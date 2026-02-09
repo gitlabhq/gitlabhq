@@ -10,6 +10,7 @@ permissions:
   - read_merge_request_participant
   - read_merge_request_reviewer
   - read_merge_request_commit
+  - read_merge_request_draft_note
   - read_merge_request_pipeline
   - read_merge_request_diff
   - read_merge_request_raw_diff

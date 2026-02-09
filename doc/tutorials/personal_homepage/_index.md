@@ -70,7 +70,7 @@ You can also keep track of what you have been working on, for example:
 1. In the **Quick access** widget on the right:
    - Select **Recently viewed** to see issues, merge requests, and epics you recently visited.
    - Select **Projects** to see projects you frequently visit and starred projects.
-     - Use the **Display options** menu to filter which project types to display.
+     - To filter by project type, select **Display options** ({{< icon name="preferences" >}}).
    - Select any link to quickly return to items you were working on.
 
 ## Stay connected with team activity

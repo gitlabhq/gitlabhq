@@ -103,6 +103,7 @@ module API
         requires :id,                type: String,  desc: "The ID of a project"
         requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
       end
+      route_setting :authorization, permissions: :read_merge_request_draft_note, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/draft_notes", feature_category: :code_review_workflow do
         present load_draft_notes(params: params), with: Entities::DraftNote
       end
@@ -120,6 +121,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
         requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
       end
+      route_setting :authorization, permissions: :read_merge_request_draft_note, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id", feature_category: :code_review_workflow do
         draft_note = get_draft_note(params: params)
 
@@ -147,6 +149,7 @@ module API
         optional :resolve_discussion,        type: Boolean, desc: 'The associated discussion should be resolved.'
         use :positional
       end
+      route_setting :authorization, permissions: :create_merge_request_draft_note, boundary_type: :project
       post ":id/merge_requests/:merge_request_iid/draft_notes", feature_category: :code_review_workflow do
         authorize_create_note!(params: params)
 
@@ -177,6 +180,7 @@ module API
         optional :note,              type: String, allow_blank: false, desc: 'The content of a note.'
         use :positional
       end
+      route_setting :authorization, permissions: :update_merge_request_draft_note, boundary_type: :project
       put ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id", feature_category: :code_review_workflow do
         bad_request!('Missing params to modify') unless params[:note].present?
 
@@ -205,6 +209,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
         requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
       end
+      route_setting :authorization, permissions: :delete_merge_request_draft_note, boundary_type: :project
       delete(
         ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id",
         feature_category: :code_review_workflow) do
@@ -232,6 +237,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
         requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
       end
+      route_setting :authorization, permissions: :publish_merge_request_draft_note, boundary_type: :project
       put(
         ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish",
         feature_category: :code_review_workflow) do
@@ -257,6 +263,7 @@ module API
         requires :id,                type: String,  desc: "The ID of a project"
         requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
       end
+      route_setting :authorization, permissions: :publish_merge_request_draft_note, boundary_type: :project
       post(
         ":id/merge_requests/:merge_request_iid/draft_notes/bulk_publish",
         feature_category: :code_review_workflow) do

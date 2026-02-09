@@ -1,0 +1,5 @@
+---
+name: publish_merge_request_draft_note
+description: Grants the ability to publish merge request draft notes
+boundaries:
+  - project

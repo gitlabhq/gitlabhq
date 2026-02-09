@@ -45,9 +45,8 @@ module MetricImageUploading
 
   def validate_file_is_image
     unless image?
-      message = _('does not have a supported extension. Only %{extension_list} are supported') % {
-        extension_list: valid_file_extensions.to_sentence
-      }
+      message = format(_('does not have a supported extension. Only %{extension_list} are supported'),
+        extension_list: valid_file_extensions.to_sentence)
       errors.add(:file, message)
     end
   end

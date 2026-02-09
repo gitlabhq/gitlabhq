@@ -93720,6 +93720,8 @@ components:
           type: string
         repository_storages_weighted:
           type: string
+        gitlab_product_usage_data_source:
+          type: string
         container_registry_import_max_tags_count:
           type: string
         container_registry_import_max_retries:

@@ -257,7 +257,6 @@ app/models/merge_request.rb:
 app/models/merge_request_diff.rb:
 - migrate_files_to_database!
 app/models/namespace.rb:
-- send_update_instructions
 - any_project_with_pages_deployed?
 - saved_change_to_parent?
 - saved_change_to_path_or_parent?

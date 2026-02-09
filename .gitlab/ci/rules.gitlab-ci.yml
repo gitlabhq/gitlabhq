@@ -3145,6 +3145,8 @@
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true
+    - <<: *if-triggered-by-aigw-project
+      allow_failure: true
     - when: manual
       allow_failure: true
 

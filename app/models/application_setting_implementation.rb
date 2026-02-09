@@ -792,18 +792,18 @@ module ApplicationSettingImplementation
 
   def check_repository_storages_weighted
     invalid = repository_storages_weighted.keys - Gitlab.config.repositories.storages.keys
-    errors.add(:repository_storages_weighted, _("can't include: %{invalid_storages}") % { invalid_storages: invalid.join(", ") }) unless
+    errors.add(:repository_storages_weighted, format(_("can't include: %{invalid_storages}"), invalid_storages: invalid.join(", "))) unless
       invalid.empty?
 
     repository_storages_weighted.each do |key, val|
       next unless val.present?
 
       unless val.is_a?(Integer)
-        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key })
+        errors.add(:repository_storages_weighted, format(_("value for '%{storage}' must be an integer"), storage: key))
       end
 
       unless val.between?(0, 100)
-        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key })
+        errors.add(:repository_storages_weighted, format(_("value for '%{storage}' must be between 0 and 100"), storage: key))
       end
     end
   end
@@ -811,7 +811,7 @@ module ApplicationSettingImplementation
   def check_valid_runner_registrars
     return if valid_runner_registrar_combinations.include?(valid_runner_registrars)
 
-    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars })
+    errors.add(:valid_runner_registrars, format(_("%{value} is not included in the list"), value: valid_runner_registrars))
   end
 
   def valid_runner_registrar_combinations

@@ -6321,6 +6321,9 @@ msgstr ""
 msgid "AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies."
 msgstr ""
 
+msgid "AdminSettings|This setting is currently controlled by the %{env_var} environment variable and cannot be changed through the UI. Current value: %{value}"
+msgstr ""
+
 msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
 msgstr ""
 

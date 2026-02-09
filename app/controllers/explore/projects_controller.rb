@@ -49,8 +49,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   def trending
     if Feature.enabled?(:retire_trending_projects, current_user)
       respond_to do |format|
-        format.html { redirect_to active_explore_projects_path }
-        format.json { redirect_to active_explore_projects_path(format: :json), status: :found }
+        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
       end
       return
     end

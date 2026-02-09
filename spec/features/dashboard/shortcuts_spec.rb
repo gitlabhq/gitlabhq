@@ -61,9 +61,6 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
   context 'logged out', :with_current_organization do
     before do
       visit explore_root_path
-
-      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
-      stub_feature_flags(explore_projects_vue: false)
     end
 
     it 'navigates to pages' do
@@ -77,8 +74,18 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
 
       find('body').send_keys([:shift, 'P'])
 
-      find('.nothing-here-block')
-      expect(page).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to'))
+      expect(page).to have_content(s_('Projects|Browse projects to learn from and contribute to.'))
+    end
+
+    context 'when `explore_projects_vue` flag is disabled' do
+      it 'navigates to project page' do
+        stub_feature_flags(explore_projects_vue: false)
+
+        find('body').send_keys([:shift, 'P'])
+
+        find('.nothing-here-block')
+        expect(page).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to'))
+      end
     end
 
     context 'when `explore_groups_vue` flag is disabled' do

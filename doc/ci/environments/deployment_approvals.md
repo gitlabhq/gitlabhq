@@ -64,6 +64,10 @@ The environments in your project require approval before deployment.
 
 Add multiple approval rules to control who can approve and execute deployment jobs.
 
+To add multiple approval rules, you must have the Developer role for the project.
+To add a group as an approver, you must [invite the group to the project](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+Only invited groups appear in the approvers list.
+
 To configure multiple approval rules, use the [CI/CD settings](protected_environments.md#protecting-environments).
 You can [also use the API](../../api/group_protected_environments.md#protect-a-single-environment).
 

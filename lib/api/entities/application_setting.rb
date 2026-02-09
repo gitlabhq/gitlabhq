@@ -55,6 +55,10 @@ module API
       expose(:housekeeping_incremental_repack_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
       expose(:repository_storages_weighted) { |settings, _options| settings.repository_storages_with_default_weight }
 
+      # Expose the source of the product usage data setting (environment or database)
+      expose(:gitlab_product_usage_data_source) { |_settings, _options| Gitlab::Usage::ProductUsageDataSetting.source.to_s }
+      expose(:gitlab_product_usage_data_enabled) { |_settings, _options| Gitlab::Usage::ProductUsageDataSetting.enabled? }
+
       # We are ignoring the container registry migration-related database columns.
       # To be backwards compatible, we are keeping these fields in the API
       # but we nullify them. We will eventually remove these as part of

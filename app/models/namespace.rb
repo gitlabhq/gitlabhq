@@ -501,12 +501,6 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def send_update_instructions
-    projects.each do |project|
-      project.send_move_instructions("#{full_path_before_last_save}/#{project.path}")
-    end
-  end
-
   def kind
     return 'group' if group_namespace?
     return 'project' if project_namespace?

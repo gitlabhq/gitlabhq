@@ -42,7 +42,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       it 'redirects to active projects with json format', :aggregate_failures do
         get :trending, format: :json
 
-        expect(response).to redirect_to(active_explore_projects_path(format: :json))
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
         expect(response).to have_gitlab_http_status(:found)
       end
 
@@ -94,7 +94,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       it 'redirects to active projects' do
         get :trending
 
-        expect(response).to redirect_to(active_explore_projects_path)
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
       end
 
       context 'when `retire_trending_projects` flag is disabled' do

@@ -10,16 +10,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-      'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
+      'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
       'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
       'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
       'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
       'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
+      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
       'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
-      'supply_chain_attestation_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
+      'supply_chain_attestation_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
+      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
     ]
   end
 
@@ -34,8 +36,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
       'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
-      'group_secrets_managers.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
-      'project_secrets_managers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
       'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
       *%w[
         web_hook_logs_daily.organization_id

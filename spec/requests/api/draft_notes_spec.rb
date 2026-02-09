@@ -36,6 +36,11 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       expect(draft_note_ids).not_to include(draft_note_by_random_user.id)
       expect(draft_note_ids).not_to include(merge_request_note.id)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_draft_note do
+      let(:boundary_object) { project }
+      let(:request) { get api(base_url, personal_access_token: pat) }
+    end
   end
 
   describe "Get a single draft note" do
@@ -75,6 +80,11 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_draft_note do
+        let(:boundary_object) { project }
+        let(:request) { get api("#{base_url}/#{draft_note_by_current_user.id}", personal_access_token: pat) }
       end
     end
   end
@@ -123,6 +133,11 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_merge_request_draft_note do
+      let(:boundary_object) { project }
+      let(:request) { delete api("#{base_url}/#{draft_note_by_current_user.id}", personal_access_token: pat) }
     end
   end
 
@@ -303,6 +318,11 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
           end
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_draft_note do
+        let(:boundary_object) { project }
+        let(:request) { post api(base_url, personal_access_token: pat), params: basic_create_params }
+      end
     end
   end
 
@@ -354,6 +374,14 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_merge_request_draft_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("#{base_url}/#{draft_note_by_current_user.id}", personal_access_token: pat),
+            params: basic_update_params
+        end
+      end
     end
   end
 
@@ -389,6 +417,13 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         published_note = merge_request.notes.last
         expect(published_note.type).to eq('DiscussionNote')
         expect(published_note.discussion.resolvable?).to eq(true)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :publish_merge_request_draft_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("#{base_url}/#{draft_note_by_current_user.id}/publish", personal_access_token: pat)
+        end
       end
     end
 
@@ -454,6 +489,13 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         bulk_publish_draft_notes
 
         expect(DraftNote.exists?(draft_note_by_random_user.id)).to eq(true)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :publish_merge_request_draft_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("#{base_url}/bulk_publish", personal_access_token: pat)
+        end
       end
     end
 
