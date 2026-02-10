@@ -44,7 +44,7 @@ Use file exports to:
   to the importing user rather than the original author.
 - For merge requests, only the latest diff is preserved during import or export.
   After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
-- Imported milestones with titles [matching existing miletones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
+- Imported milestones with titles [matching existing milestones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
   destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 

@@ -173,3 +173,34 @@ func initRdb(t *testing.T) *redis.Client {
 	})
 	return rdb
 }
+
+func TestWsRouteStrict(t *testing.T) {
+	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
+		handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		})
+		u.Routes = []routeEntry{
+			u.wsRouteStrict(newRoute(`^/-/cable\z`, "action_cable", railsBackend), handler),
+		}
+	}, nil, nil, nil, nil, nil)
+	ts := httptest.NewServer(u)
+	t.Cleanup(ts.Close)
+
+	t.Run("rejects request without websocket upgrade headers", func(t *testing.T) {
+		resp, err := http.Get(ts.URL + "/-/cable")
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	})
+
+	t.Run("allows request with websocket upgrade headers", func(t *testing.T) {
+		req, _ := http.NewRequest("GET", ts.URL+"/-/cable", nil)
+		req.Header.Set("Connection", "upgrade")
+		req.Header.Set("Upgrade", "websocket")
+
+		resp, err := http.DefaultClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+}

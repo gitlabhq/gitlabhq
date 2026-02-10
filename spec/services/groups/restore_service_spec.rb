@@ -136,7 +136,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
       context 'when the group is deletion is in progress' do
         before do
-          group.namespace_details.update!(deleted_at: Time.current)
+          set_state(group, :deletion_in_progress)
         end
 
         it 'returns error' do

@@ -14176,6 +14176,7 @@ CREATE TABLE application_settings (
     usage_billing jsonb DEFAULT '{}'::jsonb NOT NULL,
     topology_service_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     secrets_manager_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    duo_workflows_default_image_registry text,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14210,6 +14211,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
     CONSTRAINT check_5a84c3ffdc CHECK ((char_length(content_validation_endpoint_url) <= 255)),
     CONSTRAINT check_5bcba483c4 CHECK ((char_length(sentry_environment) <= 255)),
+    CONSTRAINT check_6e7bf3aef3 CHECK ((char_length(duo_workflows_default_image_registry) <= 512)),
     CONSTRAINT check_718b4458ae CHECK ((char_length(personal_access_token_prefix) <= 20)),
     CONSTRAINT check_7227fad848 CHECK ((char_length(rate_limiting_response_text) <= 255)),
     CONSTRAINT check_72c984b2a5 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
@@ -23284,6 +23286,7 @@ CREATE TABLE namespace_ai_settings (
     minimum_access_level_execute_async smallint,
     feature_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     prompt_injection_protection_level smallint DEFAULT 0 NOT NULL,
+    ai_usage_data_collection_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
 
@@ -42627,6 +42630,8 @@ CREATE INDEX i_organization_cluster_agent_mappings_on_organization_id ON organiz
 CREATE UNIQUE INDEX i_organization_cluster_agent_mappings_unique_cluster_agent_id ON organization_cluster_agent_mappings USING btree (cluster_agent_id);
 
 CREATE UNIQUE INDEX i_packages_unique_project_id_package_type_package_name_pattern ON packages_protection_rules USING btree (project_id, package_type, package_name_pattern);
+
+CREATE UNIQUE INDEX i_packages_unique_project_package_type_target_pattern ON packages_protection_rules USING btree (project_id, package_type, target_field, pattern_type, pattern);
 
 CREATE INDEX i_pkgs_deb_file_meta_on_updated_at_package_file_id_when_unknown ON packages_debian_file_metadata USING btree (updated_at, package_file_id) WHERE (file_type = 1);
 

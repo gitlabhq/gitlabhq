@@ -20,6 +20,10 @@ module Test
       def self.routing(object)
         object.id
       end
+
+      def self.embedding_model_selector
+        Test::MockEmbeddingModelSelector
+      end
     end
   end
 end

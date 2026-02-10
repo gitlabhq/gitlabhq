@@ -4,6 +4,14 @@ module Namespaces
   module Stateful
     # Scopes and query methods to resolve namespace state from ancestor hierarchies
     module StateQuerying
+      extend ActiveSupport::Concern
+
+      included do
+        scope :not_deletion_in_progress, -> do
+          where('state != ? OR state IS NULL', Namespaces::Stateful::STATES[:deletion_in_progress])
+        end
+      end
+
       # Returns the effective state for this namespace, considering ancestor inheritance.
       # If the namespace has its own explicit state (not ancestor_inherited), returns that state.
       # Otherwise, traverses up the ancestor hierarchy to find the first ancestor with an explicit state.

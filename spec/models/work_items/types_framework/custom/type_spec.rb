@@ -264,14 +264,6 @@ RSpec.describe WorkItems::TypesFramework::Custom::Type, feature_category: :team_
     end
   end
 
-  describe '#icon_name_with_prefix' do
-    let(:type) { create(:work_item_custom_type, icon_name: :work_item_feature) }
-
-    it 'converts underscores to hyphens' do
-      expect(type.icon_name_with_prefix).to eq('work-item-feature')
-    end
-  end
-
   describe '#strip_whitespaces' do
     it 'strips whitespaces from name' do
       work_item_custom_type = build(:work_item_custom_type, name: '  Feature  ')

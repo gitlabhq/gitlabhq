@@ -144,6 +144,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_group do
+      let(:boundary_object) { :user }
+      let(:user) { user1 }
+      let(:request) do
+        get api('/groups', personal_access_token: pat)
+      end
+    end
+
     context "when unauthenticated" do
       before do
         # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
@@ -721,6 +729,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_group do
+        let(:boundary_object) { group1 }
+        let(:user) { user1 }
+        let(:request) do
+          get api("/groups/#{group1.id}", personal_access_token: pat)
+        end
+      end
+
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
         allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
@@ -1159,6 +1175,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     before do
       stub_application_setting(update_namespace_name_rate_limit: 1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_group do
+      let(:boundary_object) { group1 }
+      let(:user) { user1 }
+      let(:request) do
+        put api("/groups/#{group1.id}", personal_access_token: pat), params: { name: "#{new_group_name}_gpat" }
+      end
     end
 
     it 'increments the update_namespace_name rate limit' do
@@ -1682,6 +1706,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response.first['visibility']).to be_present
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_project do
+        let(:boundary_object) { group1 }
+        let(:user) { user1 }
+        let(:request) do
+          get api("/groups/#{group1.id}/projects", personal_access_token: pat)
+        end
+      end
+
       context 'and using archived' do
         it "returns the group's archived projects", :aggregate_failures do
           get api("/groups/#{group1.id}/projects?archived=true", user1)
@@ -2054,6 +2086,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
+      it_behaves_like 'authorizing granular token permissions', :read_shared_project do
+        let(:boundary_object) { group1 }
+        let(:user) { user1 }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       it 'returns the shared projects in the group', :aggregate_failures do
         get api(path, user1)
 
@@ -2277,6 +2317,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
+      it_behaves_like 'authorizing granular token permissions', :read_shared_group do
+        let(:boundary_object) { main_group }
+        let(:user) { user1 }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       it 'returns the shared groups in the group', :aggregate_failures do
         expect_log_keys(caller_id: "GET /api/:version/groups/:id/groups/shared",
           route: "/api/:version/groups/:id/groups/shared",
@@ -2568,6 +2616,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
+      it_behaves_like 'authorizing granular token permissions', :read_invited_group do
+        let(:boundary_object) { main_group }
+        let(:user) { user1 }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       it 'returns the invited groups in the group', :aggregate_failures do
         expect_log_keys(caller_id: "GET /api/:version/groups/:id/invited_groups",
           route: "/api/:version/groups/:id/invited_groups",
@@ -2714,6 +2770,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as owner' do
+      it_behaves_like 'authorizing granular token permissions', :archive_group do
+        let(:boundary_object) { group }
+        let(:user) { user1 }
+        let(:request) do
+          post api("/groups/#{group.id}/archive", personal_access_token: pat)
+        end
+      end
+
       it 'archives the group', :aggregate_failures do
         expect_log_keys(
           caller_id: "POST /api/:version/groups/:id/archive",
@@ -2782,6 +2846,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as owner and group is archived' do
+      it_behaves_like 'authorizing granular token permissions', :unarchive_group do
+        let(:boundary_object) { group }
+        let(:user) { user1 }
+        let(:request) do
+          post api("/groups/#{group.id}/unarchive", personal_access_token: pat)
+        end
+      end
+
       it 'unarchives the group', :aggregate_failures do
         expect_log_keys(
           caller_id: "POST /api/:version/groups/:id/unarchive",
@@ -2855,6 +2927,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
+      it_behaves_like 'authorizing granular token permissions', :read_sub_group do
+        let(:boundary_object) { group1 }
+        let(:user) { user1 }
+        let(:request) do
+          get api("/groups/#{group1.id}/subgroups", personal_access_token: pat)
+        end
+      end
+
       context 'when user is not member of a public group' do
         it 'returns no subgroups for the public group', :aggregate_failures do
           expect_log_keys(caller_id: "GET /api/:version/groups/:id/subgroups",
@@ -3043,6 +3123,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           group1.add_guest(user2)
         end
 
+        it_behaves_like 'authorizing granular token permissions', :read_descendant_group do
+          let(:boundary_object) { group1 }
+          let(:user) { user1 }
+          let(:request) do
+            get api("/groups/#{group1.id}/descendant_groups", personal_access_token: pat)
+          end
+        end
+
         it 'returns private descendants', :aggregate_failures do
           get api("/groups/#{group1.id}/descendant_groups", user2)
 
@@ -3161,6 +3249,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       context 'as owner' do
         before do
           group2.add_owner(user1)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :create_group do
+          let(:boundary_object) { :user }
+          let(:user) { user1 }
+          let(:request) do
+            post api("/groups", personal_access_token: pat), params: { parent_id: group2.id, name: 'foo', path: 'foo' }
+          end
         end
 
         it 'can create subgroups' do
@@ -3476,6 +3572,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     it_behaves_like 'marks group for delayed deletion'
 
+    it_behaves_like 'authorizing granular token permissions', :delete_group, :enable_admin_mode do
+      let(:boundary_object) { group }
+      let(:user) { user1 }
+      let(:request) do
+        delete api("/groups/#{group.id}", personal_access_token: pat), params: params
+      end
+    end
+
     context 'when ancestor is already marked for deletion' do
       let(:ancestor) { create(:group_with_deletion_schedule, organization: group.organization) }
 
@@ -3623,6 +3727,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['marked_for_deletion_on']).to be_falsey
         end
+
+        it_behaves_like 'authorizing granular token permissions', :restore_group do
+          let(:boundary_object) { group }
+          let(:user) { user1 }
+          let(:request) do
+            post api("/groups/#{group.id}/restore", personal_access_token: pat)
+          end
+        end
       end
 
       context 'when restoring fails' do
@@ -3673,6 +3785,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         post api("/groups/#{group1.id}/projects/#{project.id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :transfer_project, :enable_admin_mode do
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) do
+          post api("/groups/#{group1.id}/projects/#{project_path}", personal_access_token: pat)
+        end
       end
 
       context 'when using project path in URL' do
@@ -3751,6 +3871,13 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to include_pagination_headers
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_transfer_location do
+        let(:boundary_object) { source_group }
+        let(:request) do
+          get api("/groups/#{source_group.id}/transfer_locations", personal_access_token: pat)
+        end
+      end
+
       it 'only includes groups where the user has permissions to transfer a group to' do
         expect_log_keys(caller_id: "GET /api/:version/groups/:id/transfer_locations",
           route: "/api/:version/groups/:id/transfer_locations",
@@ -3815,6 +3942,13 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     def make_request(user)
       post api("/groups/#{group.id}/transfer", user), params: params
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :transfer_group do
+      let(:boundary_object) { group }
+      let(:request) do
+        post api("/groups/#{group.id}/transfer", personal_access_token: pat), params: {}
+      end
     end
 
     context 'when promoting a subgroup to a root group' do
@@ -3953,6 +4087,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['id']).to eq(group_to_transfer.id)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :transfer_group do
+        let(:boundary_object) { group_to_transfer }
+        let(:user) { user1 }
+        let(:request) do
+          post api("/groups/#{group_to_transfer.id}/transfer_to_organization", personal_access_token: pat), params: { organization_id: organization.id }
+        end
+
+        before do
+          allow(Organizations::Groups::TransferService).to receive_message_chain(:new, :async_execute)
+            .and_return(ServiceResponse.success(message: 'Group transfer to organization initiated'))
+        end
+      end
+
       context 'when service returns error' do
         it 'returns bad request' do
           expect_next_instance_of(Organizations::Groups::TransferService) do |service|
@@ -4081,6 +4228,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         let(:group) { owner_group }
         let(:shared_with_group) { create(:group) }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :share_group do
+        let(:expires_at) { 10.days.from_now.to_date }
+        let(:boundary_object) { create(:group) }
+        let(:user) { owner_user }
+        let(:request) do
+          post api("/groups/#{owner_group.id}/share", personal_access_token: pat), params: { group_id: boundary_object.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at }
+        end
+
+        before do
+          boundary_object.add_owner(owner_user)
+        end
+      end
     end
 
     context 'when the user is not the owner of the group' do
@@ -4152,6 +4312,18 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         let(:user) { user1 }
         let(:shared_group) { group1 }
         let(:shared_with_group) { group_a }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :unshare_group do
+        let(:boundary_object) { group_a }
+        let(:user) { user1 }
+        let(:request) do
+          delete api("/groups/#{group1.id}/share/#{group_a.id}", personal_access_token: pat)
+        end
+
+        before do
+          group_a.add_owner(user1)
+        end
       end
     end
 

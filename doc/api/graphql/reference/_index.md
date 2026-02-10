@@ -56265,7 +56265,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
-| <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_policy_protected_branch_modification"></a>`SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
 | <a id="usercalloutfeaturenameenumsecurity_scanner_profiles_announcement"></a>`SECURITY_SCANNER_PROFILES_ANNOUNCEMENT` | Callout feature name for security_scanner_profiles_announcement. |
 | <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |

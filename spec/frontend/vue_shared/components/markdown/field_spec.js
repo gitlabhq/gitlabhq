@@ -515,6 +515,10 @@ describe('Markdown field component', () => {
     it('shows the header content', () => {
       expect(subject.findByTestId('header-slot-content').exists()).toBe(true);
     });
+
+    it('makes the header be sticky', () => {
+      expect(subject.findByTestId('header-container').classes()).toContain('gl-sticky');
+    });
   });
 
   describe('immersive mode disabled', () => {
@@ -534,6 +538,10 @@ describe('Markdown field component', () => {
 
     it('does not show the header content', () => {
       expect(subject.findByTestId('header-slot-content').exists()).toBe(false);
+    });
+
+    it('does not make the header', () => {
+      expect(subject.findByTestId('header-container').classes()).not.toContain('gl-sticky');
     });
   });
 });

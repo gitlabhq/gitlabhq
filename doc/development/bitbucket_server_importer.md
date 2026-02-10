@@ -74,6 +74,20 @@ Imports LFS objects from the source project by scheduling a
 This worker completes the import process by performing some housekeeping
 such as marking the import as completed.
 
+## User Contribution Mapping
+
+The Bitbucket Server importer supports [user contribution mapping](user_contribution_mapping.md), which allows imported records to be attributed to placeholder users until a real user can be assigned after the import completes.
+
+### Key classes
+
+| Class | Purpose |
+|-------|---------|
+| `BitbucketServerImport::UserFinder` | Class that calls `Import::SourceUserMapper` to map user data from Bitbucket Server API responses to GitLab `User` records |
+
+### Deleted users handling
+
+The Bitbucket Server importer does not have special handling for deleted users. If a user reference lacks a username, the contribution falls back to `project.creator_id`.
+
 ## Pull request mentions
 
 Pull request descriptions and notes can contain mentions to users. If a user with the

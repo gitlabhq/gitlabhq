@@ -707,103 +707,57 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   end
 
   describe '#commit_count' do
-    context 'with count_commits_use_revisions_only feature flag disabled' do
-      before do
-        stub_feature_flags(count_commits_use_revisions_only: false)
-      end
+    let(:response) { double(count: 42) }
 
-      it 'sends a commit_count message with revision field' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_path(storage_name, relative_path),
-            kind_of(Hash))
-          .and_return(double(count: 0))
+    it 'converts ref parameter to revisions' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: [revision.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
 
-        client.commit_count(revision)
-      end
-
-      it 'sends all field when all: true is specified' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_params(
-            repository: repository_message,
-            all: true,
-            first_parent: false
-          ), kind_of(Hash))
-          .and_return(double(count: 42))
-
-        expect(client.commit_count(nil, all: true)).to eq(42)
-      end
-
-      it 'sends revisions field when revisions parameter is provided' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_params(
-            repository: repository_message,
-            revisions: ['master'.b, 'feature'.b],
-            first_parent: false
-          ), kind_of(Hash))
-          .and_return(double(count: 42))
-
-        expect(client.commit_count(nil, revisions: %w[master feature])).to eq(42)
-      end
+      expect(client.commit_count(revision)).to eq(42)
     end
 
-    context 'with count_commits_use_revisions_only feature flag enabled' do
-      let(:response) { double(count: 42) }
+    it 'converts all: true to revisions with --all' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: ['--all'.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
 
-      it 'converts ref parameter to revisions' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_params(
-            repository: repository_message,
-            revisions: [revision.b],
-            first_parent: false
-          ), kind_of(Hash))
-          .and_return(response)
+      expect(client.commit_count(nil, all: true)).to eq(42)
+    end
 
-        expect(client.commit_count(revision)).to eq(42)
-      end
+    it 'passes through revisions parameter unchanged' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: ['master'.b, 'feature'.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
 
-      it 'converts all: true to revisions with --all' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_params(
-            repository: repository_message,
-            revisions: ['--all'.b],
-            first_parent: false
-          ), kind_of(Hash))
-          .and_return(response)
+      expect(client.commit_count(nil, revisions: %w[master feature])).to eq(42)
+    end
 
-        expect(client.commit_count(nil, all: true)).to eq(42)
-      end
+    it 'does not set revisions when nothing is provided' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
 
-      it 'passes through revisions parameter unchanged' do
-        expect_any_instance_of(Gitaly::CommitService::Stub)
-          .to receive(:count_commits)
-          .with(gitaly_request_with_params(
-            repository: repository_message,
-            revisions: ['master'.b, 'feature'.b],
-            first_parent: false
-          ), kind_of(Hash))
-          .and_return(response)
-
-        expect(client.commit_count(nil, revisions: %w[master feature])).to eq(42)
-      end
-
-      context 'when nothing is provided' do
-        it 'does not set revisions' do
-          expect_any_instance_of(Gitaly::CommitService::Stub)
-            .to receive(:count_commits)
-            .with(gitaly_request_with_params(
-              repository: repository_message,
-              first_parent: false
-            ), kind_of(Hash))
-            .and_return(response)
-
-          expect(client.commit_count(nil)).to eq(42)
-        end
-      end
+      expect(client.commit_count(nil)).to eq(42)
     end
 
     context 'with revisions parameter' do

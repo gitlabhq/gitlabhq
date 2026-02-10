@@ -383,41 +383,46 @@ export default {
     :class="{ 'immersive !gl-border-none !gl-bg-inherit': immersive, 'gl-relative': !immersive }"
     :data-uploads-path="uploadsPath"
   >
-    <slot v-if="immersive" name="header"></slot>
-    <markdown-header
-      :editor-ai-actions="editorAiActions"
-      :preview-markdown="previewMarkdown"
-      :line-content="lineContent"
-      :can-suggest="canSuggest"
-      :enable-preview="enablePreview"
-      :show-suggest-popover="showSuggestPopover"
-      :suggestion-start-index="suggestionsStartIndex"
-      :uploads-path="uploadsPath"
-      :markdown-preview-path="markdownPreviewPath"
-      :new-comment-template-paths-prop="newCommentTemplatePaths"
-      :drawio-enabled="drawioEnabled"
-      :supports-quick-actions="supportsQuickActions"
-      data-testid="markdownHeader"
-      :restricted-tool-bar-items="restrictedToolBarItems"
-      :immersive="immersive"
-      @showPreview="showPreview"
-      @hidePreview="hidePreview"
-      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+    <div
+      :class="{ 'gl-sticky gl-top-0 gl-z-3 gl-bg-default': immersive }"
+      data-testid="header-container"
     >
-      <template #header-buttons>
-        <slot name="header-buttons"></slot>
-        <div class="gl-grow">
-          <markdown-toolbar
-            v-if="immersive"
-            :markdown-docs-path="markdownDocsPath"
-            :can-attach-file="canAttachFile"
-            :show-comment-tool-bar="showCommentToolBar"
-            :show-content-editor-switcher="showContentEditorSwitcher"
-            @enableContentEditor="$emit('enableContentEditor')"
-          />
-        </div>
-      </template>
-    </markdown-header>
+      <slot v-if="immersive" name="header"></slot>
+      <markdown-header
+        :editor-ai-actions="editorAiActions"
+        :preview-markdown="previewMarkdown"
+        :line-content="lineContent"
+        :can-suggest="canSuggest"
+        :enable-preview="enablePreview"
+        :show-suggest-popover="showSuggestPopover"
+        :suggestion-start-index="suggestionsStartIndex"
+        :uploads-path="uploadsPath"
+        :markdown-preview-path="markdownPreviewPath"
+        :new-comment-template-paths-prop="newCommentTemplatePaths"
+        :drawio-enabled="drawioEnabled"
+        :supports-quick-actions="supportsQuickActions"
+        data-testid="markdownHeader"
+        :restricted-tool-bar-items="restrictedToolBarItems"
+        :immersive="immersive"
+        @showPreview="showPreview"
+        @hidePreview="hidePreview"
+        @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+      >
+        <template #header-buttons>
+          <slot name="header-buttons"></slot>
+          <div class="gl-grow">
+            <markdown-toolbar
+              v-if="immersive"
+              :markdown-docs-path="markdownDocsPath"
+              :can-attach-file="canAttachFile"
+              :show-comment-tool-bar="showCommentToolBar"
+              :show-content-editor-switcher="showContentEditorSwitcher"
+              @enableContentEditor="$emit('enableContentEditor')"
+            />
+          </div>
+        </template>
+      </markdown-header>
+    </div>
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>

@@ -76,6 +76,32 @@ module ActiveContext
         def current_embedding_fields
           current_indexing_embedding_versions.map { |v| v[:field].to_s }
         end
+
+        def embedding_model_selector
+          raise NotImplementedError
+        end
+
+        def current_indexing_embedding_model
+          return nil if collection_record&.current_indexing_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.current_indexing_embedding_model)
+        end
+
+        def next_indexing_embedding_model
+          return nil if collection_record&.next_indexing_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.next_indexing_embedding_model)
+        end
+
+        def search_embedding_model
+          return nil if collection_record&.search_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.search_embedding_model)
+        end
+
+        def indexing_embedding_models
+          [current_indexing_embedding_model, next_indexing_embedding_model].compact
+        end
       end
 
       attr_reader :object

@@ -121,7 +121,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
     let(:params) { { package_name_pattern: other_existing_package_protection_rule.package_name_pattern } }
 
     it_behaves_like 'an erroneous service response with side effect',
-      message: ['Package name pattern has already been taken']
+      message: ['Package name pattern has already been taken', 'Pattern has already been taken']
 
     it do
       expect { service_execute }.not_to(

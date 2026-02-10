@@ -1,0 +1,7 @@
+---
+name: create_group
+description: Grants the ability to create a group
+boundaries:
+  - user
+permissions:
+  - create_group

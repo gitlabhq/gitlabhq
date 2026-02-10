@@ -675,7 +675,7 @@ export default {
           >
             <template v-if="glFeatures.wikiImmersiveEditor" #header>
               <div
-                class="gl-sticky gl-top-0 gl-z-3 gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
+                class="gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
               >
                 <wiki-sidebar-toggle action="open" class="gl-my-2 gl-shrink-0" />

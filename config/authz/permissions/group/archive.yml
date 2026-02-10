@@ -1,0 +1,5 @@
+---
+name: archive_group
+description: Grants the ability to archive a group
+boundaries:
+  - group

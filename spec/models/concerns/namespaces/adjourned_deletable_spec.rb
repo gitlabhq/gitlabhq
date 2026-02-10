@@ -3,40 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_projects do
-  let(:model) do
-    Class.new do
-      include Namespaces::AdjournedDeletable
-      include Namespaces::Stateful
-    end
-  end
+  include Namespaces::StatefulHelpers
 
-  let(:record) { model.new }
+  let_it_be_with_reload(:record) { create(:group) }
 
   describe '#self_deletion_in_progress?' do
-    it 'raises NotImplementedError by default' do
-      expect { record.self_deletion_in_progress? }.to raise_error(NotImplementedError)
-    end
+    it 'delegates to deletion_in_progress?' do
+      expect(record.self_deletion_in_progress?).to be_falsy
 
-    context 'when implemented' do
-      before do
-        model.send(:define_method, :self_deletion_in_progress?) do
-          true
-        end
-      end
+      set_state(record, :deletion_in_progress)
 
-      it 'returns the implemented value' do
-        expect(record.self_deletion_in_progress?).to be_truthy
-      end
+      expect(record.self_deletion_in_progress?).to be_truthy
     end
   end
 
   describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
-    context 'when record does not respond to namespace_details' do
-      it 'returns nil' do
-        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
-      end
-    end
-
     context 'when deletion_scheduled_at is present in namespace_details.state_metadata' do
       before do
         allow(record).to receive(:namespace_details).and_return(
@@ -61,11 +42,15 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
           expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
         end
       end
+    end
 
-      context 'when record does not respond to :marked_for_deletion_on' do
-        it 'returns nil' do
-          expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
-        end
+    context 'when namespace_details.state_metadata is empty' do
+      before do
+        allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
+      end
+
+      it 'returns nil' do
+        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
       end
     end
   end
@@ -160,16 +145,18 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
   describe Namespace do
     describe '#self_deletion_in_progress?' do
-      context 'when deleted_at is nil' do
-        let_it_be(:namespace) { create(:namespace) }
+      let_it_be_with_reload(:namespace) { create(:namespace) }
 
+      context 'when state is not deletion_in_progress' do
         it 'returns false' do
           expect(namespace.self_deletion_in_progress?).to be_falsy
         end
       end
 
-      context 'when deleted_at is not nil' do
-        let_it_be(:namespace) { create(:namespace) { |n| n.deleted_at = Time.current } }
+      context 'when state is deletion_in_progress' do
+        before do
+          set_state(namespace, :deletion_in_progress)
+        end
 
         it 'returns true' do
           expect(namespace.self_deletion_in_progress?).to be_truthy

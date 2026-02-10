@@ -104,7 +104,9 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
   context 'with other existing package protection rule with same package_name_pattern' do
     let_it_be_with_reload(:other_existing_package_protection_rule) do
       create(:package_protection_rule, project: project,
-        package_name_pattern: "#{package_protection_rule.package_name_pattern}-other")
+        package_name_pattern: "#{package_protection_rule.package_name_pattern}-other",
+        pattern: "#{package_protection_rule.package_name_pattern}-other"
+      )
     end
 
     let(:input) { super().merge(package_name_pattern: other_existing_package_protection_rule.package_name_pattern) }
@@ -116,7 +118,11 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
 
     it 'includes error message in response' do
-      is_expected.tap { expect(mutation_response_errors).to eq ['Package name pattern has already been taken'] }
+      is_expected.tap do
+        expect(mutation_response_errors).to eq(
+          ['Package name pattern has already been taken', 'Pattern has already been taken']
+        )
+      end
     end
   end
 

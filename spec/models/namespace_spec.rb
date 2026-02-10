@@ -571,16 +571,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace1) }
     let_it_be(:namespace2sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace2) }
 
-    describe '.without_deleted' do
-      before do
-        namespace1.namespace_details.update!(deleted_at: Time.current)
-      end
-
-      it 'does not include namespace marked as deleted' do
-        expect(described_class.without_deleted).to contain_exactly(namespace, namespace2, namespace1sub, namespace2sub)
-      end
-    end
-
     describe '.by_parent' do
       it 'includes correct namespaces' do
         expect(described_class.by_parent(namespace1.id)).to match_array([namespace1sub])
@@ -994,11 +984,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:archived).to(:namespace_settings).allow_nil }
     it { is_expected.to delegate_method(:creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:creator=).to(:namespace_details).with_arguments(:args) }
-    it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:description).to(:namespace_details) }
     it { is_expected.to delegate_method(:description=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:description_html).to(:namespace_details) }
-    it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:state_metadata).to(:namespace_details) }
     it { is_expected.to delegate_method(:state_metadata=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited?).to(:namespace_settings) }

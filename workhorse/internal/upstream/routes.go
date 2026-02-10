@@ -222,6 +222,22 @@ func (u *upstream) wsRoute(metadata routeMetadata, handler http.Handler, matcher
 	}
 }
 
+// wsRouteStrict creates a WebSocket route that will match requests even if websocket headers are missing.
+// The request is rejected if it is not a valid WebSocket upgrade request.
+// Use wsRouteStrict if you want invalid WebSocket upgrade requests to fail early with a 400 Bad Request.
+func (u *upstream) wsRouteStrict(metadata routeMetadata, handler http.Handler, matchers ...matcherFunc) routeEntry {
+	method := "GET"
+	handler = u.observabilityMiddlewares(handler, method, metadata, nil)
+	handler = requireWebsocket(handler)
+
+	return routeEntry{
+		method:   method,
+		regex:    compileRegexp(metadata.regexpStr),
+		handler:  handler,
+		matchers: matchers,
+	}
+}
+
 // Creates matcherFuncs for a particular content type.
 func isContentType(contentType string) func(*http.Request) bool {
 	return func(r *http.Request) bool {
@@ -369,7 +385,7 @@ func configureRoutes(u *upstream) {
 			contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer, &u.Config))),
 
 		// ActionCable websocket
-		u.wsRoute(newRoute(`^/-/cable\z`, "action_cable", railsBackend),
+		u.wsRouteStrict(newRoute(`^/-/cable\z`, "action_cable", railsBackend),
 			cableProxy),
 
 		// Terminal websocket
@@ -683,6 +699,17 @@ func denyWebsocket(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if websocket.IsWebSocketUpgrade(r) {
 			httpError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func requireWebsocket(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !websocket.IsWebSocketUpgrade(r) {
+			httpError(w, r, "websocket upgrade required", http.StatusBadRequest)
 			return
 		}
 

@@ -21,6 +21,7 @@ export default function mountBranchRulesListing(el) {
     showApprovers,
     canAdminGroupProtectedBranches,
     groupSettingsRepositoryPath,
+    securityPoliciesPath,
   } = el.dataset;
 
   return new Vue({
@@ -35,6 +36,7 @@ export default function mountBranchRulesListing(el) {
       showApprovers: parseBoolean(showApprovers),
       canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
       groupSettingsRepositoryPath,
+      securityPoliciesPath,
     },
     render(createElement) {
       return createElement(BranchRulesApp);

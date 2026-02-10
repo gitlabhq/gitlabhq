@@ -1062,24 +1062,24 @@ rspec-ee system pg16 single-db-sec-connection:
 
 # Integration tests with Elasticsearch and PG production versions
 # These run on merge requests which meet certain conditions and the nightly pipeline
-rspec-ee unit pg16 es8:
+rspec-ee unit pg17 es8:
   extends:
-    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-base-pg17-es8
     - .rspec-ee-unit-parallel
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
-rspec-ee integration pg16 es8:
+rspec-ee integration pg17 es8:
   extends:
-    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-base-pg17-es8
     - .rspec-ee-integration-parallel
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
-rspec-ee system pg16 es8:
+rspec-ee system pg17 es8:
   extends:
-    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-base-pg17-es8
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
@@ -1169,44 +1169,44 @@ rspec system pg18:
 #####################################
 # EE: default branch nightly scheduled jobs #
 
-# PG16
+# PG17
 # Integration tests with supported Elasticsearch and OpenSearch versions
-# and the actual PG production version (PG16)
-rspec-ee unit pg16 opensearch1:
+# and the actual PG production version (PG17)
+rspec-ee unit pg17 opensearch1:
   extends:
-    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-base-pg17-opensearch1
     - .rspec-ee-unit-parallel
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-rspec-ee unit pg16 opensearch2:
+rspec-ee unit pg17 opensearch2:
   extends:
-    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-base-pg17-opensearch2
     - .rspec-ee-unit-parallel
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-rspec-ee integration pg16 opensearch1:
+rspec-ee integration pg17 opensearch1:
   extends:
-    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-base-pg17-opensearch1
     - .rspec-ee-integration-parallel
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-rspec-ee integration pg16 opensearch2:
+rspec-ee integration pg17 opensearch2:
   extends:
-    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-base-pg17-opensearch2
     - .rspec-ee-integration-parallel
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-rspec-ee system pg16 opensearch1:
+rspec-ee system pg17 opensearch1:
   extends:
-    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-base-pg17-opensearch1
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
-rspec-ee system pg16 opensearch2:
+rspec-ee system pg17 opensearch2:
   extends:
-    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-base-pg17-opensearch2
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
@@ -1294,56 +1294,56 @@ rspec-ee system pg18:
 ##################################################
 # EE: default branch weekly scheduled jobs #
 # Integration tests with Elasticsearch 9.X and OpenSearch versions
-# and the actual PG production version (PG16)
+# and the actual PG production version (PG17)
 
-rspec-ee unit pg16 es9:
+rspec-ee unit pg17 es9:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-es9
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-es9
     - .rspec-ee-unit-parallel
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
-rspec-ee integration pg16 es9:
+rspec-ee integration pg17 es9:
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-es9
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-es9
     - .rspec-ee-integration-parallel
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
-rspec-ee system pg16 es9:
+rspec-ee system pg17 es9:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-es9
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-es9
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
-rspec-ee unit pg16 opensearch-latest:
+rspec-ee unit pg17 opensearch-latest:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-opensearch-latest
     - .rspec-ee-unit-parallel
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
-rspec-ee integration pg16 opensearch-latest:
+rspec-ee integration pg17 opensearch-latest:
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-opensearch-latest
     - .rspec-ee-integration-parallel
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
-rspec-ee system pg16 opensearch-latest:
+rspec-ee system pg17 opensearch-latest:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-base-pg16
-    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-opensearch-latest
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]

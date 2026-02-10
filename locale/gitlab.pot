@@ -12771,6 +12771,9 @@ msgstr ""
 msgid "BranchRules|Edit status check"
 msgstr ""
 
+msgid "BranchRules|Enforced by policy"
+msgstr ""
+
 msgid "BranchRules|From users with push access."
 msgstr ""
 
@@ -12817,6 +12820,9 @@ msgid "BranchRules|No one is allowed to push and merge changes."
 msgstr ""
 
 msgid "BranchRules|No status checks have been added."
+msgstr ""
+
+msgid "BranchRules|Policy warn mode"
 msgstr ""
 
 msgid "BranchRules|Protect branch"
@@ -55993,9 +55999,6 @@ msgid "RegistrationFeatures|Read more about the %{link_start}Registration Featur
 msgstr ""
 
 msgid "RegistrationFeatures|Want to %{feature_title} for free?"
-msgstr ""
-
-msgid "RegistrationFeatures|send emails to users"
 msgstr ""
 
 msgid "RegistrationFeatures|use this feature"

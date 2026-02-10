@@ -144,7 +144,6 @@ admin_work_item_lifecycle
 admin_work_item_link
 apply_suggestion
 approve_user
-archive_group
 assign_default_duo_group
 audit_event_definitions
 award_achievement
@@ -194,7 +193,6 @@ create_environment_terminal
 create_epic_tree_relation
 create_external_issue_link
 create_feature_flags_client
-create_group
 create_group_link
 create_group_stage
 create_group_via_api
@@ -485,7 +483,6 @@ read_geo_node
 read_geo_registry
 read_google_cloud_artifact_registry
 read_grafana
-read_group
 read_group_activity
 read_group_activity_analytics
 read_group_all_available_runners

@@ -7,7 +7,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let!(:user)         { create(:user) }
-  let!(:group)        { create(:group_with_deletion_schedule, deleted_at: Time.current) }
+  let!(:group)        { create(:group_with_deletion_schedule) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group) }
@@ -151,21 +151,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   describe 'synchronous delete' do
     it_behaves_like 'group destruction', false
 
-    it 'marks the group as deleted', :freeze_time do
-      expect(group).to receive(:update_attribute).with(:deleted_at, Time.current)
-
-      destroy_group(group, user, false)
-    end
-
     context 'when destroying the group throws an error' do
       before do
         allow(group).to receive(:destroy).and_raise(StandardError)
-      end
-
-      it 'unmarks the group as delete' do
-        expect { destroy_group(group, user, false) }.to raise_error(StandardError)
-
-        expect(group.deleted_at).to be_nil
       end
 
       context 'when group state is deletion_scheduled' do

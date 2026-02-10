@@ -182,6 +182,21 @@ briefly waits for jobs to complete before deciding what the next action should
 be. For small projects, this may slow down the import process a bit, but it
 also reduces pressure on the system as a whole.
 
+## User contribution mapping
+
+The GitHub importer supports [user contribution mapping](user_contribution_mapping.md), which allows imported records to be attributed to placeholder users until a real user can be assigned after the import completes.
+
+### Key classes
+
+| Class | Purpose |
+|-------|---------|
+| `GithubImport::UserFinder` | Class that calls `Import::SourceUserMapper` to map user data from GitHub API responses to GitLab `User` records |
+| `GithubImport::Importer::CollaboratorImporter` | calls `PlaceholderMemberships::CreateService` to create placeholder memberships for the source users |
+
+### Deleted users and ghost user handling
+
+GitHub has a special "ghost" user (username: `ghost`) that represents deleted users. When the importer encounters this user, it maps the user directly to the GitLab ghost user without creating an `Import::SourceUser` or placeholder user.
+
 ## Refreshing import job IDs
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`

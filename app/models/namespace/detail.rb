@@ -11,6 +11,8 @@ class Namespace::Detail < ApplicationRecord
   validates :state_metadata, json_schema: { filename: 'namespace_detail_state_metadata', size_limit: 64.kilobytes },
     if: :state_metadata_changed?
 
+  ignore_column :deleted_at, remove_with: '18.11', remove_after: '2026-03-21'
+
   jsonb_accessor :state_metadata,
     last_updated_at: :datetime,
     last_changed_by_user_id: :integer,

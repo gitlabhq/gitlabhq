@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
-import { getProjects } from '~/rest_api';
+import { getProjects, getGroupMembers } from '~/rest_api';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
@@ -8,6 +8,7 @@ import {
   fetchProjectGroups,
   fetchAllGroups,
   fetchGroupsWithProjectAccess,
+  fetchGroupMembers,
   fetchProjects,
   fetchUsers,
   fetchAvailableDeployKeys,
@@ -207,6 +208,60 @@ describe('List Selector Utils', () => {
           value: 'jane_smith',
         },
       ]);
+    });
+  });
+
+  describe('fetchGroupMembers', () => {
+    const mockGroupId = 'group-path';
+    const mockSearch = 'john';
+    const mockInherited = false;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('calls getGroupMembers with correct parameters', async () => {
+      await fetchGroupMembers(mockGroupId, mockInherited, mockSearch);
+      expect(getGroupMembers).toHaveBeenCalledWith(mockGroupId, mockInherited, {
+        query: mockSearch,
+      });
+    });
+
+    it('returns mapped member objects when getGroupMembers returns data', async () => {
+      const mockMembers = [
+        { id: 1, name: 'John Doe', username: 'john_doe' },
+        { id: 2, name: 'Jane Smith', username: 'jane_smith' },
+      ];
+      getGroupMembers.mockResolvedValue({ data: mockMembers });
+
+      const result = await fetchGroupMembers(mockGroupId, mockInherited, mockSearch);
+
+      expect(result).toEqual([
+        { id: 1, name: 'John Doe', username: 'john_doe', text: 'John Doe', value: 'john_doe' },
+        {
+          id: 2,
+          name: 'Jane Smith',
+          username: 'jane_smith',
+          text: 'Jane Smith',
+          value: 'jane_smith',
+        },
+      ]);
+    });
+
+    it('returns empty array when getGroupMembers returns no data', async () => {
+      getGroupMembers.mockResolvedValue(null);
+
+      const result = await fetchGroupMembers(mockGroupId, mockInherited, mockSearch);
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles inherited members parameter', async () => {
+      const inheritedTrue = true;
+      await fetchGroupMembers(mockGroupId, inheritedTrue, mockSearch);
+      expect(getGroupMembers).toHaveBeenCalledWith(mockGroupId, inheritedTrue, {
+        query: mockSearch,
+      });
     });
   });
 

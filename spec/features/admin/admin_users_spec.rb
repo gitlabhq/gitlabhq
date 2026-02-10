@@ -58,31 +58,6 @@ RSpec.describe "Admin::Users", feature_category: :user_management do
     end
   end
 
-  describe 'prompt user about registration features' do
-    let(:message) { s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|send emails to users') } }
-
-    it 'does not render registration features CTA when service ping is enabled' do
-      stub_application_setting(usage_ping_enabled: true)
-
-      visit admin_users_path
-
-      expect(page).not_to have_content(message)
-    end
-
-    context 'with no license and service ping disabled', :without_license do
-      before do
-        stub_application_setting(usage_ping_enabled: false)
-      end
-
-      it 'renders registration features CTA' do
-        visit admin_users_path
-
-        expect(page).to have_content(message)
-        expect(page).to have_link(s_('RegistrationFeatures|Registration Features Program'))
-      end
-    end
-  end
-
   it 'does not perform N+1 queries' do
     control_queries = ActiveRecord::QueryRecorder.new { visit admin_users_path }
 

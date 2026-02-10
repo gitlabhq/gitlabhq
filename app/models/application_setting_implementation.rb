@@ -129,6 +129,7 @@ module ApplicationSettingImplementation
         inactive_resource_access_tokens_delete_after_days: 30,
         include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_level_ai_beta_features_enabled: false,
+        duo_workflows_default_image_registry: nil,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,

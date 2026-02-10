@@ -27,6 +27,13 @@ User contribution mapping is implemented within each importer to assign contribu
 
 Before a placeholder user can be reassigned to a real user, a placeholder user must be created during an import.
 
+### Error handling
+
+`SourceUserMapper` may throw two errors which indicate creating a source user or placeholder user should be retried:
+
+- `FailedToObtainLockError`: Raised when unable to obtain a lock for creating a source user
+- `DuplicatedUserError`: Raised when a duplicate source user is detected
+
 ### User mapping assignment flow for imported contributions
 
 ```mermaid

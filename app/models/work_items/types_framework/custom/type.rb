@@ -68,10 +68,6 @@ module WorkItems
           converted_from_system_defined_type || WorkItems::TypesFramework::SystemDefined::Type.default_issue_type
         end
 
-        def icon_name_with_prefix
-          icon_name.tr('_', '-')
-        end
-
         private
 
         def strip_whitespaces

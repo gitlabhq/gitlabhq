@@ -297,5 +297,3 @@ ee/app/models/concerns/ai/user_authorizable.rb:
 - any_group_with_ai_available?
 app/models/ci/stage.rb:
 - update_legacy_status
-app/models/work_items/types_framework/custom/type.rb:
-- icon_name_with_prefix

@@ -13,7 +13,7 @@ internal/staticpages/servefile.go:119:26: Error return value of `httpResponse.Bo
 cmd/gitlab-workhorse/main.go:119:6: Function 'buildConfig' has too many statements (43 > 40) (funlen)
 internal/ai_assist/duoworkflow/runner.go:340:18: Function 'handleAgentAction' is too long (109 > 60) (funlen)
 internal/healthcheck/puma_checker.go:77:32: Function 'Check' is too long (62 > 60) (funlen)
-internal/upstream/routes.go:292:6: Function 'configureRoutes' is too long (313 > 60) (funlen)
+internal/upstream/routes.go:308:6: Function 'configureRoutes' is too long (313 > 60) (funlen)
 internal/upstream/upstream.go:92:6: Function 'newUpstream' is too long (63 > 60) (funlen)
 cmd/gitlab-workhorse/main.go:213:1: cognitive complexity 33 of func `run` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)

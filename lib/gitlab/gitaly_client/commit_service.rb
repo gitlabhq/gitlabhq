@@ -182,30 +182,21 @@ module Gitlab
       # @example Count commits in branch-2 but not in branch-1
       #   commit_count(nil, revisions: ['branch-2', '--not', 'branch-1'])
       #
-      def commit_count(ref, options = {}) # rubocop:disable Metrics/PerceivedComplexity -- will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/587521
+      def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
           first_parent: !!options[:first_parent]
         )
 
-        if use_revisions_parameter_only?
-          revisions = if options[:revisions].present?
-                        Array.wrap(options[:revisions])
-                      elsif options[:all]
-                        ['--all']
-                      elsif ref
-                        [ref]
-                      end
+        revisions = if options[:revisions].present?
+                      Array.wrap(options[:revisions])
+                    elsif options[:all]
+                      ['--all']
+                    elsif ref
+                      [ref]
+                    end
 
-          request.revisions = encode_repeated(revisions) if revisions.present?
-        elsif options[:revisions].present?
-          # Legacy behavior: The new revisions field takes precedence over all and revision fields
-          request.revisions = encode_repeated(Array.wrap(options[:revisions]))
-        elsif options[:all]
-          request.all = true
-        elsif ref
-          request.revision = encode_binary(ref)
-        end
+        request.revisions = encode_repeated(revisions) if revisions.present?
 
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
@@ -767,11 +758,6 @@ module Gitlab
         else
           "Unknown path error"
         end
-      end
-
-      def use_revisions_parameter_only?
-        @repository.container.is_a?(Project) &&
-          Feature.enabled?(:count_commits_use_revisions_only, @repository.container)
       end
     end
   end

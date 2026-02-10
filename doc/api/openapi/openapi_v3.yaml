@@ -3247,6 +3247,8 @@ paths:
           description: Created
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not found
         '429':
@@ -3262,6 +3264,10 @@ paths:
                   type: string
                   description: workflow type based on its capability
                   example: software_developer
+                root_namespace_id:
+                  type: string
+                  description: the ID of the root namespace
+                  example: '1'
   "/api/v4/ai/duo_workflows/list_tools":
     get:
       operationId: getApiV4AiDuoWorkflowsListTools
@@ -21953,6 +21959,10 @@ paths:
                   type: boolean
                   description: Indicates if the GitLab Duo remote flows enabled setting
                     is enforced for all subgroups
+                duo_workflows_default_image_registry:
+                  type: string
+                  description: Default container registry for Duo Agent Platform foundational
+                    flow images
                 duo_namespace_access_rules:
                   type: array
                   description: AI entity access rules for controlling Duo feature
@@ -93795,6 +93805,8 @@ components:
         unconfirmed_users_delete_after_days:
           type: string
         make_profile_private:
+          type: string
+        duo_workflows_default_image_registry:
           type: string
         disabled_direct_code_suggestions:
           type: string

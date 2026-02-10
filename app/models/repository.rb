@@ -846,7 +846,7 @@ class Repository
   end
 
   def health(generate)
-    cache.fetch(:health) do
+    cache.fetch_without_caching_false(:health) do
       if generate
         info = raw_repository.repository_info
 

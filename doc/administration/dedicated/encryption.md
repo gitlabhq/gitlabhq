@@ -126,8 +126,11 @@ To create AWS KMS keys for BYOK:
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.
 1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
-1. Review the KMS key policy. It should look similar to the example below, populated with your
-   account IDs and usernames.
+1. Verify the KMS key policy matches the following example. Replace placeholder values 
+   with your account IDs and usernames. Additional restrictions beyond this policy are not supported.
+
+   > [!note]
+   > Remove any additional conditions or restrictions, including those that AWS might auto-generate like `kms:GrantIsForAWSResource`.
 
 ```json
 {

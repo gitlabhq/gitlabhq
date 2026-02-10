@@ -4,3 +4,4 @@ description: Grants the ability to read projects
 boundaries:
   - user
   - project
+  - group

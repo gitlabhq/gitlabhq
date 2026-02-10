@@ -180,7 +180,7 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
 
-  delegate :creator, :creator=, :deleted_at, :deleted_at=, :description, :description=, :description_html,
+  delegate :creator, :creator=, :description, :description=, :description_html,
     :state_metadata, :state_metadata=,
     to: :namespace_details, allow_nil: true
 
@@ -220,7 +220,6 @@ class Namespace < ApplicationRecord
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
-  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :project_namespaces, -> { where(type: Namespaces::ProjectNamespace.sti_name) }
@@ -836,12 +835,6 @@ class Namespace < ApplicationRecord
 
   def web_url(only_path: nil)
     Gitlab::UrlBuilder.build(self, only_path: only_path)
-  end
-
-  # Overriding of Namespaces::AdjournedDeletable method
-  override :self_deletion_in_progress?
-  def self_deletion_in_progress?
-    !!deleted_at
   end
 
   def uploads_sharding_key

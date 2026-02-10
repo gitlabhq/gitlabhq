@@ -410,32 +410,40 @@ describe('isValidDate', () => {
 });
 
 describe('getDatesInRange', () => {
-  it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
-    const d1 = new Date('2019-01-01');
-    const d2 = 90;
-    const range = getDatesInRange(d1, d2);
-
-    expect(range).toEqual([]);
-  });
+  const d1 = new Date('2019-01-01');
+  const d2 = new Date('2019-01-31');
 
   it('returns a range of dates between two given dates', () => {
-    const d1 = new Date('2019-01-01');
-    const d2 = new Date('2019-01-31');
-
     const range = getDatesInRange(d1, d2);
 
     expect(range).toHaveLength(31);
   });
 
-  it('applies mapper function if provided fro each item in range', () => {
-    const d1 = new Date('2019-01-01');
-    const d2 = new Date('2019-01-31');
-    const formatter = (date) => date.getDate();
+  it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
+    const range = getDatesInRange(d1, 90);
 
-    const range = getDatesInRange(d1, d2, formatter);
+    expect(range).toEqual([]);
+  });
 
-    range.forEach((formattedItem, index) => {
-      expect(formattedItem).toEqual(index + 1);
+  describe('formatter', () => {
+    it('applies mapper function if provided for each item in range', () => {
+      const formatter = (date) => date.getDate();
+
+      const range = getDatesInRange(d1, d2, formatter);
+
+      range.forEach((formattedItem, index) => {
+        expect(formattedItem).toEqual(index + 1);
+      });
+    });
+
+    it('calls mapper with dates only', () => {
+      const formatter = jest.fn((date) => date.getDate());
+
+      getDatesInRange(d1, d2, formatter);
+
+      expect(formatter).toHaveBeenCalledTimes(31);
+      expect(formatter).toHaveBeenNthCalledWith(1, new Date('2019-01-01'));
+      expect(formatter).toHaveBeenNthCalledWith(31, new Date('2019-01-31'));
     });
   });
 });

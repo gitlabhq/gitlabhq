@@ -919,6 +919,16 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           expect(Time.parse(json_response['updated_at'])).to be_between(t_start, t_end)
         end
 
+        it 'returns the health report even after a prior request without generate' do
+          get(api("/projects/#{project.id}/repository/health", current_user))
+          expect(response).to have_gitlab_http_status(:not_found)
+
+          request
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['size']).to be_present
+        end
+
         context 'when rate limited' do
           it 'returns api error' do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(true)

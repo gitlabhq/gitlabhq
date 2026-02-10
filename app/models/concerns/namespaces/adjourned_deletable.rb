@@ -11,7 +11,7 @@ module Namespaces
 
     # Models need to define this method, usually based on the value of a database attribute
     def self_deletion_in_progress?
-      raise NotImplementedError
+      deletion_in_progress?
     end
 
     # Returns an array of the record's ancestors that are scheduled for deletion.

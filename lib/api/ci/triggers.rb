@@ -34,6 +34,7 @@ module API
             documentation: { example: { VAR1: "value1", VAR2: "value2" } }
           optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
         end
+        route_setting :authorization, skip_granular_token_authorization: true
         post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')
 

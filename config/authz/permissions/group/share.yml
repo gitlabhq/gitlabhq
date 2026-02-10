@@ -1,0 +1,5 @@
+---
+name: share_group
+description: Grants the ability to share a group
+boundaries:
+  - group

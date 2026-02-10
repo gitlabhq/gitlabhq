@@ -1298,11 +1298,205 @@ Make sure that caching is not disabled in your developer tools when testing.
 
 If you are using Chrome and keep seeing `200` HTTP status codes, it might be this bug: [Developer tools show 200 instead of 304](https://bugs.chromium.org/p/chromium/issues/detail?id=1269602). In this case, inspect the response headers' source to confirm that the request was actually cached and did return with a `304` status code.
 
-#### Subscriptions
+## Subscriptions
 
 We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from GraphQL API via websockets. Currently, the number of existing subscriptions is limited, you can check a list of available ones in [GraphqiQL explorer](https://gitlab.com/-/graphql-explorer)
 
 Refer to the [Real-time widgets developer guide](../real_time.md) for a comprehensive introduction to subscriptions.
+
+### When to use subscriptions
+
+Use subscriptions sparingly. The majority of the time polling is acceptable. You should use subscriptions for the following use-cases (but not strictly limited to):
+
+- **Low-latency, real-time updates**: When a delay of even 10-15 seconds (standard polling) negatively impacts the user experience
+- **High-frequency status changes**: When an object changes state multiple times in a short window. Subscriptions "push" every state change, whereas polling might miss intermediate steps between intervals.
+- **Efficiency for Large Objects**: Repeatedly polling for a large object is expensive, especially when most of the object's fields rarely change (e.g., a Pipeline with 50+ attributes). Subscriptions allow the server to push only the specific fields that do change (like status or finished_at), drastically reducing the data transfer and processing load on both the client and the server.
+
+### Best practices for subscriptions
+
+When implementing subscriptions, follow these patterns to avoid performance issues and memory leaks.
+
+#### When to use result hook
+
+The majority of the time the `subscribeToMore` hook in the Apollo query definition is the pattern we want to use for subscriptions. However, there are use cases where we need to use the `result` hook and a manual `subscribeToMore` call:
+
+- **Subscription target derived from query data**: When your subscription variable (for example, a pipeline ID) comes from the parent query's result, `subscribeToMore` fires before the query data is available, causing `undefined` variable errors. The `result` hook lets you wait for valid data before subscribing.
+- **Complex skip logic**: When determining whether to subscribe depends on multiple fields from the query result that aren't easily expressed in a `skip` function.
+- **Subscription cleanup on data change**: When you need to explicitly unsubscribe and resubscribe based on specific conditions in the query result.
+
+```javascript
+result() {
+  const currentPipelineId = this.commit?.pipeline?.id;
+
+  // If pipeline ID changed, reset subscription state
+  if (this.subscribedPipelineId && this.subscribedPipelineId !== currentPipelineId) {
+    this.pipelineSubscription?.unsubscribe();
+    this.isSubscribed = false;
+  }
+
+  // Subscribe only once we have a valid pipeline ID
+  if (currentPipelineId && !this.isSubscribed) {
+    this.isSubscribed = true;
+    this.subscribedPipelineId = currentPipelineId;
+
+    this.pipelineSubscription = this.$apollo.queries.commit.subscribeToMore({
+      document: pipelineStatusUpdatedSubscription,
+      variables: {
+        pipelineId: currentPipelineId,
+      },
+      updateQuery(previousData, { subscriptionData }) {
+        if (Visibility.hidden()) return previousData;
+        // Update logic...
+        return previousData;
+      },
+    });
+  }
+},
+```
+
+#### Use thin payloads with refetch
+
+When using the `result` hook pattern and network operations, return only the `id` in subscription responses and fetch full data separately. This **signal and fetch** approach reduces WebSocket overhead and leverages your existing optimized queries:
+
+```graphql
+subscription pipelineUpdated($projectId: ID!) {
+  pipelineUpdated(projectId: $projectId) {
+    id # Only return the ID, fetch full data separately
+  }
+}
+```
+
+#### Guard subscriptions with visibility checks
+
+When `updateQuery` triggers network calls, guard these operations when the tab is hidden. This skips unnecessary fetches while the user isn't looking:
+
+```javascript
+updateQuery(prev, { subscriptionData }) {
+  // Skip network operations while tab is hidden
+  if (Visibility.hidden()) return prev;
+},
+```
+
+When the user returns, trigger a single refetch to synchronize:
+
+```javascript
+import Visibility from 'visibilityjs';
+
+export default {
+  created() {
+    this.visibilityId = Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        this.$apollo.queries.pipelines.refetch();
+      }
+    });
+  },
+  beforeDestroy() {
+    Visibility.unbind(this.visibilityId);
+  },
+};
+```
+
+#### Batch subscription-triggered fetches
+
+Never fire a network request immediately inside an updateQuery for list views. In high-activity environments like CI/CD, many items might update within seconds. Use a debounced batcher to collect IDs and fetch them in a single request.
+
+```javascript
+import { debounce } from 'lodash';
+import { createAlert } from '~/alert';
+import Sentry from '~/sentry/sentry_bundle';
+
+const BATCH_DEBOUNCE = 3000;
+const MAX_BATCH_SIZE = 15;
+
+export default {
+  data() {
+    return {
+      pendingIds: new Set(),
+    };
+  },
+  created() {
+    this.fetchUpdatedPipelines = debounce(this.processPendingUpdates, BATCH_DEBOUNCE);
+  },
+  beforeDestroy() {
+    this.fetchUpdatedPipelines?.cancel();
+    this.pendingIds.clear();
+  },
+  methods: {
+    // Called from subscription updateQuery
+    queuePipelineUpdate(pipelineId) {
+      this.pendingIds.add(pipelineId);
+      this.fetchUpdatedPipelines();
+    },
+    async processPendingUpdates() {
+      if (this.pendingIds.size === 0) return;
+
+      const idsToFetch = Array.from(this.pendingIds).slice(0, MAX_BATCH_SIZE);
+      idsToFetch.forEach((id) => this.pendingIds.delete(id));
+
+      try {
+        await this.$apollo.query({
+          query: getPipelinesQuery,
+          fetchPolicy: 'network-only',
+          variables: { fullPath: this.fullPath, ids: idsToFetch },
+        });
+
+        // Process remaining IDs if any
+        if (this.pendingIds.size > 0) {
+          this.fetchUpdatedPipelines();
+        }
+      } catch (error) {
+        createAlert({
+          message: s__('Pipelines|Something went wrong while updating pipeline information'),
+        });
+        Sentry.captureException(error);
+      }
+    },
+  },
+};
+```
+
+#### Use polling as a safety net
+
+Use visibility-aware polling alongside subscriptions to handle cases where WebSocket connections drop silently. ETag caching ensures these polling requests are lightweight.
+
+```javascript
+import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
+
+const POLL_INTERVAL = 60000;
+
+export default {
+  apollo: {
+    pipelines: {
+      query: getPipelinesQuery,
+      pollInterval: POLL_INTERVAL,
+      context() {
+        return etagQueryHeaders('ci/pipelines-page', this.projectPipelinesEtagPath);
+      },
+    },
+  },
+  created() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipelines, POLL_INTERVAL);
+  },
+};
+```
+
+#### Avoid subscription accumulation
+
+A common source of memory leaks is creating new subscriptions without cleaning up old ones. This typically happens when `subscribeToMore` is called on every `result()` without tracking state:
+
+```javascript
+// BAD: Subscriptions accumulate on every result()
+result() {
+  this.$apollo.queries.commit.subscribeToMore({ ... });
+}
+
+// GOOD: Track subscription state explicitly
+result() {
+  if (this.isSubscribed) return;
+  this.isSubscribed = true;
+  this.subscription = this.$apollo.queries.commit.subscribeToMore({ ... });
+}
+```
 
 ### Best Practices
 

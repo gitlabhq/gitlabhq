@@ -174,6 +174,7 @@ The main volumes that you might need to migrate manually are:
   [the moving repositories documentation section](../operations/moving_repositories.md#migrate-to-another-gitlab-instance)
   to eliminate the chance of Git data corruption.
 - The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
+- The `/var/opt/gitlab/gitlab-rails/uploads` directory which contains upload data, like user profile photos.
 - If you are using the bundled PostgreSQL included with the Linux package,
   you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
   under `/var/opt/gitlab/postgresql/data`.

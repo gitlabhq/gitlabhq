@@ -40,7 +40,7 @@ module Users
       security_configuration_devops_alert: 36,   # EE-only
       profile_personal_access_token_expiry: 37,  # EE-only
       # 38 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221338
-      security_newsletter_callout: 39,
+      # 39 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222259
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
       # 42 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221211

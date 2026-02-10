@@ -198,7 +198,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
     describe 'is_self_deletion_in_progress' do
       context 'when group is being deleted' do
-        let_it_be(:group) { create(:group, deleted_at: Time.now) }
+        let_it_be(:group) { create(:group, state: Namespaces::Stateful::STATES[:deletion_in_progress]) }
 
         it 'returns true' do
           expect(described_class.new(group, request: request).as_json[:is_self_deletion_in_progress]).to be true

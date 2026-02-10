@@ -84,7 +84,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   to **No one**. If required, this setting can be changed:
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../_index.md#specify-who-can-add-projects-to-a-group).
-- Imported milestones with titles [matching existing miletones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
+- Imported milestones with titles [matching existing milestones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
   destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 

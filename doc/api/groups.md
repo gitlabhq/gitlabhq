@@ -1345,12 +1345,13 @@ The `default_branch_protection` attribute determines whether users with the Deve
 The `default_branch_protection_defaults` attribute describes the default branch
 protection defaults. All parameters are optional.
 
-| Key                          | Type    | Description |
-|:-----------------------------|:--------|:------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
-| `allow_force_push`           | boolean | Allow force push for all users with push access. |
-| `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push. |
+| Key                            | Type    | Description |
+|:-------------------------------|:--------|:------------|
+| `allowed_to_push`              | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
+| `allow_force_push`             | boolean | Allow force push for all users with push access. |
+| `allowed_to_merge`             | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
+| `developer_can_initial_push`   | boolean | Allow developers to initial push. |
+| `code_owner_approval_required` | boolean | Require Code Owner approval. |
 
 ### Create a subgroup
 
