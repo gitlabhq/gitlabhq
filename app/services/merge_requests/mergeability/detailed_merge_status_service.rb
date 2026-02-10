@@ -54,9 +54,13 @@ module MergeRequests
           merge_request
             .execute_merge_checks(
               MergeRequest.all_mergeability_checks,
-              params: { skip_ci_check: true }
+              params: check_params
             )
         end
+      end
+
+      def check_params
+        { skip_ci_check: true }
       end
 
       def check_ci_results
@@ -75,3 +79,8 @@ module MergeRequests
     end
   end
 end
+
+# rubocop: disable Cop/InjectEnterpriseEditionModule -- Length of line too long
+MergeRequests::Mergeability::DetailedMergeStatusService
+  .prepend_mod_with('MergeRequests::Mergeability::DetailedMergeStatusService')
+# rubocop: enable Cop/InjectEnterpriseEditionModule
