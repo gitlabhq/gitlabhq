@@ -6,3 +6,4 @@ permissions:
 boundaries:
   - group
   - project
+  - user

@@ -5,3 +5,4 @@ permissions:
   - create_github_import
 boundaries:
   - group
+  - user

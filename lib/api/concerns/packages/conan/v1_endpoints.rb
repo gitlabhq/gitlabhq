@@ -390,7 +390,7 @@ module API
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :admin_packages,
-                  permissions: :authorize_conan_package, boundary: -> { project }
+                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
@@ -441,7 +441,7 @@ module API
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :admin_packages,
-                  permissions: :authorize_conan_package, boundary: -> { project }
+                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!

@@ -7,4 +7,5 @@ permissions:
   - delete_nuget_package
   - delete_package
 boundaries:
+  - group
   - project

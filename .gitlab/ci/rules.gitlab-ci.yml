@@ -1008,7 +1008,9 @@
 
 .permissions-patterns: &permissions-patterns
   - "config/authz/permissions/**/*.yml"
+  - "config/authz/permission_groups/**/*.yml"
   - "{,ee/}app/policies/**/*.rb"
+  - "{,ee/}lib/api/**/*.rb"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
   - "{,ee/}lib/api/*.rb"

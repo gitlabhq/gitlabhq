@@ -47,4 +47,6 @@ permissions:
   - read_wiki_page_meta_note
 boundaries:
   - group
+  - instance
   - project
+  - user

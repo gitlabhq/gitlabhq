@@ -168,7 +168,7 @@ def registry
   ::VirtualRegistries::Packages::Maven::Registry.find(params[:id])
 end
 
-route_setting :authorization, permissions: :download_maven_package_file, boundary: ->{ registry.group }
+route_setting :authorization, permissions: :download_maven_package_file, boundary: -> { registry.group }, boundary_type: :group
 get '/api/v4/virtual_registries/packages/maven/:id/*path' do
   # Boundary cannot be determined through `params`. Instead, it is determined
   # from an object (registry) fetched using an ID from the endpoint's

@@ -153,7 +153,7 @@ pre-push:
     permissions_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
+      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
     check-deprecated-files:
       tags: backend frontend view haml

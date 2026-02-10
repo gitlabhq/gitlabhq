@@ -135,35 +135,8 @@ Though it's difficult to predict migration duration, the following have been obs
 - 100 projects (19.9k issues, 83k merge requests, 100k+ pipelines) migrated in 8 hours.
 - 1926 projects (22k issues, 160k merge requests, 1.1 million pipelines) migrated in 34 hours.
 
-If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
-
-## Reducing migration duration
-
-These are some strategies for reducing the duration of migrations that use direct transfer.
-
-### Add Sidekiq workers to the destination instance
-
-A single direct transfer migration runs five entities (groups or projects) per import at a time,
-regardless of the number of workers available on the destination instance.
-More Sidekiq workers on the destination instance can reduce the time it takes to import each entity,
-as long as the instance has enough resources to handle additional concurrent jobs.
-In GitLab 16.8 and later, with the introduction of bulk import and export of relations,
-the number of available workers on the destination instance has become more critical.
-
-For more information about how to add Sidekiq workers to the destination instance, see information about
-[Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-
-### Redistribute large projects or start separate migrations
-
-The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
-delays and potential timeouts as the destination is waiting for exported data to become available.
-
-Distributing projects in different groups helps to avoid timeouts. If several large projects are in the same group, you can:
-
-1. Move large projects to different groups or subgroups.
-1. Start separate migrations each group and subgroup.
-
-The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.
+If you are migrating large projects and encounter problems with timeouts or duration of the migration, try
+[reducing migration duration](troubleshooting.md#migrations-are-slow-or-timing-out).
 
 ## Limits
 
