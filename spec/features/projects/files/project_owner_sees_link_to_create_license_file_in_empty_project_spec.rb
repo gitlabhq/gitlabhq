@@ -17,7 +17,10 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
     visit project_path(project)
     click_on 'Add LICENSE'
 
-    expect(page).to have_current_path("/-/ide/project/#{project.full_path}/edit/master/-/LICENSE", ignore_query: true)
+    expect(page).to have_current_path(
+      "/-/ide/project/#{project.full_path}/edit/#{project.default_branch_or_main}/-/LICENSE",
+      ignore_query: true
+    )
 
     within_web_ide do
       expect(page).to have_text('LICENSE')

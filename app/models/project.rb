@@ -682,6 +682,20 @@ class Project < ApplicationRecord
   validate :path_availability, if: :path_changed?
 
   # Scopes
+  scope :deletion_in_progress, -> {
+    joins(:project_namespace).where(namespaces: { state: Namespaces::Stateful::STATES[:deletion_in_progress] })
+  }
+
+  scope :not_deletion_in_progress, -> {
+    deletion_in_progress_state = Namespaces::Stateful::STATES[:deletion_in_progress]
+    where(
+      Namespace.select(1)
+        .where(Namespace.arel_table[:id].eq(arel_table[:project_namespace_id]))
+        .where(state: deletion_in_progress_state)
+        .arel.exists.not
+    )
+  }
+
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
   scope :not_hidden, -> { where(hidden: false) }

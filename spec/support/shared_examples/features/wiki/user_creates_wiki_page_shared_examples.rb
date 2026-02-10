@@ -259,7 +259,7 @@ RSpec.shared_examples 'User creates wiki page' do
         wiki.repository.update_file(
           user, '.gitlab/redirects.yml',
           "foo: bar\nbaz: doe",
-          message: 'Add redirect', branch_name: 'master'
+          message: 'Add redirect', branch_name: wiki.default_branch
         )
 
         find_by_testid('wiki-more-dropdown').click
@@ -273,7 +273,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
         expect(page).to have_content('foo')
 
-        expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nbaz: doe\n")
+        expect(wiki.repository.blob_at(wiki.default_branch, '.gitlab/redirects.yml').data).to eq("---\nbaz: doe\n")
       end
 
       context 'when a server side validation error is returned' do

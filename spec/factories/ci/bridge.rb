@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'deployable'
-require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
+require_relative '../../support/helpers/ci/job_factory_helpers'
 
 FactoryBot.define do
   factory :ci_bridge, class: 'Ci::Bridge', parent: :ci_processable do

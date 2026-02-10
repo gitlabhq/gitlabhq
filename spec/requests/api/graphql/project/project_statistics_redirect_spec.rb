@@ -30,7 +30,7 @@ RSpec.describe 'rendering project storage type routes', feature_category: :share
     end
 
     it 'contains valid paths' do
-      repository_url = Gitlab::Routing.url_helpers.project_tree_url(project, "master")
+      repository_url = Gitlab::Routing.url_helpers.project_tree_url(project, project.default_branch_or_main)
       wiki_url = Gitlab::Routing.url_helpers.project_wikis_pages_url(project)
       build_artifacts_url = Gitlab::Routing.url_helpers.project_artifacts_url(project)
       packages_url = Gitlab::Routing.url_helpers.project_packages_url(project)

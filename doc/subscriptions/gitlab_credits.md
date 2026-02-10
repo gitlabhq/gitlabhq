@@ -186,11 +186,11 @@ For subsidized models with basic integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| `gpt-5-mini` | 8.0 |
-| `gemini-2.5-flash` | 8.0 |
-| `codestral-2501` | 8.0 |
 | `claude-3-haiku` | 8.0 |
+| `codestral-2501` | 8.0 |
 | `gemini-2.0-flash-lite` | 8.0 |
+| `gemini-2.5-flash` | 8.0 |
+| `gpt-5-mini` | 8.0 |
 
 For premium models with optimized integration:
 
@@ -200,14 +200,14 @@ For premium models with optimized integration:
 | `gpt-5-codex` | 3.3|
 | `gpt-5` | 3.3 |
 | `gpt-5.2` | 2.5 |
-| `claude-3.7-sonnet` | 2.0 |
 | `claude-3.5-sonnet` | 2.0 |
+| `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
-| `claude-sonnet-4` <sup>2</sup> | 1.1 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
-| `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
 | `claude-opus-4.5` | 1.2 |
 | `claude-opus-4.6` <sup>1</sup> | 1.2 |
+| `claude-sonnet-4` <sup>2</sup> | 1.1 |
+| `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
 | `claude-opus-4.6` <sup>2</sup> | 0.7 |
 
 **Footnotes**:

@@ -1,0 +1,7 @@
+---
+name: delete_commit
+description: Grants the ability to delete commits
+permissions:
+  - delete_commit_discussion_note
+boundaries:
+  - project

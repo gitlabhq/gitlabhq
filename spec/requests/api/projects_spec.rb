@@ -130,7 +130,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:created)
 
         project = Project.find(json_response['id'])
-        expect(project.default_branch).to eq('master')
+        expect(project.default_branch).to eq('main')
       end
     end
 
@@ -439,38 +439,86 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
-      it 'does not include projects marked for deletion' do
-        project.update!(pending_delete: true)
-
-        get api(path, user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(json_response.map { |p| p['id'] }).not_to include(project.id)
-      end
-
-      context 'when user requests pending_delete projects' do
+      context 'when use_deletion_in_progress_in_finders feature flag is disabled' do
         before do
-          project.update!(pending_delete: true)
+          stub_feature_flags(use_deletion_in_progress_in_finders: false)
         end
 
-        let(:params) { { include_pending_delete: true } }
+        it 'does not include projects marked for deletion' do
+          project.update!(pending_delete: true)
 
-        it 'does not return projects marked for deletion' do
-          get api(path, user), params: params
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).not_to include(project.id)
         end
 
-        context 'when user is an admin' do
-          it 'returns projects marked for deletion' do
-            get api(path, admin, admin_mode: true), params: params
+        context 'when user requests pending_delete projects' do
+          before do
+            project.update!(pending_delete: true)
+          end
+
+          let(:params) { { include_pending_delete: true } }
+
+          it 'does not return projects marked for deletion' do
+            get api(path, user), params: params
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
-            expect(json_response.map { |p| p['id'] }).to include(project.id)
+            expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+          end
+
+          context 'when user is an admin' do
+            it 'returns projects marked for deletion' do
+              get api(path, admin, admin_mode: true), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to be_an Array
+              expect(json_response.map { |p| p['id'] }).to include(project.id)
+            end
+          end
+        end
+      end
+
+      context 'when use_deletion_in_progress_in_finders feature flag is enabled' do
+        before do
+          stub_feature_flags(use_deletion_in_progress_in_finders: true)
+        end
+
+        it 'does not include projects with deletion_in_progress state' do
+          project.project_namespace.start_deletion!(transition_user: project.creator)
+
+          get api(path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+
+        context 'when user requests pending_delete projects' do
+          before do
+            project.project_namespace.start_deletion!(transition_user: project.creator)
+          end
+
+          let(:params) { { include_pending_delete: true } }
+
+          it 'does not return projects with deletion_in_progress state' do
+            get api(path, user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+          end
+
+          context 'when user is an admin' do
+            it 'returns projects with deletion_in_progress state' do
+              get api(path, admin, admin_mode: true), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to be_an Array
+              expect(json_response.map { |p| p['id'] }).to include(project.id)
+            end
           end
         end
       end
@@ -1666,7 +1714,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       post api(path, user), params: project
 
-      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/#{json_response['path']}/-/blob/master/README.md")
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/#{json_response['path']}/-/blob/main/README.md")
     end
 
     it 'sets tag list to a project (deprecated)' do

@@ -108,7 +108,7 @@ FactoryBot.define do
 
           repository.commit_files(
             evaluator.author,
-            branch_name: 'master',
+            branch_name: project.default_branch_or_main,
             message: "#{action.action} for #{design.filename}",
             actions: [action.gitaly_action]
           )

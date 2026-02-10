@@ -91,11 +91,92 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
   end
 
   context 'when relation is a milestone' do
-    let(:relation_sym) { :milestone }
-    let(:relation_hash) { { 'description' => "I said to @sam the code should follow @bob's advice. @alice?" } }
+    let_it_be(:relation_sym) { :milestone }
+    let_it_be(:relation_hash) do
+      {
+        'title' => '20.0',
+        'description' => "I said to @sam the code should follow @bob's advice. @alice?"
+      }
+    end
 
     it 'updates username mentions with backticks' do
       expect(created_object.description).to eq("I said to `@sam` the code should follow `@bob`'s advice. `@alice`?")
+    end
+
+    context 'when the imported milestone title is nil' do
+      let_it_be(:relation_hash) do
+        {
+          'description' => "I said to @sam the code should follow @bob's advice. @alice?"
+        }
+      end
+
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be(:other_milestone) { create(:milestone, group: parent_group) }
+
+      it 'creates the milestone' do
+        expect(created_object).to be_a(Milestone)
+        expect(created_object.title).to be_nil
+        expect(created_object.group_id).to eq(group.id)
+      end
+    end
+
+    context 'when the milestone title is unique to the namespace hierarchy' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be(:other_milestone) { create(:milestone, group: parent_group, title: '18.0') }
+
+      it 'creates the milestone' do
+        expect(created_object).to be_a(Milestone)
+        expect(created_object.title).to eq('20.0')
+        expect(created_object.group_id).to eq(group.id)
+      end
+    end
+
+    context 'when the sibling group has a matching milestone title' do
+      let_it_be(:parent_group) { create(:group) }
+
+      let_it_be(:group) { create(:group, parent: parent_group) }
+
+      let_it_be(:group_2) { create(:group, parent: parent_group) }
+      let_it_be(:group_2_milestone) { create(:milestone, group: group_2, title: '20.0') }
+
+      it 'does not change the milestone title' do
+        expect(created_object).to be_a(Milestone)
+        expect(created_object.title).to eq('20.0')
+        expect(created_object.group_id).to eq(group.id)
+      end
+    end
+
+    context 'when the milestone title is not unique to the namespace hierarchy' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let_it_be(:project) { create(:project, group: sub_group) }
+      let_it_be(:parent_milestone) { create(:milestone, group: parent_group, title: '18.0') }
+      let_it_be(:sub_group_milestone) { create(:milestone, group: sub_group, title: '19.0') }
+      let_it_be(:project_milestone) { create(:milestone, project: project, title: '20.0') }
+      let_it_be(:new_milestone_title_pattern) { /20\.0.*imported/ }
+
+      it 'updates the milestone title and logs the event' do
+        m = '[Project/Group Import] Updating milestone title - source title used by existing group or project milestone'
+        expect(::Import::Framework::Logger).to receive_message_chain(:build, :info).with(
+          hash_including(
+            message: m,
+            importable_id: group.id,
+            relation_key: :milestone,
+            existing_milestone_title: '20.0',
+            existing_group_id: nil,
+            existing_project_id: project.id,
+            new_milestone_title: match(new_milestone_title_pattern)
+          )
+        )
+
+        expect(created_object).to be_a(Milestone)
+        expect(created_object.title).to match(new_milestone_title_pattern)
+        expect(created_object.group_id).to eq(group.id)
+        expect(parent_milestone.group_id).to eq(parent_group.id)
+      end
     end
   end
 

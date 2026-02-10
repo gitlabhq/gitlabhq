@@ -1,0 +1,5 @@
+---
+name: create_merge_request_discussion
+description: Grants the ability to create merge request discussions
+boundaries:
+  - project

@@ -84,13 +84,13 @@ RSpec.describe Ci::BuildSourceFinder, feature_category: :continuous_integration 
     end
 
     context 'with status and ref' do
-      let(:main_relation) { Ci::Build.pending.where(ref: 'master') }
+      let(:main_relation) { Ci::Build.pending.where(ref: 'main') }
 
       it 'returns the correct builds with the filtered status and ref' do
         expect(build_source_finder.pluck(:name))
           .to eq(%w[build5 build3 build1])
         expect(build_source_finder.pluck(:ref).uniq)
-          .to eq(%w[master])
+          .to eq(%w[main])
         expect(build_source_finder.pluck(:status).uniq)
           .to eq(%w[pending])
       end

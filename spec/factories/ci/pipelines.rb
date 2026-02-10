@@ -4,7 +4,7 @@ FactoryBot.define do
   # TODO: we can remove this factory in favour of :ci_pipeline
   factory :ci_empty_pipeline, class: 'Ci::Pipeline' do
     source { :push }
-    ref { 'master' }
+    ref { project.default_branch_or_main }
     sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     status { 'pending' }
     add_attribute(:protected) { false }
@@ -30,6 +30,7 @@ FactoryBot.define do
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
         pipeline.project = evaluator.child_of.project
+        pipeline.ref = evaluator.child_of.ref
         pipeline.source = :parent_pipeline
       end
 

@@ -402,7 +402,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             releasedAt: version1.released_at,
             readme: version1.readme,
             readmeHtml: "<p data-sourcepos=\"1:1-1:17\" dir=\"auto\"><a data-sourcepos=\"1:1-1:17\" " \
-              "href=\"/group1/project-1/-/blob/master/README.md\" class=\"gfm\">link</a></p>"
+              "href=\"/group1/project-1/-/blob/main/README.md\" class=\"gfm\">link</a></p>"
           )
         )
       end

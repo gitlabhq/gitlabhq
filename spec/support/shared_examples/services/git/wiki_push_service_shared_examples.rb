@@ -41,7 +41,7 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
         base_sha = current_sha
         write_new_page
 
-        service = create_service(base_sha, ['refs/heads/master', 'refs/tags/master'])
+        service = create_service(base_sha, ["refs/heads/#{wiki.default_branch}", "refs/tags/#{wiki.default_branch}"])
 
         expect { service.execute }.to change { Event.count }.by(1)
       end
@@ -326,7 +326,8 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
     create_service(base_sha).execute
   end
 
-  def create_service(base, refs = ['refs/heads/master'])
+  def create_service(base, refs = nil)
+    refs ||= ["refs/heads/#{wiki.default_branch}"]
     changes = post_received(base, refs).changes
     described_class.new(wiki, current_user, changes: changes)
   end
@@ -340,7 +341,7 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
   end
 
   def current_sha
-    repository.commit('master')&.id || Gitlab::Git::SHA1_BLANK_SHA
+    repository.commit(default_branch)&.id || Gitlab::Git::SHA1_BLANK_SHA
   end
 
   # It is important not to re-use the WikiPage services here, since they create
@@ -363,7 +364,7 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
     params = {
       file_name: 'attachment.log',
       file_content: 'some stuff',
-      branch_name: 'master'
+      branch_name: wiki.default_branch
     }
     ::Wikis::CreateAttachmentService.new(container: wiki.container, current_user: current_user, params: params).execute
   end

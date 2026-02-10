@@ -512,6 +512,39 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
             end
           end
         end
+
+        context 'when use_deletion_in_progress_in_finders feature flag is enabled' do
+          let_it_be(:deletion_in_progress_project) do
+            project = create(:project, :public)
+            project.project_namespace.start_deletion!(transition_user: project.creator)
+            project
+          end
+
+          before do
+            stub_feature_flags(use_deletion_in_progress_in_finders: true)
+          end
+
+          it 'excludes projects with deletion_in_progress state' do
+            expect(subject).not_to include(deletion_in_progress_project)
+            expect(subject).to include(public_project, internal_project)
+          end
+
+          it 'includes projects with pending_delete column' do
+            expect(subject).to include(pending_delete_project)
+          end
+
+          context 'when include_pending_delete param is provided' do
+            let(:params) { { include_pending_delete: true } }
+
+            context 'when user is an admin', :enable_admin_mode do
+              let(:current_user) { create(:admin) }
+
+              it 'also returns deletion_in_progress projects' do
+                expect(subject).to include(public_project, internal_project, deletion_in_progress_project)
+              end
+            end
+          end
+        end
       end
 
       describe 'filter by last_activity_before' do

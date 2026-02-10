@@ -1,0 +1,5 @@
+---
+name: update_merge_request_discussion_note
+description: Grants the ability to edit notes in merge request discussions
+boundaries:
+  - project

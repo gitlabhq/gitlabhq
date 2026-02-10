@@ -31,6 +31,8 @@ module API
       notable_name = noteable_type.to_s.underscore.humanize.downcase
       notable_id_type = noteable_type == Commit ? String : Integer
       noteables_path = noteable_type == Commit ? "repository/#{noteables_str}" : noteables_str
+      notable_type_underscore = noteable_type.to_s.underscore
+      boundary_type = parent_type.to_sym
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
@@ -45,6 +47,7 @@ module API
           use :pagination
         end
 
+        route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
@@ -62,6 +65,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
         end
+        route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
@@ -118,6 +122,7 @@ module API
             end
           end
         end
+        route_setting :authorization, permissions: :"create_#{notable_type_underscore}_discussion", boundary_type: boundary_type
         post ":id/#{noteables_path}/:noteable_id/discussions", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           type = params[:position] ? 'DiffNote' : 'DiscussionNote'
@@ -147,6 +152,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
         end
+        route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
@@ -168,6 +174,7 @@ module API
           requires :body, type: String, desc: 'The content of a note'
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
+        route_setting :authorization, permissions: :"create_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
@@ -207,6 +214,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
+        route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
@@ -225,6 +233,7 @@ module API
           optional :resolved, type: Boolean, desc: 'Mark note resolved/unresolved'
           exactly_one_of :body, :resolved
         end
+        route_setting :authorization, permissions: :"update_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
@@ -244,6 +253,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
+        route_setting :authorization, permissions: :"delete_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         delete ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
@@ -260,6 +270,7 @@ module API
             requires :discussion_id, type: String, desc: 'The ID of a discussion'
             requires :resolved, type: Boolean, desc: 'Mark discussion resolved/unresolved'
           end
+          route_setting :authorization, permissions: :"update_#{notable_type_underscore}_discussion", boundary_type: boundary_type
           put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id", feature_category: feature_category do
             noteable = find_noteable(noteable_type, params[:noteable_id])
 

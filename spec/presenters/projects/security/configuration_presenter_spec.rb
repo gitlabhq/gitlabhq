@@ -298,7 +298,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
               project.ci_config_path_or_default,
               'contents go here',
               message: 'test',
-              branch_name: 'master')
+              branch_name: project.default_branch)
           end
 
           it 'expects gitlab_ci_present to be true' do
@@ -314,7 +314,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       it 'includes the path to gitlab_ci history' do
-        expect(subject[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'master/.gitlab-ci.yml'))
+        expect(subject[:gitlab_ci_history_path]).to eq(project_blame_path(project, "#{project.default_branch}/.gitlab-ci.yml"))
       end
     end
 
@@ -332,7 +332,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       it 'includes the path to gitlab_ci history' do
         allow(project).to receive(:default_branch).and_return(nil)
 
-        expect(html_data[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'master/.gitlab-ci.yml'))
+        expect(html_data[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'main/.gitlab-ci.yml'))
       end
     end
 

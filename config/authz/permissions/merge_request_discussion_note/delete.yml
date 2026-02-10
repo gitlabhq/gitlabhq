@@ -1,0 +1,5 @@
+---
+name: delete_merge_request_discussion_note
+description: Grants the ability to delete notes in merge request discussions
+boundaries:
+  - project

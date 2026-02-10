@@ -301,7 +301,6 @@ Gitlab/JsonSafeParse:
     - 'lib/ci/inputs/base_input.rb'
     - 'lib/ci/retention_policies/pipeline_deletion_cutoff_cache.rb'
     - 'lib/click_house/write_buffer.rb'
-    - 'lib/container_registry/config.rb'
     - 'lib/gitlab/auth/otp/strategies/duo_auth/manual_otp.rb'
     - 'lib/gitlab/auth/otp/strategies/forti_token_cloud.rb'
     - 'lib/gitlab/background_migration/migrate_evidences_for_vulnerability_findings.rb'

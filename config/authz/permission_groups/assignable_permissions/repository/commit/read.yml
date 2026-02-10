@@ -10,5 +10,7 @@ permissions:
   - read_commit_sequence
   - read_commit_signature
   - read_commit_status
+  - read_commit_discussion
+  - read_commit_discussion_note
 boundaries:
   - project

@@ -8,10 +8,12 @@ permissions:
   - delete_epic_link
   - delete_epic_note
   - delete_epic_note_award_emoji
+  - delete_epic_discussion_note
   - delete_issue
   - delete_issue_award_emoji
   - delete_issue_board
   - delete_issue_board_list
+  - delete_issue_discussion_note
   - delete_issue_link
   - delete_issue_note
   - delete_issue_note_award_emoji
@@ -22,6 +24,7 @@ permissions:
   - delete_milestone
   - delete_related_epic_link
   - delete_snippet_award_emoji
+  - delete_snippet_discussion_note
   - delete_snippet_note
   - delete_snippet_note_award_emoji
   - delete_wiki_page_meta_note

@@ -3111,7 +3111,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'with a branch name as the ref' do
         it 'looks up a commit for a branch' do
-          expect(pipeline.ref).to eq 'master'
+          expect(pipeline.ref).to eq project.default_branch
           expect(pipeline).to be_latest
         end
       end

@@ -7,7 +7,7 @@ module ContainerRegistry
     def initialize(tag, blob)
       @tag = tag
       @blob = blob
-      @data = Gitlab::Json.parse(blob.data)
+      @data = Gitlab::Json.safe_parse(blob.data)
     end
 
     def [](key)

@@ -1,0 +1,5 @@
+---
+name: update_commit_discussion_note
+description: Grants the ability to edit notes in commit discussions
+boundaries:
+  - project

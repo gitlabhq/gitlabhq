@@ -47,7 +47,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
 
       it '"New file" button linked to IDE new file page' do
         within_testid('project-buttons') do
-          expect(page).to have_link('New file', href: presenter.ide_edit_path(project, project.default_branch || 'master'))
+          expect(page).to have_link('New file', href: presenter.ide_edit_path(project, project.default_branch_or_main))
         end
       end
 

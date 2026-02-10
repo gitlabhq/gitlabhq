@@ -10,7 +10,6 @@ description: Security attributes allows security teams to apply custom metadata 
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ description: Security attributes allows security teams to apply custom metadata 
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18010) in GitLab 18.5 with flags named `security_context_labels` and `security_categories_and_attributes`. Disabled by default. This feature was introduced in [beta](../../../policy/development_stages_support.md)
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/551226) in GitLab 18.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/588619) in GitLab 18.9. Feature flag `security_inventory_dashboard` removed.
 
 {{< /history >}}
 
@@ -37,13 +37,13 @@ By applying these attributes across your projects, you can much more quickly ide
 - Review scan coverage for each application or business unit.
 - Locate projects that contribute to publicly accessible and exposed applications.
 
-This feature is in beta. Track the development of security attributes in [epic 18010](https://gitlab.com/groups/gitlab-org/-/epics/18010). Share [your feedback in issue 576032](https://gitlab.com/gitlab-org/gitlab/-/issues/576032) with us as we continue to develop this feature. The security attributes feature is disabled by default.
+Track the development of the security inventory in [epic 16939](https://gitlab.com/groups/gitlab-org/-/work_items/16939). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature.
 
 ## Manage security attributes for groups
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the group to manage security attributes.
+- You must have the Maintainer or Owner role in the group to manage security attributes.
 
 To manage security attributes for a group:
 
@@ -54,7 +54,7 @@ To manage security attributes for a group:
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project to manage security attributes.
+- You must have the Maintainer or Owner role in the project to manage security attributes.
 
 To manage security attributes for a project:
 
@@ -74,6 +74,6 @@ When working with the security attributes, you might encounter the following iss
 
 ### Security configuration menu item missing
 
-Some users do not have the required permissions to access the **Security configuration** menu item. The menu item only displays for groups when the authenticated user has at least the Maintainer role.
+Some users do not have the required permissions to access the **Security configuration** menu item. The menu item only displays for groups when the authenticated user has the Maintainer or Owner role.
 
 To manage security attributes, ask a maintainer to complete the configuration changes or request the Maintainer role from your administrator, if necessary.

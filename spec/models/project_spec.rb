@@ -847,6 +847,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    describe '.deletion_in_progress' do
+      let_it_be(:normal_project) { create(:project) }
+      let_it_be(:pending_delete_project) { create(:project, pending_delete: true) }
+      let_it_be(:deletion_in_progress_project) do
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: project.creator)
+        project
+      end
+
+      it 'returns only projects with deletion_in_progress state' do
+        result = described_class.deletion_in_progress
+
+        expect(result).to contain_exactly(deletion_in_progress_project)
+      end
+
+      it 'does not return projects with pending_delete column' do
+        result = described_class.deletion_in_progress
+
+        expect(result).not_to include(pending_delete_project)
+      end
+    end
+
+    describe '.not_deletion_in_progress' do
+      let_it_be(:normal_project) { create(:project) }
+      let_it_be(:pending_delete_project) { create(:project, pending_delete: true) }
+      let_it_be(:deletion_in_progress_project) do
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: project.creator)
+        project
+      end
+
+      it 'returns projects without deletion_in_progress state' do
+        result = described_class.not_deletion_in_progress
+
+        expect(result).to include(normal_project, pending_delete_project)
+        expect(result).not_to include(deletion_in_progress_project)
+      end
+    end
+
     describe '.archived' do
       let_it_be(:archived_group) { create(:group, :archived) }
       let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }

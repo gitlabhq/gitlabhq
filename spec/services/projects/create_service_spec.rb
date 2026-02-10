@@ -824,8 +824,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         <<~MARKDOWN
           cd existing_repo
           git remote add origin #{project.http_url_to_repo}
-          git branch -M master
-          git push -uf origin master
+          git branch -M main
+          git push -uf origin main
         MARKDOWN
       end
     end

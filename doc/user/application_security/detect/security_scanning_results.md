@@ -118,7 +118,7 @@ branch.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or the `admin_vulnerability` custom
+- You must have the Maintainer or Owner role for the project or the `admin_vulnerability` custom
   permission.
 
 To change the status and severity of findings or vulnerabilities:

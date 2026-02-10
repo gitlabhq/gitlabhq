@@ -10,19 +10,15 @@ description: Group-level visibility of assets, scanner coverage, and vulnerabili
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16484) in GitLab 18.2 with a flag named `security_inventory_dashboard`. Enabled by default. This feature is in [beta](../../../policy/development_stages_support.md)
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16484) as a [beta](../../../policy/development_stages_support.md) in GitLab 18.2 with a flag named `security_inventory_dashboard`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/588619) in GitLab 18.9. Feature flag `security_inventory_dashboard` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use the security inventory to visualize which assets you need to secure and understand the actions you need to take to improve security. A common phrase in security is, "you can't secure what you can't see." The security inventory provides visibility into the security posture of your organization's top-level groups, helps you identify coverage gaps, and enables you to make efficient, risk-based prioritization decisions.
 
@@ -38,13 +34,13 @@ The security inventory shows:
   - Infrastructure-as-code (IaC) scanning
 - The number of vulnerabilities in each group or project, sorted by severity level.
 
-This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature. The security inventory is enabled by default.
+Track the development of the security inventory in [epic 16939](https://gitlab.com/groups/gitlab-org/-/work_items/16939). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature.
 
 ## View the security inventory
 
 Prerequisites:
 
-- You must have at least the Developer role in the group to view the security inventory.
+- You must have the Developer, Maintainer, or Owner role in the group to view the security inventory.
 
 To view the security inventory:
 
@@ -91,4 +87,4 @@ When working with the security inventory, you might encounter the following issu
 
 ### Security inventory menu item missing
 
-Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has at least the Developer role.
+Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer, Maintainer, or Owner role.

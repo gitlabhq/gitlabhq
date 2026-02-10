@@ -37,7 +37,7 @@ RSpec.shared_examples 'Wiki redirection' do
     end
 
     it 'updates the .gitlab/redirects.yml file with all redirects' do
-      expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq(
+      expect(wiki.repository.blob_at(wiki.default_branch, '.gitlab/redirects.yml').data).to eq(
         <<~YML
           ---
           parent/child/grandchild: parent/child/new-grandchild
@@ -94,7 +94,7 @@ RSpec.shared_examples 'Wiki redirection' do
     end
 
     it 'updates the .gitlab/redirects.yml file with all redirects' do
-      expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq(
+      expect(wiki.repository.blob_at(wiki.default_branch, '.gitlab/redirects.yml').data).to eq(
         <<~YML
           ---
           parent: new-parent

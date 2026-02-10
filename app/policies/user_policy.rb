@@ -51,6 +51,7 @@ class UserPolicy < BasePolicy
   rule { admin }.policy do
     enable :read_custom_attribute
     enable :update_custom_attribute
+    enable :delete_custom_attribute
   end
 
   def private_profile?

@@ -18,3 +18,5 @@ permissions:
   - read_merge_request_closes_issue
   - read_merge_request_related_issue
   - read_merge_request_context_commit
+  - read_merge_request_discussion
+  - read_merge_request_discussion_note

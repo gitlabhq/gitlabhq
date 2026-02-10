@@ -26,8 +26,8 @@ RSpec.describe Gitlab::Ci::Reports::TestFailureHistory, :aggregate_failures do
     it 'sets the recent failures for each matching failed test case in all test suites' do
       load_history
 
-      expect(failed_rspec.recent_failures).to eq(count: 2, base_branch: 'master')
-      expect(failed_java.recent_failures).to eq(count: 1, base_branch: 'master')
+      expect(failed_rspec.recent_failures).to eq(count: 2, base_branch: 'main')
+      expect(failed_java.recent_failures).to eq(count: 1, base_branch: 'main')
     end
   end
 end

@@ -152,7 +152,7 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 
 To create and manage security policies:
 
-- For policies enforced on groups: You must have at least the Maintainer role for the group.
+- For policies enforced on groups: You must have the Maintainer or Owner role for the group.
 - For policies enforced on projects:
   - You must be the project owner.
   - You must be a group member with permissions to create projects in the group.

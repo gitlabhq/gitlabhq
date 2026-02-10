@@ -263,6 +263,7 @@ module Types
     mount_mutation Mutations::WorkItems::SavedViews::Subscribe, experiment: { milestone: '18.7' }
     mount_mutation Mutations::WorkItems::SavedViews::Unsubscribe, experiment: { milestone: '18.7' }
     mount_mutation Mutations::WorkItems::SavedViews::Reorder, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::Users::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Users::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update

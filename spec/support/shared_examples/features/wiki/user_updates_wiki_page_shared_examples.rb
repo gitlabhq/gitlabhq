@@ -89,7 +89,7 @@ RSpec.shared_examples 'User updates wiki page' do
       wiki.repository.update_file(
         user, '.gitlab/redirects.yml',
         "home2: home\nfoo: bar",
-        message: 'Add redirect', branch_name: 'master'
+        message: 'Add redirect', branch_name: wiki.default_branch
       )
 
       fill_in(:wiki_path, with: 'home2')
@@ -99,7 +99,8 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_content('Home')
       expect(page).to have_content('My awesome wiki!')
 
-      expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nfoo: bar\nhome: home2\n")
+      expect(wiki.repository.blob_at(wiki.default_branch,
+        '.gitlab/redirects.yml').data).to eq("---\nfoo: bar\nhome: home2\n")
     end
 
     it 'saves page content in local storage if the user navigates away', :js do

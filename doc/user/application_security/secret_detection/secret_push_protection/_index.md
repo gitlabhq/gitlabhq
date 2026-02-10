@@ -99,7 +99,7 @@ Secret push protection is allowed on the instance. To use this feature, you must
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - On GitLab Dedicated and GitLab Self-Managed, you must allow secret push protection on the instance.
 
 To enable secret push protection in a project:

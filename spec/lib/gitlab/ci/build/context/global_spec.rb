@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
   end
 
   shared_examples 'variables collection' do
-    it { is_expected.to include('CI_COMMIT_REF_NAME' => 'master') }
+    it { is_expected.to include('CI_COMMIT_REF_NAME' => 'main') }
     it { is_expected.to include('CI_PIPELINE_IID'    => pipeline.iid.to_s) }
     it { is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path) }
 

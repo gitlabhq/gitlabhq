@@ -174,11 +174,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         end
       end
 
-      context 'when HEAD branch is different from master' do
-        before do
-          stub_feature_flags(main_branch_over_master: true)
-        end
-
+      context 'when HEAD branch is main' do
         it 'does not raise an exception during update' do
           run_service
 

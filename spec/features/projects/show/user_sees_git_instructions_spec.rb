@@ -26,7 +26,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
         expect(page).to have_content('Command line instructions')
       end
 
-      expect(page).to have_content("git push --set-upstream origin master")
+      expect(page).to have_content("git push --set-upstream origin main")
     end
   end
 

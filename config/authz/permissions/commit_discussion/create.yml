@@ -1,0 +1,5 @@
+---
+name: create_commit_discussion
+description: Grants the ability to create commit discussions
+boundaries:
+  - project

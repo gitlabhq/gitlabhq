@@ -231,3 +231,22 @@ To resolve this issue:
 - Check that your Ingress is configured to route traffic through
   GitLab Workhorse on port `8181` rather than directly to Puma.
 - Consider enabling [proxy downloads](../../../administration/object_storage.md#proxy-download) for object storage.
+
+## Milestone titles appended with `(imported-xx-datetime)`
+
+When importing a group, if any group and project milestone titles [clash with existing titles](../../../user/project/milestones/_index.md#milestone-title-rules) in the destination namespace, the imported milestones have
+a unique suffix appended to their title. For example, `18.0 (imported-3d-1770206299)`.
+
+To identify these milestones, search the `log/importer.log` file on the destination instance for the following:
+
+```plaintext
+Updating milestone title - source title used by existing group or project milestone
+```
+
+The log entry includes:
+
+- `importable_id`: The ID of the group being imported.
+- `milestone_title`: The title of the milestone being renamed.
+- `existing_group_id` or `existing_project_id`: The ID of the group or project that contains the existing milestone.
+
+With this information, you can locate the milestone and update the title to something you prefer.

@@ -6,5 +6,7 @@ permissions:
   - create_commit
   - cherry_pick_commit
   - revert_commit
+  - create_commit_discussion
+  - create_commit_discussion_note
 boundaries:
   - project

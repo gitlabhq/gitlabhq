@@ -77,7 +77,7 @@ repository is imported under the namespace of the user who started the import pr
   ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
 - You must enable the [Bitbucket Cloud import source](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   or ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
-- You must have at least the Maintainer role on the destination group to import to.
+- You must have the Maintainer or Owner role on the destination group to import to.
 - Pull requests in Bitbucket must have the same source and destination project and not be from a fork of a project.
   Otherwise, the pull requests are imported as empty merge requests.
 

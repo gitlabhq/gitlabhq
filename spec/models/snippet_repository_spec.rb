@@ -435,16 +435,16 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
   end
 
   def blob_at(snippet, path)
-    snippet.repository.blob_at('master', path)
+    snippet.repository.blob_at(snippet.default_branch, path)
   end
 
   def first_blob(snippet)
-    snippet.repository.blob_at('master', snippet.repository.ls_files(snippet.default_branch).first)
+    snippet.repository.blob_at(snippet.default_branch, snippet.repository.ls_files(snippet.default_branch).first)
   end
 
   context 'with loose foreign key on snippet_repositories.shard_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:shard) }
+      let_it_be(:parent) { Shard.find_or_create_by!(name: 'default') }
       let_it_be(:model) { create(:snippet_repository, shard: parent) }
     end
   end

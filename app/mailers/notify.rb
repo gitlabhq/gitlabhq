@@ -134,6 +134,7 @@ class Notify < ApplicationMailer
 
   def mail_thread(model, headers = {})
     add_project_headers
+    add_group_headers
     add_unsubscription_headers_and_links
     add_model_headers(model)
 
@@ -254,6 +255,21 @@ class Notify < ApplicationMailer
     headers['X-GitLab-Project-Id'] = @project.id
     headers['X-GitLab-Project-Path'] = @project.full_path
     headers['List-Id'] = "#{@project.full_path} <#{create_list_id_string(@project)}>"
+  end
+
+  def add_group_headers
+    group = if @namespace.is_a?(Group)
+              @namespace
+            else
+              @group
+            end
+
+    return unless group
+
+    headers['X-GitLab-Group'] = group.name
+    headers['X-GitLab-Group-Id'] = group.id
+    headers['X-GitLab-Group-Path'] = group.full_path
+    headers['List-Id'] ||= "#{group.full_path} <#{create_list_id_string(group)}>"
   end
 
   def add_unsubscription_headers_and_links

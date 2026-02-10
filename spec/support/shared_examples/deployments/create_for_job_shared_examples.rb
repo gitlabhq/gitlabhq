@@ -5,7 +5,7 @@ RSpec.shared_examples 'create deployment for job' do
     subject { service.execute(job) }
 
     context 'with a deployment job' do
-      let!(:job) { create(factory_type, :start_review_app, project: project) }
+      let!(:job) { create(factory_type, :start_review_app, project: project, ref: project.default_branch) }
       let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
 
       it 'creates a deployment record' do
@@ -47,7 +47,7 @@ RSpec.shared_examples 'create deployment for job' do
     end
 
     context 'with a teardown job' do
-      let!(:job) { create(factory_type, :stop_review_app, project: project) }
+      let!(:job) { create(factory_type, :stop_review_app, project: project, ref: project.default_branch) }
       let!(:environment) { create(:environment, name: job.expanded_environment_name) }
 
       it 'does not create a deployment record' do
@@ -58,7 +58,7 @@ RSpec.shared_examples 'create deployment for job' do
     end
 
     context 'with a normal job' do
-      let!(:job) { create(factory_type, project: project) }
+      let!(:job) { create(factory_type, project: project, ref: project.default_branch) }
 
       it 'does not create a deployment record' do
         expect { subject }.not_to change { Deployment.count }
@@ -69,7 +69,7 @@ RSpec.shared_examples 'create deployment for job' do
 
     context 'when job has environment attribute' do
       let!(:job) do
-        create(factory_type, environment: 'production', project: project, user: user,
+        create(factory_type, environment: 'production', project: project, ref: project.default_branch, user: user,
           options: { environment: { name: 'production', **kubernetes_options } })
       end
 
@@ -133,7 +133,11 @@ RSpec.shared_examples 'create deployment for job' do
       end
 
       context 'when job already has deployment' do
-        let!(:job) { create(factory_type, :with_deployment, project: project, environment: 'production') }
+        let!(:job) do
+          create(factory_type, :with_deployment, project: project, ref: project.default_branch,
+            environment: 'production')
+        end
+
         let!(:environment) {} # rubocop:disable Lint/EmptyBlock
 
         it 'returns the persisted deployment' do
@@ -151,7 +155,7 @@ RSpec.shared_examples 'create deployment for job' do
 
       with_them do
         let!(:job) do
-          create(factory_type, environment: 'production', project: project,
+          create(factory_type, environment: 'production', project: project, ref: project.default_branch,
                             options: { environment: { name: 'production', action: action } }) # rubocop:disable Layout/ArgumentAlignment
         end
 
@@ -162,7 +166,7 @@ RSpec.shared_examples 'create deployment for job' do
     end
 
     context 'when job does not have environment attribute' do
-      let!(:job) { create(factory_type, project: project) }
+      let!(:job) { create(factory_type, project: project, ref: project.default_branch) }
 
       it 'returns nothing' do
         is_expected.to be_nil

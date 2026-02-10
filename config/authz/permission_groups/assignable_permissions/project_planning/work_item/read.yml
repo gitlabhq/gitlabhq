@@ -6,6 +6,8 @@ permissions:
   - read_epic_award_emoji
   - read_epic_board
   - read_epic_board_list
+  - read_epic_discussion
+  - read_epic_discussion_note
   - read_epic_link
   - read_epic_issue
   - read_epic_note
@@ -17,6 +19,8 @@ permissions:
   - read_issue_iteration_event
   - read_issue_board
   - read_issue_board_list
+  - read_issue_discussion
+  - read_issue_discussion_note
   - read_issue_link
   - read_issue_merge_request
   - read_issue_milestone_event
@@ -42,6 +46,8 @@ permissions:
   - read_milestone_merge_request
   - read_related_epic_link
   - read_snippet_award_emoji
+  - read_snippet_discussion
+  - read_snippet_discussion_note
   - read_snippet_note
   - read_snippet_note_award_emoji
   - read_wiki_page_meta_note

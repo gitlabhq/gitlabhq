@@ -25,7 +25,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     it 'forwards missing methods to build' do
-      expect(presenter.ref).to eq('master')
+      expect(presenter.ref).to eq('main')
     end
   end
 

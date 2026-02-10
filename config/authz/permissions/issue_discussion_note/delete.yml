@@ -1,0 +1,5 @@
+---
+name: delete_issue_discussion_note
+description: Grants the ability to delete notes in issue discussions
+boundaries:
+  - project

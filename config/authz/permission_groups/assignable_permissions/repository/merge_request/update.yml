@@ -13,3 +13,5 @@ permissions:
   - rebase_merge_request
   - update_merge_request
   - update_merge_request_draft_note
+  - update_merge_request_discussion
+  - update_merge_request_discussion_note

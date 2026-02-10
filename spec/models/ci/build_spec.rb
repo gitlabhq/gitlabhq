@@ -5378,6 +5378,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to include(:artifacts_exclude) }
     end
+
+    context 'when inputs are defined' do
+      let(:options) do
+        { inputs: { foo: 'bar' } }
+      end
+
+      it { is_expected.to include(:job_inputs) }
+    end
   end
 
   describe '#supported_runner?' do
@@ -5479,6 +5487,26 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'requires `upload_multiple_artifacts` too' do
           is_expected.to be_falsey
         end
+      end
+    end
+
+    context 'when `job_inputs` feature is required by build' do
+      let(:options) { { inputs: { foo: 'bar' } } }
+
+      before do
+        stub_ci_job_definition(build, options: options)
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) { { job_inputs: true } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) { {} }
+
+        it { is_expected.to be_falsey }
       end
     end
   end

@@ -533,6 +533,9 @@ The following table lists all GitLab-specific email headers:
 | `X-GitLab-Project-Id`         | The project's ID. |
 | `X-GitLab-Project-Path`       | The project's path. |
 | `X-GitLab-Project`            | The name of the project the notification belongs to. |
+| `X-GitLab-Group-Id`         | The group's ID. |
+| `X-GitLab-Group-Path`       | The group's path. |
+| `X-GitLab-Group`            | The name of the group the notification belongs to. |
 | `X-GitLab-Reply-Key`          | A unique token to support reply by email. |
 
 ### X-GitLab-NotificationReason

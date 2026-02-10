@@ -356,23 +356,27 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_custom_attribute) }
         it { is_expected.to be_allowed(:update_custom_attribute) }
+        it { is_expected.to be_allowed(:delete_custom_attribute) }
       end
 
       context 'when admin mode is disabled' do
         it { is_expected.not_to be_allowed(:read_custom_attribute) }
         it { is_expected.not_to be_allowed(:update_custom_attribute) }
+        it { is_expected.not_to be_allowed(:delete_custom_attribute) }
       end
     end
 
     context 'when user is not an admin' do
       it { is_expected.not_to be_allowed(:read_custom_attribute) }
       it { is_expected.not_to be_allowed(:update_custom_attribute) }
+      it { is_expected.not_to be_allowed(:delete_custom_attribute) }
 
       context 'requesting their own' do
         subject { described_class.new(current_user, current_user) }
 
         it { is_expected.not_to be_allowed(:read_custom_attribute) }
         it { is_expected.not_to be_allowed(:update_custom_attribute) }
+        it { is_expected.not_to be_allowed(:delete_custom_attribute) }
       end
     end
   end

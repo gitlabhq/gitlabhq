@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton, GlExperimentBadge } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -11,6 +11,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import ScanProfileConfiguration from 'ee_else_ce/security_configuration/components/scan_profiles/scan_profile_configuration.vue';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -47,14 +48,10 @@ export default {
     LocalStorageSync,
     SectionLayout,
     GlButton,
-    GlExperimentBadge,
     UserCalloutDismisser,
     TrainingSection,
     RefTrackingList,
-    ScanProfileConfiguration: () =>
-      import(
-        'ee_component/security_configuration/components/scan_profiles/scan_profile_configuration.vue'
-      ),
+    ScanProfileConfiguration,
     ContainerScanningForRegistryFeatureCard: () =>
       import(
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
@@ -342,7 +339,6 @@ export default {
       <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">
         <template #title>
           {{ s__('SecurityAttributes|Security attributes') }}
-          <gl-experiment-badge type="beta" class="gl-ml-2" />
         </template>
         <project-security-attributes-list />
       </gl-tab>

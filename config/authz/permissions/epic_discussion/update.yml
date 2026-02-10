@@ -1,0 +1,5 @@
+---
+name: update_epic_discussion
+description: Grants the ability to resolve/unresolve epic discussions
+boundaries:
+  - group

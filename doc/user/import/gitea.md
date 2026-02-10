@@ -56,7 +56,7 @@ When importing:
 - Gitea version 1.0.0 or later.
 - You must enable the [Gitea import source](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   or ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
-- At least the Maintainer role on the destination group to import to.
+- the Maintainer or Owner role on the destination group to import to.
 
 ## Import your Gitea repositories
 

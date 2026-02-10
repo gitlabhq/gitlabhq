@@ -1,0 +1,5 @@
+---
+name: delete_commit_discussion_note
+description: Grants the ability to delete notes in commit discussions
+boundaries:
+  - project

@@ -1,0 +1,5 @@
+---
+name: read_merge_request_discussion
+description: Grants the ability to read merge request discussions and notes
+boundaries:
+  - project

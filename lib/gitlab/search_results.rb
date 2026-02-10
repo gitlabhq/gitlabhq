@@ -138,6 +138,11 @@ module Gitlab
       nil
     end
 
+    def work_items(finder_params = {})
+      # In CE, work items are just issues since group-level work items are EE-only
+      issues(finder_params)
+    end
+
     private
 
     def collection_for(scope)
@@ -207,11 +212,6 @@ module Gitlab
       end
 
       apply_sort(issues, scope: 'issues')
-    end
-
-    def work_items(finder_params = {})
-      # In CE, work items are just issues since group-level work items are EE-only
-      issues(finder_params)
     end
 
     def milestones
