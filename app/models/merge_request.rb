@@ -440,7 +440,7 @@ class MergeRequest < ApplicationRecord
   scope :with_api_entity_associations, -> {
     preload_routables.preload(
       :assignees, :author, :unresolved_notes, :labels, :milestone, :timelogs, :reviewers, :merge_schedule, :merge_user,
-      latest_merge_request_diff: [:merge_request_diff_commits], target_project: [:project_feature, :project_setting,
+      :latest_merge_request_diff, target_project: [:project_feature, :project_setting,
         { namespace: :namespace_settings_with_ancestors_inherited_settings }],
       metrics: [:latest_closed_by, :merged_by])
   }

@@ -11,6 +11,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be_with_refind(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
+  let(:allowed_query_threshold) { 3 } # Threshold required for N + 1 specs to pass, see: https://gitlab.com/gitlab-org/gitlab/-/work_items/587748.
 
   let(:milestone1) { create(:milestone, title: '0.9', project: project) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
@@ -77,17 +78,32 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           end
         end
       end
-    end
 
-    context 'when authenticated' do
-      it 'avoids N+1 queries' do
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N+1 queries', :request_store, :use_sql_query_cache do
+        create_list(:merge_request, 3, :unique_branches, state: 'closed', milestone: milestone1, author: user, assignees: [user], source_project: project, created_at: base_time)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api(endpoint_path, user)
         end
 
-        create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: 'Test', created_at: base_time)
+        create_list(:merge_request, 3, :unique_branches, state: 'closed', milestone: milestone1, author: user, assignees: [user], source_project: project, created_at: base_time)
 
-        merge_request = create(:merge_request, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: 'Test', created_at: base_time)
+        expect do
+          get api(endpoint_path, user)
+        end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'avoids N+1 queries', :request_store, :use_sql_query_cache do
+        create_list(:merge_request, 3, :unique_branches, state: 'closed', milestone: milestone1, author: user, assignees: [user], source_project: project, created_at: base_time)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api(endpoint_path, user)
+        end
+
+        create_list(:merge_request, 2, :unique_branches, state: 'closed', milestone: milestone1, author: user, assignees: [user], source_project: project, created_at: base_time)
+        merge_request = create(:merge_request, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: 'Test 4', created_at: base_time)
 
         merge_request.metrics.update!(
           merged_by: user,
@@ -98,22 +114,22 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect do
           get api(endpoint_path, user)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
       end
 
       context 'when merge requests are merged' do
-        it 'avoids N+1 queries' do
-          create(:merge_request, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
+        it 'avoids N+1 queries', :request_store, :use_sql_query_cache do
+          create_list(:merge_request, 3, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
 
-          control = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api(endpoint_path, user)
           end
 
-          create(:merge_request, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
+          create_list(:merge_request, 3, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
 
           expect do
             get api(endpoint_path, user)
-          end.not_to exceed_query_limit(control)
+          end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
         end
       end
 
