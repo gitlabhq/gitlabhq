@@ -44,6 +44,7 @@ module Types
         Types::Ci::Inputs::FieldType.connection_type,
         null: true,
         description: 'Inputs configured for the pipeline schedule.',
+        authorize: :read_pipeline_schedule_inputs,
         experiment: { milestone: '17.10' }
 
       field :variables,

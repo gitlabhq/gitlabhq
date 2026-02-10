@@ -441,15 +441,32 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           expect(git_import_instructions).to have_content 'Git repository URL'
         end
 
-        it 'reports error if repo URL is not a valid Git repository' do
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
+        it 'reports error if repo URL is not an accessible Git repository' do
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('example.com').and_return(false)
 
-          fill_in 'project_import_url', with: 'http://foo/bar'
+          fill_in 'project_import_url', with: 'example.com'
           send_keys(:tab)
-          expect(page).to have_text('There is not a valid Git repository at this URL')
+
+          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
         end
 
-        it 'reports error if repo URL is not a valid Git repository and submit button is clicked immediately' do
+        it 'reports error if repo URL is a localhost url' do
+          fill_in 'project_import_url', with: 'http://127.0.0.1'
+          send_keys(:tab)
+
+          expect(page).to have_text('Requests to localhost are not allowed')
+        end
+
+        it 'reports error for invalid URL format' do
+          # we intentionally use a generic error message for all validation failures to avoid
+          # leaking information about what makes a URL valid or invalid
+          fill_in 'project_import_url', with: 'not-a-valid-url'
+          send_keys(:tab)
+
+          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
+        end
+
+        it 'reports error if repo URL is not a accessible Git repository and submit button is clicked immediately' do
           allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
@@ -457,7 +474,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          expect(page).to have_text('There is not a valid Git repository at this URL')
+          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
         end
 
         it 'keeps "Import project" tab open after form validation error' do
@@ -490,7 +507,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           click_on 'Import repository'
         end
 
-        it 'reports error when invalid url is provided' do
+        it 'reports error when inaccessible url is provided' do
           allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
@@ -498,7 +515,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           click_on 'Start import'
           wait_for_requests
 
-          expect(page).to have_text('There is not a valid Git repository at this URL')
+          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
         end
 
         it 'initiates import when valid repo url is provided' do

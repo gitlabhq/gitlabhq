@@ -66,8 +66,14 @@ const rejectHTTPEmbedderOrigin = () => {
  * is not the default value built into the GitLab instance.
  *
  */
-export const buildWorkbenchUrl = async ({ extensionHostDomain, extensionHostDomainChanged }) => {
-  const digest = await sha256(`${window.location.origin}-${window.gon.current_username}`);
+export const buildWorkbenchUrl = async ({
+  extensionHostDomain,
+  extensionHostDomainChanged,
+  workbenchSecret,
+}) => {
+  const digest = await sha256(
+    `${window.location.origin}-${window.gon.current_username}-${workbenchSecret}`,
+  );
   const digestShort = digest.slice(0, 30);
   const workbenchUrl = new URL(
     buildBaseAssetsPath(extensionHostDomainChanged),
@@ -93,6 +99,7 @@ export const buildWorkbenchUrl = async ({ extensionHostDomain, extensionHostDoma
 export const getWebIDEWorkbenchConfig = async ({
   extensionHostDomain,
   extensionHostDomainChanged = false,
+  workbenchSecret,
 } = {}) => {
   if (typeof extensionHostDomain !== 'string' || !extensionHostDomain) {
     throw new Error(
@@ -113,6 +120,7 @@ export const getWebIDEWorkbenchConfig = async ({
     const workbenchBaseUrl = await buildWorkbenchUrl({
       extensionHostDomain,
       extensionHostDomainChanged,
+      workbenchSecret,
     });
 
     await pingWorkbench({

@@ -392,4 +392,18 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
   end
 
   it_behaves_like 'pipeline timing check'
+
+  describe '#build_relative_path' do
+    it 'handles paths with many ../ components without timing out' do
+      filter_instance = described_class.new(Nokogiri::HTML.fragment(''), {})
+      malicious_path = '../' * 100_000
+      allow(filter_instance).to receive(:uri_type).and_return(:blob)
+
+      expect do
+        Timeout.timeout(1) do
+          filter_instance.send(:build_relative_path, malicious_path, 'doc/api/README.md')
+        end
+      end.not_to raise_error
+    end
+  end
 end

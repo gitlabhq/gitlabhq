@@ -52,10 +52,27 @@ curl --request GET \
             "state": "active",
             "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
             "web_url": "https://gitlab.example.com/root"
-        }
+        },
+        "inputs": [
+            {
+                "name": "deploy_strategy",
+                "value": "blue-green"
+            },
+            {
+                "name": "feature_flags",
+                "value": ["flag1", "flag2"]
+            }
+        ]
     }
 ]
 ```
+
+{{< alert type="note" >}}
+
+The `inputs` field is only included in the response for users with the Maintainer or Owner roles,
+or for the schedule owner.
+
+{{< /alert >}}
 
 ## Get a single pipeline schedule
 
@@ -121,6 +138,13 @@ curl --request GET \
     ]
 }
 ```
+
+{{< alert type="note" >}}
+
+The `inputs` and `variables` fields are only included in the response for users with the Maintainer or Owner roles,
+or for the schedule owner.
+
+{{< /alert >}}
 
 ## Get all pipelines triggered by a pipeline schedule
 

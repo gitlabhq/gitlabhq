@@ -10,6 +10,7 @@ module Gitlab
       ElementCountLimitError = Class.new(LimitExceededError)
       HashSizeLimitError = Class.new(LimitExceededError)
       BodySizeExceededError = Class.new(LimitExceededError)
+      InvalidJsonError = Class.new(LimitExceededError)
 
       # Match integers, floats, and scientific notation with reasonable size limits
       # Supports: 123, -123, 12.3, -12.3, 1.23e10, -1.23E-10
@@ -31,6 +32,8 @@ module Gitlab
           "Too many total parameters"
         when ::Gitlab::Json::StreamValidator::BodySizeExceededError
           "JSON body too large"
+        when ::Gitlab::Json::StreamValidator::InvalidJsonError
+          "Invalid JSON format"
         else
           "Invalid JSON: limit exceeded"
         end
@@ -79,8 +82,13 @@ module Gitlab
         # Oj.sc_parse does not handle primitive values (see https://github.com/ohler55/oj/issues/979)
         # so we need to handle them separately before calling the streaming parser
         return if %w[true false null].include?(body)
-        return if quoted_string?(body)
         return if body.encoding == Encoding::UTF_8 && body.valid_encoding? && NUMERIC_REGEX.match?(body)
+
+        # Simple JSON strings need validation via Oj.load since sc_parse doesn't handle them
+        if simple_json_string?(body)
+          validate_simple_string!(body)
+          return
+        end
 
         ::Oj.sc_parse(self, body)
 
@@ -185,10 +193,16 @@ module Gitlab
 
       private
 
-      def quoted_string?(body)
-        return false if body.nil? || body.length < 2
+      def simple_json_string?(body)
+        body.lstrip.start_with?('"')
+      rescue ArgumentError
+        false
+      end
 
-        body.start_with?('"') && body.end_with?('"')
+      def validate_simple_string!(body)
+        Oj.load(body, mode: :strict)
+      rescue Oj::ParseError, EncodingError => e
+        raise InvalidJsonError, "Malformed JSON string: #{e.message}"
       end
 
       def check_body_size!

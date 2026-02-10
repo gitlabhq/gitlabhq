@@ -75,6 +75,46 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           str == 'active'
         end
       end
+
+      context 'with inputs' do
+        before do
+          create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'list_input')
+        end
+
+        context 'as maintainer' do
+          it 'returns pipeline_schedules with inputs' do
+            get api(url, maintainer)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            schedule_with_inputs = json_response.find { |s| s['id'] == pipeline_schedule.id }
+            expect(schedule_with_inputs).to have_key('inputs')
+            expect(schedule_with_inputs['inputs'].first['name']).to eq('list_input')
+          end
+        end
+
+        context 'as schedule owner with developer permissions' do
+          it 'returns pipeline_schedules with inputs' do
+            get api(url, developer)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            schedule_with_inputs = json_response.find { |s| s['id'] == pipeline_schedule.id }
+            expect(schedule_with_inputs).to have_key('inputs')
+            expect(schedule_with_inputs['inputs'].first['name']).to eq('list_input')
+          end
+        end
+
+        context 'as developer but not schedule owner' do
+          let(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+
+          it 'returns pipeline_schedules without inputs' do
+            get api(url, other_developer)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            schedule_without_inputs = json_response.find { |s| s['id'] == pipeline_schedule.id }
+            expect(schedule_without_inputs).not_to have_key('inputs')
+          end
+        end
+      end
     end
 
     context 'authenticated user with invalid permissions' do
@@ -220,6 +260,75 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
           expect(response).to return_pipeline_schedule_successfully
           expect(json_response).not_to have_key('variables')
+        end
+      end
+
+      context 'with inputs' do
+        let(:public_maintainer) { create(:user, maintainer_of: project) }
+
+        before do
+          create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'test_input')
+        end
+
+        context 'authenticated user with maintainer permissions' do
+          it 'returns pipeline_schedule with inputs' do
+            get api(url, public_maintainer)
+
+            expect(response).to return_pipeline_schedule_successfully
+            expect(json_response).to have_key('inputs')
+            expect(json_response['inputs'].first['name']).to eq('test_input')
+          end
+        end
+
+        context 'authenticated user as schedule owner with developer permissions' do
+          it 'returns pipeline_schedule with inputs' do
+            get api(url, developer)
+
+            expect(response).to return_pipeline_schedule_successfully
+            expect(json_response).to have_key('inputs')
+            expect(json_response['inputs'].first['name']).to eq('test_input')
+          end
+        end
+
+        context 'authenticated user with developer permissions but not schedule owner' do
+          let(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+
+          it 'returns pipeline_schedule with no inputs' do
+            get api(url, other_developer)
+
+            expect(response).to return_pipeline_schedule_successfully
+            expect(json_response).not_to have_key('inputs')
+          end
+        end
+
+        context 'authenticated user with no project permissions' do
+          it 'returns pipeline_schedule with no inputs' do
+            get api(url, user)
+
+            expect(response).to return_pipeline_schedule_successfully
+            expect(json_response).not_to have_key('inputs')
+          end
+        end
+
+        context 'authenticated user with guest permissions' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'returns pipeline_schedule with no inputs' do
+            get api(url, user)
+
+            expect(response).to return_pipeline_schedule_successfully
+            expect(json_response).not_to have_key('inputs')
+          end
+        end
+
+        context 'unauthenticated user' do
+          it 'does not return pipeline_schedule' do
+            get api(url)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
         end
       end
 

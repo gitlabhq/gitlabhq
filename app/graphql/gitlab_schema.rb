@@ -37,13 +37,18 @@ class GitlabSchema < GraphQL::Schema
 
   complexity_cost_calculation_mode(:legacy)
 
+  disable_introspection_entry_points if Rails.env.production?
   class << self
     def multiplex(queries, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless kwargs.key?(:max_complexity)
 
       queries.each do |query|
         query[:max_complexity] ||= max_query_complexity(query[:context]) unless query.key?(:max_complexity)
-        query[:max_depth] = max_query_depth(query[:context]) unless query.key?(:max_depth)
+
+        unless query.key?(:max_depth)
+          query[:max_depth] =
+            max_query_depth(query[:context])
+        end
       end
 
       super(queries, **kwargs)
@@ -98,7 +103,8 @@ class GitlabSchema < GraphQL::Schema
       return unless gid
 
       if gid.model_class < ApplicationRecord
-        Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id).find
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class,
+          gid.model_id).find
       elsif gid.model_class.respond_to?(:lazy_find)
         gid.model_class.lazy_find(gid.model_id)
       else
@@ -133,9 +139,14 @@ class GitlabSchema < GraphQL::Schema
       expected_types = Array(ctx[:expected_type])
       gid = GlobalID.parse(global_id)
 
-      raise Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab ID." unless gid
+      unless gid
+        raise Gitlab::Graphql::Errors::ArgumentError,
+          "#{global_id} is not a valid GitLab ID."
+      end
 
-      if expected_types.any? && expected_types.none? { |type| gid.model_class.ancestors.include?(type) }
+      if expected_types.any? && expected_types.none? do |type|
+        gid.model_class.ancestors.include?(type)
+      end
         vars = { global_id: global_id, expected_types: expected_types.join(', ') }
         msg = _('%{global_id} is not a valid ID for %{expected_types}.') % vars
         raise Gitlab::Graphql::Errors::ArgumentError, msg

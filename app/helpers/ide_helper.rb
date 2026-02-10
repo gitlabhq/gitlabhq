@@ -2,7 +2,7 @@
 
 module IdeHelper
   # Overridden in EE
-  def ide_data(project:, fork_info:, params:)
+  def ide_data(project:, fork_info:, workbench_secret:, params:)
     base_data = {
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/_index.md'),
       'sign-in-path' => new_session_path(current_user),
@@ -16,7 +16,8 @@ module IdeHelper
       'fork-info' => fork_info&.to_json,
       'branch-name' => params[:branch],
       'file-path' => params[:path],
-      'merge-request' => params[:merge_request_id]
+      'merge-request' => params[:merge_request_id],
+      'workbench-secret' => workbench_secret
     )
   end
 

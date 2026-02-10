@@ -17,6 +17,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
   const DEFAULT_PARAMETERS = {
     extensionHostDomain: 'web-ide-example.net',
     extensionHostDomainChanged: false,
+    workbenchSecret: 'test-workbench-secret',
   };
 
   useMockLocationHelper();
@@ -66,7 +67,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
       it('appends /assets/webpack to the URL paths', () => {
         expect(config).toEqual({
           crossOriginExtensionHost: true,
-          workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/assets/webpack/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+          workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/assets/webpack/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
           extensionsHostBaseUrl: `https://{{uuid}}.${DEFAULT_PARAMETERS.extensionHostDomain}/assets/webpack/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
         });
       });
@@ -83,13 +84,13 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
         expect(pingWorkbench).toHaveBeenCalledWith({
           el: document.body,
           config: {
-            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
             gitlabUrl: 'https://gitlab.example.com',
           },
         });
         expect(config).toEqual({
           crossOriginExtensionHost: true,
-          workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+          workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
           extensionsHostBaseUrl: `https://{{uuid}}.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
         });
       });
@@ -106,7 +107,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
         expect(pingWorkbench).toHaveBeenCalledWith({
           el: document.body,
           config: {
-            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
             gitlabUrl: 'https://gitlab.example.com',
           },
         });
@@ -122,11 +123,11 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
   describe('buildWorkbenchUrl', () => {
     it.each`
       origin                       | currentUsername               | result
-      ${'https://example.com'}     | ${'foobar'}                   | ${'ee2af4a14057872bd8c7463645f503'}
-      ${'https://ide.example.com'} | ${'barfoo'}                   | ${'ae3f10e196eac8ef4045e3ec9ba4a5'}
-      ${'https://ide.example.com'} | ${'bar.foo'}                  | ${'5bfda1a3ce2b366a1491aba48eba08'}
-      ${'https://ide.example.com'} | ${'bar+foo'}                  | ${'b6a09e91b3b97cc3b4f70cf6dfa1dd'}
-      ${'https://ide.example.com'} | ${'bar+foo+bar+foo+bar+foo '} | ${'f16f0302f14b7026753d426915bef7'}
+      ${'https://example.com'}     | ${'foobar'}                   | ${'d4365bb86884fedd38d5e09292f2a4'}
+      ${'https://ide.example.com'} | ${'barfoo'}                   | ${'b3e0e5b6ae3440ffe52adf13f1efe1'}
+      ${'https://ide.example.com'} | ${'bar.foo'}                  | ${'5efe21f7e4fe8ffd51a899481dd219'}
+      ${'https://ide.example.com'} | ${'bar+foo'}                  | ${'ac3e4ac35294fb6934629fa8c8c89c'}
+      ${'https://ide.example.com'} | ${'bar+foo+bar+foo+bar+foo '} | ${'fe9fa97636130fbdb284ff5dc20a22'}
     `(
       'returns expected hash when origin is $origin and currentUsername is $currentUsername',
       async ({ origin, currentUsername, result }) => {
