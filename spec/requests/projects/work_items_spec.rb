@@ -87,6 +87,17 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'for work_items_nav_badge_callout' do
+      it 'dismisses the callout for authenticated users' do
+        Users::Callout.where(user: current_user, feature_name: 'work_items_nav_badge').delete_all
+        sign_in(current_user)
+
+        expect { get project_work_items_path(work_item.project) }.to change {
+          Users::Callout.where(user: current_user, feature_name: 'work_items_nav_badge').count
+        }.from(0).to(1)
+      end
+    end
   end
 
   describe 'GET /:namespace/:project/-/work_items.ics' do

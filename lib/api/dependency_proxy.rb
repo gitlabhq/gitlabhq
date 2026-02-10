@@ -25,7 +25,7 @@ module API
         ]
         tags %w[dependency_proxy]
       end
-      route_setting :authorization, permissions: :delete_dependency_proxy_cache, boundary_type: :group
+      route_setting :authorization, permissions: :purge_dependency_proxy_cache, boundary_type: :group
       delete ':id/dependency_proxy/cache' do
         not_found! unless user_group.dependency_proxy_feature_available?
 

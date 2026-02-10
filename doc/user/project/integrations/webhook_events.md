@@ -73,6 +73,11 @@ attribute in the payload contains information about the newest 20 commits only.
 Loading detailed commit data is expensive, so this restriction exists for performance reasons.
 The `total_commits_count` attribute contains the actual number of commits.
 
+> [!note]
+> A separate setting, `push_event_activities_limit`, controls whether GitLab creates
+> individual push events or a bulk push event in the activity feed. For more information, see
+> [Push event activities limit](../../../administration/settings/push_event_activities_limit.md).
+
 If you create and push a branch without any new commits, the
 `commits` attribute in the payload is empty.
 

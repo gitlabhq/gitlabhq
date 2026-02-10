@@ -3843,6 +3843,7 @@ Gitlab/BoundedContexts:
     - 'lib/sidebars/concerns/positionable_list.rb'
     - 'lib/sidebars/concerns/render_if_logged_in.rb'
     - 'lib/sidebars/concerns/renderable.rb'
+    - 'lib/sidebars/concerns/show_work_items_badge.rb'
     - 'lib/sidebars/concerns/super_sidebar_panel.rb'
     - 'lib/sidebars/context.rb'
     - 'lib/sidebars/explore/menus/catalog_menu.rb'

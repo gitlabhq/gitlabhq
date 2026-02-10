@@ -34,9 +34,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    hasIterationsFeature: {
-      default: false,
-    },
     projectNamespaceFullPath: {
       default: '',
     },
@@ -227,7 +224,7 @@ export default {
       return this.parentIteration?.id;
     },
     associateIteration() {
-      return this.parentIterationId && this.hasIterationsFeature;
+      return this.parentIterationId;
     },
     parentMilestoneId() {
       return this.parentMilestone?.id;

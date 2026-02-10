@@ -29,7 +29,7 @@ module ObjectStorage
       end
 
       def to_s
-        success? ? _("Migration successful.") : _("Error while migrating %{upload_id}: %{error_message}") % { upload_id: upload.id, error_message: error.message }
+        success? ? _("Migration successful.") : format(_("Error while migrating %{upload_id}: %{error_message}"), upload_id: upload.id, error_message: error.message)
       end
     end
 
@@ -56,7 +56,7 @@ module ObjectStorage
       end
 
       def header(success, failures)
-        _("Migrated %{success_count}/%{total_count} files.") % { success_count: success.count, total_count: success.count + failures.count }
+        format(_("Migrated %{success_count}/%{total_count} files."), success_count: success.count, total_count: success.count + failures.count)
       end
 
       def failures(failures)

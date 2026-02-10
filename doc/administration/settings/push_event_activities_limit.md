@@ -22,6 +22,22 @@ For example, if you push to four branches simultaneously, the activity feed disp
 {{< icon name="commit" >}} `Pushed to 4 branches at (project name)` event instead of four separate
 push events.
 
+Bulk push events behave differently from standard push events:
+
+- Activity feed: A single bulk push entry appears instead of individual push events.
+- Events API: Returns bulk push events with `commit_count: 0` and `ref_count` that shows the
+  number of refs pushed. Individual commit details (`commit_from`, `commit_to`, `ref`,
+  `commit_title`) are `null`.
+
+If your integrations or external systems must process every pushed ref individually:
+
+- Keep the number of refs per push below the `push_event_activities_limit`.
+- Split large pushes into multiple smaller pushes.
+
+> [!note]
+> Webhook triggering is controlled separately by the `push_event_hooks_limit` setting.
+> For more information, see [Push event limits](../../user/project/integrations/webhooks.md#push-event-limits).
+
 Prerequisites:
 
 - Administrator access.

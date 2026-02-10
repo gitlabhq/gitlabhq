@@ -12900,6 +12900,9 @@ msgstr ""
 msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the %{linkStart}security policies%{linkEnd}. %{learnMoreStart}Learn more.%{learnMoreEnd}"
 msgstr ""
 
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more.%{learn_more_link_end}"
+msgstr ""
+
 msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the security policies."
 msgstr ""
 
@@ -36236,6 +36239,9 @@ msgstr ""
 msgid "InProductMarketing|Get Started with GitLab"
 msgstr ""
 
+msgid "InProductMarketing|GitLab Duo Agent Platform: AI across the software development lifecycle"
+msgstr ""
+
 msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
 msgstr ""
 
@@ -54599,6 +54605,9 @@ msgstr ""
 msgid "ProjectsNew|my-awesome-project"
 msgstr ""
 
+msgid "Projects|All the issues and merge requests that were assigned to you are unassigned."
+msgstr ""
+
 msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."
 msgstr ""
 
@@ -54611,6 +54620,12 @@ msgstr ""
 msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Projects|An error occurred while leaving the project. Please refresh the page to try again."
+msgstr ""
+
+msgid "Projects|Are you sure you want to leave \"%{nameWithNamespace}\"?"
+msgstr ""
+
 msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
 msgstr ""
 
@@ -54621,6 +54636,9 @@ msgid "Projects|Copy project ID: %{id}"
 msgstr ""
 
 msgid "Projects|Explore and collaborate on open-source projects"
+msgstr ""
+
+msgid "Projects|Leave project"
 msgstr ""
 
 msgid "Projects|No inactive projects found"
@@ -54656,6 +54674,12 @@ msgstr ""
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
 msgstr ""
 
+msgid "Projects|When you leave this project:"
+msgstr ""
+
+msgid "Projects|You are no longer a project member and cannot contribute."
+msgstr ""
+
 msgid "Projects|You aren't a member of any projects yet."
 msgstr ""
 
@@ -54669,6 +54693,9 @@ msgid "Projects|You haven't contributed to any projects yet."
 msgstr ""
 
 msgid "Projects|You haven't starred any projects yet."
+msgstr ""
+
+msgid "Projects|You left the \"%{nameWithNamespace}\" project."
 msgstr ""
 
 msgid "Project|already in use"
@@ -60226,7 +60253,16 @@ msgstr ""
 msgid "Seats owed"
 msgstr ""
 
-msgid "SeatsManagement|Your namespace has used all the seats in your subscription. To avoid overages from adding new users, consider %{settings_link_start}turning on restricted access%{settings_link_end}, or %{more_seats_link_start}purchase more seats%{more_seats_link_end}."
+msgid "SeatsManagement|Turn off restricted access"
+msgstr ""
+
+msgid "SeatsManagement|Turn on restricted access"
+msgstr ""
+
+msgid "SeatsManagement|Your namespace has used all the seats in your subscription, so users can no longer be invited or added to the namespace. To add new users, purchase more seats or turn off restricted access."
+msgstr ""
+
+msgid "SeatsManagement|Your namespace has used all the seats in your subscription. To avoid overages from adding new users, purchase more seats or turn on restricted access."
 msgstr ""
 
 msgid "Secondary email:"
@@ -78565,6 +78601,9 @@ msgstr ""
 msgid "WorkItem|Epic will be moved to parent group %{groupName}."
 msgstr ""
 
+msgid "WorkItem|Epics and issues are now work items."
+msgstr ""
+
 msgid "WorkItem|Error loading work item types"
 msgstr ""
 
@@ -78677,6 +78716,9 @@ msgid "WorkItem|Issue has 1 related vulnerability"
 msgid_plural "WorkItem|Issue has %{itemCount} related vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "WorkItem|Issues are now work items."
+msgstr ""
 
 msgid "WorkItem|Issues created from Service Desk are now Tickets. Filter by type \"Ticket\" to see only these items."
 msgstr ""
@@ -81128,9 +81170,6 @@ msgid "Your merge requests with approvals by all assigned reviewers."
 msgstr ""
 
 msgid "Your name"
-msgstr ""
-
-msgid "Your namespace has used all the seats in your subscription and users can no longer be invited or added to the namespace."
 msgstr ""
 
 msgid "Your namespace storage is full"

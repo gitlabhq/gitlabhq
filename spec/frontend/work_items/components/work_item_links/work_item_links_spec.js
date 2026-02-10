@@ -56,7 +56,6 @@ describe('WorkItemLinks', () => {
   const createComponent = async ({
     fetchHandler = responseWithAddChildPermission,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
-    hasIterationsFeature = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -69,7 +68,6 @@ describe('WorkItemLinks', () => {
     wrapper = shallowMountExtended(WorkItemLinks, {
       provide: {
         fullPath: 'project/path',
-        hasIterationsFeature,
         reportAbusePath: '/report/abuse/path',
       },
       propsData: {

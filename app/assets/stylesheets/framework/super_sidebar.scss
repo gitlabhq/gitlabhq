@@ -272,6 +272,20 @@ html:not(.application-chrome) .super-sidebar {
       }
     }
 
+    .nav-item-feature-announcement-badge {
+      font-size: 12px;
+      color: var(--gl-color-blue-700) !important;
+      background-color: var(--gl-color-blue-100) !important;
+
+      .gl-dark & {
+        color: var(--gl-color-blue-700) !important;
+      }
+
+      &:hover {
+        box-shadow: inset 0 0 0 1px var(--gl-badge-info-border-color-hover);
+      }
+    }
+
     &.super-sidebar-nav-item-current:not(:hover) {
       background-color: var(--super-sidebar-nav-item-current-bg);
 

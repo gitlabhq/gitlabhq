@@ -170,13 +170,5 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
       expect(work_items_results).to include(closed_issue)
       expect(work_items_results).not_to include(opened_issue)
     end
-
-    it 'delegates to issues method in CE' do
-      results_query = described_class.new(user, 'test', limit_projects, group: group)
-
-      expect(results_query).to receive(:issues).with({}).and_call_original
-
-      results_query.work_items
-    end
   end
 end

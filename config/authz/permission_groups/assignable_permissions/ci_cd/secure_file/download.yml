@@ -1,7 +1,0 @@
----
-name: download_secure_file
-description: Grants the ability to download secure files
-boundaries:
-  - project
-permissions:
-  - download_secure_file

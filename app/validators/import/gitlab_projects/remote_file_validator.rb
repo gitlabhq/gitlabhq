@@ -34,10 +34,9 @@ module Import
       def validate_content_type(record)
         return if ALLOWED_CONTENT_TYPES.include?(record.content_type)
 
-        record.errors.add(:content_type, "'%{content_type}' not allowed. (Allowed: %{allowed})" % {
-          content_type: record.content_type,
-          allowed: ALLOWED_CONTENT_TYPES.join(', ')
-        })
+        record.errors.add(:content_type,
+          format("'%{content_type}' not allowed. (Allowed: %{allowed})", content_type: record.content_type,
+            allowed: ALLOWED_CONTENT_TYPES.join(', ')))
       end
 
       def file_size_limit

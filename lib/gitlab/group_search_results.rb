@@ -33,12 +33,6 @@ module Gitlab
     def issuable_params
       super.merge(group_id: group.id, include_subgroups: true)
     end
-
-    override :work_items
-    def work_items(finder_params = {})
-      # In CE, delegate to issues since group-level work items are EE-only
-      issues(finder_params)
-    end
   end
 end
 

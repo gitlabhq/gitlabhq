@@ -236,6 +236,15 @@ To leave a project:
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave project**, then **Leave project** again.
 
+To leave a project from the **Your work** list view directly:
+
+1. On the top bar, select **Search or go to**.
+1. Select **View all my projects**.
+1. In the **Member** tab, find the project you want to leave and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Leave project**.
+
+This action is also available on other list pages.
+
 ## Edit a project
 
 Use the project general settings to edit your project details.

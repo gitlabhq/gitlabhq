@@ -150,10 +150,6 @@ describe('Create work item component', () => {
       },
       provide: {
         groupPath: 'group-path',
-        hasIssuableHealthStatusFeature: false,
-        hasIterationsFeature: true,
-        hasIssueWeightsFeature: false,
-        hasStatusFeature: false,
         issuesSettings: '/groups/twitter/-/settings/issues',
         ...provide,
       },

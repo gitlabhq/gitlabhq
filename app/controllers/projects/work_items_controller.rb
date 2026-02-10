@@ -42,7 +42,13 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
-  def index; end
+  def index
+    return unless current_user
+
+    ::Users::DismissCalloutService.new(
+      container: nil, current_user: current_user, params: { feature_name: :work_items_nav_badge }
+    ).execute
+  end
 
   def show
     return if show_params[:iid] == 'new'

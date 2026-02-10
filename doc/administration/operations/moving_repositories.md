@@ -38,8 +38,7 @@ To move repositories:
 1. Schedule repository moves for projects, snippets, and group.
 1. If you use [Geo](../geo/_index.md),
    [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-resources-for-the-selected-component).
-1. When using Horizontal Pod Autoscaler on Sidekiq pods, you should configure HPA with fixed replicas
-   (`minReplicas` = `maxReplicas`) to prevent scaling during migration.
+1. When using Horizontal Pod Autoscaler on Sidekiq pods, [disable HPA for Sidekiq pods](https://docs.gitlab.com/charts/gitlab/sidekiq/#disable-hpa-scaling) to prevent scaling during migration.
 
 ### Move projects
 

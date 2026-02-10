@@ -23,8 +23,9 @@ class AnyFieldValidator < ActiveModel::Validator
   def validate(record)
     return unless one_of_required_fields.all? { |field| record[field].blank? }
 
-    record.errors.add(:base, _("At least one field of %{one_of_required_fields} must be present") %
-      { one_of_required_fields: one_of_required_fields })
+    record.errors.add(:base,
+      format(_("At least one field of %{one_of_required_fields} must be present"),
+        one_of_required_fields: one_of_required_fields))
   end
 
   private

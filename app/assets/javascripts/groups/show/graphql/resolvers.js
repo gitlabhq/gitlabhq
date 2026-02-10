@@ -66,6 +66,7 @@ const formatSubgroupsAndProjects = (item) => {
     userPermissions: {
       archiveProject: item.can_archive,
       removeProject: item.can_remove,
+      canLeave: item.can_leave,
       viewEditPage: item.can_edit,
     },
     // All properties below are not yet supported by `/children.json` endpoint

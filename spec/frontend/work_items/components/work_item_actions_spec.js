@@ -138,7 +138,6 @@ describe('WorkItemActions component', () => {
     canDelete = true,
     canReportSpam = true,
     canMove = true,
-    hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
     isGroup = false,
@@ -206,7 +205,6 @@ describe('WorkItemActions component', () => {
         glFeatures: {
           okrsMvc,
         },
-        hasOkrsFeature,
         getWorkItemTypeConfiguration: jest.fn(),
         ...provide,
       },

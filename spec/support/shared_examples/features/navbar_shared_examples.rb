@@ -11,7 +11,14 @@ RSpec.shared_examples 'verified navigation bar' do
     section = page.find('[data-testid="non-static-items-section"]')
     current_structure = section.all('& > li', wait: false).map do |item|
       nav_sub_items = item.all('li', visible: :all, wait: false).map do |list_item|
-        list_item.all('a', visible: :all, wait: false).first.text(:all).gsub(/\s+\d+$/, '') # remove counts at the end
+        link = list_item.all('a', visible: :all, wait: false).first
+        text = link.text(:all)
+
+        # Remove counts and badges in navigation
+        badge_text = link.all('[data-testid="nav-item-feature-announcement-badge"]', visible: :all,
+          wait: false).first&.text(:all)
+        text = text.gsub(badge_text, '').strip if badge_text.present?
+        text.gsub(/\s+\d+$/, '')
       end
 
       { nav_item: item.text, nav_sub_items: nav_sub_items }

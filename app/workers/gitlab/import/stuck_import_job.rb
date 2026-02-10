@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def error_message
-        _("Import timed out. Import took longer than %{import_jobs_expiration} seconds") % { import_jobs_expiration: IMPORT_JOBS_EXPIRATION }
+        format(_("Import timed out. Import took longer than %{import_jobs_expiration} seconds"), import_jobs_expiration: IMPORT_JOBS_EXPIRATION)
       end
     end
   end

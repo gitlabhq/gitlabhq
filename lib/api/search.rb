@@ -83,8 +83,8 @@ module API
         end
 
         search_results = search_service.search_results
-        if search_results.respond_to?(:failed?) && search_results.failed?(search_scope)
-          bad_request!(search_results.error(search_scope))
+        if search_results.respond_to?(:failed?) && search_results.failed?(search_service.scope)
+          bad_request!(search_results.error(search_service.scope))
         end
 
         set_global_search_log_information(additional_params)
@@ -93,7 +93,7 @@ module API
           elapsed: @search_duration_s,
           search_type: search_type(additional_params),
           search_level: search_service.level,
-          search_scope: search_scope
+          search_scope: search_service.scope
         )
 
         Gitlab::InternalEvents.track_event('perform_search', category: 'API::Search', user: current_user)
@@ -104,11 +104,14 @@ module API
       ensure
         # If we raise an error somewhere in the @search_duration_s benchmark block, we will end up here
         # with a 200 status code, but an empty @search_duration_s.
+        # Errors record the user requested scope, otherwise the scope executed is recorded
+
+        search_service = search_service(additional_params)
         Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
           error: @search_duration_s.nil? || (status < 200 || status >= 400),
           search_type: search_type(additional_params),
-          search_level: search_service(additional_params).level,
-          search_scope: search_scope
+          search_level: search_service.level,
+          search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
         )
       end
 
@@ -140,7 +143,7 @@ module API
         @search_type ||= search_service(additional_params).search_type
       end
 
-      def search_scope
+      def user_requested_search_scope
         params[:scope]
       end
 
@@ -148,7 +151,7 @@ module API
         Gitlab::Instrumentation::GlobalSearchApi.set_information(
           type: search_type(additional_params),
           level: search_service(additional_params).level,
-          scope: search_scope,
+          scope: search_service.scope,
           search_duration_s: @search_duration_s
         )
       end

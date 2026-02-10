@@ -68,7 +68,6 @@ describe('WorkItemLinksForm', () => {
 
   const createComponent = async ({
     parentConfidential = false,
-    hasIterationsFeature = false,
     parentIteration = null,
     parentMilestone = null,
     formType = FORM_TYPES.create,
@@ -102,7 +101,6 @@ describe('WorkItemLinksForm', () => {
         },
       },
       provide: {
-        hasIterationsFeature,
         projectNamespaceFullPath: 'full-path',
       },
       stubs: {
