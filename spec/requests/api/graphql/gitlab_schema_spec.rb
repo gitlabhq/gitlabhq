@@ -56,6 +56,10 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
   end
 
   context 'depth, complexity and recursion checking' do
+    after do
+      controller.remove_instance_variable(:@static_schema) if controller.instance_variable_defined?(:@static_schema)
+    end
+
     context 'unauthenticated recursive queries' do
       context 'a not-quite-recursive-enough introspective query' do
         it 'succeeds' do
@@ -223,6 +227,48 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
       parsed_id = GlobalID.parse(graphql_data['project']['id'])
 
       expect(parsed_id).to eq(project.to_global_id)
+    end
+  end
+
+  context 'introspection entry points' do
+    context 'in production environment' do
+      before do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+        allow(File).to receive(:exist?).and_call_original
+
+        introspection_path = Rails.root.join("public/-/graphql/introspection_result.json")
+        allow(File).to receive(:exist?).with(introspection_path).and_return(true)
+
+        allow(File).to receive(:read).and_call_original
+        allow(File).to receive(:read).with(introspection_path)
+                                     .and_return('{"data": {"__schema": {"types": []}}}')
+      end
+
+      it 'returns static schema for introspection queries bypassing disable_introspection_entry_points' do
+        query = '{ __schema { types { name } } }'
+
+        post_graphql(query, current_user: nil)
+
+        expect_graphql_errors_to_be_empty
+        expect(json_response['data']['__schema']).to be_present
+      end
+    end
+
+    context 'in development/test environment' do
+      before do
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
+      end
+
+      it 'allows introspection through normal GraphQL execution' do
+        query = '{ __schema { types { name } } }'
+
+        post_graphql(query, current_user: nil)
+
+        expect_graphql_errors_to_be_empty
+        expect(graphql_data['__schema']['types']).to be_present
+      end
     end
   end
 

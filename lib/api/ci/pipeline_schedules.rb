@@ -39,7 +39,7 @@ module API
 
           schedules = ::Ci::PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
             .preload([:owner, :inputs])
-          present paginate(schedules), with: Entities::Ci::PipelineSchedule
+          present paginate(schedules), with: Entities::Ci::PipelineSchedule, user: current_user
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
