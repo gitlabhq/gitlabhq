@@ -9,7 +9,7 @@ title: GitLab Credits and usage billing
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -102,6 +102,19 @@ GitLab Credits are consumed in the following order:
 1. Monthly Commitment Pool of credits are used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
+
+## Temporary evaluation credits
+
+If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
+you can request a free temporary pool of credits to evaluate GitLab Duo Agent Platform features.
+
+Credits are allocated based on the number of users you request for the evaluation,
+and added to a shared pool for those users.
+Credits are valid for 30 days, and cannot be used after they expire.
+
+To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
+
+If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
 
 ## Buy GitLab Credits
 

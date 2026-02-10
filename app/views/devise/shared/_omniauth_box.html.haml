@@ -12,6 +12,13 @@
         href: omniauth_authorize_path(:user, provider, **step_up_auth_params(provider, step_up_auth_scope)),
         provider: provider,
         data: { testid: test_id_for_provider(provider) }
+    - elsif Feature.enabled?(:iam_svc_login, :instance)
+      - iam_url = iam_oauth_authorize_url(provider)
+      - if iam_url
+        = render 'devise/shared/omniauth_provider_button',
+          href: iam_url,
+          provider: provider,
+          data: { testid: test_id_for_provider(provider) }
     - else
       = render 'devise/shared/omniauth_provider_button',
         href: omniauth_authorize_path(:user, provider),

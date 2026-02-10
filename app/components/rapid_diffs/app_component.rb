@@ -9,7 +9,7 @@ module RapidDiffs
     attr_reader :presenter
 
     delegate :diffs_stream_url, :reload_stream_url, :diffs_stats_endpoint, :diff_files_endpoint, :diff_file_endpoint,
-      :should_sort_metadata_files?, :diffs_slice, :lazy?, :environment, :linked_file, to: :presenter
+      :sorted?, :diffs_slice, :lazy?, :environment, :linked_file, to: :presenter
 
     delegate :diff_view, :current_user, to: :helpers
 
@@ -33,7 +33,7 @@ module RapidDiffs
         reload_stream_url: reload_stream_url,
         diffs_stats_endpoint: diffs_stats_endpoint,
         diff_files_endpoint: diff_files_endpoint,
-        should_sort_metadata_files: should_sort_metadata_files?,
+        should_sort_metadata_files: sorted?,
         show_whitespace: show_whitespace?,
         diff_view_type: diff_view,
         diff_file_endpoint: diff_file_endpoint,

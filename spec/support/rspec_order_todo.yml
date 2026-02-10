@@ -1067,7 +1067,6 @@
 - './ee/spec/lib/geo/system_check/authorized_keys_flag_check_spec.rb'
 - './ee/spec/lib/geo/system_check/current_node_check_spec.rb'
 - './ee/spec/lib/geo/system_check/geo_database_configured_check_spec.rb'
-- './ee/spec/lib/geo/system_check/http_clone_enabled_check_spec.rb'
 - './ee/spec/lib/geo/system_check/http_connection_check_spec.rb'
 - './ee/spec/lib/geo/system_check/license_check_spec.rb'
 - './ee/spec/lib/system_check/rake_task/geo_task_spec.rb'

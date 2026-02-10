@@ -12,6 +12,36 @@ module RapidDiffs
 
     attr_reader :environment
 
+    def diffs_resource(options = {})
+      resource.diffs(@diff_options.merge(options))
+    end
+
+    def diff_files(options = {})
+      diffs_resource(options).diff_files(sorted: sorted?)
+    end
+
+    def diffs_slice
+      return if offset.nil? || offset == 0
+
+      @diffs_slice ||= resource.first_diffs_slice(offset, @diff_options)
+    end
+
+    def diff_files_for_streaming(diff_options = {})
+      resource.diffs_for_streaming(diff_options).diff_files(sorted: sorted?)
+    end
+
+    def diff_files_for_streaming_by_changed_paths(diff_options = {}, &)
+      resource.diffs_for_streaming_by_changed_paths(diff_options, &)
+    end
+
+    def linked_file
+      return if lazy? || (linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?)
+
+      @linked_file ||= resource.diffs(@diff_options.merge({
+        paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
+      })).diff_files.first.tap { |file| file && (file.linked = true) }
+    end
+
     def diffs_stream_url
       return if linked_file && diffs_count == 1
 
@@ -37,20 +67,6 @@ module RapidDiffs
       raise NotImplementedError
     end
 
-    def diffs_slice
-      return if offset.nil? || offset == 0
-
-      @diffs_slice ||= resource.first_diffs_slice(offset, @diff_options)
-    end
-
-    def linked_file
-      return if lazy? || (linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?)
-
-      @linked_file ||= resource.diffs(@diff_options.merge({
-        paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
-      })).diff_files.first.tap { |file| file && (file.linked = true) }
-    end
-
     def diffs_stats_endpoint
       raise NotImplementedError
     end
@@ -63,7 +79,7 @@ module RapidDiffs
       raise NotImplementedError
     end
 
-    def should_sort_metadata_files?
+    def sorted?
       false
     end
 

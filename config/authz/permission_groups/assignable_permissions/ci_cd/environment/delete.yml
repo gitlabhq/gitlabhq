@@ -5,3 +5,4 @@ boundaries:
   - project
 permissions:
   - delete_environment
+  - delete_environment_review_app

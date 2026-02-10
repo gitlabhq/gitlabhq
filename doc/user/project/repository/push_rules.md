@@ -107,7 +107,14 @@ Use these rules to validate users who make commits.
 > These push rules apply only to commits and not [tags](tags/_index.md).
 
 - **Reject unverified users**: The committer email must match one of the user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile) or [private commit email address](../../profile/_index.md#use-an-automatically-generated-private-commit-email).
-- **Reject inconsistent user name**: The commit author name must match the user's GitLab account name.
+- **Reject inconsistent user name**: The commit author name must match the user's GitLab account name
+  for commits where the author and committer emails are the same. The check is skipped when these
+  emails differ, which occurs during workflows like cherry-picking or rebasing commits from other
+  contributors.
+
+  This rule helps maintain commit hygiene by catching misconfigurations in users' Git settings,
+  but does not prevent impersonation. For cryptographic identity verification, use
+  [**Reject unsigned commits**](#require-signed-commits) instead.
 - **Check whether the commit author is a GitLab user**: Both the commit author and committer email addresses must match a GitLab user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile).
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
@@ -349,7 +356,7 @@ When you enable the **Reject unsigned commits** push rule:
 > Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
 > in your commit history even when the rule is enabled. The rule only validates commits pushed
 > from external Git clients.
-> 
+>
 > For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
 
 The signature must be created with a supported signing method:

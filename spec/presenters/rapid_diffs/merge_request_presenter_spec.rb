@@ -11,6 +11,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
   let(:request_params) { {} }
+  let(:resource) { merge_request }
 
   subject(:presenter) do
     described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
@@ -22,6 +23,16 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     allow(merge_request).to receive(:diff_stats).and_return(nil)
   end
 
+  describe '#diffs_resource' do
+    it 'calls latest_diffs on the merge_request with merged options' do
+      extra_options = { expand_all: true }
+
+      expect(merge_request).to receive(:latest_diffs).with(diff_options.merge(extra_options))
+
+      presenter.diffs_resource(extra_options)
+    end
+  end
+
   describe '#diffs_slice' do
     let(:offset) { presenter.send(:offset) }
 
@@ -31,6 +42,8 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       presenter.diffs_slice
     end
   end
+
+  it_behaves_like 'rapid diffs presenter diffs methods', sorted: true
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
@@ -129,8 +142,8 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to be(false) }
   end
 
-  describe '#should_sort_metadata_files?' do
-    subject(:method) { presenter.should_sort_metadata_files? }
+  describe '#sorted?' do
+    subject(:method) { presenter.sorted? }
 
     it { is_expected.to be(true) }
   end

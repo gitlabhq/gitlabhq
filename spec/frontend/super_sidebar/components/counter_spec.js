@@ -22,9 +22,6 @@ describe('Counter component', () => {
         ...defaultPropsData,
         ...props,
       },
-      provide: {
-        projectStudioEnabled: false,
-      },
     });
   };
 

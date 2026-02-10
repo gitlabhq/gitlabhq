@@ -3,16 +3,31 @@
 module Authn
   module IamService
     class JwtValidationService
-      include Gitlab::Utils::StrongMemoize
-
-      attr_reader :token_string
-
       CLOCK_SKEW_SECONDS = 30
       ALLOWED_ALGORITHMS = ['RS256'].freeze
+      GITLAB_RAILS_AUDIENCE = Gitlab.config.authn.iam_service.audience
+      IAM_AUTH_CLIENT_HANDLER_AUDIENCE = 'iam-auth-client-handler'
 
-      def initialize(token:)
+      class IamAuthClientPayloadValidator
+        REQUIRED_CLAIMS = %w[exp aud provider user_info].freeze
+      end
+
+      class IamIdToken
+        REQUIRED_CLAIMS = %w[sub jti exp iat iss aud scope].freeze
+      end
+
+      VALIDATORS = {
+        GITLAB_RAILS_AUDIENCE => IamIdToken,
+        IAM_AUTH_CLIENT_HANDLER_AUDIENCE => IamAuthClientPayloadValidator
+      }.freeze
+
+      attr_reader :token_string, :expected_audience, :validator
+
+      def initialize(token:, audience:)
         @token_string = token
+        @expected_audience = audience
         @retry_attempted = false
+        @validator = VALIDATORS.fetch(audience)
       end
 
       def execute
@@ -48,6 +63,22 @@ module Authn
         payload
       end
 
+      # TODO: agree and implement validation on jti to prevent the JWT from being replayed
+      def decode_options
+        {
+          algorithms: ALLOWED_ALGORITHMS,
+          jwks: jwks_client.fetch_keys,
+          required_claims: validator::REQUIRED_CLAIMS,
+          verify_iss: true,
+          iss: iam_config.url,
+          verify_aud: true,
+          aud: expected_audience,
+          verify_iat: true,
+          verify_exp: true,
+          leeway: CLOCK_SKEW_SECONDS
+        }
+      end
+
       def jwt_error_to_message(error)
         case error
         when JWT::ExpiredSignature then 'Token has expired'
@@ -64,24 +95,7 @@ module Authn
           message: 'IAM JWT validation failed',
           error_message: error_message
         )
-
         ServiceResponse.error(message: error_message, reason: :invalid_token)
-      end
-
-      # TODO: agree and implement validation on jti to prevent the JWT from being replayed
-      def decode_options
-        {
-          algorithms: ALLOWED_ALGORITHMS,
-          jwks: jwks_client.fetch_keys,
-          required_claims: %w[sub jti exp iat iss aud scope],
-          verify_iss: true,
-          iss: iam_config.url,
-          verify_aud: true,
-          aud: iam_config.audience,
-          verify_iat: true,
-          verify_exp: true,
-          leeway: CLOCK_SKEW_SECONDS
-        }
       end
 
       def iam_config
@@ -91,7 +105,6 @@ module Authn
       def jwks_client
         Authn::IamService::JwksClient.new
       end
-      strong_memoize_attr :jwks_client
     end
   end
 end

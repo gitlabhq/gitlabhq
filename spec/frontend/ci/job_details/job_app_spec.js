@@ -151,36 +151,6 @@ describe('Job App', () => {
     });
   });
 
-  describe('while scrolling', () => {
-    beforeEach(async () => {
-      await setupAndMount({
-        directives: {
-          GlResizeObserver: createMockDirective('gl-resize-observer'),
-        },
-      });
-
-      jest.spyOn(store, 'dispatch');
-    });
-
-    it('should update scrolling when window scrolls', async () => {
-      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
-
-      window.dispatchEvent(new Event('scroll'));
-      await waitForPromises();
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
-    });
-
-    it('should update scrolling when resized', async () => {
-      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
-
-      getBinding(wrapper.element, 'gl-resize-observer').value();
-      await waitForPromises();
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
-    });
-  });
-
   describe('while scrolling inside a content panel', () => {
     let contentPanelWrapper;
 

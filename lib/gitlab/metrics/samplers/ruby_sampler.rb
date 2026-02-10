@@ -137,6 +137,9 @@ module Gitlab
           metrics[:yjit_compiled_branch_count] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :compiled_branch_count), 'YJIT compiled branch count', labels)
           metrics[:yjit_compile_time_seconds] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :compile_time_seconds), 'YJIT compile time', labels)
           metrics[:yjit_object_shape_count] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :object_shape_count), 'YJIT object shape count', labels)
+          metrics[:yjit_hit_ratio] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :hit_ratio), 'YJIT hit ratio', labels)
+          metrics[:yjit_side_exit_count] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :side_exit_count), 'YJIT side exit count', labels)
+          metrics[:yjit_insns_count] = ::Gitlab::Metrics.gauge(metric_name(:yjit, :insns_count), 'YJIT instructions count', labels)
         end
 
         def sample_yjit_metrics
@@ -164,6 +167,9 @@ module Gitlab
           metrics[:yjit_compiled_branch_count].set(labels, stats[:compiled_branch_count])
           metrics[:yjit_compile_time_seconds].set(labels, stats[:compile_time_ns].to_f / 1_000_000_000)
           metrics[:yjit_object_shape_count].set(labels, stats[:object_shape_count])
+          metrics[:yjit_hit_ratio].set(labels, stats[:ratio_in_yjit]) if stats.key?(:ratio_in_yjit)
+          metrics[:yjit_side_exit_count].set(labels, stats[:side_exit_count]) if stats.key?(:side_exit_count)
+          metrics[:yjit_insns_count].set(labels, stats[:yjit_insns_count]) if stats.key?(:yjit_insns_count)
         end
         # rubocop:enable Metrics/AbcSize
       end

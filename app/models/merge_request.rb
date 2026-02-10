@@ -1059,16 +1059,19 @@ class MergeRequest < ApplicationRecord
     compare.present? ? compare.raw_diffs(*args) : merge_request_diff.raw_diffs(*args)
   end
 
-  def diffs_for_streaming(diff_options = {}, &)
+  def diffs_for_streaming(diff_options = {})
+    return compare.diffs_for_streaming(diff_options) if compare
+
     diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+    diff.diffs_for_streaming(diff_options)
+  end
 
+  def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
+    return compare.diffs_for_streaming_by_changed_paths(diff_options, &) if compare
+
+    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
     offset = diff_options[:offset_index].to_i || 0
-
-    if block_given?
-      source_project.repository.diffs_by_changed_paths(diff.diff_refs, offset, &)
-    else
-      diff.diffs_for_streaming(diff_options)
-    end
+    source_project.repository.diffs_by_changed_paths(diff.diff_refs, offset, &)
   end
 
   def latest_diffs(diff_options = {})

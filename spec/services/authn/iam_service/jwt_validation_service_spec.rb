@@ -6,7 +6,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
   include_context 'with IAM authentication setup'
 
   let_it_be(:user) { create(:user) }
-  let(:service) { described_class.new(token: token_string) }
+  let(:service) { described_class.new(token: token_string, audience: iam_audience) }
 
   subject(:result) { service.execute }
 
@@ -151,8 +151,12 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
           end
 
           it 'refreshes keys exactly once before giving up' do
-            jwks_client = service.send(:jwks_client)
-            expect(jwks_client).to receive(:refresh_keys).once.and_call_original
+            jwks_client = instance_double(Authn::IamService::JwksClient)
+            allow(service).to receive(:jwks_client).and_return(jwks_client)
+            allow(jwks_client).to receive(:fetch_keys).and_return(
+              JWT::JWK::Set.new(JWT::JWK.new(private_key.public_key, { use: 'sig', kid: kid }))
+            )
+            expect(jwks_client).to receive(:refresh_keys).once
 
             result
           end
@@ -174,7 +178,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
           # Coverage test: Ensures the "raise if @retry_attempted" guard clause is fully covered.
           # The behavior is already tested above, but undercoverage script doesn't detect it.
           it 'raises immediately when retry has already been attempted' do
-            test_service = described_class.new(token: token_string)
+            test_service = described_class.new(token: token_string, audience: iam_audience)
             test_service.instance_variable_set(:@retry_attempted, true)
 
             expect { test_service.send(:decode_with_retry) }.to raise_error(JWT::VerificationError)

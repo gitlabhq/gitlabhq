@@ -106,15 +106,17 @@ Reach out to your Sales contact if you are interested in a trial.
 
 ## Start GitLab Duo Enterprise trial
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 Get a trial of GitLab Duo Enterprise to test the [GitLab Duo Enterprise features](../user/gitlab_duo/feature_summary.md)
 for a limited time.
 
-You can get a trial of GitLab Duo Enterprise if:
-
-- You have the Free tier on GitLab.com. In that case, you can try Ultimate tier with GitLab Duo Enterprise.
-- You have the Premium or Ultimate tier on GitLab.com, GitLab Self-Managed, or GitLab Dedicated.
-
-If you have the Free tier on GitLab Self-Managed, no trial is available.
+If you're on the Free tier, you cannot get a trial of GitLab Duo Enterprise.
+To try GitLab Duo Agent Platform features, you can start an [Ultimate trial](free_trials.md).
 
 ### On GitLab.com
 

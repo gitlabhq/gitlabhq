@@ -40,10 +40,6 @@ module RapidDiffs
 
     private
 
-    def resource
-      raise NotImplementedError
-    end
-
     def streaming_diff_options
       diff_options
     end
@@ -53,7 +49,7 @@ module RapidDiffs
     end
 
     def stream_diff_files(options, view_context)
-      return unless resource
+      return unless rapid_diffs_presenter
 
       # NOTE: This is a temporary flag to test out the new diff_blobs
       use_new_gitaly_rpc = ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
@@ -65,7 +61,7 @@ module RapidDiffs
     end
 
     def stream_diff_collection(options, view_context)
-      diff_files = resource.diffs_for_streaming(options).diff_files(sorted: sorted?)
+      diff_files = rapid_diffs_presenter.diff_files_for_streaming(options)
 
       return render_empty_state if diff_files.empty?
 
@@ -108,19 +104,15 @@ module RapidDiffs
     end
 
     def stream_diff_blobs(options, view_context)
-      return render_empty_state if resource.diffs_for_streaming(options).count == 0
+      return render_empty_state if rapid_diffs_presenter.diff_files_for_streaming(options).count == 0
 
-      resource.diffs_for_streaming(options) do |diff_files_batch|
+      rapid_diffs_presenter.diff_files_for_streaming_by_changed_paths(options) do |diff_files_batch|
         response.stream.write(diff_files_collection(diff_files_batch).render_in(view_context))
       end
     end
 
     def render_empty_state
       response.stream.write render ::RapidDiffs::EmptyStateComponent.new, layout: false
-    end
-
-    def sorted?
-      false
     end
 
     class Request < SimpleDelegator

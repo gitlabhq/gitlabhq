@@ -11,7 +11,7 @@ RSpec.shared_examples 'diffs for streaming' do
         expect(block).to be(expected_block)
       end
 
-      resource.diffs_for_streaming(&expected_block)
+      resource.diffs_for_streaming_by_changed_paths(&expected_block)
     end
 
     context 'when offset_index is given' do
@@ -22,7 +22,7 @@ RSpec.shared_examples 'diffs for streaming' do
           expect(block).to be(expected_block)
         end
 
-        resource.diffs_for_streaming({ offset_index: offset }, &expected_block)
+        resource.diffs_for_streaming_by_changed_paths({ offset_index: offset }, &expected_block)
       end
     end
   end

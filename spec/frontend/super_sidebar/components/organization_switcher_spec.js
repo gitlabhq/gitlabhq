@@ -50,9 +50,6 @@ describe('OrganizationSwitcher', () => {
 
     wrapper = mountExtended(OrganizationSwitcher, {
       apolloProvider: mockApollo,
-      provide: {
-        projectStudioEnabled: false,
-      },
     });
   };
 

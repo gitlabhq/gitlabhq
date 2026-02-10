@@ -35,6 +35,14 @@ RSpec.describe API::Admin::Migrations, feature_category: :database do
 
         expect(response).to have_gitlab_http_status(:created)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :mark_database_migration do
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) do
+          post api(path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'when the migration does not exist' do

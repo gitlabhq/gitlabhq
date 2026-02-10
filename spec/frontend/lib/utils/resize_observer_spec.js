@@ -208,40 +208,31 @@ describe('scrollToTargetOnResize', () => {
       });
     });
 
-    describe('when project studio is enabled', () => {
-      beforeEach(() => {
-        window.gon = {
-          features: {
-            projectStudioEnabled: true,
-          },
-        };
-      });
-
-      it('scrolls the static panel', () => {
-        setHTMLFixture(
-          `<div class="js-static-panel">
+    it('scrolls the static panel', () => {
+      setHTMLFixture(
+        `<div class="js-static-panel">
             <div class="js-static-panel-inner">
               <div id="target-element">Target content</div>
               <div id="other-content">Other content</div>
             </div>
           </div>`,
-        );
+      );
 
-        const panelScroller = document.querySelector('.js-static-panel-inner');
+      const panelScroller = document.querySelector('.js-static-panel-inner');
 
-        cleanup = scrollToTargetOnResize({
-          targetId: 'target-element',
-          container: '#content-body',
-        });
-
-        resizeObserverCallback([{ target: panelScroller }]);
-
-        expect(panelScroller.scrollTo).toHaveBeenCalled();
+      cleanup = scrollToTargetOnResize({
+        targetId: 'target-element',
+        container: '#content-body',
       });
 
-      it('scrolls the dynamic panel', () => {
-        setHTMLFixture(
-          `<div class="js-dynamic-panel">
+      resizeObserverCallback([{ target: panelScroller }]);
+
+      expect(panelScroller.scrollTo).toHaveBeenCalled();
+    });
+
+    it('scrolls the dynamic panel', () => {
+      setHTMLFixture(
+        `<div class="js-dynamic-panel">
             <div class="js-dynamic-panel-inner">
               <div id="content-other-body">
                 <div id="target-element">Target content</div>
@@ -249,19 +240,18 @@ describe('scrollToTargetOnResize', () => {
               <div id="other-content">Other content</div>
             </div>
           </div>`,
-        );
+      );
 
-        const panelScroller = document.querySelector('.js-dynamic-panel-inner');
+      const panelScroller = document.querySelector('.js-dynamic-panel-inner');
 
-        cleanup = scrollToTargetOnResize({
-          targetId: 'target-element',
-          container: '#content-other-body',
-        });
-
-        resizeObserverCallback([{ target: panelScroller }]);
-
-        expect(panelScroller.scrollTo).toHaveBeenCalled();
+      cleanup = scrollToTargetOnResize({
+        targetId: 'target-element',
+        container: '#content-other-body',
       });
+
+      resizeObserverCallback([{ target: panelScroller }]);
+
+      expect(panelScroller.scrollTo).toHaveBeenCalled();
     });
   });
 

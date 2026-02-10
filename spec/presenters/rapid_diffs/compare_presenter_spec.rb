@@ -11,6 +11,7 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   let(:request_params) { { from: 'a', to: 'b' } }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/compare" }
   let(:url_params) { '?from=a&to=b' }
+  let(:resource) { compare }
 
   subject(:presenter) do
     described_class.new(compare, diff_view: diff_view, diff_options: diff_options, request_params: request_params)
@@ -21,6 +22,9 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
 
     it { is_expected.to be_nil }
   end
+
+  it_behaves_like 'rapid diffs presenter base diffs_resource'
+  it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
@@ -134,8 +138,8 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
     it { is_expected.to be(false) }
   end
 
-  describe '#should_sort_metadata_files?' do
-    subject(:method) { presenter.should_sort_metadata_files? }
+  describe '#sorted?' do
+    subject(:method) { presenter.sorted? }
 
     it { is_expected.to be(false) }
   end

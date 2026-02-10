@@ -5,3 +5,4 @@ boundaries:
   - project
 permissions:
   - stop_environment
+  - stop_stale_environment

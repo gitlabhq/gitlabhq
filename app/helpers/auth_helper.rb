@@ -348,6 +348,31 @@ module AuthHelper
     !current_user.password_automatically_set? && current_user.allow_password_authentication_for_web?
   end
 
+  def iam_oauth_authorize_url(provider)
+    return unless Feature.enabled?(:iam_svc_login, :instance)
+
+    iam_config = Gitlab.config.authn.iam_service
+    return unless iam_config&.url
+
+    # Generate state for CSRF protection
+    state = SecureRandom.hex(32)
+    # Store state in secure HTTP-only cookie (will be validated on callback)
+    set_secure_cookie(
+      iam_auth_cookie_name,
+      state,
+      httponly: true,
+      expires: 5.minutes.from_now
+    )
+
+    "#{iam_config.url}/auth/#{provider}?state=#{state}"
+  end
+
+  private
+
+  def iam_auth_cookie_name
+    'iam_auth_state'
+  end
+
   extend self
 end
 

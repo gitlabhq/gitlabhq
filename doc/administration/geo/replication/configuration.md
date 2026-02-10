@@ -351,24 +351,7 @@ If your **primary** site is using a [custom or self-signed certificate for inbou
    sudo gitlab-ctl reconfigure
    ```
 
-## Step 5. Enable Git access over HTTP/HTTPS and SSH
-
-Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. This is enabled by default, but if converting an existing site to Geo it should be checked:
-
-On the **primary** site:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **Visibility and access controls**.
-1. If using Git over SSH, then:
-   1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
-   1. Follow the steps to configure
-      [fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on
-      **all primary and secondary** sites.
-1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
-
-## Step 6. Verify proper functioning of the **secondary** site
+## Step 5. Verify proper functioning of the **secondary** site
 
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:

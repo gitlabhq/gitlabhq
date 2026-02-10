@@ -59,7 +59,6 @@ describe('WorkItemDrawer', () => {
       WorkItemDetail,
       MountingPortal: { template: '<div data-testid="mounting-portal"><slot /></div>' },
     },
-    projectStudioEnabled = false,
   } = {}) => {
     wrapper = mountFn(WorkItemDrawer, {
       attachTo: document.body,
@@ -79,9 +78,6 @@ describe('WorkItemDrawer', () => {
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
         isGroup,
-        glFeatures: {
-          projectStudioEnabled,
-        },
       },
       mocks: {
         $router: {

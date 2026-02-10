@@ -7918,33 +7918,105 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    context 'when block is given' do
-      let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs) }
-      let(:expected_block) { proc {} }
-      let(:repository) { merge_request.source_project.repository }
-
-      before do
-        allow(base_diff).to receive(:diff_refs).and_return(diff_refs)
+    context 'when compare is present' do
+      let(:compare) do
+        instance_double(
+          Compare,
+          diffs_for_streaming: ['compare diff']
+        )
       end
 
+      before do
+        merge_request.compare = compare
+      end
+
+      it 'returns diffs from compare' do
+        expect(merge_request.diffs_for_streaming).to eq(['compare diff'])
+      end
+    end
+  end
+
+  describe '#diffs_for_streaming_by_changed_paths' do
+    let(:base_diff) do
+      instance_double(
+        MergeRequestDiff,
+        diff_refs: diff_refs
+      )
+    end
+
+    let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs) }
+    let(:expected_block) { proc {} }
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:repository) { merge_request.source_project.repository }
+
+    before do
+      allow(merge_request)
+        .to receive(:diffable_merge_ref?)
+        .and_return(false)
+
+      allow(merge_request)
+        .to receive(:merge_request_diff)
+        .and_return(base_diff)
+    end
+
+    it 'calls diffs_by_changed_paths with given offset' do
+      expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+        expect(block).to be(expected_block)
+      end
+
+      merge_request.diffs_for_streaming_by_changed_paths(&expected_block)
+    end
+
+    context 'when offset_index is given' do
+      let(:offset) { 5 }
+
       it 'calls diffs_by_changed_paths with given offset' do
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+          expect(block).to be(expected_block)
+        end
+
+        merge_request.diffs_for_streaming_by_changed_paths({ offset_index: offset }, &expected_block)
+      end
+    end
+
+    context 'when compare is present' do
+      let(:compare) do
+        instance_double(
+          Compare,
+          diffs_for_streaming_by_changed_paths: ['compare result']
+        )
+      end
+
+      before do
+        merge_request.compare = compare
+      end
+
+      it 'delegates to compare' do
+        expect(compare).to receive(:diffs_for_streaming_by_changed_paths).with({}, &expected_block)
+
+        merge_request.diffs_for_streaming_by_changed_paths({}, &expected_block)
+      end
+    end
+
+    context 'when diffable_merge_ref? is true' do
+      let(:merge_head_diff) do
+        instance_double(
+          MergeRequestDiff,
+          diff_refs: diff_refs
+        )
+      end
+
+      before do
+        allow(merge_request).to receive(:diffable_merge_ref?).and_return(true)
+        allow(merge_request).to receive(:merge_head_diff).and_return(merge_head_diff)
+      end
+
+      it 'uses merge_head_diff instead of merge_request_diff' do
         expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
           expect(block).to be(expected_block)
         end
 
-        merge_request.diffs_for_streaming(&expected_block)
-      end
-
-      context 'when offset_index is given' do
-        let(:offset) { 5 }
-
-        it 'calls diffs_by_changed_paths with given offset' do
-          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
-            expect(block).to be(expected_block)
-          end
-
-          merge_request.diffs_for_streaming({ offset_index: offset }, &expected_block)
-        end
+        merge_request.diffs_for_streaming_by_changed_paths(&expected_block)
       end
     end
   end

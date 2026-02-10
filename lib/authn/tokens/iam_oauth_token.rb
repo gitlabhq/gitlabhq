@@ -11,7 +11,8 @@ module Authn
           return unless Gitlab.config.authn.iam_service.enabled
           return unless iam_issued_jwt?(token_string)
 
-          result = ::Authn::IamService::JwtValidationService.new(token: token_string).execute
+          result = ::Authn::IamService::JwtValidationService.new(token: token_string,
+            audience: Authn::IamService::JwtValidationService::GITLAB_RAILS_AUDIENCE).execute
           return unless result.success?
 
           token = from_validated_jwt(result.payload)

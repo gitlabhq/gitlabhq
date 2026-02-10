@@ -8,10 +8,6 @@ module Projects
 
     private
 
-    def resource
-      commit
-    end
-
     def streaming_diff_options
       opts = super
 

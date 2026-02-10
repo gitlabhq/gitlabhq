@@ -6,6 +6,11 @@ module RapidDiffs
 
     presents ::MergeRequest, as: :resource
 
+    override(:diffs_resource)
+    def diffs_resource(options = {})
+      resource.latest_diffs(@diff_options.merge(options))
+    end
+
     def diffs_stats_endpoint
       diffs_stats_project_merge_request_path(resource.project, resource)
     end
@@ -30,7 +35,7 @@ module RapidDiffs
       )
     end
 
-    def should_sort_metadata_files?
+    def sorted?
       true
     end
   end

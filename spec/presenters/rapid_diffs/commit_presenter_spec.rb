@@ -12,6 +12,7 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/commit/#{commit.sha}" }
   let(:request_params) { {} }
+  let(:resource) { commit }
 
   subject(:presenter) do
     described_class.new(commit, diff_view: diff_view, diff_options: diff_options,
@@ -32,6 +33,9 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
       presenter.diffs_slice
     end
   end
+
+  it_behaves_like 'rapid diffs presenter base diffs_resource'
+  it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
@@ -148,8 +152,8 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     it { is_expected.to be(false) }
   end
 
-  describe '#should_sort_metadata_files?' do
-    subject(:method) { presenter.should_sort_metadata_files? }
+  describe '#sorted?' do
+    subject(:method) { presenter.sorted? }
 
     it { is_expected.to be(false) }
   end

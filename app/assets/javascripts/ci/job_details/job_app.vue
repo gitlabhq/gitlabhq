@@ -169,12 +169,7 @@ export default {
   created() {
     this.throttleToggleScrollButtons = throttle(this.toggleScrollButtons, 100);
 
-    if (this.staticPanelWrapper) {
-      this.staticPanelWrapper.addEventListener('scroll', this.updateScroll);
-    } else {
-      // This can be removed when `projectStudioEnabled` is removed
-      window.addEventListener('scroll', this.updateScroll);
-    }
+    this.staticPanelWrapper?.addEventListener('scroll', this.updateScroll);
 
     PanelBreakpointInstance.addResizeListener(this.updateSidebar);
   },
@@ -185,12 +180,7 @@ export default {
     this.stopPollingJobLog();
     this.stopPolling();
 
-    if (this.staticPanelWrapper) {
-      this.staticPanelWrapper.removeEventListener('scroll', this.updateScroll);
-    } else {
-      // This can be removed when `projectStudioEnabled` is removed
-      window.removeEventListener('scroll', this.updateScroll);
-    }
+    this.staticPanelWrapper?.removeEventListener('scroll', this.updateScroll);
 
     PanelBreakpointInstance.removeResizeListener(this.updateSidebar);
   },

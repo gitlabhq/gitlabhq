@@ -91,6 +91,8 @@ class Projects::CompareController < Projects::ApplicationController
   private
 
   def rapid_diffs_presenter
+    return if compare.nil?
+
     @rapid_diffs_presenter ||= ::RapidDiffs::ComparePresenter.new(
       compare,
       diff_view: diff_view,
@@ -224,10 +226,6 @@ class Projects::CompareController < Projects::ApplicationController
       :new_path,
       :file_path
     )
-  end
-
-  def diffs_resource(options = {})
-    compare&.diffs(diff_options.merge(options))
   end
 end
 

@@ -34,6 +34,7 @@ module API
               type: Integer,
               desc: 'The migration version timestamp'
           end
+          route_setting :authorization, permissions: :mark_database_migration, boundary_type: :instance
           post do
             response = Database::MarkMigrationService.new(
               connection: base_model.connection,

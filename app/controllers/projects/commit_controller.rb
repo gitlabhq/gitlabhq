@@ -183,6 +183,8 @@ class Projects::CommitController < Projects::ApplicationController
   private
 
   def rapid_diffs_presenter
+    return if @commit.nil?
+
     @rapid_diffs_presenter ||= RapidDiffs::CommitPresenter.new(
       @commit,
       diff_view: diff_view,
@@ -371,10 +373,6 @@ class Projects::CommitController < Projects::ApplicationController
     return unless diffs_expanded?
 
     check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
-  end
-
-  def diffs_resource(options = {})
-    commit&.diffs(commit_diff_options.merge(options))
   end
 
   def complete_diff_path

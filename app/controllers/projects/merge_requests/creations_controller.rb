@@ -108,13 +108,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render layout: false
   end
 
-  def diffs_resource(options = {})
-    @merge_request&.compare&.diffs(options)
-  end
-
   private
 
   def rapid_diffs_presenter
+    return unless @merge_request.can_be_created
+
     @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestCreationPresenter.new(
       @merge_request,
       project: project,

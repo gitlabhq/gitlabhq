@@ -388,6 +388,8 @@ RSpec.configure do |config|
       # queries, which in turn can cause some specs to fail.
       # Due to time constraints, we'll need to address those in follow-ups.
       stub_feature_flags(dap_onboarding_empty_states: false)
+      # This feature is wip and should not be enabled in tests by default
+      stub_feature_flags(iam_svc_login: false)
     else
       unstub_all_feature_flags
     end
