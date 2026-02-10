@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/gitaly/v16/streamio"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/streamio"
 )
 
 // BlobClient wraps the gRPC client for Gitaly's BlobService.

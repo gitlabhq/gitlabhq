@@ -139,5 +139,5 @@ For more information and examples on the **AI Gateway** authorization process, c
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the **AI Gateway** as the backend service
-can be found in [install AI Gateway](_index.md#install-ai-gateway).
+Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment) 
+to run E2E integration tests with **AI Gateway** as the backend service.

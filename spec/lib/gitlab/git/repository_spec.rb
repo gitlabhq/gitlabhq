@@ -411,16 +411,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#commit_count' do
-    it { expect(repository.commit_count("master")).to eq(37) }
-    it { expect(repository.commit_count("feature")).to eq(9) }
-    it { expect(repository.commit_count("does-not-exist")).to eq(0) }
-
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
-      subject { repository.commit_count('master') }
-    end
-  end
-
   describe '#diverging_commit_count' do
     it 'counts 0 for the same branch' do
       expect(repository.diverging_commit_count('master', 'master', max_count: 1000)).to eq([0, 0])
@@ -1522,6 +1512,14 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#count_commits' do
+    it { expect(repository.count_commits(ref: "master")).to eq(37) }
+    it { expect(repository.count_commits(ref: "feature")).to eq(9) }
+    it { expect(repository.count_commits(ref: "does-not-exist")).to eq(0) }
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
+      subject { repository.count_commits(ref: 'master') }
+    end
+
     describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do

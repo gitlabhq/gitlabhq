@@ -26007,6 +26007,9 @@ msgstr ""
 msgid "DuoAgenticChat|Purchase more credits"
 msgstr ""
 
+msgid "DuoAgenticChat|Purchase more credits or turn off the Agentic toggle to start a new conversation."
+msgstr ""
+
 msgid "DuoAgenticChat|Return to Classic Chat"
 msgstr ""
 
@@ -26019,12 +26022,6 @@ msgstr ""
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
-msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, purchase more credits or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
-msgstr ""
-
-msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, upgrade to a paid subscription or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
-msgstr ""
-
 msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
 msgstr ""
 
@@ -26035,6 +26032,9 @@ msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
 msgstr ""
 
 msgid "DuoAgenticChat|Upgrade to Premium"
+msgstr ""
+
+msgid "DuoAgenticChat|Upgrade to a paid subscription or turn off the Agentic toggle to start a new conversation."
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
@@ -26374,6 +26374,9 @@ msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
+msgstr ""
+
+msgid "DuoCodeReview|:warning: %{user_reference}, you need to set a default namespace to use Code Review Flow in this project. Please set a default GitLab Duo namespace in your [preferences](%{docs_url})."
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service account needs to be verified. Contact your administrator."
@@ -75452,8 +75455,8 @@ msgstr ""
 msgid "VirtualRegistryCleanupPolicy|Cache cleanup failed. No cache entries were removed."
 msgstr ""
 
-msgid "VirtualRegistryCleanupPolicy|Delete caches not accessed in last %{strongStart}%{days} day%{strongEnd}"
-msgid_plural "VirtualRegistryCleanupPolicy|Delete caches not accessed in last %{strongStart}%{days} days%{strongEnd}"
+msgid "VirtualRegistryCleanupPolicy|Delete caches not accessed in the last %{strongStart}day%{strongEnd}"
+msgid_plural "VirtualRegistryCleanupPolicy|Delete caches not accessed in the last %{strongStart}%{days} days%{strongEnd}"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -75693,6 +75696,9 @@ msgid "VirtualRegistry|Failed to connect."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to delete cache entry."
+msgstr ""
+
+msgid "VirtualRegistry|Failed to delete registry. Please try again."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch cache entries count."
@@ -75953,6 +75959,9 @@ msgid "VirtualRegistry|Virtual registry ID copied to clipboard."
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registry cache cleanup policy"
+msgstr ""
+
+msgid "VirtualRegistry|Virtual registry deleted successfully."
 msgstr ""
 
 msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"

@@ -122,8 +122,8 @@ RSpec.describe Gitlab::Git::ObjectPool, feature_category: :source_code_managemen
           subject.fetch
 
           expect(subject.repository.commit(pool_ref_name).id).to eq(new_commit_id)
-          expect(subject.repository.commit_count(pool_ref_name))
-            .to eq(source_repository.raw_repository.commit_count(source_ref_name))
+          expect(subject.repository.count_commits(ref: pool_ref_name))
+            .to eq(source_repository.raw_repository.count_commits(ref: source_ref_name))
         end
       end
     end

@@ -600,13 +600,6 @@ module Gitlab
         end
       end
 
-      # Return total commits count accessible from passed ref
-      def commit_count(ref)
-        wrapped_gitaly_errors do
-          gitaly_commit_client.commit_count(ref)
-        end
-      end
-
       # Return total diverging commits count
       def diverging_commit_count(from, to, max_count: 0)
         wrapped_gitaly_errors do

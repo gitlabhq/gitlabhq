@@ -651,14 +651,14 @@ class Repository
   cache_method :recent_objects_size, fallback: 0.0
 
   def commit_count
-    root_ref ? raw_repository.commit_count(root_ref) : 0
+    root_ref ? raw_repository.count_commits(ref: root_ref) : 0
   end
   cache_method :commit_count, fallback: 0
 
   def commit_count_for_ref(ref)
     return 0 unless exists?
 
-    cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
+    cache.fetch(:"commit_count_#{ref}") { raw_repository.count_commits(ref: ref) }
   end
 
   delegate :branch_names, to: :raw_repository

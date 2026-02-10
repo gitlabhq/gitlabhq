@@ -31,7 +31,7 @@ data for features.
 
 ## Seed project and group resources for GitLab Duo
 
-The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) executes the development seed file for GitLab Duo project and group resources. In self-managed mode, the task is idempotent and skips reseeding if the `gitlab-duo` group already exists. To force reseeding from the setup task, set `GITLAB_DUO_RESEED=1`.
+The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-task) executes the development seed file for GitLab Duo project and group resources. In self-managed mode, the task is idempotent and skips reseeding if the `gitlab-duo` group already exists. To force reseeding from the setup task, set `GITLAB_DUO_RESEED=1`.
 
 To run the seed directly (outside the setup task) and recreate all resources:
 

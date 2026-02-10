@@ -268,7 +268,7 @@ What needs to be included in the code:
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
 > [!note]
-> For more information, see [the GitLab AI Gateway documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI Gateway.
+> For more information, see [the GitLab AI Gateway documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai#prerequisites) about authentication and authorization in AI Gateway.
 
 If your GitLab Duo feature involves an autonomous agent, you should use
 [composite identity](composite_identity.md) authorization.

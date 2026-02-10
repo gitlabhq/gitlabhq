@@ -1303,12 +1303,6 @@ lib/gitlab/checks/
 /doc/user/work_items/ @msedlakjakubowski
 # End rake-managed-docs-block
 
-# i18n Docs
-[Localization Team] @gitlab-com/localization/maintainers
-/doc-locale/
-/doc/development/i18n/
-/argo_translation.yml
-
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/**/authz/
 /app/models/ability.rb
