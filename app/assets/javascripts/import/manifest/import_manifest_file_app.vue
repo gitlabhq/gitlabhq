@@ -1,5 +1,12 @@
 <script>
-import { GlFormGroup, GlLink, GlSprintf, GlAlert, GlButton } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlLink,
+  GlSprintf,
+  GlAlert,
+  GlButton,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { validateFileFromAllowList } from '~/lib/utils/file_upload';
@@ -7,7 +14,6 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
@@ -19,7 +25,7 @@ export default {
     GlButton,
     GlAlert,
     HelpIcon,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     GroupSelect,
     UploadDropzone,
   },
@@ -108,12 +114,12 @@ export default {
 </script>
 
 <template>
-  <multi-step-form-template
+  <gl-multi-step-form-template
     :title="s__('ManifestImport|Manifest file import')"
     :current-step="3"
     :steps-total="3"
   >
-    <template #form>
+    <template #default>
       <group-select
         :label="__('Group')"
         :initial-selection="namespaceId"
@@ -174,5 +180,5 @@ export default {
         {{ __('List available repositories') }}
       </gl-button>
     </template>
-  </multi-step-form-template>
+  </gl-multi-step-form-template>
 </template>

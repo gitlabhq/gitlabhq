@@ -13988,6 +13988,9 @@ msgstr ""
 msgid "Cache search results for %{label}"
 msgstr ""
 
+msgid "Cached schema not available"
+msgstr ""
+
 msgid "Cadence"
 msgstr ""
 
@@ -74819,6 +74822,15 @@ msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%
 msgstr ""
 
 msgid "Using HTML script"
+msgstr ""
+
+msgid "Using cached GraphQL schema"
+msgstr ""
+
+msgid "Using cached introspection result"
+msgstr ""
+
+msgid "Using live GraphQL introspection"
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"

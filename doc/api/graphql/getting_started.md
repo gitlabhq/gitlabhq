@@ -311,43 +311,43 @@ mutation DisableCI_JOB_TOKENscope {
 Clients can query the GraphQL endpoint for information about its schema
 by making an [introspection query](https://graphql.org/learn/introspection/).
 
+- In development and test environments, introspection queries execute against the live
+  schema.
+- In production environments, introspection queries return a static schema.
+  - All introspection queries return the same static response, regardless of the request
+    method or parameters.
+  - The static schema is updated automatically to match the current schema.
+  - Introspection queries return one of two static schema files:
+    - `public/-/graphql/introspection_result.json`: Full schema, including deprecated
+      fields.
+    - `public/-/graphql/introspection_result_no_deprecated.json`: Schema without
+      deprecated fields.
+
+To request the schema, send the following in the request body:
+
+```json
+{
+  "query": "{ __schema { types { name } } }"
+}
+```
+
+To request the schema without deprecated fields, include `remove_deprecated: true` in the request body:
+
+```json
+{
+  "query": "{ __schema { types { name } } }",
+  "remove_deprecated": true
+}
+```
+
+#### GraphiQL introspection queries
+
 The [GraphiQL Query Explorer](#graphiql) uses an
 introspection query to:
 
 - Gain knowledge about the GitLab GraphQL schema.
 - Do autocompletion.
 - Provide its interactive `Docs` tab.
-
-Example: Get all the type names in the schema.
-
-```graphql
-{
-  __schema {
-    types {
-      name
-    }
-  }
-}
-```
-
-Example: Get all the fields associated with Issue. `kind` tells us the enum
-value for the type, like `OBJECT`, `SCALAR` or `INTERFACE`.
-
-```graphql
-query IssueTypes {
-  __type(name: "Issue") {
-    kind
-    name
-    fields {
-      name
-      description
-      type {
-        name
-      }
-    }
-  }
-}
-```
 
 More about introspection:
 [GraphQL documentation](https://graphql.org/learn/introspection/)

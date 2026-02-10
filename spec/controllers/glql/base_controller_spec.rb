@@ -70,98 +70,146 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
       { endpoint_id: endpoint_id, feature_category: 'not_owned', query_urgency: :low }
     end
 
-    before do
-      sign_in(user)
-
-      # The application context is set by the ActionControllerStaticContext middleware
-      # in lib/gitlab/middleware/action_controller_static_context.rb.
-      # However, this middleware is not called in our controller specs,
-      # so we explicitly set the caller id here; otherwise, it returns nil.
-      Gitlab::ApplicationContext.push({ caller_id: endpoint_id })
-
-      # Gitlab::ApplicationRateLimiter stores failed attempts in Redis to track the state
-      # The format is the following 'application_rate_limiter:glql:<SHA>:<TIMESTAMP>'
-      # Let's clean up Redis to ensure a clean state
-      Gitlab::Redis::RateLimiting.with(&:flushdb)
-    end
-
-    context 'when a GLQL query executes successfully' do
+    context 'with session' do
       before do
-        mock_query_service(:success)
+        sign_in(user)
+
+        # The application context is set by the ActionControllerStaticContext middleware
+        # in lib/gitlab/middleware/action_controller_static_context.rb.
+        # However, this middleware is not called in our controller specs,
+        # so we explicitly set the caller id here; otherwise, it returns nil.
+        Gitlab::ApplicationContext.push({ caller_id: endpoint_id })
+
+        # Gitlab::ApplicationRateLimiter stores failed attempts in Redis to track the state
+        # The format is the following 'application_rate_limiter:glql:<SHA>:<TIMESTAMP>'
+        # Let's clean up Redis to ensure a clean state
+        Gitlab::Redis::RateLimiting.with(&:flushdb)
       end
 
-      it 'returns successful response and does not trigger rate limiter' do
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({ 'data' => { '__typename' => 'Query' } })
-        # Rate limiting is handled by QueryService, not tested here
-      end
-
-      it 'does not fail when SLIs were initialized' do
-        Gitlab::Metrics::GlqlSlis.initialize_slis!
-
-        expect { execute_request }.not_to raise_error
-      end
-    end
-
-    context 'when a single ActiveRecord::QueryAborted error occurs' do
-      before do
-        mock_query_service(:timeout)
-      end
-
-      it 're-raises ActiveRecord::QueryAborted and returns service unavailable' do
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-        expect(json_response['errors']).to include(a_hash_including('message' => 'Query timed out'))
-        # Rate limiting is handled by QueryService, not tested here
-      end
-    end
-
-    context 'when rate limiting is triggered' do
-      before do
-        mock_query_service(:rate_limited)
-      end
-
-      it 'handles GlqlQueryLockedError and returns forbidden status' do
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-        expect(json_response['errors']).to include(a_hash_including('message' => rate_limit_message))
-        # Rate limiting is handled by QueryService, not tested here
-      end
-    end
-
-    context 'when an error other than ActiveRecord::QueryAborted is raised' do
-      before do
-        mock_query_service(:exception)
-      end
-
-      it 'handles the error and returns internal server error' do
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:internal_server_error)
-        expect(json_response['errors']).to include(a_hash_including('message' => 'Internal server error: Test error'))
-        # Rate limiting is handled by QueryService, not tested here
-      end
-    end
-
-    context 'when load balancing enabled', :db_load_balancing do
-      before do
-        mock_query_service(:success)
-      end
-
-      it 'uses QueryService which handles load balancing' do
-        expect_next_instance_of(::Analytics::Glql::QueryService) do |instance|
-          expect(instance).to receive(:execute).with(
-            query: query,
-            variables: {},
-            context: { is_sessionless_user: false }
-          )
+      context 'when a GLQL query executes successfully' do
+        before do
+          mock_query_service(:success)
         end
 
-        execute_request
+        it 'returns successful response and does not trigger rate limiter' do
+          execute_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'data' => { '__typename' => 'Query' } })
+          # Rate limiting is handled by QueryService, not tested here
+        end
+
+        it 'does not fail when SLIs were initialized' do
+          Gitlab::Metrics::GlqlSlis.initialize_slis!
+
+          expect { execute_request }.not_to raise_error
+        end
+      end
+
+      context 'when a single ActiveRecord::QueryAborted error occurs' do
+        before do
+          mock_query_service(:timeout)
+        end
+
+        it 're-raises ActiveRecord::QueryAborted and returns service unavailable' do
+          execute_request
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(json_response['errors']).to include(a_hash_including('message' => 'Query timed out'))
+          # Rate limiting is handled by QueryService, not tested here
+        end
+      end
+
+      context 'when rate limiting is triggered' do
+        before do
+          mock_query_service(:rate_limited)
+        end
+
+        it 'handles GlqlQueryLockedError and returns forbidden status' do
+          execute_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['errors']).to include(a_hash_including('message' => rate_limit_message))
+          # Rate limiting is handled by QueryService, not tested here
+        end
+      end
+
+      context 'when an error other than ActiveRecord::QueryAborted is raised' do
+        before do
+          mock_query_service(:exception)
+        end
+
+        it 'handles the error and returns internal server error' do
+          execute_request
+
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response['errors']).to include(a_hash_including('message' => 'Internal server error: Test error'))
+          # Rate limiting is handled by QueryService, not tested here
+        end
+      end
+
+      context 'when load balancing enabled', :db_load_balancing do
+        before do
+          mock_query_service(:success)
+        end
+
+        it 'uses QueryService which handles load balancing' do
+          expect_next_instance_of(::Analytics::Glql::QueryService) do |instance|
+            expect(instance).to receive(:execute).with(
+              query: query,
+              variables: {},
+              context: a_hash_including(is_sessionless_user: false)
+            )
+          end
+
+          execute_request
+        end
+      end
+    end
+
+    context 'with API token' do
+      let(:token) { create(:personal_access_token, user:, scopes:) }
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:issue) { create(:issue, project:) }
+
+      let(:query) do
+        <<~GRAPHQL
+          mutation {
+            createNote(input: {
+              noteableId: "gid://gitlab/Issue/#{issue.id}",
+              body: "*sips tea*"
+            }) {
+              note {
+                id
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'without write permission' do
+        let(:scopes) { [:read_api] }
+
+        it 'respects the token scopes' do
+          execute_request(access_token: token.token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['errors']).to include(a_hash_including(
+            'message' => "The resource that you are attempting to access does not exist or you don't have permission " \
+              'to perform this action'))
+        end
+      end
+
+      context 'with write permission' do
+        let(:scopes) { [:api] }
+
+        it 'respects the token scopes' do
+          execute_request(access_token: token.token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['errors']).to be_nil
+          expect(json_response['data']['createNote']['note']['id']).to start_with('gid://gitlab/Note/')
+        end
       end
     end
   end
@@ -349,7 +397,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         expect(instance).to receive(:execute).with(
           query: query,
           variables: {},
-          context: { is_sessionless_user: false }
+          context: a_hash_including(is_sessionless_user: false)
         )
       end
 

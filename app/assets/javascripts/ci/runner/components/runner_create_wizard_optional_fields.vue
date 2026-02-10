@@ -1,7 +1,13 @@
 <script>
-import { GlForm, GlButton, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import {
+  GlForm,
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
@@ -23,7 +29,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormTextarea,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     MultipleChoiceSelector,
     MultipleChoiceSelectorItem,
   },
@@ -142,12 +148,12 @@ export default {
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('Runners|Optional configuration details')"
       :current-step="currentStep"
       :steps-total="stepsTotal"
     >
-      <template #form>
+      <template #default>
         <multiple-choice-selector class="gl-mb-5" @input="onCheckboxesInput">
           <multiple-choice-selector-item
             :value="$options.ACCESS_LEVEL_REF_PROTECTED"
@@ -239,6 +245,6 @@ export default {
           {{ __('Go back') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </gl-form>
 </template>

@@ -68,5 +68,7 @@ applyGitLabUIConfig({
     'GlPagination.nav': s__('Pagination|Pagination'),
     'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
     'GlProgressBar.ariaLabel': __('Progress bar'),
+    'GlMultiStepFormTemplate.stepXofY': __('Step %{currentStep} of %{stepsTotal}'),
+    'GlMultiStepFormTemplate.stepX': __('Step %{currentStep}'),
   },
 });

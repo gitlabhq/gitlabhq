@@ -1,8 +1,16 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlAlert, GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlAlert,
+  GlSprintf,
+  GlLink,
+  GlIcon,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 export default {
   components: {
@@ -13,7 +21,7 @@ export default {
     GlSprintf,
     GlLink,
     GlIcon,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   directives: {
     SafeHtml,
@@ -77,12 +85,12 @@ export default {
       :value="namespaceId"
     />
     <input v-if="isCiCdOnly" id="ci_cd_only" type="hidden" name="ci_cd_only" value="true" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('ProjectsNew|Authenticate with GitHub')"
       :current-step="3"
       :steps-total="4"
     >
-      <template #form>
+      <template #default>
         <template v-if="showAuthButton">
           <gl-button
             category="primary"
@@ -200,6 +208,6 @@ export default {
           {{ __('Next step') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

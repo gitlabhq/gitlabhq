@@ -1,8 +1,14 @@
 <script>
-import { GlButton, GlFormGroup, GlSprintf, GlLink, GlExperimentBadge } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlSprintf,
+  GlLink,
+  GlExperimentBadge,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
@@ -14,7 +20,7 @@ export default {
     GlSprintf,
     GlLink,
     GlExperimentBadge,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     MultipleChoiceSelector,
     MultipleChoiceSelectorItem,
     SharedProjectCreationFields,
@@ -74,8 +80,8 @@ export default {
 <template>
   <form ref="form" method="post" :action="formPath" @submit.prevent="onSubmit">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template :title="option.title" :current-step="2" :steps-total="2">
-      <template #form>
+    <gl-multi-step-form-template :title="option.title" :current-step="2" :steps-total="2">
+      <template #default>
         <shared-project-creation-fields
           :namespace="namespace"
           @onSelectNamespace="onSelectNamespace"
@@ -179,6 +185,6 @@ export default {
           {{ __('Go back') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

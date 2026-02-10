@@ -22,7 +22,9 @@ Before starting, ensure you:
 
 ## Step-by-Step Implementation Guide
 
-### Step 1: Identify API Endpoints for the Resource
+The below steps are for REST API endpoints protection. For GraphQL protection against granular PATs, refer to [GraphQL protection](graphql_granular_token_authorization.md)
+
+### Step 1: Identify REST API Endpoints for the Resource
 
 **Goal:** Find all REST API endpoints for the resource you're working on.
 

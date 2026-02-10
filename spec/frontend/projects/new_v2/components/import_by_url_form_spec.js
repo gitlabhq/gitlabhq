@@ -1,4 +1,4 @@
-import { GlFormInputGroup, GlFormCheckbox } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormCheckbox, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -55,7 +54,7 @@ describe('Import Project by URL Form', () => {
       stubs: {
         GlFormInputGroup,
         GlFormCheckbox,
-        MultiStepFormTemplate,
+        GlMultiStepFormTemplate,
       },
     });
   };
@@ -78,7 +77,7 @@ describe('Import Project by URL Form', () => {
   const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
   const findMirrorCheckbox = () => wrapper.findByTestId('import-project-by-url-repo-mirror');
   const findSharedFields = () => wrapper.findComponent(SharedProjectCreationFields);
-  const findMultiStepTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
 
   it('renders URL, username, password fields', () => {
     expect(findUrlInput().attributes('placeholder')).toBe(

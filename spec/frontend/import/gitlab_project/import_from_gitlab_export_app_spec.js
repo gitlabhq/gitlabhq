@@ -1,8 +1,7 @@
 import { nextTick } from 'vue';
-import { GlAnimatedUploadIcon, GlFormInput } from '@gitlab/ui';
+import { GlAnimatedUploadIcon, GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import importFromGitlabExportApp from '~/import/gitlab_project/import_from_gitlab_export_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -28,7 +27,7 @@ describe('Import from GitLab export file app', () => {
     createComponent();
   });
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findForm = () => wrapper.find('form');
   const findProjectNameInput = () => wrapper.findByTestId('project-name');
   const findProjectSlugInput = () => wrapper.findByTestId('project-slug');

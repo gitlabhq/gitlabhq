@@ -193,7 +193,6 @@ instructions:
     instructions: |
       1. These files are auto-generated and do not require a newline at the end of the file - do not flag missing newlines
 
-instructions:
   - name: Log Field Standards
     fileFilters:
       - "**/*.rb"

@@ -222,7 +222,7 @@ module LabelsHelper
 
     if title.present?
       classes << 'has-tooltip'
-      dataset.merge!(html: true, title: title)
+      dataset['title'] = title
     end
 
     link_to(label_html, link, class: classes.join(' '), data: dataset)

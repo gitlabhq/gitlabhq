@@ -153,6 +153,11 @@ RSpec.describe IdeController, feature_category: :web_ide do
         expect(response).to render_template('layouts/fullscreen')
       end
 
+      it 'sets cross-origin-opener-policy header to same-origin' do
+        subject
+        expect(response.headers['Cross-Origin-Opener-Policy']).to eq('same-origin')
+      end
+
       it 'ensures web_ide_oauth_application' do
         expect(Authn::OauthApplication).to receive(:new).and_call_original
 

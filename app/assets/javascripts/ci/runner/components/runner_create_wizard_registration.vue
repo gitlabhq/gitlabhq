@@ -9,9 +9,9 @@ import {
   GlLink,
   GlIcon,
   GlLoadingIcon,
+  GlMultiStepFormTemplate,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -40,7 +40,7 @@ export default {
     GlLink,
     GlIcon,
     GlLoadingIcon,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     ClipboardButton,
     CrudComponent,
     OperatingSystemInstruction,
@@ -116,12 +116,12 @@ export default {
 };
 </script>
 <template>
-  <multi-step-form-template
+  <gl-multi-step-form-template
     :title="s__('Runners|Register your new runner')"
     :current-step="currentStep"
     :steps-total="stepsTotal"
   >
-    <template #form>
+    <template #default>
       <template v-if="loading">
         <div class="gl-text-center gl-text-base" data-testid="loading-icon-wrapper">
           <gl-loading-icon
@@ -301,5 +301,5 @@ export default {
         {{ s__('Runners|View runners') }}
       </gl-button>
     </template>
-  </multi-step-form-template>
+  </gl-multi-step-form-template>
 </template>

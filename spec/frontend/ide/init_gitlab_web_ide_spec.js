@@ -83,6 +83,7 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.filePath = TEST_FILE_PATH;
     el.dataset.extensionHostDomain = 'web-ide.example.net';
     el.dataset.extensionHostDomainChanged = true;
+    el.dataset.workbenchSecret = 'test-workbench-secret';
     el.dataset.editorFont = JSON.stringify({
       fallback_font_family: 'monospace',
       font_faces: [
@@ -190,6 +191,7 @@ describe('ide/init_gitlab_web_ide', () => {
       expect(getWebIDEWorkbenchConfig).toHaveBeenCalledWith({
         extensionHostDomain: 'web-ide.example.net',
         extensionHostDomainChanged: true,
+        workbenchSecret: 'test-workbench-secret',
       });
     });
 

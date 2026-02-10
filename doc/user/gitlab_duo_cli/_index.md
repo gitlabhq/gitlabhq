@@ -46,7 +46,7 @@ The GitLab Duo CLI (`duo`) is a separate tool from the [GitLab CLI](https://docs
 (`glab`). While `glab` provides command-line access to GitLab features like issues and merge
 requests, `duo` provides autonomous AI capabilities to complete tasks and assist you while you work.
 
-A unified experience is proposed in [issue 585937](https://gitlab.com/gitlab-org/gitlab/-/work_items/585937).
+A unified experience is proposed in [epic 20826](https://gitlab.com/groups/gitlab-org/-/work_items/20826).
 
 {{< /alert >}}
 

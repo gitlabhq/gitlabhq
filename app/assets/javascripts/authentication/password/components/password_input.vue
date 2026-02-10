@@ -129,3 +129,14 @@ export default {
     />
   </div>
 </template>
+
+<style scoped>
+/*
+ * Hiding the browser's native password reveal control when showing our own toggle.
+ * Avoids duplicate eye icons in Microsoft Edge (and IE), which only show their
+ * reveal button when the field is focused and has content.
+ */
+:deep(input[type='password']::-ms-reveal) {
+  display: none;
+}
+</style>

@@ -52995,6 +52995,8 @@ CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositor
 
 CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELETE ON organizations FOR EACH ROW EXECUTE FUNCTION prevent_delete_of_default_organization();
 
+CREATE TRIGGER project_repositories_loose_fk_trigger AFTER DELETE ON project_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER project_type_ci_runner_machines_loose_fk_trigger AFTER DELETE ON project_type_ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runner_machines');
 
 CREATE TRIGGER project_type_ci_runners_loose_fk_trigger AFTER DELETE ON project_type_ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
@@ -54561,9 +54563,6 @@ ALTER TABLE ONLY merge_request_diffs
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_repository_states
-    ADD CONSTRAINT fk_57201a9be7 FOREIGN KEY (project_repository_id) REFERENCES project_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspace_tokens
     ADD CONSTRAINT fk_5724f2499d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

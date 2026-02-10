@@ -44,11 +44,22 @@ export default {
   methods: {
     itemSlot(element) {
       if (!this.isVue3) return null;
-      const children = this.$scopedSlots.default ? this.$scopedSlots.default()[0].children : [];
-      if (typeof this.itemKey === 'function') {
-        return children.find((child) => child.key === this.itemKey(element));
-      }
-      return children.find((child) => child.key === element[this.itemKey]);
+
+      const slotContent = this.$scopedSlots.default?.();
+      if (!slotContent?.length) return null;
+
+      const firstNode = slotContent[0];
+      const firstNodeChildren = Array.isArray(firstNode?.children)
+        ? firstNode.children
+        : [firstNode?.children].filter(Boolean);
+
+      const children = [...firstNodeChildren, ...slotContent];
+      if (!children.length) return null;
+
+      const targetKey =
+        typeof this.itemKey === 'function' ? this.itemKey(element) : element[this.itemKey];
+
+      return children.find((child) => child?.key === targetKey);
     },
   },
 };

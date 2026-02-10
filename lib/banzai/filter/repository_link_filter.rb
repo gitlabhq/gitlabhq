@@ -185,9 +185,11 @@ module Banzai
 
         path.delete_prefix!('./')
 
-        while path.start_with?('../')
-          parts.pop
-          path.sub!('../', '')
+        if path.start_with?('../')
+          count = 0
+          count += 1 while path[(count * 3), 3] == '../'
+          parts.pop(count)
+          path = path[(count * 3)..]
         end
 
         parts.push(path).join('/')

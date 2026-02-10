@@ -13,6 +13,7 @@ graphql-verify:
   script:
     - bundle exec rake gitlab:graphql:validate
     - bundle exec rake gitlab:graphql:check_docs
+    - bundle exec rake gitlab:graphql:generate_all_introspection_schemas
     - bundle exec rake gitlab:graphql:schema:dump
     - node scripts/frontend/graphql_possible_types_extraction.js --check
 
@@ -22,4 +23,6 @@ graphql-verify:
     paths:
       - tmp/tests/graphql/gitlab_schema.graphql
       - tmp/tests/graphql/gitlab_schema.json
+      - public/-/graphql/introspection_result.json
+      - public/-/graphql/introspection_result_no_deprecated.json
     when: always

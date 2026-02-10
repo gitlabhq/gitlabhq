@@ -96,7 +96,7 @@ module Banzai
             if it.text?
               yield it unless it.content.blank?
             elsif els.exclude?(it.name)
-              stack.concat(it.children.reverse)
+              stack << it.children.first if it.children.first
             end
           end
         end

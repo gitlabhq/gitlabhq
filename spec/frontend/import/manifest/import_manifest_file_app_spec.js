@@ -1,11 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlMultiStepFormTemplate } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportFromManifestFileApp from '~/import/manifest/import_manifest_file_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -41,7 +41,7 @@ describe('Import from Manifest file app', () => {
     mockAxios.restore();
   });
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findBackButton = () => wrapper.findByTestId('back-button');

@@ -21,7 +21,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   let!(:allowed_cross_database_foreign_keys) do
     keys = [
       'lfs_objects_projects.lfs_object_id',
-      'project_repository_states.project_repository_id',            # https://gitlab.com/gitlab-org/gitlab/-/work_items/588745
       'p_ci_build_tags.tag_id',                                     # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
       'targeted_message_dismissals.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
       'user_broadcast_message_dismissals.broadcast_message_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/531358

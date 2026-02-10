@@ -1,5 +1,4 @@
-import { GlForm } from '@gitlab/ui';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import { GlForm, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerCreateWizardOptionalFields from '~/ci/runner/components/runner_create_wizard_optional_fields.vue';
 
@@ -23,13 +22,13 @@ describe('Create Runner Optional Fields', () => {
   });
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findNextButton = () => wrapper.findByTestId('next-button');
   const findBackButton = () => wrapper.findByTestId('back-button');
 
   describe('form', () => {
-    it('passes the correct props to MultiStepFormTemplate', () => {
-      expect(findMultiStepFormTemplate().props()).toMatchObject({
+    it('passes the correct props to GlMultiStepFormTemplate', () => {
+      expect(findGlMultiStepFormTemplate().props()).toMatchObject({
         title: 'Optional configuration details',
         currentStep: 2,
         stepsTotal: 3,
