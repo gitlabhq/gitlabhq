@@ -261,7 +261,7 @@ class GraphqlController < ApplicationController
   end
 
   def query
-    GraphQL::Language.escape_single_quoted_newlines(permitted_params.fetch(:query, '').to_s)
+    @query ||= GraphQL::Language.escape_single_quoted_newlines(permitted_params.fetch(:query, '').to_s)
   end
 
   def multiplex_param
@@ -345,37 +345,34 @@ class GraphqlController < ApplicationController
   def execute_introspection_query
     context[:introspection] = true
 
-    if introspection_query_can_use_cache?
-      # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
-      Rails.cache.fetch(
-        introspection_query_cache_key,
-        expires_in: 1.day) do
-          execute_query.to_json
-        end
-    else
-      execute_query
+    return execute_query if Gitlab.dev_or_test_env?
+
+    load_static_schema
+  end
+
+  def load_static_schema
+    @static_schema ||= begin
+      schema_path = if Gitlab::Utils.to_boolean(permitted_params[:remove_deprecated]) === true
+                      Rails.root.join("public/-/graphql/introspection_result_no_deprecated.json")
+                    else
+                      Rails.root.join("public/-/graphql/introspection_result.json")
+                    end
+
+      if File.exist?(schema_path)
+        Gitlab::Json.safe_parse(File.read(schema_path))
+      else
+        execute_query
+      end
     end
-  end
-
-  def introspection_query_can_use_cache?
-    return false if Gitlab.dev_or_test_env?
-
-    CACHED_INTROSPECTION_QUERY_STRING == graphql_query_object.query_string.squish
-  end
-
-  def introspection_query_cache_key
-    # We use context[:remove_deprecated] here as an introspection query result can differ based on the
-    # visibility of schema items. Visibility can be affected by the remove_deprecated param. For more context, see:
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/409448#note_1377558096
-    ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
   end
 
   def introspection_query?
     if permitted_params.key?(:operationName)
       permitted_params[:operationName] == INTROSPECTION_QUERY_OPERATION_NAME
     else
-      # If we don't provide operationName param, we infer it from the query
-      graphql_query_object.selected_operation_name == INTROSPECTION_QUERY_OPERATION_NAME
+      query.include?('__schema') ||
+        (query.include?('__type') && query.exclude?('__typename')) ||
+        graphql_query_object.selected_operation_name == INTROSPECTION_QUERY_OPERATION_NAME
     end
   end
 

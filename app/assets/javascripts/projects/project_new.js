@@ -303,7 +303,11 @@ const bindEvents = () => {
   });
 
   const updateUrlPathWarningVisibility = async () => {
-    const { success: isUrlValid, cancelled } = await validateImportCredentials(
+    const {
+      success: isUrlValid,
+      cancelled,
+      message,
+    } = await validateImportCredentials(
       $projectImportUrl.value,
       $projectImportUrlUser.val(),
       $projectImportUrlPassword.val(),
@@ -314,6 +318,10 @@ const bindEvents = () => {
 
     $projectImportUrl.classList.toggle(invalidInputClass, !isUrlValid);
     $projectImportUrlError.toggleClass('hide', isUrlValid);
+
+    if (!isUrlValid && message) {
+      $projectImportUrlError.text(message);
+    }
   };
   const debouncedUpdateUrlPathWarningVisibility = debounce(
     updateUrlPathWarningVisibility,

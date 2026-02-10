@@ -308,6 +308,11 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
         expect(policy).to be_allowed :update_pipeline_schedule
         expect(policy).to be_allowed :admin_pipeline_schedule
       end
+
+      it 'allows reading schedule variables and inputs' do
+        expect(policy).to be_allowed :read_pipeline_schedule_variables
+        expect(policy).to be_allowed :read_pipeline_schedule_inputs
+      end
     end
 
     describe 'rules for a maintainer' do
@@ -323,6 +328,11 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       it 'does not allow for updating of an existing schedule' do
         expect(policy).not_to be_allowed :update_pipeline_schedule
       end
+
+      it 'allows reading schedule variables and inputs' do
+        expect(policy).to be_allowed :read_pipeline_schedule_variables
+        expect(policy).to be_allowed :read_pipeline_schedule_inputs
+      end
     end
 
     describe 'rules for non-owner of schedule' do
@@ -336,6 +346,26 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
 
       it 'includes abilities to take ownership' do
         expect(policy).to be_allowed :admin_pipeline_schedule
+      end
+    end
+
+    describe 'rules for developer (non-owner)' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'does not allow reading schedule variables or inputs' do
+        expect(policy).not_to be_allowed :read_pipeline_schedule_variables
+        expect(policy).not_to be_allowed :read_pipeline_schedule_inputs
+      end
+    end
+
+    describe 'rules for unauthenticated user' do
+      let(:user) { nil }
+
+      it 'does not allow reading schedule variables or inputs' do
+        expect(policy).not_to be_allowed :read_pipeline_schedule_variables
+        expect(policy).not_to be_allowed :read_pipeline_schedule_inputs
       end
     end
   end

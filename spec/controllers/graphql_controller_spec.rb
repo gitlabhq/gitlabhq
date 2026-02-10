@@ -666,15 +666,33 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       expect(assigns(:context)[:remove_deprecated]).to be true
     end
 
-    context 'when querying an IntrospectionQuery', :use_clean_rails_memory_store_caching do
+    context 'when querying an IntrospectionQuery' do
       let_it_be(:query) { CachedIntrospectionQuery.query_string }
+
+      shared_examples 'serves static schema' do |file_name = 'introspection_result.json', request_params|
+        before do
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read).with(Rails.root.join("public/-/graphql/#{file_name}"))
+                                       .and_return('{"data": {"__schema": "static"}}')
+        end
+
+        it "serves static #{file_name} without executing GraphQL" do
+          expect(GitlabSchema).not_to receive(:execute)
+
+          post :execute, params: request_params
+          post :execute, params: request_params
+
+          expect(response).to be_successful
+          expect(Gitlab::Json.safe_parse(response.body)).to eq({ "data" => { "__schema" => "static" } })
+        end
+      end
 
       context 'in dev or test env' do
         before do
           allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
         end
 
-        it 'does not cache IntrospectionQuery' do
+        it 'does not use static schema and executes query normally' do
           expect(GitlabSchema).to receive(:execute).exactly(:twice)
 
           post :execute, params: { query: query }
@@ -682,52 +700,56 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
       end
 
-      context 'in env different from dev or test' do
+      context 'in production env' do
         before do
           allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
         end
 
-        it 'caches IntrospectionQuery even when operationName is not given' do
-          expect(GitlabSchema).to receive(:execute).exactly(:once)
+        context 'when static schema files exist' do
+          before do
+            allow(File).to receive(:exist?).and_return(true)
+            allow(File).to receive(:read).with(Rails.root.join("public/-/graphql/introspection_result.json"))
+                                         .and_return('{"data": {"__schema": "static_schema"}}')
+            allow(File).to receive(:read).with(
+              Rails.root.join("public/-/graphql/introspection_result_no_deprecated.json"))
+                                         .and_return('{"data": {"__schema": "static_schema_no_deprecated"}}')
+          end
 
-          post :execute, params: { query: query }
-          post :execute, params: { query: query }
+          context 'when operationName is not given' do
+            it_behaves_like 'serves static schema', 'introspection_result.json',
+              { query: CachedIntrospectionQuery.query_string }
+          end
+
+          context 'when operationName is IntrospectionQuery' do
+            it_behaves_like 'serves static schema', 'introspection_result.json',
+              { query: CachedIntrospectionQuery.query_string, operationName: 'IntrospectionQuery' }
+          end
+
+          context 'with remove_deprecated: true' do
+            it_behaves_like 'serves static schema', 'introspection_result_no_deprecated.json',
+              { query: CachedIntrospectionQuery.query_string, operationName: 'IntrospectionQuery',
+                remove_deprecated: true }
+          end
+
+          context 'with remove_deprecated: false' do
+            it_behaves_like 'serves static schema', 'introspection_result.json',
+              { query: CachedIntrospectionQuery.query_string, operationName: 'IntrospectionQuery',
+                remove_deprecated: false }
+          end
+
+          context 'when there is an unknown introspection query' do
+            it_behaves_like 'serves static schema', 'introspection_result.json',
+              { query: File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')),
+                operationName: 'IntrospectionQuery' }
+          end
         end
 
-        it 'caches the IntrospectionQuery' do
-          expect(GitlabSchema).to receive(:execute).exactly(:once)
+        context 'when static schema files do not exist' do
+          before do
+            allow(File).to receive(:exist?).and_return(false)
+          end
 
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-        end
-
-        it 'caches separately for both remove_deprecated set to true and false' do
-          expect(GitlabSchema).to receive(:execute).exactly(:twice)
-
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
-
-          # We clear this instance variable to reset remove_deprecated
-          subject.remove_instance_variable(:@context) if subject.instance_variable_defined?(:@context)
-
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
-        end
-
-        it 'has a different cache for each Gitlab.revision' do
-          expect(GitlabSchema).to receive(:execute).exactly(:twice)
-
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-
-          allow(Gitlab).to receive(:revision).and_return('new random value')
-
-          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-        end
-
-        context 'when there is an unknown introspection query' do
-          let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
-
-          it 'does not cache an unknown introspection query' do
+          it 'falls back to executing GraphQL when static files are missing' do
             expect(GitlabSchema).to receive(:execute).exactly(:twice)
 
             post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
@@ -735,44 +757,51 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           end
         end
 
-        it 'hits the cache even if the whitespace in the query differs' do
-          query_1 = CachedIntrospectionQuery.query_string
-          query_2 = "#{query_1}  " # add a couple of spaces to change the fingerprint
+        context 'when there is an unknown introspection query' do
+          let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
 
-          expect(GitlabSchema).to receive(:execute).exactly(:once)
+          it 'returns static schema without executing GraphQL when operationName is not given' do
+            allow(File).to receive(:read).and_call_original
+            allow(File).to receive(:read).with(Rails.root.join("public/-/graphql/introspection_result.json"))
+                                         .and_return('{"data": {"__schema": "static"}}')
+            expect(GitlabSchema).not_to receive(:execute)
 
-          post :execute, params: { query: query_1, operationName: 'IntrospectionQuery' }
-          post :execute, params: { query: query_2, operationName: 'IntrospectionQuery' }
+            post :execute, params: { query: query }
+            post :execute, params: { query: query }
+
+            expect(response).to be_successful
+            expect(Gitlab::Json.safe_parse(response.body)).to eq({ "data" => { "__schema" => "static" } })
+          end
         end
-      end
 
-      context 'when performing a multiplex query as an IntrospectionQuery' do
-        let(:user) { create(:user) }
-        let_it_be(:query) do
-          <<~GQL
+        context 'when performing a multiplex query as an IntrospectionQuery' do
+          let(:user) { create(:user) }
+          let_it_be(:query) do
+            <<~GQL
             mutation IntrospectionQuery{createSnippet(input:{title:"test" description:"test" visibilityLevel:public blobActions:[{action:create previousPath:"test" filePath:"test" content:"test new file"}]}){errors clientMutationId snippet{webUrl}}}
-          GQL
-        end
+            GQL
+          end
 
-        before do
-          sign_in(user)
-        end
+          before do
+            sign_in(user)
+          end
 
-        it 'does not perform a mutation' do
-          expect do
+          it 'does not perform a mutation' do
+            expect do
+              get :execute,
+                params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
+            end.not_to change {
+              Snippet.count
+            }
+          end
+
+          it 'does not call GitlabSchema.execute' do
+            expect(GitlabSchema).not_to receive(:execute)
+            expect(GitlabSchema).to receive(:multiplex)
+
             get :execute,
               params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
-          end.not_to change {
-            Snippet.count
-          }
-        end
-
-        it 'does not call GitlabSchema.execute' do
-          expect(GitlabSchema).not_to receive(:execute)
-          expect(GitlabSchema).to receive(:multiplex)
-
-          get :execute,
-            params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
+          end
         end
       end
     end

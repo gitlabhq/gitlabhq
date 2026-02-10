@@ -2,6 +2,39 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.4 (2026-02-09)
+
+### Added (1 change)
+
+- [Add REST endpoint for seeding external agents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9308a66c34904c475f22d3288b75305c3e5fb1e3) **GitLab Enterprise Edition**
+
+### Fixed (4 changes)
+
+- [Add cleanup of replicas without indices to RolloutService](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ee791a6c1947afebbdabb0b96ff6eb9bb26d08ea) **GitLab Enterprise Edition**
+- [Add preflight checks to resume_indexing rake task](https://gitlab.com/gitlab-org/security/gitlab/-/commit/884b17351514fe3db1271db6f660ad0636f06606) **GitLab Enterprise Edition**
+- [Fix project state getting out of sync when deletion fails](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ea893eb7aab9dbd98ea03da77c47bde3813279f7)
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd2c7efa3b958dca20816a923003a8de89c8f54d)
+
+### Changed (1 change)
+
+- [Add seed external agents button to Admin](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86e53598ca77513eed0975b3fd611c52894b7983) **GitLab Enterprise Edition**
+
+### Security (13 changes)
+
+- [587546 DoS Customizable Dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ddf86cd2bd0b0a281f92391687cc152e60bee12) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5727))
+- [Fix SSRF vulnerability in virtual registry upstream checks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a8bad27927fb40962014c85f23dff28c13cf1b79) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5656))
+- [Filter groups by accessible to user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6495ffe052c2ee5627718c36d6eb18af8f6a4e48) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5714))
+- [Don't quadratically re-process children in TaskListFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fe2fee5e83ae6476f41b3322c1ca4febf76da857) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5726))
+- [Add authorization for pipeline schedule inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4c5126dee6b6361e9099cb944b5b8772231246f6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5690))
+- [Don't copy the whole path per component removed in RepositoryLinkFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/110c99b816c1c582430abf98c69bfaa6acb5989d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5722))
+- [Fix DoS vulnerability via malformed JSON escape sequences](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9bd81602325b48e823db3b40061eea91f394d89d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5708))
+- [Pass full context to query service in /api/glql; deny sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd85c1f978c2e68e7c48e039f449f1b60fbc6d73) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5706))
+- [Don't render label link tooltip names as HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a7236aeec6c2c1017e6a2970557b513a82d258e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5702))
+- [Fix test case title html injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d5cab70d2f154d1f22f1c589454a6b386853b07) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5683))
+- [HTML injection in vulnerability reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5fa6ca65c8e39ee58346640706db381b1ff5c32b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5666))
+- [Disable GraphQL Introspection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1b86a82d5ca4aa8fe2ae90333d3356698630e18) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5662))
+- [Enforce git import url validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24aa9d9a75c313a943101c71f7037df971ede282) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5673))
+
 ## 18.8.3 (2026-02-04)
 
 ### Fixed (13 changes)
