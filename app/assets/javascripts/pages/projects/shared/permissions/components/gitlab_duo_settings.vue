@@ -36,11 +36,7 @@ export default {
       required: false,
       default: () => ({}),
     },
-    duoSastFpDetectionCascadingSettings: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
+
     duoFeaturesEnabled: {
       type: Boolean,
       required: false,
@@ -157,12 +153,6 @@ export default {
       return (
         this.duoFoundationalFlowsCascadingSettings?.lockedByAncestor ||
         this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
-      );
-    },
-    showSastFpDetectionCascadingLock() {
-      return (
-        this.duoSastFpDetectionCascadingSettings?.lockedByAncestor ||
-        this.duoSastFpDetectionCascadingSettings?.lockedByApplicationSetting
       );
     },
 
@@ -330,22 +320,10 @@ export default {
             s__('DuoSAST|Use false positive detection for vulnerabilities on the default branch')
           "
         >
-          <template #label-icon>
-            <cascading-lock-icon
-              v-if="showSastFpDetectionCascadingLock"
-              data-testid="duo-sast-fp-detection-cascading-lock-icon"
-              :is-locked-by-group-ancestor="duoSastFpDetectionCascadingSettings.lockedByAncestor"
-              :is-locked-by-application-settings="
-                duoSastFpDetectionCascadingSettings.lockedByApplicationSetting
-              "
-              :ancestor-namespace="duoSastFpDetectionCascadingSettings.ancestorNamespace"
-              class="gl-ml-1"
-            />
-          </template>
           <gl-toggle
             v-model="duoSastFpDetectionEnabled"
             class="gl-mt-2"
-            :disabled="duoFeaturesLocked || !duoEnabled || showSastFpDetectionCascadingLock"
+            :disabled="duoFeaturesLocked || !duoEnabled"
             :label="s__('DuoSAST|Turn on SAST false positive detection')"
             label-position="hidden"
             name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"

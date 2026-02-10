@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_PROJECT } from '~/issues/constants';
 import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issuable_label_selector.vue';
 
 Vue.use(VueApollo);
@@ -44,11 +44,11 @@ export default () => {
       initialLabels: JSON.parse(initialLabels),
       issuableType,
       issuableSupportsLockOnMerge: parseBoolean(supportsLockOnMerge),
-      labelType: WORKSPACE_PROJECT,
+      labelType: NAMESPACE_PROJECT,
       labelsFilterBasePath,
       labelsManagePath,
       variant: VARIANT_EMBEDDED,
-      workspaceType: WORKSPACE_PROJECT,
+      workspaceType: NAMESPACE_PROJECT,
       toggleAttrs: { 'data-testid': 'issuable-label-dropdown' },
     },
     render(createElement) {

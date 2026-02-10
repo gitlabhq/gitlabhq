@@ -1,4 +1,4 @@
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 export const getGroupItemMicrodata = ({ type }) => {
   const defaultMicrodata = {
@@ -18,7 +18,7 @@ export const getGroupItemMicrodata = ({ type }) => {
         itemprop: 'subOrganization',
         imageItemprop: 'logo',
       };
-    case WORKSPACE_PROJECT:
+    case NAMESPACE_PROJECT:
       return {
         ...defaultMicrodata,
         itemtype: 'https://schema.org/SoftwareSourceCode',

@@ -11,7 +11,7 @@ import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
 import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
@@ -118,12 +118,12 @@ describe('BoardTopBar', () => {
   it.each`
     boardType            | queryHandler                       | notCalledHandler
     ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-    ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
   `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
     createComponent({
       provide: {
         boardType,
-        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isProjectBoard: boardType === NAMESPACE_PROJECT,
         isGroupBoard: boardType === WORKSPACE_GROUP,
       },
     });
@@ -137,12 +137,12 @@ describe('BoardTopBar', () => {
   it.each`
     boardType
     ${WORKSPACE_GROUP}
-    ${WORKSPACE_PROJECT}
+    ${NAMESPACE_PROJECT}
   `('sets error when $boardType board query fails', async ({ boardType }) => {
     createComponent({
       provide: {
         boardType,
-        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isProjectBoard: boardType === NAMESPACE_PROJECT,
         isGroupBoard: boardType === WORKSPACE_GROUP,
       },
       groupBoardQueryHandler: boardQueryHandlerFailure,

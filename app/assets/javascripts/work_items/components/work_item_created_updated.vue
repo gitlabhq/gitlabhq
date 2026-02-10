@@ -3,7 +3,7 @@ import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
@@ -103,7 +103,7 @@ export default {
       },
     },
   },
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
 };
 </script>
 
@@ -123,7 +123,7 @@ export default {
       v-if="isWorkItemConfidential"
       class="gl-align-middle"
       :issuable-type="workItemType"
-      :workspace-type="$options.WORKSPACE_PROJECT"
+      :workspace-type="$options.NAMESPACE_PROJECT"
       hide-text-in-small-screens
     />
     <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />

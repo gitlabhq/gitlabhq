@@ -65,8 +65,6 @@ describe('GitlabDuoSettings', () => {
   const findDuoFoundationalFlowsCascadingLockIcon = () =>
     wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
   const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
-  const findDuoSastFpDetectionCascadingLockIcon = () =>
-    wrapper.findByTestId('duo-sast-fp-detection-cascading-lock-icon');
   const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
@@ -337,50 +335,6 @@ describe('GitlabDuoSettings', () => {
           );
 
           expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
-        });
-
-        it('shows cascading lock icon when SAST FP Detection is locked by ancestor', () => {
-          wrapper = createWrapper(
-            {
-              duoFeaturesEnabled: true,
-              amazonQAvailable: false,
-              duoSastFpDetectionCascadingSettings: {
-                lockedByAncestor: true,
-                lockedByApplicationSetting: false,
-                ancestorNamespace: { path: 'test-namespace', fullName: 'Test Namespace' },
-              },
-            },
-            { aiExperimentSastFpDetection: true },
-          );
-
-          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
-          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
-        });
-
-        it('shows cascading lock icon when SAST FP Detection is locked by application settings', () => {
-          wrapper = createWrapper(
-            {
-              duoFeaturesEnabled: true,
-              amazonQAvailable: false,
-              duoSastFpDetectionCascadingSettings: {
-                lockedByAncestor: false,
-                lockedByApplicationSetting: true,
-              },
-            },
-            { aiExperimentSastFpDetection: true },
-          );
-
-          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
-          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
-        });
-
-        it('does not show cascading lock icon when not locked', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { aiExperimentSastFpDetection: true },
-          );
-
-          expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(false);
         });
 
         it('updates the hidden input value when toggled', async () => {

@@ -1,7 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 import { routes } from './routes';
@@ -11,7 +11,7 @@ Vue.use(VueRouter);
 
 export function createRouter({
   fullPath,
-  workspaceType = WORKSPACE_PROJECT,
+  workspaceType = NAMESPACE_PROJECT,
   defaultBranch,
   workItemType,
 }) {
@@ -21,7 +21,7 @@ export function createRouter({
       ? joinPaths(gon?.relative_url_root, workspacePath, fullPath, '-', 'issues')
       : joinPaths(gon?.relative_url_root, workspacePath, fullPath, '-');
 
-  if (workspaceType === WORKSPACE_PROJECT) {
+  if (workspaceType === NAMESPACE_PROJECT) {
     window.gl.webIDEPath = webIDEUrl(joinPaths('/', fullPath, 'edit/', defaultBranch, '/-/'));
   }
 

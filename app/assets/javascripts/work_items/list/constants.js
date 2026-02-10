@@ -757,7 +757,6 @@ export const savedViewFilters = {
     type: TOKEN_TYPE_UPDATED,
     operator: OPERATOR_BEFORE,
   },
-  customField: undefined,
   healthStatusFilter: {
     type: TOKEN_TYPE_HEALTH,
     operator: OPERATOR_IS,

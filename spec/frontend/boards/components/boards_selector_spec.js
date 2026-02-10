@@ -11,7 +11,7 @@ import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -234,11 +234,11 @@ describe('BoardsSelector', () => {
     it.each`
       boardType            | queryHandler                        | notCalledHandler
       ${WORKSPACE_GROUP}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
-      ${WORKSPACE_PROJECT} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
+      ${NAMESPACE_PROJECT} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
       createComponent({
         isGroupBoard: boardType === WORKSPACE_GROUP,
-        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isProjectBoard: boardType === NAMESPACE_PROJECT,
       });
 
       await nextTick();
@@ -255,11 +255,11 @@ describe('BoardsSelector', () => {
     it.each`
       boardType
       ${WORKSPACE_GROUP}
-      ${WORKSPACE_PROJECT}
+      ${NAMESPACE_PROJECT}
     `('sets error when fetching $boardType boards fails', async ({ boardType }) => {
       createComponent({
         isGroupBoard: boardType === WORKSPACE_GROUP,
-        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isProjectBoard: boardType === NAMESPACE_PROJECT,
         projectBoardsQueryHandler: boardsHandlerFailure,
         groupBoardsQueryHandler: boardsHandlerFailure,
       });

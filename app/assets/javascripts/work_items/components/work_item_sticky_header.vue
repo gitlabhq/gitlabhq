@@ -3,7 +3,7 @@ import { GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import ArchivedBadge from '~/issuable/components/archived_badge.vue';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -98,7 +98,7 @@ export default {
       container.style.setProperty('--work-item-sticky-header-height', heightPx);
     },
   },
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
   STATE_CLOSED,
   TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
 };
@@ -131,7 +131,7 @@ export default {
           <confidentiality-badge
             v-if="workItem.confidential"
             :issuable-type="workItemType"
-            :workspace-type="$options.WORKSPACE_PROJECT"
+            :workspace-type="$options.NAMESPACE_PROJECT"
             hide-text-in-small-screens
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />

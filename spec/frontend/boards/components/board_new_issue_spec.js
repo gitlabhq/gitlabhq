@@ -7,7 +7,7 @@ import BoardNewItem from '~/boards/components/board_new_item.vue';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
 import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 import {
   mockList,
@@ -67,14 +67,14 @@ describe('Issue boards new issue form', () => {
   it.each`
     boardType            | queryHandler                       | notCalledHandler
     ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-    ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
   `(
     'fetches $boardType board and emits addNewIssue event',
     async ({ boardType, queryHandler, notCalledHandler }) => {
       wrapper = createComponent({
         provide: {
           boardType,
-          isProjectBoard: boardType === WORKSPACE_PROJECT,
+          isProjectBoard: boardType === NAMESPACE_PROJECT,
           isGroupBoard: boardType === WORKSPACE_GROUP,
         },
       });

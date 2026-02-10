@@ -262,29 +262,13 @@ POST /import/bitbucket
 
 | Attribute                | Type   | Required | Description |
 |:-------------------------|:-------|:---------|:------------|
-| `bitbucket_username`     | string | No       | Bitbucket Cloud username. Required when using app password authentication. |
-| `bitbucket_app_password` | string | No       | Bitbucket Cloud app password. Required when using app password authentication. |
-| `bitbucket_email`        | string | No       | Bitbucket Cloud email. Required when using API token authentication. |
 | `bitbucket_api_token`    | string | No       | Bitbucket Cloud API token. Required when using API token authentication. |
+| `bitbucket_email`        | string | No       | Bitbucket Cloud email. Required when using API token authentication. |
+| `bitbucket_username`     | string | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961). Bitbucket Cloud username. Required when using app password authentication. |
+| `bitbucket_app_password` | string | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961). Bitbucket Cloud app password. Required when using app password authentication. |
 | `repo_path`              | string | Yes      | Path to repository. |
 | `target_namespace`       | string | Yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
 | `new_name`               | string | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
-
-Example using app password:
-
-```shell
-curl --request POST \
-  --url "https://gitlab.example.com/api/v4/import/bitbucket" \
-  --header "content-type: application/json" \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --data '{
-    "bitbucket_username": "bitbucket_username",
-    "bitbucket_app_password": "bitbucket_app_password",
-    "repo_path": "username/my_project",
-    "target_namespace": "my_group/my_subgroup",
-    "new_name": "new_project_name"
-}'
-```
 
 Example using API token:
 

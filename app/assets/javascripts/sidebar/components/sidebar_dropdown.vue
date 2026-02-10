@@ -13,7 +13,7 @@ import {
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
   WORKSPACE_GROUP,
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { __ } from '~/locale';
 import {
@@ -83,9 +83,9 @@ export default {
     workspaceType: {
       type: String,
       required: false,
-      default: WORKSPACE_PROJECT,
+      default: NAMESPACE_PROJECT,
       validator(value) {
-        return [WORKSPACE_GROUP, WORKSPACE_PROJECT].includes(value);
+        return [WORKSPACE_GROUP, NAMESPACE_PROJECT].includes(value);
       },
     },
     showWorkItemEpics: {

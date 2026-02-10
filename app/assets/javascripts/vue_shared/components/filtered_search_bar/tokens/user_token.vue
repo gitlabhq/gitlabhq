@@ -4,7 +4,7 @@ import { compact } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import { OPTIONS_NONE_ANY } from '../constants';
 
@@ -48,7 +48,7 @@ export default {
       return this.config.preloadedUsers || [];
     },
     namespace() {
-      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+      return this.config.isProject ? NAMESPACE_PROJECT : WORKSPACE_GROUP;
     },
     fetchUsersQuery() {
       return this.config.fetchUsers ? this.config.fetchUsers : this.fetchUsersBySearchTerm;

@@ -82,6 +82,7 @@ module MergeRequests
         merge_commit_sha: merge_result[:merge_commit_sha],
         squash_commit_sha: merge_result[:squash_commit_sha]
       }.compact
+
       merge_request.update!(new_merge_request_attributes) if new_merge_request_attributes.present?
 
       commit_sha

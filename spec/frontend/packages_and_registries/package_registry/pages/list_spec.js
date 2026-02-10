@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
@@ -388,7 +388,7 @@ describe('PackagesListApp', () => {
 
   describe.each`
     type                 | sortType
-    ${WORKSPACE_PROJECT} | ${'sort'}
+    ${NAMESPACE_PROJECT} | ${'sort'}
     ${WORKSPACE_GROUP}   | ${'groupSort'}
   `('$type query', ({ type, sortType }) => {
     let groupPackageSettingsResolver;

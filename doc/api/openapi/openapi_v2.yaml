@@ -48465,9 +48465,6 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
-      duo_sast_fp_detection_availability:
-        type: boolean
-        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48739,9 +48736,6 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
-      duo_sast_fp_detection_availability:
-        type: boolean
-        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request

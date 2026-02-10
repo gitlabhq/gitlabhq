@@ -91,6 +91,11 @@ For user contributions to be mapped, each user must complete the following befor
 
 ### Generate a Bitbucket Cloud app password
 
+> [!warning]
+> Support for app passwords was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 18.9
+> and is planned for removal in 19.0. Use [user API tokens](https://support.atlassian.com/organization-administration/docs/understand-user-api-tokens/)
+> instead.
+
 If you want to use the import API to import a Bitbucket Cloud repository, you must create a Bitbucket Cloud app password.
 
 To generate a Bitbucket Cloud app password:

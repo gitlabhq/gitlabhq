@@ -26,16 +26,18 @@ For information about activity retention limits, see:
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
 - [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
 
-> [!note]
-> This API has limitations related to epics, merge requests, and bulk push events:
->
-> - Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
-> - Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).
-> - Bulk push events created when a push exceeds the
->   [Push event activities limit](../administration/settings/push_event_activities_limit.md)
->   are returned with limited details: `commit_count: 0`, `ref_count` showing the number of refs
->   pushed, and `null` values for individual commit attributes (`commit_from`, `commit_to`,
->   `ref`, `commit_title`).
+This API has limitations related to epics, merge requests, and bulk push events:
+
+- Some epic features like child items, linked items, start dates, due dates,
+  and health statuses are not returned by the API.
+- Some merge request notes may instead use the `DiscussionNote` type.
+  This target type is
+  [not supported by the API](discussions.md#understand-note-types-in-the-api).
+- Bulk push events created when a push exceeds the
+  [Push event activities limit](../administration/settings/push_event_activities_limit.md)
+  are returned with limited details: `commit_count: 0`, `ref_count` showing
+  the number of refs pushed, and `null` values for individual commit attributes
+  (`commit_from`, `commit_to`, `ref`, `commit_title`).
 
 ## List all events
 

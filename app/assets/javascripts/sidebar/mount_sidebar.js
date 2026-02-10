@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST, NAMESPACE_PROJECT } from '~/issues/constants';
 import {
   isInDesignPage,
   isInIncidentPage,
@@ -329,9 +329,9 @@ export function mountSidebarLabelsWidget() {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? TYPE_ISSUE
               : TYPE_MERGE_REQUEST,
-          workspaceType: WORKSPACE_PROJECT,
+          workspaceType: NAMESPACE_PROJECT,
           attrWorkspacePath: el.dataset.projectPath,
-          labelCreateType: WORKSPACE_PROJECT,
+          labelCreateType: NAMESPACE_PROJECT,
         },
         class: ['block labels js-labels-block'],
         scopedSlots: {

@@ -3,7 +3,7 @@ import { mapState } from 'pinia';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST, NAMESPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
@@ -13,7 +13,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 export default {
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
   components: {
     ConfidentialityBadge,
     LockedBadge,
@@ -105,7 +105,7 @@ export default {
       v-if="isConfidential"
       class="gl-mr-2 gl-self-center"
       :issuable-type="$options.TYPE_ISSUE"
-      :workspace-type="$options.WORKSPACE_PROJECT"
+      :workspace-type="$options.NAMESPACE_PROJECT"
     />
     <locked-badge
       v-if="isLocked"

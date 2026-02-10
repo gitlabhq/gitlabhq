@@ -13,13 +13,14 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
-  # This is not a linear condition (some policies available for planner might not be available for higher access levels)
+  # Planner is a non-hierarchical role (some permissions available for planner might not be available for higher access levels)
   condition(:planner) { access_level == GroupMember::PLANNER }
-  condition(:developer) { access_level >= GroupMember::DEVELOPER }
-  condition(:owner) { access_level >= GroupMember::OWNER }
-  condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
+  # Security manager is a non-hierarchical role (some permissions available for security_manager might not be available for higher access levels)
   condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && access_level == GroupMember::SECURITY_MANAGER }
+  condition(:developer) { access_level >= GroupMember::DEVELOPER }
+  condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
+  condition(:owner) { access_level >= GroupMember::OWNER }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
@@ -240,6 +241,149 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_compliance_pipeline_configuration
   end
 
+  rule { guest }.policy do
+    enable :guest_access
+
+    enable :award_emoji
+    enable :read_group
+    enable :read_release
+  end
+
+  rule { planner }.policy do
+    enable :planner_access
+
+    enable :admin_issue
+    enable :admin_issue_board
+    enable :admin_issue_board_list
+    enable :admin_label
+    enable :admin_milestone
+    enable :admin_work_item
+    enable :destroy_issue
+    enable :guest_access
+    enable :read_confidential_issues
+    enable :read_crm_contact
+    enable :read_crm_organization
+    enable :read_internal_note
+    enable :update_issue
+  end
+
+  rule { reporter }.policy do
+    enable :reporter_access
+
+    enable :admin_issue
+    enable :admin_issue_board
+    enable :admin_issue_board_list
+    enable :admin_label
+    enable :admin_milestone
+    enable :admin_work_item
+    enable :read_ci_cd_analytics
+    enable :read_confidential_issues
+    enable :read_container_image
+    enable :read_crm_contact
+    enable :read_crm_organization
+    enable :read_harbor_registry
+    enable :read_internal_note
+    enable :read_package
+    enable :read_prometheus
+    enable :update_issue
+  end
+
+  rule { security_manager }.policy do
+    enable :security_manager_access
+  end
+
+  rule { developer }.policy do
+    enable :developer_access
+
+    enable :admin_crm_contact
+    enable :admin_crm_organization
+    enable :create_custom_emoji
+    enable :create_observability_access_request
+    enable :create_package
+    enable :delete_o11y_settings
+    enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
+    enable :read_cluster_agent
+    enable :read_group_all_available_runners
+    enable :read_observability_portal
+    enable :update_o11y_settings
+  end
+
+  rule { maintainer }.policy do
+    enable :maintainer_access
+
+    enable :add_cluster
+    enable :admin_achievement
+    enable :admin_build
+    enable :admin_cluster
+    enable :admin_pipeline
+    enable :admin_push_rules
+    enable :admin_upload
+    enable :award_achievement
+    enable :create_cluster
+    enable :create_jira_connect_subscription
+    enable :destroy_package
+    enable :destroy_upload
+    enable :import_projects
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :read_runners
+    enable :read_deploy_token
+    enable :update_cluster
+  end
+
+  rule { owner }.policy do
+    enable :owner_access
+    enable :security_manager_access
+
+    enable :admin_cicd_variables
+    enable :admin_group
+    enable :admin_group_member
+    enable :admin_integrations
+    enable :admin_namespace
+    enable :admin_package
+    enable :admin_protected_environments
+    enable :archive_group
+    enable :change_group
+    enable :change_new_user_signups_cap
+    enable :change_prevent_sharing_groups_outside_hierarchy
+    enable :change_seat_control
+    enable :change_visibility_level
+    enable :create_deploy_token
+    enable :create_group_link
+    enable :create_subgroup
+    enable :delete_group_link
+    enable :destroy_deploy_token
+    enable :destroy_issue
+    enable :edit_billing
+    enable :manage_merge_request_settings
+    enable :read_billing
+    enable :read_usage_quotas
+    enable :remove_group
+    enable :set_emails_disabled
+    enable :set_note_created_at
+    enable :set_show_diff_preview_in_email
+    enable :update_default_branch_protection
+    enable :update_git_access_protocol
+
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :admin_runners
+    enable :create_runners
+    enable :read_runners
+    enable :read_runners_registration_token
+    enable :register_group_runners
+    enable :update_group_link
+    enable :update_runners_registration_token
+  end
+
+  rule { admin }.policy do
+    enable :update_max_artifacts_size
+    enable :create_projects
+    enable :read_custom_attribute
+    enable :delete_custom_attribute
+    enable :update_custom_attribute
+  end
+
   rule { archived & ~group_scheduled_for_deletion }.policy do
     prevent :delete_custom_emoji
     prevent :delete_o11y_settings
@@ -264,49 +408,13 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { logged_in_viewable }.enable :read_group
 
-  rule { guest }.policy do
-    enable :read_group
-    enable :guest_access
-    enable :read_release
-    enable :award_emoji
-  end
-
   rule { guest | can?(:admin_issue) }.policy do
     enable :set_new_issue_metadata
     enable :set_new_work_item_metadata
   end
 
-  rule { planner }.policy do
-    enable :planner_access
-    enable :guest_access
-    enable :admin_label
-    enable :admin_milestone
-    enable :admin_issue_board
-    enable :admin_issue_board_list
-    enable :admin_issue
-    enable :admin_work_item
-    enable :destroy_issue
-    enable :update_issue
-    enable :read_confidential_issues
-    enable :read_crm_organization
-    enable :read_crm_contact
-    enable :read_internal_note
-  end
-
-  rule { security_manager }.policy do
-    enable :security_manager_access
-  end
-
   rule { admin | organization_owner }.policy do
     enable :read_group
-  end
-
-  rule { admin }.policy do
-    enable :update_max_artifacts_size
-    enable :create_projects
-    enable :read_custom_attribute
-    enable :delete_custom_attribute
-    enable :update_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.policy do
@@ -363,108 +471,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { has_access }.enable :read_namespace_via_membership
-
-  rule { developer }.policy do
-    enable :create_custom_emoji
-    enable :create_observability_access_request
-    enable :update_o11y_settings
-    enable :delete_o11y_settings
-    enable :create_package
-    enable :developer_access
-    enable :admin_crm_organization
-    enable :admin_crm_contact
-    enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
-    enable :read_cluster_agent
-    enable :read_group_all_available_runners
-    enable :read_observability_portal
-  end
-
-  rule { reporter }.policy do
-    enable :reporter_access
-    enable :read_container_image
-    enable :read_harbor_registry
-    enable :admin_issue_board
-    enable :admin_label
-    enable :admin_milestone
-    enable :admin_issue_board_list
-    enable :admin_issue
-    enable :admin_work_item
-    enable :update_issue
-    enable :read_prometheus
-    enable :read_package
-    enable :read_crm_organization
-    enable :read_crm_contact
-    enable :read_confidential_issues
-    enable :read_ci_cd_analytics
-    enable :read_internal_note
-  end
-
-  rule { maintainer }.policy do
-    enable :maintainer_access
-    enable :add_cluster
-    enable :admin_achievement
-    enable :admin_build
-    enable :admin_cluster
-    enable :admin_pipeline
-    enable :admin_push_rules
-    enable :admin_upload
-    enable :award_achievement
-    enable :create_cluster
-    enable :create_jira_connect_subscription
-    enable :destroy_package
-    enable :destroy_upload
-    enable :import_projects
-    enable :read_deploy_token
-    enable :update_cluster
-
-    # doc/ci/runners/runners_scope.md#group-runners
-    # doc/user/permissions.md#cicd-group-permissions
-    enable :read_runners
-  end
-
-  rule { owner }.policy do
-    enable :owner_access
-    enable :admin_cicd_variables
-    enable :admin_group
-    enable :admin_group_member
-    enable :admin_integrations
-    enable :admin_namespace
-    enable :admin_package
-    enable :admin_protected_environments
-    enable :archive_group
-    enable :change_group
-    enable :change_new_user_signups_cap
-    enable :change_prevent_sharing_groups_outside_hierarchy
-    enable :change_seat_control
-    enable :change_visibility_level
-    enable :create_deploy_token
-    enable :create_group_link
-    enable :create_subgroup
-    enable :delete_group_link
-    enable :destroy_deploy_token
-    enable :destroy_issue
-    enable :edit_billing
-    enable :manage_merge_request_settings
-    enable :read_billing
-    enable :read_usage_quotas
-    enable :remove_group
-    enable :set_emails_disabled
-    enable :set_note_created_at
-    enable :set_show_diff_preview_in_email
-    enable :update_default_branch_protection
-    enable :update_git_access_protocol
-
-    # doc/ci/runners/runners_scope.md#group-runners
-    # doc/user/permissions.md#cicd-group-permissions
-    enable :admin_runners
-    enable :create_runners
-    enable :read_runners
-    enable :read_runners_registration_token
-    enable :register_group_runners
-    enable :update_group_link
-    enable :update_runners_registration_token
-    enable :security_manager_access
-  end
 
   rule { can?(:read_nested_project_resources) }.policy do
     enable :read_group_activity

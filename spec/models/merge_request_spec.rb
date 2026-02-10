@@ -1898,6 +1898,97 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#cache_closing_issues_after_merge!' do
+    let_it_be_with_reload(:issue1) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue2) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue3) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue4) { create(:issue, project: project) }
+
+    before do
+      project.add_developer(subject.author)
+      subject.target_branch = subject.project.default_branch
+      create(
+        :merge_requests_closing_issues,
+        issue: issue1,
+        merge_request: subject,
+        from_mr_description: true
+      )
+      create(
+        :merge_requests_closing_issues,
+        issue: issue2,
+        merge_request: subject,
+        from_mr_description: false
+      )
+    end
+
+    context 'when squash commit is present' do
+      let(:squash_commit) do
+        double('squash commit', safe_message: "Fixes #{issue3.to_reference} closes #{issue2.to_reference}")
+      end
+
+      before do
+        allow(subject).to receive(:squash_commit).and_return(squash_commit)
+      end
+
+      it 'adds closing issues from the squash commit message, sets from_mr_description=true if matching issues exist' do
+        expect do
+          subject.cache_closing_issues_after_merge!(subject.author)
+        end.to change(subject.merge_requests_closing_issues, :count).by(1)
+
+        expect(subject.merge_requests_closing_issues.pluck(:issue_id, :from_mr_description)).to contain_exactly(
+          [issue1.id, true],
+          [issue2.id, true],
+          [issue3.id, true]
+        )
+      end
+
+      context 'when merge_commit is present' do
+        let(:merge_commit) do
+          double('merge commit', safe_message: "Fixes #{issue4.to_reference}")
+        end
+
+        before do
+          allow(subject).to receive(:merge_commit).and_return(merge_commit)
+        end
+
+        it 'adds closing issues from the squash and merge commit messages' do
+          expect do
+            subject.cache_closing_issues_after_merge!(subject.author)
+          end.to change(subject.merge_requests_closing_issues, :count).by(2)
+
+          expect(subject.merge_requests_closing_issues.pluck(:issue_id, :from_mr_description)).to contain_exactly(
+            [issue1.id, true],
+            [issue2.id, true],
+            [issue3.id, true],
+            [issue4.id, true]
+          )
+        end
+      end
+    end
+
+    context 'when merge_commit is present' do
+      let(:merge_commit) do
+        double('merge commit', safe_message: "Fixes #{issue4.to_reference}")
+      end
+
+      before do
+        allow(subject).to receive(:merge_commit).and_return(merge_commit)
+      end
+
+      it 'adds closing issues from the merge commit message' do
+        expect do
+          subject.cache_closing_issues_after_merge!(subject.author)
+        end.to change(subject.merge_requests_closing_issues, :count).by(1)
+
+        expect(subject.merge_requests_closing_issues.pluck(:issue_id, :from_mr_description)).to contain_exactly(
+          [issue1.id, true],
+          [issue2.id, false],
+          [issue4.id, true]
+        )
+      end
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!', :aggregate_failures do
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
 

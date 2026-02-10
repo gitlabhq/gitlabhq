@@ -1707,6 +1707,25 @@ class MergeRequest < ApplicationRecord
     target_project == source_project
   end
 
+  def cache_closing_issues_after_merge!(current_user)
+    return unless merge_commit || squash_commit
+
+    messages = [squash_commit&.safe_message, merge_commit&.safe_message].compact
+
+    squash_and_merge_commit_issue_ids = Gitlab::ClosingIssueExtractor.new(project, current_user)
+      .closed_by_message(messages.join("\n"))
+      .reject { |issue| issue.is_a?(ExternalIssue) }
+      .map(&:id)
+
+    transaction do
+      update_cached_closing_issues_from_description!(squash_and_merge_commit_issue_ids)
+      existing_issue_ids = merge_requests_closing_issues.pluck(:issue_id)
+      issue_ids_to_create = squash_and_merge_commit_issue_ids - existing_issue_ids
+
+      bulk_insert_cached_closing_issues(issue_ids_to_create)
+    end
+  end
+
   # If the merge request closes any issues, save this information in the
   # `MergeRequestsClosingIssues` model. This is a performance optimization.
   # Calculating this information for a number of merge requests requires
@@ -1720,33 +1739,11 @@ class MergeRequest < ApplicationRecord
     transaction do
       merge_requests_closing_issues.from_mr_description.delete_all
 
-      # These might have been created manually from the work item interface
-      issue_ids_to_update = merge_requests_closing_issues
-        .where(from_mr_description: false, issue_id: issues_to_close_ids)
-        .pluck(:issue_id)
-
-      if issue_ids_to_update.any?
-        merge_requests_closing_issues.where(issue_id: issue_ids_to_update).update_all(from_mr_description: true)
-      end
-
-      issue_ids_to_create = issues_to_close_ids - issue_ids_to_update
+      updated_issue_ids = update_cached_closing_issues_from_description!(issues_to_close_ids)
+      issue_ids_to_create = issues_to_close_ids - updated_issue_ids
       next unless issue_ids_to_create.any?
 
-      now = Time.zone.now
-      new_associations = issue_ids_to_create.map do |issue_id|
-        MergeRequestsClosingIssues.new(
-          issue_id: issue_id,
-          merge_request_id: id,
-          from_mr_description: true,
-          created_at: now,
-          updated_at: now
-        )
-      end
-
-      # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
-      # We can skip validations once we have validated the unique constraint
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
-      MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
+      bulk_insert_cached_closing_issues(issue_ids_to_create)
     end
   end
 
@@ -1776,6 +1773,8 @@ class MergeRequest < ApplicationRecord
     if target_branch == project.default_branch
       messages = [title, description]
       messages.concat(commits(load_from_gitaly: true).map(&:safe_message)) if merge_request_diff.persisted?
+      messages << squash_commit.safe_message if squash_commit.present?
+      messages << merge_commit.safe_message if merge_commit.present?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -2842,6 +2841,37 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def update_cached_closing_issues_from_description!(issues_to_close_ids)
+    # These might have been created manually from the work item interface
+    issue_ids_to_update = merge_requests_closing_issues
+      .where(from_mr_description: false, issue_id: issues_to_close_ids)
+      .pluck(:issue_id)
+
+    if issue_ids_to_update.any?
+      merge_requests_closing_issues.where(issue_id: issue_ids_to_update).update_all(from_mr_description: true)
+    end
+
+    issue_ids_to_update
+  end
+
+  def bulk_insert_cached_closing_issues(issue_ids_to_create)
+    now = Time.zone.now
+    new_associations = issue_ids_to_create.map do |issue_id|
+      MergeRequestsClosingIssues.new(
+        issue_id: issue_id,
+        merge_request_id: id,
+        from_mr_description: true,
+        created_at: now,
+        updated_at: now
+      )
+    end
+
+    # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
+    # We can skip validations once we have validated the unique constraint
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
+    MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
+  end
 
   def merge_data_attributes
     {

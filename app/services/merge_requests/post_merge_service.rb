@@ -64,6 +64,9 @@ module MergeRequests
     def close_issues(merge_request)
       return unless merge_request.target_branch == project.default_branch
 
+      # We need to do this here to include closing messages from merge and squash commit
+      merge_request.cache_closing_issues_after_merge!(current_user)
+
       if merge_request.target_project.has_external_issue_tracker?
         merge_request.closes_issues(current_user).each do |issue|
           close_issue(issue, merge_request)

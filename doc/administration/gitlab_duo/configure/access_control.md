@@ -41,7 +41,7 @@ To give a user access to specific features:
 1. Select **Change configuration**.
 1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
-1. Select the features that group members can access.
+1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
 The user now has access to these features anywhere in the instance
@@ -63,13 +63,15 @@ To give a user access to specific features:
 1. Select **Change configuration**.
 1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
-1. Select the features that group members can access.
+1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
 These settings apply to:
 
 - Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Users that don't have access through their default namespace, but the current top-level group gives them ability to use the feature.
+- Users who do not have access through their default namespace
+  but can use the features through their top-level group.
+- Users who are direct members of the top-level group.
 
 {{< /tab >}}
 

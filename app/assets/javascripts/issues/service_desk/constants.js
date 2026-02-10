@@ -32,7 +32,7 @@ export const STATUS_ALL = 'all';
 export const STATUS_CLOSED = 'closed';
 export const STATUS_OPEN = 'opened';
 
-export const WORKSPACE_PROJECT = 'project';
+export const NAMESPACE_PROJECT = 'project';
 
 export const filtersMap = {
   [FILTERED_SEARCH_TERM]: {

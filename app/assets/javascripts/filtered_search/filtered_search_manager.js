@@ -7,7 +7,7 @@ import {
   STATUS_CLOSED,
   STATUS_MERGED,
   STATUS_OPEN,
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import {
   ENTER_KEY_CODE,
@@ -86,7 +86,7 @@ export default class FilteredSearchManager {
     );
     const fullPath = this.searchHistoryDropdownElement
       ? this.searchHistoryDropdownElement.dataset.fullPath
-      : WORKSPACE_PROJECT;
+      : NAMESPACE_PROJECT;
     const recentSearchesKey = `${fullPath}-${recentSearchesStorageKeys[this.page]}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }

@@ -245,6 +245,21 @@ The trending algorithm only considers public projects, making it ineffective for
 
 UI users: The **Trending** tab will be inaccessible during the next breaking change window before full removal in 19.0. We recommend using the **Active** tab to view recently updated or most starred projects.
 
+### Using app passwords with Bitbucket Cloud import GitLab API
+
+- Announced in GitLab 18.9
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961).
+
+Atlassian has deprecated app passwords (username and password authentication) for Bitbucket Cloud and
+[announced](https://www.atlassian.com/blog/bitbucket/bitbucket-cloud-transitions-to-api-tokens-enhancing-security-with-app-password-deprecation)
+that this authentication method will stop working on 2026-06-09.
+
+From GitLab 19.0, if you want to import repositories from Bitbucket Cloud through the GitLab API, you must use
+[user API tokens](https://support.atlassian.com/organization-administration/docs/understand-user-api-tokens/) instead.
+
+Users importing repositories from Bitbucket Server, or from Bitbucket Cloud through the GitLab UI, are unaffected.
+
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 - Announced in GitLab 17.5

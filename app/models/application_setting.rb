@@ -11,6 +11,8 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
+  ignore_column :lock_duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

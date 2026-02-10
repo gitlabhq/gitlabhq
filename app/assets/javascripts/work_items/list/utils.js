@@ -442,20 +442,20 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
         return acc;
       }
       const { operator, type } = savedViewFilters[key];
-      acc.push({ type, data: value, operator });
+      if (operator === OPERATOR_IS && Array.isArray(value)) {
+        acc.push(...value.map((v) => ({ type, data: v, operator })));
+      } else {
+        acc.push({ type, data: value, operator });
+      }
       return acc;
     }, [])
     .map(({ type, data, operator }) => {
       if (Array.isArray(data)) {
         /**
-         * Some filters are returned from the api as arrays
-         * in the case that we're using the 'is' operator, we
-         * should select the first and only item in that array.
-         *
          * heath status returns an array for a single value with
-         * the 'not' operator too.
+         * the 'not' operator.
          */
-        if (operator === OPERATOR_IS || (operator === OPERATOR_NOT && type === TOKEN_TYPE_HEALTH)) {
+        if (operator === OPERATOR_NOT && type === TOKEN_TYPE_HEALTH) {
           return {
             type,
             value: { data: convertToTokenValue(type, data[0]), operator },

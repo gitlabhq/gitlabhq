@@ -1,5 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import createBoardListMutation from './graphql/board_list_create.mutation.graphql';
@@ -54,7 +54,7 @@ export const boardQuery = {
   [WORKSPACE_GROUP]: {
     query: groupBoardQuery,
   },
-  [WORKSPACE_PROJECT]: {
+  [NAMESPACE_PROJECT]: {
     query: projectBoardQuery,
   },
 };

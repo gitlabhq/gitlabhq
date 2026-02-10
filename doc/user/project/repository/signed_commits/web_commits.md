@@ -47,6 +47,40 @@ Co-authored-by: User B <b@example.com>
 Before you can use commit signing for GitLab UI commits, you must
 [configure it](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits).
 
+## Enable web-based commit signing for a group
+
+{{< details >}}
+
+Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219744) in GitLab 18.9 [with a flag](../../../../administration/feature_flags/_index.md) named `web_based_commit_signing_ui`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+- The `web_based_commit_signing_ui` feature flag must be enabled for your instance.
+
+To enable web-based commit signing for all projects in a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings**, then **Repository**.
+1. Expand **General**.
+1. Select the **Sign web-based commits** checkbox.
+
+When enabled, all commits made through the GitLab UI (Web Editor, Web IDE, merge requests) are automatically signed with the instance's configured signing key.
+
+Projects in the group inherit this setting.
+
 ## Committer field of the commits
 
 In Git, commits have both an author and a committer.
