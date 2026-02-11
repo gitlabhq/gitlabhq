@@ -25,7 +25,7 @@ GitLab provides a way to connect Sentry to your project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable the Sentry integration:
 

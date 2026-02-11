@@ -106,6 +106,13 @@ export default {
         };
       },
       update(data) {
+        if (
+          data?.note?.noteableType !== this.noteableData.noteableType ||
+          data?.note?.noteableId !== this.noteableData.id
+        ) {
+          return null;
+        }
+
         if (!data?.note?.discussion) return null;
         return {
           id: `${getIdFromGraphQLId(data.note.discussion.id)}`,

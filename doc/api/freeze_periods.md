@@ -20,7 +20,7 @@ Paginated list of freeze periods, sorted by `created_at` in ascending order.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/freeze_periods
@@ -59,7 +59,7 @@ Retrieves a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/freeze_periods/:freeze_period_id
@@ -97,7 +97,7 @@ Creates a freeze period for a specified project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 POST /projects/:id/freeze_periods
@@ -139,7 +139,7 @@ Updates a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 PUT /projects/:id/freeze_periods/:freeze_period_id
@@ -182,7 +182,7 @@ Deletes a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/freeze_periods/:freeze_period_id

@@ -26,7 +26,7 @@ import {
   WORK_ITEM_NOTES_SORT_ORDER_KEY,
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
-import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM, ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import { autocompleteDataSources, findNotesWidget } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
@@ -313,6 +313,13 @@ export default {
         };
       },
       update(data) {
+        if (
+          data?.note?.noteableType !== ISSUE_NOTEABLE_TYPE ||
+          data?.note?.noteableId !== getIdFromGraphQLId(this.workItemId)
+        ) {
+          return null;
+        }
+
         return data?.note?.discussion;
       },
       result(result) {

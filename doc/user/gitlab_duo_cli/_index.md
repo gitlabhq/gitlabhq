@@ -11,8 +11,6 @@ title: GitLab Duo CLI (`duo`)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
-This feature uses [GitLab Credits](../../subscriptions/gitlab_credits.md).
-
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}

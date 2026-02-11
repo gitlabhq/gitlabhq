@@ -1148,8 +1148,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/users_table/users_table.vue',
     'app/assets/javascripts/vue_shared/components/visibility_icon_button.vue',
     'app/assets/javascripts/vue_shared/components/work_item_attribute.vue',
-    'app/assets/javascripts/vue_shared/issuable/create/components/issuable_create_root.vue',
-    'app/assets/javascripts/vue_shared/issuable/create/components/issuable_form.vue',
     'app/assets/javascripts/vue_shared/issuable/create/components/issuable_label_selector.vue',
     'app/assets/javascripts/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue',
     'app/assets/javascripts/vue_shared/issuable/list/components/issuable_item.vue',

@@ -5,6 +5,10 @@ query doraMetricsQuery(
   $startDate: Date!
   $endDate: Date!
   $interval: DoraMetricBucketingInterval!
+  $skipDeploymentFrequency: Boolean = false
+  $skipLeadTimeForChanges: Boolean = false
+  $skipTimeToRestoreService: Boolean = false
+  $skipChangeFailureRate: Boolean = false
 ) {
   project(fullPath: $fullPath) {
     id

@@ -2358,6 +2358,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#get_blob_types' do
+    let(:revision_paths) { [['master', 'README.md'], ['master', 'files']] }
+
+    it 'delegates to raw_repository' do
+      expect(repository.raw_repository).to receive(:get_blob_types)
+        .with(revision_paths, -1)
+        .and_return({ 'README.md' => :blob, 'files' => :tree })
+
+      result = repository.get_blob_types(revision_paths, -1)
+
+      expect(result).to eq({ 'README.md' => :blob, 'files' => :tree })
+    end
+  end
+
   describe '#root_ref' do
     let(:project) { create(:project, :repository) }
 

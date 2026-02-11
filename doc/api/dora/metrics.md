@@ -19,7 +19,7 @@ Additional endpoints are available with the [GraphQL API](../graphql/reference/_
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 ## Retrieve project-level DORA metrics
 

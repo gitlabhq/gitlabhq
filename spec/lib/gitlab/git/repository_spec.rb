@@ -2910,6 +2910,18 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#get_blob_types' do
+    subject { repository.get_blob_types(revision_paths, limit) }
+
+    let(:revision_paths) { [['master', 'README.md'], ['master', 'files']] }
+    let(:limit) { -1 }
+
+    it 'delegates to BlobService' do
+      expect(repository.gitaly_blob_client).to receive(:get_blob_types).with(revision_paths, limit)
+      subject
+    end
+  end
+
   describe '#object_pool' do
     subject { repository.object_pool }
 

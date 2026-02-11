@@ -117,7 +117,7 @@ module Gitlab
         end
 
         def unique_milestone_title(title)
-          suffix = "(imported-#{SecureRandom.hex(1)}-#{Time.current.to_i}))"
+          suffix = "(imported-#{SecureRandom.hex(1)}-#{Time.current.to_i})"
           "#{title} #{suffix}"
         end
 

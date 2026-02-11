@@ -9,6 +9,12 @@ query flowMetricsQuery(
   $authorUsername: String
   $assigneeUsernames: [String!]
   $milestoneTitle: String
+  $skipIssueCount: Boolean = false
+  $skipIssuesCompletedCount: Boolean = false
+  $skipCycleTime: Boolean = false
+  $skipLeadTime: Boolean = false
+  $skipDeploymentCount: Boolean = false
+  $skipTimeToMerge: Boolean = false
 ) {
   project(fullPath: $fullPath) {
     id
@@ -20,7 +26,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipIssueCount) {
         ...FlowMetricItem
       }
       issues_completed: issuesCompletedCount(
@@ -30,7 +36,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipIssuesCompletedCount) {
         ...FlowMetricItem
       }
       cycle_time: cycleTime(
@@ -40,7 +46,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipCycleTime) {
         ...FlowMetricItem
       }
       lead_time: leadTime(
@@ -50,10 +56,10 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipLeadTime) {
         ...FlowMetricItem
       }
-      deploys: deploymentCount(from: $startDate, to: $endDate) {
+      deploys: deploymentCount(from: $startDate, to: $endDate) @skip(if: $skipDeploymentCount) {
         ...FlowMetricItem
       }
       median_time_to_merge: timeToMerge(
@@ -62,7 +68,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipTimeToMerge) {
         ...FlowMetricItem
       }
     }
@@ -78,7 +84,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipIssueCount) {
         ...FlowMetricItem
       }
       issues_completed: issuesCompletedCount(
@@ -89,7 +95,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipIssuesCompletedCount) {
         ...FlowMetricItem
       }
       cycle_time: cycleTime(
@@ -100,7 +106,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipCycleTime) {
         ...FlowMetricItem
       }
       lead_time: leadTime(
@@ -111,10 +117,11 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipLeadTime) {
         ...FlowMetricItem
       }
-      deploys: deploymentCount(from: $startDate, to: $endDate, projectIds: $projectIds) {
+      deploys: deploymentCount(from: $startDate, to: $endDate, projectIds: $projectIds)
+        @skip(if: $skipDeploymentCount) {
         ...FlowMetricItem
       }
       median_time_to_merge: timeToMerge(
@@ -125,7 +132,7 @@ query flowMetricsQuery(
         authorUsername: $authorUsername
         assigneeUsernames: $assigneeUsernames
         milestoneTitle: $milestoneTitle
-      ) {
+      ) @skip(if: $skipTimeToMerge) {
         ...FlowMetricItem
       }
     }

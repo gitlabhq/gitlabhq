@@ -10,8 +10,6 @@ title: Code Review Flow
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
-This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
-
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}

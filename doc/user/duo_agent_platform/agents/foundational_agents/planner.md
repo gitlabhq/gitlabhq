@@ -10,8 +10,6 @@ title: Planner Agent
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
-
 {{< /details >}}
 
 {{< history >}}

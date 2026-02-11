@@ -7343,9 +7343,6 @@ msgstr ""
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
-msgid "AiPowered|Capture detailed information about AI-related activities and requests."
-msgstr ""
-
 msgid "AiPowered|Change configuration"
 msgstr ""
 
@@ -7401,9 +7398,6 @@ msgid "AiPowered|Data collection"
 msgstr ""
 
 msgid "AiPowered|Direct connections"
-msgstr ""
-
-msgid "AiPowered|Enable AI logs"
 msgstr ""
 
 msgid "AiPowered|Enabled"
@@ -9127,7 +9121,7 @@ msgstr ""
 msgid "Analytics|No results match your query or filter."
 msgstr ""
 
-msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
+msgid "Analytics|Refresh the page to try again."
 msgstr ""
 
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -9136,7 +9130,7 @@ msgstr ""
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
-msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
+msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again."
 msgstr ""
 
 msgid "Analytics|Something went wrong."
@@ -78357,6 +78351,9 @@ msgstr ""
 msgid "WorkItem|Archived custom fields"
 msgstr ""
 
+msgid "WorkItem|Archived types"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to cancel creating this %{workItemType}?"
 msgstr ""
 
@@ -78589,6 +78586,9 @@ msgid "WorkItem|Development"
 msgstr ""
 
 msgid "WorkItem|Disable list item"
+msgstr ""
+
+msgid "WorkItem|Disabled in all groups and projects. Items created prior to archiving may remain in this type."
 msgstr ""
 
 msgid "WorkItem|Discard changes"

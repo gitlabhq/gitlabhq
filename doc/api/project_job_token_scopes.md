@@ -16,7 +16,7 @@ Use this API to interact with [CI/CD job token](../ci/jobs/ci_job_token.md) scop
 
 > [!note]
 > All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/authentication.md).
-> The authenticated user must have at least the Maintainer role for the project.
+> The authenticated user must have the Maintainer or Owner role for the project.
 
 ## Get a project's CI/CD job token access settings
 

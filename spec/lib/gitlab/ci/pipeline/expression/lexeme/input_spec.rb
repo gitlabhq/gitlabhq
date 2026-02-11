@@ -15,6 +15,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Input, feature_category
 
       expect(lexeme.value).to eq('environment')
     end
+
+    it 'handles input names with hyphens' do
+      lexeme = described_class.build('$[[ inputs.kebab-case-name ]]')
+
+      expect(lexeme.value).to eq('kebab-case-name')
+    end
   end
 
   describe '.type' do

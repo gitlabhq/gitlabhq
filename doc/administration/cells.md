@@ -1,7 +1,7 @@
 ---
 stage: Runtime
 group: Cells Infrastructure
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with the Maintainer or Owner role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Cells
 description: Configure and test GitLab Cells functionality for GitLab.com administrators as part of functionality testing, including enabling Cell instances and configuring topology service clients.
 ---

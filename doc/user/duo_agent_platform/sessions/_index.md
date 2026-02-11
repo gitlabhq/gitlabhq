@@ -10,8 +10,6 @@ title: Sessions
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
-
 {{< /details >}}
 
 Sessions show the status and execution data for the agents and flows you've run.

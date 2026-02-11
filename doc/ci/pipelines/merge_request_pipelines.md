@@ -35,7 +35,7 @@ use [merged results pipelines](merged_results_pipelines.md).
 To use merge request pipelines:
 
 - Your project's `.gitlab-ci.yml` file must include job rules or workflow rules that match `CI_PIPELINE_SOURCE == "merge_request_event"`.
-- You must have at least the Developer role for the source project to run a merge request pipeline.
+- You must have the Developer, Maintainer, or Owner role for the source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 
 ## Configure merge request pipelines

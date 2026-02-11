@@ -844,7 +844,7 @@ Example response:
 
 List users provisioned by a group. Does not include subgroups.
 
-Requires at least the Maintainer role on the group.
+Requires the Maintainer or Owner role on the group.
 
 ```plaintext
 GET /groups/:id/provisioned_users

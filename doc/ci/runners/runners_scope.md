@@ -545,7 +545,7 @@ You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) 
 Prerequisites:
 
 - Runner registration tokens must be [enabled](#enable-use-of-runner-registration-tokens-in-projects-and-groups) in the top-level group.
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a project runner:
 
@@ -603,7 +603,7 @@ To prevent unnecessary API traffic, you must also
 After a project runner is created, you can enable it for other projects.
 
 Prerequisites:
-You must have at least the Maintainer role for:
+You must have the Maintainer or Owner role for:
 
 - The project where the runner is already enabled.
 - The project where you want to enable the runner.

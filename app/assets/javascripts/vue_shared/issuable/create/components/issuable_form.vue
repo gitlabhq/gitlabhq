@@ -6,6 +6,7 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import { __ } from '~/locale';
 
 export default {
+  name: 'IssuableForm',
   VARIANT_EMBEDDED,
   components: {
     GlForm,
@@ -43,10 +44,12 @@ export default {
   },
   data() {
     return {
-      issuableTitle: '',
-      issuableDescription: '',
-      issuableConfidential: false,
-      selectedLabels: [],
+      issuableMeta: {
+        issuableTitle: '',
+        issuableDescription: '',
+        issuableConfidential: false,
+        selectedLabels: [],
+      },
     };
   },
   computed: {
@@ -59,7 +62,7 @@ export default {
   methods: {
     handleUpdateSelectedLabels(labels) {
       if (labels.length) {
-        this.selectedLabels = labels;
+        this.issuableMeta.selectedLabels = labels;
       }
     },
   },
@@ -74,7 +77,7 @@ export default {
         <gl-form-group :description="__('Maximum of 255 characters')">
           <gl-form-input
             id="issuable-title"
-            v-model="issuableTitle"
+            v-model="issuableMeta.issuableTitle"
             maxlength="255"
             :autofocus="true"
             :placeholder="__('Title')"
@@ -86,7 +89,7 @@ export default {
       <label for="issuable-description" class="gl-col-12">{{ __('Description') }}</label>
       <div class="gl-col-12">
         <markdown-editor
-          v-model="issuableDescription"
+          v-model="issuableMeta.issuableDescription"
           :render-markdown-path="descriptionPreviewPath"
           :markdown-docs-path="descriptionHelpPath"
           :form-field-props="$options.descriptionFormFieldProps"
@@ -96,7 +99,7 @@ export default {
     <div data-testid="issuable-confidential" class="form-group gl-row">
       <div class="gl-col-12">
         <gl-form-group :label="__('Confidentiality')" label-for="issuable-confidential">
-          <gl-form-checkbox id="issuable-confidential" v-model="issuableConfidential">
+          <gl-form-checkbox id="issuable-confidential" v-model="issuableMeta.issuableConfidential">
             {{ confidentialityText }}
           </gl-form-checkbox>
         </gl-form-group>
@@ -113,7 +116,7 @@ export default {
             :allow-scoped-labels="true"
             :labels-fetch-path="labelsFetchPath"
             :labels-manage-path="labelsManagePath"
-            :selected-labels="selectedLabels"
+            :selected-labels="issuableMeta.selectedLabels"
             :labels-list-title="__('Select label')"
             :footer-create-label-title="__('Create project label')"
             :footer-manage-label-title="__('Manage project labels')"
@@ -124,13 +127,7 @@ export default {
       </div>
     </div>
     <div data-testid="issuable-create-actions" class="footer-block gl-mt-6 gl-flex">
-      <slot
-        name="actions"
-        :issuable-title="issuableTitle"
-        :issuable-description="issuableDescription"
-        :issuable-confidential="issuableConfidential"
-        :selected-labels="selectedLabels"
-      ></slot>
+      <slot name="actions" :issuable-meta="issuableMeta"></slot>
     </div>
   </gl-form>
 </template>

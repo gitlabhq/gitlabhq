@@ -20,7 +20,7 @@ title: Runner fleet dashboard for groups
 
 {{< /history >}}
 
-Users with at least the Maintainer role for a group can use the runner fleet dashboard to assess the health of group runners.
+Users with the Maintainer or Owner role for a group can use the runner fleet dashboard to assess the health of group runners.
 
 ![Runner fleet dashboard for groups](img/runner_fleet_dashboard_groups_v17_1.png)
 

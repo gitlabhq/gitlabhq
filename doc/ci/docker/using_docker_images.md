@@ -235,7 +235,7 @@ To access private container registries, the GitLab Runner process can use:
 
 When you use the [GitLab Container Registry](../../user/packages/container_registry/_index.md) on the same GitLab instance,
 GitLab provides default credentials for this registry. With these credentials, the `CI_JOB_TOKEN` is used for authentication.
-To use the job token, the user starting the job must have at least the Developer role for the project where the private image is hosted.
+To use the job token, the user starting the job must have the Developer, Maintainer, or Owner role for the project where the private image is hosted.
 The project hosting the private image must also allow the other project to authenticate with the job token. This access is disabled by default.
 For more details, see [CI/CD job token](../jobs/ci_job_token.md#control-job-token-access-to-your-project).
 

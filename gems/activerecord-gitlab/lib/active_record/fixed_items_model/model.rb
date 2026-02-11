@@ -148,6 +148,40 @@ module ActiveRecord
         validates :id, numericality: { greater_than: 0, only_integer: true }
       end
 
+      def as_json(options = {})
+        # Start with all attributes
+        attrs = attributes.transform_keys(&:to_s)
+
+        # Handle :only option - include only specified attributes
+        if options[:only]
+          only_attrs = Array(options[:only]).map(&:to_s)
+          attrs = attrs.slice(*only_attrs)
+        end
+
+        # Handle :except option - exclude specified attributes
+        if options[:except]
+          except_attrs = Array(options[:except]).map(&:to_s)
+          attrs = attrs.except(*except_attrs)
+        end
+
+        # Handle :methods option - include additional methods
+        if options[:methods]
+          Array(options[:methods]).each do |method|
+            # rubocop:disable GitlabSecurity/PublicSend -- Method names come from controlled options, not user input
+            attrs[method.to_s] = public_send(method) if respond_to?(method)
+            # rubocop:enable GitlabSecurity/PublicSend
+          end
+        end
+
+        attrs
+      end
+
+      alias_method :serializable_hash, :as_json
+
+      def to_json(options = {})
+        as_json(options).to_json
+      end
+
       def matches?(conditions)
         conditions.all? do |attribute, value|
           if value.is_a?(Array)

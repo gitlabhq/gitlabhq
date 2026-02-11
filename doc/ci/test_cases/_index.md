@@ -41,7 +41,7 @@ while integrating with your development workflows, see
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To create a test case in a GitLab project:
 
@@ -59,8 +59,8 @@ issue list with a search query, including labels or the test case's title.
 Prerequisites:
 
 - Non-confidential test case in a public project: You don't have to be a member of the project.
-- Non-confidential test case in a private project: You must have at least the Guest role for the project.
-- Confidential test case (regardless of project visibility): You must have at least the Planner role for the project.
+- Non-confidential test case in a private project: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- Confidential test case (regardless of project visibility): You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To view a test case:
 
@@ -82,7 +82,7 @@ You can edit a test case's title and description.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 - Users demoted to the Guest role can continue to edit the test cases they created
   when they were in the higher role.
 
@@ -106,7 +106,7 @@ If you're working on a test case that contains private information, you can make
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To make a test case confidential:
 
@@ -128,7 +128,7 @@ When you want to stop using a test case, you can archive it. You can [reopen an 
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To archive a test case, on the test case's page, select **Archive test case**.
 
@@ -150,7 +150,7 @@ If you decide to start using an archived test case again, you can reopen it.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To reopen an archived test case:
 

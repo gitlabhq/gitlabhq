@@ -41,6 +41,12 @@ To give a user access to specific features:
 1. Select **Change configuration**.
 1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
+
+   >>> [!note]
+   You can select only direct subgroups of the top-level group for access control.
+   You cannot use nested subgroups in this configuration.
+   >>>
+
 1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
@@ -72,6 +78,11 @@ These settings apply to:
 - Users who do not have access through their default namespace
   but can use the features through their top-level group.
 - Users who are direct members of the top-level group.
+
+> [!note]
+> When you configure group-based access controls, you can select only groups
+> that are direct subgroups of the top-level group.
+> You cannot use nested subgroups in access control rules.
 
 {{< /tab >}}
 

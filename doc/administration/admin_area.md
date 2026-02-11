@@ -261,7 +261,7 @@ To prevent a user from creating top-level groups:
 After you turn off this setting:
 
 - The user cannot create top-level groups.
-- The user can create subgroups in groups where they have at least the Maintainer role,
+- The user can create subgroups in groups where they have the Maintainer or Owner role,
   depending on the [subgroup creation permissions](../user/group/subgroups/_index.md#change-who-can-create-subgroups)
   for the group.
 

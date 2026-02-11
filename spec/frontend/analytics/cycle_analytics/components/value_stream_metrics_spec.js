@@ -125,6 +125,10 @@ describe('ValueStreamMetrics', () => {
       startDate,
       endDate,
       interval: 'ALL',
+      skipChangeFailureRate: false,
+      skipDeploymentFrequency: false,
+      skipLeadTimeForChanges: false,
+      skipTimeToRestoreService: false,
     });
 
   const expectFlowMetricsRequests = ({
@@ -146,6 +150,12 @@ describe('ValueStreamMetrics', () => {
       assigneeUsernames,
       authorUsername,
       milestoneTitle,
+      skipCycleTime: false,
+      skipDeploymentCount: false,
+      skipIssueCount: false,
+      skipIssuesCompletedCount: false,
+      skipLeadTime: false,
+      skipTimeToMerge: false,
     });
 
   afterEach(() => {

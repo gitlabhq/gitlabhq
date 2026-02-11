@@ -692,7 +692,7 @@ To view catalog resource analytics:
 1. Select **CI/CD Catalog**.
 1. Select the **Analytics** tab.
 
-The Analytics view displays the catalog resources where you have at least the Maintainer role.
+The Analytics view displays the catalog resources where you have the Maintainer or Owner role.
 This view shows:
 
 - **Projects**: The catalog resource name and its latest released version.

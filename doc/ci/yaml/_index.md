@@ -1956,7 +1956,7 @@ with the GitLab UI and API by anonymous users, or Guest and Reporter roles.
 
 - `true` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous users, or Guest and Reporter roles.
-- `false`: Artifacts in the job are only available for download by users with at least the Developer role.
+- `false`: Artifacts in the job are only available for download by users with the Developer, Maintainer, or Owner role.
 
 **Example of `artifacts:public`**:
 
@@ -1994,8 +1994,8 @@ You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in 
 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
-- `developer`: Artifacts in the job are only available for download by users with at least the Developer role.
-- `maintainer`: Artifacts in the job are only available for download by users with at least the Maintainer role.
+- `developer`: Artifacts in the job are only available for download by users with the Developer, Maintainer, or Owner role.
+- `maintainer`: Artifacts in the job are only available for download by users with the Maintainer or Owner role.
 - `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:
@@ -3973,7 +3973,7 @@ build_job:
 - To download artifacts from a different pipeline in the current project, set `project`
   to be the same as the current project, but use a different ref than the current pipeline.
   Concurrent pipelines running on the same ref could override the artifacts.
-- The user running the pipeline must have at least the Reporter role for the group or project,
+- The user running the pipeline must have the Reporter, Developer, Maintainer, or Owner role for the group or project,
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for

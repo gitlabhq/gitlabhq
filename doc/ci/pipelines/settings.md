@@ -119,8 +119,8 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 You can customize which roles have permission to cancel pipelines or jobs.
 
-By default, users with at least the Developer role can cancel pipelines or jobs.
-You can restrict cancellation permission to only users with at least the Maintainer role,
+By default, users with the Developer, Maintainer, or Owner role can cancel pipelines or jobs.
+You can restrict cancellation permission to only users with the Maintainer or Owner role,
 or completely prevent cancellation of any pipelines or jobs.
 
 To change the permissions to cancel pipelines or jobs:

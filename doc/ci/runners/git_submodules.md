@@ -89,7 +89,7 @@ For submodules not located on the same GitLab server, always use the full URL:
 Prerequisites:
 
 - If you use the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) to clone a submodule in a
-  pipeline job, you must have at least the Reporter role for the submodule repository to pull the code.
+  pipeline job, you must have the Reporter, Developer, Maintainer, or Owner role for the submodule repository to pull the code.
 - [CI/CD job token access](../jobs/ci_job_token.md#control-job-token-access-to-your-project) must be properly configured in the upstream submodule project.
 
 To make submodules work correctly in CI/CD jobs:

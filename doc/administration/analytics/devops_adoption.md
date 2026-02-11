@@ -55,7 +55,7 @@ To view DevOps adoption for your instance:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To add a group to DevOps adoption:
 
@@ -67,7 +67,7 @@ To add a group to DevOps adoption:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To remove a group from DevOps adoption:
 

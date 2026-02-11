@@ -126,7 +126,7 @@ Supported attributes:
 |:-------------------------|:------------------|:---------|:------------|
 | `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `license`                | boolean           | No       | Include project license data. |
-| `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
+| `statistics`             | boolean           | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. Administrator access. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the

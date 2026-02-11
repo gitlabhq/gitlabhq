@@ -107,7 +107,8 @@ module Ci
       def resolved_default(current_inputs = {})
         return default unless rules
 
-        rules_evaluator(current_inputs).resolved_default || default
+        value = rules_evaluator(current_inputs).resolved_default
+        value.nil? ? default : value
       end
 
       def rules_evaluator(current_inputs)

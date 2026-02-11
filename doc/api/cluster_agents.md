@@ -24,7 +24,7 @@ Use this API to interact with the [GitLab agent for Kubernetes](../user/clusters
 
 Lists all agents registered for the project.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents
@@ -104,7 +104,7 @@ Example response:
 
 Retrieves a single agent's details.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id
@@ -168,7 +168,7 @@ Example response:
 
 Creates a new agent for the project.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 POST /projects/:id/cluster_agents
@@ -234,7 +234,7 @@ Example response:
 
 Deletes an existing agent registration.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id
@@ -265,7 +265,7 @@ curl --request DELETE \
 
 Lists all active tokens for an agent.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/tokens
@@ -338,7 +338,7 @@ Example response:
 
 Retrieves a single agent token.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 Returns a `404` if the agent token has been revoked.
 
@@ -404,7 +404,7 @@ Example response:
 
 Creates a new token for an agent.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 An agent can have only two active tokens at one time.
 
@@ -476,7 +476,7 @@ Example response:
 
 Revokes an agent token.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id/tokens/:token_id
@@ -520,7 +520,7 @@ that cannot establish a network connection to the GitLab instance, but can be co
 
 Lists all URL configurations for a specified agent.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/url_configurations
@@ -575,7 +575,7 @@ Example response:
 
 Retrieves a single agent URL configuration.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id
@@ -629,7 +629,7 @@ Example response:
 
 Creates a new URL configuration for an agent.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 An agent can have only one URL configuration at the time.
 
@@ -714,7 +714,7 @@ Example response for mTLS:
 
 Deletes an agent URL configuration.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id

@@ -172,6 +172,25 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
     end
   end
 
+  context 'for viewport meta tag' do
+    it 'includes viewport meta tag with device-width and initial-scale' do
+      allow(view).to receive_message_chain(:browser, :device, :iphone?).and_return(false)
+
+      render
+
+      expect(rendered).to include('name="viewport"')
+      expect(rendered).to include('content="width=device-width, initial-scale=1"')
+    end
+
+    it 'includes maximum-scale=1 on iPhone to prevent auto-zoom on input focus' do
+      allow(view).to receive_message_chain(:browser, :device, :iphone?).and_return(true)
+
+      render
+
+      expect(rendered).to include('content="width=device-width, initial-scale=1, maximum-scale=1"')
+    end
+  end
+
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
       .and_return(%q(foo" http-equiv="refresh).html_safe)

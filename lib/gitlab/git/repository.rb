@@ -438,6 +438,15 @@ module Gitlab
         end
       end
 
+      # Returns a hash mapping file paths to their object types (:blob, :tree, or :commit).
+      #
+      # revision_paths - Array of [revision, path] tuples
+      # limit - Maximum bytes to fetch per blob (default: -1 for no limit)
+      #
+      def get_blob_types(revision_paths, limit = -1)
+        gitaly_blob_client.get_blob_types(revision_paths, limit)
+      end
+
       def count_commits(options)
         options = process_count_commits_options(options.dup)
 

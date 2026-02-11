@@ -12,6 +12,7 @@ import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
@@ -31,7 +32,7 @@ import {
   WIDGET_TYPE_NOTES,
   WORK_ITEM_NOTES_SORT_ORDER_KEY,
 } from '~/work_items/constants';
-import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM, ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
@@ -73,6 +74,8 @@ const mockWorkItemNoteResponse = {
   data: {
     note: {
       id: mockDiscussions[0].notes.nodes[0].id,
+      noteableType: ISSUE_NOTEABLE_TYPE,
+      noteableId: getIdFromGraphQLId(mockWorkItemId),
       discussion: { id: mockDiscussions[0].id, notes: mockDiscussions[0].notes },
     },
   },
@@ -308,6 +311,16 @@ describe('WorkItemNotes component', () => {
       expect(findWorkItemDiscussionAtIndex(0).props('discussion')).toEqual(
         mockWorkItemNoteResponse.data.note.discussion,
       );
+    });
+
+    it('does not render note when noteable id does not match', async () => {
+      setWindowLocation('#note_174');
+
+      createComponent({ workItemId: 'gid://gitlab/WorkItem/9999999' });
+
+      await waitForPromises();
+
+      expect(findAllWorkItemDiscussions()).toHaveLength(0);
     });
   });
 

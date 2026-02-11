@@ -135,7 +135,7 @@ Parameters:
 
 Deletes a specified project milestone.
 
-Only for users with at least the Planner role for the project.
+Only for users with the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/milestones/:milestone_id
@@ -189,7 +189,7 @@ Parameters:
 
 Promotes a project milestone to a group milestone.
 
-Only for users with at least the Planner role for the group.
+Only for users with the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 ```plaintext
 POST /projects/:id/milestones/:milestone_id/promote

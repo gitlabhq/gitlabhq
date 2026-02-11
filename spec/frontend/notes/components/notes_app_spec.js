@@ -406,12 +406,14 @@ describe('note_app', () => {
   describe('preview note', () => {
     let noteQueryHandler;
 
-    function hashFactory({ urlHash, authorId } = {}) {
+    function hashFactory({ urlHash, authorId, noteableType, noteableId } = {}) {
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(urlHash);
 
       noteQueryHandler = jest
         .fn()
-        .mockResolvedValue(mockData.singleNoteResponseFactory({ urlHash, authorId }));
+        .mockResolvedValue(
+          mockData.singleNoteResponseFactory({ urlHash, authorId, noteableType, noteableId }),
+        );
 
       useNotes()[types.SET_NOTES_LOADING_STATE](true);
       useNotes()[types.SET_TARGET_NOTE_HASH](urlHash);
@@ -433,6 +435,24 @@ describe('note_app', () => {
       await waitForPromises();
 
       expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
+    });
+
+    it('does not render note when noteable type does not match', async () => {
+      hashFactory({ urlHash: 'note_123', noteableType: 'Other' });
+
+      expect(noteQueryHandler).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(false);
+    });
+
+    it('does not render note when noteable id does not match', async () => {
+      hashFactory({ urlHash: 'note_123', noteableId: 9999999 });
+
+      expect(noteQueryHandler).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(false);
     });
 
     it('converts all ids from graphql to numeric', async () => {
