@@ -6,6 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
+import subscribeToViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
 
@@ -14,10 +15,11 @@ describe('WorkItemsExistingSavedViewsModal', () => {
 
   Vue.use(VueApollo);
 
+  const mockPush = jest.fn();
   const mockSavedViewsData = [
     {
       __typename: 'SavedView',
-      id: '1',
+      id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
       name: 'My Private View',
       description: 'Only I can see this',
       isPrivate: true,
@@ -32,7 +34,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
     {
       __typename: 'SavedView',
-      id: '2',
+      id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
       name: 'Team View',
       description: 'Shared with the team',
       isPrivate: false,
@@ -46,6 +48,19 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       },
     },
   ];
+
+  const mockSubscribeResponse = {
+    data: {
+      workItemSavedViewSubscribe: {
+        __typename: 'WorkItemSavedViewSubscribePayload',
+        errors: [],
+        savedView: {
+          __typename: 'WorkItemSavedViewType',
+          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
+        },
+      },
+    },
+  };
 
   const savedViewsHandler = jest.fn().mockResolvedValue({
     data: {
@@ -70,10 +85,19 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
   });
 
+  const successSubscribeMutationHandler = jest.fn().mockResolvedValue(mockSubscribeResponse);
+
   const simulatedErrorHandler = jest.fn().mockRejectedValue(new Error('this is fine'));
 
-  const createComponent = async ({ props, mockSavedViewsHandler = savedViewsHandler } = {}) => {
-    const apolloProvider = createMockApollo([[getNamespaceSavedViewsQuery, mockSavedViewsHandler]]);
+  const createComponent = async ({
+    props,
+    mockSavedViewsHandler = savedViewsHandler,
+    subscribeMutationHandler = successSubscribeMutationHandler,
+  } = {}) => {
+    const apolloProvider = createMockApollo([
+      [getNamespaceSavedViewsQuery, mockSavedViewsHandler],
+      [subscribeToViewMutation, subscribeMutationHandler],
+    ]);
 
     wrapper = shallowMountExtended(WorkItemsExistingSavedViewsModal, {
       apolloProvider,
@@ -81,6 +105,11 @@ describe('WorkItemsExistingSavedViewsModal', () => {
         show: true,
         fullPath: 'test-project-path',
         ...props,
+      },
+      mocks: {
+        $router: {
+          push: mockPush,
+        },
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -143,11 +172,39 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     });
 
     it('shows "Added" and check icon only for subscribed views', async () => {
-      createComponent();
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Added');
       expect(findSubscribedIcons()).toHaveLength(1);
+    });
+
+    it('navigates immediately to view if user is already subscribed', async () => {
+      const firstView = findSavedViewItems().at(0);
+
+      await firstView.trigger('click');
+      await nextTick();
+
+      expect(successSubscribeMutationHandler).not.toHaveBeenCalled();
+
+      expect(mockPush).toHaveBeenCalledWith({
+        name: 'savedView',
+        params: { view_id: '1' },
+      });
+    });
+
+    it('subscribes then navigates to view when user is not subscribed', async () => {
+      const secondView = findSavedViewItems().at(1);
+
+      await secondView.trigger('click');
+      await nextTick();
+
+      expect(successSubscribeMutationHandler).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(mockPush).toHaveBeenCalledWith({
+        name: 'savedView',
+        params: { view_id: '2' },
+      });
     });
   });
 

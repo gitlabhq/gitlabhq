@@ -194,74 +194,71 @@ runners, you must customize the `--multi-core` flag in the
 
 {{< /history >}}
 
-Diff-based scanning analyzes only the files modified in a merge request, along with their dependent files. This targeted approach reduces scan times and delivers faster feedback during development.
+Diff-based scanning analyzes only the files modified in a merge request, along with their dependent
+files. This targeted approach reduces scan times and delivers faster feedback during development.
 
 To ensure complete coverage, a full scan runs on the default branch after the merge request is merged.
 
-When diff-based scanning is enabled:
+Diff-based scanning is supported in both merge request pipelines and branch pipelines, under the following conditions:
 
-- Only files that were modified or added in the merge request, along with their dependent files, are scanned.
-- If enabled, you'll see the job log print: `Running differential scan`
-  If disabled, it prints: `Running full scan`
-- In the **merge request security widget**, a dedicated **Diff-based** tab shows relevant scan findings.
-- In the **Pipeline Security** tab, an alert labeled **Partial SAST report** indicates that only partial findings are included.
+- Merge request pipelines: Diff-based scanning occurs when GitLab Advanced SAST is configured to run
+  on
+  [merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+- Branch pipelines: Diff-based scanning occurs when there is exactly one open merge request
+  associated with the branch. If there are none or more than one, the scan falls back to a full scan
+  because it cannot determine which commit the branch should be diffed against.
 
-#### Use diff-based scanning to improve performance
+When diff-based scanning is active:
 
-To enable diff-based scanning in merge request pipelines, set this CI/CD variable
-in the project's CI/CD configuration file or in either a scan execution policy or pipeline
-execution policy.
+- Only files that were modified or added in the merge request, along with their dependent files, are
+  scanned.
+- The job log includes the output: `Running differential scan`. (If inactive, it outputs: `Running
+  full scan`.)
+- In the merge request security widget, a dedicated **Diff-based** tab shows relevant scan findings.
+- In the pipeline security tab, an alert labeled **Partial SAST report** indicates that only partial
+  findings are included.
 
-| Variable                     | Value          | Description |
-|------------------------------|----------------|-------------|
-| `ADVANCED_SAST_PARTIAL_SCAN` | `differential` | Enables diff-based scanning mode |
+Diff-based scanning has the following known issues:
 
-#### Pipeline support and behavior
+- False negatives and positives: Diff-based scanning may not capture the full call graph in the
+  scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of
+  resolved ones (false positives). This trade-off reduces scan times and provides faster feedback
+  during development. For comprehensive coverage, a full scan always runs on the default branch.
+- C/C++ header file coverage: Diff-based scanning does not fully support C/C++ header files.
+  Vulnerabilities that span both header and source files can be detected, but those located entirely
+  in header files might not be.
+- Fixed vulnerabilities not reported: To avoid misleading results, fixed vulnerabilities are
+  excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call
+  graph is not available, making it impossible to confirm if a vulnerability has been fixed. A full
+  scan always runs on the default branch after the merge, where fixed vulnerabilities are reported.
 
-Diff-based scanning is supported in both merge request pipelines and branch pipelines, under the following conditions.
+#### Turn on diff-based scanning
 
-##### Merge request pipelines
-
-Diff-based scanning occurs when GitLab Advanced SAST is configured to run on [merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
-
-##### Branch pipelines
-
-Diff-based scanning occurs when there is exactly one open merge request associated with the branch.
-If there are none or more than one, the scan falls back to a full scan because it cannot determine which commit the branch should be diffed against.
+To turn on diff-based scanning in merge request pipelines, set the CI/CD variable
+`ADVANCED_SAST_PARTIAL_SCAN` to `differential` in either the project's CI/CD configuration file, a
+scan execution policy, or pipeline execution policy.
 
 #### Dependent files
 
-To avoid missing cross-file vulnerabilities beyond the modified files, diff-based scanning includes their immediate dependents. This reduces false negatives while maintaining fast scans, though it may produce imprecise results in deeper dependency chains, as discussed in more detail [below](#false-negatives-and-positives).
+To avoid missing cross-file vulnerabilities beyond the modified files, diff-based scanning includes
+their immediate dependents. This reduces false negatives while maintaining fast scans, though it may
+produce imprecise results in deeper dependency chains.
 
 The following files are included in the scan:
 
 - Modified files (files changed or added in the merge request)
 - Dependent files (files that import the modified files)
 
-This design helps detect cross-file data flows, such as tainted data moving from a modified function to a caller that imports it.
+This design helps detect cross-file data flows, such as tainted data moving from a modified function
+to a caller that imports it.
 
-Files imported by modified files are not scanned because they typically do not impact the behavior or data flow of the modified code.
+Files imported by modified files are not scanned because they typically do not impact the behavior
+or data flow of the modified code.
 
 For example, consider a merge request that modifies file B:
 
 - If file A imports file B, files A and B are scanned.
 - If file B imports file C, only file B is scanned.
-
-#### Restrictions
-
-##### False negatives and positives
-
-Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch.
-
-##### C/C++ header file coverage
-
-Diff-based scanning does not fully support C/C++ header files. Vulnerabilities that span both header and source files can be detected, but those located entirely in header files might not be.
-
-##### Fixed vulnerabilities not reported
-
-To avoid misleading results, fixed vulnerabilities are excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call graph is not available, making it impossible to confirm if a vulnerability has been fixed.
-
-A full scan always runs on the default branch after the merge, where fixed vulnerabilities are reported.
 
 ## Roll out
 
@@ -376,7 +373,7 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 |-------------------------------------|---------|------------------------------------------------------------------------------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`      | `false` | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`  | `false` | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.          |
-| `ADVANCED_SAST_PARTIAL_SCAN`        | N/A     | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.       |
+| `ADVANCED_SAST_PARTIAL_SCAN`        | `false` | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.       |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT` | `30`    | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.     |
 
 GitLab Advanced SAST scanning is disabled by default. To explicitly disable it when enabled at a

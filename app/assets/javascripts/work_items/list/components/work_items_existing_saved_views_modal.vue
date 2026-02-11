@@ -7,8 +7,12 @@ import {
   GlTooltipDirective,
   GlLoadingIcon,
   GlLink,
+  GlAlert,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { ROUTES } from '~/work_items/constants';
+import { subscribeToSavedView } from 'ee_else_ce/work_items/list/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getNamespaceSavedViewsQuery from '../graphql/work_item_saved_views_namespace.query.graphql';
 
@@ -21,6 +25,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlLink,
+    GlAlert,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -66,6 +71,7 @@ export default {
     return {
       searchInput: '',
       savedViews: [],
+      error: undefined,
     };
   },
   apollo: {
@@ -119,18 +125,34 @@ export default {
       this.$emit('hide', false);
       this.$emit('show-new-view-modal');
     },
-    // TODO: Implement handleViewClick once subscribe functionality is available
-    // This should:
-    // 1. If view.subscribed, emit 'view-subscribed' and navigate
-    // 2. If not subscribed, call subscribe mutation, then emit 'view-subscribed'
-    // 3. Parent will handle unsubscribing from last view if at limit
-    // See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588295
-    handleViewClick(view) {
-      if (view.subscribed) {
-        // Navigate to already subscribed view
-        this.hideModal();
+    async redirectToView(view) {
+      const viewId = getIdFromGraphQLId(view.id).toString();
+
+      if (!view.subscribed) {
+        const mutationKey = 'workItemSavedViewSubscribe';
+        try {
+          const { data } = await subscribeToSavedView({
+            view,
+            cache: this.$apollo,
+            fullPath: this.fullPath,
+          });
+
+          if (data[mutationKey].errors?.length) {
+            this.error = s__(
+              'WorkItem|An error occurred while subscribing to the view. Please try again.',
+            );
+            return;
+          }
+        } catch (e) {
+          this.error = s__(
+            'WorkItem|An error occurred while subscribing to the view. Please try again.',
+          );
+          return;
+        }
       }
-      // Subscribe logic to be added in separate MR
+
+      this.$router.push({ name: ROUTES.savedView, params: { view_id: viewId }, query: undefined });
+      this.hideModal();
     },
   },
 };
@@ -196,12 +218,17 @@ export default {
     </template>
 
     <template v-else>
+      <div v-if="error" class="gl-mt-5">
+        <gl-alert variant="danger" @dismiss="error = undefined">
+          {{ error }}
+        </gl-alert>
+      </div>
       <ul class="gl-mb-3 gl-mt-[6px] gl-max-h-[25rem] gl-overflow-scroll gl-p-0 gl-px-1">
         <li v-for="view in filteredViews" :key="view.id" class="gl-my-1">
           <button
-            class="saved-view-item gl-flex gl-w-full gl-cursor-pointer gl-rounded-base gl-border-none gl-px-4 gl-py-3 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
+            class="saved-view-item gl-flex gl-min-h-[36px] gl-w-full gl-cursor-pointer gl-rounded-base gl-border-none gl-px-4 gl-py-3 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
             data-testid="saved-view-item"
-            @click="handleViewClick(view)"
+            @click="redirectToView(view)"
           >
             <gl-icon name="list-bulleted" class="gl-mr-3 gl-shrink-0" variant="subtle" />
             <span class="gl-text-start">

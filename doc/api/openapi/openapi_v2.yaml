@@ -48499,6 +48499,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          ai_usage_data_collection_enabled:
+            type: boolean
+            description: Enable AI usage data collection for this namespace
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
@@ -48770,6 +48773,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          ai_usage_data_collection_enabled:
+            type: boolean
+            description: Enable AI usage data collection for this namespace
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default

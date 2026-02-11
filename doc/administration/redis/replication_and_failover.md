@@ -837,6 +837,68 @@ To prevent the `replicaof` line from rendering in the Redis configuration file:
 
 This setting can be used to prevent replication of a Redis node independently of other Redis settings.
 
+## Use Valkey instead of Redis
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9113) in GitLab 18.9 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+You can use [Valkey](https://valkey.io/) as a drop-in replacement for Redis in replication
+and failover setups. Valkey uses the same roles and configuration options as Redis.
+
+Using Valkey instead of Redis is a [beta](../../policy/development_stages_support.md#beta) feature.
+
+### Configure Valkey primary and replica nodes
+
+On each node (primary and replicas), add the following to `/etc/gitlab/gitlab.rb` to switch from Redis to Valkey:
+
+```ruby
+# Use the same Redis roles
+roles ['redis_master_role']  # or 'redis_replica_role' for replicas
+
+# Switch to Valkey
+redis['backend'] = 'valkey'
+
+# Use the same configuration options as for Redis
+redis['bind'] = '10.0.0.1'
+redis['port'] = 6379
+redis['password'] = 'redis-password-goes-here'
+
+gitlab_rails['auto_migrate'] = false
+```
+
+### Configure Sentinel for Valkey
+
+On each Sentinel node, add the following to `/etc/gitlab/gitlab.rb`:
+
+```ruby
+roles ['redis_sentinel_role']
+
+# Switch redis backend to Valkey
+# Then Sentinel will use the same backend
+redis['backend'] = 'valkey'
+
+# Sentinel configuration (same as for Redis)
+redis['master_name'] = 'gitlab-redis'
+redis['master_password'] = 'redis-password-goes-here'
+redis['master_ip'] = '10.0.0.1'
+redis['port'] = 6379
+
+sentinel['bind'] = '10.0.0.1'
+sentinel['quorum'] = 2
+```
+
+All other Sentinel configuration options remain the same as documented in
+[Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances).
+
 ## Troubleshooting
 
 See the [Redis troubleshooting guide](troubleshooting.md).

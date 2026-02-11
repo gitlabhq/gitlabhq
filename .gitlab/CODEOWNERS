@@ -2053,3 +2053,7 @@ frontend/**/geo_* @zcuddy
 
 [Source Code Backend] @gitlab-com/create-team/source-code/backend
 /app/workers/authorized_keys_worker.rb
+
+# Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
+[Database Sharding] @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
+/spec/lib/gitlab/organizations/sharding_key_spec.rb

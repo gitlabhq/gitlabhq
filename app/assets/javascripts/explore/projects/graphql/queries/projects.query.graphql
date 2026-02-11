@@ -32,6 +32,5 @@ query exploreProjects(
     pageInfo {
       ...PageInfo
     }
-    count
   }
 }

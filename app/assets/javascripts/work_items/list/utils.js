@@ -92,6 +92,7 @@ import {
 } from '~/work_items/list/constants';
 import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
 import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 
@@ -1021,4 +1022,93 @@ export const saveSavedView = async ({
   }
 
   return result;
+};
+
+// Centralized logic for subscribing to a saved view
+export const updateCacheAfterSubscribe = (cache, view, fullPath) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (!subscribedOnly) {
+        const subscribedView = savedViews.find((v) => v.id === view.id);
+        if (subscribedView) subscribedView.subscribed = true;
+      } else {
+        savedViews.push(view);
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
+export const subscribeToSavedView = async ({ view, cache, fullPath }) => {
+  const result = await cache.mutate({
+    mutation: subscribeToSavedViewMutation,
+    variables: {
+      input: { id: view.id },
+    },
+
+    optimisticResponse: {
+      workItemSavedViewSubscribe: {
+        __typename: 'WorkItemSavedViewSubscribePayload',
+        errors: [],
+        savedView: {
+          __typename: 'WorkItemSavedViewType',
+          id: view.id,
+        },
+      },
+    },
+    update: (localCache) => updateCacheAfterSubscribe(localCache, view, fullPath),
+  });
+
+  return result;
+};
+
+export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
+        const index = savedViews.findIndex((v) => v.id === view.id);
+        if (index !== -1) {
+          savedViews.splice(index, 1);
+        }
+      } else if (!subscribedOnly && action === 'unsubscribe') {
+        const unsubscribedView = savedViews.find((v) => v.id === view.id);
+        if (unsubscribedView) unsubscribedView.subscribed = false;
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
 };

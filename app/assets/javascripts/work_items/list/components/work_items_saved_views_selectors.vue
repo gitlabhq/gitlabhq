@@ -1,10 +1,9 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { produce } from 'immer';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
-import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import { updateCacheAfterViewRemoval } from 'ee_else_ce/work_items/list/utils';
 import workItemSavedViewDelete from '~/work_items/graphql/delete_saved_view.mutation.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
@@ -163,30 +162,6 @@ export default {
         this.$emit('reset-to-default-view');
       }
     },
-    updateCacheAfterRemoval(cache, viewId) {
-      const query = {
-        query: getSubscribedSavedViewsQuery,
-        variables: {
-          fullPath: this.fullPath,
-          subscribedOnly: true,
-          sort: 'RELATIVE_POSITION',
-        },
-      };
-
-      const sourceData = cache.readQuery(query);
-      if (!sourceData) return;
-
-      const newData = produce(sourceData, (draftState) => {
-        const savedViews = draftState.namespace.savedViews.nodes;
-        const index = savedViews.findIndex((v) => v.id === viewId);
-
-        if (index !== -1) {
-          savedViews.splice(index, 1);
-        }
-      });
-
-      cache.writeQuery({ ...query, data: newData });
-    },
     async handleUnsubscribeFromView(view) {
       if (!view) return;
 
@@ -208,9 +183,13 @@ export default {
               },
             },
           },
-          update: (cache) => {
-            this.updateCacheAfterRemoval(cache, view.id);
-          },
+          update: (cache) =>
+            updateCacheAfterViewRemoval({
+              cache,
+              view,
+              action: 'unsubscribe',
+              fullPath: this.fullPath,
+            }),
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
@@ -248,9 +227,13 @@ export default {
               },
             },
           },
-          update: (cache) => {
-            this.updateCacheAfterRemoval(cache, view.id);
-          },
+          update: (cache) =>
+            updateCacheAfterViewRemoval({
+              cache,
+              view,
+              action: 'delete',
+              fullPath: this.fullPath,
+            }),
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
