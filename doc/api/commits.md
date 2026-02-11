@@ -149,20 +149,28 @@ POST /projects/:id/repository/commits
 > [!note]
 > This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
-| Attribute        | Type           | Required | Description |
-|------------------|----------------|----------|-------------|
-| `branch`         | string         | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
-| `commit_message` | string         | Yes      | Commit message. |
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `branch`         | string            | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
+| `commit_message` | string            | Yes      | Commit message. |
 | `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `actions[]`      | array          | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
-| `allow_empty`    | boolean        | No       | When `true`, creates an empty commit. Default is `false`. |
-| `author_email`   | string         | No       | Specify the commit author's email address. |
-| `author_name`    | string         | No       | Specify the commit author's name. |
-| `force`          | boolean        | No       | If `true`, overwrites the target branch with a new commit based on the `start_branch` or `start_sha`. |
-| `start_branch`   | string         | No       | Name of the branch to start the new branch from. |
-| `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
-| `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
-| `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
+| `actions[]`      | array             | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `allow_empty`    | boolean           | No       | When `true`, creates an empty commit. Default is `false`. |
+| `author_email`   | string            | No       | Specify the commit author's email address. |
+| `author_name`    | string            | No       | Specify the commit author's name. |
+| `force`          | boolean           | No       | If `true`, overwrites `branch` with a new commit based on `start_branch` or `start_sha`, replacing the branch's existing commit history. Default is `false`. <sup>1</sup> |
+| `start_branch`   | string            | No       | Name of the branch to use as the parent for the new commit. If not provided and `start_sha` is also not provided, defaults to the value of `branch`. Mutually exclusive with `start_sha`. <sup>1</sup> |
+| `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to use as the source for `start_branch` or `start_sha`. Defaults to the value of `id`. |
+| `start_sha`      | string            | No       | SHA of the commit to use as the parent for the new commit. Must be a full 40-character SHA. Mutually exclusive with `start_branch`. <sup>1</sup> |
+| `stats`          | boolean           | No       | Include commit stats. Default is `true`. |
+
+**Footnotes**:
+
+1. When `force` is `true`, provide `start_branch` or `start_sha` to specify a
+   different parent commit.
+   If neither is provided, `start_branch` defaults to the value of `branch`, and the new
+   commit is based on the current branch tip.
+   In that case, `force` has no effect because the result is the same as a regular commit.
 
 > [!note]
 > Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
@@ -677,24 +685,6 @@ Parameters:
 > returned beyond the limit. For GitLab.com specific limits, see
 > [diff display limits](../user/gitlab_com/_index.md#diff-display-limits).
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
-
-| Attribute      | Type    | Description |
-|----------------|---------|-------------|
-| `a_mode`       | string  | File mode before the change. |
-| `b_mode`       | string  | File mode after the change. |
-| `deleted_file` | boolean | If `true`, the file was deleted. |
-| `diff`         | string  | The diff content. |
-| `new_file`     | boolean | If `true`, this is a new file. |
-| `new_path`     | string  | New path of the file. |
-| `old_path`     | string  | Old path of the file. |
-| `renamed_file` | boolean | If `true`, the file was renamed. |
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
-```
-
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
@@ -710,6 +700,11 @@ response attributes:
 | `old_path`     | string  | Old path of the file. |
 | `renamed_file` | boolean | File has been renamed. |
 | `too_large`    | boolean | File diffs are excluded and cannot be retrieved. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
+```
 
 Example response:
 

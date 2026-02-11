@@ -2,9 +2,8 @@
 - page_title _('Repository')
 - @force_desktop_expanded_sidebar = true
 
-- if Feature.enabled?(:web_based_commit_signing_ui, @group)
-  - if can?(current_user, :admin_group, @group)
-    = render_if_exists "groups/settings/repository/general", group: @group
+- if can?(current_user, :admin_group, @group)
+  = render_if_exists "groups/settings/repository/general", group: @group
 
 - if can?(current_user, :create_deploy_token, @group)
   - deploy_token_description = s_('DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group.')

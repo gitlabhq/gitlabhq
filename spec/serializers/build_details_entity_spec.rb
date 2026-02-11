@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
   include ProjectForksHelper
+  include Ci::PipelineVariableHelpers
 
   it 'inherits from Ci::JobEntity' do
     expect(described_class).to be < Ci::JobEntity
@@ -310,14 +311,17 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       let_it_be(:user) { project.first_owner }
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
-      let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
+
+      before do
+        create_or_replace_pipeline_variables(pipeline, { key: 'TEST_VAR', value: 'test_value' })
+      end
 
       it 'exposes trigger' do
         expect(subject[:trigger]).to be_present
         expect(subject[:trigger][:short_token]).to eq(build.trigger_short_token)
-        expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
-        expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
+        expect(subject[:trigger][:variables][0][:key]).to eq('TEST_VAR')
+        expect(subject[:trigger][:variables][0][:value]).to eq('test_value')
       end
     end
 

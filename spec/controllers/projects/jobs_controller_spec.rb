@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration, factory_default: :keep do
   include ApiHelpers
   include HttpIOHelpers
+  include Ci::PipelineVariableHelpers
 
   let_it_be(:namespace) { create_default(:namespace) }
   let_it_be(:project) { create(:project, :public, :repository) }
@@ -575,7 +576,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       context 'with variables' do
         before do
-          create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+          create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
         end
 
         context 'user is a maintainer' do

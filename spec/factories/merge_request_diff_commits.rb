@@ -16,7 +16,11 @@ FactoryBot.define do
       message { nil }
     end
 
-    before(:create, :build) do |merge_request_diff_commit, evaluator|
+    after(:build) do |merge_request_diff_commit, evaluator|
+      # rubocop:disable RSpec/FactoryBot/StrategyInCallback -- We need to create
+      # an associated `merge_request_commits_metadata` when we build/create a
+      # `merge_request_diff_commit` to replicate how data is created in bulk
+      # creation.
       existing_metadata =
         evaluator.merge_request_commits_metadata.presence ||
         MergeRequest::CommitsMetadata.find_by(project_id: evaluator.merge_request_diff.project_id, sha: evaluator.sha)
@@ -33,6 +37,7 @@ FactoryBot.define do
       )
 
       merge_request_diff_commit.merge_request_commits_metadata_id = metadata.id
+      # rubocop:enable RSpec/FactoryBot/StrategyInCallback
     end
 
     trait :with_duplicated_data do

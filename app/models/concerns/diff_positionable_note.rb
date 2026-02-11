@@ -19,7 +19,7 @@ module DiffPositionableNote
     define_method "#{meth}=" do |new_position|
       if new_position.is_a?(String)
         new_position = begin
-          Gitlab::Json.parse(new_position)
+          Gitlab::Json.safe_parse(new_position)
         rescue StandardError
           nil
         end

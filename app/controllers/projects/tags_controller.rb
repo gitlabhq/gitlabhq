@@ -22,9 +22,11 @@ class Projects::TagsController < Projects::ApplicationController
       @sort = tags_params[:sort]
       @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, tags_params).execute(batch_load_signatures: true)
+      @tags = TagsFinder.new(@repository, tags_params).execute
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
+
+      TagsFinder.batch_load_tag_signature_data(@tags)
 
       tag_names = @tags.map(&:name)
 

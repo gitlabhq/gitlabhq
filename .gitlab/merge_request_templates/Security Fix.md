@@ -21,8 +21,8 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 - [ ] For the MR targeting `master`:
   - [ ] Assign to a reviewer and maintainer, per our [Code Review process].
   - [ ] Ensure it's approved according to our [Approval Guidelines].
-  - [ ] Ensure it's approved by an AppSec engineer.
-    - Please see the security [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
+  - [ ] Ensure it's approved by a PSIRT engineer.
+    - Please see the security [Code reviews and Approvals] documentation for details on which PSIRT team member to ping for approval.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label

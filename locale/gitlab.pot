@@ -6026,7 +6026,7 @@ msgstr ""
 msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
 msgstr ""
 
-msgid "AdminSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
+msgid "AdminSettings|If GitLab manages your cluster, then your analytics data is %{link_start}retained for 1 year%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|If exact code search is enabled, you should turn off this setting to save resources."
@@ -53822,9 +53822,6 @@ msgstr ""
 msgid "ProjectSettings|How do they differ?"
 msgstr ""
 
-msgid "ProjectSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
-msgstr ""
-
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
 msgstr ""
 
@@ -74022,6 +74019,9 @@ msgid "User account deletion will be delayed for 7 days"
 msgstr ""
 
 msgid "User and IP rate limits"
+msgstr ""
+
+msgid "User cannot be provisioned by both group and project"
 msgstr ""
 
 msgid "User caps is enabled for this group. You can manage members on the %{pending_members_link_start}pending members%{pending_members_link_end} page."

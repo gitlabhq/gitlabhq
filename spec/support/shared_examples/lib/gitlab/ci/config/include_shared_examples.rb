@@ -76,6 +76,106 @@ RSpec.shared_examples 'basic include validations' do
   end
 end
 
+RSpec.shared_examples 'cache validation for includes' do
+  describe 'cache validation' do
+    before do
+      include_entry.compose!
+    end
+
+    context 'when using cache with non-remote include' do
+      let(:config) { { local: 'file.yml', cache: true } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has specific error' do
+        expect(include_entry.errors)
+          .to include('include config cache can only be specified for remote includes')
+      end
+    end
+
+    context 'when cache value is blank' do
+      let(:config) { { remote: 'https://example.com/file.yml', cache: nil } }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_cache_remote_includes: false)
+      end
+
+      context 'when using cache with boolean' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: true } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when using cache with duration string' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: '1 day' } }
+
+        it { is_expected.to be_valid }
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_cache_remote_includes: true)
+      end
+
+      context 'when using cache with boolean true' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: true } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when using cache with valid duration string' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: '1 day' } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when using cache with duration at minimum bound' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: '1 minute' } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when using cache with invalid type' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: 123 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'has specific error' do
+          expect(include_entry.errors)
+            .to include('include config cache must be a boolean or a duration string')
+        end
+      end
+
+      context 'when using cache with invalid duration string' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: 'invalid' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'has specific error' do
+          expect(include_entry.errors)
+            .to include('include config cache contains an invalid duration')
+        end
+      end
+
+      context 'when using cache with duration below minimum' do
+        let(:config) { { remote: 'https://example.com/file.yml', cache: '30 seconds' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'has specific error' do
+          expect(include_entry.errors)
+            .to include('include config cache duration must be at least 1 minute')
+        end
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'integrity validation for includes' do
   describe 'integrity validation' do
     before do

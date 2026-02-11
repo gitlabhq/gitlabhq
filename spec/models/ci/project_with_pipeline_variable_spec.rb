@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ProjectWithPipelineVariable, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   describe '.upsert_for_pipeline' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
     context 'when the pipeline has variables' do
       before do
-        create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar')
+        create_or_replace_pipeline_variables(pipeline, { key: 'foo', value: 'bar' })
       end
 
       it 'creates a corresponding project_with_pipeline_variable record' do

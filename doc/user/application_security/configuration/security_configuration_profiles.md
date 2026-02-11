@@ -59,7 +59,7 @@ To save time, you can apply security settings to multiple projects at once:
 
 ## Default profiles 
 
-GitLab provides default profiles that are preconfigured scanner settings so you can enable security scanning with minimal configuration. The foolwing
+GitLab provides default profiles that are preconfigured scanner settings so you can enable security scanning with minimal configuration.
 
 ### Secret detection profile
 

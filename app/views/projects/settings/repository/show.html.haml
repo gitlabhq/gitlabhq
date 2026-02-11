@@ -4,8 +4,7 @@
 - @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_project, @project)
-  - if Feature.enabled?(:web_based_commit_signing_ui, @project)
-    = render_if_exists "projects/settings/repository/general", project: @project
+  = render_if_exists "projects/settings/repository/general", project: @project
   = render "projects/branch_defaults/show"
   = render "projects/branch_rules/show"
 

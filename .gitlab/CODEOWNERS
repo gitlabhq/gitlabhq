@@ -2052,7 +2052,255 @@ frontend/**/geo_* @zcuddy
 /gems/gitlab-grape-openapi/**/*.rb @cfeick @mwoolf @vwolanyk
 
 [Source Code Backend] @gitlab-com/create-team/source-code/backend
+# Repositories & Git Core
+/app/models/repository.rb
+/app/models/project_repository.rb
+/app/models/pool_repository.rb
+/app/models/repository_language.rb
+/app/models/tree.rb
+/app/models/commit.rb
+/app/models/compare.rb
+/app/models/remote_mirror.rb
+/app/services/repositories/
+/ee/app/services/repositories/
+/lib/gitlab/repositories/
+/ee/lib/gitlab/repositories/
+/app/finders/repositories/
+
+# Git Operations & Services
+/app/services/git/
+/ee/app/services/ee/git/
+/lib/gitlab/git/
+/lib/gitlab/gitaly_client/
+/lib/gitlab/gl_repository.rb
+
+# Protected Branches & Rules
+/app/models/protected_ref/
+/app/models/protected_branch.rb
+/app/models/protected_branch/
+/app/controllers/projects/protected_branches_controller.rb
+/app/services/protected_branches/
+/ee/app/controllers/ee/projects/protected_branches_controller.rb
+/ee/app/models/push_rule.rb
+/ee/app/services/push_rules/
+/ee/app/controllers/projects/push_rules_controller.rb
+/ee/app/controllers/groups/push_rules_controller.rb
+/ee/app/controllers/admin/push_rules_controller.rb
+/ee/app/helpers/push_rules_helper.rb
+/ee/app/finders/push_rule_finder.rb
+
+# Git Checks & Validations
+/lib/gitlab/checks/
+/ee/lib/gitlab/checks/push_rules/
+/ee/lib/gitlab/checks/diffs/
+/ee/lib/gitlab/checks/integrations/
+
+# Commits & Diffs
+/app/services/commits/
+/app/controllers/projects/commit_controller.rb
+/app/controllers/projects/commits_controller.rb
+/app/controllers/projects/compare_controller.rb
+/lib/gitlab/diff/
+
+# Snippets
+/app/models/snippet.rb
+/app/models/snippet_repository.rb
+/app/models/project_snippet.rb
+/app/models/personal_snippet.rb
+/app/services/snippets/
+/app/controllers/projects/snippets_controller.rb
+/app/controllers/snippets/
+/app/controllers/explore/snippets_controller.rb
+
+# Blobs, Files & Trees
+/app/controllers/projects/blob_controller.rb
+/ee/app/controllers/ee/projects/blob_controller.rb
+/app/controllers/projects/tree_controller.rb
+/app/controllers/projects/raw_controller.rb
+/app/controllers/projects/find_file_controller.rb
+/app/controllers/projects/blame_controller.rb
+/app/services/files/
+/app/services/submodules/
+/app/helpers/blob_helper.rb
+/app/helpers/tree_helper.rb
+
+# Branches & Tags
+/app/services/branches/
+/app/controllers/projects/branches_controller.rb
+/app/controllers/projects/tags_controller.rb
+/app/services/tags/
+
+# Protected Tags
+/app/models/protected_tag.rb
+/app/models/protected_tag/
+/app/controllers/projects/protected_tags_controller.rb
+/app/services/protected_tags/
+
+# SSH Keys & Signatures
+/app/models/key.rb
+/app/models/deploy_key.rb
+/app/models/gpg_key.rb
+/app/services/keys/
+/app/services/gpg_keys/
+/lib/gitlab/ssh/
+/lib/gitlab/gpg/
+/lib/gitlab/x509/
+
+# Branch Rules
+/app/services/branch_rules/
+/app/finders/projects/branch_rules_finder.rb
+/app/graphql/resolvers/projects/branch_rules_resolver.rb
+
+# LFS (Git Large File Storage)
+/app/services/lfs/
+/app/controllers/repositories/lfs_storage_controller.rb
+/app/services/projects/lfs_pointers/
+
+# Mirrors
+/app/services/remote_mirrors/
+/app/controllers/projects/mirrors_controller.rb
+/ee/app/services/projects/update_mirror_service.rb
+/ee/app/controllers/ee/projects/mirrors_controller.rb
+
+# Forks
+/app/services/projects/forks/
+/app/services/projects/fork_service.rb
+/app/services/projects/unlink_fork_service.rb
+/app/services/projects/move_forks_service.rb
+/app/controllers/projects/forks_controller.rb
+/app/services/namespaces/unlink_project_forks_service.rb
+
+# Project Services (SCM-related)
+/app/services/projects/git_deduplication_service.rb
+/app/services/projects/cleanup_service.rb
+/app/services/projects/repository_languages_service.rb
+/app/services/projects/move_lfs_objects_projects_service.rb
+/app/services/projects/update_remote_mirror_service.rb
+/app/services/projects/branches_by_mode_service.rb
+/app/services/projects/protect_default_branch_service.rb
+/app/services/projects/update_repository_storage_service.rb
+
+# Git HTTP Operations
+/app/controllers/repositories/
+/ee/app/controllers/ee/repositories/git_http_controller.rb
+
+# Repository Settings
+/app/controllers/projects/refs_controller.rb
+/app/controllers/projects/repositories_controller.rb
+/app/controllers/projects/settings/repository_controller.rb
+/ee/app/controllers/ee/projects/repositories_controller.rb
+/ee/app/controllers/ee/projects/settings/repository_controller.rb
+
+# Background Workers
 /app/workers/authorized_keys_worker.rb
+/app/workers/repositories/
+/app/workers/object_pool/
+/app/workers/flush_counter_increments_worker.rb
+/app/workers/trending_projects_worker.rb
+/app/workers/post_receive.rb
+/app/workers/project_cache_worker.rb
+/app/workers/system_hook_push_worker.rb
+/app/workers/update_project_statistics_worker.rb
+/app/workers/detect_repository_languages_worker.rb
+/app/workers/repository_fork_worker.rb
+/app/workers/invalid_gpg_signature_update_worker.rb
+/app/workers/x509_certificate_revoke_worker.rb
+/app/workers/x509_issuer_crl_check_worker.rb
+/app/workers/project_destroy_worker.rb
+/app/workers/remove_unreferenced_lfs_objects_worker.rb
+/app/workers/delete_merged_branches_worker.rb
+/app/workers/emails_on_push_worker.rb
+/app/workers/rebase_worker.rb
+/app/workers/repository_cleanup_worker.rb
+/app/workers/process_commit_worker.rb
+/app/workers/create_commit_signature_worker.rb
+/app/workers/repository_update_remote_mirror_worker.rb
+/app/workers/remote_mirror_notification_worker.rb
+/app/workers/admin_email_worker.rb
+/app/workers/namespaces/unlink_project_forks_worker.rb
+/app/workers/namespaces/root_statistics_worker.rb
+/app/workers/namespaces/schedule_aggregation_worker.rb
+/app/workers/namespaces/update_root_statistics_worker.rb
+/app/workers/namespaces/prune_aggregation_schedules_worker.rb
+/app/workers/merge_requests/execute_approval_hooks_worker.rb
+/app/workers/merge_requests/delete_source_branch_worker.rb
+/app/workers/groups/update_statistics_worker.rb
+/app/workers/repository_check/clear_worker.rb
+/app/workers/repository_check/batch_worker.rb
+/app/workers/repository_check/single_repository_worker.rb
+/app/workers/repository_check/dispatch_worker.rb
+/app/workers/wikis/git_garbage_collect_worker.rb
+/app/workers/projects/git_garbage_collect_worker.rb
+/app/workers/projects/post_creation_worker.rb
+/app/workers/projects/update_repository_storage_worker.rb
+/app/workers/projects/delete_branch_worker.rb
+/app/workers/ssh_keys/update_last_used_at_worker.rb
+/app/workers/snippets/update_repository_storage_worker.rb
+/app/workers/authorized_project_update/periodic_recalculate_worker.rb
+
+# API Endpoints
+/lib/api/branches.rb
+/lib/api/commits.rb
+/lib/api/repositories.rb
+/lib/api/files.rb
+/lib/api/tags.rb
+/lib/api/snippets.rb
+/lib/api/project_snippets.rb
+/lib/api/submodules.rb
+/lib/api/remote_mirrors.rb
+/lib/api/templates.rb
+/lib/api/internal/
+/ee/lib/api/project_push_rule.rb
+/ee/lib/api/group_push_rule.rb
+
+# GraphQL
+/app/graphql/mutations/commits/
+/app/graphql/resolvers/repositories/
+/app/graphql/resolvers/blobs_resolver.rb
+/app/graphql/resolvers/blame_resolver.rb
+/app/graphql/resolvers/snippets_resolver.rb
+/app/graphql/resolvers/users/snippets_resolver.rb
+/app/graphql/resolvers/paginated_tree_resolver.rb
+/ee/app/graphql/types/push_rules_type.rb
+/ee/app/graphql/resolvers/path_locks_resolver.rb
+/ee/app/graphql/mutations/projects/set_locked.rb
+
+# Helpers & Presenters
+/app/helpers/avatars_helper.rb
+/app/helpers/branches_helper.rb
+/ee/app/helpers/ee/branches_helper.rb
+/ee/app/helpers/ee/protected_branches_helper.rb
+/ee/app/helpers/ee/projects/settings/branch_rules_helper.rb
+
+# Path Locks (EE)
+/ee/app/models/path_lock.rb
+/ee/app/controllers/projects/path_locks_controller.rb
+/ee/app/graphql/types/path_lock_type.rb
+
+# Approval Rules (branch protection related)
+/ee/app/services/approval_rules/create_service.rb
+/ee/app/finders/approval_rules/
+
+# Components
+/app/components/diffs/
+
+# Utilities & Libraries
+/lib/gitlab/url_sanitizer.rb
+/lib/gitlab/tree_summary.rb
+/lib/gitlab/repository_set_cache.rb
+/lib/gitlab/repository_cache/
+/lib/gitlab/cache/
+/lib/gitlab/changelog/
+/lib/gitlab/beyond_identity/
+
+# Network Graph
+/app/models/network/
+
+# Constraints
+/app/constraints/repositories/
+
+# Push Event Handling
+/app/services/push_event_payload_service.rb
 
 # Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
 [Database Sharding] @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels

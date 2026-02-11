@@ -540,4 +540,99 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       end
     end
   end
+
+  describe 'caching' do
+    let(:params) { { remote: location, cache: cache_value } }
+
+    before do
+      stub_full_request(location).to_return(body: remote_file_content)
+    end
+
+    context 'when feature flag is disabled' do
+      let(:cache_value) { true }
+
+      before do
+        stub_feature_flags(ci_cache_remote_includes: false)
+      end
+
+      it 'does not cache the content' do
+        expect(Rails.cache).not_to receive(:fetch)
+
+        remote_file.preload_content
+        expect(remote_file.content).to eq(remote_file_content)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_cache_remote_includes: true)
+      end
+
+      context 'with cache: true' do
+        let(:cache_value) { true }
+
+        it 'caches content with default TTL and returns cached content on subsequent calls' do
+          expect(Rails.cache).to receive(:fetch)
+            .with("ci-remote-include::#{location}", expires_in: 1.hour)
+            .twice
+            .and_call_original
+
+          remote_file.preload_content
+          first_content = remote_file.content
+
+          remote_file.clear_memoization(:content)
+          stub_full_request(location).to_return(body: 'different content')
+
+          remote_file.preload_content
+          second_content = remote_file.content
+
+          expect(second_content).to eq(first_content)
+        end
+      end
+
+      context 'with cache duration string' do
+        let(:cache_value) { '30 minutes' }
+
+        it 'caches the content with parsed TTL' do
+          expect(Rails.cache).to receive(:fetch)
+            .with("ci-remote-include::#{location}", expires_in: 30.minutes)
+            .and_call_original
+
+          remote_file.preload_content
+          expect(remote_file.content).to eq(remote_file_content)
+        end
+      end
+
+      context 'with cache and integrity check' do
+        let(:cache_value) { true }
+        let(:integrity_hash) { "sha256-#{Base64.strict_encode64(Digest::SHA256.digest('wrong content'))}" }
+        let(:params) { { remote: location, cache: cache_value, integrity: integrity_hash } }
+
+        it 'fails validation even with cached content' do
+          remote_file.preload_content
+          remote_file.content
+
+          expect(remote_file).not_to be_valid
+          expect(remote_file.errors).to include(/failed integrity check/)
+        end
+      end
+
+      context 'when context has no project' do
+        let(:cache_value) { true }
+        let(:context_params) { { project: nil, sha: '12345', user: nil } }
+
+        it 'logs cache access without project_id' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(
+              message: 'CI remote include cache access',
+              project_id: nil
+            )
+          )
+
+          remote_file.preload_content
+          remote_file.content
+        end
+      end
+    end
+  end
 end

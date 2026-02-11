@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:project) { create(:project, :repository) }
 
@@ -146,7 +148,9 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
     end
 
     context 'pipeline with variables' do
-      let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1') }
+      before_all do
+        create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
+      end
 
       it { expect(attributes[:variables]).to be_a(Array) }
       it { expect(attributes[:variables]).to contain_exactly({ key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' }) }

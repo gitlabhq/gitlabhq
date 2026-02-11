@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:project2) { create(:project, creator: user) }
@@ -1231,7 +1233,9 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'with variables' do
-        let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
+        before_all do
+          create_or_replace_pipeline_variables(pipeline, { key: 'foo', value: 'bar' })
+        end
 
         it 'returns pipeline variables', :aggregate_failures do
           subject
@@ -1264,7 +1268,10 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       context 'pipeline created by the developer user' do
         let(:api_user) { pipeline_owner_user }
-        let!(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'foo', value: 'bar') }
+
+        before do
+          create_or_replace_pipeline_variables(pipeline, { key: 'foo', value: 'bar' })
+        end
 
         it 'returns pipeline variables', :aggregate_failures do
           subject

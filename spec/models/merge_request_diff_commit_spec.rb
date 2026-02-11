@@ -6,6 +6,16 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
+  describe 'factory test' do
+    it 'creates merge_request_commits_metadata accordingly', :aggregate_failures do
+      created_mrdc = create(:merge_request_diff_commit)
+      built_mrdc = build(:merge_request_diff_commit)
+
+      expect(created_mrdc.merge_request_commits_metadata).to be_present
+      expect(built_mrdc.merge_request_commits_metadata).to be_present
+    end
+  end
+
   it_behaves_like 'a BulkInsertSafe model', described_class do
     let(:valid_items_for_bulk_insertion) do
       build_list(:merge_request_diff_commit, 10) do |mr_diff_commit|

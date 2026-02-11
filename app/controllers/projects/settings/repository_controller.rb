@@ -10,7 +10,6 @@ module Projects
       before_action :define_variables, only: [:create_deploy_token]
 
       before_action do
-        push_frontend_feature_flag(:web_based_commit_signing_ui, @project)
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_branch, resource: @project, user: current_user)
       end

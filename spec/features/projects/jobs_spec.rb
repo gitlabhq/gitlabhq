@@ -6,6 +6,7 @@ require 'tempfile'
 RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :groups_and_projects do
   include Gitlab::Routing
   include ProjectForksHelper
+  include Ci::PipelineVariableHelpers
 
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
@@ -462,7 +463,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         context 'when variables are stored in pipeline_variables' do
           before do
-            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+            create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
 
             visit project_job_path(project, job)
           end
@@ -497,7 +498,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         context 'when variables are stored in pipeline_variables' do
           before do
-            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+            create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
 
             visit project_job_path(project, job)
           end

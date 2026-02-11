@@ -23,6 +23,69 @@ If you notice replication or verification failures in `Admin > Geo > Sites` or t
 
 Before attempting manual retries, you can use these enhanced diagnostic procedures to better understand the scope and nature of synchronization issues.
 
+### Model status check
+
+This procedure provides detailed status information for all [Geo data type Model classes](#geo-data-type-model-classes) and helps identify checksumming failures. These failures happen when the checksum of a replicable object could not be computed. They are also sometimes called "primary verification failures".
+
+You can view the checksum failures either from the UI or the Rails console.
+
+{{< tabs >}}
+
+{{< tab title="UI" >}}
+
+On the **primary** site, use the [Data Management page](../../../admin_area.md#data-management).
+
+{{< /tab >}}
+
+{{< tab title="Rails console" >}}
+
+You can use the following script to output detailed information for each model type, including:
+
+- Total count of records
+- Number of failed, verified, and pending records
+- Sample failed records for investigation
+
+> [!note]
+> The `ModelMapper` class was added in [GitLab 18.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196293).
+> For older versions, you need to manually specify the list of [Geo data type Model classes](#geo-data-type-model-classes).
+
+1. On the **primary** site, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following script to get a comprehensive overview:
+
+   ```ruby
+   def output_geo_verification_failures
+     model_classes = ::Gitlab::Geo::ModelMapper.available_models
+
+     model_classes.each do |klass|
+       total = klass.count
+       state_klass = klass.verification_state_table_class
+       failed_examples = []
+
+       puts "\n=== #{klass.name} ==="
+       puts "Total: #{total}"
+       ::Geo::VerificationState::VERIFICATION_STATE_VALUES.each do |key, value|
+         records = state_klass.where(verification_state: value)
+         failed_examples = records if key == 'verification_failed'
+
+         puts "#{key.gsub('verification_', '').camelize}: #{records.size}"
+       end
+
+       if failed_examples.any?
+         puts "\nSample failed records:"
+         failed_examples.limit(3).each { |record| puts "  ID: #{record.id}, Checksum: #{record.verification_checksum || 'nil'}, Error: #{record.verification_failure}" }
+       end
+     end
+
+     nil
+   end
+
+   output_geo_verification_failures
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Registry status check
 
 This procedure provides detailed status information for all Geo registry types and helps identify patterns in failures.

@@ -6,6 +6,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
+  include Ci::PipelineVariableHelpers
 
   let(:instance_id) { 'test-instance-id' }
   let(:instance_uuid) { 'test-instance-uuid' }
@@ -396,7 +397,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'specifies refspecs' do
@@ -455,7 +456,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'specifies refspecs' do
@@ -541,7 +542,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'returns the overwritten git depth for merge request refspecs' do
@@ -944,7 +945,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when variables are stored in pipeline_variables' do
               before do
-                create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+                create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
               end
 
               it_behaves_like 'expected variables behavior'

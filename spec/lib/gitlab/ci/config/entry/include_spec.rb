@@ -8,6 +8,7 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Include, feature_category: :pipeline
   # Test all common include validations shared with Header::Include
   it_behaves_like 'basic include validations'
   it_behaves_like 'integrity validation for includes'
+  it_behaves_like 'cache validation for includes'
 
   describe 'Entry::Include specific validations' do
     before do

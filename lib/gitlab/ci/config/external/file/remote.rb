@@ -19,7 +19,7 @@ module Gitlab
             end
 
             def content
-              body = fetch_response_body
+              body = fetch_body_with_cache
 
               return unless body
 
@@ -54,6 +54,39 @@ module Gitlab
             end
 
             private
+
+            def fetch_body_with_cache
+              start_time = Time.current
+
+              if cache_enabled?
+                cache_hit = Rails.cache.exist?(cache_key)
+
+                result = Rails.cache.fetch(cache_key, expires_in: cache_ttl) do
+                  fetch_response_body
+                end
+
+                log_cache_access(cache_hit: cache_hit, duration: Time.current - start_time)
+              else
+                result = fetch_response_body
+                log_cache_access(cache_hit: false, duration: Time.current - start_time) if params[:cache].present?
+              end
+
+              result
+            end
+
+            def cache_enabled?
+              Feature.enabled?(:ci_cache_remote_includes, context.project) && params[:cache].present?
+            end
+
+            def cache_key
+              "ci-remote-include::#{location}"
+            end
+
+            def cache_ttl
+              return 1.hour unless params[:cache].is_a?(String)
+
+              ChronicDuration.parse(params[:cache]).seconds
+            end
 
             def fetch_response_body
               response = fetch_with_error_handling do
@@ -147,6 +180,18 @@ module Gitlab
               # After attempt 1 fails: 2^0 = 1s
               # After attempt 2 fails: 2^1 = 2s
               2**(attempt - 1)
+            end
+
+            def log_cache_access(cache_hit:, duration:)
+              Gitlab::AppJsonLogger.info(
+                message: 'CI remote include cache access',
+                location: masked_location,
+                cache_hit: cache_hit,
+                cache_enabled: cache_enabled?,
+                cache_ttl_seconds: cache_enabled? ? cache_ttl : nil,
+                duration_ms: (duration * 1000).round(2),
+                project_id: context.project&.id
+              )
             end
 
             def verify_integrity(content)

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :pipeline_composition do
+  include Ci::PipelineVariableHelpers
+
   let(:log_output) { StringIO.new }
   let(:service) { described_class.new(current_user: current_user, group: parent_group) }
 
@@ -30,7 +32,7 @@ RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :pipel
       let(:build) { create(:ci_build, pipeline: pipeline3) }
 
       before do
-        create(:ci_pipeline_variable, pipeline: pipeline1, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+        create_or_replace_pipeline_variables(pipeline1, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
 
         create(:ci_job_variable, job: build)
       end

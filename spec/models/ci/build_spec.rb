@@ -6,6 +6,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   using RSpec::Parameterized::TableSyntax
   include Ci::TemplateHelpers
   include AfterNextHelpers
+  include Ci::PipelineVariableHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
@@ -3528,9 +3529,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when pipeline has a variable' do
-      let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
+      before_all do
+        create_or_replace_pipeline_variables(pipeline, { key: 'TEST_VAR', value: 'test_value' })
+      end
 
-      it { is_expected.to include(key: pipeline_variable.key, value: pipeline_variable.value, public: false, masked: false) }
+      it { is_expected.to include(key: 'TEST_VAR', value: 'test_value', public: false, masked: false) }
     end
 
     context 'when a job was triggered by a pipeline schedule' do
@@ -5658,7 +5661,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'reflects pipeline variables' do
-          create(:ci_pipeline_variable, key: 'CI_DEBUG_TRACE', value: value, pipeline: pipeline)
+          create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_TRACE', value: value })
 
           is_expected.to eq true
         end
@@ -5698,7 +5701,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'reflects pipeline variables' do
-          create(:ci_pipeline_variable, key: 'CI_DEBUG_SERVICES', value: value, pipeline: pipeline)
+          create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_SERVICES', value: value })
 
           is_expected.to eq true
         end

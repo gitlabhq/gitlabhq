@@ -17,13 +17,13 @@ module Gitlab
           module BaseInclude
             extend ActiveSupport::Concern
 
-            COMMON_ALLOWED_KEYS = %i[local file remote project ref integrity].freeze
+            COMMON_ALLOWED_KEYS = %i[local file remote project ref integrity cache].freeze
 
             included do
               include ::Gitlab::Config::Entry::Validatable
               include ::Gitlab::Config::Entry::Attributable
 
-              attributes :local, :file, :remote, :project, :ref, :component, :integrity
+              attributes :local, :file, :remote, :project, :ref, :component, :integrity, :cache
 
               validations do
                 validates :config, hash_or_string: true
@@ -51,11 +51,17 @@ module Gitlab
                     end
                   end
                 end
+
+                validates :cache, 'ci/include_cache': true, if: :cache_present?
               end
             end
 
             def skip_config_hash_validation?
               true
+            end
+
+            def cache_present?
+              config.is_a?(Hash) && config[:cache].present?
             end
           end
         end

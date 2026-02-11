@@ -10,7 +10,6 @@ module Groups
       before_action :define_deploy_token_variables, if: -> { can?(current_user, :create_deploy_token, @group) }
 
       before_action do
-        push_frontend_feature_flag(:web_based_commit_signing_ui, @group)
         push_frontend_ability(ability: :admin_group, resource: @group, user: current_user)
       end
 

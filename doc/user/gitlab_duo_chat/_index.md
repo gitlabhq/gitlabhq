@@ -116,6 +116,7 @@ On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="hi
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187443) in GitLab 17.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190042) in GitLab 18.1. Feature flag `duo_chat_multi_thread` removed.
+- Search capability for chat history in the GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582513) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -130,6 +131,8 @@ In GitLab 17.10 and later, you can have an unlimited number of simultaneous conv
 1. Under the Chat text box, turn off the **Agentic** toggle.
 1. To view all of your conversations, view the [Chat history](#view-the-chat-history).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
+1. In the GitLab UI, to search for a specific conversation in the chat history,
+   in the **Search for a thread** text box, enter your search term.
 
 Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
 

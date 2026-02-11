@@ -68,7 +68,6 @@ Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
     - 'app/models/clusters/platforms/kubernetes.rb'
-    - 'app/models/concerns/diff_positionable_note.rb'
     - 'app/models/concerns/redis_cacheable.rb'
     - 'app/presenters/ci/pipeline_artifacts/code_coverage_presenter.rb'
     - 'app/presenters/ci/pipeline_artifacts/code_quality_mr_diff_presenter.rb'
@@ -111,7 +110,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/services/sbom/ingestion/vulnerability_data.rb'
     - 'ee/app/services/search/zoekt/provisioning_service.rb'
     - 'ee/app/services/search/zoekt/rollout_service.rb'
-    - 'ee/app/services/security/ingestion/finding_map.rb'
     - 'ee/app/services/security/process_scan_events_service.rb'
     - 'ee/app/workers/click_house/rebuild_materialized_view_cron_worker.rb'
     - 'ee/app/workers/observability/alert_query_worker.rb'

@@ -240,7 +240,10 @@ module.exports = (path, options = {}) => {
     setupFilesAfterEnv,
     restoreMocks: true,
     // actual test timeouts
-    testTimeout: process.env.CI ? 10000 : 5000,
+    // Increased from 10000 to 15000 for CI to accommodate gVisor's syscall overhead
+    // gVisor's system call interception adds ~10-20% latency which can cause
+    // timing-sensitive tests to exceed the 10s timeout on edge cases
+    testTimeout: process.env.CI ? 15000 : 5000,
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',

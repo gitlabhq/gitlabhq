@@ -200,6 +200,7 @@ And optionally:
 - [`include:inputs`](#includeinputs)
 - [`include:rules`](#includerules)
 - [`include:integrity`](#includeintegrity)
+- [`include:cache`](#includecache)
 
 **Additional details**:
 
@@ -532,6 +533,62 @@ include:
   - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
     integrity: 'sha256-L3/GAoKaw0Arw6hDCKeKQlV1QPEgHYxGBHsH4zG1IY8='
 ```
+
+---
+
+#### `include:cache`
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351252) in GitLab 18.9 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `ci_cache_remote_includes`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Use `cache` with `include:remote` to cache the fetched remote file content and reduce HTTP requests.
+When enabled, the remote file is cached for a specified time-to-live (TTL), improving pipeline performance
+for configurations that use the same remote includes repeatedly.
+
+Consider the trade-off between performance and freshness when setting cache durations.
+Longer cache durations improve performance but might use stale content if the remote file changes frequently.
+
+When `cache` is not defined, the remote file is fetched every time.
+
+**Keyword type**: Global keyword.
+
+**Supported values**:
+
+- `true`: Enable caching with a default time-to-live (TTL) of 1 hour.
+- A duration (string): Valid TTL duration strings use time units
+  like `minutes`, `hours`, or `days` (minimum `1 minute`).
+
+**Example of `include:cache`**:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample1.gitlab-ci.yml'
+    cache: true
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample2.gitlab-ci.yml'
+    cache: '1 day'
+```
+
+**Additional details**:
+
+- Caching is only available for `include:remote`.
+- After the remote file is cached, the cached version
+  continues to be used until the TTL expires, even if the remote file content changes.
+- If you use [`integrity`](#includeintegrity) with `cache`, the integrity check is performed
+  on every pipeline run, even when using cached content.
 
 ---
 
