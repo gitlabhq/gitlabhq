@@ -40,11 +40,7 @@ describe('ScopeSidebarNavigation', () => {
   const blobCountHandler = jest.fn().mockResolvedValue(mockgetBlobSearchCountQuery);
   const mockQueryError = jest.fn().mockRejectedValue(mockError);
 
-  const createComponent = (
-    initialState,
-    provide = { glFeatures: {} },
-    gqlHandler = blobCountHandler,
-  ) => {
+  const createComponent = (initialState, gqlHandler = blobCountHandler) => {
     const requestHandlers = [[getBlobSearchCountQuery, gqlHandler]];
     const apolloProvider = createMockApollo(requestHandlers);
     const state = {
@@ -66,7 +62,6 @@ describe('ScopeSidebarNavigation', () => {
       stubs: {
         NavItem,
       },
-      provide,
     });
   };
 
@@ -160,6 +155,31 @@ describe('ScopeSidebarNavigation', () => {
         });
       });
 
+      describe('when group_id and project_id is missing', () => {
+        beforeEach(() => {
+          blobCountHandler.mockClear();
+          createComponent({
+            zoektAvailable: true,
+            query: {
+              search: 'test',
+              regex: 'false',
+            },
+          });
+        });
+
+        it('makes query even without group_id or project_id', () => {
+          expect(blobCountHandler).toHaveBeenCalledWith({
+            search: 'test',
+            chunkCount: 5,
+            groupId: undefined,
+            projectId: undefined,
+            includeArchived: false,
+            includeForked: false,
+            regex: false,
+          });
+        });
+      });
+
       it('commits the count to store on successful response', async () => {
         await blobCountHandler();
         jest.runOnlyPendingTimers();
@@ -172,39 +192,20 @@ describe('ScopeSidebarNavigation', () => {
       });
     });
 
-    describe('when conditions are not met', () => {
-      describe('when group_id and project_id are missing', () => {
-        beforeEach(() => {
-          blobCountHandler.mockClear();
-          createComponent({
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-              regex: 'false',
-            },
-          });
-        });
-
-        it('does not make query', () => {
-          expect(blobCountHandler).not.toHaveBeenCalled();
+    describe('when zoektAvailable is false', () => {
+      beforeEach(() => {
+        blobCountHandler.mockClear();
+        createComponent({
+          zoektAvailable: false,
+          query: {
+            search: 'test',
+            regex: 'false',
+          },
         });
       });
 
-      describe('when zoektAvailable is false', () => {
-        beforeEach(() => {
-          blobCountHandler.mockClear();
-          createComponent({
-            zoektAvailable: false,
-            query: {
-              search: 'test',
-              regex: 'false',
-            },
-          });
-        });
-
-        it('does not make query', () => {
-          expect(blobCountHandler).not.toHaveBeenCalled();
-        });
+      it('does not make query', () => {
+        expect(blobCountHandler).not.toHaveBeenCalled();
       });
     });
 
@@ -220,7 +221,6 @@ describe('ScopeSidebarNavigation', () => {
               regex: 'false',
             },
           },
-          {},
           mockQueryError,
         );
         jest.runOnlyPendingTimers();
@@ -229,30 +229,6 @@ describe('ScopeSidebarNavigation', () => {
 
       it('captures exception in Sentry when query fails', () => {
         expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
-      });
-    });
-
-    describe('when zoektCrossNamespaceSearch feature is enabled', () => {
-      beforeEach(() => {
-        blobCountHandler.mockClear();
-        createComponent(
-          {
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-              regex: 'false',
-            },
-          },
-          {
-            glFeatures: {
-              zoektCrossNamespaceSearch: true,
-            },
-          },
-        );
-      });
-
-      it('makes query even without group_id or project_id', () => {
-        expect(blobCountHandler).toHaveBeenCalled();
       });
     });
 
@@ -287,9 +263,6 @@ describe('ScopeSidebarNavigation', () => {
             },
           },
           currentScope: 'blobs',
-          features: {
-            zoektCrossNamespaceSearch: true,
-          },
           expected: true,
         },
         {
@@ -302,77 +275,23 @@ describe('ScopeSidebarNavigation', () => {
             },
           },
           currentScope: 'notes',
-          features: {
-            zoektCrossNamespaceSearch: true,
-          },
           expected: true,
         },
         {
-          name: 'returns true when zoektCrossNamespaceSearch is off and no group_id or project_id',
+          name: 'returns false when scope is not blobs and zoekt is available',
           initialState: {
             zoektAvailable: true,
-            query: {
-              search: 'test',
-            },
+            query: { search: 'test' },
           },
           currentScope: 'notes',
-          features: {
-            zoektCrossNamespaceSearch: false,
-          },
-          expected: true,
-        },
-        {
-          name: 'returns false when all conditions allow the query to run with group_id',
-          initialState: {
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-              group_id: '123',
-            },
-          },
-          currentScope: 'notes',
-          features: {
-            zoektCrossNamespaceSearch: false,
-          },
-          expected: false,
-        },
-        {
-          name: 'returns false when all conditions allow the query to run with project_id',
-          initialState: {
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-              project_id: '456',
-            },
-          },
-          currentScope: 'notes',
-          features: {
-            zoektCrossNamespaceSearch: false,
-          },
-          expected: false,
-        },
-        {
-          name: 'returns false when all conditions allow with zoektCrossNamespaceSearch even without IDs',
-          initialState: {
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-            },
-          },
-          currentScope: 'notes',
-          features: {
-            zoektCrossNamespaceSearch: true,
-          },
           expected: false,
         },
       ];
 
-      legacyBlobsCountCases.forEach(({ name, initialState, currentScope, features, expected }) => {
+      legacyBlobsCountCases.forEach(({ name, initialState, currentScope, expected }) => {
         it(`test ${name}`, () => {
           getterSpies.currentScope.mockReturnValue(currentScope);
-          createComponent(initialState, {
-            glFeatures: { ...features },
-          });
+          createComponent(initialState);
 
           expect(wrapper.vm.legacyBlobsCount).toBe(expected);
         });
