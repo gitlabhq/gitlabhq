@@ -48,7 +48,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       issue_tracker_data
       jira_connect_installations
       jira_tracker_data
-      labels
       ldap_admin_role_links
       member_roles
       merge_request_diff_commit_users

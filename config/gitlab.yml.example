@@ -343,7 +343,7 @@ production: &base
   #   enabled: false
   #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
   #   connection:
-  #     provider: AWS # Only AWS supported at the moment
+  #     provider: AWS
   #     aws_access_key_id: AWS_ACCESS_KEY_ID
   #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
   #     region: us-east-1
@@ -365,6 +365,36 @@ production: &base
   #       bucket: packages
   #     dependency_proxy:
   #       bucket: dependency_proxy
+
+  ## Consolidated object store config for Google Cloud Storage
+  # object_store:
+  #   enabled: false
+  #   proxy_download: false
+  #   connection:
+  #     provider: Google
+  #     google_project: 'gcp-project-12345'
+  #     google_application_default: true
+  #     # Uncomment the following line to use a non-default universe domain (e.g., Google Cloud Dedicated)
+  #     # universe_domain: 'googleapis.com'
+  #   objects:
+  #     artifacts:
+  #       bucket: gitlab-artifacts
+  #     external_diffs:
+  #       bucket: gitlab-mr-diffs
+  #     lfs:
+  #       bucket: gitlab-lfs
+  #     uploads:
+  #       bucket: gitlab-uploads
+  #     packages:
+  #       bucket: gitlab-packages
+  #     dependency_proxy:
+  #       bucket: gitlab-dependency-proxy
+  #     terraform_state:
+  #       bucket: gitlab-terraform-state
+  #     ci_secure_files:
+  #       bucket: gitlab-ci-secure-files
+  #     pages:
+  #       bucket: gitlab-pages
 
   ## Build Artifacts
   artifacts:

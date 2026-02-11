@@ -124,7 +124,7 @@ export default {
       this.$refs.savedViewTitle?.$el.focus();
     },
     validateTitle() {
-      this.isTitleValid = Boolean(this.savedViewTitle.trim());
+      this.isTitleValid = Boolean(this.savedViewTitle?.trim());
     },
     async saveView() {
       this.validateTitle();

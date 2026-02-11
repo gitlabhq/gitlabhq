@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
-import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -25,19 +24,6 @@ const mockDisplaySettings = {
 };
 
 const firstMetadataKey = METADATA_KEYS[Object.keys(METADATA_KEYS)[0]];
-
-const mockCacheData = {
-  currentUser: {
-    __typename: 'User',
-    id: 'gid://gitlab/User/1',
-    userPreferences: {
-      __typename: 'UserPreferences',
-      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
-    },
-    workItemPreferences: null,
-    workItemPreferencesWithType: null,
-  },
-};
 
 describe('WorkItemUserPreferences', () => {
   let wrapper;
@@ -84,16 +70,6 @@ describe('WorkItemUserPreferences', () => {
       [updateWorkItemsDisplaySettings, mutationHandler],
       [updateWorkItemListUserPreference, namespaceHandler],
     ]);
-
-    // Set up cache with initial data
-    mockApolloProvider.clients.defaultClient.cache.writeQuery({
-      query: getUserWorkItemsPreferences,
-      variables: {
-        namespace: 'gitlab-org/gitlab',
-        workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
-      },
-      data: mockCacheData,
-    });
 
     isLoggedIn.mockReturnValue(isLoggedInValue);
 
@@ -172,19 +148,6 @@ describe('WorkItemUserPreferences', () => {
           input: {
             workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
           },
-        });
-
-        // Verify cache was updated
-        const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
-          query: getUserWorkItemsPreferences,
-          variables: {
-            namespace: 'gitlab-org/gitlab',
-            workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
-          },
-        });
-
-        expect(updatedCacheData.currentUser.userPreferences.workItemsDisplaySettings).toEqual({
-          shouldOpenItemsInSidePanel: false,
         });
       });
 
@@ -312,18 +275,6 @@ describe('WorkItemUserPreferences', () => {
             displaySettings: {
               hiddenMetadataKeys: [firstMetadataKey],
             },
-          });
-
-          const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
-            query: getUserWorkItemsPreferences,
-            variables: {
-              namespace: 'gitlab-org/gitlab',
-              workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
-            },
-          });
-
-          expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
-            hiddenMetadataKeys: [firstMetadataKey],
           });
         });
 

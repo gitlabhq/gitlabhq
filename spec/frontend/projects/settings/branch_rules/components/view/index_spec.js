@@ -91,7 +91,6 @@ describe('View branch rules', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = async ({
-    glFeatures = { editBranchRules: true },
     canAdminProtectedBranches = true,
     allowEditSquashSetting = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
@@ -117,7 +116,6 @@ describe('View branch rules', () => {
         projectPath,
         protectedBranchesPath,
         branchRulesPath,
-        glFeatures,
         canAdminProtectedBranches,
         allowEditSquashSetting,
       },
@@ -445,7 +443,6 @@ describe('View branch rules', () => {
       mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush =
         allowForcePush;
       await createComponent({
-        glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
       });
 
@@ -549,7 +546,6 @@ describe('View branch rules', () => {
         .mockResolvedValue({ ...editBranchRuleMockResponse, data: mockResponse });
 
       await createComponent({
-        glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: branchRulesMockRequestHandler,
         editMutationHandler,
       });
@@ -571,7 +567,6 @@ describe('View branch rules', () => {
       const editMutationHandler = jest.fn().mockRejectedValue(networkError);
 
       await createComponent({
-        glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: branchRulesMockRequestHandler,
         editMutationHandler,
       });
@@ -649,7 +644,6 @@ describe('View branch rules', () => {
 
     it('if error happens it shows an alert', async () => {
       await createComponent({
-        glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: branchRulesMockRequestHandler,
         deleteMutationHandler: errorHandler,
       });
@@ -676,7 +670,6 @@ describe('View branch rules', () => {
       jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
 
       await createComponent({
-        glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: predefinedBranchRulesMockRequestHandler,
       });
     });
@@ -809,7 +802,7 @@ describe('View branch rules', () => {
   describe('When rendered for a non-existing rule', () => {
     beforeEach(async () => {
       jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('non-existing-rule');
-      await createComponent({ glFeatures: { editBranchRules: true } });
+      await createComponent();
     });
 
     it('shows empty state', () => {

@@ -109,7 +109,7 @@ module API
             # AuthJobFinder currently returns no details.
             job_forbidden!(current_job, 'Job is not processing on runner')
           rescue ::Ci::AuthJobFinder::ExpiredJobTokenError => e
-            if fail_on_expired_token && Feature.enabled?(:fail_job_on_expired_token, e.job.project)
+            if fail_on_expired_token
               e.job.drop!(:job_token_expired)
               log_job_failed_due_to_expired_token(e.job)
             else

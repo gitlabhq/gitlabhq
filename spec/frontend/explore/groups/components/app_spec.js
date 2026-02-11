@@ -5,7 +5,6 @@ import ExploreGroupsApp from '~/explore/groups/components/app.vue';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import { createRouter } from '~/explore/groups';
 import { EXPLORE_GROUPS_TABS } from '~/explore/groups/constants';
-import groupCountsQuery from '~/explore/groups/graphql/queries/group_counts.query.graphql';
 
 Vue.use(VueRouter);
 
@@ -42,8 +41,6 @@ describe('ExploreGroupsApp', () => {
         updated_at: 'updatedAt',
       },
       initialSort: 'latest_activity',
-      tabCountsQuery: groupCountsQuery,
-      tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
       shouldUpdateActiveTabCountFromTabQuery: false,
     });
   });

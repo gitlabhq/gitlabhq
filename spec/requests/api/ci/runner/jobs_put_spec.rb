@@ -347,28 +347,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             update_job(job.id, jwt_token, state: 'success')
           end
         end
-
-        context 'when fail_job_on_expired_token feature flag is disabled' do
-          before do
-            stub_feature_flags(fail_job_on_expired_token: false)
-          end
-
-          it 'does not fail the job' do
-            travel_to(3.hours.from_now) do
-              expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including(
-                job_id: job.id,
-                job_user_id: job.user_id,
-                job_project_id: job.project_id,
-                message: "Job forbidden due to expired JWT"
-              ))
-
-              expect { update_job(job.id, jwt_token, state: 'success') }.not_to change { job.reload.status }
-
-              expect(response).to have_gitlab_http_status(:forbidden)
-              expect(response.header['Job-Status']).to eq('running')
-            end
-          end
-        end
       end
 
       def update_job(job_id = job.id, token = job.token, **params)

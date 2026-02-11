@@ -9,7 +9,7 @@ import { protectionPropsMock, protectionEmptyStatePropsMock, deployKeysMock } fr
 describe('Branch rule protection', () => {
   let wrapper;
 
-  const createComponent = (glFeatures = { editBranchRules: true }, props = protectionPropsMock) => {
+  const createComponent = (props = protectionPropsMock) => {
     wrapper = shallowMountExtended(Protection, {
       propsData: {
         header: 'Allowed to merge',
@@ -24,7 +24,6 @@ describe('Branch rule protection', () => {
           template: '<div>Stubbed GroupInheritancePopover</div>',
         },
       },
-      provide: { glFeatures },
     });
   };
 
@@ -43,7 +42,6 @@ describe('Branch rule protection', () => {
           template: '<div>Stubbed GroupInheritancePopover</div>',
         },
       },
-      provide: { glFeatures: { editBranchRules: true } },
     });
   };
 
@@ -66,13 +64,13 @@ describe('Branch rule protection', () => {
   });
 
   it('renders empty state for Status Checks when there is none', () => {
-    createComponent({ editBranchRules: true }, { ...protectionEmptyStatePropsMock });
+    createComponent({ ...protectionEmptyStatePropsMock });
 
     expect(findEmptyState().text()).toBe('No status checks');
   });
 
   it('renders a help text when provided', () => {
-    createComponent({ editBranchRules: true }, { helpText: 'Help text' });
+    createComponent({ helpText: 'Help text' });
 
     expect(findCrudComponent().text()).toContain('Help text');
   });
@@ -95,10 +93,7 @@ describe('Branch rule protection', () => {
   });
 
   it('renders a protection row for deploy keys', () => {
-    createComponent(
-      { editBranchRules: false },
-      { ...protectionPropsMock, deployKeys: deployKeysMock },
-    );
+    createComponent({ ...protectionPropsMock, deployKeys: deployKeysMock });
     expect(findProtectionRows().at(2).props()).toMatchObject({
       showDivider: true,
       deployKeys: deployKeysMock,
@@ -108,19 +103,19 @@ describe('Branch rule protection', () => {
 
   describe('When `isEditAvailable` prop is set to true', () => {
     it('renders `Edit` button', () => {
-      createComponent({ editBranchRules: true }, { isEditAvailable: true });
+      createComponent({ isEditAvailable: true });
       expect(findEditButton().exists()).toBe(true);
     });
 
     it('does not render group inheritance popover', () => {
-      createComponent({ editBranchRules: true }, { isEditAvailable: true });
+      createComponent({ isEditAvailable: true });
       expect(findEditButton().props('disabled')).toBe(false);
       expect(findGroupInheritancePopover().exists()).toBe(false);
     });
 
     describe('when `isGroupLevel` is true', () => {
       it('renders group inheritance popover and disabled `Edit` button, when protection is on', () => {
-        createComponent({ editBranchRules: true }, { isGroupLevel: true, isEditAvailable: true });
+        createComponent({ isGroupLevel: true, isEditAvailable: true });
 
         expect(findEditButton().props('disabled')).toBe(true);
         expect(findGroupInheritancePopover().exists()).toBe(true);
@@ -129,10 +124,7 @@ describe('Branch rule protection', () => {
 
     describe('when protected by enforced security policies', () => {
       beforeEach(() => {
-        createComponent(
-          { editBranchRules: true },
-          { isEditAvailable: true, isProtectedByPolicy: true },
-        );
+        createComponent({ isEditAvailable: true, isProtectedByPolicy: true });
       });
 
       it('renders disabled by policy popover and disabled `Edit` button, when protection is on', () => {
@@ -143,10 +135,7 @@ describe('Branch rule protection', () => {
 
     describe('when protected by warn mode security policies', () => {
       beforeEach(() => {
-        createComponent(
-          { editBranchRules: true },
-          { isEditAvailable: true, isProtectedByWarnPolicy: true },
-        );
+        createComponent({ isEditAvailable: true, isProtectedByWarnPolicy: true });
       });
 
       it('renders disabled by policy popover with warn mode', () => {
@@ -163,7 +152,7 @@ describe('Branch rule protection', () => {
   describe('description slot', () => {
     it('renders help text when no description slot is provided', () => {
       const helpText = 'This is help text';
-      createComponent({ editBranchRules: true }, { helpText });
+      createComponent({ helpText });
 
       expect(findCrudComponent().text()).toContain(helpText);
     });

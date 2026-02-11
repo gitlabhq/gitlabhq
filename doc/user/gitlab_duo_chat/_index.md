@@ -94,7 +94,7 @@ To use Chat in the GitLab UI:
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the Chat text box, turn off the **Agentic** toggle.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
-   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat)
+   - You can provide additional [context](../gitlab_duo/context.md)
      for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
@@ -401,7 +401,7 @@ For each Chat conversation, input and output length is limited:
 
 - Input is limited to 200,000 tokens (roughly 680,000 characters). The input tokens
   include:
-  - All the [context that Chat is aware of](../gitlab_duo/context.md#gitlab-duo-chat).
+  - All the [context that Chat is aware of](../gitlab_duo/context.md).
   - All the previous questions and answers in that conversation.
 - Output is limited to 8,192 tokens (roughly 28,600 characters).
 

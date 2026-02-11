@@ -8087,6 +8087,26 @@ Input type: `GroupSecretCreateInput`
 | <a id="mutationgroupsecretcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsecretcreategroupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Group secret. |
 
+### `Mutation.groupSecretDelete`
+
+Input type: `GroupSecretDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretdeletegrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secret. |
+| <a id="mutationgroupsecretdeletename"></a>`name` | [`String!`](#string) | Name of the group secret to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretdeletegroupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Deleted group secret. |
+
 ### `Mutation.groupSecretUpdate`
 
 Input type: `GroupSecretUpdateInput`
@@ -14329,6 +14349,32 @@ Input type: `UpdateDependencyProxySettingsInput`
 | <a id="mutationupdatedependencyproxysettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatedependencyproxysettingsdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Group dependency proxy settings after mutation. |
 | <a id="mutationupdatedependencyproxysettingserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.updateDuoWorkflowToolCallApprovals`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `UpdateDuoWorkflowToolCallApprovalsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdateduoworkflowtoolcallapprovalsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdateduoworkflowtoolcallapprovalstoolcallargs"></a>`toolCallArgs` | [`JSON!`](#json) | Arguments for the tool call. |
+| <a id="mutationupdateduoworkflowtoolcallapprovalstoolname"></a>`toolName` | [`String!`](#string) | Name of the tool to approve. |
+| <a id="mutationupdateduoworkflowtoolcallapprovalsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the workflow to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdateduoworkflowtoolcallapprovalsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdateduoworkflowtoolcallapprovalserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during update. |
+| <a id="mutationupdateduoworkflowtoolcallapprovalsworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Updated workflow with new tool approvals. |
 
 ### `Mutation.updateEpic`
 
@@ -32950,6 +32996,7 @@ GitLab Duo Agent Platform session.
 | <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 | <a id="duoworkflowstatusgroup"></a>`statusGroup` | [`DuoWorkflowStatusGroup`](#duoworkflowstatusgroup) | Status group of the flow session. |
 | <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status name of the session. |
+| <a id="duoworkflowtoolcallapprovals"></a>`toolCallApprovals` | [`JSON`](#json) | Tools approval per session policy. |
 | <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the session was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
 | <a id="duoworkflowuserpermissions"></a>`userPermissions` | [`DuoWorkflowPermissions`](#duoworkflowpermissions) | Permissions of the current user for the workflow. |

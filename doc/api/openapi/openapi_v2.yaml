@@ -46581,7 +46581,8 @@ paths:
       operationId: getApiV4FeatureFlagsUnleashProjectId
   "/api/v4/feature_flags/unleash/{project_id}/features":
     get:
-      description: Get a list of features (deprecated, v2 client support)
+      summary: Get a list of features (v2 client support)
+      description: Deprecated in GitLab 15.6
       produces:
       - application/json
       parameters:
@@ -46602,10 +46603,11 @@ paths:
         required: false
       responses:
         '200':
-          description: Get a list of features (deprecated, v2 client support)
+          description: Get a list of features (v2 client support)
       tags:
       - unleash
       operationId: getApiV4FeatureFlagsUnleashProjectIdFeatures
+      deprecated: true
   "/api/v4/feature_flags/unleash/{project_id}/client/features":
     get:
       description: Get a list of features

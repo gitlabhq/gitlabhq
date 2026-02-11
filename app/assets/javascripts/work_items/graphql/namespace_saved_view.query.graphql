@@ -7,6 +7,7 @@ query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
       nodes {
         id
         name
+        description
         displaySettings
         filters
         sort

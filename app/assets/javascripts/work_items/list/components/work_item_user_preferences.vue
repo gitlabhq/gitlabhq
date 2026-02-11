@@ -164,14 +164,20 @@ export default {
               cache.updateQuery(
                 {
                   query: getUserWorkItemsPreferences,
-                  variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
+                  variables: {
+                    namespace: this.fullPath,
+                    workItemTypeId: this.workItemTypeId,
+                    userPreferencesOnly: this.preventAutoSubmit,
+                  },
                 },
                 (existingData) =>
                   produce(existingData, (draftData) => {
-                    draftData.currentUser.workItemPreferences = {
-                      ...(draftData.currentUser.workItemPreferences ?? {}),
-                      displaySettings: userPreferences.displaySettings,
-                    };
+                    if (draftData?.currentUser) {
+                      draftData.currentUser.workItemPreferences = {
+                        ...(draftData?.currentUser?.workItemPreferences ?? {}),
+                        displaySettings: userPreferences.displaySettings,
+                      };
+                    }
                   }),
               );
             },
@@ -218,7 +224,11 @@ export default {
             cache.updateQuery(
               {
                 query: getUserWorkItemsPreferences,
-                variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
+                variables: {
+                  namespace: this.fullPath,
+                  workItemTypeId: this.workItemTypeId,
+                  userPreferencesOnly: this.preventAutoSubmit,
+                },
               },
               (existingData) =>
                 produce(existingData, (draftData) => {

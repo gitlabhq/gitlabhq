@@ -359,7 +359,9 @@ class GraphqlController < ApplicationController
                     end
 
       if File.exist?(schema_path)
-        Gitlab::Json.safe_parse(File.read(schema_path))
+        # rubocop:disable Gitlab/JsonSafeParse -- safe_parse has to restrictive limits for the introspection query result
+        Gitlab::Json.parse(File.read(schema_path))
+        # rubocop:enable Gitlab/JsonSafeParse
       else
         execute_query
       end

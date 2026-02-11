@@ -12,7 +12,6 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import groupCountsQuery from '~/explore/groups/graphql/queries/group_counts.query.graphql';
 
 export default {
   EXPLORE_GROUPS_TABS,
@@ -23,7 +22,6 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
-  tabCountsQuery: groupCountsQuery,
   name: 'ExploreGroupsApp',
   components: { TabsWithList },
   props: {
@@ -44,8 +42,6 @@ export default {
     :filtered-search-input-placeholder="__('Search')"
     :timestamp-type-map="$options.timestampTypeMap"
     :initial-sort="initialSort"
-    :tab-counts-query="$options.tabCountsQuery"
-    :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
     :should-update-active-tab-count-from-tab-query="false"
   />
 </template>

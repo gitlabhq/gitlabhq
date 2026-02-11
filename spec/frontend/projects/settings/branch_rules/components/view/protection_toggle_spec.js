@@ -7,11 +7,7 @@ import ProtectionToggle from '~/projects/settings/branch_rules/components/view/p
 describe('ProtectionToggle', () => {
   let wrapper;
 
-  const createComponent = ({
-    props = {},
-    provided = {},
-    glFeatures = { editBranchRules: true },
-  } = {}) => {
+  const createComponent = ({ props = {}, provided = {} } = {}) => {
     wrapper = shallowMountExtended(ProtectionToggle, {
       stubs: {
         GlToggle,
@@ -20,7 +16,6 @@ describe('ProtectionToggle', () => {
         GlSprintf,
       },
       provide: {
-        glFeatures,
         ...provided,
       },
       propsData: {

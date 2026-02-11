@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlForm, GlModal, GlAlert, GlFormRadio, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
@@ -147,7 +148,26 @@ describe('WorkItemsNewSavedViewModal', () => {
     });
     await waitForPromises();
 
+    expect(findTitleInput().props().state).toBe(false);
     expect(findCreateButton().props('disabled')).toBe(true);
+  });
+
+  it('enables the submit button if title is entered after invalid title error', async () => {
+    findTitleInput().vm.$emit('input', undefined);
+
+    findForm().vm.$emit('submit', {
+      preventDefault: jest.fn(),
+    });
+    await waitForPromises();
+
+    expect(findTitleInput().props().state).toBe(false);
+    expect(findCreateButton().props('disabled')).toBe(true);
+
+    findTitleInput().vm.$emit('input', 'New view');
+    await nextTick();
+
+    expect(findTitleInput().props().state).toBe(true);
+    expect(findCreateButton().props('disabled')).toBe(false);
   });
 
   it('creates new saved view and hides modal when submitting a form', async () => {

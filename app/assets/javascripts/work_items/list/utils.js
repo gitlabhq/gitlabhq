@@ -94,6 +94,7 @@ import createSavedViewMutation from '~/work_items/graphql/create_saved_view.muta
 import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 
 /**
@@ -842,6 +843,30 @@ const updateSavedViewsQueryCache = ({
   cache.writeQuery({ ...query, data: newData });
 };
 
+const updateNamespaceSavedViewQueryCache = ({ cache, savedView, fullPath, id = '' }) => {
+  const query = {
+    query: namespaceSavedViewQuery,
+    variables: {
+      fullPath,
+      id,
+    },
+  };
+
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    const existingSavedView = draftState.namespace?.savedViews?.nodes;
+
+    existingSavedView[0] = savedView;
+  });
+
+  cache.writeQuery({ ...query, data: newData });
+};
+
 const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath, isEdit }) => {
   const action = isEdit ? 'update' : 'create';
 
@@ -1008,6 +1033,13 @@ export const saveSavedView = async ({
           mutationKey,
           namespacePath,
           isEdit,
+        });
+      } else {
+        updateNamespaceSavedViewQueryCache({
+          cache,
+          savedView: responseData[mutationKey].savedView,
+          fullPath: namespacePath,
+          id,
         });
       }
     },

@@ -101,7 +101,7 @@ To use Chat in the GitLab UI:
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, ensure the **Agentic** toggle is turned on.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
    - Ask a follow-up question.

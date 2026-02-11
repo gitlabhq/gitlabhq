@@ -133,7 +133,7 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
-- Review and adjust the [context available to Code Suggestions](../../../gitlab_duo/context.md#code-suggestions).
+- Review and adjust the [context available to Code Suggestions](context.md).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:

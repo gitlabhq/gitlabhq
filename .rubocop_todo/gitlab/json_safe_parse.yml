@@ -120,7 +120,6 @@ Gitlab/JsonSafeParse:
     - 'ee/lib/ai/context/dependencies/config_files/php_composer.rb'
     - 'ee/lib/ai/context/dependencies/config_files/php_composer_lock.rb'
     - 'ee/lib/ai/duo_workflow/duo_workflow_service/client.rb'
-    - 'ee/lib/analytics/ai_user_metrics_database_write_buffer.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
     - 'ee/lib/audit_events/strategies/base_amazon_s3_destination_strategy.rb'
     - 'ee/lib/audit_events/strategies/base_google_cloud_logging_destination_strategy.rb'

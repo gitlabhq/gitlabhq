@@ -320,7 +320,8 @@ paths:
   "/api/v4/namespaces/{id}/gitlab_subscription":
     post:
       operationId: postApiV4NamespacesIdGitlabSubscription
-      summary: "[DEPRECATED] Create a subscription for the namespace"
+      summary: Create a subscription for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - Gitlab subscriptions
       responses:
@@ -330,6 +331,7 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesGitlabSubscription"
+      deprecated: true
       requestBody:
         required: true
         content:
@@ -371,7 +373,8 @@ paths:
               - start_date
     put:
       operationId: putApiV4NamespacesIdGitlabSubscription
-      summary: "[DEPRECATED] Update the subscription for the namespace"
+      summary: Update the subscription for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - Gitlab subscriptions
       responses:
@@ -381,6 +384,7 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesGitlabSubscription"
+      deprecated: true
       requestBody:
         required: false
         content:
@@ -433,8 +437,8 @@ paths:
   "/api/v4/namespaces/{id}/minutes":
     post:
       operationId: postApiV4NamespacesIdMinutes
-      summary: "[DEPRECATED] Create a compute minutes purchase record for the namespace"
-      description: Creates an additional pack
+      summary: Create a compute minutes purchase record for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - CI minutes
       responses:
@@ -450,6 +454,7 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      deprecated: true
       parameters:
       - name: id
         required: true
@@ -488,8 +493,8 @@ paths:
   "/api/v4/namespaces/{id}/minutes/move/{target_id}":
     patch:
       operationId: patchApiV4NamespacesIdMinutesMoveTargetId
-      summary: "[DEPRECATED] Transfer purchased compute minutes packs to another namespace"
-      description: Moves additional packs from one namespace to another
+      summary: Transfer purchased compute minutes packs to another namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - CI minutes
       responses:
@@ -501,6 +506,7 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      deprecated: true
       parameters:
       - name: id
         required: true
@@ -517,9 +523,8 @@ paths:
   "/api/v4/namespaces/{id}/subscription_add_on_purchase/{add_on_name}":
     post:
       operationId: postApiV4NamespacesIdSubscriptionAddOnPurchaseAddOnName
-      summary: "[DEPRECATED] Create an add-on purchase for the namespace"
-      description: Creates a subscription add-on record for the given namespaces and
-        add-on
+      summary: Create an add-on purchase for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - Add on purchases
       responses:
@@ -535,6 +540,7 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      deprecated: true
       requestBody:
         required: true
         content:
@@ -565,8 +571,8 @@ paths:
               - purchase_xid
     get:
       operationId: getApiV4NamespacesIdSubscriptionAddOnPurchaseAddOnName
-      summary: "[DEPRECATED] Returns an add-on purchase for the namespace"
-      description: Gets the add-on purchase record for the given namespace and add-on
+      summary: Returns an add-on purchase for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - Add on purchases
       responses:
@@ -582,11 +588,11 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      deprecated: true
     put:
       operationId: putApiV4NamespacesIdSubscriptionAddOnPurchaseAddOnName
-      summary: "[DEPRECATED] Update the add-on purchase for the namespace"
-      description: Updates a subscription add-on record for the given namespaces and
-        add-on
+      summary: Update the add-on purchase for the namespace
+      description: Deprecated in GitLab 17.7
       tags:
       - Add on purchases
       responses:
@@ -602,6 +608,7 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      deprecated: true
       requestBody:
         required: true
         content:
@@ -29973,12 +29980,14 @@ paths:
   "/api/v4/feature_flags/unleash/{project_id}/features":
     get:
       operationId: getApiV4FeatureFlagsUnleashProjectIdFeatures
-      summary: Get a list of features (deprecated, v2 client support)
+      summary: Get a list of features (v2 client support)
+      description: Deprecated in GitLab 15.6
       tags:
       - Unleash
       responses:
         '200':
           description: OK
+      deprecated: true
       parameters:
       - name: project_id
         required: true

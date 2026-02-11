@@ -1,9 +1,0 @@
----
-name: fail_job_on_expired_token
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/38356
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218204
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/585778
-milestone: "18.9"
-group: group::pipeline execution
-type: beta
-default_enabled: false

@@ -51,7 +51,6 @@ describe('Branch rules app', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = async ({
-    glFeatures = { editBranchRules: true },
     queryHandler = branchRulesQuerySuccessHandler,
     mutationHandler = addRuleMutationSuccessHandler,
     provided = appProvideMock,
@@ -66,7 +65,6 @@ describe('Branch rules app', () => {
       apolloProvider: fakeApollo,
       provide: {
         ...provided,
-        glFeatures,
       },
       stubs: {
         BranchRuleModal,

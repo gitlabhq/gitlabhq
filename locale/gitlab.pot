@@ -7385,6 +7385,9 @@ msgstr ""
 msgid "AiPowered|Contact sales for Duo Enterprise"
 msgstr ""
 
+msgid "AiPowered|Container registry for foundational flow images. Leave blank to use registry.gitlab.com"
+msgstr ""
+
 msgid "AiPowered|Control whether AI-powered features are available."
 msgstr ""
 
@@ -7659,6 +7662,9 @@ msgid "AiPowered|When you turn off composite identity for the Agent Platform, ac
 msgstr ""
 
 msgid "AiPowered|When you turn on composite identity for GitLab Duo Agent Platform, a service account is created."
+msgstr ""
+
+msgid "AiPowered|registry.gitlab.com"
 msgstr ""
 
 msgid "Akismet"
@@ -11282,10 +11288,10 @@ msgstr ""
 msgid "Billing"
 msgstr ""
 
-msgid "BillingPlans|$12 in GitLab Credits/User/Month"
+msgid "BillingPlans|$12 in GitLab Credits per user per month"
 msgstr ""
 
-msgid "BillingPlans|$24 in GitLab Credits/User/Month"
+msgid "BillingPlans|$24 in GitLab Credits per user per month"
 msgstr ""
 
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
@@ -11580,6 +11586,12 @@ msgid "BillingPlans|If you would like to downgrade your plan please contact %{su
 msgstr ""
 
 msgid "BillingPlans|Includes"
+msgstr ""
+
+msgid "BillingPlans|Includes $12 in GitLab Credits per user per month"
+msgstr ""
+
+msgid "BillingPlans|Includes $24 in GitLab Credits per user per month"
 msgstr ""
 
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
@@ -25955,6 +25967,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
 msgstr ""
 
+msgid "DuoAgentPlatform|Image registry"
+msgstr ""
+
 msgid "DuoAgentPlatform|Job ID"
 msgstr ""
 
@@ -37584,6 +37599,9 @@ msgstr ""
 msgid "InviteMember|Invited users will be added with developer level permissions. %{linkStart}View the documentation%{linkEnd} to see how to change this later."
 msgstr ""
 
+msgid "InviteMember|Limited time offer. Additional GitLab Credits can be purchased as part of an annual commitment, or on a pay-as-you-go basis at the on-demand rate of $1/credit. %{linkStart}See details and promo terms%{linkEnd}."
+msgstr ""
+
 msgid "InviteReminderEmail|%{inviter} is still waiting for you to join GitLab"
 msgstr ""
 
@@ -40746,9 +40764,6 @@ msgstr ""
 msgid "Linked epics"
 msgstr ""
 
-msgid "Linked incidents or issues"
-msgstr ""
-
 msgid "Linked items"
 msgstr ""
 
@@ -40779,10 +40794,10 @@ msgstr ""
 msgid "LinkedResources|Link"
 msgstr ""
 
-msgid "LinkedResources|Linked resources"
+msgid "LinkedResources|Remove"
 msgstr ""
 
-msgid "LinkedResources|Remove"
+msgid "LinkedResources|Resources"
 msgstr ""
 
 msgid "LinkedResources|Something went wrong while creating the resource link for the incident."

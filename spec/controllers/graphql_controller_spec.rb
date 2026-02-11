@@ -778,7 +778,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           let(:user) { create(:user) }
           let_it_be(:query) do
             <<~GQL
-            mutation IntrospectionQuery{createSnippet(input:{title:"test" description:"test" visibilityLevel:public blobActions:[{action:create previousPath:"test" filePath:"test" content:"test new file"}]}){errors clientMutationId snippet{webUrl}}}
+              mutation IntrospectionQuery{createSnippet(input:{title:"test" description:"test" visibilityLevel:public blobActions:[{action:create previousPath:"test" filePath:"test" content:"test new file"}]}){errors clientMutationId snippet{webUrl}}}
             GQL
           end
 
@@ -801,6 +801,30 @@ RSpec.describe GraphqlController, feature_category: :integrations do
 
             get :execute,
               params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
+          end
+        end
+
+        describe 'can return the whole schema' do
+          it 'with deprecated fields' do
+            post :execute, params: { query: CachedIntrospectionQuery.query_string, operationName: 'IntrospectionQuery' }
+
+            # rubocop:disable Gitlab/JsonSafeParse -- safe_parse has to restrictive limits for the introspection query result
+            expect(Gitlab::Json.parse(response.body)).to eq(
+              Gitlab::Json.parse(File.read(Rails.root.join("public/-/graphql/introspection_result.json")))
+            )
+            # rubocop:enable Gitlab/JsonSafeParse
+          end
+
+          it 'without deprecated fields' do
+            post :execute,
+              params: { query: CachedIntrospectionQuery.query_string, operationName: 'IntrospectionQuery',
+                        remove_deprecated: true }
+
+            # rubocop:disable Gitlab/JsonSafeParse -- safe_parse has to restrictive limits for the introspection query result
+            expect(Gitlab::Json.parse(response.body)).to eq(
+              Gitlab::Json.parse(File.read(Rails.root.join("public/-/graphql/introspection_result_no_deprecated.json")))
+            )
+            # rubocop:enable Gitlab/JsonSafeParse
           end
         end
       end

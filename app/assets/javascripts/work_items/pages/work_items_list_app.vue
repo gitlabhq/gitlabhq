@@ -1698,7 +1698,7 @@ export default {
           const { data } = await saveSavedView({
             isEdit: true,
             isForm: false,
-            namespacePath: this.fullPath,
+            namespacePath: this.rootPageFullPath,
             id: this.savedView?.id,
             name: this.savedView?.name,
             description: this.savedView?.description,
