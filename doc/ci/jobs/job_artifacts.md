@@ -331,7 +331,7 @@ You can delete a job's artifacts and log.
 
 Prerequisites:
 
-- You must be the owner of the job or a user with at least the Maintainer role for the project.
+- You must be the owner of the job or a user with the Maintainer or Owner role for the project.
 
 To delete a job:
 

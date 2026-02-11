@@ -275,6 +275,58 @@ func Test_newRunner(t *testing.T) {
 	runner.Close()
 }
 
+func Test_newRunner_WithServerCapabilities(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	tests := []struct {
+		name               string
+		serverCapabilities []string
+	}{
+		{
+			name:               "with capabilities",
+			serverCapabilities: []string{"advanced_search"},
+		},
+		{
+			name:               "without capabilities",
+			serverCapabilities: []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", "/duo", nil)
+			cfg := &api.DuoWorkflow{
+				Service: &api.DuoWorkflowServiceConfig{
+					URI:     server.Addr,
+					Headers: map[string]string{},
+					Secure:  false,
+				},
+				ServerCapabilities: tt.serverCapabilities,
+				LockConcurrentFlow: false,
+			}
+
+			runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
+
+			require.NoError(t, err)
+			require.Equal(t, tt.serverCapabilities, runner.serverCapabilities)
+
+			runner.Close()
+		})
+	}
+}
+
 func Test_newRunner_WithoutRedis(t *testing.T) {
 	server := setupTestServer(t)
 	mockConn := &mockWebSocketConn{}
@@ -576,6 +628,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		name               string
 		message            []byte
 		clientCapabilities []string
+		serverCapabilities []string
 		sendError          error
 		mcpManager         *mockMcpManager
 		expectedErrMsg     string
@@ -629,6 +682,20 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			clientCapabilities: []string{"shell_command", "incremental_streaming"},
 			expectedErrMsg:     "",
 		},
+		{
+			name:               "start request with server capabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
+			clientCapabilities: []string{"shell_command", "advanced_search"},
+			serverCapabilities: []string{"advanced_search"},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request without server capabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
+			clientCapabilities: []string{"shell_command"},
+			serverCapabilities: []string{},
+			expectedErrMsg:     "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -645,12 +712,13 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					Client: &http.Client{},
 					URL:    testURL,
 				},
-				token:       "test-token",
-				originalReq: &http.Request{},
-				conn:        &mockWebSocketConn{},
-				wf:          mockWf,
-				mcpManager:  tt.mcpManager,
-				lockManager: newWorkflowLockManager(rdb),
+				token:              "test-token",
+				originalReq:        &http.Request{},
+				conn:               &mockWebSocketConn{},
+				wf:                 mockWf,
+				mcpManager:         tt.mcpManager,
+				lockManager:        newWorkflowLockManager(rdb),
+				serverCapabilities: tt.serverCapabilities,
 			}
 
 			err := r.handleWebSocketMessage(tt.message)
@@ -675,7 +743,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					require.Len(t, mockWf.sendEvents, 1)
 					startReq := mockWf.sendEvents[0].GetStartRequest()
 					require.NotNil(t, startReq)
-					assert.Equal(t, tt.clientCapabilities, startReq.ClientCapabilities)
+					assert.ElementsMatch(t, tt.clientCapabilities, startReq.ClientCapabilities)
 				}
 			}
 		})
@@ -1142,6 +1210,47 @@ func TestRunner_sendActionToWs(t *testing.T) {
 				require.NoError(t, err)
 				require.Len(t, mockConn.writeMessages, 1)
 			}
+		})
+	}
+}
+
+func Test_intersectServerCapabilities(t *testing.T) {
+	tests := []struct {
+		name       string
+		fromServer []string
+		expected   []string
+	}{
+		{
+			name:       "filters to whitelisted capabilities",
+			fromServer: []string{"advanced_search", "unknown_capability"},
+			expected:   []string{"advanced_search"},
+		},
+		{
+			name:       "returns empty when no matches",
+			fromServer: []string{"unknown_capability", "another_unknown"},
+			expected:   []string{},
+		},
+		{
+			name:       "empty input returns empty",
+			fromServer: []string{},
+			expected:   []string{},
+		},
+		{
+			name:       "nil input returns empty",
+			fromServer: nil,
+			expected:   []string{},
+		},
+		{
+			name:       "all whitelisted capabilities pass through",
+			fromServer: []string{"advanced_search"},
+			expected:   []string{"advanced_search"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := intersectServerCapabilities(tt.fromServer)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

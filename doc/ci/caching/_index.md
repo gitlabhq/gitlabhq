@@ -239,7 +239,7 @@ Cache keys receive the `-protected` suffix if the pipeline:
 - Runs for a protected branch or tag. The user must have permission to merge to the
   [protected branch](../../user/project/repository/branches/protected.md) or permission to
   create a [protected tag](../../user/project/protected_tags.md).
-- Was started by a user with at least the Maintainer role.
+- Was started by a user with the Maintainer or Owner role.
 
 Keys generated in other pipelines receive the `non_protected` suffix.
 

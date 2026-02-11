@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_comment_filter_toggle_user_comments_in_mr_weekly
 description: Weekly count of unique users who toggled the user comments option in the MR comment filter dropdown
 product_group: code_review
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

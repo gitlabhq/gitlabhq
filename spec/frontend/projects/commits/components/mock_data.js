@@ -65,6 +65,7 @@ const mockCommitSecond = {
   message:
     "GitLab currently doesn't support patches that involve a merge commit: add a commit here\n",
   webPath: '/gitlab-org/gitlab-test/-/commit/5f923865dde3436854e9ceb9cdb7815618d4e849',
+  webUrl: '/gitlab-org/gitlab-test/-/commit/5f923865dde3436854e9ceb9cdb7815618d4e849',
   authoredDate: '2025-06-23T07:27:12+00:00',
   authorName: 'Stan Hu',
   authorGravatar:
@@ -110,6 +111,7 @@ const mockCommitThird = {
   descriptionHtml: '',
   message: 'Another commit on a different day\n',
   webPath: '/gitlab-org/gitlab-test/-/commit/abc123def456',
+  webUrl: '/gitlab-org/gitlab-test/-/commit/abc123def456',
   authoredDate: '2025-06-21T18:03:33+00:00',
   authorName: 'Alfonzo Dickinson',
   authorGravatar:
@@ -133,39 +135,43 @@ const mockCommitThird = {
 // Flat array of commits as returned by GraphQL
 export const mockCommitsNodes = [mockCommit, mockCommitSecond, mockCommitThird];
 
-export const mockCommitsQueryResponse = {
+const createMockResponse = (nodes, pageInfo = {}) => ({
   data: {
     project: {
+      __typename: 'Project',
       id: 'gid://gitlab/Project/1',
       repository: {
+        __typename: 'Repository',
         commits: {
+          __typename: 'CommitConnection',
           pageInfo: {
+            __typename: 'PageInfo',
             hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: null,
             endCursor: null,
+            ...pageInfo,
           },
-          nodes: mockCommitsNodes,
+          nodes,
         },
       },
     },
   },
-};
+});
 
-export const mockEmptyCommitsQueryResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/1',
-      repository: {
-        commits: {
-          pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
-          },
-          nodes: [],
-        },
-      },
-    },
-  },
-};
+export const mockCommitsQueryResponse = createMockResponse(mockCommitsNodes);
+
+export const mockEmptyCommitsQueryResponse = createMockResponse([]);
+
+export const mockCommitsQueryResponseWithNextPage = createMockResponse(mockCommitsNodes, {
+  hasNextPage: true,
+  endCursor: 'end-cursor-1',
+});
+
+export const mockCommitsQueryResponseSecondPage = createMockResponse(mockCommitsNodes, {
+  hasNextPage: true,
+  endCursor: 'end-cursor-2',
+});
 
 export const mockCommitDescriptionQueryResponse = (descriptionHtml = 'Commit description') => ({
   data: {

@@ -14,7 +14,8 @@ Sidekiq::Testing.disable! do
 
       key = user.keys.create(
         title: "Sample key #{user.id}",
-        key: key
+        key: key,
+        organization: user.organization,
       )
 
       Sidekiq::Worker.skipping_transaction_check do

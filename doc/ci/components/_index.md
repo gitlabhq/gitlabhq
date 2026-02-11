@@ -150,7 +150,7 @@ Prerequisites:
 
 If you are a member of a parent group that contains the current group or project:
 
-- You must have the minimum role set by the visibility level of the project's parent group. For example, you must have at least the Reporter role if a parent project is set to **Private**.
+- You must have the minimum role set by the visibility level of the project's parent group. For example, you must have the Reporter, Developer, Maintainer, or Owner role if a parent project is set to **Private**.
 
 To add a component to a project's CI/CD configuration, use the [`include: component`](../yaml/_index.md#includecomponent)
 keyword. The component reference is formatted as `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`,
@@ -661,7 +661,7 @@ in your project, you can select **CI/CD Catalog**.
 Visibility of components in the CI/CD catalog follows the component source project's
 [visibility setting](../../user/public_access.md). Components with source projects set to:
 
-- Private are visible only to users assigned at least the Guest role for the source component project. To use a component, you must have at least the Reporter role.
+- Private are visible only to users assigned the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the source component project. To use a component, you must have the Reporter, Developer, Maintainer, or Owner role.
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
 
@@ -742,7 +742,7 @@ However, publishing a component's releases in the catalog makes it discoverable 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
   - Have a [project description](../../user/project/working_with_projects.md#edit-a-project) defined.

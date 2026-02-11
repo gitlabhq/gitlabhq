@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -8,18 +8,21 @@ import {
   TOKEN_TYPE_MESSAGE,
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import commitsQuery from '../graphql/queries/commits.query.graphql';
 import { groupCommitsByDay } from '../utils';
 import CommitListHeader from './commit_list_header.vue';
 import CommitListItem from './commit_list_item.vue';
 
-const COMMITS_PER_PAGE = 20; // Note: this will be user configurable in future (see issue #555379)
+const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'CommitListApp',
   components: {
     GlIcon,
+    GlKeysetPagination,
     GlLoadingIcon,
+    PageSizeSelector,
     CommitListHeader,
     CommitListItem,
   },
@@ -27,8 +30,12 @@ export default {
   data() {
     return {
       commits: [],
+      pageInfo: {},
       authorFilter: null,
       messageFilter: null,
+      pageSize: DEFAULT_PAGE_SIZE,
+      cursors: [],
+      currentCursor: null,
     };
   },
   apollo: {
@@ -38,13 +45,17 @@ export default {
         return {
           projectPath: this.projectFullPath,
           ref: this.escapedRef,
-          first: COMMITS_PER_PAGE,
+          first: this.pageSize,
+          after: this.currentCursor,
           author: this.authorFilter,
           query: this.messageFilter,
         };
       },
       update(data) {
         return data.project?.repository?.commits?.nodes || [];
+      },
+      result({ data }) {
+        this.pageInfo = data?.project?.repository?.commits?.pageInfo || {};
       },
       error(error) {
         createAlert({
@@ -63,6 +74,12 @@ export default {
     },
     groupedCommits() {
       return groupCommitsByDay(this.commits);
+    },
+    showPagination() {
+      return this.pageInfo.hasNextPage || this.hasPreviousPage;
+    },
+    hasPreviousPage() {
+      return this.cursors.length > 0;
     },
   },
   methods: {
@@ -86,6 +103,22 @@ export default {
       });
 
       Object.assign(this, result);
+      this.resetPagination();
+    },
+    resetPagination() {
+      this.cursors = [];
+      this.currentCursor = null;
+    },
+    nextPage() {
+      this.cursors.push(this.currentCursor);
+      this.currentCursor = this.pageInfo.endCursor;
+    },
+    prevPage() {
+      this.currentCursor = this.cursors.pop() ?? null;
+    },
+    handlePageSizeChange(size) {
+      this.pageSize = size;
+      this.resetPagination();
     },
   },
 };
@@ -111,6 +144,17 @@ export default {
           </ul>
         </li>
       </ol>
+
+      <div v-if="showPagination" class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
+        <div></div>
+        <gl-keyset-pagination
+          :has-previous-page="hasPreviousPage"
+          :has-next-page="pageInfo.hasNextPage"
+          @prev="prevPage"
+          @next="nextPage"
+        />
+        <page-size-selector :value="pageSize" @input="handlePageSizeChange" />
+      </div>
     </template>
 
     <p v-else class="gl-mt-5 gl-text-center gl-text-subtle">

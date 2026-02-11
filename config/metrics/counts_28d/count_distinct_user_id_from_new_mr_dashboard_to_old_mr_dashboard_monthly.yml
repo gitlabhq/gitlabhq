@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_new_mr_dashboard_to_old_mr_dashboard_monthly
 description: Monthly count of unique users who toggled the old dashboard from the new dashboard
 product_group: code_review
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

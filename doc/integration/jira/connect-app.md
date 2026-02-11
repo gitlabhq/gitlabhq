@@ -92,7 +92,7 @@ The following instructions cover both old and new app management interfaces.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the GitLab group.
+- You must have the Maintainer or Owner role for the GitLab group.
 - You must meet certain [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.

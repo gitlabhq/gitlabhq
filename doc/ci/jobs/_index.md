@@ -363,7 +363,7 @@ When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downst
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - The job must not be [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
 
 To retry a job from a merge request:
@@ -417,7 +417,7 @@ If you need to cancel a job immediately without waiting for the `after_script`, 
 
 Prerequisites:
 
-- You must have at least the Developer role for the project,
+- You must have the Developer, Maintainer, or Owner role for the project,
   or the [minimum role required to cancel a pipeline or job](../pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
 
 To cancel a job from a merge request:
@@ -467,7 +467,7 @@ The runner aborts the job without waiting for `after_script` to complete.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The job must be in the `canceling` state, which requires:
   - GitLab 17.0 and later.
   - GitLab Runner 16.10 and later.

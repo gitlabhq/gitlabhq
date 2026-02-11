@@ -39,7 +39,7 @@ Share your feedback in [issue 519575](https://gitlab.com/gitlab-org/gitlab/-/iss
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - You must enable the use of fine-grained permissions for a project.
 
 You can add fine-grained permissions to groups and projects on your job token allowlist. This allows

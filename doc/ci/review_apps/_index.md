@@ -84,7 +84,7 @@ Configure review apps when you want to provide a preview environment of your app
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - You must have CI/CD pipelines available in the project.
 - You must set up the infrastructure to host and deploy the review apps.
 

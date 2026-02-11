@@ -263,3 +263,19 @@ func Test_passResponseBack(t *testing.T) {
 		require.Equal(t, safeData, w.Header().Get("Safe-Header"))
 	})
 }
+
+func TestDuoWorkflowWithServerCapabilities(t *testing.T) {
+	duoWorkflow := &DuoWorkflow{
+		Service: &DuoWorkflowServiceConfig{
+			URI:     "grpc://localhost:50051",
+			Headers: map[string]string{"Authorization": "Bearer token"},
+			Secure:  false,
+		},
+		ServerCapabilities: []string{"advanced_search"},
+		LockConcurrentFlow: true,
+	}
+
+	require.Equal(t, []string{"advanced_search"}, duoWorkflow.ServerCapabilities)
+	require.True(t, duoWorkflow.LockConcurrentFlow)
+	require.NotNil(t, duoWorkflow.Service)
+}

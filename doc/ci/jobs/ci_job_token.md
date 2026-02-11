@@ -131,8 +131,8 @@ authenticate API calls to access project A.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the current project. If the allowed project
-  is internal or private, you must have at least the Guest role in that project.
+- You must have the Maintainer or Owner role for the current project. If the allowed project
+  is internal or private, you must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role in that project.
 - You must not have more than 200 groups and projects added to the allowlist.
 
 To add a group or project to the allowlist:
@@ -209,7 +209,7 @@ disabled.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable the job token allowlist:
 
@@ -254,7 +254,7 @@ If you use the `semantic-release` tool, [this setting might prevent pipeline cre
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To grant permission to job tokens generated in your project to push to the project's repository:
 

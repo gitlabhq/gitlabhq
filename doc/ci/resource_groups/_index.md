@@ -64,7 +64,7 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 - Familiarity with [GitLab CI/CD pipelines](../pipelines/_index.md)
 - Familiarity with [GitLab environments and deployments](../environments/_index.md)
-- At least the Developer role for the project to configure CI/CD pipelines.
+- the Developer, Maintainer, or Owner role for the project to configure CI/CD pipelines.
 
 ## Process modes
 

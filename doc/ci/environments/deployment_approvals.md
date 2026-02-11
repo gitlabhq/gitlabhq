@@ -28,7 +28,7 @@ a project.
 
 Prerequisites:
 
-- To update an environment, you must have at least the Maintainer role.
+- To update an environment, you must have the Maintainer or Owner role.
 
 To configure deployment approvals for a project:
 

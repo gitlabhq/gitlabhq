@@ -29,16 +29,40 @@ const wsWriteDeadline = 60 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
 
+type capability string
+
+const (
+	// Client capabilities
+	capabilityIncrementalStreaming capability = "incremental_streaming"
+	capabilityShellCommand         capability = "shell_command"
+
+	// Server capabilities
+	capabilityAdvancedSearch capability = "advanced_search"
+)
+
 // ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
 // capabilities that can be used by Duo Workflow Service without breaking
 // backwards compatibility. We intersect the capabilities of all parties and
 // then new behavior can only depend on that behavior if it makes it all the
-// way through. Whenever you add to this list you must also update the constant in
-// ee/app/assets/javascripts/ai/duo_agentic_chat/utils/workflow_socket_utils.js
-// and gitlab-lsp .
-var ClientCapabilities = []string{
-	"shell_command",
-	"incremental_streaming",
+// way through. Whenever you add to this list you must also update the gitlab-lsp and
+// either updates the constant in ee/app/assets/javascripts/ai/constants.js or
+// conditionally add to the capabilities in passed to buildStartRequest in
+// ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat.vue.
+var ClientCapabilities = []capability{
+	capabilityIncrementalStreaming,
+	capabilityShellCommand,
+}
+
+// ServerCapabilities defines the list of allowed server capabilities that
+// can be communicated to Duo Workflow Service. This whitelist ensures only
+// explicitly approved capabilities are sent.
+//
+// To add a new server capability:
+// 1. Add a constant above (e.g., capabilityNewFeature capability = "new_feature")
+// 2. Add it to this ServerCapabilities list
+// 3. Update get_server_capabilities in ee/lib/api/ai/duo_workflows/workflows.rb
+var ServerCapabilities = []capability{
+	capabilityAdvancedSearch,
 }
 
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
@@ -91,6 +115,7 @@ type runner struct {
 	workflowID         string
 	mutex              *redsync.Mutex
 	lockFlow           bool
+	serverCapabilities []string
 	cloudServiceClient *Client
 	cloudServiceStream selfHostedWorkflowStream
 }
@@ -153,6 +178,7 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 		mcpManager:         mcpManager,
 		lockManager:        newWorkflowLockManager(rdb),
 		lockFlow:           lockFlow,
+		serverCapabilities: cfg.ServerCapabilities,
 		cloudServiceClient: cloudServiceClient,
 		cloudServiceStream: cloudServiceStream,
 	}, nil
@@ -282,7 +308,10 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
-		startReq.ClientCapabilities = intersectClientCapabilities(startReq.ClientCapabilities)
+		startReq.ClientCapabilities = append(
+			intersectClientCapabilities(startReq.ClientCapabilities),
+			intersectServerCapabilities(r.serverCapabilities)...,
+		)
 		log.WithRequest(r.originalReq).WithFields(log.Fields{
 			"client_capabilities": startReq.ClientCapabilities,
 		}).Info("Sending startRequest")
@@ -306,14 +335,28 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	return nil
 }
 
-// Returns the intersection of what gitlab-lsp passed in and what workhorse
+// intersectClientCapabilities returns the intersection of what gitlab-lsp passed in and what workhorse
 // supports.
 func intersectClientCapabilities(fromClient []string) []string {
-	var result = []string{}
+	result := []string{}
 
 	for _, cap := range ClientCapabilities {
-		if slices.Contains(fromClient, cap) {
-			result = append(result, cap)
+		if slices.Contains(fromClient, string(cap)) {
+			result = append(result, string(cap))
+		}
+	}
+
+	return result
+}
+
+// intersectServerCapabilities returns the intersection of what is passed from server and what workhorse
+// supports.
+func intersectServerCapabilities(fromServer []string) []string {
+	result := []string{}
+
+	for _, cap := range ServerCapabilities {
+		if slices.Contains(fromServer, string(cap)) {
+			result = append(result, string(cap))
 		}
 	}
 

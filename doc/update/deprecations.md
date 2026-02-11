@@ -2607,7 +2607,7 @@ The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ci/runners/saas/lin
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387891).
 
 The ability for users with the Developer role for a group to import projects to that group is deprecated in GitLab
-15.8 and will be removed in GitLab 16.0. From GitLab 16.0, only users with at least the Maintainer role for a group
+15.8 and will be removed in GitLab 16.0. From GitLab 16.0, only users with the Maintainer or Owner role for a group
 will be able to import projects to that group.
 
 ### Development dependencies reported for PHP and Python

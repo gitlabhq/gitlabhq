@@ -28,7 +28,7 @@ With environments, you:
 
 Prerequisites:
 
-- In a private project, you must have at least the Reporter role. See [Environment permissions](#environment-permissions).
+- In a private project, you must have the Reporter, Developer, Maintainer, or Owner role. See [Environment permissions](#environment-permissions).
 
 There are a few ways to view a list of environments for a given project:
 
@@ -117,7 +117,7 @@ You can create a static environment in the UI or in your `.gitlab-ci.yml` file.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a static environment in the UI:
 
@@ -131,7 +131,7 @@ To create a static environment in the UI:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a static environment, in your `.gitlab-ci.yml` file:
 
@@ -162,7 +162,7 @@ unique to each pipeline.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a dynamic environment, in your `.gitlab-ci.yml` file:
 
@@ -593,7 +593,7 @@ Clean up stale environments when you want to stop old environments in a project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To clean up stale environments:
 
@@ -734,7 +734,7 @@ Delete an environment when you want to remove it and all its deployments.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 - You must [stop](#stopping-an-environment) the environment before it can be deleted.
 
 To delete an environment:
@@ -859,23 +859,23 @@ and private projects.
 ### View environments
 
 - In public projects, anyone can view a list of environments, including non-members.
-- In private projects, you must have at least the Reporter role to view a list of environments.
+- In private projects, you must have the Reporter, Developer, Maintainer, or Owner role to view a list of environments.
 
 ### Create and update environments
 
-- You must have at least the Developer role to create a new environment, or update an existing unprotected environment.
+- You must have the Developer, Maintainer, or Owner role to create a new environment, or update an existing unprotected environment.
 - If an existing environment is protected and you don't have access to it, you cannot update the environment.
 
 ### Stop and delete environments
 
-- You must have at least the Developer role to stop or delete an unprotected environment.
+- You must have the Developer, Maintainer, or Owner role to stop or delete an unprotected environment.
 - If an environment is protected and you don't have access to it, you cannot stop or delete the environment.
 
 ### Run deployment jobs in protected environments
 
 If you can push or merge to the protected branch:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 If you can't push to the protected branch:
 

@@ -70,7 +70,7 @@ To invite a user to the `My website` project:
 1. Select **Invite members**.
 1. Enter the user's **username**.
 1. From the **Role** dropdown list, select at least the **Developer** role.
-   Users must have at least the Developer role to view analytics and contribute to issues and merge requests.
+   Users must have the Developer, Maintainer, or Owner role to view analytics and contribute to issues and merge requests.
 1. Optional. In the **Access expiration date** picker, select a date.
    This step is recommended if the invited member is expected to contribute to the project only for a limited time.
 1. Select **Invite**.
@@ -157,7 +157,7 @@ To create an Insights report, in the `My website` project:
 1. Select **Commit changes**.
 
 Now you have an Insights bar chart that displays the number of issues with the label `~bug` created per month, for the past 12 months.
-You and project members with at least the Developer role can view the Insights report in **Analyze** > **Insights**.
+You and project members with the Developer, Maintainer, or Owner role can view the Insights report in **Analyze** > **Insights**.
 
 ## View merge request and issue analytics
 

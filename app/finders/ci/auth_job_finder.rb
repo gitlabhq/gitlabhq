@@ -45,17 +45,12 @@ module Ci
     end
 
     def find_job_by_jwt
-      if Feature.enabled?(:ci_job_token_decode_ignore_expiration, Feature.current_request)
-        # Intentionally bypass JWT expiration verification to recover the job identity.
-        # Expiration is checked separately via `jwt.expired?`.
-        jwt = ::Ci::JobToken::Jwt.decode(token, verify_expiration: false)
-        return unless jwt&.job
+      # Intentionally bypass JWT expiration verification to recover the job identity.
+      # Expiration is checked separately via `jwt.expired?`.
+      jwt = ::Ci::JobToken::Jwt.decode(token, verify_expiration: false)
+      return unless jwt&.job
 
-        raise ExpiredJobTokenError.new('Job token has expired', job: jwt.job) if jwt.expired?
-      else
-        jwt = ::Ci::JobToken::Jwt.decode(token)
-        return unless jwt&.job
-      end
+      raise ExpiredJobTokenError.new('Job token has expired', job: jwt.job) if jwt.expired?
 
       link_composite_identity!(jwt)
       jwt.job

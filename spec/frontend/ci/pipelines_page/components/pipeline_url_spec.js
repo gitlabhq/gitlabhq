@@ -9,6 +9,7 @@ import {
   mockPipelineBranch,
   mockPipelineTag,
 } from '../../pipeline_details/mock_data';
+import { mockBranchPipeline } from '../mock_data';
 
 const projectPath = 'test/test';
 
@@ -220,6 +221,18 @@ describe('Pipeline Url Component', () => {
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_commit_sha', {
         label: TRACKING_CATEGORIES.table,
+      });
+    });
+
+    describe('GraphQL', () => {
+      it('formats ref URL correctly', () => {
+        createComponent({
+          props: {
+            pipeline: { ...mockBranchPipeline, merge_request: null },
+          },
+        });
+
+        expect(findCommitRefName().attributes('href')).toBe('commits/main');
       });
     });
   });

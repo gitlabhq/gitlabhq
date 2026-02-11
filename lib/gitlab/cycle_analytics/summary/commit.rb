@@ -18,18 +18,14 @@ module Gitlab
 
         private
 
-        # Don't use the `Gitlab::Git::Repository#log` method, because it enforces
-        # a limit. Since we need a commit count, we _can't_ enforce a limit, so
-        # the easiest way forward is to replicate the relevant portions of the
-        # `log` function here.
         def commits_count
           return unless ref
 
-          @commits_count ||= gitaly_commit_client.commit_count(ref, after: @options[:from], before: @options[:to])
-        end
-
-        def gitaly_commit_client
-          Gitlab::GitalyClient::CommitService.new(@project.repository.raw_repository)
+          @commits_count ||= @project.repository.count_commits(
+            ref: ref,
+            after: @options[:from],
+            before: @options[:to]
+          )
         end
 
         def ref

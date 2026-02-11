@@ -21,7 +21,7 @@ To configure the Jira DVCS connector, see
 You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later.
 
 Jira creates a webhook in the GitLab project to provide real-time updates.
-To configure this webhook, you must have at least the Maintainer role for the project.
+To configure this webhook, you must have the Maintainer or Owner role for the project.
 For more information, see [configuring webhook security](https://confluence.atlassian.com/adminjiraserver/configuring-webhook-security-1299913153.html).
 
 The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in GitLab 16.0.

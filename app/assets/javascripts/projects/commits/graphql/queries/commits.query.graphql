@@ -3,15 +3,18 @@ query getCommitList(
   $projectPath: ID!
   $ref: String!
   $first: Int
+  $after: String
   $author: String
   $query: UntrustedRegexp
 ) {
   project(fullPath: $projectPath) {
     id
     repository {
-      commits(ref: $ref, first: $first, author: $author, query: $query) {
+      commits(ref: $ref, first: $first, after: $after, author: $author, query: $query) {
         pageInfo {
           hasNextPage
+          hasPreviousPage
+          startCursor
           endCursor
         }
         nodes {

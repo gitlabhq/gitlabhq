@@ -163,6 +163,8 @@ type DuoWorkflow struct {
 	CloudServiceForSelfHosted *DuoWorkflowServiceConfig
 	McpServers                map[string]McpServerConfig
 	LockConcurrentFlow        bool
+	// ServerCapabilities is a list of capability strings provided by Rails.
+	ServerCapabilities []string
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

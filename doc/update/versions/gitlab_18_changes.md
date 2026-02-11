@@ -104,6 +104,10 @@ to be reintroduced to handle an edge case in the data structure and ensure that 
   - [Geo documentation for the Linux package](../../administration/geo/replication/configuration.md#add-primary-and-secondary-urls-as-allowed-actioncable-origins)
   - [Geo documentation for the Helm chart](https://docs.gitlab.com/charts/advanced/geo/#configure-primary-database)
 
+### Geo installations 18.6.5
+
+- Fixed the Geo [issue 587407](https://gitlab.com/gitlab-org/gitlab/-/work_items/587407) where `Geo::VerificationStateBackfillWorker` generated large slow queries for the `merge_request_diff_details` table.
+
 ## 18.6.2
 
 GitLab 18.6.2, 18.5.4, and 18.4.6 introduced size and rate limits on requests made to the following endpoints:

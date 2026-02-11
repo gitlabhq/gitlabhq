@@ -32,7 +32,7 @@ To set up GitLab for issue triage in a project:
 
 ## Before you begin
 
-- If you're using an existing project for this tutorial, make sure you have at least the Reporter role
+- If you're using an existing project for this tutorial, make sure you have the Reporter, Developer, Maintainer, or Owner role
   for the project.
 - If you follow the steps below and later decide to create a parent group for your project, to make
   best use of labels, you'll have to promote the project labels to group labels.

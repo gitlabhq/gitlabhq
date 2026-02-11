@@ -55,7 +55,7 @@ export default {
       return this.pipeline?.commit?.short_id || this.pipeline?.commit?.shortId;
     },
     refUrl() {
-      return this.commitRef?.ref_url || this.commitRef?.path || this.pipeline?.refPath;
+      return this.commitRef?.ref_url || this.commitRef?.path || `commits/${this.pipeline?.ref}`;
     },
     tooltipTitle() {
       return this.mergeRequestRef?.title || this.commitRef?.name || this.pipeline?.refText;

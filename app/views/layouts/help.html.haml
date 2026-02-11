@@ -2,5 +2,7 @@
 - page_title    _("Help")
 - header_title  _("Help"), help_path
 - @force_desktop_expanded_sidebar = true
+- content_for :meta_tags do
+  %meta{ name: "robots", content: "noindex, nofollow" }
 
 = render template: "layouts/application"

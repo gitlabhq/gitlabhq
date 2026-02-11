@@ -2,6 +2,8 @@
 key_path: counts.count_total_user_clicks_comment_filter_dropdown_monthly
 description: Monthly count of times the MR comment filter dropdown is opened
 product_group: code_review
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active
