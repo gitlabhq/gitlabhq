@@ -322,6 +322,23 @@ This error occurs when you belong to multiple GitLab Duo namespaces, and have no
 
 To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
+## Links in Chat responses are not selectable
+
+GitLab Duo Chat does not display the URLs for external websites
+and third-party domains as selectable links in responses.
+
+Chat instead converts these types of URLs to code-formatted text
+showing only the link text. The destination URL is not displayed.
+
+This restriction helps protect users from potentially malicious links
+that could be generated in AI responses.
+
+Chat displays the following types of links as selectable in responses:
+
+- Links to the GitLab documentation at `docs.gitlab.com`.
+- Links to `gitlab.com`, including but not limited to GitLab projects, issues, and merge requests.
+- Relative URLs in your GitLab instance.
+
 ## Agentic Chat-specific issues
 
 ### Not enough GitLab Credits

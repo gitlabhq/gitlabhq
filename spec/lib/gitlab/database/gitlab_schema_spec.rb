@@ -232,6 +232,25 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
+  describe 'Schema YAML files' do
+    it 'loads all schema files without errors' do
+      schema_files = Dir.glob(Rails.root.join('db/gitlab_schemas/*.yaml'))
+
+      schema_files.each do |file|
+        expect { Gitlab::Database::GitlabSchemaInfo.load_file(file) }.not_to raise_error
+      end
+    end
+
+    it 'all loaded schemas have correct structure' do
+      Gitlab::Database.all_gitlab_schemas.each_value do |schema_info|
+        expect(schema_info.name).to be_a(Symbol)
+        expect(schema_info.allow_cross_joins).to be_a(Hash)
+        expect(schema_info.allow_cross_transactions).to be_a(Hash)
+        expect(schema_info.allow_cross_foreign_keys).to be_a(Hash)
+      end
+    end
+  end
+
   context 'when testing cross schema access' do
     using RSpec::Parameterized::TableSyntax
 

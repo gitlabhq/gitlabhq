@@ -16,6 +16,10 @@ RSpec.describe 'User applies parent filter', :js, feature_category: :team_planni
 
   let(:issuable_container) { '[data-testid="issuable-container"]' }
 
+  before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
+  end
+
   context 'for signed in user' do
     context 'when accessing work item from project issues list' do
       before do

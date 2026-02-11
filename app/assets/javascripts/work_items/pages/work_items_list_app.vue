@@ -3,8 +3,8 @@ import {
   GlButton,
   GlFilteredSearchToken,
   GlLoadingIcon,
-  GlTooltipDirective,
   GlIcon,
+  GlTooltipDirective,
   GlSkeletonLoader,
   GlModalDirective,
   GlAlert,
@@ -123,6 +123,7 @@ import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_w
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import HealthStatus from '../list/components/health_status.vue';
@@ -130,6 +131,7 @@ import WorkItemListHeading from '../list/components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../list/components/work_item_user_preferences.vue';
 import WorkItemListActions from '../list/components/work_item_list_actions.vue';
 import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
+import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
 import WorkItemsSavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
@@ -207,6 +209,8 @@ export default {
     WorkItemsSavedViewsSelectors,
     GlAlert,
     WorkItemsNewSavedViewModal,
+    WorkItemsOnboardingModal,
+    UserCalloutDismisser,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -1770,6 +1774,14 @@ export default {
     v-else-if="shouldShowList"
     :class="{ 'work-item-list-container': isPlanningViewsEnabled && !isServiceDeskList }"
   >
+    <user-callout-dismisser
+      v-if="isPlanningViewsEnabled && workItemsSavedViewsEnabled"
+      feature-name="work_items_onboarding_modal"
+    >
+      <template #default="{ dismiss, shouldShowCallout }">
+        <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
+      </template>
+    </user-callout-dismisser>
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>

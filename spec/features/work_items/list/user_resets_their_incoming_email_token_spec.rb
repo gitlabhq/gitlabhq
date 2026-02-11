@@ -8,6 +8,7 @@ RSpec.describe 'Work Items > User resets their incoming email token', feature_ca
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     project.add_maintainer(user)
   end
 

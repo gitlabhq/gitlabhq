@@ -1,7 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -50,7 +49,6 @@ export default {
       },
     },
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       // eslint-disable-next-line vue/no-unused-properties -- used in apollo query()
@@ -68,14 +66,6 @@ export default {
 
       if (!this.zoektAvailable) {
         // skip this if no multimatch feature is available
-        return true;
-      }
-
-      if (
-        !this.glFeatures.zoektCrossNamespaceSearch &&
-        !(this.query?.group_id || this.query?.project_id)
-      ) {
-        // skip this if we have no group or project ID or crossNamespaceSearch is enabled
         return true;
       }
 

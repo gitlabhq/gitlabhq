@@ -4378,6 +4378,7 @@ Input type: `BranchRuleExternalStatusCheckCreateInput`
 | <a id="mutationbranchruleexternalstatuscheckcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchruleexternalstatuscheckcreateexternalurl"></a>`externalUrl` | [`String!`](#string) | URL of external status check resource. |
 | <a id="mutationbranchruleexternalstatuscheckcreatename"></a>`name` | [`String!`](#string) | Name of the external status check. |
+| <a id="mutationbranchruleexternalstatuscheckcreatesharedsecret"></a>`sharedSecret` | [`String`](#string) | HMAC shared secret for authenticating external status check requests. |
 
 #### Fields
 
@@ -4433,6 +4434,7 @@ Input type: `BranchRuleExternalStatusCheckUpdateInput`
 | <a id="mutationbranchruleexternalstatuscheckupdateexternalurl"></a>`externalUrl` | [`String!`](#string) | External URL of the external status check. |
 | <a id="mutationbranchruleexternalstatuscheckupdateid"></a>`id` | [`MergeRequestsExternalStatusCheckID!`](#mergerequestsexternalstatuscheckid) | Global ID of the external status check to update. |
 | <a id="mutationbranchruleexternalstatuscheckupdatename"></a>`name` | [`String!`](#string) | Name of the external status check. |
+| <a id="mutationbranchruleexternalstatuscheckupdatesharedsecret"></a>`sharedSecret` | [`String`](#string) | HMAC shared secret for authenticating external status check requests. |
 
 #### Fields
 
@@ -5048,6 +5050,30 @@ Input type: `ConfigureSecretDetectionInput`
 | <a id="mutationconfiguresecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationconfiguresecretdetectionsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
 
+### `Mutation.containerUpstreamCacheDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerUpstreamCacheDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamcachedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamcachedeleteid"></a>`id` | [`VirtualRegistriesContainerUpstreamID!`](#virtualregistriescontainerupstreamid) | ID of the container virtual registry upstream. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamcachedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamcachedeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainerupstreamcachedeleteupstream"></a>`upstream` | [`ContainerUpstream`](#containerupstream) | Container virtual registry upstream. |
+
 ### `Mutation.containerUpstreamCreate`
 
 {{< details >}}
@@ -5131,6 +5157,30 @@ Input type: `ContainerUpstreamUpdateInput`
 | <a id="mutationcontainerupstreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcontainerupstreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainerupstreamupdateupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Container upstream after the mutation. |
+
+### `Mutation.containerVirtualRegistryCacheDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerVirtualRegistryCacheDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistrycachedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistrycachedeleteid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | ID of the container virtual registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistrycachedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistrycachedeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainervirtualregistrycachedeleteregistry"></a>`registry` | [`ContainerRegistry`](#containerregistry) | Container virtual registry. |
 
 ### `Mutation.containerVirtualRegistryCreate`
 
@@ -56301,6 +56351,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 | <a id="usercalloutfeaturenameenumwork_items_nav_badge"></a>`WORK_ITEMS_NAV_BADGE` | Callout feature name for work_items_nav_badge. |
+| <a id="usercalloutfeaturenameenumwork_items_onboarding_modal"></a>`WORK_ITEMS_ONBOARDING_MODAL` | Callout feature name for work_items_onboarding_modal. |
 | <a id="usercalloutfeaturenameenumwork_item_consolidated_list_feedback"></a>`WORK_ITEM_CONSOLIDATED_LIST_FEEDBACK` | Callout feature name for work_item_consolidated_list_feedback. |
 | <a id="usercalloutfeaturenameenumwork_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
@@ -56315,7 +56366,6 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
 | <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
 | <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
-| <a id="usergroupcalloutfeaturenamecompliance_framework_settings_moved_callout"></a>`COMPLIANCE_FRAMEWORK_SETTINGS_MOVED_CALLOUT` | Callout feature name for compliance_framework_settings_moved_callout. |
 | <a id="usergroupcalloutfeaturenameend_of_trial_modal"></a>`END_OF_TRIAL_MODAL` | Callout feature name for end_of_trial_modal. |
 | <a id="usergroupcalloutfeaturenameenforcement_at_limit_alert"></a>`ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
 | <a id="usergroupcalloutfeaturenameexpired_duo_enterprise_trial_widget"></a>`EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |

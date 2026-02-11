@@ -8155,6 +8155,9 @@ msgstr ""
 msgid "All users with matching phone numbers"
 msgstr ""
 
+msgid "All work items in one place"
+msgstr ""
+
 msgid "All your to-do items are done."
 msgstr ""
 
@@ -17549,9 +17552,6 @@ msgid "Compliance and security policy group"
 msgstr ""
 
 msgid "Compliance center"
-msgstr ""
-
-msgid "Compliance framework settings have moved."
 msgstr ""
 
 msgid "Compliance frameworks"
@@ -28253,6 +28253,9 @@ msgstr ""
 msgid "Epics, issues, and merge requests"
 msgstr ""
 
+msgid "Epics, issues, and tasks are now %{boldStart}work items%{boldEnd}. We’ve improved how your team finds and organizes work with customizable views."
+msgstr ""
+
 msgid "Erased"
 msgstr ""
 
@@ -31665,6 +31668,9 @@ msgid "Geo|primary"
 msgstr ""
 
 msgid "Geo|secondary"
+msgstr ""
+
+msgid "Get Started"
 msgstr ""
 
 msgid "Get a support subscription"
@@ -35091,6 +35097,9 @@ msgstr ""
 msgid "HomepageActivityWidget|Your projects"
 msgstr ""
 
+msgid "Hone in on what’s important"
+msgstr ""
+
 msgid "Hook execution failed. %{error}"
 msgstr ""
 
@@ -36191,6 +36200,9 @@ msgstr ""
 msgid "In GitLab"
 msgstr ""
 
+msgid "In a group, epics and issues are all together under %{boldStart}Work items%{boldEnd}. To view them separately, filter the list by type and save the view."
+msgstr ""
+
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
@@ -37260,6 +37272,9 @@ msgid "Internal users cannot be deactivated"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Introducing the work items list"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -47185,9 +47200,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "On the confirmation dialog, choose a deletion method."
-msgstr ""
-
-msgid "On the left sidebar, select %{compliance_center_link} to view them."
 msgstr ""
 
 msgid "On the upper right, select the overflow menu, then select %{strongStart}Delete%{strongEnd}."
@@ -59084,6 +59096,9 @@ msgid "Save internal note"
 msgstr ""
 
 msgid "Save password"
+msgstr ""
+
+msgid "Save views with your preferred filters and display options to plan and track work easier. Add views shared by your team or create your own."
 msgstr ""
 
 msgid "Saved views are not enabled for this namespace."
@@ -75419,6 +75434,9 @@ msgstr ""
 msgid "VirtualRegistryCleanupPolicyForm|Cancel"
 msgstr ""
 
+msgid "VirtualRegistryCleanupPolicyForm|Cleanup policy has been successfully saved."
+msgstr ""
+
 msgid "VirtualRegistryCleanupPolicyForm|Delete caches not accessed in the last (days)"
 msgstr ""
 
@@ -75447,6 +75465,9 @@ msgid "VirtualRegistryCleanupPolicyForm|Every week"
 msgstr ""
 
 msgid "VirtualRegistryCleanupPolicyForm|Failed to load cleanup policy. Please try again."
+msgstr ""
+
+msgid "VirtualRegistryCleanupPolicyForm|Failed to save cleanup policy. Please try again."
 msgstr ""
 
 msgid "VirtualRegistryCleanupPolicyForm|Loading cleanup policy"
@@ -78002,6 +78023,9 @@ msgid "Work Item Settings"
 msgstr ""
 
 msgid "Work Item type %{gid} was not found"
+msgstr ""
+
+msgid "Work Items Onboarding Modal"
 msgstr ""
 
 msgid "Work in progress (open and unassigned)"

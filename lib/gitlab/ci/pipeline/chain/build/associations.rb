@@ -8,6 +8,7 @@ module Gitlab
           class Associations < Chain::Base
             include Gitlab::Allowable
             include Chain::Helpers
+            include ::Gitlab::Utils::StrongMemoize
 
             def perform!
               assign_pipeline_variables
@@ -22,6 +23,12 @@ module Gitlab
 
             def assign_pipeline_variables
               @pipeline.variables_attributes = variables_attributes
+
+              if Feature.enabled?(:ci_write_pipeline_variables_artifact, project)
+                Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(@pipeline, variables_attributes).run
+              end
+            rescue ActiveModel::ValidationError => e
+              error("Failed to build pipeline variables: #{e}", failure_reason: :config_error)
             end
 
             def assign_source_pipeline
@@ -41,6 +48,7 @@ module Gitlab
               variables = apply_permissions(variables)
               validate_uniqueness(variables)
             end
+            strong_memoize_attr :variables_attributes
 
             def apply_permissions(variables)
               # On demand DAST validation pipelines are created by the GitLab backend.

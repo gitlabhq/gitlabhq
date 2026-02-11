@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
@@ -77,6 +78,8 @@ import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.gr
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import WorkItemsOnboardingModal from '~/work_items/components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -257,6 +260,7 @@ const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
 const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
 const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
+const findWorkItemsOnboardingModal = () => wrapper.findComponent(WorkItemsOnboardingModal);
 
 const mountComponent = ({
   provide = {},
@@ -521,6 +525,93 @@ describe('when work items are fetched', () => {
 
     it('does not display error alert when there is no error', () => {
       expect(findGlAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('work items onboarding modal', () => {
+    describe('when workItemPlanningView flag and workItemsSavedViewsEnabled are enabled', () => {
+      describe('when user has not seen the modal before', () => {
+        it('renders the onboarding modal', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: true,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          expect(findWorkItemsOnboardingModal().exists()).toBe(true);
+        });
+
+        it('calls dismiss when modal emits close event', async () => {
+          const dismissSpy = jest.fn();
+
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: true,
+                dismiss: dismissSpy,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          const modal = findWorkItemsOnboardingModal();
+          modal.vm.$emit('close');
+          await nextTick();
+
+          expect(dismissSpy).toHaveBeenCalled();
+        });
+      });
+
+      describe('when user has already dismissed the modal', () => {
+        it('does not render the onboarding modal', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: false,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          expect(findWorkItemsOnboardingModal().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('when workItemPlanningView flag is disabled', () => {
+      it('does not render UserCalloutDismisser', async () => {
+        mountComponent({
+          workItemPlanningView: false,
+          workItemsSavedViewsEnabled: true,
+        });
+        await waitForPromises();
+
+        expect(wrapper.findComponent(UserCalloutDismisser).exists()).toBe(false);
+      });
+    });
+
+    describe('when workItemsSavedViewsEnabled flag is disabled', () => {
+      it('does not render UserCalloutDismisser', async () => {
+        mountComponent({
+          workItemPlanningView: true,
+          workItemsSavedViewsEnabled: false,
+        });
+        await waitForPromises();
+
+        expect(wrapper.findComponent(UserCalloutDismisser).exists()).toBe(false);
+      });
     });
   });
 

@@ -8,6 +8,10 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
     create(:project, :custom_repo, :with_namespace_settings, namespace: user.namespace, files: { 'README.txt' => '' })
   end
 
+  before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
+  end
+
   before do
     sign_in(user)
   end

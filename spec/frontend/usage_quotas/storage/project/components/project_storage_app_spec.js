@@ -22,6 +22,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
   mockGetProjectStorageStatisticsGraphQLResponse,
   mockEmptyResponse,
+  mockProjectStorageStatisticsNoStorageResponse,
   defaultProjectProvideValues,
 } from '../../mock_data';
 
@@ -198,33 +199,71 @@ describe('ProjectStorageApp', () => {
   });
 
   describe('rendering <sectioned-percentage-bar />', () => {
-    let mockApollo;
+    describe('when data is valid', () => {
+      let mockApollo;
 
-    beforeEach(async () => {
-      mockApollo = createMockApolloProvider({
-        mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
+      beforeEach(async () => {
+        mockApollo = createMockApolloProvider({
+          mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
+        });
+        createComponent({ mockApollo });
+        await waitForPromises();
       });
-      createComponent({ mockApollo });
-      await waitForPromises();
+
+      it('renders sectioned-percentage-bar component if project.statistics exists', () => {
+        expect(findSectionedPercentageBar().exists()).toBe(true);
+      });
+
+      it('passes processed project statistics to sectioned-percentage-bar component', () => {
+        expect(findSectionedPercentageBar().props('sections')).toStrictEqual([
+          { formattedValue: '4.58 MiB', id: 'lfsObjects', label: 'LFS', value: 4800000 },
+          { formattedValue: '3.72 MiB', id: 'repository', label: 'Repository', value: 3900000 },
+          { formattedValue: '3.62 MiB', id: 'packages', label: 'Packages', value: 3800000 },
+          {
+            formattedValue: '390.63 KiB',
+            id: 'buildArtifacts',
+            label: 'Job artifacts',
+            value: 400000,
+          },
+          { formattedValue: '292.97 KiB', id: 'wiki', label: 'Wiki', value: 300000 },
+        ]);
+      });
     });
 
-    it('renders sectioned-percentage-bar component if project.statistics exists', () => {
-      expect(findSectionedPercentageBar().exists()).toBe(true);
+    describe('when project is missing statistics', () => {
+      let mockApollo;
+
+      beforeEach(async () => {
+        mockApollo = createMockApolloProvider({
+          mockedValue: mockEmptyResponse,
+        });
+        createComponent({ mockApollo });
+        await waitForPromises();
+      });
+
+      it('does not render sectioned-percentage-bar component', () => {
+        expect(findSectionedPercentageBar().exists()).toBe(false);
+      });
     });
 
-    it('passes processed project statistics to sectioned-percentage-bar component', () => {
-      expect(findSectionedPercentageBar().props('sections')).toMatchObject([
-        { formattedValue: '4.58 MiB', id: 'lfsObjects', label: 'LFS', value: 4800000 },
-        { formattedValue: '3.72 MiB', id: 'repository', label: 'Repository', value: 3900000 },
-        { formattedValue: '3.62 MiB', id: 'packages', label: 'Packages', value: 3800000 },
-        {
-          formattedValue: '390.63 KiB',
-          id: 'buildArtifacts',
-          label: 'Job artifacts',
-          value: 400000,
-        },
-        { formattedValue: '292.97 KiB', id: 'wiki', label: 'Wiki', value: 300000 },
-      ]);
+    describe('when storage size is 0', () => {
+      let mockApollo;
+
+      beforeEach(async () => {
+        mockApollo = createMockApolloProvider({
+          mockedValue: mockProjectStorageStatisticsNoStorageResponse,
+        });
+        createComponent({ mockApollo });
+        await waitForPromises();
+      });
+
+      it('renders sectioned-percentage-bar component if project.statistics exists', () => {
+        expect(findSectionedPercentageBar().exists()).toBe(true);
+      });
+
+      it('passes empty array to sectioned-percentage-bar component', () => {
+        expect(findSectionedPercentageBar().props('sections')).toStrictEqual([]);
+      });
     });
   });
 

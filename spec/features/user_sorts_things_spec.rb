@@ -15,6 +15,10 @@ RSpec.describe "User sorts things", :js do
   let_it_be(:issue) { create(:issue, project: project, author: user) }
   let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: user) }
 
+  before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
+  end
+
   before do
     project.add_developer(user)
     sign_in(user)

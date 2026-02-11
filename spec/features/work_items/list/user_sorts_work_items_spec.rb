@@ -22,6 +22,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
   end
 
   before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     project.add_owner(user)
     project.add_developer(user2)
   end

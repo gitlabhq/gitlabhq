@@ -1,12 +1,12 @@
 <script>
 import { GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import { BRANCH_PAGINATION_LIMIT, BRANCH_SEARCH_DEBOUNCE } from '~/ci/pipeline_editor/constants';
+import { BRANCH_PAGINATION_LIMIT } from '~/ci/pipeline_editor/constants';
 import getAvailableBranchesQuery from '~/ci/pipeline_editor/graphql/queries/available_branches.query.graphql';
 import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
 
 export default {
-  inputDebounce: BRANCH_SEARCH_DEBOUNCE,
+  name: 'BranchSelector',
   components: {
     GlCollapsibleListbox,
   },

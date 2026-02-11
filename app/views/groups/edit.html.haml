@@ -43,9 +43,6 @@
     - c.with_body do
       = render 'shared/badges/badge_settings'
 
-- if can?(current_user, :admin_compliance_framework, @group)
-  = render_if_exists 'groups/compliance_frameworks', expanded: expanded
-
 - if can?(current_user, :admin_group, @group)
   = render_if_exists 'groups/custom_project_templates_setting'
   = render_if_exists 'groups/templates_setting', expanded: expanded

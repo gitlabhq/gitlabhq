@@ -11,6 +11,17 @@ export const { namespace } = mockGetNamespaceStorageGraphQLResponse.data;
 export const projectList = mockGetProjectListStorageGraphQLResponse.data.namespace.projects.nodes;
 
 export const mockEmptyResponse = { data: { project: null } };
+export const mockProjectStorageStatisticsNoStorageResponse = {
+  data: {
+    project: {
+      ...mockGetProjectStorageStatisticsGraphQLResponse.data.project,
+      statistics: {
+        ...mockGetProjectStorageStatisticsGraphQLResponse.data.project.statistics,
+        storageSize: 0,
+      },
+    },
+  },
+};
 
 export const defaultProjectProvideValues = {
   projectPath: '/project-path',

@@ -264,6 +264,7 @@ Object storage usage counts towards the top-level group [object storage usage li
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [UI for cleanup policies](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) introduced in GitLab 18.9 [with a flag](../../../administration/feature_flags/_index.md) named `ui_for_virtual_registry_cleanup_policy`. Disabled by default.
 
 {{< /history >}}
 
@@ -287,15 +288,67 @@ A cleanup policy affects only cached content from upstream registries. It does n
 
 ### Manage cleanup policies
 
+Manage a cleanup policy for virtual registries in a top-level group.
+Each top-level group can have up to one cleanup policy that 
+applies to all virtual registries in that group.
+
+#### Create a cleanup policy
+
+Create a cleanup policy and set how often it runs.
+
 Prerequisites:
 
 - You must have the Owner role for the top-level group.
 - The virtual registry must be turned on for the group.
 
-Each top-level group can have only one cleanup policy.
-The cleanup policy applies to all virtual registries in that group.
+To create a cleanup policy:
 
-You can manage cleanup policies using the [Virtual registries cleanup policies API](../../../api/virtual_registries_cleanup_policies.md).
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Settings** > **Packages and registries**.
+1. Next to **Virtual registry cache cleanup policy**, select **Set policy**.
+1. Turn on the **Enable cleanup policy** toggle.
+1. Configure the cleanup policy settings:
+   - From the **Run cleanup** dropdown list, select how often the cleanup policy runs. Defaults to **Every day**.
+   - Under **Delete caches not accessed in the last (days)**, enter a number to set how often unused cache entries are deleted. Defaults to `7` days. Must be between `1` and `365`.
+   - Optional. Under **Email notifications**, select either or both of the following checkboxes to receive email notifications:
+     - **Send email notifications when cleanup runs**
+     - **Send email notifications if cleanup fails** 
+1. Select **Save changes**.
+
+#### Edit a cleanup policy
+
+Edit a cleanup policy to determine
+how often the policy runs.
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+
+To edit a cleanup policy:
+
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Settings** > **Packages and registries**.
+1. Next to **Virtual registry cache cleanup policy**, select **Edit policy**.
+1. Make changes to your cleanup policy.
+1. Select **Save changes**.
+
+#### Turn off cleanup policies
+
+Turn off cleanup policies for a top-level group.
+When turned off, the cleanup policy retains its configuration
+but does not run. Existing cached entries are preserved.
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+
+To turn off cleanup policies:
+
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Settings** > **Packages and registries**.
+1. Next to **Virtual registry cache cleanup policy**, select **Edit policy**.
+1. Turn off the **Enable cleanup policy** toggle.
+1. Select **Save changes**.
 
 ### Cleanup policy settings
 

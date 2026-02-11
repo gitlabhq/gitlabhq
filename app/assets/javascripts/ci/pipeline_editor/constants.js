@@ -49,7 +49,6 @@ export const COMMIT_ACTION_CREATE = 'CREATE';
 export const COMMIT_ACTION_UPDATE = 'UPDATE';
 
 export const BRANCH_PAGINATION_LIMIT = 20;
-export const BRANCH_SEARCH_DEBOUNCE = '500';
 export const SOURCE_EDITOR_DEBOUNCE = 500;
 
 export const FILE_TREE_DISPLAY_KEY = 'pipeline_editor_file_tree_display';

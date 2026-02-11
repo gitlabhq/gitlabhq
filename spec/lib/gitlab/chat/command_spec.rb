@@ -76,5 +76,29 @@ RSpec.describe Gitlab::Chat::Command, feature_category: :integrations do
       expect(vars['CHAT_CHANNEL']).to eq('123')
       expect(vars['CHAT_USER_ID']).to eq(chat_name.chat_id)
     end
+
+    it 'builds a pipeline_variables artifact' do
+      expect(pipeline.pipeline_artifacts_pipeline_variables).to be_present
+    end
+
+    context 'when ci_write_pipeline_variables_artifact FF is disabled' do
+      before do
+        stub_feature_flags(ci_write_pipeline_variables_artifact: false)
+      end
+
+      it 'creates the environment variables for the pipeline' do
+        vars = pipeline.variables.each_with_object({}) do |row, hash|
+          hash[row.key] = row.value
+        end
+
+        expect(vars['CHAT_INPUT']).to eq('foo')
+        expect(vars['CHAT_CHANNEL']).to eq('123')
+        expect(vars['CHAT_USER_ID']).to eq(chat_name.chat_id)
+      end
+
+      it 'does not build a pipeline_variables artifact' do
+        expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
+      end
+    end
   end
 end

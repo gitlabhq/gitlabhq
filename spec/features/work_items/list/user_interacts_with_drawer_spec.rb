@@ -13,6 +13,10 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
   let_it_be(:label) { create(:label, project: project, title: "testing-label") }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
+  before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
+  end
+
   context 'if user is signed in as developer' do
     let(:issuable_container) { '[data-testid="issuable-container"]' }
 
