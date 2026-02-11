@@ -4919,6 +4919,9 @@ msgstr ""
 msgid "Add exclusions"
 msgstr ""
 
+msgid "Add exemption"
+msgstr ""
+
 msgid "Add existing issue"
 msgstr ""
 
@@ -5166,6 +5169,9 @@ msgid "Added an issue to an epic."
 msgstr ""
 
 msgid "Added for this merge request"
+msgstr ""
+
+msgid "Added identity verification exemption."
 msgstr ""
 
 msgid "Added in this version"
@@ -8225,6 +8231,9 @@ msgid "Allow projects to enable secret push protection. This does not enable sec
 msgstr ""
 
 msgid "Allow secret push protection"
+msgstr ""
+
+msgid "Allow the user to confirm their identity with only an email address, and skip phone number or credit card verification."
 msgstr ""
 
 msgid "Allow this key to push to this repository"
@@ -21228,9 +21237,6 @@ msgstr ""
 msgid "Create group label"
 msgstr ""
 
-msgid "Create identity verification exemption"
-msgstr ""
-
 msgid "Create issue"
 msgstr ""
 
@@ -21835,9 +21841,6 @@ msgid "Custom"
 msgstr ""
 
 msgid "Custom (%{language})"
-msgstr ""
-
-msgid "Custom Attributes"
 msgstr ""
 
 msgid "Custom Git clone URL for HTTP(S)"
@@ -35356,12 +35359,6 @@ msgid "Identity already exists"
 msgstr ""
 
 msgid "Identity verification exemption"
-msgstr ""
-
-msgid "Identity verification exemption has been created."
-msgstr ""
-
-msgid "Identity verification exemption has been removed."
 msgstr ""
 
 msgid "Identity verification is required in order to run CI jobs"
@@ -56357,6 +56354,9 @@ msgstr ""
 msgid "Remove email participants"
 msgstr ""
 
+msgid "Remove exemption"
+msgstr ""
+
 msgid "Remove favicon"
 msgstr ""
 
@@ -56379,9 +56379,6 @@ msgid "Remove header logo"
 msgstr ""
 
 msgid "Remove icon"
-msgstr ""
-
-msgid "Remove identity verification exemption"
 msgstr ""
 
 msgid "Remove iteration"
@@ -56502,6 +56499,9 @@ msgid "Removed all labels."
 msgstr ""
 
 msgid "Removed an issue from an epic."
+msgstr ""
+
+msgid "Removed identity verification exemption."
 msgstr ""
 
 msgid "Removed linked item %{issue_ref}."
@@ -66321,7 +66321,7 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-msgid "Something went wrong. Unable to create identity verification exemption."
+msgid "Something went wrong. Unable to add identity verification exemption."
 msgstr ""
 
 msgid "Something went wrong. Unable to remove identity verification exemption."
@@ -70448,7 +70448,7 @@ msgstr ""
 msgid "This user has the %{access} role in the %{name} project."
 msgstr ""
 
-msgid "This user is currently exempt from identity verification. Remove the exemption using the button below."
+msgid "This user is exempt from identity verification."
 msgstr ""
 
 msgid "This user is the author of this %{noteable}."
@@ -70963,9 +70963,6 @@ msgid "To add the entry manually, provide the following details to the applicati
 msgstr ""
 
 msgid "To allow %{strongOpen}%{provider}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
-msgstr ""
-
-msgid "To allow the user to confirm their identity by only confirming an email address and skip phone number and/or credit card verification, create an identity verification exemption using the button below."
 msgstr ""
 
 msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."

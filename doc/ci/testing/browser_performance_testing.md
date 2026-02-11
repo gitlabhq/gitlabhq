@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Measure web page rendering performance with Sitespeed.io in GitLab CI/CD. View performance metrics and impacts in merge requests automatically.
 title: Browser Performance Testing
 ---
 

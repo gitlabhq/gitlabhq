@@ -158,17 +158,11 @@ module QA
       end
 
       def running_on_live_env?
-        running_on_dot_com? || running_on_release?
+        running_on_dot_com?
       end
 
       def running_on_dot_com?
         gitlab_host.include?('.com')
-      end
-
-      # This method can be removed after decommissioning `release` instance
-      # https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1571
-      def running_on_release?
-        gitlab_host == 'release.gitlab.net'
       end
 
       def running_on_dev?

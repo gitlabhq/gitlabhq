@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Restrict deployment access by protecting environments. Control who can deploy to specific environments based on roles, users, or group membership.
 title: Protected environments
 ---
 

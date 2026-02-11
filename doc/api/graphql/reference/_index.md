@@ -28543,6 +28543,18 @@ Represents a component usage in a project.
 | <a id="cicatalogresourcecomponentusagename"></a>`name` | [`String`](#string) | Name of the component. |
 | <a id="cicatalogresourcecomponentusageversion"></a>`version` | [`String`](#string) | Version of the component. |
 
+### `CiCatalogResourceSemver`
+
+Semantic version information for a catalog resource version.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcesemvermajor"></a>`major` | [`Int`](#int) | Major version number. |
+| <a id="cicatalogresourcesemverminor"></a>`minor` | [`Int`](#int) | Minor version number. |
+| <a id="cicatalogresourcesemverpatch"></a>`patch` | [`Int`](#int) | Patch version number. |
+
 ### `CiCatalogResourceVersion`
 
 #### Fields
@@ -28559,6 +28571,7 @@ Represents a component usage in a project.
 | <a id="cicatalogresourceversionreadme"></a>`readme` | [`String`](#string) | Readme data. |
 | <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was released. |
+| <a id="cicatalogresourceversionsemver"></a>`semver` | [`CiCatalogResourceSemver`](#cicatalogresourcesemver) | Semantic version information. |
 
 ### `CiCdSettings`
 

@@ -33,24 +33,16 @@ RSpec.describe QA::Runtime::Namespace do
 
   describe '.sandbox_name' do
     let(:dot_com) { false }
-    let(:release) { false }
 
     before do
       described_class.instance_variable_set(:@live_env, nil)
       allow(QA::Runtime::Env).to receive_messages(
-        running_on_dot_com?: dot_com,
-        running_on_release?: release
+        running_on_dot_com?: dot_com
       )
     end
 
     context "when running on .com environment" do
       let(:dot_com) { true }
-
-      it_behaves_like "sandbox naming for live environments"
-    end
-
-    context "when running on release environment" do
-      let(:release) { true }
 
       it_behaves_like "sandbox naming for live environments"
     end
