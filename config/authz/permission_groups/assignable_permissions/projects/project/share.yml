@@ -3,5 +3,6 @@ name: share_project
 description: Grants the ability to share projects with groups and manage group links
 permissions:
   - share_project
+  - unshare_project
 boundaries:
   - project

@@ -153,7 +153,7 @@ For example, `To create an issue:`
 
 If the task requires the user to have a role other than Guest,
 list all applicable roles in the prerequisites. See [the Word list](../styleguide/word_list.md) for
-how to write the phrase for each role.
+how to write the phrase for each role. List the applicable roles first.
 
 If the task can only be performed by an administrator, put `Administrator access.` in the prerequisites.
 
@@ -177,9 +177,9 @@ For example, for a list of nouns:
 ```markdown
 Prerequisites:
 
-- A valid GitLab account.
-- Docker installed locally.
 - The Maintainer or Owner role for the project.
+- A project access token.
+- Docker installed locally.
 ```
 
 For a list of verbs:

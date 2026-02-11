@@ -57,7 +57,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
               {
                 bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath' },
                 source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
-                          rails_primary_key_id: be_a(Integer) },
+                          rails_primary_key_id: be_a(String) },
                 subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) },
                 record: instance
               }
@@ -168,16 +168,96 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '#cells_claims_default_metadata' do
-    it 'returns metadata with subject and source information' do
-      metadata = instance.send(:cells_claims_default_metadata)
+    context 'when instance ID is integer' do
+      it 'returns metadata with subject and source information' do
+        metadata = instance.send(:cells_claims_default_metadata)
 
-      expect(metadata).to eq({
-        subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
-        source: {
-          type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS, rails_primary_key_id: instance.id
-        },
-        record: instance
-      })
+        expect(metadata).to include({
+          subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+          source: {
+            type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+            rails_primary_key_id: be_a(String)
+          },
+          record: instance
+        })
+
+        rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+        expect(rails_pk_bytes.encoding).to eq(Encoding::ASCII_8BIT)
+        expect(rails_pk_bytes.bytesize).to eq(8)
+        expect(rails_pk_bytes.unpack1("Q>")).to eq(instance.id)
+      end
+    end
+
+    context 'when instance ID is a string' do
+      before do
+        allow(instance).to receive(:id).and_return(instance_id)
+        allow(instance).to receive(:read_attribute).with("id").and_return(instance_id)
+        allow(instance).to receive(:read_attribute).with(:id).and_return(instance_id)
+      end
+
+      context 'when instance ID is UUID' do
+        let(:instance_id) { SecureRandom.uuid }
+
+        it 'returns metadata with subject and source information' do
+          metadata = instance.send(:cells_claims_default_metadata)
+
+          expect(metadata).to include({
+            subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+            source: {
+              type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+              rails_primary_key_id: be_a(String)
+            },
+            record: instance
+          })
+
+          rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+          expect(rails_pk_bytes.encoding).to eq(Encoding::ASCII_8BIT)
+          expect(rails_pk_bytes.bytesize).to eq(16)
+          expect(rails_pk_bytes.unpack1('H*')).to eq(instance_id.delete('-'))
+        end
+      end
+
+      context 'when instance ID is a string (not uuid)' do
+        let(:instance_id) { 'foo/bar' }
+
+        it 'returns metadata with subject and source information' do
+          metadata = instance.send(:cells_claims_default_metadata)
+
+          expect(metadata).to include({
+            subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+            source: a_hash_including(
+              type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+              rails_primary_key_id: be_a(String)
+            ),
+            record: instance
+          })
+
+          rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+          expect(rails_pk_bytes.encoding).to eq(Encoding::UTF_8)
+          expect(rails_pk_bytes.bytesize).to eq(7)
+          expect(rails_pk_bytes).to eq(instance_id)
+        end
+      end
+
+      context 'when instance ID is of unsupported type' do
+        let(:instance_id) { %w[foo bar] }
+
+        it 'raises error' do
+          expect { instance.send(:cells_claims_default_metadata) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    context 'when primary key is missing' do
+      before do
+        allow(instance).to receive(:read_attribute).with(instance.class.primary_key).and_return(nil)
+      end
+
+      it 'raises MissingPrimaryKeyError' do
+        expect { instance.send(:cells_claims_default_metadata) }.to raise_error(
+          Cells::Claimable::MissingPrimaryKeyError
+        )
+      end
     end
   end
 

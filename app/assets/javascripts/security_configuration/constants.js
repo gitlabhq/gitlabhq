@@ -21,8 +21,6 @@ import configureSecretDetectionMutation from './graphql/configure_secret_detecti
 export const SAST_NAME = __('Static Application Security Testing (SAST)');
 export const SAST_SHORT_NAME = s__('ciReport|SAST');
 
-export const ADVANCED_SAST_NAME = s__('ciReport|Advanced SAST Scanning');
-
 export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
 export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 
@@ -38,39 +36,13 @@ export const DEPENDENCY_SCANNING_NAME = __('Dependency Scanning');
 
 export const CONTAINER_SCANNING_NAME = __('Container Scanning');
 
-export const CONTAINER_SCANNING_FOR_REGISTRY_NAME = __('Container Scanning For Registry');
-
-export const COVERAGE_FUZZING_NAME = __('Coverage Fuzzing');
-
 export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
 
-export const API_FUZZING_NAME = __('API Fuzzing');
-
-export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
-
 export const SECRET_PUSH_PROTECTION = 'secret_push_protection';
-
-export const SECRET_PUSH_PROTECTION_NAME = __('Secret push protection');
 
 export const SECRET_DETECTION = 'secret_detection';
 
 export const LICENSE_INFORMATION_SOURCE = 'license_information_source';
-
-export const SCANNER_NAMES_MAP = {
-  SAST: SAST_SHORT_NAME,
-  SAST_ADVANCED: ADVANCED_SAST_NAME,
-  SAST_IAC: SAST_IAC_NAME,
-  DAST: DAST_SHORT_NAME,
-  API_FUZZING: API_FUZZING_NAME,
-  CONTAINER_SCANNING: CONTAINER_SCANNING_NAME,
-  CONTAINER_SCANNING_FOR_REGISTRY: CONTAINER_SCANNING_FOR_REGISTRY_NAME,
-  COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
-  SECRET_DETECTION: SECRET_DETECTION_NAME,
-  DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
-  CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
-  SECRET_PUSH_PROTECTION: SECRET_PUSH_PROTECTION_NAME,
-  GENERIC: s__('ciReport|Manually added'),
-};
 
 export const featureToMutationMap = {
   [REPORT_TYPE_SAST]: {

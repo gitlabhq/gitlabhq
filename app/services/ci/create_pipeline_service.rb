@@ -57,6 +57,7 @@ module Ci
     # @param [MergeRequest] merge_request                     The merge request triggers the pipeline creation.
     # @param [Ci::ExternalPullRequest] external_pull_request  The external pull request triggers the pipeline creation.
     # @param [Ci::Bridge] bridge                              The bridge job that triggers the downstream pipeline creation.
+    # @param [Ci::Trigger] trigger                            The trigger that triggers the pipeline creation.
     # @param [String] content                                 The content of .gitlab-ci.yml to override the default config
     #                                                         contents (e.g. .gitlab-ci.yml in repostiry). Mainly used for
     #                                                         generating a dangling pipeline.
@@ -66,7 +67,7 @@ module Ci
     def execute(
       source,
       ignore_skip_ci: false, save_on_errors: true, schedule: nil, merge_request: nil,
-      external_pull_request: nil, bridge: nil, inputs: {},
+      external_pull_request: nil, bridge: nil, trigger: nil, inputs: {},
       **options, &block
     )
       @logger = build_logger
@@ -83,6 +84,7 @@ module Ci
         before_sha: params[:before],          # The base SHA of the source branch (i.e merge_request.diff_base_sha).
         source_sha: params[:source_sha],      # The HEAD SHA of the source branch (i.e merge_request.diff_head_sha).
         target_sha: params[:target_sha],      # The HEAD SHA of the target branch.
+        trigger: trigger,
         schedule: schedule,
         merge_request: merge_request,
         external_pull_request: external_pull_request,

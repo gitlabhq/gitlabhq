@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS siphon_test_table
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY (id)
+      SETTINGS index_granularity = 2048
       SQL
 
       expect(generator.send(:table_definition)).to eq(expected_definition)
@@ -163,7 +164,7 @@ CREATE TABLE IF NOT EXISTS siphon_project_authorizations
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY (traversal_path, project_id, user_id, arr)
-      SETTINGS deduplicate_merge_projection_mode = 'rebuild'
+      SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild'
         SQL
 
         expect(table_definition).to eq(expected_definition)

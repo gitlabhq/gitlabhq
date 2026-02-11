@@ -2,6 +2,12 @@
 name: update_project
 description: Grants the ability to update project settings and attributes
 permissions:
+  - housekeep_project
+  - import_member
+  - recalculate_storage
+  - restore_project
+  - star_project
+  - unstar_project
   - update_project
 boundaries:
   - project

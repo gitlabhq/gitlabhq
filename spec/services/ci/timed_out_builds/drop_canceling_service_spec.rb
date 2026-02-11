@@ -19,7 +19,7 @@ RSpec.describe Ci::TimedOutBuilds::DropCancelingService, feature_category: :cont
   end
 
   context 'when job timeout has been exceeded' do
-    let(:started_at) { timeout.seconds.ago }
+    let(:started_at) { timeout.seconds.ago - described_class::MINUTE_BUFFER }
 
     it_behaves_like 'job is canceled with failure reason', 'job_execution_server_timeout'
     it_behaves_like 'when invalid dooms the job bypassing validations'

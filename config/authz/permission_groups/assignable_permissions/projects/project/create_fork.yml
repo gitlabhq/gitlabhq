@@ -1,7 +1,0 @@
----
-name: create_fork_project
-description: Grants the ability to fork projects
-permissions:
-  - create_fork_project
-boundaries:
-  - project

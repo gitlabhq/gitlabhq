@@ -165,6 +165,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Ci::DailyBuildGroupReportResultsWorker' => 3,
         'Ci::DeleteObjectsWorker' => 0,
         'Ci::DropPipelineWorker' => 3,
+        'Ci::TimedOutBuilds::DropRunningWorker' => 1,
+        'Ci::TimedOutBuilds::DropCancelingWorker' => 1,
         'Ci::InitialPipelineProcessWorker' => 3,
         'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,

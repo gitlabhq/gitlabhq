@@ -29,6 +29,60 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
           expect(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_SIDEKIQ_ARG).to eq 'sqci'
           expect(job['sqci']).to eq([primary_user.id, scoped_user.id])
         end
+
+        context 'when worker has skip_composite_identity_passthrough!' do
+          let(:worker_class) do
+            Class.new do
+              def self.name
+                'TestWorkerWithSkipPassthrough'
+              end
+
+              include ApplicationWorker
+
+              skip_composite_identity_passthrough!
+            end
+          end
+
+          let(:worker) { worker_class }
+
+          it 'does not add composite identity to job payload' do
+            expect { |b| middleware.call(worker, job, queue, nil, &b) }.to yield_control
+
+            expect(job[::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_SIDEKIQ_ARG]).to be_nil
+          end
+        end
+
+        context 'when worker class is passed as a string' do
+          let(:worker_class) do
+            Class.new do
+              def self.name
+                'TestWorkerWithSkipPassthroughString'
+              end
+
+              include ApplicationWorker
+
+              skip_composite_identity_passthrough!
+            end
+          end
+
+          before do
+            stub_const('TestWorkerWithSkipPassthroughString', worker_class)
+          end
+
+          it 'does not add composite identity to job payload' do
+            expect { |b| middleware.call('TestWorkerWithSkipPassthroughString', job, queue, nil, &b) }.to yield_control
+
+            expect(job[::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_SIDEKIQ_ARG]).to be_nil
+          end
+        end
+
+        context 'when worker class string cannot be constantized' do
+          it 'adds composite identity to job payload' do
+            expect { |b| middleware.call('NonExistentWorkerClass', job, queue, nil, &b) }.to yield_control
+
+            expect(job['sqci']).to eq([primary_user.id, scoped_user.id])
+          end
+        end
       end
 
       context 'when user does not have composite identity' do

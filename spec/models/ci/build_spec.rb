@@ -165,6 +165,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'only fetches the timed out running builds' do
         expect(described_class.timed_out_running_builds.pluck(:id)).to contain_exactly(timed_out_build.id)
       end
+
+      context 'when a time buffer is provided' do
+        it 'applies the buffer' do
+          expect(described_class.timed_out_running_builds(10.minutes).pluck(:id)).to be_empty
+        end
+      end
     end
 
     describe 'not_timed_out_builds', :freeze_time do

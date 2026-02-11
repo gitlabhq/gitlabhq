@@ -1,0 +1,5 @@
+---
+name: recalculate_storage
+description: Grants the ability to recalculate project repository size statistics
+boundaries:
+  - project

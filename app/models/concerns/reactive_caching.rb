@@ -163,11 +163,7 @@ module ReactiveCaching
     def background_update_worker
       return worker_class unless self.class.reactive_cache_work_type.to_sym == :no_dependency
 
-      if Feature.enabled?(:low_urgency_reactive_caching_worker, Feature.current_request)
-        ReactiveCaching::LowUrgencyWorker
-      else
-        worker_class
-      end
+      ReactiveCaching::LowUrgencyWorker
     end
 
     def reactive_cache_limit_enabled?

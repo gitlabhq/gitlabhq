@@ -1380,16 +1380,6 @@ msgstr ""
 msgid "%{seconds}s"
 msgstr ""
 
-msgid "%{securityScanner} is not enabled for this project. %{linkStart}More information%{linkEnd}"
-msgid_plural "%{securityScanner} are not enabled for this project. %{linkStart}More information%{linkEnd}"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{securityScanner} result is not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
-msgid_plural "%{securityScanner} results are not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{selectedLabelsCount} label"
 msgid_plural "%{selectedLabelsCount} labels"
 msgstr[0] ""
@@ -11913,9 +11903,6 @@ msgstr ""
 msgid "Billings|Free seats used"
 msgstr ""
 
-msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."
-msgstr ""
-
 msgid "Billings|GitLab Duo Agent Platform"
 msgstr ""
 
@@ -11928,6 +11915,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Billings|In a seat"
+msgstr ""
+
+msgid "Billings|Learn more about billing and seat usage."
 msgstr ""
 
 msgid "Billings|Manage billing"
@@ -17414,6 +17404,9 @@ msgid "CompareRevisions|Include changes to target after source was created"
 msgstr ""
 
 msgid "CompareRevisions|Only incoming changes from source"
+msgstr ""
+
+msgid "CompareRevisions|Select %{boldStart}Compare%{boldEnd} to check for an existing merge request"
 msgstr ""
 
 msgid "CompareRevisions|Select Git revision"
@@ -25516,6 +25509,9 @@ msgstr ""
 msgid "Discard review"
 msgstr ""
 
+msgid "Disclosure"
+msgstr ""
+
 msgid "Discord webhook (for example, `https://discord.com/api/webhooks/…`)."
 msgstr ""
 
@@ -31506,6 +31502,9 @@ msgid "Geo|There was an error deleting the Geo Site"
 msgstr ""
 
 msgid "Geo|There was an error executing the %{actionName} mutation"
+msgstr ""
+
+msgid "Geo|There was an error fetching %{modelType}. Please refresh the page and try again."
 msgstr ""
 
 msgid "Geo|There was an error fetching %{model}. Please refresh the page and try again."
@@ -81837,9 +81836,6 @@ msgid "ciReport|API Fuzzing"
 msgstr ""
 
 msgid "ciReport|API fuzzing"
-msgstr ""
-
-msgid "ciReport|Advanced SAST Scanning"
 msgstr ""
 
 msgid "ciReport|All tools"

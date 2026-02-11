@@ -399,18 +399,6 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
             instance.exclusively_update_reactive_cache!
           end
         end
-
-        context 'when feature flag low_urgency_reactive_caching_worker is disabled' do
-          before do
-            stub_feature_flags(low_urgency_reactive_caching_worker: false)
-          end
-
-          it 'enqueues refresh with default worker' do
-            expect_reactive_cache_update_queued(instance, worker_klass: ReactiveCachingWorker)
-
-            instance.exclusively_update_reactive_cache!
-          end
-        end
       end
 
       context 'with external dependency cache class' do

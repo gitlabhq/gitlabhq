@@ -210,10 +210,10 @@ module Ci
       )
     end
 
-    scope :timed_out_running_builds, -> do
+    scope :timed_out_running_builds, ->(time_buffer = 0) do
       joins(:runtime_metadata)
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout <= ?",
-          Time.current)
+          Time.current - time_buffer)
         .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
     end
 

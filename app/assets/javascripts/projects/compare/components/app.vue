@@ -92,6 +92,29 @@ export default {
       isStraight: this.straight,
     };
   },
+  computed: {
+    branchSelectionChanged() {
+      return this.from.revision !== this.paramsFrom || this.to.revision !== this.paramsTo;
+    },
+    areBranchesDifferent() {
+      return this.from.revision !== this.to.revision;
+    },
+    showMrButton() {
+      return !this.branchSelectionChanged && (this.projectMergeRequestPath || this.createMrPath);
+    },
+    showMrStatusMessage() {
+      return this.branchSelectionChanged && this.areBranchesDifferent;
+    },
+    mrButtonHref() {
+      return this.projectMergeRequestPath || this.createMrPath;
+    },
+    mrButtonTestId() {
+      return this.projectMergeRequestPath ? 'projectMrButton' : 'createMrButton';
+    },
+    mrButtonText() {
+      return this.projectMergeRequestPath ? this.$options.i18n.viewMr : this.$options.i18n.openMr;
+    },
+  },
   methods: {
     onSelectProject({ direction, project }) {
       // direction is either 'from' or 'to'
@@ -178,7 +201,7 @@ export default {
         required
       />
     </gl-form-group>
-    <div class="gl-flex gl-gap-3 gl-pb-4">
+    <div class="gl-flex gl-items-center gl-gap-3 gl-pb-4">
       <gl-button
         category="primary"
         variant="confirm"
@@ -188,16 +211,16 @@ export default {
       >
         {{ $options.i18n.compare }}
       </gl-button>
-      <gl-button
-        v-if="projectMergeRequestPath"
-        :href="projectMergeRequestPath"
-        data-testid="projectMrButton"
-      >
-        {{ $options.i18n.viewMr }}
+      <gl-button v-if="showMrButton" :href="mrButtonHref" :data-testid="mrButtonTestId">
+        {{ mrButtonText }}
       </gl-button>
-      <gl-button v-else-if="createMrPath" :href="createMrPath" data-testid="createMrButton">
-        {{ $options.i18n.openMr }}
-      </gl-button>
+      <span v-else-if="showMrStatusMessage" data-testid="mrStatusMessage">
+        <gl-sprintf :message="$options.i18n.compareToCheckMr">
+          <template #bold="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </span>
     </div>
   </form>
 </template>

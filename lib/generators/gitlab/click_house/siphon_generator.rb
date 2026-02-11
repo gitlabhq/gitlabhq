@@ -166,11 +166,10 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
       end
 
       def table_settings
-        @table_settings ||= if hierarchy_denormalization?
-                              ["deduplicate_merge_projection_mode = 'rebuild'"]
-                            else
-                              []
-                            end
+        # Lower value is faster for IN queries doing primary key lookups (default: 8192)
+        @table_settings ||= ['index_granularity = 2048'].tap do |array|
+          array << "deduplicate_merge_projection_mode = 'rebuild'" if hierarchy_denormalization?
+        end
       end
 
       def ch_type_for(pg_field)

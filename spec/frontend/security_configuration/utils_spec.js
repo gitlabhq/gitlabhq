@@ -1,5 +1,4 @@
-import { augmentFeatures, translateScannerNames } from '~/security_configuration/utils';
-import { SCANNER_NAMES_MAP } from '~/security_configuration/constants';
+import { augmentFeatures } from '~/security_configuration/utils';
 
 describe('augmentFeatures', () => {
   const mockSecurityFeatures = [
@@ -221,21 +220,5 @@ describe('augmentFeatures', () => {
         ]),
       ).toEqual(expectedOutputCustomFeatureWithOnDemandAvailableTrue);
     });
-  });
-});
-
-describe('translateScannerNames', () => {
-  it.each(['', undefined, null, 1, 'UNKNOWN_SCANNER_KEY'])('returns %p as is', (key) => {
-    expect(translateScannerNames([key])).toEqual([key]);
-  });
-
-  it('returns an empty array if no input is provided', () => {
-    expect(translateScannerNames([])).toEqual([]);
-  });
-
-  it('returns translated scanner names', () => {
-    expect(translateScannerNames(Object.keys(SCANNER_NAMES_MAP))).toEqual(
-      Object.values(SCANNER_NAMES_MAP),
-    );
   });
 });

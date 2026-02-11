@@ -65,15 +65,19 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 
 Prerequisites:
 
-- You have the GitLab Duo add-on and a seat assigned.
+- For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
+- You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
 - You open a project that is linked to a remote repository on GitLab, or you set a default GitLab
   Duo namespace in the extension.
 
-To enable GitLab Duo Chat and GitLab Duo Code Suggestions, review the prerequisites and
-setup steps for each feature:
+To enable GitLab Duo features:
 
-- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides)
-- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides)
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Find the feature you want to enable and select the checkbox.
+1. Restart your IDE, if prompted.
+
+For GitLab Duo Code Suggestions, review the additional prerequisites and setup steps:
+
 - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
 - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 

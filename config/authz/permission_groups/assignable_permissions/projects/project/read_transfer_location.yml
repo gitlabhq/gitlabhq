@@ -1,7 +1,0 @@
----
-name: read_transfer_location_project
-description: Grants the ability to view projects transfer locations
-permissions:
-  - read_transfer_location_project
-boundaries:
-  - project

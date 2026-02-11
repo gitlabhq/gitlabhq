@@ -1,7 +1,0 @@
----
-name: mark_forked_project
-description: Grants the ability to mark the project as forked
-permissions:
-  - mark_forked_project
-boundaries:
-  - project

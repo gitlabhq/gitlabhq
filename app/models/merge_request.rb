@@ -1374,10 +1374,6 @@ class MergeRequest < ApplicationRecord
     !source_project.in_fork_network_of?(target_project)
   end
 
-  def reopenable?
-    closed? && !source_project_missing? && source_branch_exists?
-  end
-
   def can_be_closed?
     opened?
   end

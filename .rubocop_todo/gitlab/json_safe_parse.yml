@@ -104,7 +104,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/models/security/remediations_proxy.rb'
     - 'ee/app/models/virtual_registries/container/upstream.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
-    - 'ee/app/services/ai/duo_workflows/start_workflow_service.rb'
     - 'ee/app/services/alert_management/extract_alert_payload_fields_service.rb'
     - 'ee/app/services/arkose/status_service.rb'
     - 'ee/app/services/geo/base_batch_bulk_update_service.rb'

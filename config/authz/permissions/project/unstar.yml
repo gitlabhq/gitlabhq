@@ -1,0 +1,5 @@
+---
+name: unstar_project
+description: Grants the ability to unstar projects
+boundaries:
+  - project

@@ -2537,7 +2537,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       let(:failed_status_code) { :not_found }
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_group_project do
+    it_behaves_like 'authorizing granular token permissions', :read_ancestor_group do
       let(:boundary_object) { private_project }
       let(:request) do
         get api("/projects/#{private_project.id}/groups", personal_access_token: pat)
@@ -2678,7 +2678,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_share_location_project do
+    it_behaves_like 'authorizing granular token permissions', :read_share_location do
       let(:boundary_object) { project }
       let(:request) do
         get api("/projects/#{project.id}/share_locations", personal_access_token: pat)
@@ -3589,7 +3589,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_user_project do
+      it_behaves_like 'authorizing granular token permissions', :read_contributing_user do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/users", personal_access_token: pat)
@@ -3706,7 +3706,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(project_fork_target).to be_forked
           end
 
-          it_behaves_like 'authorizing granular token permissions', :mark_forked_project do
+          it_behaves_like 'authorizing granular token permissions', :create_fork_relationship do
             let(:boundary_object) { project_fork_target }
             let(:request) do
               post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", personal_access_token: pat)
@@ -3850,7 +3850,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(project_fork_target).not_to be_forked
           end
 
-          it_behaves_like 'authorizing granular token permissions', :delete_fork_project do
+          it_behaves_like 'authorizing granular token permissions', :delete_fork_relationship do
             let(:boundary_object) { project_fork_target }
             let(:request) do
               delete api("/projects/#{project_fork_target.id}/fork", personal_access_token: pat)
@@ -3896,7 +3896,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(project_fork_source.forks).to include(private_fork)
         end
 
-        it_behaves_like 'authorizing granular token permissions', :read_fork_project do
+        it_behaves_like 'authorizing granular token permissions', :read_fork do
           let(:boundary_object) { project_fork_source }
           let(:request) do
             get api("/projects/#{project_fork_source.id}/forks", personal_access_token: pat)
@@ -4089,7 +4089,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(group_ids).to contain_exactly(direct_group1.id, direct_group2.id, inherited_group.id)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_invited_group_project do
+      it_behaves_like 'authorizing granular token permissions', :read_invited_group do
         let(:boundary_object) { main_project }
         let(:request) do
           get api("/projects/#{main_project.id}/invited_groups", personal_access_token: pat)
@@ -4241,7 +4241,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(project.project_group_links).to be_empty
       end
 
-      it_behaves_like 'authorizing granular token permissions', :delete_group_share_project do
+      it_behaves_like 'authorizing granular token permissions', :unshare_project do
         let(:boundary_object) { project }
         let(:request) do
           delete api("/projects/#{project.id}/share/#{group.id}", personal_access_token: pat)
@@ -4354,7 +4354,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       project2.add_developer(project2_user)
     end
 
-    it_behaves_like 'authorizing granular token permissions', :import_member_project do
+    it_behaves_like 'authorizing granular token permissions', :import_member do
       let(:boundary_object) { project2 }
       let(:request) do
         post api("/projects/#{project.id}/import_project_members/#{project2.id}", personal_access_token: pat)
@@ -5610,7 +5610,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         project.update!(archived: true)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :archive_project do
+      it_behaves_like 'authorizing granular token permissions', :unarchive_project do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/unarchive", personal_access_token: pat)
@@ -5700,7 +5700,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['star_count']).to eq(0)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :star_project do
+      it_behaves_like 'authorizing granular token permissions', :unstar_project do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/unstar", personal_access_token: pat)
@@ -5745,7 +5745,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       private_user.users_star_projects.create!(project_id: public_project.id)
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_starrer_project do
+    it_behaves_like 'authorizing granular token permissions', :read_starring_user do
       let(:boundary_object) { public_project }
       let(:request) do
         get api("/projects/#{public_project.id}/starrers", personal_access_token: pat)
@@ -5820,7 +5820,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_language_project do
+      it_behaves_like 'authorizing granular token permissions', :read_language do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/languages", personal_access_token: pat)
@@ -6349,7 +6349,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['error']).to eq('visibility does not have a valid value')
       end
 
-      it_behaves_like 'authorizing granular token permissions', :create_fork_project do
+      it_behaves_like 'authorizing granular token permissions', :create_fork do
         let(:boundary_object) { project }
         let(:fork_path) { "fork-test-#{SecureRandom.hex(4)}" }
         let(:request) do
@@ -6505,7 +6505,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:created)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :recalculate_storage_project do
+      it_behaves_like 'authorizing granular token permissions', :recalculate_storage do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/repository_size", personal_access_token: pat)
@@ -6633,7 +6633,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         owner_group.add_owner(user)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_transfer_location_project do
+      it_behaves_like 'authorizing granular token permissions', :read_transfer_location do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/transfer_locations", personal_access_token: pat)
@@ -6756,7 +6756,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'with granular token permissions', :enable_admin_mode do
-      it_behaves_like 'authorizing granular token permissions', :read_storage_project do
+      it_behaves_like 'authorizing granular token permissions', :read_storage do
         let(:boundary_object) { project }
         let(:user) { admin }
         let(:request) do

@@ -7,6 +7,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include RecordUserLastActivity
+  include IssueBuildParameters
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk can_create_branch].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
@@ -85,8 +86,6 @@ class Projects::IssuesController < Projects::ApplicationController
   feature_category :importers, [:import_csv, :export_csv]
   urgency :low, [:import_csv, :export_csv]
 
-  attr_accessor :vulnerability_id
-
   def index
     return if redirect_if_epic_params
 
@@ -107,26 +106,20 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def new
-    params[:issue] ||= ActionController::Parameters.new(
-      assignee_ids: ""
+    service = ::Issues::BuildService.new(
+      container: project,
+      current_user: current_user,
+      params: build_params
     )
-    build_params = issue_params.merge(
-      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
-      discussion_to_resolve: params[:discussion_to_resolve],
-      observability_links: { metrics: params[:observability_metric_details], logs: params[:observability_log_details], tracing: params[:observability_trace_details] },
-      confidential: !!Gitlab::Utils.to_boolean(issue_params[:confidential])
-    )
-    service = ::Issues::BuildService.new(container: project, current_user: current_user, params: build_params)
 
     @issue = @noteable = service.execute
-
     @add_related_issue = add_related_issue
-
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
 
-    if params[:discussion_to_resolve]
-      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_thread_in_issue_action(user: current_user)
+    if service.discussion_to_resolve_id.present?
       @discussion_to_resolve = service.discussions_to_resolve.first
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+        .track_resolve_thread_in_issue_action(user: current_user)
     end
 
     respond_with(@issue)
@@ -352,33 +345,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def issue_params
-    params[:issue][:issue_type] ||= params[:issue_type] if params[:issue_type].present?
-    all_params = params.require(:issue).permit(
-      *issue_params_attributes,
-      sentry_issue_attributes: [:sentry_issue_identifier]
-    )
-
-    clean_params(all_params)
-  end
-
-  def issue_params_attributes
-    %i[
-      title
-      assignee_id
-      position
-      description
-      confidential
-      milestone_id
-      due_date
-      state_event
-      task_num
-      lock_version
-      discussion_locked
-      issue_type
-    ] + [{ label_ids: [], assignee_ids: [], update_task: [:checked, :line_source, :line_sourcepos] }]
-  end
-
   def reorder_params
     params.permit(:move_before_id, :move_after_id)
   end
@@ -443,13 +409,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def clean_params(all_params)
-    issue_type = all_params[:issue_type].to_s
-    all_params.delete(:issue_type) unless ::WorkItems::TypesFilter.allowed_types_for_issues.include?(issue_type)
-
-    all_params
-  end
-
   def finder_options
     options = super
 
@@ -476,7 +435,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # Overridden in EE
   def create_vulnerability_issue_feedback(issue); end
 
-  # Overriden on EE
+  # Overriden in EE
   def work_item_redirect_except_actions
     WORK_ITEM_REDIRECT_EXCEPT_ACTIONS
   end

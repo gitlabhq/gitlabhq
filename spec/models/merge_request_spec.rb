@@ -5634,52 +5634,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#reopenable?' do
-    context 'when the merge request is closed' do
-      it 'returns true' do
-        subject.close
-
-        expect(subject.reopenable?).to be_truthy
-      end
-
-      context 'forked project' do
-        let(:project)      { create(:project, :public) }
-        let(:user)         { create(:user) }
-        let(:forked_project) { fork_project(project, user) }
-
-        let!(:merge_request) do
-          create(:closed_merge_request,
-            source_project: forked_project,
-            target_project: project)
-        end
-
-        it 'returns false if unforked' do
-          Projects::UnlinkForkService.new(forked_project, user).execute
-
-          expect(merge_request.reload.reopenable?).to be_falsey
-        end
-
-        it 'returns false if the source project is deleted' do
-          Projects::DestroyService.new(forked_project, user).execute
-
-          expect(merge_request.reload.reopenable?).to be_falsey
-        end
-
-        it 'returns false if the merge request is merged' do
-          merge_request.update!(state: 'merged')
-
-          expect(merge_request.reload.reopenable?).to be_falsey
-        end
-      end
-    end
-
-    context 'when the merge request is opened' do
-      it 'returns false' do
-        expect(subject.reopenable?).to be_falsey
-      end
-    end
-  end
-
   describe '#create_merge_request_diff' do
     let_it_be(:merge_request) { create(:merge_request) }
 

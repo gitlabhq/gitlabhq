@@ -19,6 +19,7 @@ module API
             authorize_by_unleash_instance_id!
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           get do
             # not supported yet
             status :ok
@@ -28,6 +29,7 @@ module API
             is_array true
             tags unleash_tags
           end
+          route_setting :authorization, skip_granular_token_authorization: true
           get 'features', urgency: :low do
             present_feature_flags
           end
@@ -36,15 +38,18 @@ module API
             is_array true
             tags unleash_tags
           end
+          route_setting :authorization, skip_granular_token_authorization: true
           get 'client/features', urgency: :medium do
             present_feature_flags
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           post 'client/register' do
             # not supported yet
             status :ok
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           post 'client/metrics', urgency: :low do
             # not supported yet
             status :ok

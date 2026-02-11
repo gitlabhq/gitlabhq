@@ -288,6 +288,19 @@ module WorkerAttributes
       !!get_class_attribute(:big_payload)
     end
 
+    # Workers that create their own composite identity should call this
+    # to prevent inheriting composite identity from the enqueuing context.
+    # This is needed when a worker is triggered from a request that uses
+    # composite identity, but the worker needs to establish its own
+    # composite identity for workflow execution.
+    def skip_composite_identity_passthrough!
+      set_class_attribute(:skip_composite_identity_passthrough, true)
+    end
+
+    def skip_composite_identity_passthrough?
+      !!get_class_attribute(:skip_composite_identity_passthrough)
+    end
+
     def defer_on_database_health_signal(gitlab_schema, tables = [], delay_by = DEFAULT_DEFER_DELAY, &block)
       set_class_attribute(
         :database_health_check_attrs,

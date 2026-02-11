@@ -46227,6 +46227,8 @@ CREATE UNIQUE INDEX index_oauth_access_tokens_on_token ON oauth_access_tokens US
 
 CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON oauth_applications USING btree (owner_id, owner_type);
 
+CREATE INDEX index_oauth_applications_on_secret ON oauth_applications USING btree (secret);
+
 CREATE UNIQUE INDEX index_oauth_applications_on_uid ON oauth_applications USING btree (uid);
 
 CREATE INDEX index_oauth_device_grants_on_application_id ON oauth_device_grants USING btree (application_id);

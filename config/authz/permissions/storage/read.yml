@@ -1,0 +1,5 @@
+---
+name: read_storage
+description: Grants the ability to view projects repository storage
+boundaries:
+  - project

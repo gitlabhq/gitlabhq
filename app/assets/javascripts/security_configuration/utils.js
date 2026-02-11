@@ -1,6 +1,5 @@
 import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { SCANNER_NAMES_MAP } from '~/security_configuration/constants';
 import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
 
 /**
@@ -66,13 +65,3 @@ export const augmentFeatures = (features = []) => {
     augmentedSecurityFeatures: features.map(flattenFeatures).filter(filterFeatures),
   };
 };
-
-/**
- * Converts a list of security scanner IDs (such as SAST_IAC) into a list of their translated
- * names defined in the SCANNER_NAMES_MAP constant (eg. IaC Scanning).
- *
- * @param {String[]} scannerNames
- * @returns {String[]}
- */
-export const translateScannerNames = (scannerNames = []) =>
-  scannerNames.map((scannerName) => SCANNER_NAMES_MAP[scannerName] || scannerName);

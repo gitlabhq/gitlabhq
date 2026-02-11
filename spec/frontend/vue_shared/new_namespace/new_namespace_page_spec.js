@@ -38,6 +38,12 @@ describe('Experimental new namespace creation app', () => {
         identityVerificationRequired,
         identityVerificationPath: '#',
       },
+      stubs: {
+        MountingPortal: {
+          name: 'MountingPortal',
+          template: '<div data-testid="mounting-portal-stub"><slot /></div>',
+        },
+      },
     });
   };
 
@@ -112,10 +118,11 @@ describe('Experimental new namespace creation app', () => {
   });
 
   describe('top bar', () => {
-    it('has "top-bar-fixed" and "container-fluid" classes', () => {
+    it('has correct classes', () => {
       createComponent();
 
-      expect(findTopBar().classes()).toEqual(['top-bar-fixed', 'container-fluid']);
+      expect(findTopBar().classes()).toContain('top-bar-fixed');
+      expect(findTopBar().classes()).toContain('container-fluid');
     });
   });
 
@@ -161,26 +168,9 @@ describe('Experimental new namespace creation app', () => {
     });
   });
 
-  it.each`
-    projectStudioEnabled | expected
-    ${true}              | ${true}
-    ${false}             | ${false}
-  `(
-    'is properly positioned when paneled view is $projectStudioEnabled',
-    ({ projectStudioEnabled, expected }) => {
-      window.gon = {
-        features: {
-          projectStudioEnabled,
-        },
-      };
+  it('always renders MountingPortal', () => {
+    createComponent();
 
-      const panel = document.createElement('div');
-      panel.classList.add('panel-header');
-      document.body.appendChild(panel);
-
-      createComponent();
-
-      expect(findMountingPortal().exists()).toBe(expected);
-    },
-  );
+    expect(findMountingPortal().exists()).toBe(true);
+  });
 });

@@ -47,7 +47,6 @@ module Gitlab
           scope :below_max_attempts, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
           scope :retriable, -> { failed.below_max_attempts }
           scope :successful_in_execution_order, -> { finished.succeeded.order_by_finished_at }
-          scope :with_preloads, -> { preload(:jobs) }
           scope :order_by_finished_at, -> { order(:finished_at) }
 
           # Partition should not be changed once the record is created
@@ -109,6 +108,12 @@ module Gitlab
                 error: job.class.get_transition_args(transition, :error).first
               )
             end
+          end
+
+          def time_efficiency
+            return unless succeeded? && finished_at && started_at
+
+            (finished_at - started_at).to_f / worker.interval
           end
 
           class << self

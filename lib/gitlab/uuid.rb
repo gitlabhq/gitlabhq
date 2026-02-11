@@ -9,6 +9,7 @@ module Gitlab
       production: "58dc0f06-936c-43b3-93bb-71693f1b6570"
     }.freeze
 
+    UUID_PATTERN = /\A[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\z/i
     UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/
 
     class << self
@@ -23,7 +24,11 @@ module Gitlab
       end
 
       def v5?(string)
-        string.match(UUID_V5_PATTERN).present?
+        UUID_V5_PATTERN.match(string).present?
+      end
+
+      def uuid?(string)
+        UUID_PATTERN.match?(string)
       end
 
       private

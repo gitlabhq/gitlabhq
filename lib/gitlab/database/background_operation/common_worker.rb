@@ -232,7 +232,7 @@ module Gitlab
           end
 
           def optimizer
-            Gitlab::Database::Batch::EfficiencyCalculator.new(record: self).optimizer
+            Gitlab::Database::Batch::EfficiencyCalculator.new(worker: self).optimizer
           end
           strong_memoize_attr :optimizer
         end

@@ -5,6 +5,8 @@ module Ci
     class DropRunningService
       include StuckBuilds::DropHelpers
 
+      MINUTE_BUFFER = 15.minutes
+
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning timed-out builds"
 
@@ -15,7 +17,7 @@ module Ci
 
       def timed_out_builds(partition)
         Ci::Build
-          .timed_out_running_builds
+          .timed_out_running_builds(MINUTE_BUFFER)
           .in_partition(partition.id)
       end
     end

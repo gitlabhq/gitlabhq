@@ -60,6 +60,7 @@ RSpec.describe WorkerAttributes, feature_category: :sidekiq do
       :worker_has_external_dependencies?      | :worker_has_external_dependencies! | false            | [] | {} | true
       :idempotent?                            | :idempotent!                       | false            | [] | {} | true
       :big_payload?                           | :big_payload!                      | false            | [] | {} | true
+      :skip_composite_identity_passthrough?   | :skip_composite_identity_passthrough! | false         | [] | {} | true
 
       :get_feature_category                   | :feature_category                  | nil              | [:foo]       | {} | :foo
       :get_urgency                            | :urgency                           | :low             | [:high]      | {} | :high
