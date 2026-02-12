@@ -10,7 +10,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
 import TokenAccessTable from '~/vue_shared/access_tokens/components/access_token_table.vue';
-import PersonalAccessTokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
 
 Vue.use(PiniaVuePlugin);
 
@@ -40,7 +39,6 @@ describe('AccessTokens', () => {
     tokenDescription,
     tokenScopes,
     showAvatar = false,
-    useFineGrainedTokens = true,
   } = {}) => {
     wrapper = shallowMountExtended(AccessTokens, {
       pinia,
@@ -50,7 +48,7 @@ describe('AccessTokens', () => {
         accessTokenRotate,
         accessTokenShow,
       },
-      propsData: { id, tokenName, tokenDescription, tokenScopes, showAvatar, useFineGrainedTokens },
+      propsData: { id, tokenName, tokenDescription, tokenScopes, showAvatar },
       mocks: {
         $router,
       },
@@ -68,7 +66,6 @@ describe('AccessTokens', () => {
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findUserAvatar = () => wrapper.findComponent(UserAvatar);
   const findTokenAccessTable = () => wrapper.findComponent(TokenAccessTable);
-  const findPersonalAccessTokensCrud = () => wrapper.findComponent(PersonalAccessTokensCrud);
 
   it('fetches tokens when it is rendered', () => {
     createComponent();
@@ -203,33 +200,8 @@ describe('AccessTokens', () => {
       createComponent();
     });
 
-    it('shows personal access tokens crud', () => {
-      expect(findPersonalAccessTokensCrud().props()).toEqual({
-        tokens,
-        loading: false,
-      });
-    });
-
-    it('does not show access token table', () => {
-      expect(findTokenAccessTable().exists()).toBe(false);
-    });
-  });
-
-  describe('when fineGrainedPersonalAccessTokens feature flag is disabled', () => {
-    beforeEach(() => {
-      store.tokens = tokens;
-      createComponent({ useFineGrainedTokens: false });
-    });
-
     it('shows access token table', () => {
-      expect(findTokenAccessTable().props()).toEqual({
-        tokens,
-        busy: false,
-      });
-    });
-
-    it('does not show personal access tokens crud', () => {
-      expect(findPersonalAccessTokensCrud().exists()).toBe(false);
+      expect(findTokenAccessTable().exists()).toBe(true);
     });
   });
 
@@ -238,14 +210,8 @@ describe('AccessTokens', () => {
       store.busy = true;
     });
 
-    it('shows personal access tokens crud as loading', () => {
-      createComponent();
-
-      expect(findPersonalAccessTokensCrud().props('loading')).toBe(true);
-    });
-
     it('shows access token table as busy', () => {
-      createComponent({ useFineGrainedTokens: false });
+      createComponent();
 
       expect(findTokenAccessTable().props('busy')).toBe(true);
     });

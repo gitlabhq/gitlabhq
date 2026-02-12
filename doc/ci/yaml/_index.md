@@ -4115,6 +4115,10 @@ In this example:
   - `review-job` has no other needed jobs and starts immediately (at the same time as `build-job`),
     like `needs: []`.
 
+**Additional details**:
+
+- You cannot use `needs:optional` with [`needs:parallel:matrix`](#needsparallelmatrix).
+
 ---
 
 #### `needs:pipeline`
@@ -4205,6 +4209,7 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 **Additional details**:
 
+- You cannot use `needs:parallel:matrix` with [`needs:optional`](#needsoptional).
 - The order of the matrix identifiers in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
   the variables in the `linux:rspec` job in the previous example would be invalid:

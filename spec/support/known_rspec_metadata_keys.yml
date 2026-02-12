@@ -43,6 +43,7 @@
 - :do_not_mock_admin_mode_setting
 - :do_not_stub_ci_job_token_signing_key
 - :do_not_stub_snowplow_by_default
+- :duo_workflow_service
 - :dynamic_analysis
 - :eager_load
 - :elastic

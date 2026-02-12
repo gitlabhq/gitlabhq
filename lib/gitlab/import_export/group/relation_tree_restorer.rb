@@ -185,6 +185,12 @@ module Gitlab
           modify_attributes
 
           @importable.save!(touch: false)
+
+          after_save_importable
+        end
+
+        def after_save_importable
+          # no-op to be overridden on inheritance
         end
 
         def filter_attributes(params)

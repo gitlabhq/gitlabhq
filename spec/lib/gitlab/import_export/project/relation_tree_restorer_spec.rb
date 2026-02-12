@@ -84,6 +84,79 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
     end
 
     it_behaves_like 'import project successfully'
+
+    context 'when importing an archived project' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
+
+      it 'sets the project namespace state to archived' do
+        expect(relation_tree_restorer.restore).to eq(true)
+
+        project = Project.find_by_path('project')
+
+        expect(project.project_namespace.state_name).to eq(:archived)
+      end
+    end
+
+    context 'when importing a non-archived project' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => false) }
+
+      it 'does not archive the project namespace' do
+        expect(relation_tree_restorer.restore).to eq(true)
+
+        project = Project.find_by_path('project')
+
+        expect(project.project_namespace.state_name).not_to eq(:archived)
+      end
+    end
+
+    context 'when archived attribute is not present' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).except('archived') }
+
+      it 'does not archive the project namespace' do
+        expect(relation_tree_restorer.restore).to eq(true)
+
+        project = Project.find_by_path('project')
+
+        expect(project.project_namespace.state_name).not_to eq(:archived)
+      end
+    end
+
+    context 'when archiving fails due to invalid state transition' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
+      let(:transition_error) do
+        error = StateMachines::InvalidTransition.allocate
+        allow(error).to receive(:message).and_return('Cannot transition state')
+        error
+      end
+
+      # rubocop:disable RSpec/AnyInstanceOf -- need to stub all instances since multiple ProjectNamespaces are created
+      it 'logs a warning and continues the import' do
+        allow_any_instance_of(Namespaces::ProjectNamespace).to receive(:archive!).and_raise(transition_error)
+
+        allow(shared.logger).to receive(:warn).and_call_original
+        expect(shared.logger).to receive(:warn).with(
+          hash_including(
+            message: '[Project Import] Failed to archive project namespace',
+            error: 'Cannot transition state'
+          )
+        )
+
+        expect(relation_tree_restorer.restore).to eq(true)
+      end
+      # rubocop:enable RSpec/AnyInstanceOf
+    end
+
+    describe '#update_archived_state!' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
+
+      context 'when project namespace is not present' do
+        it 'does not attempt to archive' do
+          allow(importable).to receive(:project_namespace).and_return(nil)
+
+          expect { relation_tree_restorer.send(:update_archived_state!) }.not_to raise_error
+        end
+      end
+    end
   end
 
   context 'with invalid relations' do

@@ -36,12 +36,20 @@ export default {
     MaxExpirationDateMessage: () =>
       import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
-  inject: [
-    'accessTokenMaxDate',
-    'accessTokenMinDate',
-    'accessTokenAvailableScopes',
-    'accessTokenTableUrl',
-  ],
+  inject: {
+    accessTokenMaxDate: {
+      default: null,
+    },
+    accessTokenMinDate: {
+      default: null,
+    },
+    accessTokenAvailableScopes: {
+      default: () => [],
+    },
+    accessTokenTableUrl: {
+      default: '',
+    },
+  },
   props: {
     name: {
       type: String,

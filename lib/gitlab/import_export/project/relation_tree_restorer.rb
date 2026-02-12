@@ -38,6 +38,23 @@ module Gitlab
           @importable.drop_visibility_level!
         end
 
+        def after_save_importable
+          update_archived_state!
+        end
+
+        def update_archived_state!
+          return unless ActiveModel::Type::Boolean.new.cast(@importable_attributes['archived'])
+          return unless @importable.project_namespace.present?
+
+          @importable.project_namespace.archive!(transition_user: @user)
+        rescue StateMachines::InvalidTransition => e
+          @shared.logger.warn(
+            message: '[Project Import] Failed to archive project namespace',
+            project_id: @importable.id,
+            error: e.message
+          )
+        end
+
         def relation_invalid_for_importable?(relation_object)
           group_models.include?(relation_object.class) && relation_object.group_id
         end

@@ -465,10 +465,6 @@ module TestEnv
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
   end
 
-  def with_duo_workflow_service
-    yield # No-op
-  end
-
   private
 
   # These are directories that should be preserved at cleanup time

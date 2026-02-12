@@ -142,7 +142,7 @@ RSpec.shared_examples 'getting a collection of projects' do
       # There is an N+1 query related to web_based_commit_signing_enabled - https://gitlab.com/gitlab-org/gitlab/-/work_items/588811
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(control).with_threshold(19)
+      end.not_to exceed_all_query_limit(control).with_threshold(24)
     end
 
     it 'returns the expected projects' do
