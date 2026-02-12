@@ -3,9 +3,11 @@ import { GlPopover, GlAvatar, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 
+const mockFormat = jest.fn(() => '2 days ago');
+
 jest.mock('~/lib/utils/datetime_utility', () => ({
   getTimeago: jest.fn(() => ({
-    format: jest.fn(() => '2 days ago'),
+    format: mockFormat,
   })),
 }));
 
@@ -62,6 +64,14 @@ describe('CommitPopover component', () => {
 
     it('renders authored date with timeago format', () => {
       expect(findAuthoredTime().text()).toBe('Authored 2 days ago');
+    });
+  });
+
+  describe('authoredText', () => {
+    it('passes a Date object to getTimeago().format()', () => {
+      createComponent();
+
+      expect(mockFormat).toHaveBeenCalledWith(expect.any(Date));
     });
   });
 

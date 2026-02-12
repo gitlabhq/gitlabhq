@@ -2,6 +2,7 @@
 query titleRegex($projectPath: ID!) {
   project(fullPath: $projectPath) {
     id
+    mergeRequestTitleRegex
     mergeRequestTitleRegexDescription
   }
 }

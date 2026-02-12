@@ -117,6 +117,8 @@ module API
 
             ::Packages::Debian::CreatePackageFileService.new(package: package, current_user: current_user, params: file_params).execute
 
+            track_package_event('push_package', :debian, project: package.project, namespace: package.project.group)
+
             created!
           rescue ObjectStorage::RemoteStoreError => e
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })

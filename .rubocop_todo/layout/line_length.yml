@@ -967,7 +967,6 @@ Layout/LineLength:
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
-    - 'ee/spec/frontend/fixtures/epic.rb'
     - 'ee/spec/frontend/fixtures/on_demand_dast_scans.rb'
     - 'ee/spec/frontend/fixtures/project_quality_summary.rb'
     - 'ee/spec/graphql/ee/mutations/issues/create_spec.rb'

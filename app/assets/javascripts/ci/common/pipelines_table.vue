@@ -265,7 +265,7 @@ export default {
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
           :upstream-pipeline="item.triggered_by"
-          @miniGraphStageClick="trackPipelineMiniGraph"
+          @mini-graph-stage-click="trackPipelineMiniGraph"
         />
       </template>
 

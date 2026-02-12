@@ -2,7 +2,7 @@
 table_name: packages_helm_metadata_cache_states
 description: Separate table for Helm Metadata Cache verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217447
-milestone: '18.8'
+milestone: '18.9'
 feature_categories:
 - geo_replication
 classes:

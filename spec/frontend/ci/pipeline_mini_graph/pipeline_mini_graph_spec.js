@@ -53,9 +53,9 @@ describe('PipelineMiniGraph', () => {
         });
       });
 
-      it('emits miniGraphStageClick', () => {
-        findStages().vm.$emit('miniGraphStageClick');
-        expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
+      it('emits mini-graph-stage-click', () => {
+        findStages().vm.$emit('mini-graph-stage-click');
+        expect(wrapper.emitted('mini-graph-stage-click')).toHaveLength(1);
       });
     });
 

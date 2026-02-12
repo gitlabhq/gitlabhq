@@ -76,9 +76,9 @@ describe('JobDropdownItem', () => {
           });
         });
 
-        it('emits jobActionExecuted', () => {
-          findJobActionButton().vm.$emit('jobActionExecuted');
-          expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
+        it('emits job-action-executed', () => {
+          findJobActionButton().vm.$emit('job-action-executed');
+          expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
         });
       });
     });

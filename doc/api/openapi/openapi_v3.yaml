@@ -15878,6 +15878,7 @@ paths:
         schema:
           type: string
           enum:
+          - packages_helm_metadata_caches
           - supply_chain_attestations
           - packages_nuget_symbols
           - uploads
@@ -15933,6 +15934,7 @@ paths:
         schema:
           type: string
           enum:
+          - packages_helm_metadata_caches
           - supply_chain_attestations
           - packages_nuget_symbols
           - uploads
@@ -15986,6 +15988,7 @@ paths:
         schema:
           type: string
           enum:
+          - packages_helm_metadata_caches
           - supply_chain_attestations
           - packages_nuget_symbols
           - uploads
@@ -16085,6 +16088,7 @@ paths:
         schema:
           type: string
           enum:
+          - packages_helm_metadata_caches
           - supply_chain_attestations
           - packages_nuget_symbols
           - uploads
@@ -83790,14 +83794,6 @@ paths:
                     developer_can_initial_push:
                       type: boolean
                       description: Allow developers to initial push
-                shared_runners_setting:
-                  type: string
-                  enum:
-                  - disabled_and_unoverridable
-                  - disabled_and_overridable
-                  - enabled
-                  description: Enable/disable shared runners for the group and its
-                    subgroups and projects
                 enabled_git_access_protocol:
                   type: string
                   enum:
@@ -83968,6 +83964,14 @@ paths:
                 path:
                   type: string
                   description: The path of the group
+                shared_runners_setting:
+                  type: string
+                  enum:
+                  - disabled_and_unoverridable
+                  - disabled_and_overridable
+                  - enabled
+                  description: Enable/disable shared runners for the group and its
+                    subgroups and projects
                 description:
                   type: string
                   description: The description of the group
@@ -84090,14 +84094,6 @@ paths:
                     developer_can_initial_push:
                       type: boolean
                       description: Allow developers to initial push
-                shared_runners_setting:
-                  type: string
-                  enum:
-                  - disabled_and_unoverridable
-                  - disabled_and_overridable
-                  - enabled
-                  description: Enable/disable shared runners for the group and its
-                    subgroups and projects
                 enabled_git_access_protocol:
                   type: string
                   enum:
@@ -91642,6 +91638,26 @@ components:
           type: string
         supply_chain_attestations_verification_failed_count:
           type: string
+        packages_helm_metadata_caches_count:
+          type: string
+        packages_helm_metadata_caches_checksum_total_count:
+          type: string
+        packages_helm_metadata_caches_checksummed_count:
+          type: string
+        packages_helm_metadata_caches_checksum_failed_count:
+          type: string
+        packages_helm_metadata_caches_synced_count:
+          type: string
+        packages_helm_metadata_caches_failed_count:
+          type: string
+        packages_helm_metadata_caches_registry_count:
+          type: string
+        packages_helm_metadata_caches_verification_total_count:
+          type: string
+        packages_helm_metadata_caches_verified_count:
+          type: string
+        packages_helm_metadata_caches_verification_failed_count:
+          type: string
         git_fetch_event_count_weekly:
           type: string
         git_push_event_count_weekly:
@@ -91729,6 +91745,10 @@ components:
         supply_chain_attestations_synced_in_percentage:
           type: string
         supply_chain_attestations_verified_in_percentage:
+          type: string
+        packages_helm_metadata_caches_synced_in_percentage:
+          type: string
+        packages_helm_metadata_caches_verified_in_percentage:
           type: string
         repositories_count:
           type: string
@@ -96418,6 +96438,26 @@ components:
           type: string
         supply_chain_attestations_verification_failed_count:
           type: string
+        packages_helm_metadata_caches_count:
+          type: string
+        packages_helm_metadata_caches_checksum_total_count:
+          type: string
+        packages_helm_metadata_caches_checksummed_count:
+          type: string
+        packages_helm_metadata_caches_checksum_failed_count:
+          type: string
+        packages_helm_metadata_caches_synced_count:
+          type: string
+        packages_helm_metadata_caches_failed_count:
+          type: string
+        packages_helm_metadata_caches_registry_count:
+          type: string
+        packages_helm_metadata_caches_verification_total_count:
+          type: string
+        packages_helm_metadata_caches_verified_count:
+          type: string
+        packages_helm_metadata_caches_verification_failed_count:
+          type: string
         git_fetch_event_count_weekly:
           type: string
         git_push_event_count_weekly:
@@ -96505,6 +96545,10 @@ components:
         supply_chain_attestations_synced_in_percentage:
           type: string
         supply_chain_attestations_verified_in_percentage:
+          type: string
+        packages_helm_metadata_caches_synced_in_percentage:
+          type: string
+        packages_helm_metadata_caches_verified_in_percentage:
           type: string
         repositories_count:
           type: string

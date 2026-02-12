@@ -45,7 +45,7 @@ export default {
       required: true,
     },
   },
-  emits: ['jobActionExecuted', 'miniGraphStageClick'],
+  emits: ['job-action-executed', 'mini-graph-stage-click'],
   data() {
     return {
       isDropdownOpen: false,
@@ -130,7 +130,7 @@ export default {
       this.$apollo.queries.stageJobs.startPolling(PIPELINE_POLL_INTERVAL_DEFAULT);
 
       // used for tracking in the pipeline table
-      this.$emit('miniGraphStageClick');
+      this.$emit('mini-graph-stage-click');
     },
     stageAriaLabel(title) {
       return sprintf(__('View Stage: %{title}'), { title });
@@ -195,7 +195,7 @@ export default {
             v-for="job in searchedJobs"
             :key="job.id + 'searched'"
             :job="job"
-            @jobActionExecuted="$emit('jobActionExecuted')"
+            @job-action-executed="$emit('job-action-executed')"
           />
         </gl-disclosure-dropdown-group>
       </template>
@@ -210,7 +210,7 @@ export default {
             v-for="job in failedJobs"
             :key="job.id"
             :job="job"
-            @jobActionExecuted="$emit('jobActionExecuted')"
+            @job-action-executed="$emit('job-action-executed')"
           />
         </gl-disclosure-dropdown-group>
         <gl-disclosure-dropdown-group
@@ -222,7 +222,7 @@ export default {
             v-for="job in passedJobs"
             :key="job.id"
             :job="job"
-            @jobActionExecuted="$emit('jobActionExecuted')"
+            @job-action-executed="$emit('job-action-executed')"
           />
         </gl-disclosure-dropdown-group>
       </template>

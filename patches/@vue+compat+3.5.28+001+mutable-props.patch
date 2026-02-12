@@ -1,0 +1,48 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index 531ec00..4885d73 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6637,7 +6637,7 @@ const publicPropertiesMap = (
+     $: (i) => i,
+     $el: (i) => i.vnode.el,
+     $data: (i) => i.data,
+-    $props: (i) => shallowReadonly(i.props) ,
++    $props: (i) => !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props ,
+     $attrs: (i) => shallowReadonly(i.attrs) ,
+     $slots: (i) => shallowReadonly(i.slots) ,
+     $refs: (i) => shallowReadonly(i.refs) ,
+@@ -8934,6 +8934,10 @@ function setFullProps(instance, rawProps, props, attrs) {
+       );
+     }
+   }
++  // GitLab specific: copy mutable props marker to internal props object
++  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
++    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
++  }
+   return hasAttrsChanged;
+ }
+ function resolvePropValue(options, props, key, value, instance, isAbsent) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 6121567..c8cddd4 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6544,7 +6544,7 @@ const publicPropertiesMap = (
+     $: (i) => i,
+     $el: (i) => i.vnode.el,
+     $data: (i) => i.data,
+-    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
++    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
+     $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
+     $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
+     $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
+@@ -8845,6 +8845,10 @@ function setFullProps(instance, rawProps, props, attrs) {
+       );
+     }
+   }
++  // GitLab specific: copy mutable props marker to internal props object
++  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
++    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
++  }
+   return hasAttrsChanged;
+ }
+ function resolvePropValue(options, props, key, value, instance, isAbsent) {

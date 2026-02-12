@@ -167,7 +167,7 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       end
 
       with_them do
-        it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body]
+        it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body], with_metrics: true
 
         context 'for bumping last downloaded at' do
           include_context 'Debian repository access', :public, :developer, :basic do

@@ -89,6 +89,7 @@ export const EVT_PERF_MARK_FILE_TREE_END = 'mr:diffs:perf:fileTreeEnd';
 export const EVT_PERF_MARK_DIFF_FILES_START = 'mr:diffs:perf:filesStart';
 export const EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN = 'mr:diffs:perf:firstFileShown';
 export const EVT_PERF_MARK_DIFF_FILES_END = 'mr:diffs:perf:filesEnd';
+export const EVT_REVIEW_DRAWER_APPROVED = 'mr:reviewDrawer:submit:approval';
 
 export const CONFLICT_OUR = 'conflict_our';
 export const CONFLICT_THEIR = 'conflict_their';
@@ -116,6 +117,8 @@ export const TRACKING_WHITESPACE_HIDE = 'i_code_review_diff_hide_whitespace';
 export const TRACKING_CLICK_SINGLE_FILE_SETTING = 'i_code_review_click_single_file_mode_setting';
 export const TRACKING_SINGLE_FILE_MODE = 'i_code_review_diff_single_file';
 export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';
+
+export const TRACKING_REVIEW_DRAWER_SUBMIT_APPROVED = 'mr_approved_from_review_drawer';
 
 // SAST Findings
 export const SAST_FINDING_DISMISSED = 'dismissed';

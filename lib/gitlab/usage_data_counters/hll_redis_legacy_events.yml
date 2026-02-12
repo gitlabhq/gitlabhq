@@ -195,6 +195,8 @@
 - i_package_composer_user
 - i_package_conan_deploy_token
 - i_package_conan_user
+- i_package_debian_deploy_token
+- i_package_debian_user
 - i_package_generic_deploy_token
 - i_package_generic_user
 - i_package_helm_deploy_token

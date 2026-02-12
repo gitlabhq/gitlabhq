@@ -108,7 +108,7 @@ RSpec.shared_examples 'Debian packages upload authorize request' do |status, bod
   end
 end
 
-RSpec.shared_examples 'Debian packages read endpoint' do |desired_behavior, success_status, success_body|
+RSpec.shared_examples 'Debian packages read endpoint' do |desired_behavior, success_status, success_body, **kwargs|
   context 'with valid container' do
     using RSpec::Parameterized::TableSyntax
 
@@ -128,6 +128,24 @@ RSpec.shared_examples 'Debian packages read endpoint' do |desired_behavior, succ
     with_them do
       include_context 'Debian repository access', params[:visibility_level], params[:user_type], params[:auth_method] do
         it_behaves_like "Debian packages #{desired_behavior} request", params[:expected_status], params[:expected_body]
+
+        it "triggers an internal event" do
+          if kwargs[:with_metrics] && status == :success
+            expect { subject }.to trigger_internal_events('pull_package_from_registry').with(
+              category: 'InternalEventTracking',
+              project: package.project,
+              namespace: package.project.group,
+              user: user,
+              additional_properties: {
+                label: 'debian',
+                property: params[:user_type] == 'anonymous' ? 'guest' : 'user'
+              }
+            ).and increment_usage_metrics(
+              'counts.package_events_i_package_debian_pull_package',
+              'counts.package_events_i_package_pull_package'
+            )
+          end
+        end
       end
     end
   end
@@ -135,7 +153,7 @@ RSpec.shared_examples 'Debian packages read endpoint' do |desired_behavior, succ
   it_behaves_like 'rejects Debian access with unknown container id', :unauthorized, :basic
 end
 
-RSpec.shared_examples 'Debian packages write endpoint' do |desired_behavior, success_status, success_body|
+RSpec.shared_examples 'Debian packages write endpoint' do |desired_behavior, success_status, success_body, **kwargs|
   context 'with valid container' do
     using RSpec::Parameterized::TableSyntax
 
@@ -156,6 +174,24 @@ RSpec.shared_examples 'Debian packages write endpoint' do |desired_behavior, suc
     with_them do
       include_context 'Debian repository access', params[:visibility_level], params[:user_type], params[:auth_method] do
         it_behaves_like "Debian packages #{desired_behavior} request", params[:expected_status], params[:expected_body]
+
+        it "triggers an internal event" do
+          if kwargs[:with_metrics] && status == :success
+            expect { subject }.to trigger_internal_events('push_package_to_registry').with(
+              category: 'InternalEventTracking',
+              project: package.project,
+              namespace: package.project.group,
+              user: user,
+              additional_properties: {
+                label: 'debian',
+                property: params[:user_type] == 'anonymous' ? 'guest' : 'user'
+              }
+            ).and increment_usage_metrics(
+              'counts.package_events_i_package_debian_push_package',
+              'counts.package_events_i_package_push_package'
+            )
+          end
+        end
       end
     end
   end

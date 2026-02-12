@@ -13,7 +13,11 @@ app/models/jira_import_state.rb:
 app/models/service_desk/custom_email_verification.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/user.rb:
+  - inactive_message: Override of Devise method
   - owner_class_attribute_default: Used internally by state_machine
+  - reset_password_by_token: Override of Devise method
+  - unlock_access_by_token: Override of Devise method
+  - will_save_change_to_login?: Override of Devise method
 app/helpers/sorting_titles_values_helper.rb:
   - sort_value_stars_desc: Used to build sorting dropdowns in app/helpers/sorting_helper.rb
 app/helpers/routing/snippets_helper.rb:

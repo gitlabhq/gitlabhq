@@ -132,9 +132,9 @@ If a webhook is not triggered, verify that:
 
 ## Error: `Webhook rate limit exceeded`
 
-A webhook might fail due to rate limiting.
-GitLab.com has [specific limits](../../gitlab_com/_index.md#webhooks)
-on the number of times a webhook can be called in a minute.
+A webhook might fail because of rate limiting.
+GitLab.com limits the total number of webhook calls each minute for each top-level namespace.
+For more information, see [rate limits](../../gitlab_com/_index.md#rate-limits).
 
 To confirm if rate limiting is the issue:
 

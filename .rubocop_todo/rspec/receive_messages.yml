@@ -14,7 +14,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/finders/security/security_policies_finder_spec.rb'
-    - 'ee/spec/frontend/fixtures/epic.rb'
     - 'ee/spec/graphql/resolvers/epic_issues_resolver_spec.rb'
     - 'ee/spec/graphql/types/project_type_spec.rb'
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'

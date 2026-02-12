@@ -2,6 +2,8 @@
 key_path: container_registry_server.db_enabled
 description: Is the Container Registry metadata database enabled
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: boolean
 status: active
 milestone: "16.5"

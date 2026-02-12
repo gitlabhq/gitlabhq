@@ -42,7 +42,7 @@ export default {
       required: true,
     },
   },
-  emits: ['jobActionExecuted'],
+  emits: ['job-action-executed'],
   data() {
     return {
       isDropdownOpen: false,
@@ -172,7 +172,7 @@ export default {
         v-for="job in pipelineJobs"
         :key="job.id"
         :job="job"
-        @jobActionExecuted="$emit('jobActionExecuted')"
+        @job-action-executed="$emit('job-action-executed')"
       />
     </ul>
   </gl-disclosure-dropdown>

@@ -333,7 +333,6 @@
 - './ee/spec/frontend/fixtures/codequality_report.rb'
 - './ee/spec/frontend/fixtures/dast_profiles.rb'
 - './ee/spec/frontend/fixtures/dora/metrics.rb'
-- './ee/spec/frontend/fixtures/epic.rb'
 - './ee/spec/frontend/fixtures/issues.rb'
 - './ee/spec/frontend/fixtures/merge_requests.rb'
 - './ee/spec/frontend/fixtures/on_demand_dast_scans.rb'

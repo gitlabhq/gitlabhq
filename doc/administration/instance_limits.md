@@ -171,16 +171,10 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ### Webhook rate limit
 
-{{< history >}}
+Limit the number of times each minute that webhooks in a top-level namespace can be called.
+All project and group webhooks in the namespace share this limit.
 
-- [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
-
-{{< /history >}}
-
-Limit the number of times a webhook can be called per minute, per top-level namespace.
-This only applies to project and group webhooks.
-
-Calls over the rate limit are logged into `auth.log`.
+Calls that exceed the rate limit are logged in `auth.log`.
 
 To set this limit for a GitLab Self-Managed instance, use the [Plan Limits API](../api/plan_limits.md)
 or run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

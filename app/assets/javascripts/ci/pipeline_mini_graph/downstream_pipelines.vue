@@ -69,7 +69,7 @@ export default {
       :key="pipeline.id"
       :pipeline="pipeline"
       class="gl-mr-2 last-of-type:gl-mr-0"
-      @jobActionExecuted="$emit('jobActionExecuted')"
+      @job-action-executed="$emit('job-action-executed')"
     />
     <a
       v-if="shouldRenderCounter"

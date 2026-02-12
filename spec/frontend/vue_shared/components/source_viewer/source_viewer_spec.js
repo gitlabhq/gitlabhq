@@ -178,6 +178,15 @@ describe('Source Viewer component', () => {
             `transform: translateY(${chunkOffset}px)`,
           );
         });
+
+        it('passes totalLines from the chunk to the skeleton loader', async () => {
+          createComponent();
+          emitAppear();
+          await nextTick();
+
+          const loader = findBlameSkeletonLoaders().at(0);
+          expect(loader.props('totalLines')).toBe(1);
+        });
       });
 
       it('preloads blame data', async () => {

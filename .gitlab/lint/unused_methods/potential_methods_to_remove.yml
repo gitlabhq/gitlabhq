@@ -286,10 +286,7 @@ app/models/todo.rb:
 - for_ssh_key?
 - self_assigned?
 app/models/user.rb:
-- inactive_message
-- will_save_change_to_login?
-- reset_password_by_token
-- unlock_access_by_token
+- legacy_otp_secret
 ee/app/models/ai/duo_code_review.rb:
 - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:

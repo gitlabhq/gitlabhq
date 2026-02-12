@@ -253,6 +253,7 @@ export default {
       <blame-skeleton-loader
         v-for="chunkIndex in activeLoadingChunks"
         :key="`loading-${chunkIndex}`"
+        :total-lines="1"
         class="gl-absolute gl-left-0"
         :style="{ transform: `translateY(${chunkOffsets[chunkIndex] || 0}px)` }"
       />

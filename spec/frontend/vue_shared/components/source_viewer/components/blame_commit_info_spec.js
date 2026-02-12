@@ -138,12 +138,13 @@ describe('BlameCommitInfo component', () => {
   });
 
   describe('previous blame button', () => {
-    it('renders when previousPath, parentSha, and projectPath are provided', () => {
+    it('is visible when previousPath, parentSha, and projectPath are provided', () => {
       createComponent({
         previousPath: 'old/file.js',
         projectPath: 'gitlab-org/gitlab',
       });
 
+      expect(findPreviousBlameButton().classes()).not.toContain('gl-invisible');
       expect(findPreviousBlameButton().attributes('href')).toBe(
         '/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1',
       );
@@ -160,10 +161,10 @@ describe('BlameCommitInfo component', () => {
           commit: { ...defaultCommit, parentSha: null },
         },
       ],
-    ])('does not render when %s is missing', (_, props) => {
+    ])('is hidden when %s is missing', (_, props) => {
       createComponent(props);
 
-      expect(findPreviousBlameButton().exists()).toBe(false);
+      expect(findPreviousBlameButton().classes()).toContain('gl-invisible');
     });
   });
 });

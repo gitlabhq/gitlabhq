@@ -1,17 +1,8 @@
 diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
-index 9ac00e7..3e6775d 100644
+index 4885d73..2977a69 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6429,7 +6429,7 @@ const publicPropertiesMap = (
-     $: (i) => i,
-     $el: (i) => i.vnode.el,
-     $data: (i) => i.data,
--    $props: (i) => shallowReadonly(i.props) ,
-+    $props: (i) => !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props ,
-     $attrs: (i) => shallowReadonly(i.attrs) ,
-     $slots: (i) => shallowReadonly(i.slots) ,
-     $refs: (i) => shallowReadonly(i.refs) ,
-@@ -7315,6 +7315,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
+@@ -7518,6 +7518,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
@@ -35,31 +26,11 @@ index 9ac00e7..3e6775d 100644
      const vm = app._createRoot(options);
      if (options.el) {
        return vm.$mount(options.el);
-@@ -8167,6 +8184,10 @@ function setFullProps(instance, rawProps, props, attrs) {
-       );
-     }
-   }
-+  // GitLab specific: copy mutable props marker to internal props object
-+  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
-+    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
-+  }
-   return hasAttrsChanged;
- }
- function resolvePropValue(options, props, key, value, instance, isAbsent) {
 diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-index 6eaafff..b546904 100644
+index c8cddd4..7794465 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6336,7 +6336,7 @@ const publicPropertiesMap = (
-     $: (i) => i,
-     $el: (i) => i.vnode.el,
-     $data: (i) => i.data,
--    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
-+    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
-     $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
-     $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
-     $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -7224,6 +7224,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
+@@ -7427,6 +7427,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
@@ -83,14 +54,3 @@ index 6eaafff..b546904 100644
      const vm = app._createRoot(options);
      if (options.el) {
        return vm.$mount(options.el);
-@@ -8078,6 +8095,10 @@ function setFullProps(instance, rawProps, props, attrs) {
-       );
-     }
-   }
-+  // GitLab specific: copy mutable props marker to internal props object
-+  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
-+    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
-+  }
-   return hasAttrsChanged;
- }
- function resolvePropValue(options, props, key, value, instance, isAbsent) {

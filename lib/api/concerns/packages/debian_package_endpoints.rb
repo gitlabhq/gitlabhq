@@ -40,6 +40,8 @@ module API
 
               package_file = distribution_from!(project).package_files.with_file_name(params[:file_name]).last!
 
+              track_package_event('pull_package', :debian, project: project)
+
               present_package_file!(package_file)
             end
 

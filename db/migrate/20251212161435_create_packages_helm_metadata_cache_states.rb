@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CreatePackagesHelmMetadataCacheStates < Gitlab::Database::Migration[2.3]
-  milestone '18.8'
+  milestone '18.9'
 
   VERIFICATION_STATE_INDEX_NAME = "idx_packages_helm_metadata_cache_states_on_verification_state"
   PENDING_VERIFICATION_INDEX_NAME = "idx_packages_helm_metadata_cache_states_pending_verification"

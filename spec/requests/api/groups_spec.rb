@@ -1617,6 +1617,15 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'with shared_runners_setting attribute' do
+      it 'updates the shared_runners_setting' do
+        put api("/groups/#{group1.id}", admin, admin_mode: true), params: { shared_runners_setting: 'disabled_and_unoverridable' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['shared_runners_setting']).to eq('disabled_and_unoverridable')
+      end
+    end
   end
 
   describe "GET /groups/:id/projects" do
@@ -3480,6 +3489,21 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['enabled_git_access_protocol']).to eq(nil)
+        end
+      end
+
+      context 'when creating a group with `shared_runners_setting`' do
+        let(:params) do
+          attributes_for_group_api.merge(shared_runners_setting: 'disabled_and_overridable')
+        end
+
+        subject { post api("/groups", user3), params: params }
+
+        it 'creates group but ignores the specified shared runners settings', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['shared_runners_setting']).to eq('enabled')
         end
       end
 

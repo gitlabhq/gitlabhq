@@ -162,6 +162,14 @@ module StubObjectStorage
     )
   end
 
+  def stub_helm_metadata_cache_object_storage(**params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Helm::MetadataCacheUploader,
+      **params
+    )
+  end
+
   def stub_object_storage_multipart_init(endpoint, upload_id = "upload_id")
     stub_request(:post, %r{\A#{endpoint}tmp/uploads/[%A-Za-z0-9-]*\?uploads\z})
       .to_return status: 200, body: <<-EOS.strip_heredoc

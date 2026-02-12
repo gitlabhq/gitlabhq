@@ -47,6 +47,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     wiki_page_meta
     WikiPage::Meta
     packages_nuget_symbol_registry
+    packages_helm_metadata_cache_registry
   ]
   inflect.acronym 'CDN'
   inflect.acronym 'EE'
@@ -54,4 +55,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'CSP'
   inflect.acronym 'VSCode'
   inflect.acronym 'FIPS'
+  inflect.irregular 'cache', 'caches'
 end

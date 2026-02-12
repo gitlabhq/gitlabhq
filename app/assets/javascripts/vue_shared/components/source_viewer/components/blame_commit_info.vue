@@ -140,7 +140,6 @@ export default {
     </div>
 
     <gl-button
-      v-if="previousBlameUrl"
       v-gl-tooltip
       :href="previousBlameUrl"
       :title="$options.i18n.viewBlamePrior"
@@ -152,6 +151,7 @@ export default {
       data-testid="view-previous-blame-button"
       style="min-height: var(--blame-line-height)"
       class="!gl-text-secondary focus:!gl-focus-inset"
+      :class="{ 'gl-invisible': !previousBlameUrl }"
     />
   </div>
 </template>

@@ -23,7 +23,7 @@ export default {
       required: true,
     },
   },
-  emits: ['jobActionExecuted'],
+  emits: ['job-action-executed'],
   computed: {
     hasJobAction() {
       return Boolean(this.status?.action?.id && this.status?.action?.icon);
@@ -88,7 +88,7 @@ export default {
           :job-id="job.id"
           :job-action="status.action"
           :job-name="job.name"
-          @jobActionExecuted="$emit('jobActionExecuted')"
+          @job-action-executed="$emit('job-action-executed')"
         />
         <job-action-button
           v-if="hasUnauthorizedManualAction"

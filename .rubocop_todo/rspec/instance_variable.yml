@@ -8,7 +8,6 @@ RSpec/InstanceVariable:
     - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
     - 'ee/spec/features/markdown/markdown_spec.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
-    - 'ee/spec/frontend/fixtures/epic.rb'
     - 'ee/spec/graphql/types/vulnerability_request_response_header_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_request_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_response_type_spec.rb'

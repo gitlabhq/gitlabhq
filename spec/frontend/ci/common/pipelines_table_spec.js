@@ -334,7 +334,7 @@ describe('Pipelines Table', () => {
     });
 
     it('tracks pipeline mini graph stage click', () => {
-      findPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+      findPipelineMiniGraph().vm.$emit('mini-graph-stage-click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
         label: TRACKING_CATEGORIES.table,

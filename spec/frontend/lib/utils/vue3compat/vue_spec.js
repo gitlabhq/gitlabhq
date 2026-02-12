@@ -13,7 +13,7 @@ describe('Vue.js compat behavior', () => {
 
   As for now it is manual task to ensure patches in these two files provided via patch-package are in sync
   */
-  it('respects provide/inject passed via parent option', () => {
+  it('respects provide/inject passed via parent option (parent-context-inheritance.patch)', () => {
     const PROVIDED_VALUE = 'DEMO';
     const vueApp = new Vue({
       provide: {
@@ -41,7 +41,7 @@ describe('Vue.js compat behavior', () => {
     expect(injectedValue).toBe(PROVIDED_VALUE);
   });
 
-  describe('__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__', () => {
+  describe('__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ (mutable-props.patch)', () => {
     // Vue 3: "Set operation on key X failed: target is readonly"
     // Vue 2: "Avoid mutating a prop directly"
     ignoreConsoleMessages([
@@ -129,6 +129,99 @@ describe('Vue.js compat behavior', () => {
         // In readonly mode, the value should remain unchanged
         expect(capturedInstance.$props.value).toBe(originalValue);
       });
+    });
+  });
+
+  describe('revert-pull-13514.patch', () => {
+    let container;
+
+    beforeEach(() => {
+      container = document.createElement('div');
+      document.body.appendChild(container);
+    });
+
+    afterEach(() => {
+      container.remove();
+    });
+
+    it('does not let parent listeners shadow child methods', async () => {
+      const ITEM_VALUE = 'group-1';
+      const UPDATED_LABEL = 'updated';
+
+      const ListboxItem = Vue.extend({
+        props: {
+          item: {
+            type: Object,
+            required: true,
+          },
+        },
+        render(h) {
+          return h('button', { on: { click: () => this.$emit('select', true) } }, 'Select');
+        },
+      });
+
+      const Listbox = Vue.extend({
+        props: {
+          label: {
+            type: String,
+            required: true,
+          },
+        },
+        data() {
+          return {
+            item: { value: ITEM_VALUE },
+          };
+        },
+        methods: {
+          onSelect(item) {
+            this.$emit('select', item.value);
+          },
+        },
+        render(h) {
+          return h(ListboxItem, {
+            ref: 'item',
+            props: { item: this.item },
+            on: { select: ($event) => this.onSelect(this.item, $event) },
+          });
+        },
+      });
+
+      const Parent = Vue.extend({
+        data() {
+          return {
+            label: 'initial',
+            selected: null,
+          };
+        },
+        methods: {
+          handleSelect(payload) {
+            this.selected = payload;
+          },
+        },
+        render(h) {
+          return h(Listbox, {
+            ref: 'listbox',
+            props: { label: this.label },
+            on: { select: this.handleSelect },
+          });
+        },
+      });
+
+      const parentInstance = new Parent({
+        el: container,
+      });
+
+      await nextTick();
+
+      parentInstance.label = UPDATED_LABEL;
+
+      await nextTick();
+
+      parentInstance.$refs.listbox.$refs.item.$emit('select', true);
+
+      await nextTick();
+
+      expect(parentInstance.selected).toBe(ITEM_VALUE);
     });
   });
 });

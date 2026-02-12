@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlPopover } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -17,11 +18,15 @@ const DEFAULT_MR = { targetProjectFullPath: TEST_PROJECT_PATH };
 describe('MergeChecksTitleRegex component', () => {
   let wrapper;
 
-  const createTitleRegexQueryResponse = (mergeRequestTitleRegexDescription = null) => ({
+  const createTitleRegexQueryResponse = ({
+    mergeRequestTitleRegex = null,
+    mergeRequestTitleRegexDescription = null,
+  } = {}) => ({
     data: {
       project: {
         __typename: 'Project',
         id: TEST_PROJECT_ID,
+        mergeRequestTitleRegex,
         mergeRequestTitleRegexDescription,
       },
     },
@@ -66,23 +71,70 @@ describe('MergeChecksTitleRegex component', () => {
     expect(titleRegexQueryHandler).toHaveBeenCalledWith({ projectPath: TEST_PROJECT_PATH });
   });
 
-  it.each`
-    scenario                                    | description                                | shouldExist
-    ${'renders description when present'}       | ${'MR title must match: ^feat|fix|chore:'} | ${true}
-    ${'does not render description when null'}  | ${null}                                    | ${false}
-    ${'does not render description when empty'} | ${''}                                      | ${false}
-  `('$scenario', async ({ description, shouldExist }) => {
-    await createComponent({
-      titleRegexQueryHandler: jest
-        .fn()
-        .mockResolvedValue(createTitleRegexQueryResponse(description)),
+  describe('popover', () => {
+    const findPopover = () => wrapper.findComponent(GlPopover);
+    const findHelpButton = () => wrapper.find('#title-regex-help');
+
+    it('renders popover when description is present', async () => {
+      await createComponent({
+        titleRegexQueryHandler: jest.fn().mockResolvedValue(
+          createTitleRegexQueryResponse({
+            mergeRequestTitleRegexDescription: 'Use conventional commits',
+          }),
+        ),
+      });
+
+      expect(findPopover().exists()).toBe(true);
+      expect(findHelpButton().exists()).toBe(true);
     });
 
-    const descriptionEl = wrapper.find('.gl-text-subtle');
-    expect(descriptionEl.exists()).toBe(shouldExist);
+    it('renders popover when regex is present', async () => {
+      await createComponent({
+        titleRegexQueryHandler: jest.fn().mockResolvedValue(
+          createTitleRegexQueryResponse({
+            mergeRequestTitleRegex: '^(feat|fix):',
+          }),
+        ),
+      });
 
-    if (shouldExist) {
-      expect(descriptionEl.text()).toBe(description);
-    }
+      expect(findPopover().exists()).toBe(true);
+    });
+
+    it('does not render popover when neither description nor regex is present', async () => {
+      await createComponent();
+
+      expect(findPopover().exists()).toBe(false);
+      expect(findHelpButton().exists()).toBe(false);
+    });
+
+    it('displays description and regex in popover', async () => {
+      const description = 'Use conventional commits format';
+      const regex = '^(feat|fix|chore):';
+
+      await createComponent({
+        titleRegexQueryHandler: jest.fn().mockResolvedValue(
+          createTitleRegexQueryResponse({
+            mergeRequestTitleRegex: regex,
+            mergeRequestTitleRegexDescription: description,
+          }),
+        ),
+      });
+
+      const popover = findPopover();
+      expect(popover.text()).toContain(description);
+      expect(popover.find('code').text()).toBe(regex);
+    });
+
+    it('has correct popover title', async () => {
+      await createComponent({
+        titleRegexQueryHandler: jest.fn().mockResolvedValue(
+          createTitleRegexQueryResponse({
+            mergeRequestTitleRegexDescription: 'Some description',
+          }),
+        ),
+      });
+
+      expect(findPopover().props('title')).toBe('Naming convention');
+    });
   });
 });

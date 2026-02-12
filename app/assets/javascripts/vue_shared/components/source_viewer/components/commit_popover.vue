@@ -42,7 +42,8 @@ export default {
       return this.commit.webPath || this.commit.commitUrl;
     },
     authoredText() {
-      const timeago = getTimeago().format(this.authoredDate);
+      if (!this.authoredDate) return '';
+      const timeago = getTimeago().format(new Date(this.authoredDate));
       return sprintf(__('Authored %{timeago}'), { timeago });
     },
   },

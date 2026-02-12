@@ -54204,6 +54204,7 @@ Geo registry class.
 | <a id="georegistryclassjob_artifact_registry"></a>`JOB_ARTIFACT_REGISTRY` | Geo::JobArtifactRegistry registry class. |
 | <a id="georegistryclasslfs_object_registry"></a>`LFS_OBJECT_REGISTRY` | Geo::LfsObjectRegistry registry class. |
 | <a id="georegistryclassmerge_request_diff_registry"></a>`MERGE_REQUEST_DIFF_REGISTRY` | Geo::MergeRequestDiffRegistry registry class. |
+| <a id="georegistryclasspackages_helm_metadata_cache_registry"></a>`PACKAGES_HELM_METADATA_CACHE_REGISTRY` | Geo::PackagesHelmMetadataCacheRegistry registry class. |
 | <a id="georegistryclasspackages_nuget_symbol_registry"></a>`PACKAGES_NUGET_SYMBOL_REGISTRY` | Geo::PackagesNugetSymbolRegistry registry class. |
 | <a id="georegistryclasspackage_file_registry"></a>`PACKAGE_FILE_REGISTRY` | Geo::PackageFileRegistry registry class. |
 | <a id="georegistryclasspages_deployment_registry"></a>`PAGES_DEPLOYMENT_REGISTRY` | Geo::PagesDeploymentRegistry registry class. |

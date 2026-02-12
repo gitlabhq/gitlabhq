@@ -4,24 +4,24 @@ import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/component
 describe('BlameSkeletonLoader component', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(BlameSkeletonLoader);
+  const createComponent = (props = { totalLines: 1 }) => {
+    wrapper = shallowMountExtended(BlameSkeletonLoader, { propsData: props });
   };
 
   const findSkeletonLoader = () => wrapper.findByTestId('blame-skeleton-loader');
-  const findSkeletonBar = () => wrapper.findByTestId('blame-skeleton-bar');
-  const findSkeletonDate = () => wrapper.findByTestId('blame-skeleton-date');
-  const findSkeletonAvatar = () => wrapper.findByTestId('blame-skeleton-avatar');
-  const findSkeletonTitle = () => wrapper.findByTestId('blame-skeleton-title');
+  const findAllSkeletonBars = () => wrapper.findAllByTestId('blame-skeleton-bar');
+  const findAllSkeletonDates = () => wrapper.findAllByTestId('blame-skeleton-date');
+  const findAllSkeletonAvatars = () => wrapper.findAllByTestId('blame-skeleton-avatar');
+  const findAllSkeletonTitles = () => wrapper.findAllByTestId('blame-skeleton-title');
 
   beforeEach(() => createComponent());
 
   it('renders skeleton loader elements', () => {
     expect(findSkeletonLoader().exists()).toBe(true);
-    expect(findSkeletonBar().exists()).toBe(true);
-    expect(findSkeletonDate().exists()).toBe(true);
-    expect(findSkeletonAvatar().exists()).toBe(true);
-    expect(findSkeletonTitle().exists()).toBe(true);
+    expect(findAllSkeletonBars()).toHaveLength(1);
+    expect(findAllSkeletonDates()).toHaveLength(1);
+    expect(findAllSkeletonAvatars()).toHaveLength(1);
+    expect(findAllSkeletonTitles()).toHaveLength(1);
   });
 
   it('has accessible loading state', () => {
@@ -30,5 +30,14 @@ describe('BlameSkeletonLoader component', () => {
       'aria-busy': 'true',
       'aria-label': 'Loading blame information',
     });
+  });
+
+  it('renders a row for each line in the chunk', () => {
+    createComponent({ totalLines: 5 });
+
+    expect(findAllSkeletonBars()).toHaveLength(5);
+    expect(findAllSkeletonDates()).toHaveLength(5);
+    expect(findAllSkeletonAvatars()).toHaveLength(5);
+    expect(findAllSkeletonTitles()).toHaveLength(5);
   });
 });
