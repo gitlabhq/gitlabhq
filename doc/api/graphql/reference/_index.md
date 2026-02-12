@@ -26454,6 +26454,7 @@ An AI catalog agent.
 | <a id="aicatalogagentsoftdeletedat"></a>`softDeletedAt` | [`Time`](#time) | Timestamp of when the item was soft deleted. |
 | <a id="aicatalogagentupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogagentuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
+| <a id="aicatalogagentverificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogagentversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
 #### Fields with arguments
@@ -26559,6 +26560,7 @@ An AI catalog flow.
 | <a id="aicatalogflowsoftdeletedat"></a>`softDeletedAt` | [`Time`](#time) | Timestamp of when the item was soft deleted. |
 | <a id="aicatalogflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogflowuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
+| <a id="aicatalogflowverificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogflowversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
 #### Fields with arguments
@@ -26703,6 +26705,7 @@ An AI catalog third party flow.
 | <a id="aicatalogthirdpartyflowsoftdeletedat"></a>`softDeletedAt` | [`Time`](#time) | Timestamp of when the item was soft deleted. |
 | <a id="aicatalogthirdpartyflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogthirdpartyflowuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
+| <a id="aicatalogthirdpartyflowverificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogthirdpartyflowversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
 #### Fields with arguments
@@ -52469,6 +52472,16 @@ Possible item types for AI items.
 | <a id="aicatalogitemtypeflow"></a>`FLOW` | Flow. |
 | <a id="aicatalogitemtypethird_party_flow"></a>`THIRD_PARTY_FLOW` | Third party flow. |
 
+### `AiCatalogItemVerificationLevel`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogitemverificationlevelgitlab_maintained"></a>`GITLAB_MAINTAINED` | The item is Gitlab Maintained. |
+| <a id="aicatalogitemverificationlevelgitlab_partner_maintained"></a>`GITLAB_PARTNER_MAINTAINED` | The item is Gitlab Partner Maintained. |
+| <a id="aicatalogitemverificationlevelunverified"></a>`UNVERIFIED` | The item is Unverified. |
+| <a id="aicatalogitemverificationlevelverified_creator_maintained"></a>`VERIFIED_CREATOR_MAINTAINED` | The item is Verified Creator Maintained. |
+| <a id="aicatalogitemverificationlevelverified_creator_self_managed"></a>`VERIFIED_CREATOR_SELF_MANAGED` | The item is Verified Creator Self Managed. |
+
 ### `AiCatalogVersionBump`
 
 Possible version bumps for AI catalog items.
@@ -58707,6 +58720,7 @@ Implementations:
 | <a id="aicatalogitemsoftdeletedat"></a>`softDeletedAt` | [`Time`](#time) | Timestamp of when the item was soft deleted. |
 | <a id="aicatalogitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogitemuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
+| <a id="aicatalogitemverificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogitemversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
 ##### Fields with arguments

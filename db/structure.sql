@@ -9149,8 +9149,11 @@ CREATE TABLE virtual_registries_container_cache_remote_entries (
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9176,8 +9179,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9202,8 +9208,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9228,8 +9237,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9254,8 +9266,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9280,8 +9295,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9306,8 +9324,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9332,8 +9353,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9358,8 +9382,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9384,8 +9411,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9410,8 +9440,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9436,8 +9469,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9462,8 +9498,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9488,8 +9527,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9514,8 +9556,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9540,8 +9585,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -9566,8 +9614,11 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_remote_
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     file text NOT NULL,
+    digest text,
+    CONSTRAINT check_59c50b0509 CHECK ((char_length(digest) <= 71)),
     CONSTRAINT check_6847a04300 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_6e0cc6c36e CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_digest_length CHECK (((digest IS NULL) OR (char_length(digest) = 71))),
     CONSTRAINT check_f8dfd83288 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_fe82daca73 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_ff83dec0d4 CHECK ((char_length(relative_path) <= 1024)),
@@ -32602,12 +32653,13 @@ CREATE TABLE work_item_custom_types (
     icon_name smallint DEFAULT 0 NOT NULL,
     converted_from_system_defined_type_identifier smallint,
     name text NOT NULL,
+    CONSTRAINT check_1695e9567e CHECK ((id >= 1001)),
     CONSTRAINT check_26af0900e6 CHECK ((char_length(name) <= 48)),
     CONSTRAINT check_8d909174fb CHECK ((num_nonnulls(namespace_id, organization_id) = 1))
 );
 
 CREATE SEQUENCE work_item_custom_types_id_seq
-    START WITH 1
+    START WITH 1001
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -40146,6 +40198,10 @@ CREATE INDEX index_1076a9a98a ON gitlab_partitions_static.issue_search_data_10 U
 
 CREATE INDEX index_107e123e17 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_25 USING btree (stage_event_hash_id, group_id, end_event_timestamp, issue_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
+CREATE INDEX idx_vregs_container_cache_remote_entries_on_digest ON ONLY virtual_registries_container_cache_remote_entries USING btree (digest);
+
+CREATE INDEX index_107e505187 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_10 USING btree (digest);
+
 CREATE INDEX idx_vregs_container_cache_entries_on_group_id_upstream_etag ON ONLY virtual_registries_container_cache_entries USING btree (group_id, upstream_etag);
 
 CREATE INDEX index_1106f883b6 ON gitlab_partitions_static.virtual_registries_container_cache_entries_12 USING btree (group_id, upstream_etag);
@@ -40163,6 +40219,8 @@ CREATE INDEX index_14f3645821 ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE UNIQUE INDEX index_161d562e07 ON gitlab_partitions_static.virtual_registries_container_cache_entries_06 USING btree (relative_path, object_storage_key, group_id);
 
 CREATE INDEX index_16627b455e ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
+
+CREATE INDEX index_16977b62b3 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_02 USING btree (digest);
 
 CREATE UNIQUE INDEX index_1714ba4053 ON gitlab_partitions_static.virtual_registries_container_cache_entries_09 USING btree (relative_path, object_storage_key, group_id);
 
@@ -40260,11 +40318,15 @@ CREATE INDEX index_27d7ad78d8 ON gitlab_partitions_static.analytics_cycle_analyt
 
 CREATE INDEX index_281840d2d1 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_06 USING btree (stage_event_hash_id, project_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
+CREATE INDEX index_284ac91299 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_01 USING btree (digest);
+
 CREATE INDEX index_2945cf4c6d ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id);
 
 CREATE UNIQUE INDEX index_2947f5803e ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING btree (relative_path, object_storage_key, group_id);
 
 CREATE INDEX index_296f64df5c ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_01 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
+
+CREATE INDEX index_29c9223a63 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_13 USING btree (digest);
 
 CREATE INDEX index_2ad4b4fdbc ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_05 USING btree (stage_event_hash_id, project_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
@@ -40336,7 +40398,11 @@ CREATE INDEX index_3a8848c00b ON gitlab_partitions_static.analytics_cycle_analyt
 
 CREATE INDEX index_3b09ab5902 ON gitlab_partitions_static.issue_search_data_12 USING btree (namespace_id);
 
+CREATE INDEX index_3b647bf06d ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_11 USING btree (digest);
+
 CREATE INDEX index_3bc2eedca5 ON gitlab_partitions_static.issue_search_data_59 USING btree (namespace_id);
+
+CREATE INDEX index_3c08969144 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_06 USING btree (digest);
 
 CREATE INDEX index_3c2a3a6ac9 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_06 USING btree (stage_event_hash_id, project_id, end_event_timestamp, issue_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
@@ -40347,6 +40413,8 @@ CREATE INDEX index_3db5021697 ON gitlab_partitions_static.virtual_registries_con
 CREATE INDEX index_3dbde77b8b ON gitlab_partitions_static.issue_search_data_58 USING btree (namespace_id);
 
 CREATE INDEX index_3e6be332b7 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_27 USING btree (stage_event_hash_id, project_id, start_event_timestamp, issue_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
+
+CREATE INDEX index_3f49a99d8f ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_12 USING btree (digest);
 
 CREATE INDEX index_4137a6fac3 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_17 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id);
 
@@ -40532,6 +40600,8 @@ CREATE INDEX index_6c08054aaa ON gitlab_partitions_static.virtual_registries_con
 
 CREATE INDEX index_6cfb391b86 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 USING btree (stage_event_hash_id, project_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
+CREATE INDEX index_6d81e95e7a ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_00 USING btree (digest);
+
 CREATE INDEX index_6e560c1a4d ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_23 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id);
 
 CREATE INDEX index_6e64aa1646 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_18 USING btree (stage_event_hash_id, group_id, end_event_timestamp, issue_id);
@@ -40595,6 +40665,8 @@ CREATE INDEX index_7a0b7ffadf ON gitlab_partitions_static.issue_search_data_07 U
 CREATE INDEX index_7b7c85eceb ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_05 USING btree (stage_event_hash_id, group_id, end_event_timestamp, issue_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
 CREATE INDEX index_7c0398954a ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING btree (upstream_id, status, relative_path, downloaded_at);
+
+CREATE INDEX index_7c115bb7b7 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_07 USING btree (digest);
 
 CREATE INDEX index_7cfe703df0 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_02 USING btree (group_id, iid, downloaded_at) WHERE (status = 0);
 
@@ -40724,6 +40796,8 @@ CREATE INDEX index_9c5f8f615f ON gitlab_partitions_static.virtual_registries_con
 
 CREATE INDEX index_9d0e953ab3 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_03 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id);
 
+CREATE INDEX index_9e179fb2b0 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_08 USING btree (digest);
+
 CREATE INDEX index_9eb022c7ea ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_04 USING btree (upstream_id, group_id, created_at DESC) WHERE (status = 0);
 
 CREATE INDEX index_9ee83b068b ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_25 USING btree (stage_event_hash_id, group_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
@@ -40735,6 +40809,8 @@ CREATE INDEX index_a016d4ed08 ON gitlab_partitions_static.issue_search_data_36 U
 CREATE INDEX index_a1a9dc36c1 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 USING btree (stage_event_hash_id, group_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
 CREATE INDEX index_a2d9f185a5 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 USING btree (stage_event_hash_id, project_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
+
+CREATE INDEX index_a3dae5a646 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_14 USING btree (digest);
 
 CREATE INDEX index_a3feed3097 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 USING btree (stage_event_hash_id, group_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
@@ -40806,9 +40882,13 @@ CREATE INDEX index_b1835b5295 ON gitlab_partitions_static.virtual_registries_con
 
 CREATE INDEX index_b1dda405af ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 USING btree (stage_event_hash_id, group_id, start_event_timestamp, issue_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
+CREATE INDEX index_b1e7a97375 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_09 USING btree (digest);
+
 CREATE INDEX index_b24e8538c8 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_14 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id);
 
 CREATE INDEX index_b286c595e8 ON gitlab_partitions_static.issue_search_data_05 USING btree (namespace_id);
+
+CREATE INDEX index_b2a9c23ded ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_05 USING btree (digest);
 
 CREATE INDEX index_b377ac6784 ON gitlab_partitions_static.issue_search_data_20 USING btree (namespace_id);
 
@@ -40823,6 +40903,8 @@ CREATE INDEX index_b607012614 ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE INDEX index_b6cc38a848 ON gitlab_partitions_static.issue_search_data_08 USING btree (namespace_id);
 
 CREATE INDEX index_b72ed34d9d ON gitlab_partitions_static.virtual_registries_container_cache_entries_02 USING btree (group_id, upstream_etag);
+
+CREATE INDEX index_b739d5ff94 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_15 USING btree (digest);
 
 CREATE INDEX index_b748a3e0a6 ON gitlab_partitions_static.issue_search_data_15 USING btree (namespace_id);
 
@@ -40873,6 +40955,8 @@ CREATE INDEX index_c08e669dfa ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE INDEX index_c09bb66559 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_09 USING btree (stage_event_hash_id, project_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
 CREATE INDEX index_c119f5b92e ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
+
+CREATE INDEX index_c134936666 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_04 USING btree (digest);
 
 CREATE INDEX index_c13656fec7 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_07 USING btree (group_id, iid, downloaded_at) WHERE (status = 0);
 
@@ -41019,6 +41103,8 @@ CREATE INDEX index_e6405afea0 ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE INDEX index_e64588e276 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_00 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
 CREATE INDEX index_e716b8ac3f ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_22 USING btree (stage_event_hash_id, group_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
+
+CREATE INDEX index_e71cd0a814 ON gitlab_partitions_static.virtual_registries_container_cache_remote_entries_03 USING btree (digest);
 
 CREATE INDEX index_e73bc5ba6a ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_20 USING btree (stage_event_hash_id, project_id, start_event_timestamp, merge_request_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
@@ -49484,6 +49570,8 @@ ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_part
 
 ALTER INDEX index_issue_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_107e123e17;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_107e505187;
+
 ALTER INDEX idx_vregs_container_cache_entries_on_group_id_upstream_etag ATTACH PARTITION gitlab_partitions_static.index_1106f883b6;
 
 ALTER INDEX index_issue_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_1230a7a402;
@@ -49497,6 +49585,8 @@ ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION git
 ALTER INDEX i_v_container_cache_entries_on_uniq_object_storage_key_group_id ATTACH PARTITION gitlab_partitions_static.index_161d562e07;
 
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_16627b455e;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_16977b62b3;
 
 ALTER INDEX i_v_container_cache_entries_on_uniq_object_storage_key_group_id ATTACH PARTITION gitlab_partitions_static.index_1714ba4053;
 
@@ -49588,11 +49678,15 @@ ALTER INDEX index_issue_stage_events_group_in_progress_duration ATTACH PARTITION
 
 ALTER INDEX index_merge_request_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_281840d2d1;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_284ac91299;
+
 ALTER INDEX index_mr_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_2945cf4c6d;
 
 ALTER INDEX i_v_pkgs_mvn_cache_entries_on_uniq_object_storage_key_group_id ATTACH PARTITION gitlab_partitions_static.index_2947f5803e;
 
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_296f64df5c;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_29c9223a63;
 
 ALTER INDEX index_merge_request_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_2ad4b4fdbc;
 
@@ -49664,7 +49758,11 @@ ALTER INDEX index_issue_stage_events_for_consistency_check ATTACH PARTITION gitl
 
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_3b09ab5902;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_3b647bf06d;
+
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_3bc2eedca5;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_3c08969144;
 
 ALTER INDEX index_issue_stage_events_project_duration ATTACH PARTITION gitlab_partitions_static.index_3c2a3a6ac9;
 
@@ -49675,6 +49773,8 @@ ALTER INDEX idx_vreg_cont_cache_remote_lookup ATTACH PARTITION gitlab_partitions
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_3dbde77b8b;
 
 ALTER INDEX index_issue_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_3e6be332b7;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_3f49a99d8f;
 
 ALTER INDEX index_mr_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_4137a6fac3;
 
@@ -49860,6 +49960,8 @@ ALTER INDEX idx_vregs_container_cache_entries_on_pending_upt_id_created_at ATTAC
 
 ALTER INDEX index_merge_request_stage_events_project_duration ATTACH PARTITION gitlab_partitions_static.index_6cfb391b86;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_6d81e95e7a;
+
 ALTER INDEX index_mr_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_6e560c1a4d;
 
 ALTER INDEX index_issue_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_6e64aa1646;
@@ -49923,6 +50025,8 @@ ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_part
 ALTER INDEX index_issue_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_7b7c85eceb;
 
 ALTER INDEX idx_maven_cache_entries_requiring_cleanup_columns ATTACH PARTITION gitlab_partitions_static.index_7c0398954a;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_7c115bb7b7;
 
 ALTER INDEX index_vr_cont_cache_rem_entries_on_requiring_cleanup ATTACH PARTITION gitlab_partitions_static.index_7cfe703df0;
 
@@ -50052,6 +50156,8 @@ ALTER INDEX index_vr_cont_cache_rem_entries_on_requiring_cleanup ATTACH PARTITIO
 
 ALTER INDEX index_mr_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_9d0e953ab3;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_9e179fb2b0;
+
 ALTER INDEX idx_vreg_cont_cache_remote_lookup ATTACH PARTITION gitlab_partitions_static.index_9eb022c7ea;
 
 ALTER INDEX index_merge_request_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_9ee83b068b;
@@ -50063,6 +50169,8 @@ ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_part
 ALTER INDEX index_merge_request_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_a1a9dc36c1;
 
 ALTER INDEX index_merge_request_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_a2d9f185a5;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_a3dae5a646;
 
 ALTER INDEX index_merge_request_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_a3feed3097;
 
@@ -50134,9 +50242,13 @@ ALTER INDEX idx_vregs_container_cache_entries_on_pending_upt_id_created_at ATTAC
 
 ALTER INDEX index_issue_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_b1dda405af;
 
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_b1e7a97375;
+
 ALTER INDEX index_mr_stage_events_for_consistency_check ATTACH PARTITION gitlab_partitions_static.index_b24e8538c8;
 
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_b286c595e8;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_b2a9c23ded;
 
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_b377ac6784;
 
@@ -50151,6 +50263,8 @@ ALTER INDEX index_issue_stage_events_group_in_progress_duration ATTACH PARTITION
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_b6cc38a848;
 
 ALTER INDEX idx_vregs_container_cache_entries_on_group_id_upstream_etag ATTACH PARTITION gitlab_partitions_static.index_b72ed34d9d;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_b739d5ff94;
 
 ALTER INDEX index_issue_search_data_on_namespace_id ATTACH PARTITION gitlab_partitions_static.index_b748a3e0a6;
 
@@ -50201,6 +50315,8 @@ ALTER INDEX index_merge_request_stage_events_project_in_progress_duration ATTACH
 ALTER INDEX index_merge_request_stage_events_project_duration ATTACH PARTITION gitlab_partitions_static.index_c09bb66559;
 
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_c119f5b92e;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_c134936666;
 
 ALTER INDEX index_vr_cont_cache_rem_entries_on_requiring_cleanup ATTACH PARTITION gitlab_partitions_static.index_c13656fec7;
 
@@ -50347,6 +50463,8 @@ ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION git
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_e64588e276;
 
 ALTER INDEX index_merge_request_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_e716b8ac3f;
+
+ALTER INDEX idx_vregs_container_cache_remote_entries_on_digest ATTACH PARTITION gitlab_partitions_static.index_e71cd0a814;
 
 ALTER INDEX index_merge_request_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_e73bc5ba6a;
 

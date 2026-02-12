@@ -273,4 +273,40 @@ describe('Linked Pipelines Column', () => {
       });
     });
   });
+
+  describe('multiple pipeline expansion', () => {
+    let getPipelineDetailsHandler;
+
+    beforeEach(() => {
+      getPipelineDetailsHandler = jest.fn().mockResolvedValue(wrappedPipelineReturn);
+      createComponentWithApollo({ mountFn: mount, getPipelineDetailsHandler });
+    });
+
+    it('queries the correct pipeline when switching between multiple pipelines', async () => {
+      const firstPipeline = processedPipeline.downstream[0];
+      const secondPipeline = processedPipeline.downstream[1];
+
+      await findLinkedPipelineElements()
+        .at(0)
+        .find('[data-testid="expand-pipeline-button"]')
+        .trigger('click');
+      await waitForPromises();
+
+      expect(getPipelineDetailsHandler).toHaveBeenCalledWith({
+        projectPath: firstPipeline.project.fullPath,
+        iid: firstPipeline.iid,
+      });
+
+      await findLinkedPipelineElements()
+        .at(1)
+        .find('[data-testid="expand-pipeline-button"]')
+        .trigger('click');
+      await waitForPromises();
+
+      expect(getPipelineDetailsHandler).toHaveBeenCalledWith({
+        projectPath: secondPipeline.project.fullPath,
+        iid: secondPipeline.iid,
+      });
+    });
+  });
 });

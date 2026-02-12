@@ -67,7 +67,7 @@ module Gitlab
         end
 
         def cursor?
-          cursor_columns.count > 1
+          cursor_columns.present?
         end
 
         def cursor(*args)

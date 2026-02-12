@@ -259,6 +259,89 @@ This command creates the following files:
 - `lib/gitlab/background_migration/my_batched_migration.rb`
 - `spec/lib/gitlab/background_migration/my_batched_migration_spec.rb`
 
+### Use cursor-based iteration (default)
+
+Cursor-based iteration is now the default and recommended strategy for batched background migrations.
+It provides support for composite primary key and maintainability simplicity compared to the legacy primary key-based approach.
+
+The `queue_batched_background_migration` helper automatically detects whether your migration job uses cursor strategy and configures the migration accordingly.
+
+#### When to use cursor strategy
+
+Cursor strategy should be used in most cases. It is especially recommended for:
+
+- Tables with single-column primary keys
+- Tables with composite primary keys
+- Any table where you want more reliable and efficient iteration
+
+#### How to use cursor strategy
+
+Define cursor columns in your migration job class using the `cursor` DSL:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    class MyBatchedMigration < BatchedMigrationJob
+      # For single-column primary keys
+      cursor :id
+
+      operation_name :my_operation
+      feature_category :database
+
+      def perform
+        each_sub_batch do |sub_batch|
+          # Your migration logic here
+        end
+      end
+    end
+  end
+end
+```
+
+For tables with composite primary keys:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    class MyCompositePkMigration < BatchedMigrationJob
+      cursor :deployment_id, :merge_request_id
+
+      operation_name :backfill_project_id
+      feature_category :continuous_delivery
+
+      def perform
+        each_sub_batch do |relation|
+          # Your migration logic here
+        end
+      end
+    end
+  end
+end
+```
+
+Then use the standard helper in your migration file:
+
+```ruby
+queue_batched_background_migration(
+  'MyBatchedMigration',
+  :my_table,
+  :id,
+  job_interval: 2.minutes
+)
+```
+
+The helper will automatically:
+
+- Detect that the job uses cursor strategy
+- Calculate the appropriate `min_cursor` and `max_cursor` values
+- Configure the migration to use cursor-based iteration
+
+#### Legacy primary key-based iteration
+
+If you need to use the legacy primary key-based iteration strategy (not recommended for new migrations),
+simply omit the `cursor` definition from your migration class. The migration will fall back to the
+old iteration approach.
+
 ### Enqueue a batched background migration
 
 Queueing a batched background migration should be done in a post-deployment

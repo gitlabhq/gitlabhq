@@ -53,8 +53,10 @@ Prerequisites:
 - An SSH key with the **Usage type** `Authentication & Signing` or `Signing`.
   The following SSH key types are supported:
   - ED25519
+  - ED25519_SK
   - RSA
   - ECDSA
+  - ECDSA_SK
 
 To configure Git to use your key:
 

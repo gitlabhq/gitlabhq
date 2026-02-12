@@ -44,22 +44,61 @@ bundle exec rails generate authz:permission force_delete_ai_catalog_item --actio
 
 ### Naming Permissions
 
-Our goal is for all permissions to follow a consistent pattern: `action_resource(_subresource)`. The resource and subresource should always be in the singular and match the object being acted upon. For example, if an action is being evaluated against a `Project` the permission name should be in the format `action_project`. Additionally, we aim to limit the actions used to ensure clarity. The preferred actions are:
-
-- `create` - for creating an object. For example, `create_issue`.
-- `read` - for reading an object. For example, `read_issue`.
-- `update` - for updating an object. For example, `update_issue`.
-- `delete` - for deleting an object. For example, `delete_issue`.
-- `push` and `download` - these are specific actions for file-related permissions. Other industry terms can be permitted after a justification.
-
-We recognize that this set of actions is limited and not applicable to every feature. If you're unsure about a new permission name, consult a member of the [Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization/#group-members) for advice or approval for exceptions.
+Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but most strictly be followed with Assignable Permissions as they are public facing.
 
 #### Preferred Actions
 
-- `create` is preferred over `build` or `import`
-- `read` is preferred over `access`
-- `push` is preferred over `upload`
-- `delete` is preferred over `destroy`
+If you are introducing a new permission, prefer to use one of the following actions:
+
+| Action   | What it does                 | Example        |
+|----------|------------------------------|----------------|
+| `create` | Creates a new object         | `create_issue` |
+| `read`   | Views or retrieves an object | `read_project` |
+| `update` | Modifies an existing object  | `update_merge_request` |
+| `delete` | Removes an object            | `delete_issue` |
+
+We recognize that this set of actions is limited and not applicable to every feature. Actions are [situationally allowed from outside this set](#when-to-introduce-new-actions), but require approval from the [Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/#group-members).
+
+#### Disallowed Actions
+
+The following action patterns are examples of those that should not be introduced into the permission catalog:
+
+| Action     | Why it’s disallowed |
+|-----------|--------------------|
+| `admin`   | Implies broad, undefined authority with unclear scope |
+| `change`  | Redundant with `update` |
+| `destroy` | Reflects implementation semantics rather than the domain action; prefer `delete` |
+| `edit`    | Redundant with `update` |
+| `list`    | Ambiguous read semantics; use `read` |
+| `manage`  | Bundles multiple CRUD operations into a single ambiguous permission |
+| `modify`  | Redundant with `update` |
+| `set`     | Redundant with `update` |
+| `view`    | Ambiguous read semantics; use `read` |
+| `write`   | Does not align with our permission granularity; prefer specific actions like `create`, `update`, or `delete` |
+
+While you may see permissions with these actions, they were likely introduced before these [conventions were established](#historical-context) and will eventually be refactored to align with the current guidelines.
+
+#### When to Introduce New Actions
+
+There are actions outside of [the preferred set](#preferred-actions) that are necessary for providing users with a secure and intuitive permissions model.
+
+A new action may be introduced when:
+
+1. The action represents a distinct lifecycle or state transition already present in the GitLab domain language. For example, `archive_project` or `protect_branch` represent specific actions that users understand and expect because they are already established within the GitLab domain language.
+
+1. The action changes the relationship between resources that are a part of the GitLab domain language. For example, `transfer_project` or `move_issue` represent specific actions that change the relationship between the resource and its parent namespace.
+
+1. The action is high-impact or irreversible and carries distinct domain meaning. For example, `purge_maven_virtual_registry_cache` uses the action `purge` which is irreversible and has established meaning when discussing caching in the broader software industry.
+
+#### Resource Naming Conventions
+
+The resource (and optional subresource) in a permission name should always:
+
+1. Use the singular form (e.g., `read_project` instead of `read_projects`)
+
+1. Match the domain object being acted upon. (e.g., if an action is being evaluated against an `Issue` the permission name should be in the format `{action}_issue`.)
+
+1. Use user-facing domain terminology instead of exposing implementation details. (e.g., if a customer would have no way of knowing about your resource, it probably shouldn't be in the permission name)
 
 #### Avoiding Resource Boundaries in Permission Names
 

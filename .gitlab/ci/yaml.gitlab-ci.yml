@@ -21,7 +21,7 @@ lint-pipeline-yaml:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
   variables:
-    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/whats_new
+    LINT_PATHS: .gitlab-ci.yml .gitlab/ci .gitlab/duo lib/gitlab/ci/templates data/deprecations data/whats_new
   script:
     - 'yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable}}" $LINT_PATHS'
 

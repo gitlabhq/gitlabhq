@@ -46,6 +46,11 @@ The external agent:
 - Runs a CI/CD pipeline and responds inside GitLab with either a ready-to-merge
   change or an inline comment.
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+- Allow [flow execution](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+
 ## Security considerations
 
 External agents integrate with third-party AI model providers and have different security characteristics than GitLab built-in agents and flows. By using external agents, you accept the following risks:
@@ -85,9 +90,6 @@ The following integrations have been tested by GitLab and are available:
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
 - [Amazon Q](https://aws.amazon.com/q/)
 - [Gemini](https://gemini.google.com/)
-
-Before you can create an agent and integrate it with an external AI model
-provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
 Managed external agents use GitLab-managed credentials and can be enabled in groups
 without additional agent configuration necessary.
@@ -162,13 +164,6 @@ To use the Develop with Gemini Agent:
   - `GOOGLE_CREDENTIALS` - Add the location of the Google credentials JSON file. For details, see [`GOOGLE_APPLICATION_CREDENTIALS` environment variable](https://docs.cloud.google.com/docs/authentication/application-default-credentials#GAC).
   - `GOOGLE_CLOUD_PROJECT`
   - `GOOGLE_CLOUD_LOCATION`
-
-## Prerequisites
-
-Before you can create an agent and integrate it with an external AI model
-provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
-
-To integrate your agent with an external AI model provider, you must also have access credentials which are provided and managed by GitLab.
 
 ### Access credentials
 

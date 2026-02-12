@@ -50,5 +50,3 @@ GitLab provides three types of agents:
   outside GitLab. Use external agents to allow model providers like
   Claude to operate in GitLab. You can trigger an external agent
   directly from a discussion, issue, or merge request.
-
-To use agents, you must meet the [prerequisites](../_index.md#prerequisites).

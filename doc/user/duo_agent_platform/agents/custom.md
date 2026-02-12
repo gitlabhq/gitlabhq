@@ -40,6 +40,10 @@ created by GitLab.
 When you're ready to interact with an agent, you can enable it to
 start using it with GitLab Duo Chat.
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+
 ## Agent visibility
 
 When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.

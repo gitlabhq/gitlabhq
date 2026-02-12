@@ -4,20 +4,22 @@ module SendFileUpload
   def send_upload(
     file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false,
     disposition: 'attachment', ssrf_params: {}, sanitize_content_type: false)
-    content_type = content_type_for(attachment, sanitize: sanitize_content_type)
-
-    if attachment
+    if attachment # rubocop:disable Cop/LineBreakAroundConditionalBlock: -- Not a justified complaint
       response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: disposition,
         filename: attachment)
 
       # Response-Content-Type will not override an existing Content-Type in
       # Google Cloud Storage, so the metadata needs to be cleared on GCS for
       # this to work. However, this override works with AWS.
+      #
+      content_type = content_type_for(attachment, sanitize: sanitize_content_type)
       redirect_params[:query] = { "response-content-disposition" => response_disposition,
                                   "response-content-type" => content_type }
+
       # By default, Rails will send uploads with an extension of .js with a
       # content-type of text/javascript, which will trigger Rails'
       # cross-origin JavaScript protection.
+      #
       send_params[:content_type] = 'text/plain' if File.extname(attachment) == '.js'
 
       send_params.merge!(filename: attachment, disposition: disposition)
@@ -25,7 +27,10 @@ module SendFileUpload
 
     if image_scaling_request?(file_upload)
       location = file_upload.file_storage? ? file_upload.path : file_upload.url
+      content_type ||= content_type_for(attachment, sanitize: sanitize_content_type)
+
       headers.store(*Gitlab::Workhorse.send_scaled_image(location, safe_width, content_type))
+
       head :ok
     elsif file_upload.file_storage?
       send_file file_upload.path, send_params
@@ -41,6 +46,8 @@ module SendFileUpload
     end
   end
 
+  private
+
   def content_type_for(attachment, sanitize:)
     return '' unless attachment
 
@@ -49,8 +56,6 @@ module SendFileUpload
 
     ::Gitlab::ContentTypes.sanitize_content_type(content_type)
   end
-
-  private
 
   def image_scaling_request?(file_upload)
     avatar_safe_for_scaling?(file_upload) || pwa_icon_safe_for_scaling?(file_upload)

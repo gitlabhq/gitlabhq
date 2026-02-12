@@ -186,7 +186,7 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
         key.update!(key: public_key_text)
       end
 
-      it_behaves_like 'unverified signature'
+      it_behaves_like 'verified signature'
     end
 
     context 'when signed text is an empty string' do

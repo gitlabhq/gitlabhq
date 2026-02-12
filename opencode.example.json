@@ -1,0 +1,52 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ".ai/AGENTS.md",
+  "plugin": [
+    "@gitlab/opencode-gitlab-plugin"
+  ],
+  "enabled_providers": [
+    "gitlab"
+  ],
+  "small_model": "gitlab/duo-chat-haiku-4-5",
+  "share": "disabled",
+  "default_agent": "plan",
+  "permission": {
+    "*": "ask",
+    "bash": {
+      "*": "ask",
+      "bundle exec rspec*": "allow",
+      "bundle exec rubocop -A *": "allow",
+      "echo*": "allow",
+      "find*": "allow",
+      "git add*": "allow",
+      "git blame*": "allow",
+      "git branch*": "allow",
+      "git diff*": "allow",
+      "git --no-pager diff*": "allow",
+      "git grep*": "allow",
+      "git log*": "allow",
+      "git ls-files*": "allow",
+      "git rev-parse*": "allow",
+      "git show*": "allow",
+      "git status*": "allow",
+      "go build*": "allow",
+      "go test*": "allow",
+      "go vet*": "allow",
+      "golangci-lint run*": "allow",
+      "grep*": "allow",
+      "head*": "allow",
+      "ls*": "allow",
+      "pre-commit *": "allow",
+      "sleep *": "allow",
+      "tail*": "allow",
+      "wc *": "allow",
+      "which*": "allow"
+    },
+    "read": "allow",
+    "write": "ask",
+    "edit": "ask",
+    "glob": "allow",
+    "grep": "allow",
+    "todowrite": "allow"
+  }
+}

@@ -29,6 +29,11 @@ practitioners actually work.
 
 Foundational agents are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
+- Have [foundational agents turned on](#turn-foundational-agents-on-or-off).
+
 ## Available foundational agents
 
 The following foundational agents are available:

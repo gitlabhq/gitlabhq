@@ -3,6 +3,8 @@
 *.mo
 *.edit.po
 *.rej
+/AGENTS.local.md
+/opencode.json
 .dir-locals.el
 .DS_Store
 /OpenCode.md

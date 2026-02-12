@@ -756,6 +756,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
+            expect(json_response["gitaly"]["retry_config"]).to eq(Gitlab::GitalyClient.retry_policy.deep_stringify_keys)
             expect(user.reload.last_activity_on).to eql(Date.today)
           end
 
@@ -845,6 +846,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(json_response["gitaly"]["retry_config"]).to eq(Gitlab::GitalyClient.retry_policy.deep_stringify_keys)
           end
 
           it_behaves_like 'rate limited request' do
@@ -1160,6 +1162,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+          expect(json_response["gitaly"]["retry_config"]).to eq(Gitlab::GitalyClient.retry_policy.deep_stringify_keys)
         end
 
         it_behaves_like 'rate limited request' do

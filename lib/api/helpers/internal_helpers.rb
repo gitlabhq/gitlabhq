@@ -217,7 +217,8 @@ module API
             repository: repository,
             project: ::Feature::Gitaly.project_actor(repository.container),
             group: ::Feature::Gitaly.group_actor(repository.container)
-          )
+          ),
+          retry_config: Gitlab::GitalyClient.retry_policy
         }
       end
     end

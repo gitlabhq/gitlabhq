@@ -192,6 +192,7 @@ GitLab documentation uses the following shortcodes:
 - [Feature tables](#feature-tables)
   - Yes
   - No
+- [Glossary tooltip](#glossary-tooltip)
 
 ## Language
 
@@ -2212,6 +2213,45 @@ maintained GitLab versions as specified by the
 Maintained versions render only on the pre-release version of the GitLab
 documentation site (`https://docs.gitlab.com`). In all other cases and in
 `/help`, a link to the documentation site is shown instead.
+
+## Glossary tooltip
+
+Use the `glossary-tooltip` shortcode to provide a short definition that appears as a tooltip on hover. For example:
+
+```markdown
+To do this thing, use {{</* glossary-tooltip text="my term" */>}}.
+```
+
+When the user hovers on `my term`, a tooltip is displayed.
+
+If the user selects the tooltip, a related glossary page opens.
+
+### Create a glossary term
+
+A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary.yaml)
+exists in the `docs-gitlab-com` repo.
+
+- Add definitions to this file. Each definition should be short and not contain links.
+- If the term specified in the `text` field matches a value in `glossary.yaml`,
+  the definition is displayed on hover.
+- If no value matches, no definition or underline is displayed.
+  Values are case insensitive.
+- If a related glossary page is not specified, the tooltip is displayed but does not change when selected.
+
+### Usage guidance
+
+Do not use more than five to ten tooltips on a page. Each tooltip slows down the reader. Be careful not to overload users with definitions.
+
+Use glossary tooltips in these cases:
+
+- For the first occurrence of a GitLab-specific term on a page.
+- For terms readers might not know, like `artifact` or `analyzer`.
+
+Do not use glossary tooltips in these cases:
+
+- For common terms like repository, branch, or commit.
+- For every instance of a term.
+- As a replacement for acronyms. If you can spell out the acronym on first use, and it's an industry standard, do not use a glossary tooltip.
 
 ## Plagiarism
 
