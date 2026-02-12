@@ -221,7 +221,7 @@ Verify that your SSH key was added correctly, and that you can connect to the Gi
      where `gitlab.example.com` is the GitLab instance URL.
 
 By default, connections use the `git` username, but GitLab Self-Managed or GitLab Dedicated administrators
-can [change the username](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
+can [change the username](https://docs.gitlab.com/omnibus/settings/configuration/#change-the-name-of-the-git-user-or-group).
 
 1. On your first connection, you might need to verify the authenticity of the GitLab host.
    Follow the on-screen prompts if you see a message like:

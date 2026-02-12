@@ -594,7 +594,7 @@ This script identifies all missing LFS objects in the database. Before deleting 
 
 ### LFS commands fail on TLS v1.3 server
 
-If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.html)
+If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx/)
 and only enable TLS v1.3 connections, LFS operations require a
 [Git LFS client](https://git-lfs.com/) version 2.11.0 or later. If you use
 a Git LFS client earlier than version 2.11.0, GitLab displays an error:

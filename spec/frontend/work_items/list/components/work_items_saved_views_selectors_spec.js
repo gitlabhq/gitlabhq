@@ -192,6 +192,22 @@ describe('WorkItemsSavedViewsSelectors', () => {
 
       expect(findOverflowDropdown().exists()).toBe(false);
     });
+
+    describe('overflow view click', () => {
+      it('navigates to clicked overflow view', () => {
+        createComponent();
+
+        const overflowItems = findOverflowDropdown().props('items');
+
+        overflowItems[0].action();
+
+        expect(routerPushMock).toHaveBeenCalledWith({
+          name: ROUTES.savedView,
+          params: { view_id: '3' },
+          query: undefined,
+        });
+      });
+    });
   });
 
   describe('unsubscribe from saved view', () => {

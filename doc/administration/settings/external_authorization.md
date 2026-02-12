@@ -43,7 +43,7 @@ authorization service.
 
 Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`. Read more about the logs GitLab keeps in
-the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
+the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs/).
 
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed

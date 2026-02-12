@@ -95,7 +95,7 @@ Create a webhook to send notifications about events in your project or group.
 
 Prerequisites:
 
-- For project webhooks, you must have at least the Maintainer role for the project.
+- For project webhooks, you must have the Maintainer or Owner role for the project.
 - For group webhooks, you must have the Owner role for the group.
 
 To create a webhook:
@@ -173,7 +173,7 @@ Create a custom payload template for your webhook to control the data sent in th
 
 #### Create a custom webhook template
 
-- For project webhooks, you must have at least the Maintainer role for the project.
+- For project webhooks, you must have the Maintainer or Owner role for the project.
 - For group webhooks, you must have the Owner role for the group.
 
 To create a custom webhook template:
@@ -362,7 +362,7 @@ View the history of webhook requests to monitor their performance and troublesho
 
 Prerequisites:
 
-- For project webhooks, you must have at least the Maintainer role for the project.
+- For project webhooks, you must have the Maintainer or Owner role for the project.
 - For group webhooks, you must have the Owner role for the group.
 
 To view the request history for a webhook:
@@ -389,7 +389,7 @@ The table includes:
 
 Prerequisites:
 
-- For project webhooks, you must have at least the Maintainer role for the project.
+- For project webhooks, you must have the Maintainer or Owner role for the project.
 - For group webhooks, you must have the Owner role for the group.
 
 Each webhook request in **Recent events** has a **Request details** page.
@@ -416,7 +416,7 @@ Test a webhook to ensure it's working properly or to re-enable a disabled webhoo
 
 Prerequisites:
 
-- For project webhooks, you must have at least the Maintainer role for the project.
+- For project webhooks, you must have the Maintainer or Owner role for the project.
 - For group webhooks, you must have the Owner role for the group.
 - To test `push events`, your project must have at least one commit.
 

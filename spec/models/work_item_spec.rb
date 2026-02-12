@@ -40,10 +40,10 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   describe '.work_item_children_by_relative_position' do
     subject { parent_item.reload.work_item_children_by_relative_position }
 
-    let_it_be(:parent_item) { create(:work_item, :objective, project: reusable_project) }
-    let_it_be(:oldest_item) { create(:work_item, :objective, project: reusable_project) }
-    let_it_be(:middle_item) { create(:work_item, :objective, project: reusable_project) }
-    let_it_be(:newest_item) { create(:work_item, :objective, project: reusable_project) }
+    let_it_be(:parent_item) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:oldest_item) { create(:work_item, :task, project: reusable_project) }
+    let_it_be(:middle_item) { create(:work_item, :task, project: reusable_project) }
+    let_it_be(:newest_item) { create(:work_item, :task, project: reusable_project) }
 
     let_it_be_with_reload(:link_to_oldest_item) do
       create(:parent_link, work_item_parent: parent_item, work_item: oldest_item)
@@ -88,25 +88,39 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   describe ".with_enabled_widget_definition" do
     let_it_be(:issue) { create(:work_item, :issue) }
     let_it_be(:task) { create(:work_item, :task) }
-    let_it_be(:epic) { create(:work_item, :epic) }
-
-    before do
-      # Ensure that the widget definition does not exists.
-      WorkItems::WidgetDefinition.where(widget_type: "iteration", work_item_type: epic.work_item_type).delete_all
-    end
 
     subject(:with_enabled_widget_definition) { described_class.with_enabled_widget_definition(:iteration) }
 
+    before do
+      # Ensure that the widget definition does not exists.
+      allow(::WorkItems::TypesFramework::SystemDefined::Type)
+        .to receive(:with_widget_definition)
+        .with(:iteration)
+        .and_return([task.work_item_type])
+    end
+
     it "returns the items with widget iteration enabled" do
-      expect(with_enabled_widget_definition).not_to include(epic)
+      expect(with_enabled_widget_definition).not_to include(issue)
+    end
+
+    context "when the FF for system defined types is disabled" do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+        # Ensure that the widget definition does not exists.
+        WorkItems::WidgetDefinition.where(widget_type: "iteration", work_item_type: issue.work_item_type).delete_all
+      end
+
+      it "returns the items with widget iteration enabled" do
+        expect(with_enabled_widget_definition).not_to include(issue)
+      end
     end
   end
 
   describe '.with_parent_ids' do
-    let_it_be(:parent_item) { create(:work_item, :epic, project: reusable_project) }
+    let_it_be(:parent_item) { create(:work_item, :issue, project: reusable_project) }
 
     context 'when given valid parent IDs' do
-      let_it_be(:child_item) { create(:work_item, project: reusable_project) }
+      let_it_be(:child_item) { create(:work_item, :task, project: reusable_project) }
 
       before do
         create(:parent_link, work_item_parent: parent_item, work_item: child_item)
@@ -118,7 +132,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'when work item does not have parent link' do
-      let_it_be(:work_item_without_parent) { create(:work_item, project: reusable_project) }
+      let_it_be(:work_item_without_parent) { create(:work_item, :task, project: reusable_project) }
 
       it 'does not return the work item' do
         expect(described_class.with_work_item_parent_ids([parent_item.id])).to be_empty
@@ -359,6 +373,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         work_item = build(:work_item, base_type)
         supports_assignee = widgets.include?(:assignees)
 
+        skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
         expect(work_item.supports_assignee?).to eq(supports_assignee)
       end
     end
@@ -370,74 +386,87 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         work_item = build(:work_item, base_type)
         supports_time_tracking = widgets.include?(:time_tracking)
 
+        skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
         expect(work_item.supports_time_tracking?).to eq(supports_time_tracking)
       end
     end
   end
 
   describe '#supported_quick_action_commands' do
-    let_it_be(:custom_type_without_widgets) { create(:work_item_type, :non_default) }
-    let_it_be(:custom_work_item_type) do
-      create(:work_item_type, :non_default, widgets: [
-        :assignees,
-        :labels,
-        :start_and_due_date,
-        :current_user_todos,
-        :development
-      ])
-    end
+    shared_examples "supports quick action commands" do
+      let_it_be(:work_item_with_widgets) { build(:work_item, work_item_type: custom_work_item_type) }
+      let_it_be(:work_item_without_widgets) { build(:work_item, work_item_type: custom_type_without_widgets) }
 
-    let_it_be(:work_item_with_widgets) { build(:work_item, work_item_type: custom_work_item_type) }
-    let_it_be(:work_item_without_widgets) { build(:work_item, work_item_type: custom_type_without_widgets) }
+      let(:work_item) { work_item_without_widgets }
 
-    let(:work_item) { work_item_without_widgets }
+      subject { work_item.supported_quick_action_commands }
 
-    subject { work_item.supported_quick_action_commands }
-
-    it 'returns quick action commands supported for all work items' do
-      is_expected.to include(:title, :reopen, :close, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-        :subscribe, :unsubscribe, :confidential, :award, :move, :clone, :copy_metadata, :duplicate,
-        :promote_to_incident, :board_move, :convert_to_ticket, :zoom, :remove_zoom)
-    end
-
-    it 'omits quick action commands from assignees widget' do
-      is_expected.not_to include(:assign, :unassign, :reassign)
-    end
-
-    it 'omits quick action commands from labels widget' do
-      is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
-    end
-
-    it 'omits quick action commands from start and due date widget' do
-      is_expected.not_to include(:due, :remove_due_date)
-    end
-
-    it 'omits quick action commands from current user todos widget' do
-      is_expected.not_to include(:todo, :done)
-    end
-
-    context 'when work item type has relevant widgets' do
-      let(:work_item) { work_item_with_widgets }
-
-      it 'returns quick action commands from assignee widget' do
-        is_expected.to include(:assign, :unassign, :reassign)
+      it 'returns quick action commands supported for all work items' do
+        is_expected.to include(:title, :reopen, :close, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
+          :subscribe, :unsubscribe, :confidential, :award, :move, :clone, :copy_metadata, :duplicate,
+          :promote_to_incident, :board_move, :convert_to_ticket, :zoom, :remove_zoom)
       end
 
-      it 'returns quick action commands from labels widget' do
-        is_expected.to include(:label, :labels, :relabel, :remove_label, :unlabel)
+      it 'omits quick action commands from assignees widget' do
+        is_expected.not_to include(:assign, :unassign, :reassign)
       end
 
-      it 'returns quick action commands from start and due date widget' do
-        is_expected.to include(:due, :remove_due_date)
+      it 'omits quick action commands from labels widget' do
+        is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
       end
 
-      it 'returns quick action commands from current user todos widget' do
-        is_expected.to include(:todo, :done)
+      it 'omits quick action commands from start and due date widget' do
+        is_expected.not_to include(:due, :remove_due_date)
       end
 
-      it 'returns quick action commands from development widget' do
-        is_expected.to include(:create_merge_request)
+      it 'omits quick action commands from current user todos widget' do
+        is_expected.not_to include(:todo, :done)
       end
+
+      context 'when work item type has relevant widgets' do
+        let(:work_item) { work_item_with_widgets }
+
+        it 'returns quick action commands from assignee widget' do
+          is_expected.to include(:assign, :unassign, :reassign)
+        end
+
+        it 'returns quick action commands from labels widget' do
+          is_expected.to include(:label, :labels, :relabel, :remove_label, :unlabel)
+        end
+
+        it 'returns quick action commands from start and due date widget' do
+          is_expected.to include(:due, :remove_due_date)
+        end
+
+        it 'returns quick action commands from current user todos widget' do
+          is_expected.to include(:todo, :done)
+        end
+
+        it 'returns quick action commands from development widget' do
+          is_expected.to include(:create_merge_request)
+        end
+      end
+    end
+
+    context "when using the work_item_type model" do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      let_it_be(:custom_type_without_widgets) do
+        create(:work_item_type, :task) do |work_item_type|
+          work_item_type.widget_definitions
+            .where(widget_type: %w[assignees labels start_and_due_date current_user_todos development])
+            .delete_all
+
+          work_item_type
+        end
+      end
+
+      let_it_be(:custom_work_item_type) { create(:work_item_type, :issue) }
+
+      it_behaves_like "supports quick action commands"
     end
   end
 
@@ -511,24 +540,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
             'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
             'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly'
           )
-      end
-
-      context 'when work item is of type epic' do
-        it "triggers an internal event" do
-          expect { create(:work_item, :epic, project: reusable_project, author: user) }
-            .to trigger_internal_events('users_creating_work_items').with(
-              project: reusable_project,
-              user: user,
-              additional_properties: {
-                label: 'epic'
-              }
-            ).and increment_usage_metrics(
-              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
-              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly',
-              'counts_weekly.aggregated_metrics.users_work_items',
-              'counts_monthly.aggregated_metrics.users_work_items'
-            )
-        end
       end
 
       it_behaves_like 'internal event tracking' do
@@ -697,66 +708,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
-  context 'with hierarchy' do
-    let_it_be(:epic1) { create(:work_item, :epic, project: reusable_project) }
-    let_it_be(:epic2) { create(:work_item, :epic, project: reusable_project) }
-    let_it_be(:epic3) { create(:work_item, :epic, project: reusable_project) }
-    let_it_be(:issue1) { create(:work_item, :issue, project: reusable_project) }
-    let_it_be(:issue2) { create(:work_item, :issue, project: reusable_project) }
-    let_it_be(:task1) { create(:work_item, :task, project: reusable_project) }
-    let_it_be(:task2) { create(:work_item, :task, project: reusable_project) }
-
-    let_it_be(:ignored_ancestor) { create(:work_item, :epic, project: reusable_project) }
-    let_it_be(:ignored_descendant) { create(:work_item, :task, project: reusable_project) }
-
-    # Create the hierarchy:
-    # epic1 -> epic2 -> epic3 -> issue1 -> task1
-    #                         \-> issue2 -> task2
-    let_it_be(:link1) { create(:parent_link, work_item_parent: epic1, work_item: epic2) }
-    let_it_be(:link2) { create(:parent_link, work_item_parent: epic2, work_item: epic3) }
-    let_it_be(:link3) { create(:parent_link, work_item_parent: epic3, work_item: issue1) }
-    let_it_be(:link4) { create(:parent_link, work_item_parent: epic3, work_item: issue2) }
-    let_it_be(:link5) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
-    let_it_be(:link6) { create(:parent_link, work_item_parent: issue2, work_item: task2) }
-
-    describe '#ancestors' do
-      it 'returns all ancestors in ascending order' do
-        expect(task1.ancestors).to eq([issue1, epic3, epic2, epic1])
-      end
-
-      it 'returns an empty array if there are no ancestors' do
-        expect(epic1.ancestors).to be_empty
-      end
-    end
-
-    describe '#descendants' do
-      it 'returns all descendants' do
-        expect(epic1.descendants).to match_array([epic2, epic3, issue1, issue2, task1, task2])
-      end
-    end
-
-    describe '#same_type_base_and_ancestors' do
-      it 'returns self and all ancestors of the same type in ascending order' do
-        expect(epic3.same_type_base_and_ancestors).to eq([epic3, epic2, epic1])
-      end
-
-      it 'returns self if there are no ancestors of the same type' do
-        expect(issue1.same_type_base_and_ancestors).to match_array([issue1])
-      end
-    end
-
-    describe '#same_type_descendants_depth' do
-      it 'returns max descendants depth including self' do
-        # epic1 has epic2 and epic3 as same-type descendants, so depth is 3
-        expect(epic1.same_type_descendants_depth).to eq(3)
-      end
-
-      it 'returns 1 if there are no descendants' do
-        expect(task1.same_type_descendants_depth).to eq(1)
-      end
-    end
-  end
-
   describe '#allowed_work_item_type_change' do
     let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
 
@@ -797,8 +748,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
           task_child.reload # Make sure it knows about its parent
 
           # Try to change task to issue (which would create Issue->Issue, not allowed)
-          issue_type = WorkItems::Type.find_by(base_type: :issue)
-          task_child.work_item_type = issue_type
+          issue_type = build(:work_item_system_defined_type, :issue)
+          task_child.work_item_type_id = issue_type.id
 
           expect(task_child).not_to be_valid
           expect(task_child.errors[:work_item_type_id]).to contain_exactly(
@@ -833,14 +784,14 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       context 'when restriction does not exist for the parent-child combination' do
         before do
-          parent_work_item.work_item_type_id = WorkItems::Type.find_by(base_type: :epic).id
+          parent_work_item.work_item_type_id = build(:work_item_system_defined_type, :task).id
         end
 
         it 'adds an error' do
           parent_work_item.send(:validate_child_restrictions, parent_work_item.child_links)
 
           expect(parent_work_item.errors[:work_item_type_id])
-            .to include("cannot be changed to Epic with these child item types.")
+            .to include("cannot be changed to Task with these child item types.")
         end
       end
     end
@@ -1003,53 +954,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
 
       specify { expect(work_item.start_date).to eq(work_item.dates_source.start_date) }
-    end
-  end
-
-  describe '#max_depth_reached?' do
-    let_it_be(:work_item) { create(:work_item) }
-    let_it_be(:child_type) { create(:work_item_type) }
-
-    context 'when there is no hierarchy restriction' do
-      it 'returns false' do
-        expect(work_item.max_depth_reached?(child_type)).to be false
-      end
-    end
-
-    context 'when there is a hierarchy restriction with maximum depth' do
-      context 'when work item type is the same as child type' do
-        # Epic can have Epic children with max depth 7
-        let(:work_item) { create(:work_item, :epic, project: reusable_project) }
-        let(:child_type) { work_item.work_item_type }
-        let(:max_depth) { 7 } # Epic->Epic has max depth 7
-
-        it 'returns true when depth is reached' do
-          allow(work_item).to receive_message_chain(:same_type_base_and_ancestors, :count).and_return(max_depth)
-          expect(work_item.max_depth_reached?(child_type)).to be true
-        end
-
-        it 'returns false when depth is not reached' do
-          allow(work_item).to receive_message_chain(:same_type_base_and_ancestors, :count).and_return(max_depth - 1)
-          expect(work_item.max_depth_reached?(child_type)).to be false
-        end
-      end
-
-      context 'when work item type is different from child type' do
-        # Epic can have Issue children with max depth 1
-        let(:work_item) { create(:work_item, :epic, project: reusable_project) }
-        let(:child_type) { WorkItems::Type.find_by(base_type: :issue) }
-        let(:max_depth) { 1 } # Epic->Issue has max depth 1
-
-        it 'returns true when depth is reached' do
-          allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth)
-          expect(work_item.max_depth_reached?(child_type)).to be true
-        end
-
-        it 'returns false when depth is not reached' do
-          allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth - 1)
-          expect(work_item.max_depth_reached?(child_type)).to be false
-        end
-      end
     end
   end
 

@@ -59,6 +59,7 @@ module Types
     field :source_project_id, GraphQL::Types::Int, null: true,
       description: 'ID of the merge request source project.'
     field :state, MergeRequestStateEnum, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'State of the merge request.'
     field :target_branch, GraphQL::Types::String, null: false,
       description: 'Target branch of the merge request.'
@@ -167,6 +168,7 @@ module Types
       description: 'Web path of the merge request.'
 
     field :web_url, GraphQL::Types::String, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Web URL of the merge request.'
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :diff_head_pipeline,

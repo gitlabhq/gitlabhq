@@ -21,17 +21,6 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
     end
   end
 
-  context 'when the archive_group feature flag is disabled' do
-    before do
-      stub_feature_flags(archive_group: false)
-    end
-
-    it 'returns an error response' do
-      expect(service_response).to be_error
-      expect(service_response.message).to eq("You don't have permissions to archive this group!")
-    end
-  end
-
   context 'when the group is already archived' do
     before do
       group.namespace_settings.update!(archived: true)

@@ -21,7 +21,7 @@ Pipeline notifications triggered by blocked users are not delivered.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or the Owner role for the group.
+- You must have the Maintainer or Owner role for the project or the Owner role for the group.
 
 To enable pipeline status emails:
 

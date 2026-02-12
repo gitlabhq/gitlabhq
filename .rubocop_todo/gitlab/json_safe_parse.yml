@@ -97,7 +97,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/models/concerns/audit_events/externally_streamable.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/ci/pipeline.rb'
-    - 'ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb'
     - 'ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb'
     - 'ee/app/models/secrets_management/audit_log.rb'
     - 'ee/app/models/security/remediations_proxy.rb'

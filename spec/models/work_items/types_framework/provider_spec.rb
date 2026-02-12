@@ -47,12 +47,12 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
       end
 
       context 'when given a WorkItems::Type object' do
-        let_it_be(:issue_type_from_db) { create(:work_item_type, :issue) }
+        let_it_be(:issue_type) { create(:work_item_type, :issue) }
 
         it 'returns the work item type' do
-          result = provider.fetch_work_item_type(issue_type_from_db)
+          result = provider.fetch_work_item_type(issue_type)
 
-          expect(result).to eq(issue_type_from_db)
+          expect(result).to eq(issue_type)
         end
       end
     end
@@ -78,6 +78,14 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     context 'when given an integer ID' do
       it 'returns the work item type by ID' do
         result = provider.fetch_work_item_type(issue_type.id)
+
+        expect(result).to eq(issue_type)
+      end
+    end
+
+    context 'when given an integer ID in a string format' do
+      it 'returns the work item type by ID' do
+        result = provider.fetch_work_item_type(issue_type.id.to_s)
 
         expect(result).to eq(issue_type)
       end
@@ -297,7 +305,7 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
       end
     end
 
-    context 'when work_item_system_defined_type is enabled' do
+    context 'when work_item_system_defined_type is disabled' do
       before do
         stub_feature_flags(work_item_system_defined_type: false)
       end

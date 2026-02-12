@@ -112,7 +112,7 @@ Specific information applies to Linux package installations:
 - The binaries for PostgreSQL 13 have been removed.
 
   Prior to upgrading, you must ensure your installation is using
-  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 - Packages are no longer built for Ubuntu 18.04
 
@@ -454,7 +454,7 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 ### OpenSSL 3 upgrade
 
 > [!note]
-> Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
+> Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/)
 > to identify and assess the compatibility of your external integrations.
 
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
@@ -485,7 +485,7 @@ information, see the [certificate requirements](../../security/tls_support.md#ce
 
 All components that are shipped with the Linux package are compatible with
 OpenSSL 3. Therefore, you only need to verify the services and integrations that
-are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html#identifying-external-integrations).
+are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/#identifying-external-integrations).
 
 SSH keys are not affected by this upgrade. OpenSSL sets
 security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and

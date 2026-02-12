@@ -25,6 +25,7 @@
 #     archived: boolean - default is nil which returns all groups, true returns only archived groups, and false returns
 #                         non archived groups
 #     with_statistics - load project statistics.
+#     visibility: visibility level or array of visibility levels - filters groups by visibility level.
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -62,6 +63,8 @@ class GroupsFinder < UnionFinder
   def all_groups
     return [owned_groups] if params[:owned]
     return [groups_with_min_access_level] if min_access_level?
+    # Avoids the performance overhead from `authorized_groups` query. Additional filters applied by `by_visibility`.
+    return [Group.public_and_internal_only] if public_or_internal_only?
     return [Group.all] if can_read_all_groups? && all_available?
 
     groups = [
@@ -204,6 +207,12 @@ class GroupsFinder < UnionFinder
 
   def all_available?
     params.fetch(:all_available, true)
+  end
+
+  def public_or_internal_only?
+    return false unless visibility_levels.present?
+
+    (visibility_levels - [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL]).empty?
   end
 end
 

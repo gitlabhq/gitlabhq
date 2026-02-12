@@ -156,7 +156,7 @@ The error occurs because the Jira certificate is not publicly trusted or the cer
 Until this issue is resolved, GitLab does not connect to Jira.
 
 To resolve this issue, see
-[Common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#common-ssl-errors).
+[Common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#common-ssl-errors).
 
 ## Change all Jira projects to instance-level or group-level values
 

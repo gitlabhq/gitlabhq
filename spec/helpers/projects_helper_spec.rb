@@ -2071,14 +2071,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when project and ancestor is not archived' do
       it { is_expected.to be(false) }
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
     end
   end
 end

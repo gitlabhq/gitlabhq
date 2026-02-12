@@ -90,7 +90,7 @@ To resolve this issue:
   ```
 
 - If your instance has [SSL configured](https://docs.gitlab.com/omnibus/settings/ssl/), check your
-  [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#useful-openssl-debugging-commands).
+  [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#useful-openssl-debugging-commands).
 
 Depending on how you installed the app, you might want to check the following:
 

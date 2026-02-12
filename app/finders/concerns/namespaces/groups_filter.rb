@@ -2,6 +2,8 @@
 
 module Namespaces
   module GroupsFilter
+    include Gitlab::Utils::StrongMemoize
+
     private
 
     def by_ids(items)
@@ -46,10 +48,20 @@ module Namespaces
       groups.sort_by_attribute(params[:sort])
     end
 
-    def by_visibility(groups)
-      return groups unless params[:visibility]
+    def visibility_levels
+      return unless params[:visibility].present?
 
-      groups.by_visibility_level(params[:visibility])
+      levels = Array.wrap(params[:visibility])
+      levels = levels.map { |l| Gitlab::VisibilityLevel.level_value(l) }
+
+      levels & Gitlab::VisibilityLevel.levels_for_user(current_user, include_private: true)
+    end
+    strong_memoize_attr :visibility_levels
+
+    def by_visibility(groups)
+      return groups unless visibility_levels
+
+      groups.by_visibility_level(visibility_levels)
     end
 
     def by_min_access_level(groups)

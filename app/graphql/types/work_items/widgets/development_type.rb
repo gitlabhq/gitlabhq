@@ -12,6 +12,10 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :closing_merge_requests,
           ::Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
@@ -28,6 +32,7 @@ module Types
         field :related_merge_requests, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
           ::Types::MergeRequestType.connection_type,
           null: true,
+          scopes: [:api, :read_api, :ai_workflows],
           resolver: ::Resolvers::MergeRequests::WorkItemRelatedResolver,
           description: 'Merge requests where the work item has been mentioned. ' \
             'This field can only be resolved for one work item in any single request.',

@@ -27,6 +27,12 @@ class Explore::GroupsController < Explore::ApplicationController
   private
 
   def render_groups
-    render_group_tree GroupsFinder.new(current_user, active: safe_params[:active]).execute.limit(MAX_QUERY_SIZE)
+    finder_params = { active: safe_params[:active] }
+
+    if Feature.enabled?(:explore_groups_non_members_only, current_user)
+      finder_params[:visibility] = Gitlab::VisibilityLevel.levels_for_user(current_user)
+    end
+
+    render_group_tree GroupsFinder.new(current_user, finder_params).execute.limit(MAX_QUERY_SIZE)
   end
 end

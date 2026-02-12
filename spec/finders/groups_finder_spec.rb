@@ -577,5 +577,65 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe 'with visibility' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:internal_group) { create(:group, :internal) }
+      let_it_be(:public_group) { create(:group, :public) }
+
+      let(:current_user) { user }
+
+      subject { described_class.new(current_user, params).execute }
+
+      before do
+        private_group.add_owner(user)
+      end
+
+      context 'when filtering by single value' do
+        context 'when filtering by public only' do
+          let(:params) { { visibility: Gitlab::VisibilityLevel::PUBLIC } }
+
+          it { is_expected.to contain_exactly(public_group) }
+        end
+
+        context 'when filtering by internal only' do
+          let(:params) { { visibility: Gitlab::VisibilityLevel::INTERNAL } }
+
+          it { is_expected.to contain_exactly(internal_group) }
+        end
+
+        context 'when filtering by private only' do
+          let(:params) { { visibility: Gitlab::VisibilityLevel::PRIVATE } }
+
+          it { is_expected.to contain_exactly(private_group) }
+        end
+      end
+
+      context 'when filtering by multiple values' do
+        let(:params) { { visibility: [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] } }
+
+        it { is_expected.to contain_exactly(public_group, internal_group) }
+      end
+
+      context 'when filtering by integer value' do
+        let(:params) { { visibility: 0 } }
+
+        it { is_expected.to contain_exactly(private_group) }
+      end
+
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
+        let(:params) { { visibility: Gitlab::VisibilityLevel.values } }
+
+        it { is_expected.to contain_exactly(public_group) }
+      end
+
+      context 'when user is external' do
+        let(:current_user) { create(:user, :external) }
+        let(:params) { { visibility: Gitlab::VisibilityLevel.values } }
+
+        it { is_expected.to contain_exactly(public_group) }
+      end
+    end
   end
 end

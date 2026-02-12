@@ -106,7 +106,6 @@ module Gitlab
       push_frontend_feature_flag(:glql_work_items, current_user)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
-      push_frontend_feature_flag(:archive_group)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, true)

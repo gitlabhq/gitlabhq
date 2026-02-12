@@ -353,7 +353,7 @@ If you use a third party external service:
    plain text password. These details are necessary when configuring the
    [GitLab application server](#configure-gitlab-rails) later.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database/)
 are supported and can be added if needed.
 
 <div align="right">
@@ -418,7 +418,7 @@ the Linux package:
    Redis password. These will be necessary when
    [configuring the GitLab application servers](#configure-gitlab-rails) later.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 <div align="right">

@@ -52,7 +52,6 @@ RSpec.describe Search::Worker, feature_category: :global_search do
         # checks elasticsearch_pause_indexing
         ElasticIndexInitialBulkCronWorker,
         ElasticIndexBulkCronWorker,
-        Search::ElasticIndexEmbeddingBulkCronWorker,
         # advanced search framework operations
         Elastic::MigrationWorker,
         ElasticClusterReindexingCronWorker,
@@ -70,7 +69,8 @@ RSpec.describe Search::Worker, feature_category: :global_search do
         Search::Zoekt::SchedulingWorker,
         Search::Zoekt::DefaultBranchChangedWorker,
         # deprecated
-        ElasticNamespaceRolloutWorker
+        ElasticNamespaceRolloutWorker,
+        Search::ElasticIndexEmbeddingBulkCronWorker
       ]
     end
 

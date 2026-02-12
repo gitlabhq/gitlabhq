@@ -33,6 +33,8 @@ module Resolvers
       private
 
       def preloads
+        return {} if Feature.enabled?(:work_item_system_defined_type, :instance)
+
         {
           widget_definitions: :enabled_widget_definitions
         }

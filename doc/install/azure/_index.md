@@ -162,7 +162,7 @@ to assign a descriptive DNS name to the VM:
 Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.
 You can use the [Azure DNS](https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
-or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
+or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns/).
 
 ### Change the GitLab external URL
 
@@ -329,4 +329,4 @@ sudo curl --fail --silent --show-error \
 ```
 
 You can now [update GitLab](#update-gitlab). For more information, read about the
-[packages signatures](https://docs.gitlab.com/omnibus/update/package_signatures.html).
+[packages signatures](https://docs.gitlab.com/omnibus/update/package_signatures/).

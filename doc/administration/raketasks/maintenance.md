@@ -408,7 +408,7 @@ order that conforms to the GitLab release cadence.
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy
 levels of index bloat over time. Reindexing can also be run as a
-[regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).
+[regular cron job](https://docs.gitlab.com/omnibus/settings/database/#automatic-database-reindexing).
 A "healthy" level of bloat is highly dependent on the specific index, but generally
 should be below 30%.
 

@@ -520,7 +520,7 @@ After you create a `.gitlab/insights.yml` file in a project, you can also use it
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To configure project insights, create a file `.gitlab/insights.yml` either:
 

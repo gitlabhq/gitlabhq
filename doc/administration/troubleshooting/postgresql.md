@@ -93,7 +93,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 ### Procedures
 
-- [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) including:
+- [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database/) including:
   - SSL: enabling, disabling, and verifying.
   - Enabling Write Ahead Log (WAL) archiving.
   - Using an external (non-Omnibus) PostgreSQL installation; and backing it up.
@@ -107,7 +107,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [Running Geo with external PostgreSQL](../geo/setup/external_database.md).
 
-- [Upgrades when running PostgreSQL configured for HA](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-gitlab-ha-cluster).
+- [Upgrades when running PostgreSQL configured for HA](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-gitlab-ha-cluster).
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
@@ -331,7 +331,7 @@ See [database requirements](../../install/requirements.md#postgresql) and review
 ### Serialization errors in the `production/sidekiq` log
 
 If you receive errors like this example in your `production/sidekiq` log, read
-about [setting `default_transaction_isolation` into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed) to fix the problem:
+about [setting `default_transaction_isolation` into read committed](https://docs.gitlab.com/omnibus/settings/database/#set-default_transaction_isolation-into-read-committed) to fix the problem:
 
 ```plaintext
 ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not serialize access due to concurrent update
@@ -340,7 +340,7 @@ ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not ser
 ### PostgreSQL replication slot errors
 
 If you receive errors like this example, read about how to resolve PostgreSQL HA
-[replication slot errors](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting-upgrades-in-an-ha-cluster):
+[replication slot errors](https://docs.gitlab.com/omnibus/settings/database/#troubleshooting-upgrades-in-an-ha-cluster):
 
 ```plaintext
 pg_basebackup: could not create temporary replication slot "pg_basebackup_12345": ERROR:  all replication slots are in use
@@ -374,7 +374,7 @@ When troubleshooting problems with Geo, you should:
 ### Mismatch in `pg_dump` and `psql` versions
 
 If you receive errors like this example, read about how to
-[back up and restore a non-packaged PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#backup-and-restore-a-non-packaged-postgresql-database):
+[back up and restore a non-packaged PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database/#backup-and-restore-a-non-packaged-postgresql-database):
 
 ```plaintext
 Dumping PostgreSQL database gitlabhq_production ... pg_dump: error: server version: 13.3; pg_dump version: 14.2

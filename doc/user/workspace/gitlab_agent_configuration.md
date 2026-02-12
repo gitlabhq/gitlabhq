@@ -163,7 +163,7 @@ You can use any agent in the top-level group of a workspace project to create a 
 if both of the following are true:
 
 - The remote development module is enabled.
-- You have at least the Developer role for the top-level group.
+- You have the Developer, Maintainer, or Owner role for the top-level group.
 
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-level-group` and in any of its subgroups.

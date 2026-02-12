@@ -162,68 +162,34 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
     end
   end
 
-  describe "incrementing the Sli's for Apdex and error rate" do
-    context "when record is deleted" do
-      context 'with acceptable deletion delay' do
-        before do
-          Ci::DeletedObject.bulk_import(data)
-          # We disable the check because the specs are wrapped in a transaction
-          allow(service).to receive(:transaction_open?).and_return(false)
-        end
+  describe 'metrics tracking' do
+    before do
+      Ci::DeletedObject.bulk_import(data)
+      allow(service).to receive(:transaction_open?).and_return(false)
+    end
 
-        it 'increments the apdex for a successful delete' do
-          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_apdex).with(
-            success: true
-          )
-          service.execute
-        end
+    context 'when file deletion succeeds' do
+      it 'tracks deletion and records no error' do
+        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:track_deletion)
+          .with(an_instance_of(Ci::DeletedObject))
+        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error)
+          .with(error: false)
 
-        it 'increments the error_rate with no error' do
-          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
-            error: false
-          )
-          service.execute
-        end
-      end
-
-      context 'with unacceptable deletion delay' do
-        before do
-          Ci::DeletedObject.bulk_import(data)
-          Ci::DeletedObject.update_all(created_at: 17.hours.ago)
-
-          # We disable the check because the specs are wrapped in a transaction
-          allow(service).to receive(:transaction_open?).and_return(false)
-        end
-
-        it 'increments the apdex for a unsuccessful delete' do
-          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_apdex).with(
-            success: false
-          )
-          service.execute
-        end
-
-        it 'increments the error_rate with no error' do
-          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
-            error: false
-          )
-          service.execute
-        end
+        service.execute
       end
     end
 
-    context "when record is not deleted" do
+    context 'when file deletion fails' do
       before do
-        Ci::DeletedObject.bulk_import(data)
         allow_next_found_instance_of(Ci::DeletedObject) do |instance|
           allow(instance).to receive(:delete_file_from_storage).and_return(false)
         end
-        allow(service).to receive(:transaction_open?).and_return(false)
       end
 
-      it 'increments the error_rate with an error' do
-        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
-          error: true
-        )
+      it 'does not track deletion and records an error' do
+        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).not_to receive(:track_deletion)
+        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error)
+          .with(error: true)
 
         service.execute
       end

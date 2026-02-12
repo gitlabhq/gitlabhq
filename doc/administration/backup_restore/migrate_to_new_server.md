@@ -16,7 +16,7 @@ If you're running GitLab Geo, an alternative option is [Geo disaster recovery fo
 > [incoming email](../incoming_email.md), if both GitLab instances are
 > processing email at the same time, then both instances miss some data.
 > This type of problem can occur with other services as well, such as a
-> [non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
+> [non-packaged database](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server),
 > a non-packaged Redis instance, or non-packaged Sidekiq.
 
 Prerequisites:
@@ -40,7 +40,7 @@ To prepare the new server:
    1. Install GitLab.
    1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
       Read the
-      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups.html) for more detail.
+      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups/) for more detail.
    1. If applicable, disable [incoming email](../incoming_email.md).
    1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
       Edit `/etc/gitlab/gitlab.rb` and set the following:
@@ -176,7 +176,7 @@ The main volumes that you might need to migrate manually are:
 - The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
 - The `/var/opt/gitlab/gitlab-rails/uploads` directory which contains upload data, like user profile photos.
 - If you are using the bundled PostgreSQL included with the Linux package,
-  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
+  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database/#store-postgresql-data-in-a-different-directory)
   under `/var/opt/gitlab/postgresql/data`.
 
 After all GitLab services have been stopped, you can use tools like `rsync` or mounting volume snapshots to move the data

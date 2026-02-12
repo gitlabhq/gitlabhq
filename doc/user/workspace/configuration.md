@@ -63,7 +63,7 @@ If you use AWS, you can use our OpenTofu tutorial. For more information, see
 Prerequisites:
 
 - You must [set up workspace infrastructure](#set-up-workspace-infrastructure).
-- You must have at least the Developer role for the workspace and agent projects.
+- You must have the Developer, Maintainer, or Owner role for the workspace and agent projects.
 
 {{< tabs >}}
 

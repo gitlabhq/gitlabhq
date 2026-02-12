@@ -1,0 +1,10 @@
+---
+name: explore_groups_non_members_only
+description: Hide private groups from `Explore > Groups` page
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20536
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221862
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587120
+milestone: '18.9'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

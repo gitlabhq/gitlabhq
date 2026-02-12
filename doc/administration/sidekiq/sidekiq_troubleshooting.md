@@ -50,7 +50,7 @@ arguments logs are limited to a maximum size of 10 kilobytes of text;
 any arguments after this limit are discarded and replaced with a
 single argument containing the string `"..."`.
 
-You can set `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+You can set `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables/)
 to `0` (false) to disable argument logging.
 
 Example:

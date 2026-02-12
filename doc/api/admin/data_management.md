@@ -46,11 +46,13 @@ The `:model_name` parameter must be one of:
 - `group_wiki_repositories`
 - `lfs_objects`
 - `merge_request_diffs`
+- `packages_nuget_symbols`
 - `packages_package_files`
 - `pages_deployments`
 - `projects`
 - `projects_wiki_repositories`
 - `snippet_repositories`
+- `supply_chain_attestations`
 - `terraform_state_versions`
 - `uploads`
 
@@ -116,7 +118,7 @@ Example response:
 
 ## Recalculate checksums for model records
 
-Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation. 
+Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation.
 
 ```plaintext
 PUT /admin/data_management/:model_name/checksum

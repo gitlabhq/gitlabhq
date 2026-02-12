@@ -19,6 +19,10 @@ module Gitlab
         where(visibility_level: VisibilityLevel.levels_for_user(user))
       end
 
+      scope :by_visibility_level, ->(levels) do
+        where(visibility_level: levels)
+      end
+
       alias_method :visibility_level=, :visibility=
     end
 
@@ -30,13 +34,15 @@ module Gitlab
     class << self
       delegate :values, to: :options
 
-      def levels_for_user(user = nil)
+      def levels_for_user(user = nil, include_private: false)
         return [PUBLIC] unless user
 
         if user.can_read_all_resources?
           LEVELS_FOR_ADMINS
         elsif user.external?
           [PUBLIC]
+        elsif include_private
+          [INTERNAL, PUBLIC, PRIVATE]
         else
           [INTERNAL, PUBLIC]
         end

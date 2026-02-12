@@ -34,14 +34,31 @@ RSpec.describe Explore::GroupsController, feature_category: :groups_and_projects
         expect(described_class).to include(GroupTree)
       end
 
-      it 'includes public projects' do
-        member_of_group = create(:group)
-        member_of_group.add_developer(user)
+      it 'only includes public and internal groups', :aggregate_failures do
+        private_group = create(:group, :private, developers: [user])
+        internal_group = create(:group, :internal)
         public_group = create(:group, :public)
 
         get :index
 
-        expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
+        expect(assigns(:groups)).to include(internal_group, public_group)
+        expect(assigns(:groups)).not_to include(private_group)
+      end
+
+      context 'when `explore_groups_non_members_only` is disabled' do
+        before do
+          stub_feature_flags(explore_groups_non_members_only: false)
+        end
+
+        it 'includes member private groups' do
+          member_of_group = create(:group, :private, developers: [user])
+          internal_group = create(:group, :internal)
+          public_group = create(:group, :public)
+
+          get :index
+
+          expect(assigns(:groups)).to contain_exactly(member_of_group, internal_group, public_group)
+        end
       end
 
       context 'restricted visibility level is public' do

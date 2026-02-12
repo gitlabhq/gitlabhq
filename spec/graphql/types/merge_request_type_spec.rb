@@ -351,4 +351,14 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       resolve_field(:committers, merge_request)
     end
   end
+
+  describe 'fields with :ai_workflows scope' do
+    it 'includes :ai_workflows scope for the applicable fields' do
+      state_field = described_class.fields['state']
+      expect(state_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+
+      web_url_field = described_class.fields['webUrl']
+      expect(web_url_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+    end
+  end
 end

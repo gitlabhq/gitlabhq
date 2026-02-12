@@ -1187,6 +1187,51 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     end
   end
 
+  describe '.with_widget_definition' do
+    let(:assignees_widget_type) { :assignees }
+    let(:description_widget_type) { :description }
+    let(:non_existent_widget_type) { :non_existent_widget }
+
+    it 'returns types that have the specified widget definition' do
+      types = described_class.with_widget_definition(assignees_widget_type)
+
+      expect(types).to be_present
+      expect(types).to all(be_a(described_class))
+    end
+
+    it 'only returns types with the specified widget' do
+      types = described_class.with_widget_definition(assignees_widget_type)
+
+      types.each do |type|
+        widget_defs = WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+          .where(work_item_type_id: type.id, widget_type: assignees_widget_type.to_s)
+
+        expect(widget_defs).to be_present
+      end
+    end
+
+    it 'returns empty array when no types have the widget' do
+      types = described_class.with_widget_definition(non_existent_widget_type)
+
+      expect(types).to be_empty
+    end
+
+    it 'accepts string widget type' do
+      types = described_class.with_widget_definition('description')
+
+      expect(types).to be_present
+    end
+
+    it 'returns different results for different widgets' do
+      types_with_assignees = described_class.with_widget_definition(:assignees)
+      types_with_description = described_class.with_widget_definition(:description)
+
+      # Both should have results but they might be different sets
+      expect(types_with_assignees).to be_present
+      expect(types_with_description).to be_present
+    end
+  end
+
   describe '#configuration_class' do
     it 'returns the correct configuration class for issue type' do
       issue_type = build(:work_item_system_defined_type, :issue)

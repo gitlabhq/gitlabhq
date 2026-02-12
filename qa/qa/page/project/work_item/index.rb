@@ -29,6 +29,11 @@ module QA
             element 'export-work-items-modal'
           end
 
+          view 'app/assets/javascripts/work_items/components/' \
+            'work_items_onboarding_modal/work_items_onboarding_modal.vue' do
+            element 'work-items-onboarding-modal'
+          end
+
           def avatar_counter
             find_element('avatar-counter-content')
           end
@@ -77,6 +82,16 @@ module QA
 
           def export_issues_modal
             find_element('export-work-items-modal')
+          end
+
+          def dismiss_onboarding_modal_if_present
+            return unless has_element?('work-items-onboarding-modal', wait: 0.5)
+
+            within_element('work-items-onboarding-modal') do
+              click_element('close-icon')
+            end
+
+            has_no_element?('work-items-onboarding-modal')
           end
 
           def go_to_jira_import_form

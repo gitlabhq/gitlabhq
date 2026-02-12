@@ -12,7 +12,7 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
   let(:work_item_to_update) { list_work_item }
   let(:link_params) { {} }
   let(:current_user) { developer }
-  let(:task_type) { WorkItems::Type.default_by_type(:task) }
+  let(:task_type) { build(:work_item_system_defined_type, :task) }
   let(:type_params) { { work_item_type_id: task_type.id } }
   let(:params) do
     {
@@ -84,7 +84,7 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
 
       context 'when passing the work item type as an object and also by id' do
         let(:type_params) do
-          { work_item_type: WorkItems::Type.default_by_type(:issue), work_item_type_id: task_type.id }
+          { work_item_type: build(:work_item_system_defined_type, :issue), work_item_type_id: task_type.id }
         end
 
         it 'takes ID value over the work item type object' do
@@ -94,7 +94,7 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
             change { WorkItems::ParentLink.count }.by(1)
           )
           created_work_item = WorkItem.last
-          expect(created_work_item.work_item_type).to eq(task_type)
+          expect(created_work_item.work_item_type_id).to eq(task_type.id)
         end
       end
     end

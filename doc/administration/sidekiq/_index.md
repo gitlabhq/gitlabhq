@@ -20,8 +20,8 @@ PostgreSQL, and Gitaly instances.
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
-1. [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip) adding the Sidekiq server IP addresses to `postgresql['md5_auth_cidr_addresses']`
-1. [Make the bundled Redis reachable via TCP](https://docs.gitlab.com/omnibus/settings/redis.html#making-the-bundled-redis-reachable-via-tcp)
+1. [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database/#configure-packaged-postgresql-server-to-listen-on-tcpip) adding the Sidekiq server IP addresses to `postgresql['md5_auth_cidr_addresses']`
+1. [Make the bundled Redis reachable via TCP](https://docs.gitlab.com/omnibus/settings/redis/#making-the-bundled-redis-reachable-via-tcp)
 1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance, and add the following:
 
    ```ruby

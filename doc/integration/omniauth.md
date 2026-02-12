@@ -582,7 +582,7 @@ then override the icon in one of two ways:
 - **Provide a custom image path**:
 
   1. If you are hosting the image outside of your GitLab server domain, ensure
-     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration.html#content-security-policy)
+     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration/#content-security-policy)
      are configured to allow access to the image file.
   1. Depending on your method of installing GitLab, add a custom `icon` parameter
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)

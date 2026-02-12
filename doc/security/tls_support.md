@@ -90,7 +90,7 @@ DSA, and DH keys with at least 3072 bits, and ECC keys longer than 256 bits.
 
 GitLab 17.7 and later use OpenSSL version 3. All components that are shipped
 with the Linux package are compatible with OpenSSL 3. However, before upgrading
-to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
+to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/)
 to identify and assess the compatibility of your external integrations.
 
 ## Bypassing the OpenSSL 3 requirement for `close_notify`

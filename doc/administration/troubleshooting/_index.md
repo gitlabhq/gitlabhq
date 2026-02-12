@@ -20,7 +20,7 @@ for in this list, you should search the documentation.
 
 ## Troubleshooting guides
 
-- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - [Geo](../geo/replication/troubleshooting/_index.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
 - [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
@@ -53,7 +53,7 @@ before referring to these documents.
 - [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Troubleshooting PostgreSQL](postgresql.md)
 - [Guide to test environments](test_environments.md) (for Support Engineers)
-- [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - Related links:
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)

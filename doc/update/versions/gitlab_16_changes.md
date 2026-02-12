@@ -26,7 +26,7 @@ For additional information for Helm chart installations, see
 - [PostgreSQL 12 is not supported starting from GitLab 16](../deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
-- Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+- Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
   - [The second database connection can be disabled](#disable-the-second-database-connection).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
@@ -110,11 +110,11 @@ In GitLab 16.11, PostgreSQL is automatically upgraded to 14.x except for the fol
 
 - You are running the database in high availability using Patroni.
 - Your database nodes are part of a GitLab Geo configuration.
-- You have specifically [opted out](https://docs.gitlab.com/omnibus/settings/database.html#opt-out-of-automatic-postgresql-upgrades) from automatically upgrading PostgreSQL.
+- You have specifically [opted out](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) from automatically upgrading PostgreSQL.
 - You have `postgresql['version'] = 13` in your `/etc/gitlab/gitlab.rb`.
 
 Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 14,
-see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
+see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database/#packaged-postgresql-deployed-in-an-hageo-cluster).
 
 ### Geo installations
 
@@ -312,10 +312,10 @@ planned for release in 16.9.1.
   All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site on GitLab 16.7 to 16.8.1,
   you must take one of the following actions based on your configuration:
 
-  - To add your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)
+  - To add your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server)
     before you set up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
   - To add a new Geo secondary site to a deployment that already has one or more Geo secondaries:
-    - If all existing sites are running PostgreSQL 13, install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
+    - If all existing sites are running PostgreSQL 13, install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database/#pin-the-packaged-postgresql-version-fresh-installs-only).
     - If all existing sites are running PostgreSQL 14: No special action is required.
     - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
 
@@ -389,7 +389,7 @@ Specific information applies to Linux package installations:
 
 - As of GitLab 16.7, PostgreSQL 14 is the default version installed with the Linux package.
   During a package upgrade, the database isn't upgraded to PostgreSQL 14.
-  If you want to upgrade to PostgreSQL 14, [you must do it manually](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  If you want to upgrade to PostgreSQL 14, [you must do it manually](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
   If you want to use PostgreSQL 13, you must set `postgresql['version'] = 13` in `/etc/gitlab/gitlab.rb`.
 
@@ -400,9 +400,9 @@ Specific information applies to Linux package installations:
   All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site based on GitLab 16.7 to 16.8.1, you must
   take one of the following actions based on your configuration:
 
-  - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
+  - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
   - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries:
-    - If all existing sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
+    - If all existing sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database/#pin-the-packaged-postgresql-version-fresh-installs-only).
     - If all existing sites are running PostgreSQL 14: No special action is required.
     - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
 
@@ -1231,7 +1231,7 @@ Specific information applies to Linux package installations:
 - The binaries for PostgreSQL 12 have been removed.
 
   Prior to upgrading, administrators of Linux package installations must ensure the installation is using
-  [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 - Grafana that was bundled with GitLab is deprecated and is no longer supported.
   It is removed in GitLab 16.3.
@@ -1645,7 +1645,7 @@ praefect['configuration'] = {
 In GitLab 16.0, GitLab defaults to using two database connections that point to the same PostgreSQL database.
 
 PostgreSQL might need to be configured with a larger value for `max_connections`.
-[There is a Rake task for checking if this is necessary](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+[There is a Rake task for checking if this is necessary](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
 
 If you have PgBouncer deployed:
 

@@ -51,7 +51,7 @@ the Linux package:
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These are necessary when [configuring the GitLab application servers](#set-up-the-gitlab-rails-application-instance).
 
-[Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+[Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 ## Set up the GitLab Rails application instance

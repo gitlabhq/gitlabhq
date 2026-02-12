@@ -684,7 +684,7 @@ For more information, see the various [Patroni replication methods](../postgresq
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database/)
 are supported and can be added if needed.
 
 <div align="right">
@@ -1022,7 +1022,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 <div align="right">
@@ -1167,7 +1167,7 @@ a node and change its status from primary to replica (and vice versa).
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 <div align="right">

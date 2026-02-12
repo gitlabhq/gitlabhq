@@ -87,7 +87,7 @@ Resetting a group default setting removes integrations that use default settings
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To use instance or group default settings for a project integration:
 
@@ -103,7 +103,7 @@ To use instance or group default settings for a project integration:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project integration.
+- You must have the Maintainer or Owner role for the project integration.
 - You must have the Owner role for the group integration.
 
 To use custom settings for a project or group integration:

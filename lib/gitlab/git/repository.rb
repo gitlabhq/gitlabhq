@@ -183,6 +183,12 @@ module Gitlab
         end
       end
 
+      def fork_repository(source_repository, branch = nil)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fork_repository(source_repository, branch)
+        end
+      end
+
       def expire_has_local_branches_cache
         clear_memoization(:has_local_branches)
       end

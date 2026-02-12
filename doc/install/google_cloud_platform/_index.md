@@ -142,7 +142,7 @@ Although not needed, it's strongly recommended to secure GitLab with a
 ### Configuring the email SMTP settings
 
 You must configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
-Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
+Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp/#smtp-settings) how to do so.
 
 ## Further reading
 

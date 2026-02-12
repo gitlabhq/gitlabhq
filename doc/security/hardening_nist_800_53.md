@@ -658,7 +658,7 @@ GitLab supports the [sending of email notifications](../administration/email_fro
 to users from the GitLab application instance. DHS BOD 18-01 guidance
 indicates that Domain-based Message Authentication, Reporting &
 Conformance (DMARC) must be configured for outgoing messages as spam
-protection. GitLab provides [configuration guidance for SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
+protection. GitLab provides [configuration guidance for SMTP](https://docs.gitlab.com/omnibus/settings/smtp/)
 across a wide range of email providers, which may be used to help meet
 this requirement.
 

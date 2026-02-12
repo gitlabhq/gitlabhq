@@ -30,7 +30,7 @@ System log files are typically plain text in a standard log file format.
 The log system is similar to [audit events](../compliance/audit_event_reports.md).
 For more information, see also:
 
-- [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+- [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs/)
 - [Parsing and analyzing GitLab logs in JSON format](log_parsing.md)
 
 ## Log Levels
@@ -92,9 +92,9 @@ The logs for a given service may be managed and rotated by:
 The following table includes information about which daemon is responsible for managing and rotating logs for
 the included services:
 
-- Logs [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs) are written to a file called `current`.
+- Logs [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs/#runit-logs) are written to a file called `current`.
   Their archived versions are compressed into `@<hexadecimal-ID>.s` files.
-- The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+- The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs/#logrotate).
   Their archived versions are compressed into `<original-name>.<number>.gz` files.
 
 | Log type                                        | Managed by logrotate    | Managed by svlogd/runit |

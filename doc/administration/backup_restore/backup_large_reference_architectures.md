@@ -336,7 +336,7 @@ new bucket.
    to point to the new database:
 
    - For Linux package installations, follow
-     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
      [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).
@@ -351,7 +351,7 @@ new bucket.
 1. If you restore to a new database instance, then reconfigure GitLab to point to the new database:
 
    - For Linux package installations, follow
-     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
      [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).

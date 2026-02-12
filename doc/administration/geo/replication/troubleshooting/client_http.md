@@ -124,7 +124,7 @@ To resolve this issue:
 - Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the **secondary** site is
   using IPv6 to send its status to the **primary** site. If it is, add an entry to
   the **primary** site using IPv4 in the `/etc/hosts` file. Alternatively, you should
-  [enable IPv6 on the **primary** site](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+  [enable IPv6 on the **primary** site](https://docs.gitlab.com/omnibus/settings/nginx/#setting-the-nginx-listen-address-or-addresses).
 
 ## WebSocket requests fail on Geo secondary sites
 

@@ -145,7 +145,7 @@ Note there are several options that you should consider using:
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously. |
 | `hard`                 | Instead of `soft`. [Further details](#soft-mount-option). |
 | `cto`                  | `cto` is the default option, which you should use. Do not use `nocto`. [Further details](#nocto-mount-option). |
-| `_netdev`              | Wait to mount file system until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration.html#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option. |
+| `_netdev`              | Wait to mount file system until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration/#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option. |
 
 #### `soft` mount option
 
@@ -267,7 +267,7 @@ following are the 3 locations need to be shared:
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
 logs to a central location consider using remote syslog. The Linux package
-provides configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
+provides configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs/#udp-log-shipping-gitlab-enterprise-edition-only).
 
 Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the

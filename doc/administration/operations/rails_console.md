@@ -130,7 +130,7 @@ Partial output:
  "bot_type"=>nil}
 ```
 
-Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp.html#testing-the-smtp-configuration):
+Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp/#testing-the-smtp-configuration):
 
 ```ruby
 e = u.email

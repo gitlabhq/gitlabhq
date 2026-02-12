@@ -82,7 +82,7 @@ Version-specific change documentation for Linux packages is available for:
 
 Instructions are available for downloading the Linux package locally and [manually installing](../update/package/_index.md#upgrade-with-a-downloaded-package) it.
 
-A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 ## Upgrading major versions
 

@@ -47,12 +47,12 @@ see [reference architectures](../administration/reference_architectures/_index.m
 
 In some cases, GitLab can run with at least 8 GB of memory.
 For more information, see
-[running GitLab in a memory-constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
+[running GitLab in a memory-constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/).
 
 ## PostgreSQL
 
 [PostgreSQL](https://www.postgresql.org/) is the only supported database and is bundled with the Linux package.
-You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
+You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server)
 [which must be configured correctly](#postgresql-settings).
 
 Depending on the [number of users](../administration/reference_architectures/_index.md),

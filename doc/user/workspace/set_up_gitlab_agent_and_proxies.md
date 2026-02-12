@@ -134,7 +134,7 @@ To allow your GitLab agent for Kubernetes in a group and make it available to al
 
 ## Grant workspace permissions
 
-Grant users with at least the Developer role for the workspace and agent projects
+Grant users with the Developer, Maintainer, or Owner role for the workspace and agent projects
 the necessary permissions to create and manage workspaces. You can:
 
 - [Add users to a project](../project/members/_index.md#add-users-to-a-project)

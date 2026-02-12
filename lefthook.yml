@@ -71,7 +71,8 @@ pre-push:
     openapi_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      run: bundle exec rake gitlab:openapi:v2:check_docs && bundle exec rake gitlab:openapi:v3:check_docs
+      glob: '{doc/api/openapi/openapi_v2.yaml,doc/api/openapi/openapi_v3.yaml,*.rb}'
+      run: bundle exec rake gitlab:openapi:v3:check_docs gitlab:openapi:v2:check_docs
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

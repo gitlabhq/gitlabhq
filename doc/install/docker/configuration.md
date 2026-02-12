@@ -39,7 +39,7 @@ context of a running container.
       a valid URL for your GitLab instance.
 
    1. To receive emails from GitLab, configure the
-      [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html). The GitLab Docker image
+      [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp/). The GitLab Docker image
       doesn't have an SMTP server pre-installed.
 
    1. If desired [enable HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
@@ -52,7 +52,7 @@ context of a running container.
 
 GitLab reconfigures itself each time the container starts.
 For more configuration options in GitLab, see the
-[configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration.html).
+[configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration/).
 
 ## Pre-configure Docker container
 
@@ -165,7 +165,7 @@ port `2424`:
    The port specified in this URL must match the port published to the host by Docker.
    Additionally, if the NGINX listen port is not explicitly set in
    `nginx['listen_port']`, the `external_url` is used instead.
-   For more information, see the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html).
+   For more information, see the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx/).
 
 1. Set the SSH port:
 

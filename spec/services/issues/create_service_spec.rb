@@ -104,14 +104,19 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
-      it 'raises an error if work item types have not been created yet' do
-        WorkItems::Type.delete_all
+      context "when work_item_system_defined_type is disabled" do
+        before do
+          stub_feature_flags(work_item_system_defined_type: false)
+        end
 
-        expect do
-          issue
-        end.to raise_error(
-          WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
-          <<~STRING
+        it 'raises an error if work item types have not been created yet' do
+          WorkItems::Type.delete_all
+
+          expect do
+            issue
+          end.to raise_error(
+            WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
+            <<~STRING
             Default work item types have not been created yet. Make sure the DB has been seeded successfully.
             See related documentation in
             https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
@@ -119,7 +124,8 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
             If you have additional questions, you can ask in
             https://gitlab.com/gitlab-org/gitlab/-/issues/423483
           STRING
-        )
+          )
+        end
       end
 
       it 'creates the issue with the given params' do
@@ -756,7 +762,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
           created_issue = Issue.last
 
-          expect(created_issue.work_item_type).to eq(WorkItems::Type.default_by_type('incident'))
+          expect(created_issue.work_item_type_id).to eq(build(:work_item_system_defined_type, :incident).id)
         end
       end
     end

@@ -502,4 +502,4 @@ You can also see this error message in the logs:
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page:
 
 - [Consul](../consul.md#troubleshooting-consul)
-- [PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
+- [PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#troubleshooting)

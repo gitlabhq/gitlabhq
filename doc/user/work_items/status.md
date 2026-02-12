@@ -88,7 +88,7 @@ Each lifecycle defines default transition statuses:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
 
 To create a lifecycle:
@@ -103,7 +103,7 @@ To create a lifecycle:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
 
 To rename a lifecycle:
@@ -118,7 +118,7 @@ To rename a lifecycle:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
 - The lifecycle must not be in use i.e., should not be associated with any work item type
 
@@ -133,7 +133,7 @@ To remove a lifecycle:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
 
 To change the lifecycle for a work item type:
@@ -167,7 +167,7 @@ Configure custom statuses for top-level groups to make them available for work i
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
 
 To configure custom statuses:
@@ -182,7 +182,7 @@ To configure custom statuses:
 
 Prerequisites:
 
-- You must have at least the Planner role for the work item's project or group, be the author of the work item, or be assigned to the work item.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the work item's project or group, be the author of the work item, or be assigned to the work item.
 
 To set a status for a work item:
 

@@ -36,8 +36,8 @@ module WorkItems
       attr_reader :namespace
 
       def fetch_work_item_type(work_item_type)
-        work_item_type_id = work_item_type.is_a?(Integer) ? work_item_type : work_item_type&.id
-        type_class.find_by(id: work_item_type_id)
+        work_item_type_id = work_item_type.respond_to?(:id) ? work_item_type.id : work_item_type
+        find_by_id(work_item_type_id)
       end
 
       # This list of types will exclude custom types because they're based on top of the `issue` base type.

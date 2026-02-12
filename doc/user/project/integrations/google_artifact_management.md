@@ -29,7 +29,7 @@ After you connect the Google Artifact Registry to your project, you can view, pu
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the GitLab project.
+- You must have the Maintainer or Owner role for the GitLab project.
 - You must have the [permissions needed](https://cloud.google.com/iam/docs/granting-changing-revoking-access#required-permissions) to manage access to the Google Cloud project with the Artifact Registry repository.
 - A [workload identity federation](../../../integration/google_cloud_iam.md) (WLIF) pool and provider must be configured to authenticate to Google Cloud.
 - A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration:

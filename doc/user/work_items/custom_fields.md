@@ -52,7 +52,7 @@ Keep these limits in mind:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 To create a custom field:
 
@@ -83,7 +83,7 @@ losing existing data.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 To edit a custom field:
 
@@ -101,7 +101,7 @@ Archiving removes the field from any work items that had them.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 To archive a custom field:
 
@@ -117,7 +117,7 @@ Work items that had values set for this field retain the same values they had be
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 To unarchive a custom field:
 
@@ -133,7 +133,7 @@ Add relevant information to work items by using the custom fields configured for
 
 Prerequisites:
 
-- You must have at least the Planner role for the work item's project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the work item's project or group.
 - If you have the Guest role, you can set custom fields only when creating a work item.
 
 1. Go to a work item.

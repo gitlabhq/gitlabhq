@@ -202,6 +202,13 @@
     min-height: auto;
   }
 }
+
+.saved-view-selector .gl-new-dropdown-toggle,
+.saved-view-selector.gl-button {
+  @include gl-container-width-down(md, panel) {
+    @apply gl-max-w-20;
+  }
+}
 /* stylelint-enable gitlab/no-gl-class */
 
 .saved-view-item {

@@ -196,7 +196,7 @@ Creates a new note (comment) on a GitLab work item.
 | `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `internal`      | boolean | No       | Marks the note as internal (visible only to users with at least the Reporter role for the project). Default is `false`. |
+| `internal`      | boolean | No       | Marks the note as internal (visible only to users with the Reporter, Developer, Maintainer, or Owner role for the project). Default is `false`. |
 | `discussion_id` | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). |
 
 Example:

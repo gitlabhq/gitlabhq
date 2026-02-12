@@ -2873,6 +2873,38 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#fork_repository' do
+    let(:source_repository) { described_class.new('default', 'source/path', '', 'group/source') }
+    let(:target_repository) { described_class.new('default', 'target/path', '', 'group/target') }
+
+    it 'delegates to gitaly_repository_client' do
+      expect(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .with(source_repository, nil)
+
+      target_repository.fork_repository(source_repository)
+    end
+
+    it 'passes branch parameter when provided' do
+      branch = 'main'
+
+      expect(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .with(source_repository, branch)
+
+      target_repository.fork_repository(source_repository, branch)
+    end
+
+    it 'wraps GRPC::BadStatus errors via wrapped_gitaly_errors' do
+      allow(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .and_raise(GRPC::BadStatus.new(GRPC::Core::StatusCodes::INTERNAL, 'Fork failed'))
+
+      expect { target_repository.fork_repository(source_repository) }
+        .to raise_error(Gitlab::Git::CommandError)
+    end
+  end
+
   describe '#check_objects_exist' do
     it 'returns hash specifying which object exists in repo' do
       refs_exist = %w[

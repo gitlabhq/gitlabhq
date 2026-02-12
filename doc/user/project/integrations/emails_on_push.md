@@ -21,7 +21,7 @@ With emails on push, you can specify a list of email addresses to receive commit
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To set up emails on push:
 

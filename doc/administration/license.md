@@ -132,7 +132,7 @@ This can be caused by:
       fronted by Cloudflare. Ensure your firewall or proxy allows traffic to the Cloudflare
       [IPv4](https://www.cloudflare.com/ips-v4/) and
       [IPv6](https://www.cloudflare.com/ips-v6/) ranges for activation to work.
-    - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+    - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables/)
       in `gitlab.rb` to point to your server.
 
     Contact your network administrator to make changes to an existing proxy or firewall.

@@ -333,17 +333,6 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
     let_it_be_with_reload(:ancestor) { group }
     let_it_be_with_reload(:subgroup) { create(:group, parent: ancestor) }
 
-    shared_examples 'does not render archive settings when `archive_group` flag is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-
-        visit edit_group_path(subgroup)
-      end
-
-      specify { expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive')) }
-      specify { expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive')) }
-    end
-
     context 'when group is archived' do
       before do
         subgroup.namespace_settings.update!(archived: true)
@@ -396,8 +385,6 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
           tag_pair(tag.strong, :strong_open, :strong_close)
         ))
       end
-
-      it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'
     end
   end
 

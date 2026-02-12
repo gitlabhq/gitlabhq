@@ -1213,6 +1213,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def fork_from(source_repository, branch = nil)
+    raw_repository.fork_repository(source_repository.raw_repository, branch)
+  end
+
   def rebase(user, merge_request, skip_ci: false)
     push_options = []
     push_options << Gitlab::PushOptions::CI_SKIP if skip_ci

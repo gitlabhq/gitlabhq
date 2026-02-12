@@ -194,7 +194,7 @@ become eligible as Code Owners for all projects in the parent group's hierarchy.
 Prerequisites:
 
 - You must have the Owner role for the group you are inviting the other group to.
-- When inviting the group, you must assign at least the Developer role.
+- When inviting the group, you must assign the Developer, Maintainer, or Owner role.
 
 For example, in this hierarchy:
 

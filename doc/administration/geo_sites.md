@@ -85,7 +85,7 @@ You can set up a different URL for synchronization between the primary and secon
 
 The **primary** site's Internal URL is used by **secondary** sites to contact
 it. For example, to sync repositories. The name Internal URL distinguishes it from
-[External URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab),
+[External URL](https://docs.gitlab.com/omnibus/settings/configuration/#configuring-the-external-url-for-gitlab),
 which is used by users. Internal URL does not need to be a private address.
 
 The Internal URL of a **secondary** site is used by the **primary** site to

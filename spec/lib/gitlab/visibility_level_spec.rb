@@ -5,6 +5,29 @@ require 'spec_helper'
 RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:klass) do
+    Class.new(ApplicationRecord) do
+      include Gitlab::VisibilityLevel
+
+      self.table_name = '_test_visibility_level'
+
+      def visibility_level_field
+        :visibility_level
+      end
+    end
+  end
+
+  before_all do
+    ApplicationRecord.connection.execute(
+      <<~SQL
+        CREATE TABLE IF NOT EXISTS _test_visibility_level (
+          id smallint PRIMARY KEY,
+          visibility_level integer DEFAULT 20 NOT NULL
+        );
+      SQL
+    )
+  end
+
   describe '.level_value' do
     where(:string_value, :integer_value) do
       [
@@ -95,6 +118,19 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
     it 'returns PUBLIC when no user is given' do
       expect(described_class.levels_for_user)
         .to eq([Gitlab::VisibilityLevel::PUBLIC])
+    end
+
+    context 'when include_private is true' do
+      it 'returns INTERNAL, PUBLIC, and PRIVATE for internal users' do
+        user = build(:user)
+
+        expect(described_class.levels_for_user(user, include_private: true))
+          .to eq([
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC,
+            Gitlab::VisibilityLevel::PRIVATE
+          ])
+      end
     end
   end
 
@@ -260,6 +296,26 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
     with_them do
       it 'returns the name of the visibility level' do
         expect(described_class.level_name(level_value)).to eq(level_name)
+      end
+    end
+  end
+
+  describe '.by_visibility_level' do
+    let_it_be(:private_record) { klass.create!(id: 1, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+    let_it_be(:internal_record) { klass.create!(id: 2, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let_it_be(:public_record) { klass.create!(id: 3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+    it 'returns records with the specified visibility level' do
+      expect(klass.by_visibility_level(Gitlab::VisibilityLevel::PUBLIC)).to contain_exactly(public_record)
+      expect(klass.by_visibility_level(Gitlab::VisibilityLevel::PRIVATE)).to contain_exactly(private_record)
+      expect(klass.by_visibility_level(Gitlab::VisibilityLevel::INTERNAL)).to contain_exactly(internal_record)
+    end
+
+    context 'when param is an array' do
+      it 'returns groups with specified visibility levels' do
+        result = klass.by_visibility_level([Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL])
+
+        expect(result).to match_array([public_record, internal_record])
       end
     end
   end

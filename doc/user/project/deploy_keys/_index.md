@@ -99,7 +99,7 @@ The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) provides a `gl
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
@@ -147,7 +147,7 @@ You can modify only a public deploy key's name.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To grant a public deploy key access to a project:
 
@@ -164,7 +164,7 @@ To grant a public deploy key access to a project:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To edit the project access permissions of a deploy key:
 
@@ -181,7 +181,7 @@ a deploy key stops working when the key is disabled.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable a deploy key:
 

@@ -2767,10 +2767,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     let_it_be_with_refind(:group) { create(:group, owners: user1) }
     let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
 
-    before do
-      stub_feature_flags(archive_group: true)
-    end
-
     context 'when unauthenticated' do
       it 'returns 401' do
         post api("/groups/#{group.id}/archive")
@@ -2822,17 +2818,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-      end
-
-      it 'returns 403' do
-        post api("/groups/#{group.id}/archive", user1)
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      end
-    end
   end
 
   describe "POST /groups/:id/unarchive" do
@@ -2843,7 +2828,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
 
     before_all do
-      stub_feature_flags(archive_group: true)
       group.namespace_settings.update!(archived: true)
     end
 

@@ -223,7 +223,7 @@ for the project. The following rules apply:
 - Project and group visibility settings do not affect eligibility.
 - Users [banned from a group](../../group/moderate_users.md) cannot be Code Owners.
 - Eligible users include those with:
-  - Direct membership in the project with at least the Developer role.
+  - Direct membership in the project with the Developer, Maintainer, or Owner role.
   - Membership in the project's group (direct or inherited).
   - Membership in any of the project's group's ancestors.
   - Direct or inherited membership in a group that has been invited to the project.
@@ -240,9 +240,9 @@ the following rules apply:
 - Eligible groups include:
   - The project's group.
   - The project's group's ancestors.
-  - Groups invited directly to the project with at least the Developer role.
+  - Groups invited directly to the project with the Developer, Maintainer, or Owner role.
   - Groups shared with the project's group or its ancestors.
-    The shared group must have at least the Developer role in the parent group.
+    The shared group must have the Developer, Maintainer, or Owner role in the parent group.
     For more information, see [groups shared with parent groups](advanced.md#groups-shared-with-parent-groups).
 
 ### Role eligibility

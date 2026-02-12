@@ -333,7 +333,7 @@ The following guide assumes that:
    the hostname mismatch causes errors.
 
 1. Optional. Generate your own SSL certificate and manually
-   [configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-ssl),
+   [configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#configuring-ssl),
    instead of using the generated certificate.
 
    You need at least the SSL certificate and key. Set the `postgresql['ssl_cert_file']` and

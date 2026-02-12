@@ -207,7 +207,7 @@ You should back up the configuration directory. At the very minimum, you must ba
 - `/etc/gitlab/gitlab-secrets.json`
 - `/etc/gitlab/gitlab.rb`
 
-For more information, see [Backup and restore Linux package (Omnibus) configuration](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration).
+For more information, see [Backup and restore Linux package (Omnibus) configuration](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-omnibus-gitlab-configuration).
 
 {{< /tab >}}
 

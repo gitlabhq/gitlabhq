@@ -238,7 +238,7 @@ sudo gitlab-rake gitlab:uploads:check
 
 After the restore is completed, it's recommended to generate database statistics to improve the database performance and avoid inconsistencies in the UI:
 
-1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database).
+1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database).
 1. Run the following:
 
    ```sql

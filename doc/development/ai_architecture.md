@@ -108,10 +108,6 @@ The following models have been approved for use:
 - [Anthropic models](https://docs.anthropic.com/en/docs/about-claude/models)
 - [Suggested reviewer](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10)
 
-### Embeddings
-
-For more information regarding GitLab embeddings, see our [AI embeddings architecture](ai_features/embeddings.md).
-
 ## Code Suggestions
 
 Code Suggestions is being integrated as part of the GitLab-Rails repository which will unify the architectures between Code Suggestions and AI features that use the abstraction layer, along with offering [self-managed support](#self-managed-support) for the other AI features.

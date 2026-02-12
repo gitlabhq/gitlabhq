@@ -33,7 +33,7 @@ The lowest supported PostgreSQL versions are listed in the
 [installation requirements](../../install/requirements.md#postgresql).
 
 Read more about update policies and warnings in the PostgreSQL
-[upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+[upgrade docs](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 | First GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
@@ -60,7 +60,7 @@ Read more about update policies and warnings in the PostgreSQL
 | 14.1 | 12.7, 13.3 | 12.7 | 12.7 | PostgreSQL 13 available for fresh installations if not using [Geo](../geo/_index.md#requirements-for-running-geo) or [Patroni](../postgresql/_index.md#postgresql-replication-and-failover-for-linux-package-installations). |
 | 14.0 | 12.7       | 12.7 | 12.7 | HA installations with repmgr are no longer supported and are prevented from upgrading to Linux package 14.0 |
 | 13.8 | 11.9, 12.4 | 12.4 | 12.4 | Package upgrades automatically performed PostgreSQL upgrade for nodes that are not part of a Geo or HA cluster. |
-| 13.7 | 11.9, 12.4 | 12.4 | 11.9 | For upgrades users can manually upgrade to 12.4 following the [upgrade documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server). |
+| 13.7 | 11.9, 12.4 | 12.4 | 11.9 | For upgrades users can manually upgrade to 12.4 following the [upgrade documentation](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server). |
 | 13.4 | 11.9, 12.4 | 11.9 | 11.9 | Package upgrades aborted if users not running PostgreSQL 11 already |
 | 13.3 | 11.7, 12.3 | 11.7 | 11.7 | Package upgrades aborted if users not running PostgreSQL 11 already |
 | 13.0 | 11.7 | 11.7 | 11.7 | Package upgrades aborted if users not running PostgreSQL 11 already |

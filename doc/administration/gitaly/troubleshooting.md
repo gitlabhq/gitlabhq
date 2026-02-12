@@ -174,7 +174,7 @@ Confirm the following are all true:
   UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../user/project/_index.md#create-a-blank-project)
   successfully creates the project but doesn't create the README.
-- When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
+- When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs/#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors
   when reaching the `/api/v4/internal/allowed` endpoint:
 

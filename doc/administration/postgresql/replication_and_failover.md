@@ -17,7 +17,7 @@ If you're a Free user of GitLab Self-Managed, consider using a cloud-hosted solu
 This document doesn't cover self-compiled installations.
 
 If a setup with replication and failover isn't what you were looking for, see
-the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
+the [database configuration document](https://docs.gitlab.com/omnibus/settings/database/)
 for the Linux packages.
 
 It's recommended to read this document fully before attempting to configure PostgreSQL with

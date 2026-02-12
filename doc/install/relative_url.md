@@ -22,7 +22,7 @@ this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
 This document describes how to run GitLab under a relative URL for installations
-from source. Check the relative URL documentation for the [Linux package](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab)
+from source. Check the relative URL documentation for the [Linux package](https://docs.gitlab.com/omnibus/settings/configuration/#configuring-a-relative-url-for-gitlab)
 or for [GitLab chart](https://docs.gitlab.com/charts/charts/globals/#configure-a-relative-url-root)
 to enable relative URLs if you are not installing from source.
 

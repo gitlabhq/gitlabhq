@@ -519,7 +519,7 @@ viewed via `kubectl logs`.
 
 1. Consider log retention settings. By default, Omnibus rotates any
    logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and
-   [keep at most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+   [keep at most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs/#logrotate).
    On GitLab.com, that setting is only 6 compressed files. These settings should suffice
    for most users, but you may need to tweak them in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
 

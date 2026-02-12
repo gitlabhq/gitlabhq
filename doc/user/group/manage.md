@@ -102,13 +102,9 @@ for the group's projects to meet your group's needs.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15019) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Archive a group and all of its subgroups and projects. When archived, a group and its contents become read-only, and group data is preserved for future reference.
 
@@ -117,6 +113,10 @@ Additionally, archived groups:
 - Display an `Archived` badge on the group page
 - Appear in the **Inactive** tab on the **Your work** page, and **Explore** page
 - Cannot be transferred to another namespace
+
+### Known limitations
+
+Issues from archived groups will continue to appear on issue boards until [issue 585677](https://gitlab.com/gitlab-org/gitlab/-/work_items/585677) is resolved.
 
 Prerequisites:
 

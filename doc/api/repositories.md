@@ -232,9 +232,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
+Retrieves the differences between two branches, tags, or commits in a specified project.
 This endpoint can be accessed without authentication if the repository is
-publicly accessible. Diffs can have an empty diff string if
-diff limits are reached.
+publicly accessible.
+
+When `compare_timeout` is `true`, the comparison exceeded size limits
+or timed out:
+
+- The `commits` array is always complete.
+- The `diffs` array might be incomplete.
+- Individual diff objects might have empty `diff` strings
+  if their content exceeded limits.
 
 ```plaintext
 GET /projects/:id/repository/compare
@@ -257,7 +265,7 @@ response attributes:
 | Attribute                | Type         | Description |
 |--------------------------|--------------|-------------|
 | `commit`                 | object       | Details of the latest commit in the comparison. |
-| `commits`                | object array | List of commits included in the comparison. |
+| `commits`                | object array | Commits between the two references. Always complete, even when `compare_timeout` is `true`. |
 | `commits[].author_email` | string       | Commit author's email address. |
 | `commits[].author_name`  | string       | Commit author's name. |
 | `commits[].created_at`   | datetime     | Commit creation timestamp. |
@@ -265,7 +273,7 @@ response attributes:
 | `commits[].short_id`     | string       | Short commit SHA. |
 | `commits[].title`        | string       | Commit title. |
 | `compare_same_ref`       | boolean      | If `true`, comparison uses the same reference for both from and to. |
-| `compare_timeout`        | boolean      | If `true`, comparison operation timed out. |
+| `compare_timeout`        | boolean      | If `true`, the comparison exceeded size limits or timed out. The `diffs` array might be incomplete. |
 | `diffs`                  | object array | List of file differences. |
 | `diffs[].a_mode`         | string       | Old file mode. |
 | `diffs[].b_mode`         | string       | New file mode. |

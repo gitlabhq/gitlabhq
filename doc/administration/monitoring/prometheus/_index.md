@@ -362,7 +362,7 @@ If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 [A GitLab test project exists](https://gitlab.com/gitlab-org/multi-user-prometheus) to provide access, but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
-having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block).
+having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx/#inserting-custom-nginx-settings-into-the-gitlab-server-block).
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console, or through a compatible dashboard tool.

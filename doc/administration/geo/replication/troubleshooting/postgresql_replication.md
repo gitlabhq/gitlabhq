@@ -22,7 +22,7 @@ Replication slots are marked as 'inactive' when the replication client (a second
 Inactive replication slots cause WAL files to be retained, because they are sent to the client when it reconnects and the slot becomes active once more.
 If the secondary site is not able to reconnect, use the following steps to remove its corresponding inactive replication slot:
 
-1. [Start a PostgreSQL console session](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database) on the Geo primary site's database node:
+1. [Start a PostgreSQL console session](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database) on the Geo primary site's database node:
 
    ```shell
    sudo gitlab-psql -d gitlabhq_production
@@ -167,7 +167,7 @@ To fix this issue, you can either:
 - Use the `--sslmode=verify-ca` argument with the `replicate-geo-database` command.
 - For an already replicated database, change `sslmode=verify-full` to `sslmode=verify-ca`
   in `/var/opt/gitlab/postgresql/data/gitlab-geo.conf` and run `gitlab-ctl restart postgresql`.
-- [Configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-ssl)
+- [Configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#configuring-ssl)
   with a custom certificate (including the host name that's used to connect to the database in the CN or SAN)
   instead of using the automatically generated certificate.
 

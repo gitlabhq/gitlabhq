@@ -1,5 +1,6 @@
 <script>
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
@@ -9,6 +10,9 @@ import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from './work_items_saved_view_selector.vue';
 
+// Fallback widths in case refs aren't available yet
+const DEFAULT_BUTTON_WIDTH = 100;
+
 export default {
   name: 'WorkItemsSavedViewsSelectors',
   components: {
@@ -16,8 +20,11 @@ export default {
     WorkItemsSavedViewSelector,
     GlDisclosureDropdown,
   },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
+  },
   i18n: {
-    defaultViewtitle: s__('WorkItem|All items'),
+    defaultViewTitle: s__('WorkItem|All items'),
   },
   inject: ['subscribedSavedViewLimit'],
   props: {
@@ -81,52 +88,92 @@ export default {
       this.$nextTick(this.detectViewsOverflow);
     },
   },
+  created() {
+    this.debouncedDetectOverflow = debounce(this.detectViewsOverflow, 100);
+  },
   mounted() {
     this.$nextTick(this.detectViewsOverflow);
-    window.addEventListener('resize', this.detectViewsOverflow);
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.detectViewsOverflow);
+    this.debouncedDetectOverflow.cancel();
   },
   methods: {
+    handleResize() {
+      this.debouncedDetectOverflow();
+    },
+    /**
+     * Calculates which views fit in the available space and which overflow.
+     * Ensures the currently active view always remains visible by swapping
+     * it with the last visible item if it would otherwise be in overflow.
+     */
     async detectViewsOverflow() {
-      const { viewsWrapper, measureContainer } = this.$refs;
+      const { viewsWrapper, measureContainer, defaultButton, addViewDropdown, overflowDropdown } =
+        this.$refs;
 
       if (!viewsWrapper || !measureContainer) return;
 
-      // reset to full list so the wrapper we are measuring against can expand
+      // Reset to full list so we can measure all items
       this.visibleViews = this.savedViews;
       this.overflowedViews = [];
       await this.$nextTick();
 
-      const availableWidth = viewsWrapper.clientWidth;
-      const items = measureContainer.children;
+      // Use measured widths from refs, with fallbacks
+      const defaultBtnWidth = defaultButton?.offsetWidth || DEFAULT_BUTTON_WIDTH;
+      const addViewWidth = addViewDropdown?.$el?.offsetWidth || DEFAULT_BUTTON_WIDTH;
+      const overflowWidth = overflowDropdown?.$el?.offsetWidth || DEFAULT_BUTTON_WIDTH;
 
+      const availableWidth = viewsWrapper.clientWidth - defaultBtnWidth - addViewWidth;
+      const items = Array.from(measureContainer.children);
+
+      // Find the currently active view index
+      const activeViewIndex = this.activeViewId
+        ? this.savedViews.findIndex(
+            (view) => getIdFromGraphQLId(view.id).toString() === this.activeViewId,
+          )
+        : -1;
+
+      let totalWidth = 0;
       let firstOverflowIndex = null;
 
-      Array.from(items).some((item, index) => {
-        const itemRight = item.offsetLeft + item.offsetWidth;
+      items.some((item, index) => {
+        const itemWidth = item.offsetWidth;
+        const isLastItem = index === items.length - 1;
+        const widthNeededForOverflow = isLastItem ? 0 : overflowWidth;
 
-        // If item is overflowing the container, we are assigning the first overflow index
-        if (itemRight > availableWidth) {
-          firstOverflowIndex = Math.max(0, index - 2);
+        if (totalWidth + itemWidth + widthNeededForOverflow > availableWidth) {
+          // Push previous item to overflow to make room for current item
+          firstOverflowIndex = Math.max(0, index - 1);
           return true;
         }
+
+        totalWidth += itemWidth;
         return false;
       });
 
-      if (firstOverflowIndex === null) {
-        return;
+      if (firstOverflowIndex === null) return;
+
+      const visible = this.savedViews.slice(0, firstOverflowIndex);
+      let overflowed = this.savedViews.slice(firstOverflowIndex);
+
+      // Ensure active view stays visible by swapping with last visible item
+      if (activeViewIndex >= firstOverflowIndex && activeViewIndex !== -1) {
+        const activeView = this.savedViews[activeViewIndex];
+        overflowed = overflowed.filter((v) => v.id !== activeView.id);
+
+        if (visible.length > 0) {
+          const lastVisible = visible.pop();
+          overflowed.unshift(lastVisible);
+        }
+
+        visible.push(activeView);
       }
 
-      // separating views into two arrays based on the first overflow index
-      this.visibleViews = this.savedViews.slice(0, firstOverflowIndex);
-      this.overflowedViews = this.savedViews.slice(firstOverflowIndex);
+      this.visibleViews = visible;
+      this.overflowedViews = overflowed;
     },
     onOverflowViewClick(view) {
       const overflowIndex = this.overflowedViews.findIndex((item) => item.name === view.name);
 
-      // swaps selected view with the last visible view to make it active
       const [selectedOverflowView] = this.overflowedViews.splice(overflowIndex, 1);
       const removedVisibleView = this.visibleViews.pop();
 
@@ -193,7 +240,6 @@ export default {
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
-
         this.$toast.show(s__('WorkItem|View removed from your list'));
       } catch (e) {
         this.$emit(
@@ -212,11 +258,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: workItemSavedViewDelete,
-          variables: {
-            input: {
-              id: view.id,
-            },
-          },
+          variables: { input: { id: view.id } },
           optimisticResponse: {
             workItemSavedViewDelete: {
               __typename: 'WorkItemSavedViewDeletePayload',
@@ -237,7 +279,6 @@ export default {
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
-
         this.$toast.show(s__('WorkItem|View has been deleted'));
       } catch (e) {
         this.$emit(
@@ -257,16 +298,18 @@ export default {
   >
     <div
       ref="viewsWrapper"
+      v-gl-resize-observer="handleResize"
       class="gl-border-b gl-flex gl-w-full gl-min-w-0 gl-flex-nowrap sm:gl-border-none"
     >
       <button
+        ref="defaultButton"
         category="tertiary"
         class="default-selector gl-h-[50px] !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
         :class="{ 'default-selector-active gl-font-bold': isDefaultButtonActive }"
         data-testid="saved-views-default-view-selector"
         @click="$emit('reset-to-default-view')"
       >
-        {{ $options.i18n.defaultViewtitle }}
+        {{ $options.i18n.defaultViewTitle }}
       </button>
 
       <ul ref="viewsContainer" class="gl-mb-0 gl-flex gl-flex-nowrap gl-overflow-hidden gl-p-0">
@@ -288,9 +331,11 @@ export default {
         </li>
       </ul>
 
+      <!-- Hidden container for measuring all view widths -->
       <ul
         ref="measureContainer"
         class="gl-pointer-events-none gl-invisible gl-absolute gl-mb-0 gl-flex gl-flex-nowrap gl-p-0"
+        aria-hidden="true"
       >
         <li
           v-for="view in savedViews"
@@ -311,6 +356,7 @@ export default {
 
       <gl-disclosure-dropdown
         v-if="overflowedViews.length > 0"
+        ref="overflowDropdown"
         category="tertiary"
         :toggle-text="moreItemsText"
         no-caret
@@ -321,6 +367,7 @@ export default {
       />
 
       <work-items-create-saved-view-dropdown
+        ref="addViewDropdown"
         :full-path="fullPath"
         :sort-key="sortKey"
         :filters="filters"
@@ -331,7 +378,7 @@ export default {
     </div>
 
     <div
-      class="gl-ml-auto gl-mt-3 gl-flex gl-items-center gl-justify-end gl-gap-3 sm:gl-ml-6 sm:gl-mt-0"
+      class="gl-ml-auto gl-mt-3 gl-flex gl-items-center gl-justify-end gl-gap-3 sm:gl-ml-3 sm:gl-mt-0"
     >
       <slot name="header-area"></slot>
     </div>

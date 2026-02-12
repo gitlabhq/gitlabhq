@@ -97,11 +97,17 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       end
     end
 
-    it 'does not delete type when there are related issues' do
-      type = work_item.work_item_type
+    context 'when work_item_system_defined_type FF is disabled' do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
 
-      expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
-      expect(Issue.count).to eq(1)
+      it 'does not delete type when there are related issues' do
+        type = work_item.work_item_type
+
+        expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
+        expect(Issue.count).to eq(1)
+      end
     end
   end
 

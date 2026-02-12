@@ -246,20 +246,25 @@ RSpec.describe Issue, feature_category: :team_planning do
       let_it_be(:issue_type) { create(:work_item_type, :issue) }
       let_it_be(:incident_type) { create(:work_item_type, :incident) }
       let_it_be(:project) { create(:project) }
+      let(:provider) { ::WorkItems::TypesFramework::Provider.new(issue.namespace) }
+
+      before do
+        allow(::WorkItems::TypesFramework::Provider).to receive(:new).and_return(provider)
+      end
 
       context 'when a type was already set' do
         let_it_be(:issue, refind: true) { create(:issue, project: project) }
 
-        it 'does not fetch a work item type from the DB' do
+        it 'does not fetch a work item type from the provider' do
           expect(issue.work_item_type_id).to eq(issue_type.id)
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           expect(issue).to be_valid
         end
 
-        it 'does not fetch a work item type from the DB when updating the type' do
+        it 'does not fetch a work item type from the provider when updating the type' do
           expect(issue.work_item_type_id).to eq(issue_type.id)
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           issue.update!(work_item_type: incident_type)
 
@@ -270,8 +275,8 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to eq(issue_type.id)
 
           expect do
-            issue.update!(work_item_type: nil)
-          end.to not_change(issue, :work_item_type).from(issue_type)
+            issue.update!(work_item_type_id: nil)
+          end.to not_change(issue, :work_item_type_id).from(issue_type.id)
         end
       end
 
@@ -286,9 +291,9 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to eq(issue_type.id)
         end
 
-        it 'does not fetch type from DB if provided during update' do
+        it 'does not fetch type from the provider if provided during update' do
           expect(issue.work_item_type_id).to be_nil
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           issue.update!(work_item_type: incident_type)
 
@@ -1723,6 +1728,8 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue = build(:issue, base_type)
         supports_assignee = widgets.include?(:assignees)
 
+        skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
         expect(issue.supports_assignee?).to eq(supports_assignee)
       end
     end
@@ -1896,7 +1903,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#work_item_type_with_default' do
     subject { described_class.new.work_item_type_with_default }
 
-    it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
+    it { is_expected.to eq(WorkItems::TypesFramework::Provider.new.default_issue_type) }
   end
 
   describe '#update_search_data!' do
@@ -1936,6 +1943,8 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'uses the issue type as the reference name' do
         issue = create(:issue, issue_type, project: reusable_project)
 
+        skip if !Gitlab.ee? && issue_type == :test_case
+
         expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
       end
     end
@@ -1963,12 +1972,12 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#has_widget?' do
-    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
+    let(:work_item_type) { create(:work_item_type, :task) }
+    let(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
 
     # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.
     # Using const_get in the implementation will make sure the widget exists in CE (no licenses)
-    let(:widget_type) { :assignees }
+    let(:widget_type) { :designs }
 
     subject { issue.has_widget?(widget_type) }
 
@@ -1981,13 +1990,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when the work item has the widget' do
-      before do
-        create(
-          :widget_definition,
-          widget_type: widget_type,
-          work_item_type: work_item_type
-        )
-      end
+      let(:work_item_type) { create(:work_item_type, :issue) }
 
       it { is_expected.to be_truthy }
     end

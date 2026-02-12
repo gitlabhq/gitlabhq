@@ -27,7 +27,7 @@ To install a single node GitLab instance and configure it to be secure:
 
 ## Before you begin
 
-- A domain name, and a correct [setup of DNS](https://docs.gitlab.com/omnibus/settings/dns.html).
+- A domain name, and a correct [setup of DNS](https://docs.gitlab.com/omnibus/settings/dns/).
 - A Debian-based server with the following minimum specs:
   - 8 vCPU
   - 7.2 GB memory
@@ -294,7 +294,7 @@ you of GitLab activity.
 
 #### Configure SMTP
 
-In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
+In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp/)
 server and use the [Mailgun](https://www.mailgun.com/) SMTP provider.
 
 First, start by creating an encrypted file that will contain the login
@@ -361,7 +361,7 @@ You should now be able to send emails. To test that the configuration worked:
    ```
 
 If you're unable to send emails, see the
-[SMTP troubleshooting section](https://docs.gitlab.com/omnibus/settings/smtp.html#troubleshooting).
+[SMTP troubleshooting section](https://docs.gitlab.com/omnibus/settings/smtp/#troubleshooting).
 
 #### Require email verification for locked accounts
 

@@ -39,7 +39,7 @@ Specifically, you should exclude the following GitLab directories from scanning:
 - `/var/log/gitlab/`
 - `/opt/gitlab/`
 
-You can find all those directories listed in the [Linux package configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration.html).
+You can find all those directories listed in the [Linux package configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration/).
 
 ### User accounts
 
@@ -81,7 +81,7 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 - [Review the log types and contents produced by GitLab](../administration/logs/_index.md).
 - [Review Runner job logs information](../administration/cicd/job_logs.md).
 - [How to use correlation ID to trace logs](../administration/logs/tracing_correlation_id.md).
-- [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs.html).
+- [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs/).
 - [How to configure audit event streaming](../administration/compliance/audit_event_streaming.md).
 
 ## Response

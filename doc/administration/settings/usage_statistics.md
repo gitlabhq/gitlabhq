@@ -151,7 +151,7 @@ To send usage statistics to GitLab Inc., you must allow network traffic from you
 GitLab instance to the host `version.gitlab.com` on port `443`.
 
 If your GitLab instance is behind a proxy, set the appropriate
-[proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+[proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables/).
 
 ## Enable or disable Service Ping
 

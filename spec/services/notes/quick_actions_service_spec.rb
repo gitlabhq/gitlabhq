@@ -354,9 +354,9 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/add_child' do
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
-      let_it_be(:child) { create(:work_item, :objective, project: project) }
-      let_it_be(:second_child) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :issue, project: project) }
+      let_it_be(:child) { create(:work_item, :task, project: project) }
+      let_it_be(:second_child) { create(:work_item, :task, project: project) }
       let_it_be(:note_text) { "/add_child #{child.to_reference}, #{second_child.to_reference}" }
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
       let(:children) { [child, second_child] }
@@ -379,8 +379,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/remove_child' do
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :issue, project: project) }
+      let_it_be_with_reload(:child) { create(:work_item, :task, project: project) }
       let_it_be(:note_text) { "/remove_child #{child.to_reference}" }
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
@@ -421,8 +421,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/set_parent' do
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
+      let_it_be_with_reload(:parent) { create(:work_item, :issue, project: project) }
       let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
@@ -460,8 +460,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/remove_parent' do
-      let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:parent) { create(:work_item, :issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
       let_it_be(:note_text) { "/remove_parent" }
       let(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
 
@@ -651,8 +651,15 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
           end
 
           context 'when work item type does not have the development widget' do
-            let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
-            let_it_be(:noteable) { create(:work_item, project: project, work_item_type: work_item_type) }
+            let(:work_item_type) { create(:work_item_type, :issue) }
+            let(:noteable) { create(:work_item, project: project, work_item_type: work_item_type) }
+
+            before do
+              # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
+              # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
+              widgets = work_item_type.widget_classes(project).reject { |widget| widget == WorkItems::Widgets::Development }
+              allow(noteable.work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+            end
 
             it 'does not create a merge request' do
               expect { execute(note) }.to not_change { MergeRequest.count }

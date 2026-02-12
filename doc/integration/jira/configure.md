@@ -37,7 +37,7 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 
 Prerequisites:
 
-- Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-relative-url-for-gitlab).
+- Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab).
 - **For Jira Cloud**:
   - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
   - If you've enabled
