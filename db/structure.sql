@@ -12778,6 +12778,56 @@ CREATE SEQUENCE ai_catalog_items_id_seq
 
 ALTER SEQUENCE ai_catalog_items_id_seq OWNED BY ai_catalog_items.id;
 
+CREATE TABLE ai_catalog_mcp_servers (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    created_by_id bigint,
+    transport smallint DEFAULT 0 NOT NULL,
+    auth_type smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    description text,
+    url text NOT NULL,
+    homepage_url text,
+    oauth_client_xid text,
+    oauth_client_secret jsonb,
+    CONSTRAINT check_20bd8ced32 CHECK ((char_length(description) <= 2048)),
+    CONSTRAINT check_60113a60d2 CHECK ((char_length(oauth_client_xid) <= 255)),
+    CONSTRAINT check_b2557f2a96 CHECK ((char_length(homepage_url) <= 2048)),
+    CONSTRAINT check_d5800eddf1 CHECK ((char_length(url) <= 2048)),
+    CONSTRAINT check_fcd5ded883 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_catalog_mcp_servers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_mcp_servers_id_seq OWNED BY ai_catalog_mcp_servers.id;
+
+CREATE TABLE ai_catalog_mcp_servers_users (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    ai_catalog_mcp_server_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    token jsonb,
+    refresh_token jsonb
+);
+
+CREATE SEQUENCE ai_catalog_mcp_servers_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_mcp_servers_users_id_seq OWNED BY ai_catalog_mcp_servers_users.id;
+
 CREATE TABLE ai_code_suggestion_events (
     id bigint NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -14958,7 +15008,8 @@ CREATE TABLE audit_events_group_external_streaming_destinations (
     encrypted_secret_token_iv bytea NOT NULL,
     legacy_destination_ref bigint,
     active boolean DEFAULT true NOT NULL,
-    CONSTRAINT check_97d157fbd0 CHECK ((char_length(name) <= 72))
+    CONSTRAINT check_97d157fbd0 CHECK ((char_length(name) <= 72)),
+    CONSTRAINT check_audit_event_streams_group_secret_token_max_length CHECK ((octet_length(encrypted_secret_token) <= 4112))
 );
 
 CREATE SEQUENCE audit_events_group_external_streaming_destinations_id_seq
@@ -15059,7 +15110,8 @@ CREATE TABLE audit_events_instance_external_streaming_destinations (
     encrypted_secret_token_iv bytea NOT NULL,
     legacy_destination_ref bigint,
     active boolean DEFAULT true NOT NULL,
-    CONSTRAINT check_219decfb51 CHECK ((char_length(name) <= 72))
+    CONSTRAINT check_219decfb51 CHECK ((char_length(name) <= 72)),
+    CONSTRAINT check_audit_event_streams_instance_secret_token_max_length CHECK ((octet_length(encrypted_secret_token) <= 4112))
 );
 
 CREATE SEQUENCE audit_events_instance_external_streaming_destinations_id_seq
@@ -34152,6 +34204,10 @@ ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('a
 
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_catalog_mcp_servers ALTER COLUMN id SET DEFAULT nextval('ai_catalog_mcp_servers_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_catalog_mcp_servers_users ALTER COLUMN id SET DEFAULT nextval('ai_catalog_mcp_servers_users_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_code_suggestion_events ALTER COLUMN id SET DEFAULT nextval('ai_code_suggestion_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ai_conversation_messages_id_seq'::regclass);
@@ -37011,6 +37067,12 @@ ALTER TABLE ONLY ai_catalog_item_versions
 
 ALTER TABLE ONLY ai_catalog_items
     ADD CONSTRAINT ai_catalog_items_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_mcp_servers
+    ADD CONSTRAINT ai_catalog_mcp_servers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_mcp_servers_users
+    ADD CONSTRAINT ai_catalog_mcp_servers_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_code_suggestion_events
     ADD CONSTRAINT ai_code_suggestion_events_pkey PRIMARY KEY (id, "timestamp");
@@ -42702,6 +42764,10 @@ CREATE UNIQUE INDEX idx_ai_catalog_item_version_dependencies_version_and_depende
 
 CREATE UNIQUE INDEX idx_ai_catalog_item_version_unique ON ai_catalog_item_versions USING btree (ai_catalog_item_id, version);
 
+CREATE INDEX idx_ai_catalog_mcp_servers_on_organization_id ON ai_catalog_mcp_servers USING btree (organization_id);
+
+CREATE INDEX idx_ai_catalog_mcp_servers_users_on_organization_id ON ai_catalog_mcp_servers_users USING btree (organization_id);
+
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
 
 CREATE UNIQUE INDEX idx_ai_events_counts_unique_tuple ON ONLY ai_events_counts USING btree (events_date, namespace_id, event, user_id) INCLUDE (total_occurrences) NULLS NOT DISTINCT;
@@ -43585,6 +43651,10 @@ CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (p
 CREATE INDEX index_ai_catalog_items_on_verification_level ON ai_catalog_items USING btree (verification_level);
 
 CREATE INDEX index_ai_catalog_items_where_deleted_at_is_null ON ai_catalog_items USING btree (deleted_at) WHERE (deleted_at IS NULL);
+
+CREATE INDEX index_ai_catalog_mcp_servers_on_created_by_id ON ai_catalog_mcp_servers USING btree (created_by_id);
+
+CREATE INDEX index_ai_catalog_mcp_servers_users_on_user_id ON ai_catalog_mcp_servers_users USING btree (user_id);
 
 CREATE INDEX index_ai_code_suggestion_events_on_organization_id ON ONLY ai_code_suggestion_events USING btree (organization_id);
 
@@ -45755,6 +45825,8 @@ CREATE INDEX index_manifest_states_on_verification_state ON dependency_proxy_man
 CREATE INDEX index_manifest_states_pending_verification ON dependency_proxy_manifest_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_maven_upstream_rules_on_group_id ON virtual_registries_packages_maven_upstream_rules USING btree (group_id);
+
+CREATE UNIQUE INDEX index_mcp_servers_users_on_server_and_user ON ai_catalog_mcp_servers_users USING btree (ai_catalog_mcp_server_id, user_id);
 
 CREATE INDEX index_member_approval_on_member_id ON member_approvals USING btree (member_id);
 
@@ -54323,6 +54395,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_386a642e13 FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_mcp_servers_users
+    ADD CONSTRAINT fk_3893673d80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -55220,6 +55295,9 @@ ALTER TABLE ONLY project_secrets_managers
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT fk_8f8f23decb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_mcp_servers_users
+    ADD CONSTRAINT fk_8fac70cb26 FOREIGN KEY (ai_catalog_mcp_server_id) REFERENCES ai_catalog_mcp_servers(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT fk_909d62907f FOREIGN KEY (component_id) REFERENCES catalog_resource_components(id) ON DELETE CASCADE;
 
@@ -55831,6 +55909,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY packages_debian_project_architectures
     ADD CONSTRAINT fk_cd96fce0a1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_mcp_servers
+    ADD CONSTRAINT fk_cdae3de8e1 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY cluster_providers_aws
     ADD CONSTRAINT fk_cdbcadde6d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -56960,6 +57041,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_mcp_servers_users
+    ADD CONSTRAINT fk_rails_3f8adbb880 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY group_type_ci_runner_machines
     ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -57430,6 +57514,9 @@ ALTER TABLE uploads_9ba88c4165
 
 ALTER TABLE security_findings
     ADD CONSTRAINT fk_rails_729b763a54 FOREIGN KEY (scanner_id) REFERENCES vulnerability_scanners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_mcp_servers
+    ADD CONSTRAINT fk_rails_7406643003 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT fk_rails_745925b412 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

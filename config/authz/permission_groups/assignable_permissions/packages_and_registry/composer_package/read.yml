@@ -1,8 +1,0 @@
----
-name: read_composer_package
-description: Grants the ability to read Composer packages
-permissions:
-  - read_composer_package
-boundaries:
-  - group
-  - project

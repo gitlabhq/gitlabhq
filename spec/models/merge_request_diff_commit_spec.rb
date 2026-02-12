@@ -279,16 +279,6 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
               .not_to change { MergeRequest::CommitsMetadata.count }
           end
         end
-
-        context 'when merge_request_diff_commits_dedup is disabled' do
-          before do
-            stub_feature_flags(merge_request_diff_commits_dedup: false)
-          end
-
-          it 'does not create merge_request_commits_metadata records' do
-            expect { create_bulk(merge_request_diff_id) }.not_to change { MergeRequest::CommitsMetadata.count }
-          end
-        end
       end
     end
 
@@ -452,17 +442,6 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           expected_method_value = expected_method_value.to_i if expected_method_value.is_a?(Time)
 
           expect(method_value).to eq(expected_method_value)
-        end
-
-        context 'when merge_request_diff_commits_dedup is disabled' do
-          before do
-            stub_feature_flags(merge_request_diff_commits_dedup: false)
-          end
-
-          it 'returns data from diff commit' do
-            expect(diff_commit_with_metadata.public_send(delegated_method))
-              .not_to eq(commits_metadata.public_send(delegated_method))
-          end
         end
       end
 

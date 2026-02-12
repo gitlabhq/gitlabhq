@@ -228,7 +228,6 @@ create_snippet
 create_squash_option
 create_subgroup
 create_task
-create_terraform_state
 create_test_case
 create_timelog
 create_todo
@@ -610,7 +609,6 @@ read_statistics
 read_storage_disk_path
 read_subscription_usage
 read_target_branch_rule
-read_terraform_state
 read_timelog_category
 read_todo
 read_token

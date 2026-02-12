@@ -95,6 +95,14 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   describe 'GET /projects/:id/terraform/state/:name' do
     subject(:request) { get api(state_path), headers: auth_header }
 
+    it_behaves_like 'authorizing granular token permissions', :read_terraform_state do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api(state_path, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'endpoint with unique user tracking'
     it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
@@ -300,6 +308,19 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         params: params,
         headers: auth_header,
         send_rewritten_field: true)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_terraform_state do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        workhorse_finalize(
+          api(state_path, personal_access_token: pat),
+          method: :post,
+          file_key: :file,
+          params: params,
+          send_rewritten_field: true)
+      end
     end
 
     it_behaves_like 'endpoint with unique user tracking'
@@ -515,6 +536,14 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   describe 'DELETE /projects/:id/terraform/state/:name' do
     subject(:request) { delete api(state_path), headers: auth_header }
 
+    it_behaves_like 'authorizing granular token permissions', :delete_terraform_state do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api(state_path, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_terraform_state do
       let_it_be(:user) { maintainer }
       let(:auth_header) { job_basic_auth_header(target_job) }
@@ -584,6 +613,14 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
 
     subject(:request) { post api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :lock_terraform_state do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api("#{state_path}/lock", personal_access_token: pat), params: params
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_terraform_state do
       let_it_be(:user) { maintainer }
@@ -683,6 +720,15 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
 
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :unlock_terraform_state do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:lock_id) { '123.456' }
+      let(:request) do
+        delete api("#{state_path}/lock", personal_access_token: pat), params: params
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_terraform_state do
       let_it_be(:user) { maintainer }

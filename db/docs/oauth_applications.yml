@@ -9,7 +9,6 @@ description: OAuth applications for GitLab as an OAuth provider. Used as shardin
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e41dadcb33fda44ee274daa673bd933e13aa90eb
 milestone: '7.7'
 gitlab_schema: gitlab_main_org
-sharding_key:
-  organization_id: organizations
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579291
 organization_transfer_support: todo
 table_size: small

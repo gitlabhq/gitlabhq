@@ -180,36 +180,10 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
 
     context 'when SHAs are only present in `merge_request_diff_commits` table' do
       it_behaves_like 'finder for oldest MR per commit'
-
-      context 'when feature flag merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
-        end
-
-        it_behaves_like 'finder for oldest MR per commit'
-      end
     end
 
     context 'when SHAs are only present in `merge_request_commits_metadata` table' do
       it_behaves_like 'finder for oldest MR per commit', with_metadata: true
-
-      context 'when feature flag merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
-        end
-
-        it 'reverts to query `merge_request_diff_commits` table' do
-          sha = Digest::SHA1.hexdigest('foo')
-          mr1 = create(:merge_request, :merged, target_project: project)
-          create_commit(mr1.merge_request_diff, sha, create_metadata: true)
-
-          commits = [double(:commit, id: sha)]
-
-          expect(MergeRequest::CommitsMetadata)
-            .not_to receive(:oldest_merge_request_id_per_commit)
-          expect(described_class.new(project).execute(commits)).to be_empty
-        end
-      end
     end
 
     context 'when SHAs are present in both tables' do

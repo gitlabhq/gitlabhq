@@ -1081,17 +1081,11 @@ module Ci
       @all_merge_requests ||=
         if merge_request?
           MergeRequest.where(id: merge_request_id)
-        elsif Feature.enabled?(:merge_request_diff_commits_dedup, project)
-          # When FF merge_request_diff_commits_dedup is enabled, commits SHAs are stored in
-          # `merge_request_commits_metadata` with `project_id` set to the MR's target_project_id.
+        else
           merge_requests_for_source_project = MergeRequest.where(source_project_id: project_id, source_branch: ref)
           target_project_ids = merge_requests_for_source_project.from_fork.pluck(:target_project_id)
           target_project_ids << project_id
-
-          merge_requests_for_source_project.by_commit_sha(project, sha, target_project_ids)
-        else
-          MergeRequest.where(source_project_id: project_id, source_branch: ref)
-            .by_commit_sha(project, sha)
+          merge_requests_for_source_project.by_commit_sha(target_project_ids, sha)
         end
     end
 

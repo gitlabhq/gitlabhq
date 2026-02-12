@@ -20,47 +20,23 @@ between your coding environment and GitLab.
 
 ## Available extensions
 
-GitLab offers extensions for the following development environments:
+GitLab offers the following IDE extensions with access to GitLab Duo and other GitLab features used
+to manage projects and applications.
 
-- [GitLab Workflow extension for VS Code](visual_studio_code/_index.md): Bring GitLab Duo,
-  and other GitLab features, into Visual Studio Code.
-- [GitLab Duo for JetBrains IDEs](jetbrains_ide/_index.md): Bring GitLab Duo AI capabilities
-  to IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs.
-- [GitLab Extension for Visual Studio](visual_studio/_index.md): Bring GitLab Duo Code Suggestions to Visual Studio.
-- [GitLab for Eclipse](eclipse/_index.md): Bring GitLab Duo capabilities to Eclipse.
+| Extension                                                       | GitLab Duo Chat       | Code Suggestions | Software Development<br>Flow | Other GitLab features |
+|-----------------------------------------------------------------|-----------------------|-----------------------------|-----------------------|---------------------------|
+| [GitLab for VS Code](visual_studio_code/_index.md)              | {{< yes >}}           | {{< yes >}}                 | {{< yes >}}               | {{< yes >}}           |
+| [GitLab Duo plugin for JetBrains IDEs](jetbrains_ide/_index.md) | {{< yes >}}           | {{< yes >}}                 | {{< yes >}}               | {{< no >}}            |
+| [GitLab extension for Visual Studio](visual_studio/_index.md)   | {{< yes >}}           | {{< yes >}}                 | {{< yes >}}               | {{< no >}}            |
+| [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}} (Classic) | {{< yes >}}                 | {{< no >}}                | {{< no >}}            |
 
-If you prefer a command-line interface, try:
+If you prefer a command-line interface, try the following:
 
-- [`glab`](gitlab_cli/_index.md): The GitLab CLI.
-- [`duo`](../user/gitlab_duo_cli/_index.md): The GitLab Duo CLI. Bring GitLab Duo Chat (Agentic) to your terminal to ask
-  complex questions about your codebase and perform actions on your behalf.
-- [GitLab.nvim for Neovim](neovim/_index.md): The GitLab plugin for Neovim. Bring GitLab Duo Code
-  Suggestions directly to Neovim in your terminal window.
-
-## Features
-
-GitLab editor extensions offer powerful GitLab Duo integration, with Visual Studio Code and `glab` featuring
-an integrated GitLab workflow experience.
-
-### GitLab Duo Code Suggestions
-
-[GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../user/project/repository/code_suggestions/_index.md) provide AI-assisted coding capabilities:
-
-- Code completion: Suggests completions to the current line you are typing.
-  Use it to complete one or a few lines of code.
-- Code generation: Generates code based on a natural language code comment block.
-  Write a comment, then press <kbd>Enter</kbd> to generate code based on the context of your
-  comment, and the rest of your code.
-- Context-aware suggestions: Uses open files in your IDE, content before and after the cursor,
-  filename, and extension type to provide relevant suggestions.
-- Support for multiple languages: Works with various programming languages supported by your development environment.
-
-### GitLab Duo Chat
-
-Use [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) or [GitLab Duo Chat (Classic)](../user/gitlab_duo_chat/_index.md) to interact with an AI assistant directly in your development environment.
-
-- Ask about GitLab: Get answers about how GitLab works, concepts, and step-by-step instructions.
-- Code-related queries: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
+| Extension                                                      | GitLab Duo Chat       | Code Suggestions | Software Development<br>Flow | Other GitLab features |
+|----------------------------------------------------------------|-----------------------|-----------------------------|-----------------------|---------------------------|
+| [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}} (Classic) | {{< no >}}                  | {{< no >}}                | {{< yes >}}           |
+| [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}} (Agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}}            |
+| [GitLab.nvim for Neovim](neovim/_index.md)                     | {{< no >}}            | {{< yes >}}                 | {{< no >}}                | {{< no >}}            |
 
 ## Security considerations
 
@@ -85,6 +61,8 @@ or want to contribute to the development of our extensions:
 
 ## Related topics
 
+- [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)
+- [GitLab Duo (Classic)](../user/gitlab_duo/feature_summary.md)
 - [How we created a GitLab Workflow Extension for VS Code](https://about.gitlab.com/blog/use-gitlab-with-vscode/)
 - [GitLab for Visual Studio](https://about.gitlab.com/blog/gitlab-visual-studio-extension/)
 - [GitLab for JetBrains and Neovim](https://about.gitlab.com/blog/gitlab-jetbrains-neovim-plugins/)

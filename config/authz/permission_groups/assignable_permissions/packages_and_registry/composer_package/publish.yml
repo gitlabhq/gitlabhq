@@ -1,7 +1,0 @@
----
-name: publish_composer_package
-description: Grants the ability to publish Composer packages
-permissions:
-  - publish_composer_package
-boundaries:
-  - project

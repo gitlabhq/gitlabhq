@@ -46,7 +46,7 @@ module API
       ]
       tags METADATA_TAGS
     end
-    route_setting :authorization, permissions: :read_instance_metadata, boundary_type: :instance
+    route_setting :authorization, permissions: :read_metadata, boundary_type: :instance
     get '/metadata' do
       run_metadata_query
     end
@@ -63,7 +63,7 @@ module API
       tags METADATA_TAGS
     end
 
-    route_setting :authorization, permissions: :read_instance_metadata, boundary_type: :instance
+    route_setting :authorization, permissions: :read_metadata, boundary_type: :instance
     get '/version' do
       run_metadata_query
     end

@@ -1,0 +1,5 @@
+---
+name: read_metadata
+description: Grants the ability to read metadata
+boundaries:
+  - instance

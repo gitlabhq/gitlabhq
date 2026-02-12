@@ -88,8 +88,6 @@ module Gitlab
         end
 
         def find_merge_request_commits_metadata
-          return unless diff_commits_dedup_enabled?
-
           metadata = {
             'project_id' => project.id,
             'commit_author' => @attributes['commit_author'],
@@ -137,26 +135,24 @@ module Gitlab
 
           merge_request_commits_metadata = row.delete('merge_request_commits_metadata')
 
-          if diff_commits_dedup_enabled?
-            commit_metadata_attrs = row.slice('authored_date', 'committed_date', 'sha', 'message')
-            commit_metadata_attrs['project_id'] = project.id
-            commit_metadata_attrs['commit_author'] = row['commit_author']
-            commit_metadata_attrs['committer'] = row['committer']
+          commit_metadata_attrs = row.slice('authored_date', 'committed_date', 'sha', 'message')
+          commit_metadata_attrs['project_id'] = project.id
+          commit_metadata_attrs['commit_author'] = row['commit_author']
+          commit_metadata_attrs['committer'] = row['committer']
 
-            row['merge_request_commits_metadata'] = merge_request_commits_metadata ||
-              find_or_create_merge_request_commits_metadata(commit_metadata_attrs)
+          row['merge_request_commits_metadata'] = merge_request_commits_metadata ||
+            find_or_create_merge_request_commits_metadata(commit_metadata_attrs)
 
-            %w[committer commit_author authored_date committed_date sha message].each do |deduplicated_column|
-              row.delete(deduplicated_column)
-            end
+          %w[committer commit_author authored_date committed_date sha message].each do |deduplicated_column|
+            row.delete(deduplicated_column)
+          end
 
-            unless row['merge_request_commits_metadata'].present?
-              Gitlab::ErrorTracking.track_exception(
-                MergeRequestDiffCommit::CouldNotCreateMetadataError.new,
-                message: 'Failed to create metadata during import',
-                project_id: project.id
-              )
-            end
+          unless row['merge_request_commits_metadata'].present?
+            Gitlab::ErrorTracking.track_exception(
+              MergeRequestDiffCommit::CouldNotCreateMetadataError.new,
+              message: 'Failed to create metadata during import',
+              project_id: project.id
+            )
           end
 
           MergeRequestDiffCommit.new(row)
@@ -260,11 +256,6 @@ module Gitlab
           # Only the 'iid' and `project` attributes should be present
           ::Ci::Pipeline.find_by(iid: attributes['iid'], project_id: project.id)
         end
-
-        def diff_commits_dedup_enabled?
-          Feature.enabled?(:merge_request_diff_commits_dedup, project)
-        end
-        strong_memoize_attr :diff_commits_dedup_enabled?
 
         def diff_commits_partition_enabled?
           Feature.enabled?(:merge_request_diff_commits_partition, project)

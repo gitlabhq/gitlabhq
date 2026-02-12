@@ -115,7 +115,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/workers/observability/alert_query_worker.rb'
     - 'ee/app/workers/product_analytics/initialize_snowplow_product_analytics_worker.rb'
     - 'ee/lib/ai/context/dependencies/config_files/cpp_vcpkg.rb'
-    - 'ee/lib/ai/context/dependencies/config_files/javascript_npm.rb'
     - 'ee/lib/ai/context/dependencies/config_files/javascript_npm_lock.rb'
     - 'ee/lib/ai/context/dependencies/config_files/php_composer.rb'
     - 'ee/lib/ai/context/dependencies/config_files/php_composer_lock.rb'

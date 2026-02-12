@@ -1,0 +1,5 @@
+---
+name: unlock_terraform_state
+description: Grants the ability to unlock Terraform state
+boundaries:
+  - project

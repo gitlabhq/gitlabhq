@@ -35,7 +35,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         bulk_import_batch_trackers.project_id
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
-      'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
       'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
       *%w[
         web_hook_logs_daily.organization_id

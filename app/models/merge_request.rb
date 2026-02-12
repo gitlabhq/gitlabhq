@@ -369,13 +369,8 @@ class MergeRequest < ApplicationRecord
   scope :including_target_project, -> do
     includes(:target_project)
   end
-  # Finds merge requests containing the given commit SHA(s).
-  # Commit metadata is stored in `merge_request_commits_metadata` with `project_id` set to
-  # the MR's target_project_id.
-  # - Use `project` = MR's target project
-  # - Use `target_project_ids` = array of target project IDs (cross-project cases)
-  # IMPORTANT: Do not pass the source project as `project` - it won't match the metadata's project_id.
-  scope :by_commit_sha, ->(project, sha, target_project_ids = []) do
+
+  scope :by_commit_sha, ->(target_project_id, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- pre-existing ff, ops flag
       Gitlab::AppLogger.info(
         event: 'merge_request_by_commit_sha_call',
@@ -383,7 +378,7 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(project, sha, target_project_ids)).reorder(nil)
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(target_project_id, sha)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
@@ -410,7 +405,7 @@ class MergeRequest < ApplicationRecord
 
     from_union(
       [
-        by_commit_sha(project, sha),
+        by_commit_sha(project.id, sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha),
         by_merged_commit_sha(sha),
@@ -491,17 +486,11 @@ class MergeRequest < ApplicationRecord
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :target_project, :latest_merge_request_diff) }
 
   scope :preload_latest_diff_commit, ->(project) do
-    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
-      preload(latest_merge_request_diff: {
-        merge_request_diff_commits: [{
-          merge_request_commits_metadata: [:commit_author, :committer]
-        }]
-      })
-    else
-      preload(latest_merge_request_diff: {
-        merge_request_diff_commits: [:commit_author, :committer]
-      })
-    end
+    preload(latest_merge_request_diff: {
+      merge_request_diff_commits: [{
+        merge_request_commits_metadata: [:commit_author, :committer]
+      }]
+    })
   end
 
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
@@ -889,7 +878,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)
-    if preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project) && !load_from_gitaly
+    if preload_metadata && !load_from_gitaly
       preload_commits_metadata
     end
 
@@ -909,9 +898,7 @@ class MergeRequest < ApplicationRecord
 
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
     strong_memoize_with(:committers, with_merge_commits, lazy, include_author_when_signed) do
-      if Feature.enabled?(:merge_request_diff_commits_dedup, project)
-        preload_commits_metadata
-      end
+      preload_commits_metadata
 
       commits.committers(
         with_merge_commits: with_merge_commits,
@@ -2282,11 +2269,7 @@ class MergeRequest < ApplicationRecord
   def all_commit_shas
     return commit_shas unless persisted?
 
-    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
-      all_commit_shas_from_metadata
-    else
-      all_commits.pluck(:sha).uniq
-    end
+    all_commit_shas_from_metadata
   end
   strong_memoize_attr :all_commit_shas
 
@@ -2729,8 +2712,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_exists?(sha)
-    return all_commits.exists?(sha: sha) if Feature.disabled?(:merge_request_diff_commits_dedup, project)
-
     # We query the SHA from `merge_request_commits_metadata` table first and
     # fallback to querying them from `merge_request_diff_commits` if doesn't match
     # anything. That is to check if commit exists but the records are old and there

@@ -38,10 +38,8 @@ class MergeRequestDiff < ApplicationRecord
     inverse_of: :merge_request_diff
 
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff do
-    def with_users(include_metadata: false)
-      associations_to_preload = [:commit_author, :committer]
-      associations_to_preload << { merge_request_commits_metadata: [:commit_author, :committer] } if include_metadata
-
+    def with_users
+      associations_to_preload = [{ merge_request_commits_metadata: [:commit_author, :committer] }, :commit_author, :committer]
       ActiveRecord::Associations::Preloader.new(records: self, associations: associations_to_preload).call
       self
     end
@@ -77,13 +75,8 @@ class MergeRequestDiff < ApplicationRecord
   scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
   scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
-  # Finds merge request diffs by commit SHA.
-  # Commit metadata is stored in `merge_request_commits_metadata` with `project_id` set to
-  # the MR's target_project_id.
-  # - Use `project` = MR's target project
-  # - Use `target_project_ids` = array of target project IDs (cross-project cases)
-  # IMPORTANT: Do not pass the source project as `project` - it won't match the metadata's project_id.
-  scope :by_commit_sha, ->(project, sha, target_project_ids = []) do
+
+  scope :by_commit_sha, ->(target_project_id, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
       Gitlab::AppLogger.info(
         event: 'merge_request_diff_by_commit_sha_call',
@@ -91,34 +84,31 @@ class MergeRequestDiff < ApplicationRecord
       )
     end
 
-    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
-      # Need to serialize the SHAs when querying `merge_request_commits_metadata`
-      # table as `sha` column is binary and AR is not automatically serializing the SHA
-      # in this case.
-      #
-      # There are callers of this scope wherein `sha` is an array of `sha` so we need
-      # to handle that as well.
-      sha_array = Array.wrap(sha)
-      serialized_shas = sha_array.map { |s| Gitlab::Database::ShaAttribute.new.serialize(s) }
-      project_ids_list = Array.wrap(target_project_ids).presence || [project.id]
+    # Need to serialize the SHAs when querying `merge_request_commits_metadata`
+    # table as `sha` column is binary and AR is not automatically serializing the SHA
+    # in this case.
+    #
+    # There are callers of this scope wherein `sha` is an array of `sha`
+    # or multiple target project IDs are passed, so we need to handle that as well.
 
-      metadata_query = MergeRequestDiff.joins(:merge_request_diff_commits)
-                                       .joins(
-                                         MergeRequestDiff.sanitize_sql_array([
-                                           "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id IN (?)",
-                                           project_ids_list
-                                         ])
-                                       ).where(merge_request_commits_metadata: { sha: serialized_shas })
+    sha_array = Array.wrap(sha)
+    serialized_shas = sha_array.map { |s| Gitlab::Database::ShaAttribute.new.serialize(s) }
+    project_ids_list = Array.wrap(target_project_id)
 
-      diff_commits_query =
-        MergeRequestDiff
-          .joins(:merge_request_diff_commits)
-          .where(merge_request_diff_commits: { sha: sha })
+    metadata_query = MergeRequestDiff.joins(:merge_request_diff_commits)
+                                     .joins(
+                                       MergeRequestDiff.sanitize_sql_array([
+                                         "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id IN (?)",
+                                         project_ids_list
+                                       ])
+                                     ).where(merge_request_commits_metadata: { sha: serialized_shas })
 
-      from_union(metadata_query, diff_commits_query).reorder(nil)
-    else
-      joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
-    end
+    diff_commits_query =
+      MergeRequestDiff
+        .joins(:merge_request_diff_commits)
+        .where(merge_request_diff_commits: { sha: sha })
+
+    from_union(metadata_query, diff_commits_query).reorder(nil)
   end
 
   scope :by_project_id, ->(project_id) do
@@ -426,16 +416,14 @@ class MergeRequestDiff < ApplicationRecord
       sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
       sorted_diff_commits = sorted_diff_commits.take(limit) if limit
 
-      if preload_metadata && diff_commits_dedup_enabled?
+      if preload_metadata
         # ActiveRecord::Associations::Preloader works with both arrays and relations
         preload_metadata_for_commits(sorted_diff_commits)
       end
 
       sorted_diff_commits.map(&:sha)
-    elsif diff_commits_dedup_enabled?
-      commit_shas_from_metadata(limit)
     else
-      merge_request_diff_commits.limit(limit).pluck(:sha)
+      commit_shas_from_metadata(limit)
     end
   end
 
@@ -445,7 +433,7 @@ class MergeRequestDiff < ApplicationRecord
     # when the number of shas is huge (1000+) we don't want
     # to pass them all as an SQL param, let's pass them in batches
     shas.each_slice(BATCH_SIZE).any? do |batched_shas|
-      break true if diff_commits_dedup_enabled? && metadata_sha_exists?(batched_shas)
+      break true if metadata_sha_exists?(batched_shas)
 
       merge_request_diff_commits.where(sha: batched_shas).exists?
     end
@@ -915,17 +903,11 @@ class MergeRequestDiff < ApplicationRecord
     diff_commits = diff_commits.limit(limit) if limit.present?
 
     if load_from_gitaly
-      shas = if diff_commits_dedup_enabled?
-               diff_commits.commit_shas_from_metadata(project_id: project.id, limit: nil)
-             else
-               diff_commits.map(&:sha)
-             end
-
+      shas = diff_commits.commit_shas_from_metadata(project_id: project.id, limit: nil)
       commits = Gitlab::Git::Commit.batch_by_oid(repository, shas)
       commits = Commit.decorate(commits, project)
     else
-      commits = diff_commits.with_users(include_metadata: diff_commits_dedup_enabled?)
-        .map { |commit| Commit.from_hash(commit.to_hash, project) }
+      commits = diff_commits.with_users.map { |commit| Commit.from_hash(commit.to_hash, project) }
     end
 
     CommitCollection
@@ -1076,11 +1058,6 @@ class MergeRequestDiff < ApplicationRecord
   def commit_shas_from_metadata(limit)
     MergeRequestDiffCommit.for_merge_request_diff(id).commit_shas_from_metadata(project_id: project.id, limit: limit)
   end
-
-  def diff_commits_dedup_enabled?
-    Feature.enabled?(:merge_request_diff_commits_dedup, project)
-  end
-  strong_memoize_attr :diff_commits_dedup_enabled?
 end
 
 MergeRequestDiff.prepend_mod_with('MergeRequestDiff')

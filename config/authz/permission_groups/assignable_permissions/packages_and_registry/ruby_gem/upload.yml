@@ -1,7 +1,0 @@
----
-name: upload_ruby_gem
-description: Grants the ability to upload Ruby gems
-permissions:
-  - upload_ruby_gem
-boundaries:
-  - project

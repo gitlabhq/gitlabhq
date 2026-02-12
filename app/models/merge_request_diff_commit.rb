@@ -53,7 +53,6 @@ class MergeRequestDiffCommit < ApplicationRecord
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
-    dedup_enabled = Feature.enabled?(:merge_request_diff_commits_dedup, project)
     partition_enabled = Feature.enabled?(:merge_request_diff_commits_partition, project)
     commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_triples)
@@ -87,9 +86,8 @@ class MergeRequestDiffCommit < ApplicationRecord
       )
 
       # Need to add `raw_sha` to commit_hash as we will use that when
-      # inserting the `sha` in `merge_request_commits_metadata` table. We
-      # only need to do this when dedup is enabled.
-      commit_hash[:raw_sha] = raw_sha if dedup_enabled
+      # inserting the `sha` in `merge_request_commits_metadata` table.
+      commit_hash[:raw_sha] = raw_sha
 
       commit_hash[:project_id] = project.id if partition_enabled
       commit_hash = commit_hash.merge(message: '') if skip_commit_data
@@ -97,7 +95,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       commit_hash
     end
 
-    rows = commit_rows_with_metadata(project.id, merge_request_diff_id, rows) if dedup_enabled
+    rows = commit_rows_with_metadata(project.id, merge_request_diff_id, rows)
 
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
@@ -262,7 +260,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def has_commit_metadata?
-    merge_request_commits_metadata_id.present? && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+    merge_request_commits_metadata_id.present?
   rescue ActiveModel::MissingAttributeError => e
     Gitlab::ErrorTracking.track_exception(e, self.attributes)
 

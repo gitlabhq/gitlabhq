@@ -508,6 +508,8 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
         let(:ee_migratable_models) do
           [
             "Ai::Catalog::ItemVersion",
+            "Ai::Catalog::McpServer",
+            "Ai::Catalog::McpServersUser",
             "Ai::Conversation::Thread",
             "Ai::EventsCount",
             "Ai::UsageEvent",

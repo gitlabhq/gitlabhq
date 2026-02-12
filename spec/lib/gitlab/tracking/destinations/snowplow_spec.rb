@@ -7,13 +7,17 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   let(:event_eligibility_checker) { instance_double(Gitlab::Tracking::EventEligibilityChecker) }
   let(:event_eligible) { true }
   let(:track_struct_event_logger) { false }
+  let(:snowplow_sync_emitter) { false }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
       app_id: 'app_id')
   end
 
   before do
-    stub_feature_flags(track_struct_event_logger: track_struct_event_logger)
+    stub_feature_flags(
+      track_struct_event_logger: track_struct_event_logger,
+      snowplow_sync_emitter: snowplow_sync_emitter
+    )
     stub_application_setting(
       snowplow_enabled?: true,
       snowplow_collector_hostname: 'gitfoo.com',
@@ -306,6 +310,18 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
+  context 'when snowplow_sync_emitter flag is enabled' do
+    let(:snowplow_sync_emitter) { true }
+
+    it 'uses a synchronous Emitter' do
+      expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+      expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+      expect(SnowplowTracker::Emitter).to receive(:new)
+
+      subject.send(:emitter)
+    end
+  end
+
   describe 'emitter class' do
     context 'when snowplow is enabled' do
       before do
@@ -353,6 +369,18 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         it 'uses SnowplowLoggingEmitter' do
           expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
           expect(Gitlab::Tracking::SnowplowLoggingEmitter).to receive(:new)
+
+          subject.send(:emitter)
+        end
+      end
+
+      context 'when snowplow_sync_emitter flag is enabled' do
+        let(:snowplow_sync_emitter) { true }
+
+        it 'uses a synchronous Emitter' do
+          expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+          expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+          expect(SnowplowTracker::Emitter).to receive(:new)
 
           subject.send(:emitter)
         end

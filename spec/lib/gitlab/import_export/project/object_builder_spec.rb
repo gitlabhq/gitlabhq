@@ -297,21 +297,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
       expect(new_commits_metadata.sha).to eq('abc123')
       expect(new_commits_metadata.project).to eq(project)
     end
-
-    context 'when merge_request_diff_commits_dedup is disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_commits_dedup: false)
-      end
-
-      it 'does not create a new commits metadata' do
-        new_commits_metadata = described_class.build(
-          MergeRequest::CommitsMetadata,
-          commits_metadata_attrs
-        )
-
-        expect(new_commits_metadata).to be_nil
-      end
-    end
   end
 
   context 'merge request diff commits' do
@@ -472,21 +457,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
         expect(commit.merge_request_commits_metadata).to eq(commits_metadata)
       end
-
-      context 'when merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
-        end
-
-        it 'does not use this object as commits metadata' do
-          commit = described_class.build(
-            MergeRequestDiffCommit,
-            commit_attrs
-          )
-
-          expect(commit.merge_request_commits_metadata).to be_nil
-        end
-      end
     end
 
     context 'when the "merge_request_commits_metadata" object is missing' do
@@ -519,33 +489,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
         expect(commits_metadata.message).to eq(commit_attrs['message'])
         expect(commits_metadata.authored_date).to eq(commit_attrs['authored_date'])
         expect(commits_metadata.committed_date).to eq(commit_attrs['committed_date'])
-      end
-
-      context 'when merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
-        end
-
-        it 'does not create merge request commits metadata' do
-          commit = described_class.build(
-            MergeRequestDiffCommit,
-            commit_attrs
-          )
-
-          expect(commit.merge_request_commits_metadata).to be_nil
-        end
-
-        it 'creates a new diff commit record including commit metadata attributes' do
-          commit = described_class.build(MergeRequestDiffCommit, commit_attrs)
-          expect(commit.attributes).to include({
-            'committer_id' => committer.id,
-            'commit_author_id' => commit_author.id,
-            'sha' => 'abc123',
-            'message' => 'This is a message',
-            'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-            'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
-          })
-        end
       end
 
       context 'when metadata is not found or created' do

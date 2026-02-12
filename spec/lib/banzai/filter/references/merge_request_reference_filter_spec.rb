@@ -361,19 +361,6 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
         expect(commit.sha).to eq(commit_sha)
       end
     end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_commits_dedup: false)
-      end
-
-      it 'does not preload commits metadata' do
-        expect(filter).not_to receive(:preloaded_all_commits)
-        expect(merge_request).to receive(:all_commits).and_call_original
-
-        filter.send(:find_commit_by_sha, merge_request, commit_sha)
-      end
-    end
   end
 
   describe '#preloaded_all_commits' do

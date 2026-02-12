@@ -80,14 +80,7 @@ module MergeRequests
     end
 
     def oldest_merge_request_id_per_commit_rows(shas)
-      commits_data_class =
-        if Feature.enabled?(:merge_request_diff_commits_dedup, @project)
-          MergeRequest::CommitsMetadata
-        else
-          MergeRequestDiffCommit
-        end
-
-      commits_data_class.oldest_merge_request_id_per_commit(@project.id, shas)
+      MergeRequest::CommitsMetadata.oldest_merge_request_id_per_commit(@project.id, shas)
     end
   end
 end
