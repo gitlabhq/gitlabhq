@@ -40,7 +40,7 @@ Productivity analytics display the following charts:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Productivity analytics**.

@@ -3,10 +3,6 @@
 Style/FormatString:
   Exclude:
     - 'app/helpers/emails_helper.rb'
-    - 'app/helpers/groups_helper.rb'
-    - 'app/helpers/import_helper.rb'
-    - 'app/helpers/issuables_helper.rb'
-    - 'app/helpers/merge_requests_helper.rb'
     - 'app/helpers/preferences_helper.rb'
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/projects/project_members_helper.rb'

@@ -1,4 +1,4 @@
-import { escapeRegExp, kebabCase, isEmpty, unionBy } from 'lodash';
+import { escapeRegExp, kebabCase, isEmpty, unionBy, union } from 'lodash';
 import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
@@ -527,23 +527,59 @@ export function getLastUsedWorkItemTypeIdForNamespace(namespaceFullPath) {
   return null;
 }
 
-export function combineWorkItemLists(slimList, fullList) {
+const combineWidgets = (fullItem, slimItem) => {
+  const combinedWidgets = unionBy(fullItem.widgets, slimItem?.widgets, 'type');
+
+  return {
+    widgets: combinedWidgets.reduce((acc, widget) => {
+      const slimWidget = slimItem?.widgets.find((w) => w.type === widget.type);
+      const widgetToUse =
+        slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length
+          ? slimWidget
+          : widget;
+      acc.push(widgetToUse);
+      return acc;
+    }, []),
+  };
+};
+
+/**
+ *
+ * @param {Object} fullItem - The WorkItem query that has all the data
+ * @param {Object} slimItem - The WorkItem query that is leaner to get a faster response
+ * @returns {Object} - For each feature key, we return the version that has the most data inside a single object.
+ */
+const combineFeatures = (fullItem, slimItem) => {
+  const fullItemFeaturesKeys = fullItem?.features ? Object.keys(fullItem.features) : [];
+  const slimItemFeaturesKeys = slimItem?.features ? Object.keys(slimItem.features) : [];
+
+  const featuresUnion = union(fullItemFeaturesKeys, slimItemFeaturesKeys);
+
+  // For each feature, check if the full or slim has more data and use that one.
+  return {
+    features: featuresUnion.reduce((acc, featureName) => {
+      const fullItemData = fullItem?.features[featureName] || {};
+      const slimItemData = slimItem?.features[featureName] || {};
+
+      const dataToUse =
+        Object.keys(slimItemData).length > Object.keys(fullItemData).length
+          ? slimItemData
+          : fullItemData;
+      return { ...acc, [featureName]: dataToUse };
+    }, {}),
+  };
+};
+
+export function combineWorkItemLists(slimList, fullList, workItemFeaturesField = false) {
   if (isEmpty(fullList)) return slimList;
 
   return fullList.map((fullItem) => {
     const slimVersion = slimList.find((item) => item.id === fullItem.id);
-    const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
+    const combineFeatureFn = workItemFeaturesField ? combineFeatures : combineWidgets;
+
     return {
       ...fullItem,
-      widgets: combinedWidgets.reduce((acc, widget) => {
-        const slimWidget = slimVersion?.widgets.find((w) => w.type === widget.type);
-        const widgetToUse =
-          slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length
-            ? slimWidget
-            : widget;
-        acc.push(widgetToUse);
-        return acc;
-      }, []),
+      ...combineFeatureFn(fullItem, slimVersion),
     };
   });
 }

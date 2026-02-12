@@ -166,7 +166,7 @@ compile-fe-islands:
 # Builds FOSS fixtures in the FOSS project.
 rspec-all frontend_fixture:
   extends:
-    - .use-pg16
+    - .use-pg17
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
   script:
@@ -176,7 +176,7 @@ rspec-all frontend_fixture:
 
 rspec-all frontend_fixture clickhouse:
   extends:
-    - .use-pg16-clickhouse25
+    - .use-pg17-clickhouse25
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
   script:

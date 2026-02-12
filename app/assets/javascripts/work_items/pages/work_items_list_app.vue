@@ -355,58 +355,11 @@ export default {
         Sentry.captureException(error);
       },
     },
-    workItemsFull: {
-      context: {
-        featureCategory: 'portfolio_management',
-      },
-      query() {
-        return getWorkItemsQuery;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        return data?.namespace?.workItems.nodes ?? [];
-      },
-      skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
-      },
-      result({ data }) {
-        this.namespaceId = data?.namespace?.id;
-        this.handleListDataResults(data);
-      },
-      error(error) {
-        this.error = s__(
-          'WorkItem|Something went wrong when fetching work items. Please try again.',
-        );
-        Sentry.captureException(error);
-      },
+    workItemsFull() {
+      return this.createWorkItemQuery(getWorkItemsQuery);
     },
-    workItemsSlim: {
-      context: {
-        featureCategory: 'portfolio_management',
-      },
-      query() {
-        return getWorkItemsSlimQuery;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        return data?.namespace?.workItems.nodes ?? [];
-      },
-      skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
-      },
-      result({ data }) {
-        this.handleListDataResults(data);
-      },
-      error(error) {
-        this.error = s__(
-          'WorkItem|Something went wrong when fetching work items. Please try again.',
-        );
-        Sentry.captureException(error);
-      },
+    workItemsSlim() {
+      return this.createWorkItemQuery(getWorkItemsSlimQuery);
     },
     workItemsCount: {
       query() {
@@ -569,7 +522,11 @@ export default {
       return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
     },
     workItems() {
-      return combineWorkItemLists(this.workItemsSlim, this.workItemsFull);
+      return combineWorkItemLists(
+        this.workItemsSlim,
+        this.workItemsFull,
+        Boolean(this.glFeatures.workItemFeaturesField),
+      );
     },
     shouldShowList() {
       return (
@@ -1200,6 +1157,33 @@ export default {
     setPageDefaultWidth();
   },
   methods: {
+    createWorkItemQuery(query) {
+      return {
+        query,
+        context: {
+          featureCategory: 'portfolio_management',
+        },
+        variables() {
+          return this.queryVariables;
+        },
+        update(data) {
+          return data?.namespace?.workItems.nodes ?? [];
+        },
+        skip() {
+          return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
+        },
+        result({ data }) {
+          this.namespaceId = data?.namespace?.id;
+          this.handleListDataResults(data);
+        },
+        error(error) {
+          this.error = s__(
+            'WorkItem|Something went wrong when fetching work items. Please try again.',
+          );
+          Sentry.captureException(error);
+        },
+      };
+    },
     getFilterTokensFromSavedView(savedViewFilters) {
       const tokens = getSavedViewFilterTokens(savedViewFilters, {
         includeStateToken: true,
@@ -1209,6 +1193,7 @@ export default {
       const availableTokenTypes = this.searchTokens.map((token) => token.type);
       return tokens.filter((token) => availableTokenTypes.includes(token.type));
     },
+
     async handleLocalDisplayPreferencesUpdate(newSettings) {
       this.localDisplaySettings = {
         ...this.localDisplaySettings,

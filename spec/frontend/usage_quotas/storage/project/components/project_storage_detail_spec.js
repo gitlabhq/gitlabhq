@@ -33,6 +33,9 @@ describe('ProjectStorageDetail', () => {
     }),
   ];
 
+  const STORAGE_TYPE_WITH_DETAILS = generateStorageType({ id: 'repository', value: 100 });
+  const STORAGE_TYPE_WITHOUT_DETAILS = generateStorageType({ id: 'one' });
+
   const defaultProps = { storageTypes };
 
   const createComponent = (props = {}, features = {}) => {
@@ -54,6 +57,9 @@ describe('ProjectStorageDetail', () => {
   };
 
   const findTable = () => wrapper.findComponent(GlTableLite);
+  const findShowDetailsButton = (id) => wrapper.findByTestId(`${id}-show-details-button`);
+  const findRowDetails = () => wrapper.findComponent(RepositoryHealthDetailsSection);
+  const findRowData = () => wrapper.findByTestId('storage-type-row').find('td');
 
   beforeEach(() => {
     createComponent();
@@ -61,7 +67,7 @@ describe('ProjectStorageDetail', () => {
 
   describe('with storage types', () => {
     it.each(storageTypes)(
-      'renders table row correctly %o',
+      'renders table row correctly for id $id',
       ({ id, name, value, description, helpPath, warning }) => {
         expect(wrapper.findByTestId(`${id}-name`).text()).toBe(name);
         expect(wrapper.findByTestId(`${id}-description`).text()).toContain(description);
@@ -76,7 +82,7 @@ describe('ProjectStorageDetail', () => {
   });
 
   describe('with details links', () => {
-    it.each(storageTypes)('each $storageType.id', (item) => {
+    it.each(storageTypes)('renders correctly for id $id', (item) => {
       const shouldExist = Boolean(item.detailsPath && item.value);
       const detailsLink = wrapper.findByTestId(`${item.id}-details-link`);
       expect(detailsLink.exists()).toBe(shouldExist);
@@ -98,9 +104,6 @@ describe('ProjectStorageDetail', () => {
   });
 
   describe('storage types with details components', () => {
-    const STORAGE_TYPE_WITH_DETAILS = generateStorageType({ id: 'repository', value: 100 });
-    const STORAGE_TYPE_WITHOUT_DETAILS = generateStorageType({ id: 'one' });
-
     describe('when feature flag is enabled', () => {
       beforeEach(() => {
         createComponent(
@@ -110,12 +113,8 @@ describe('ProjectStorageDetail', () => {
       });
 
       it('renders show details button only for storage type with details component', () => {
-        expect(
-          wrapper.findByTestId(`${STORAGE_TYPE_WITH_DETAILS.id}-show-details-button`).exists(),
-        ).toBe(true);
-        expect(
-          wrapper.findByTestId(`${STORAGE_TYPE_WITHOUT_DETAILS.id}-show-details-button`).exists(),
-        ).toBe(false);
+        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).exists()).toBe(true);
+        expect(findShowDetailsButton(STORAGE_TYPE_WITHOUT_DETAILS.id).exists()).toBe(false);
       });
     });
 
@@ -128,23 +127,14 @@ describe('ProjectStorageDetail', () => {
       });
 
       it('does not render show details button for any storage types', () => {
-        expect(
-          wrapper.findByTestId(`${STORAGE_TYPE_WITH_DETAILS.id}-show-details-button`).exists(),
-        ).toBe(false);
-        expect(
-          wrapper.findByTestId(`${STORAGE_TYPE_WITHOUT_DETAILS.id}-show-details-button`).exists(),
-        ).toBe(false);
+        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).exists()).toBe(false);
+        expect(findShowDetailsButton(STORAGE_TYPE_WITHOUT_DETAILS.id).exists()).toBe(false);
       });
     });
 
     describe('toggling show details component', () => {
-      const findShowDetailsButton = () =>
-        wrapper.findByTestId(`${STORAGE_TYPE_WITH_DETAILS.id}-show-details-button`);
-      const findRowDetails = () => wrapper.findComponent(RepositoryHealthDetailsSection);
-      const findRowData = () => wrapper.findByTestId('storage-type-row').find('td');
-
       const toggleDetailsSection = async () => {
-        findShowDetailsButton().vm.$emit('click');
+        findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).vm.$emit('click');
         await nextTick();
       };
 
@@ -164,11 +154,17 @@ describe('ProjectStorageDetail', () => {
       });
 
       it('toggles the chevron direction when the button is clicked', async () => {
-        expect(findShowDetailsButton().props('icon')).toBe('chevron-right');
+        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).props('icon')).toBe(
+          'chevron-right',
+        );
         await toggleDetailsSection();
-        expect(findShowDetailsButton().props('icon')).toBe('chevron-down');
+        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).props('icon')).toBe(
+          'chevron-down',
+        );
         await toggleDetailsSection();
-        expect(findShowDetailsButton().props('icon')).toBe('chevron-right');
+        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).props('icon')).toBe(
+          'chevron-right',
+        );
       });
 
       it('toggles the row bottom border when the button is clicked', async () => {

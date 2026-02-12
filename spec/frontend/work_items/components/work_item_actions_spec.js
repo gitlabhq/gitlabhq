@@ -524,7 +524,7 @@ describe('WorkItemActions component', () => {
         canUpdateMetadata | mockConfig                         | shouldExist | expectationText
         ${true}           | ${{ canPromoteToObjective: true }} | ${true}     | ${'has permissions'}
         ${false}          | ${{ canPromoteToObjective: true }} | ${false}    | ${'does not have permissions'}
-      `('when user $expectationText', ({ canUpdateMetadata, mockConfig, shouldExist }) => {
+      `('when user $expectationText', async ({ canUpdateMetadata, mockConfig, shouldExist }) => {
         createComponent({
           canUpdateMetadata,
           workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
@@ -532,6 +532,8 @@ describe('WorkItemActions component', () => {
             getWorkItemTypeConfiguration: jest.fn().mockReturnValue(mockConfig),
           },
         });
+
+        await waitForPromises();
 
         expect(findChangeTypeButton().exists()).toBe(shouldExist);
       });
@@ -765,16 +767,20 @@ describe('WorkItemActions component', () => {
   });
 
   describe('change type action', () => {
-    it('opens the change type modal', () => {
+    it('opens the change type modal', async () => {
       createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK });
+
+      await waitForPromises();
 
       findChangeTypeButton().vm.$emit('action');
 
       expect(findWorkItemChangeTypeModal().exists()).toBe(true);
     });
 
-    it('hides the action in case of Epic type', () => {
+    it('hides the action when work item type has no supported conversion types', async () => {
       createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
+
+      await waitForPromises();
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
@@ -783,6 +789,14 @@ describe('WorkItemActions component', () => {
       createComponent({ canUpdateMetadata: false });
 
       expect(findChangeTypeButton().exists()).toBe(false);
+    });
+
+    it('shows the action when work item type has supported conversion types', async () => {
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_ISSUE });
+
+      await waitForPromises();
+
+      expect(findChangeTypeButton().exists()).toBe(true);
     });
   });
 

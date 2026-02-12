@@ -18,7 +18,7 @@ RSpec.describe FailedTests do
       'suites' => [
         {
           'failed_count' => 1,
-          'name' => 'rspec unit pg16 10/12',
+          'name' => 'rspec unit pg17 10/12',
           'test_cases' => [
             {
               'status' => 'failed',
@@ -28,7 +28,7 @@ RSpec.describe FailedTests do
         },
         {
           'failed_count' => 1,
-          'name' => 'rspec-ee unit pg16',
+          'name' => 'rspec-ee unit pg17',
           'test_cases' => [
             {
               'status' => 'failed',
@@ -38,7 +38,7 @@ RSpec.describe FailedTests do
         },
         {
           'failed_count' => 1,
-          'name' => 'rspec unit pg16 10/12',
+          'name' => 'rspec unit pg17 10/12',
           'test_cases' => [
             {
               'status' => 'failed',
@@ -173,7 +173,7 @@ RSpec.describe FailedTests do
         'suites' => [
           {
             'failed_count' => 2,
-            'name' => 'rspec unit pg16 1/12',
+            'name' => 'rspec unit pg17 1/12',
             'test_cases' => [
               { 'status' => 'failed', 'file' => user_spec },
               { 'status' => 'failed', 'file' => project_spec }
@@ -181,7 +181,7 @@ RSpec.describe FailedTests do
           },
           {
             'failed_count' => 2,
-            'name' => 'rspec-ee unit pg16 2/12',
+            'name' => 'rspec-ee unit pg17 2/12',
             'test_cases' => [
               { 'status' => 'failed', 'file' => user_spec },
               { 'status' => 'failed', 'file' => issue_spec }
@@ -233,8 +233,8 @@ RSpec.describe FailedTests do
         expect(options[:previous_tests_report_path]).to eq 'test_results/previous/test_reports.json'
         expect(options[:output_directory]).to eq 'tmp/previous_failed_tests/'
         expect(options[:format]).to eq :oneline
-        expect(options[:rspec_pg_regex]).to eq(/rspec .+ pg16( .+)?/)
-        expect(options[:rspec_ee_pg_regex]).to eq(/rspec-ee .+ pg16( .+)?/)
+        expect(options[:rspec_pg_regex]).to eq(/rspec .+ pg17( .+)?/)
+        expect(options[:rspec_ee_pg_regex]).to eq(/rspec-ee .+ pg17( .+)?/)
       end
 
       it 'handles help option by exiting' do

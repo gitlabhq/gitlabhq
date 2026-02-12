@@ -109,6 +109,11 @@ reuse diagrams. For example:
   ----
   ```
 
+> [!note]
+> The `::include` directive resolves only after the file is committed to the repository.
+> The Markdown editor preview does not render included files. To verify the diagram
+> renders correctly, commit the file and view it in the repository file browser.
+
 ## Configure your PlantUML server
 
 Before you can enable PlantUML in GitLab, set up your own PlantUML

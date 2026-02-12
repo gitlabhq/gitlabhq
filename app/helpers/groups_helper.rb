@@ -274,7 +274,7 @@ module GroupsHelper
 
   def remove_the_share_with_group_lock_from_ancestor(group)
     ancestor = oldest_consecutively_locked_ancestor(group)
-    text = s_("GroupSettings|remove the share with group lock from %{ancestor_group_name}") % { ancestor_group_name: ancestor.name }
+    text = format(s_("GroupSettings|remove the share with group lock from %{ancestor_group_name}"), ancestor_group_name: ancestor.name)
     if can?(current_user, :admin_group, ancestor)
       link_to text, edit_group_path(ancestor)
     else

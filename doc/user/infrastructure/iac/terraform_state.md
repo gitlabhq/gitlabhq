@@ -79,8 +79,8 @@ To secure your plan data:
 
 Prerequisites:
 
-- To lock, unlock, and write to the state by using `tofu apply`, you must have at least the Maintainer role.
-- To read the state by using `tofu plan -lock=false`, you must have at least the Developer role.
+- To lock, unlock, and write to the state by using `tofu apply`, you must have the Maintainer or Owner role.
+- To read the state by using `tofu plan -lock=false`, you must have the Developer, Maintainer, or Owner role.
 
 To configure GitLab CI/CD as a backend:
 
@@ -358,7 +358,7 @@ You can use a GitLab-managed OpenTofu state backend as an
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
 
-To read the OpenTofu state in the target project, you need at least the Developer role.
+To read the OpenTofu state in the target project, you need the Developer, Maintainer, or Owner role.
 
 ## Manage OpenTofu state files
 
@@ -376,8 +376,8 @@ the GitLab CLI (`glab`) or the API.
 
 Prerequisites:
 
-- To get state versions using their serial number, you must have at least the Developer role.
-- To remove state versions using their serial number, you must have at least the Maintainer role.
+- To get state versions using their serial number, you must have the Developer, Maintainer, or Owner role.
+- To remove state versions using their serial number, you must have the Maintainer or Owner role.
 
 To get state versions using their serial number:
 {{< tabs >}}
@@ -428,7 +428,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Prerequisites:
 
-- To remove a state file, you must have at least the Maintainer role.
+- To remove a state file, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 
@@ -473,7 +473,7 @@ To remove a state file using the UI:
 
 Prerequisites:
 
-- To lock a state file, you must have at least the Maintainer role.
+- To lock a state file, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 
@@ -518,7 +518,7 @@ To lock or unlock a state file using the UI:
 
 Prerequisites:
 
-- To download a state file, you must have at least the Developer role.
+- To download a state file, you must have the Developer, Maintainer, or Owner role.
 
 {{< tabs >}}
 

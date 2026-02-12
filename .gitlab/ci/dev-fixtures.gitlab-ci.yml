@@ -3,7 +3,7 @@
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .use-pg16-clickhouse23
+    - .use-pg17-clickhouse23
   stage: test
   needs: ["setup-test-env"]
   variables:
@@ -39,7 +39,7 @@ run-dev-fixtures-ee:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-only
   services:
-    - !reference [.use-pg16-clickhouse23, services]
+    - !reference [.use-pg17-clickhouse23, services]
     - !reference [.es7-services, services]
   script:
     - cp ee/db/fixtures/development/* $FIXTURE_PATH

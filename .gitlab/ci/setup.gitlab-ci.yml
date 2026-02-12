@@ -140,7 +140,7 @@ type-check-fe-islands:
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
-    - .use-pg16
+    - .use-pg17
     - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare

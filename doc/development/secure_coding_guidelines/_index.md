@@ -284,6 +284,42 @@ Use the standard `parse` method only when you have full control over the input s
 - Parsing data from trusted internal services with established contracts
 - Processing data that has already been validated
 
+### Evaluating performance impact
+
+`safe_parse` adds overhead compared to `parse` because it validates the JSON structure during parsing. The overhead scales roughly with payload size, but also depends on the shape of the data (nesting depth, number of keys, value types).
+
+If you're converting a hot code path from `parse` to `safe_parse` and are concerned about performance impact, you can use [`benchmark-ips`](../performance.md#benchmarks) to get a rough sense of the relative overhead for your specific payload shapes:
+
+```ruby
+require "benchmark/ips"
+
+json_string = "<your_actual_json_payload>"
+
+Benchmark.ips do |x|
+  x.report("parse:") do
+    Gitlab::Json.parse(json_string)
+  end
+
+  x.report("safe_parse:") do
+    Gitlab::Json.safe_parse(json_string)
+  end
+
+  x.compare!
+end
+```
+
+The benchmark output shows total seconds for all iterations. Divide by the iteration count to get per-call time.
+
+When evaluating results, consider:
+
+- Payload characteristics: Overhead varies with payload size, nesting depth, and structure. Parsing structures with deeper nesting or more keys carries higher overhead.
+- Benchmark with representative data from your actual use case.
+- Call frequency: A few milliseconds overhead may be negligible for a one-time operation, but significant in a tight loop or frequently-hit cache.
+- Absolute vs. relative cost: A 5x slowdown sounds dramatic, but if the absolute time is microseconds, it may not matter in practice.
+- Production measurement: If performance is critical, plan how you'll [monitor in production](../performance.md#tooling) rather than relying solely on benchmarks.
+
+When in doubt, prefer `safe_parse` for security. Only use `parse` when you've confirmed the data source is trusted and profiling shows `safe_parse` overhead is unacceptable for your use case.
+
 ### Resources
 
 - [GitLab JSON development guidelines](../json.md)

@@ -55,7 +55,7 @@ To use the Agent Platform in your IDE:
 
 - Install an editor extension and authenticate with GitLab.
 - Have a project in a [group namespace](../namespace/_index.md).
-- Have at least the Developer role.
+- Have the Developer, Maintainer, or Owner role.
 
 ## Use cases
 

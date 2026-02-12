@@ -45,7 +45,7 @@ Public flows:
 
 Private flows:
 
-- Can be viewed only by members of the managing project who have at least the Developer role, and by users with the Owner role for the top-level group.
+- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role, and by users with the Owner role for the top-level group.
 - Cannot be enabled in projects other than the managing project, or in groups other than the top-level group.
 
 You cannot change a public flow to private if the flow is enabled.
@@ -54,7 +54,7 @@ You cannot change a public flow to private if the flow is enabled.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To view a list of flows associated with your project:
 
@@ -69,7 +69,7 @@ Select a flow to view its details.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a flow:
 
@@ -120,7 +120,7 @@ follows this naming convention: `ai-<flow>-<group>`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The flow must be enabled in the project's top-level group.
 
 To enable a flow in a project:
@@ -148,7 +148,7 @@ This account is assigned the Developer role.
 Prerequisites:
 
 - For groups, you must have the Owner role.
-- For projects, you must have at least the Maintainer role.
+- For projects, you must have the Maintainer or Owner role.
 
 To disable a flow:
 
@@ -172,7 +172,7 @@ When you enable a flow in a project, you also create triggers.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - The flow must be enabled in the project.
 
 To use a flow:
@@ -195,7 +195,7 @@ To make changes to a flow without overwriting the original, create a copy of an 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To duplicate a flow:
 
@@ -212,7 +212,7 @@ Edit a flow to change its configuration, or delete it to remove it from the AI C
 
 Prerequisites:
 
-- You must be a member of the managing project and have at least the Maintainer role.
+- You must be a member of the managing project and have the Maintainer or Owner role.
 
 1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.

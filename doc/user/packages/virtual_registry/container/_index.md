@@ -9,7 +9,7 @@ description: Use the container virtual registry to cache container images from u
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
 {{< /details >}}

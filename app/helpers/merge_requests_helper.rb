@@ -28,12 +28,8 @@ module MergeRequestsHelper
               _("Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}")
             end
 
-      msg % {
-        source_project_path: merge_request.source_project_path,
-        source_branch: merge_request.source_branch,
-        target_project_path: merge_request.target_project.full_path,
-        target_branch: merge_request.target_branch
-      }
+      format(msg, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch,
+        target_project_path: merge_request.target_project.full_path, target_branch: merge_request.target_branch)
     else
       msg = if with_arrow
               _("Branches: %{source_branch} → %{target_branch}")
@@ -41,10 +37,7 @@ module MergeRequestsHelper
               _("Branches: %{source_branch} to %{target_branch}")
             end
 
-      msg % {
-        source_branch: merge_request.source_branch,
-        target_branch: merge_request.target_branch
-      }
+      format(msg, source_branch: merge_request.source_branch, target_branch: merge_request.target_branch)
     end
   end
 
@@ -156,11 +149,11 @@ module MergeRequestsHelper
 
     if include_value
       sanitized_list = sanitize_name(reviewers.map(&:name).to_sentence)
-      ns_(
+      format(ns_(
         'NotificationEmail|Reviewer: %{users}',
         'NotificationEmail|Reviewers: %{users}',
         reviewers.count
-      ) % { users: sanitized_list }
+      ), users: sanitized_list)
     else
       ns_('NotificationEmail|Reviewer', 'NotificationEmail|Reviewers', reviewers.count)
     end
@@ -361,20 +354,20 @@ module MergeRequestsHelper
                 end
 
     branch = if merge_request.for_fork?
-               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % {
+               format(ERB::Util.html_escape(
+                 _('%{fork_icon} %{source_project_path}:%{source_branch}')),
                  fork_icon: fork_icon.html_safe,
                  source_project_path: merge_request.source_project_path,
-                 source_branch: merge_request.source_branch
-               }
+                 source_branch: merge_request.source_branch)
              else
                merge_request.source_branch
              end
 
     branch_title = if merge_request.for_fork?
-                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % {
+                     format(
+                       ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')),
                        source_project_path: merge_request.source_project_path,
-                       source_branch: merge_request.source_branch
-                     }
+                       source_branch: merge_request.source_branch)
                    else
                      merge_request.source_branch
                    end

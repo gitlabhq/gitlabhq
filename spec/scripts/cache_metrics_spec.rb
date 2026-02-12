@@ -30,7 +30,7 @@ RSpec.describe 'scripts/cache_metrics', feature_category: :tooling do
   let(:ci_env) do
     {
       job_id: '12345',
-      job_name: 'rspec-unit pg16',
+      job_name: 'rspec-unit pg17',
       pipeline_id: '67890',
       project_id: '278964',
       merge_request_iid: '199241',
@@ -426,7 +426,7 @@ RSpec.describe 'scripts/cache_metrics', feature_category: :tooling do
     before do
       allow(ENV).to receive(:[]).and_call_original
       stub_env('CI_JOB_ID', '12345')
-      stub_env('CI_JOB_NAME', 'rspec-unit pg16')
+      stub_env('CI_JOB_NAME', 'rspec-unit pg17')
       stub_env('CI_PIPELINE_ID', '67890')
       stub_env('CI_PROJECT_ID', '278964')
       stub_env('CI_MERGE_REQUEST_IID', '199241')
@@ -443,7 +443,7 @@ RSpec.describe 'scripts/cache_metrics', feature_category: :tooling do
 
       expect(result).to eq({
         job_id: '12345',
-        job_name: 'rspec-unit pg16',
+        job_name: 'rspec-unit pg17',
         pipeline_id: '67890',
         project_id: '278964',
         merge_request_iid: '199241',

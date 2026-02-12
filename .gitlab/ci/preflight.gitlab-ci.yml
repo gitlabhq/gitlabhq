@@ -9,7 +9,7 @@
     - .default-before_script
     - .production
     - .ruby-cache
-    - .use-pg16
+    - .use-pg17
     - .preflight:rules:rails-production-server-boot
   needs:
     - job: cache:ruby-gems

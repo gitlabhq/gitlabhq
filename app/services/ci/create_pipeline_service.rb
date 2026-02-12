@@ -166,8 +166,8 @@ module Ci
     # :nocov:
     # rubocop:enable Gitlab/NoCodeCoverageComment
 
-    def extra_options(content: nil, dry_run: false, linting: false)
-      { content: content, dry_run: dry_run, linting: linting }
+    def extra_options(content: nil, dry_run: false, linting: false, duo_workflow_definition: nil)
+      { content: content, dry_run: dry_run, linting: linting, duo_workflow_definition: duo_workflow_definition }
     end
 
     def build_logger

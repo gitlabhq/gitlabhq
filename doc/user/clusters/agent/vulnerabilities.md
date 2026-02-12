@@ -315,7 +315,7 @@ To view vulnerability information in GitLab:
 This information can also be found under [operational vulnerabilities](../../application_security/vulnerability_report/_index.md#operational-vulnerabilities).
 
 > [!note]
-> You must have at least the Developer role.
+> You must have the Developer, Maintainer, or Owner role.
 
 ## Scanning private images
 

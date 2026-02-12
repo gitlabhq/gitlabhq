@@ -57,7 +57,7 @@ module SearchHelpers
     return false unless has_testid?('search-filter')
 
     within_testid('search-filter') do
-      has_link?(scope)
+      has_link?(scope, wait: 0)
     end
   end
 

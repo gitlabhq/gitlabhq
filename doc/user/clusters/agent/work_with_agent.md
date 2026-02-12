@@ -20,7 +20,7 @@ The installed `agentk` version is displayed on the **Agent** tab.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To view the list of agents:
 

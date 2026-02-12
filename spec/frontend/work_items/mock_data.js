@@ -7969,33 +7969,7 @@ export const namespaceWorkItemTypesQueryResponse = {
             id: 'gid://gitlab/WorkItems::Type/8',
             name: 'Epic',
             iconName: 'work-item-epic',
-            supportedConversionTypes: [
-              {
-                id: 'gid://gitlab/WorkItems::Type/2',
-                name: 'Incident',
-                __typename: 'WorkItemType',
-              },
-              {
-                id: 'gid://gitlab/WorkItems::Type/1',
-                name: 'Issue',
-                __typename: 'WorkItemType',
-              },
-              {
-                id: 'gid://gitlab/WorkItems::Type/5',
-                name: 'Task',
-                __typename: 'WorkItemType',
-              },
-              {
-                id: 'gid://gitlab/WorkItems::Type/3',
-                name: 'Test Case',
-                __typename: 'WorkItemType',
-              },
-              {
-                id: 'gid://gitlab/WorkItems::Type/9',
-                name: 'Ticket',
-                __typename: 'WorkItemType',
-              },
-            ],
+            supportedConversionTypes: [],
             widgetDefinitions: [
               {
                 type: 'ASSIGNEES',

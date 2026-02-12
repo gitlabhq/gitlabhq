@@ -272,6 +272,8 @@ Virtual registries cache packages from upstream registries to improve performanc
 
 A cleanup policy is a scheduled job that removes cached entries based on configurable rules. When a cleanup policy runs, it identifies cached entries that haven't been downloaded recently and removes them from storage.
 
+Cleanup policies are set for all virtual registries in the top-level group.
+
 ### Cleanup policies workflow
 
 In the virtual registry, cleanup policies:

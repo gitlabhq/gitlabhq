@@ -262,13 +262,7 @@ export default {
         return data.namespace?.workItemTypes?.nodes;
       },
       skip() {
-        return (
-          !this.canUpdateMetadata ||
-          (this.workItemTypeConfiguration?.canPromoteToObjective !== null
-            ? !this.workItemTypeConfiguration?.canPromoteToObjective
-            : false) ||
-          this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT
-        );
+        return !this.canUpdateMetadata;
       },
     },
     workItemNotificationsSubscribed: {
@@ -398,7 +392,12 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     showChangeType() {
-      return !this.isEpic && this.canUpdateMetadata;
+      if (!this.canUpdateMetadata) {
+        return false;
+      }
+
+      const currentType = this.workItemTypes.find((type) => type.name === this.workItemType);
+      return currentType?.supportedConversionTypes?.length > 0;
     },
     showStateItem() {
       return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);

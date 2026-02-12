@@ -221,7 +221,7 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group or project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group or project.
 - Overview background aggregation must be enabled.
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 - To track deployment to production, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
@@ -287,7 +287,7 @@ Before you customize the dashboard panels, you must select a project to store yo
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Analytics**.

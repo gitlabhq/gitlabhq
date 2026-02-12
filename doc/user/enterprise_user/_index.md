@@ -41,7 +41,7 @@ for all projects, so no configuration is required.
 
 Even though the domain is linked to a project, it is available to the entire group hierarchy
 including all nested subgroups and projects. Members in the linked project with
-[at least the Maintainer role](../permissions.md#project-permissions) can modify or remove
+[the Maintainer or Owner role](../permissions.md#project-permissions) can modify or remove
 the domain. If this project is deleted, your associated domains are also removed.
 
 For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).

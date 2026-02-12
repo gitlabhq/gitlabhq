@@ -86,10 +86,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       snippet_statistics
       snippet_uploads
       snippet_user_mentions
-      subscription_add_on_purchases
-      subscription_seat_assignments
       subscription_user_add_on_assignment_versions
-      subscription_user_add_on_assignments
       topics
       upcoming_reconciliations
       user_agent_details

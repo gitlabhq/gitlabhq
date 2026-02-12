@@ -73,160 +73,161 @@ setup-test-env-fips:
     - source scripts/utils.sh
     - bundle_install_script
 
-rspec migration pg16:
+# Default PG version: PG17
+rspec migration pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rspec-base-migration
     - .rspec-migration-parallel
     - .rails:rules:ee-and-foss-migration
 
-rspec background_migration pg16:
+rspec background_migration pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rspec-base-migration
     - .rspec-background-migration-parallel
     - .rails:rules:ee-and-foss-background-migration
 
-rspec migration pg16 single-db:
+rspec migration pg17 single-db:
   extends:
-    - rspec migration pg16
+    - rspec migration pg17
     - .single-db-rspec
     - .rspec-migration-parallel
     - .rails:rules:single-db
 
-rspec background_migration pg16 single-db:
+rspec background_migration pg17 single-db:
   extends:
-    - rspec background_migration pg16
+    - rspec background_migration pg17
     - .single-db-rspec
     - .rspec-background-migration-parallel
     - .rails:rules:single-db
 
-rspec migration pg16 single-db-ci-connection:
+rspec migration pg17 single-db-ci-connection:
   extends:
-    - rspec migration pg16
+    - rspec migration pg17
     - .single-db-ci-connection-rspec
     - .rspec-migration-parallel
     - .rails:rules:single-db-ci-connection
 
-rspec background_migration pg16 single-db-ci-connection:
+rspec background_migration pg17 single-db-ci-connection:
   extends:
-    - rspec background_migration pg16
+    - rspec background_migration pg17
     - .single-db-ci-connection-rspec
     - .rspec-background-migration-parallel
     - .rails:rules:single-db-ci-connection
 
-rspec migration pg16 praefect:
+rspec migration pg17 praefect:
   extends:
-    - rspec migration pg16
+    - rspec migration pg17
     - .praefect-with-db
     - .rspec-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec background_migration pg16 praefect:
+rspec background_migration pg17 praefect:
   extends:
-    - rspec background_migration pg16
+    - rspec background_migration pg17
     - .praefect-with-db
     - .rspec-background-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec unit pg16:
+rspec unit pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rspec-unit-parallel
     - .rails:rules:ee-and-foss-unit
 
-rspec unit pg16 single-redis:
+rspec unit pg17 single-redis:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .no-redis-cluster
     - .rspec-unit-parallel
     - .rails:rules:single-redis
 
-rspec unit pg16 single-db:
+rspec unit pg17 single-db:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .single-db-rspec
     - .rspec-unit-parallel
     - .rails:rules:single-db
 
-rspec unit pg16 single-db-ci-connection:
+rspec unit pg17 single-db-ci-connection:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .single-db-ci-connection-rspec
     - .rspec-unit-parallel
     - .rails:rules:single-db-ci-connection
 
-rspec unit pg16 single-db-sec-connection:
+rspec unit pg17 single-db-sec-connection:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .single-db-sec-connection-rspec
     - .rspec-unit-parallel
     - .rails:rules:single-db-sec-connection
 
-rspec unit pg16 praefect:
+rspec unit pg17 praefect:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .praefect-with-db
     - .rspec-unit-parallel
     - .rails:rules:praefect-with-db
 
-rspec integration pg16:
+rspec integration pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rspec-integration-parallel
     - .rails:rules:ee-and-foss-integration
 
-rspec integration pg16 single-redis:
+rspec integration pg17 single-redis:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .no-redis-cluster
     - .rspec-integration-parallel
     - .rails:rules:single-redis
 
-rspec integration pg16 single-db:
+rspec integration pg17 single-db:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .single-db-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db
 
-rspec integration pg16 single-db-ci-connection:
+rspec integration pg17 single-db-ci-connection:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .single-db-ci-connection-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db-ci-connection
 
-rspec integration pg16 single-db-sec-connection:
+rspec integration pg17 single-db-sec-connection:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .single-db-sec-connection-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db-sec-connection
 
-rspec integration pg16 praefect:
+rspec integration pg17 praefect:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .praefect-with-db
     - .rspec-integration-parallel
     - .rails:rules:praefect-with-db
 
-rspec system pg16:
+rspec system pg17:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rspec-system-parallel
     - .rails:rules:ee-and-foss-system
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
-rspec system pg16 vue3:
+rspec system pg17 vue3:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .rails:rules:ee-and-foss-system-vue3
   needs:
-    # Same as needs of "rspec system pg16" with
+    # Same as needs of "rspec system pg17" with
     # "compile-test-assets vue3" instead of "compile-test-assets"
     - !reference [.repo-from-artifacts, needs]
     - job: "setup-test-env"
@@ -234,30 +235,30 @@ rspec system pg16 vue3:
     - job: "compile-test-assets vue3"
     - job: "detect-tests"
       optional: true
-    - job: "db:setup pg16"
+    - job: "db:setup pg17"
       optional: true
 
-rspec system pg16 single-redis:
+rspec system pg17 single-redis:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .no-redis-cluster
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-redis", rules]
 
-rspec system pg16 single-db:
+rspec system pg17 single-db:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .single-db-rspec
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db", rules]
 
-rspec system pg16 single-db-ci-connection:
+rspec system pg17 single-db-ci-connection:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .single-db-ci-connection-rspec
     - .rspec-system-parallel
   rules:
@@ -271,18 +272,18 @@ rspec system pg16 single-db-ci-connection:
     - !reference [".rails:rules:single-db-ci-connection", rules]
     - !reference [".rails:rules:single-db", rules]
 
-rspec system pg16 single-db-sec-connection:
+rspec system pg17 single-db-sec-connection:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .single-db-sec-connection-rspec
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db-sec-connection", rules]
 
-rspec system pg16 praefect:
+rspec system pg17 praefect:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .praefect-with-db
     - .rspec-system-parallel
   rules:
@@ -291,62 +292,62 @@ rspec system pg16 praefect:
 
 # Test jobs that run without Gitaly's transactions enabled. These will be removed once
 # transactions are always in use in Gitaly.
-rspec migration pg16 no_gitaly_transactions:
+rspec migration pg17 no_gitaly_transactions:
   extends:
-    - rspec migration pg16
+    - rspec migration pg17
     - .gitaly-without-transactions
 
-rspec background_migration pg16 no_gitaly_transactions:
+rspec background_migration pg17 no_gitaly_transactions:
   extends:
-    - rspec background_migration pg16
+    - rspec background_migration pg17
     - .gitaly-without-transactions
 
-rspec unit pg16 no_gitaly_transactions:
+rspec unit pg17 no_gitaly_transactions:
   extends:
-    - rspec unit pg16
+    - rspec unit pg17
     - .gitaly-without-transactions
 
-rspec integration pg16 no_gitaly_transactions:
+rspec integration pg17 no_gitaly_transactions:
   extends:
-    - rspec integration pg16
+    - rspec integration pg17
     - .gitaly-without-transactions
 
-rspec system pg16 no_gitaly_transactions:
+rspec system pg17 no_gitaly_transactions:
   extends:
-    - rspec system pg16
+    - rspec system pg17
     - .gitaly-without-transactions
     - .rails:rules:only-run-system-if-medium-runners-available
 
-rspec-ee migration pg16 no_gitaly_transactions:
+rspec-ee migration pg17 no_gitaly_transactions:
   extends:
-    - rspec-ee migration pg16
+    - rspec-ee migration pg17
     - .ee-only-gitaly-without-transactions
 
-rspec-ee background_migration pg16 no_gitaly_transactions:
+rspec-ee background_migration pg17 no_gitaly_transactions:
   extends:
-    - rspec-ee background_migration pg16
+    - rspec-ee background_migration pg17
     - .ee-only-gitaly-without-transactions
 
-rspec-ee unit pg16 no_gitaly_transactions:
+rspec-ee unit pg17 no_gitaly_transactions:
   extends:
-    - rspec-ee unit pg16
+    - rspec-ee unit pg17
     - .ee-only-gitaly-without-transactions
 
-rspec-ee integration pg16 no_gitaly_transactions:
+rspec-ee integration pg17 no_gitaly_transactions:
   extends:
-    - rspec-ee integration pg16
+    - rspec-ee integration pg17
     - .ee-only-gitaly-without-transactions
 
-rspec-ee system pg16 no_gitaly_transactions:
+rspec-ee system pg17 no_gitaly_transactions:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .ee-only-gitaly-without-transactions
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
 
 rspec fast_spec_helper:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rails:rules:ee-and-foss-fast_spec_helper
   script:
     - fast_spec_helper_specs=$(git grep -l -E '^require.*fast_spec_helper')
@@ -355,49 +356,49 @@ rspec fast_spec_helper:
 
 rspec unit clickhouse23:
   extends:
-    - .rspec-base-pg16-clickhouse23
+    - .rspec-base-pg17-clickhouse23
     - .rails:rules:clickhouse-changes
   parallel: 2
 
 rspec-ee unit clickhouse23:
   extends:
-    - .rspec-base-pg16-clickhouse23
+    - .rspec-base-pg17-clickhouse23
     - .rails:rules:ee-only-clickhouse-changes
   parallel: 2
 
 rspec unit clickhouse24:
   extends:
-    - .rspec-base-pg16-clickhouse24
+    - .rspec-base-pg17-clickhouse24
     - .rails:rules:clickhouse-changes
   parallel: 2
 
 rspec-ee unit clickhouse24:
   extends:
-    - .rspec-base-pg16-clickhouse24
+    - .rspec-base-pg17-clickhouse24
     - .rails:rules:ee-only-clickhouse-changes
   parallel: 2
 
 rspec unit clickhouse25:
   extends:
-    - .rspec-base-pg16-clickhouse25
+    - .rspec-base-pg17-clickhouse25
     - .rails:rules:clickhouse-changes
   parallel: 2
 
 rspec-ee unit clickhouse25:
   extends:
-    - .rspec-base-pg16-clickhouse25
+    - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
   parallel: 2
 
-rspec integration pg16 clickhouse25:
+rspec integration pg17 clickhouse25:
   extends:
-    - .rspec-base-pg16-clickhouse25
+    - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-and-foss-integration
   parallel: 3
 
-rspec-ee integration pg16 clickhouse25:
+rspec-ee integration pg17 clickhouse25:
   extends:
-    - .rspec-base-pg16-clickhouse25
+    - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-integration
   parallel: 3
 
@@ -426,7 +427,7 @@ gitlab:clickhouse-23:rollback:main:
   extends:
     - .rspec-base
     - .production
-    - .use-pg16-clickhouse23
+    - .use-pg17-clickhouse23
     - .rails:rules:clickhouse-changes
   script:
     - !reference [.clickhouse-setup, script]
@@ -438,7 +439,7 @@ gitlab:clickhouse-24:rollback:main:
   extends:
     - .rspec-base
     - .production
-    - .use-pg16-clickhouse24
+    - .use-pg17-clickhouse24
     - .rails:rules:clickhouse-changes
   script:
     - !reference [.clickhouse-setup, script]
@@ -450,7 +451,7 @@ gitlab:clickhouse-25:rollback:main:
   extends:
     - .rspec-base
     - .production
-    - .use-pg16-clickhouse25
+    - .use-pg17-clickhouse25
     - .rails:rules:clickhouse-changes
   script:
     - !reference [.clickhouse-setup, script]
@@ -493,7 +494,7 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:artifact-collector-unit
   needs:
-    - job: rspec unit pg16  # 44 jobs
+    - job: rspec unit pg17  # 44 jobs
       optional: true
     - job: rspec unit clickhouse23 # 2 jobs
       optional: true
@@ -507,9 +508,9 @@ rspec:artifact-collector part-a:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-a
   needs:
-    - job: rspec system pg16  # 32 jobs
+    - job: rspec system pg17  # 32 jobs
       optional: true
-    - job: rspec background_migration pg16  # 17 jobs
+    - job: rspec background_migration pg17  # 17 jobs
       optional: true
 
 rspec:artifact-collector part-b:
@@ -517,11 +518,11 @@ rspec:artifact-collector part-b:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-b
   needs:
-    - job: rspec integration pg16  # 20 jobs
+    - job: rspec integration pg17  # 20 jobs
       optional: true
-    - job: rspec integration pg16 clickhouse25  # 3 jobs
+    - job: rspec integration pg17 clickhouse25  # 3 jobs
       optional: true
-    - job: rspec migration pg16  # 26 jobs
+    - job: rspec migration pg17  # 26 jobs
       optional: true
 
 rspec:artifact-collector unit single-redis:
@@ -529,7 +530,7 @@ rspec:artifact-collector unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec unit pg16 single-redis  # 44 jobs
+    - job: rspec unit pg17 single-redis  # 44 jobs
       optional: true
 
 rspec:artifact-collector system single-redis:
@@ -537,7 +538,7 @@ rspec:artifact-collector system single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec system pg16 single-redis  # 32 jobs
+    - job: rspec system pg17 single-redis  # 32 jobs
       optional: true
 
 rspec:artifact-collector remainder single-redis:
@@ -545,7 +546,7 @@ rspec:artifact-collector remainder single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec integration pg16 single-redis  # 20 jobs
+    - job: rspec integration pg17 single-redis  # 20 jobs
       optional: true
 
 rspec:artifact-collector ee unit single-redis:
@@ -553,7 +554,7 @@ rspec:artifact-collector ee unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg16 single-redis  # 39 jobs
+    - job: rspec-ee unit pg17 single-redis  # 39 jobs
       optional: true
 
 rspec:artifact-collector ee remainder single-redis:
@@ -561,16 +562,16 @@ rspec:artifact-collector ee remainder single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee integration pg16 single-redis  # 9 jobs
+    - job: rspec-ee integration pg17 single-redis  # 9 jobs
       optional: true
-    - job: rspec-ee system pg16 single-redis  # 16 jobs
+    - job: rspec-ee system pg17 single-redis  # 16 jobs
       optional: true
 
 rspec:artifact-collector ee unit:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee unit pg16  # 39 jobs
+    - job: rspec-ee unit pg17  # 39 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-unit', rules]
@@ -579,9 +580,9 @@ rspec:artifact-collector ee remainder:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee migration pg16  # 2 jobs
+    - job: rspec-ee migration pg17  # 2 jobs
       optional: true
-    - job: rspec-ee background_migration pg16  # 3 jobs
+    - job: rspec-ee background_migration pg17  # 3 jobs
       optional: true
     - job: rspec-ee unit clickhouse23  # 2 jobs
       optional: true
@@ -589,11 +590,11 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee unit clickhouse25  # 2 jobs
       optional: true
-    - job: rspec-ee integration pg16  # 9 jobs
+    - job: rspec-ee integration pg17  # 9 jobs
       optional: true
-    - job: rspec-ee integration pg16 clickhouse25  # 3 jobs
+    - job: rspec-ee integration pg17 clickhouse25  # 3 jobs
       optional: true
-    - job: rspec-ee system pg16  # 16 jobs
+    - job: rspec-ee system pg17  # 16 jobs
       optional: true
     - job: rspec fail-fast # 1 job
       optional: true
@@ -868,152 +869,152 @@ rspec-ee:predictive:trigger single-db-ci-connection:
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
 
-rspec-ee migration pg16:
+rspec-ee migration pg17:
   extends:
-    - .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
     - .rspec-base-migration
     - .rails:rules:ee-only-migration
     - .rspec-ee-migration-parallel
 
-rspec-ee background_migration pg16:
+rspec-ee background_migration pg17:
   extends:
-    - .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
     - .rspec-base-migration
     - .rails:rules:ee-only-background-migration
     - .rspec-ee-background-migration-parallel
 
-rspec-ee migration pg16 single-db:
+rspec-ee migration pg17 single-db:
   extends:
-    - rspec-ee migration pg16
+    - rspec-ee migration pg17
     - .single-db-rspec
     - .rails:rules:single-db-ee
 
-rspec-ee background_migration pg16 single-db:
+rspec-ee background_migration pg17 single-db:
   extends:
-    - rspec-ee background_migration pg16
+    - rspec-ee background_migration pg17
     - .single-db-rspec
     - .rails:rules:single-db-ee
 
-rspec-ee migration pg16 single-db-ci-connection:
+rspec-ee migration pg17 single-db-ci-connection:
   extends:
-    - rspec-ee migration pg16
+    - rspec-ee migration pg17
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee background_migration pg16 single-db-ci-connection:
+rspec-ee background_migration pg17 single-db-ci-connection:
   extends:
-    - rspec-ee background_migration pg16
+    - rspec-ee background_migration pg17
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee migration pg16 single-db-sec-connection:
+rspec-ee migration pg17 single-db-sec-connection:
   extends:
-    - rspec-ee migration pg16
+    - rspec-ee migration pg17
     - .single-db-sec-connection-rspec
     - .rails:rules:single-db-sec-connection-ee
 
-rspec-ee background_migration pg16 single-db-sec-connection:
+rspec-ee background_migration pg17 single-db-sec-connection:
   extends:
-    - rspec-ee background_migration pg16
+    - rspec-ee background_migration pg17
     - .single-db-sec-connection-rspec
     - .rails:rules:single-db-sec-connection-ee
 
-rspec-ee migration pg16 praefect:
+rspec-ee migration pg17 praefect:
   extends:
-    - rspec migration pg16
+    - rspec migration pg17
     - .praefect-with-db
     - .rspec-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec-ee background_migration pg16 praefect:
+rspec-ee background_migration pg17 praefect:
   extends:
-    - rspec background_migration pg16
+    - rspec background_migration pg17
     - .praefect-with-db
     - .rspec-background-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec-ee unit pg16:
+rspec-ee unit pg17:
   extends:
-    - .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
     - .rspec-ee-unit-parallel
     - .rails:rules:ee-only-unit
 
-rspec-ee unit pg16 single-db:
+rspec-ee unit pg17 single-db:
   extends:
-    - rspec-ee unit pg16
+    - rspec-ee unit pg17
     - .single-db-rspec
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-ee
 
-rspec-ee unit pg16 single-redis:
+rspec-ee unit pg17 single-redis:
   extends:
-    - rspec-ee unit pg16
+    - rspec-ee unit pg17
     - .no-redis-cluster
     - .rspec-ee-unit-parallel
     - .rails:rules:single-redis-ee
 
-rspec-ee unit pg16 single-db-ci-connection:
+rspec-ee unit pg17 single-db-ci-connection:
   extends:
-    - rspec-ee unit pg16
+    - rspec-ee unit pg17
     - .single-db-ci-connection-rspec
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee unit pg16 single-db-sec-connection:
+rspec-ee unit pg17 single-db-sec-connection:
   extends:
-    - rspec-ee unit pg16
+    - rspec-ee unit pg17
     - .single-db-sec-connection-rspec
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-sec-connection-ee
 
-rspec-ee integration pg16:
+rspec-ee integration pg17:
   extends:
-    - .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
     - .rspec-ee-integration-parallel
     - .rails:rules:ee-only-integration
 
-rspec-ee integration pg16 single-db:
+rspec-ee integration pg17 single-db:
   extends:
-    - rspec-ee integration pg16
+    - rspec-ee integration pg17
     - .single-db-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ee
 
-rspec-ee integration pg16 single-redis:
+rspec-ee integration pg17 single-redis:
   extends:
-    - rspec-ee integration pg16
+    - rspec-ee integration pg17
     - .no-redis-cluster
     - .rspec-ee-integration-parallel
     - .rails:rules:single-redis-ee
 
-rspec-ee integration pg16 single-db-ci-connection:
+rspec-ee integration pg17 single-db-ci-connection:
   extends:
-    - rspec-ee integration pg16
+    - rspec-ee integration pg17
     - .single-db-ci-connection-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee integration pg16 single-db-sec-connection:
+rspec-ee integration pg17 single-db-sec-connection:
   extends:
-    - rspec-ee integration pg16
+    - rspec-ee integration pg17
     - .single-db-sec-connection-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-sec-connection-ee
 
-rspec-ee system pg16:
+rspec-ee system pg17:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
-    - .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
     - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
 
-rspec-ee system pg16 vue3:
+rspec-ee system pg17 vue3:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .rails:rules:ee-and-foss-system-vue3
   needs:
-    # Same as needs of "rspec-ee system pg16" with
+    # Same as needs of "rspec-ee system pg17" with
     # "compile-test-assets vue3" instead of "compile-test-assets"
     - !reference [.repo-from-artifacts, needs]
     - job: "setup-test-env"
@@ -1021,39 +1022,39 @@ rspec-ee system pg16 vue3:
     - job: "compile-test-assets vue3"
     - job: "detect-tests"
       optional: true
-    - job: "db:setup-ee pg16"
+    - job: "db:setup-ee pg17"
       optional: true
 
-rspec-ee system pg16 single-db:
+rspec-ee system pg17 single-db:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .single-db-rspec
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db-ee", rules]
 
-rspec-ee system pg16 single-redis:
+rspec-ee system pg17 single-redis:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .no-redis-cluster
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-redis-ee", rules]
 
-rspec-ee system pg16 single-db-ci-connection:
+rspec-ee system pg17 single-db-ci-connection:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .single-db-ci-connection-rspec
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db-ci-connection-ee", rules]
 
-rspec-ee system pg16 single-db-sec-connection:
+rspec-ee system pg17 single-db-sec-connection:
   extends:
-    - rspec-ee system pg16
+    - rspec-ee system pg17
     - .single-db-sec-connection-rspec
     - .rspec-ee-system-parallel
   rules:
@@ -1092,44 +1093,44 @@ rspec-ee system pg17 es8:
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
 
-# PG16 is the default now.
+# PG17 is the default now.
 
-# PG17
-rspec migration pg17:
+# PG16 (Nightly)
+rspec migration pg16:
   extends:
-    - .rspec-base-pg17
+    - .rspec-base-pg16
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-migration-parallel
 
-rspec background_migration pg17:
+rspec background_migration pg16:
   extends:
-    - .rspec-base-pg17
+    - .rspec-base-pg16
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-background-migration-parallel
 
-rspec unit pg17:
+rspec unit pg16:
   extends:
-    - .rspec-base-pg17
+    - .rspec-base-pg16
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-unit-parallel
 
-rspec integration pg17:
+rspec integration pg16:
   extends:
-    - .rspec-base-pg17
+    - .rspec-base-pg16
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-integration-parallel
 
-rspec system pg17:
+rspec system pg16:
   extends:
-    - .rspec-base-pg17
+    - .rspec-base-pg16
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
 
-# PG18
+# PG18 (Nightly)
 rspec migration pg18:
   extends:
     - .rspec-base-pg18
@@ -1214,44 +1215,43 @@ rspec-ee system pg17 opensearch2:
 
 # Production version tests for ES and PG in nightly pipeline are defined in the previous section
 
-# PG17
-# Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.
+# PG16 (EE-Nightly)
 # Adding new job families can cause the nightly pipeline to fail.
-rspec-ee migration pg17:
+rspec-ee migration pg16:
   extends:
-    - .rspec-ee-base-pg17
+    - .rspec-ee-base-pg16
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-migration-parallel
 
-rspec-ee background_migration pg17:
+rspec-ee background_migration pg16:
   extends:
-    - .rspec-ee-base-pg17
+    - .rspec-ee-base-pg16
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-background-migration-parallel
 
-rspec-ee unit pg17:
+rspec-ee unit pg16:
   extends:
-    - .rspec-ee-base-pg17
+    - .rspec-ee-base-pg16
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
-rspec-ee integration pg17:
+rspec-ee integration pg16:
   extends:
-    - .rspec-ee-base-pg17
+    - .rspec-ee-base-pg16
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
-rspec-ee system pg17:
+rspec-ee system pg16:
   extends:
-    - .rspec-ee-base-pg17
+    - .rspec-ee-base-pg16
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
-# PG18
+# PG18 (EE-Nightly)
 # Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.
 # Adding new job families can cause the nightly pipeline to fail.
 rspec-ee migration pg18:
@@ -1401,7 +1401,7 @@ fail-pipeline-early:
   script:
     - fail_pipeline_early
 
-.base-rspec-pg16-rerun-previous-failed-tests:
+.base-rspec-pg17-rerun-previous-failed-tests:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED # See note above on .rspec-fail-fast regarding special-case usage of GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
@@ -1414,17 +1414,17 @@ fail-pipeline-early:
     - !reference [.base-script, script]
     - rspec_section rspec_rerun_previous_failed_tests "${PREVIOUS_FAILED_TESTS_FILE}"
 
-rspec rspec-pg16-rerun-previous-failed-tests:
+rspec rspec-pg17-rerun-previous-failed-tests:
   extends:
-    - .rspec-base-pg16
-    - .base-rspec-pg16-rerun-previous-failed-tests
+    - .rspec-base-pg17
+    - .base-rspec-pg17-rerun-previous-failed-tests
   variables:
     PREVIOUS_FAILED_TESTS_FILE: tmp/previous_failed_tests/rspec_failed_tests.txt
 
-rspec rspec-ee-pg16-rerun-previous-failed-tests:
+rspec rspec-ee-pg17-rerun-previous-failed-tests:
   extends:
-    - .rspec-ee-base-pg16
-    - .base-rspec-pg16-rerun-previous-failed-tests
+    - .rspec-ee-base-pg17
+    - .base-rspec-pg17-rerun-previous-failed-tests
   variables:
     PREVIOUS_FAILED_TESTS_FILE: tmp/previous_failed_tests/rspec_ee_failed_files.txt
 # EE: Canonical MR pipelines

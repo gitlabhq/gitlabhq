@@ -94,7 +94,7 @@ To configure the contact source for a group or subgroup:
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view a group's contacts:
 
@@ -107,7 +107,7 @@ To view a group's contacts:
 
 Prerequisites:
 
-- You must have at least the Developer role for the group.
+- You must have the Developer, Maintainer, or Owner role for the group.
 
 To create a contact:
 
@@ -124,7 +124,7 @@ contacts using the GraphQL API.
 
 Prerequisites:
 
-- You must have at least the Developer role for the group.
+- You must have the Developer, Maintainer, or Owner role for the group.
 
 To edit an existing contact:
 
@@ -158,7 +158,7 @@ To change the state of a contact:
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view a group's organizations:
 
@@ -172,7 +172,7 @@ To view a group's organizations:
 
 Prerequisites:
 
-- You must have at least the Developer role for the group.
+- You must have the Developer, Maintainer, or Owner role for the group.
 
 To create an organization:
 
@@ -190,7 +190,7 @@ organizations using the GraphQL API.
 
 Prerequisites:
 
-- You must have at least the Developer role for the group.
+- You must have the Developer, Maintainer, or Owner role for the group.
 
 To edit an existing organization:
 
@@ -213,7 +213,7 @@ issues are linked to contacts matching the email addresses in the sender and CC 
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view a contact's issues, select a contact from the issue sidebar, or:
 
@@ -225,7 +225,7 @@ To view a contact's issues, select a contact from the issue sidebar, or:
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view an organization's issues:
 
@@ -238,7 +238,7 @@ To view an organization's issues:
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 You can view contacts associated with an issue in the right sidebar.
 
@@ -254,7 +254,7 @@ API.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To add [active](#change-the-state-of-a-contact) contacts to an issue use the [`/add_contacts` quick action](../project/quick_actions.md#add_contacts) with `[contact:address@example.com]`.
 
@@ -266,7 +266,7 @@ API.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To remove contacts from an issue use the [`/remove_contacts` quick action](../project/quick_actions.md#remove_contacts) with `[contact:address@example.com]`.
 

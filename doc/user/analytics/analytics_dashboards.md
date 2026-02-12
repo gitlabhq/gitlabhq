@@ -54,7 +54,7 @@ The following built-in dashboards are available:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To view a list of dashboards for a project:
 
@@ -74,7 +74,7 @@ To view a list of dashboards for a project:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view a list of dashboards for a group:
 

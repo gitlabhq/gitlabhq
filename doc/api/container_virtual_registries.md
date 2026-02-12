@@ -9,7 +9,7 @@ description: Create and manage virtual registries for the container registry, an
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
 {{< /details >}}
@@ -32,6 +32,9 @@ Use this API to:
 
 For information about pulling container images through a virtual registry, see
 [Container virtual registry](../user/packages/virtual_registry/container/_index.md).
+
+> [!note]
+> Cloud provider registries are not supported, but [issue 20919](https://gitlab.com/groups/gitlab-org/-/work_items/20919) proposes to change this behavior.
 
 ## Manage virtual registries
 

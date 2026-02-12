@@ -188,7 +188,7 @@ or [instance](../profile/account/create_accounts.md).
 Prerequisites:
 
 - For groups, you must have the Owner role for the group.
-- For projects, you must have at least the Maintainer role for the project.
+- For projects, you must have the Maintainer or Owner role for the project.
 
 To assign a custom member role to an existing user:
 

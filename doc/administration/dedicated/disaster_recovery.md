@@ -33,7 +33,7 @@ To be eligible for the full recovery objectives, you must:
 - Specify both a primary and secondary region during [onboarding](create_instance/_index.md).
   If you don't specify a secondary region, recovery is limited to backup restoration.
 - Make sure both regions are [supported by GitLab Dedicated](create_instance/data_residency_high_availability.md#primary-regions).
-  If you select a secondary region with [limited support](create_instance/data_residency_high_availability.md#secondary-regions-with-limited-support), the recovery time and point objectives do not apply.
+  If you select a secondary region with [limited support](create_instance/data_residency_high_availability.md#secondary-regions), the recovery time and point objectives do not apply.
 
 ## Recovery objectives
 
@@ -104,7 +104,7 @@ Disaster recovery has these service limitations:
 - Some secondary regions have limited support and are not covered by the RPO and RTO targets.
   These regions have limited email functionality and resilience in your failover instance because of AWS limitations.
   These limitations may also affect disaster recovery times and certain features during failover operations.
-  For more information, see [secondary regions with limited support](create_instance/data_residency_high_availability.md#secondary-regions-with-limited-support).
+  For more information, see [secondary regions with limited support](create_instance/data_residency_high_availability.md#secondary-regions).
 
 GitLab does not provide:
 

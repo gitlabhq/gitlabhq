@@ -165,8 +165,8 @@ export const config = {
           },
           features: {
             keyArgs: false,
-            merge(existing = [], incoming) {
-              return unionBy(incoming, existing, '__typename');
+            merge(existing = {}, incoming = {}) {
+              return { ...existing, ...incoming };
             },
           },
           // widgets policy because otherwise the subscriptions invalidate the cache

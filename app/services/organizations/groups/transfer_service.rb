@@ -13,6 +13,7 @@ module Organizations
         @group = group
         @new_organization = new_organization
         @current_user = current_user
+        @old_organization = group.organization
       end
 
       def async_execute
@@ -40,8 +41,7 @@ module Organizations
         user_transfer_service.prepare_bots
 
         Group.transaction do
-          transfer_namespaces_and_projects
-          transfer_users
+          perform_transfer
         end
 
         log_transfer_success
@@ -53,7 +53,12 @@ module Organizations
 
       private
 
-      attr_reader :group, :new_organization, :current_user
+      attr_reader :group, :new_organization, :current_user, :old_organization
+
+      def perform_transfer
+        transfer_namespaces_and_projects
+        transfer_users
+      end
 
       def transfer_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
@@ -136,7 +141,7 @@ module Organizations
       end
 
       def already_transferred?
-        new_organization && new_organization.id == group.organization_id
+        new_organization && new_organization.id == old_organization.id
       end
 
       def has_permission?
@@ -164,3 +169,5 @@ module Organizations
     end
   end
 end
+
+Organizations::Groups::TransferService.prepend_mod

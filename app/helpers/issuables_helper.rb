@@ -27,7 +27,7 @@ module IssuablesHelper
 
     if include_value
       sanitized_list = sanitize_name(issuable.assignee_list)
-      ns_('NotificationEmail|Assignee: %{users}', 'NotificationEmail|Assignees: %{users}', assignees.count) % { users: sanitized_list }
+      format(ns_('NotificationEmail|Assignee: %{users}', 'NotificationEmail|Assignees: %{users}', assignees.count), users: sanitized_list)
     else
       ns_('NotificationEmail|Assignee', 'NotificationEmail|Assignees', assignees.count)
     end

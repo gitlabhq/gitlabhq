@@ -159,7 +159,7 @@ Email replies that create standard or threaded comments are subject to a two yea
 ## Edit a comment
 
 You can edit your own comment at any time.
-Anyone with at least the Maintainer role can also edit a comment made by someone else.
+Anyone with the Maintainer or Owner role can also edit a comment made by someone else.
 
 To edit a comment:
 
@@ -184,8 +184,8 @@ When you do, only project members can add and edit comments.
 
 Prerequisites:
 
-- In merge requests, you must have at least the Developer role.
-- In issues, you must have at least the Planner role.
+- In merge requests, you must have the Developer, Maintainer, or Owner role.
+- In issues, you must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To lock an issue or merge request:
 
@@ -208,8 +208,8 @@ If the item was not previously confidential, users without access may appear as 
 Who can be notified:
 
 - Users assigned to the item, regardless of role.
-- Users who authored the item, if they have at least the Guest role.
-- Users with at least a Planner role in the group or project the item belongs to.
+- Users who authored the item, if they have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
+- Users with the Planner, Reporter, Developer, Maintainer, or Owner role in the group or project the item belongs to.
 
 ## Add an internal note
 
@@ -233,7 +233,7 @@ Internal notes differ from public comments:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add an internal note:
 
@@ -298,7 +298,7 @@ When you reply to a standard comment, you create a thread.
 
 Prerequisites:
 
-- You must have at least the Guest role.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - You must be in an issue, merge request, or epic. Threads in commits and snippets are not supported.
 
 To create a thread by replying to a comment:
@@ -316,7 +316,7 @@ You can create a thread without replying to a standard comment.
 
 Prerequisites:
 
-- You must have at least the Guest role.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - You must be in an issue, merge request, commit, or snippet.
 
 To create a thread:
@@ -350,7 +350,7 @@ Resolved threads can be reopened later by any user who has permission to resolve
 Prerequisites:
 
 - You must be in an epic, issue, task, objective, key result, or merge request.
-- You must have at least the Developer role or be the author of the issue or merge request.
+- You must have the Developer, Maintainer, or Owner role or be the author of the issue or merge request.
 
 To resolve a thread:
 

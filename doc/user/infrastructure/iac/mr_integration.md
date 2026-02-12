@@ -28,7 +28,7 @@ modifies, or destroys.
 > encrypt the plan output or modify the project visibility settings. You should also **disable**
 > [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
 > and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
-> This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Reporter role.
+> This setting ensures artifacts are accessible only to GitLab administrators and project members with the Reporter, Developer, Maintainer, or Owner role.
 
 ## Configure OpenTofu report artifacts
 

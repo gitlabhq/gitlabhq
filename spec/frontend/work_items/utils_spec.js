@@ -765,86 +765,147 @@ describe('setLastUsedWorkItemTypeIdForNamespace', () => {
 });
 
 describe('combineWorkItemLists', () => {
-  const baseSlimList = [
-    { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'slim desc' }] },
-    { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'slim assignee' }] },
-  ];
-  const baseFullList = [
-    { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'full desc' }] },
-    { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'full assignee' }] },
-    { id: 3, widgets: [{ type: 'LABELS', value: 'full label' }] },
-  ];
+  describe('with the features data', () => {
+    const baseSlimList = [
+      { id: 1, features: { description: { description: 'This work item description' } } },
+      { id: 2, features: { assignees: { assignees: { nodes: [{ name: 'John' }] } } } },
+    ];
+    const baseFullList = [
+      {
+        id: 1,
+        features: { description: { description: 'This work item description full version' } },
+      },
+      { id: 2, features: { assignees: { assignees: [{ name: 'John Jack' }] } } },
+      { id: 3, features: { labels: { labels: { title: 'workflow' } } } },
+    ];
 
-  describe('when slim list is empty', () => {
-    describe('and full list is empty', () => {
-      it('returns empty array', () => {
-        expect(combineWorkItemLists([], [])).toEqual([]);
+    describe('when slim list is empty', () => {
+      describe('and full list is empty', () => {
+        it('returns empty array', () => {
+          expect(combineWorkItemLists([], [], true)).toEqual([]);
+        });
       });
-    });
 
-    describe('and full list has items', () => {
-      it('returns the full list', () => {
-        expect(combineWorkItemLists([], baseFullList)).toEqual(baseFullList);
+      describe('and full list has items', () => {
+        it('returns the full list', () => {
+          expect(combineWorkItemLists([], baseFullList, true)).toEqual(baseFullList);
+        });
+      });
+
+      describe('when both lists have items', () => {
+        describe('and slim list features have fewer keys than full list features', () => {
+          it('prioritizes full list features', () => {
+            const fullList = [
+              { ...baseFullList[0], features: { ...baseFullList[0].features, otherProp: true } },
+              baseFullList[1],
+              baseFullList[2],
+            ];
+            const result = combineWorkItemLists(baseSlimList, fullList, true);
+            expect(result).toEqual(fullList);
+          });
+        });
+
+        describe('and slim list has items not in full list', () => {
+          it('includes items from both lists', () => {
+            const slimList = [
+              ...baseSlimList,
+              { id: 4, features: { labels: { labels: { title: 'slim workflow' } } } },
+            ];
+            const fullList = [
+              baseFullList[0],
+              baseFullList[1],
+              { id: 3, features: { milestone: { title: 'full milestone' } } },
+            ];
+            const result = combineWorkItemLists(slimList, fullList, true);
+            expect(result).toEqual(fullList);
+          });
+        });
       });
     });
   });
 
-  describe('when both lists have items', () => {
-    describe('and slim list widgets have fewer keys than full list widgets', () => {
-      it('prioritizes full list widgets', () => {
-        const fullList = [
-          { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
-          baseFullList[1],
-          baseFullList[2],
-        ];
+  describe('with the widget data', () => {
+    const baseSlimList = [
+      { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'slim desc' }] },
+      { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'slim assignee' }] },
+    ];
+    const baseFullList = [
+      { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'full desc' }] },
+      { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'full assignee' }] },
+      { id: 3, widgets: [{ type: 'LABELS', value: 'full label' }] },
+    ];
 
-        const result = combineWorkItemLists(baseSlimList, fullList);
+    describe('when slim list is empty', () => {
+      describe('and full list is empty', () => {
+        it('returns empty array', () => {
+          expect(combineWorkItemLists([], [])).toEqual([]);
+        });
+      });
 
-        expect(result).toEqual([
-          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
-          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
-          fullList[2],
-        ]);
+      describe('and full list has items', () => {
+        it('returns the full list', () => {
+          expect(combineWorkItemLists([], baseFullList)).toEqual(baseFullList);
+        });
       });
     });
 
-    describe('and full list widgets have more keys than slim list widgets', () => {
-      it('prioritizes full list widgets', () => {
-        const fullList = [
-          { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
-          { ...baseFullList[1], widgets: [{ ...baseFullList[1].widgets[0], otherProp: true }] },
-          baseFullList[2],
-        ];
+    describe('when both lists have items', () => {
+      describe('and slim list widgets have fewer keys than full list widgets', () => {
+        it('prioritizes full list widgets', () => {
+          const fullList = [
+            { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
+            baseFullList[1],
+            baseFullList[2],
+          ];
 
-        const result = combineWorkItemLists(baseSlimList, fullList);
+          const result = combineWorkItemLists(baseSlimList, fullList);
 
-        expect(result).toEqual([
-          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
-          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
-          fullList[2],
-        ]);
+          expect(result).toEqual([
+            { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+            { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+            fullList[2],
+          ]);
+        });
       });
-    });
 
-    describe('and slim list has items not in full list', () => {
-      it('includes items from both lists', () => {
-        const slimList = [
-          ...baseSlimList,
-          { id: 4, widgets: [{ type: 'LABELS', value: 'slim label' }] },
-        ];
-        const fullList = [
-          baseFullList[0],
-          baseFullList[1],
-          { id: 3, widgets: [{ type: 'MILESTONE', value: 'full milestone' }] },
-        ];
+      describe('and full list widgets have more keys than slim list widgets', () => {
+        it('prioritizes full list widgets', () => {
+          const fullList = [
+            { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
+            { ...baseFullList[1], widgets: [{ ...baseFullList[1].widgets[0], otherProp: true }] },
+            baseFullList[2],
+          ];
 
-        const result = combineWorkItemLists(slimList, fullList);
+          const result = combineWorkItemLists(baseSlimList, fullList);
 
-        expect(result).toEqual([
-          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
-          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
-          fullList[2],
-        ]);
+          expect(result).toEqual([
+            { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+            { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+            fullList[2],
+          ]);
+        });
+      });
+
+      describe('and slim list has items not in full list', () => {
+        it('includes items from both lists', () => {
+          const slimList = [
+            ...baseSlimList,
+            { id: 4, widgets: [{ type: 'LABELS', value: 'slim label' }] },
+          ];
+          const fullList = [
+            baseFullList[0],
+            baseFullList[1],
+            { id: 3, widgets: [{ type: 'MILESTONE', value: 'full milestone' }] },
+          ];
+
+          const result = combineWorkItemLists(slimList, fullList);
+
+          expect(result).toEqual([
+            { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+            { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+            fullList[2],
+          ]);
+        });
       });
     });
   });
