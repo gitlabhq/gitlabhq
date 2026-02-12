@@ -36,7 +36,7 @@ import {
   STATUS_ALL,
   STATUS_CLOSED,
   STATUS_OPEN,
-  WORKSPACE_GROUP,
+  NAMESPACE_GROUP,
   NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
@@ -631,7 +631,7 @@ export default {
       return this.state === STATUS_OPEN;
     },
     namespace() {
-      return this.isGroup ? WORKSPACE_GROUP : NAMESPACE_PROJECT;
+      return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);

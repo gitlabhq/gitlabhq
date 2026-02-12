@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import BoardApp from '~/boards/components/board_app.vue';
-import { TYPE_ISSUE, WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import {
   navigationType,
   isLoggedIn,
@@ -111,8 +111,8 @@ function mountBoardApp(el) {
       initialFilterParams,
       boardBaseUrl: el.dataset.boardBaseUrl,
       boardType,
-      isGroup: boardType === WORKSPACE_GROUP,
-      isGroupBoard: boardType === WORKSPACE_GROUP,
+      isGroup: boardType === NAMESPACE_GROUP,
+      isGroupBoard: boardType === NAMESPACE_GROUP,
       isProjectBoard: boardType === NAMESPACE_PROJECT,
       currentUserId: gon.current_user_id || null,
       boardWeight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,

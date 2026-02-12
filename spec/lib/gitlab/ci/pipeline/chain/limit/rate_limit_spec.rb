@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :clean_gitlab_redis_rate_limiting do
+RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :clean_gitlab_redis_rate_limiting, feature_category: :ci_pipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project, reload: true) { create(:project, namespace: namespace) }
@@ -25,20 +25,56 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
   let(:source) { 'push' }
   let(:step) { described_class.new(pipeline, command) }
 
-  def perform(count: 2)
-    count.times { step.perform! }
+  def exceed_rate_limit
+    2.times { step.perform! }
+  end
+
+  shared_context 'with duo_workflow pipeline' do |workflow_def:|
+    let(:source) { 'duo_workflow' }
+
+    before do
+      command.duo_workflow_definition = workflow_def
+    end
+  end
+
+  shared_examples 'excluded from rate limits' do
+    it 'does not break the chain' do
+      exceed_rate_limit
+
+      expect(step.break?).to be_falsey
+    end
+
+    it 'does not invalidate the pipeline' do
+      exceed_rate_limit
+
+      expect(pipeline.errors).to be_empty
+    end
+
+    it 'does not log anything' do
+      expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+      exceed_rate_limit
+    end
+  end
+
+  shared_examples 'not excluded from rate limits' do
+    it 'still enforces rate limits' do
+      exceed_rate_limit
+
+      expect(pipeline.errors).not_to be_empty
+    end
   end
 
   shared_examples 'exceeded rate limit' do
     it 'does not persist the pipeline' do
-      perform
+      exceed_rate_limit
 
       expect(pipeline).not_to be_persisted
       expect(pipeline.errors.added?(:base, throttle_message)).to be_truthy
     end
 
     it 'breaks the chain' do
-      perform
+      exceed_rate_limit
 
       expect(step.break?).to be_truthy
     end
@@ -56,27 +92,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
         )
       )
 
-      perform
-    end
-
-    shared_examples_for 'excluded from rate limits' do
-      it 'does not break the chain' do
-        perform
-
-        expect(step.break?).to be_falsey
-      end
-
-      it 'does not invalidate the pipeline' do
-        perform
-
-        expect(pipeline.errors).to be_empty
-      end
-
-      it 'does not log anything' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-        perform
-      end
+      exceed_rate_limit
     end
 
     context 'with child pipelines' do
@@ -95,65 +111,41 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     end
 
     context 'with SAST FP detection duo_workflow pipelines' do
-      let(:source) { 'duo_workflow' }
-      let(:workload) { double('Workload') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
-      let(:workflow) { double('Workflow', workflow_definition: 'sast_fp_detection/v1') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
-
-      before do
-        allow(pipeline).to receive(:workload).and_return(workload)
-        allow(workload).to receive(:workflows).and_return([workflow])
-      end
+      include_context 'with duo_workflow pipeline', workflow_def: 'sast_fp_detection/v1'
 
       it_behaves_like 'excluded from rate limits'
     end
 
-    context 'with non-SAST FP duo_workflow pipelines' do
-      let(:source) { 'duo_workflow' }
-      let(:workload) { double('Workload') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
-      let(:workflow) { double('Workflow', workflow_definition: 'other_workflow/v1') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
+    context 'with resolve SAST vulnerability duo_workflow pipelines' do
+      include_context 'with duo_workflow pipeline', workflow_def: 'resolve_sast_vulnerability/v1'
 
-      before do
-        stub_application_setting(pipeline_limit_per_project_user_sha: 1)
-        stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
-        allow(pipeline).to receive(:workload).and_return(workload)
-        allow(workload).to receive(:workflows).and_return([workflow])
-      end
-
-      it 'does not exclude from rate limits' do
-        perform
-
-        expect(pipeline.errors).not_to be_empty
-      end
+      it_behaves_like 'excluded from rate limits'
     end
 
-    context 'with duo_workflow pipelines when workload is nil' do
+    context 'with non-excluded duo_workflow pipelines' do
+      include_context 'with duo_workflow pipeline', workflow_def: 'other_workflow/v1'
+
+      it_behaves_like 'not excluded from rate limits'
+    end
+
+    context 'with duo_workflow pipelines when workflow definition is nil' do
       let(:source) { 'duo_workflow' }
 
-      before do
-        stub_application_setting(pipeline_limit_per_project_user_sha: 1)
-        stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
-        allow(pipeline).to receive(:workload).and_return(nil)
-      end
-
-      it 'does not exclude from rate limits' do
-        perform
-
-        expect(pipeline.errors).not_to be_empty
-      end
+      it_behaves_like 'not excluded from rate limits'
     end
 
     context 'when saving incomplete pipelines' do
       let(:save_incompleted) { true }
 
       it 'does not persist the pipeline' do
-        perform
+        exceed_rate_limit
 
         expect(pipeline).not_to be_persisted
         expect(pipeline.errors.added?(:base, throttle_message)).to be_truthy
       end
 
       it 'breaks the chain' do
-        perform
+        exceed_rate_limit
 
         expect(step.break?).to be_truthy
       end
@@ -165,13 +157,13 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       end
 
       it 'does not break the chain' do
-        perform
+        exceed_rate_limit
 
         expect(step.break?).to be_falsey
       end
 
       it 'does not invalidate the pipeline' do
-        perform
+        exceed_rate_limit
 
         expect(pipeline.errors).to be_empty
       end
@@ -188,7 +180,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
           )
         )
 
-        perform
+        exceed_rate_limit
       end
     end
   end
@@ -235,13 +227,13 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
 
   context 'when the limit is not exceeded' do
     it 'does not break the chain' do
-      perform
+      exceed_rate_limit
 
       expect(step.break?).to be_falsey
     end
 
     it 'does not invalidate the pipeline' do
-      perform
+      exceed_rate_limit
 
       expect(pipeline.errors).to be_empty
     end
@@ -249,7 +241,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     it 'does not log anything' do
       expect(Gitlab::AppJsonLogger).not_to receive(:info)
 
-      perform
+      exceed_rate_limit
     end
   end
 end

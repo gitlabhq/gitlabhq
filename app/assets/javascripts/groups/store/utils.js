@@ -1,4 +1,4 @@
-import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 export const getGroupItemMicrodata = ({ type }) => {
   const defaultMicrodata = {
@@ -11,7 +11,7 @@ export const getGroupItemMicrodata = ({ type }) => {
   };
 
   switch (type) {
-    case WORKSPACE_GROUP:
+    case NAMESPACE_GROUP:
       return {
         ...defaultMicrodata,
         itemtype: 'https://schema.org/Organization',

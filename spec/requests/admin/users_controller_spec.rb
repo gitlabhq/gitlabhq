@@ -191,4 +191,71 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
       end
     end
   end
+
+  describe '#safe_params' do
+    it 'permits only expected parameters' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: user.id,
+          email_id: 123,
+          personal_projects_page: 1,
+          projects_page: 2,
+          groups_page: 3,
+          tab: 'activity',
+          search_query: 'test',
+          sort: 'name_asc',
+          page: 5,
+          filter: 'active',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:safe_params)
+
+      expect(result.keys).to contain_exactly(
+        'id',
+        'email_id',
+        'personal_projects_page',
+        'projects_page',
+        'groups_page',
+        'tab',
+        'search_query',
+        'sort',
+        'page',
+        'filter'
+      )
+      expect(result[:extra_param]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
+    end
+  end
+
+  describe '#permitted_user_password_params' do
+    it 'permits only password and password_confirmation from user params' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          user: {
+            password: 'newpassword123',
+            password_confirmation: 'newpassword123',
+            email: 'hacker@example.com',
+            admin: true,
+            malicious: 'data'
+          }
+        )
+      )
+
+      result = controller_instance.send(:permitted_user_password_params)
+
+      expect(result.keys).to contain_exactly('password', 'password_confirmation')
+      expect(result[:password]).to eq('newpassword123')
+      expect(result[:password_confirmation]).to eq('newpassword123')
+      expect(result[:email]).to be_nil
+      expect(result[:admin]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
+    end
+  end
 end

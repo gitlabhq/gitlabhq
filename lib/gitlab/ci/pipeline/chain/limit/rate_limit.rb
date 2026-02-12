@@ -14,14 +14,19 @@ module Gitlab
               { key: :pipelines_created_per_user, scope: ->(chain) { chain.current_user } }
             ].freeze
 
+            EXCLUDED_WORKFLOW_DEFINITIONS = [
+              'sast_fp_detection/v1',
+              'resolve_sast_vulnerability/v1'
+            ].freeze
+
             def perform!
               # We exclude child-pipelines from the rate limit because they represent
               # sub-pipelines, as well as execution policy pipelines
               # that would otherwise hit the rate limit due to having the same scope (project, user, sha).
-              # We also exclude SAST FP detection workflows specifically to prevent rate limiting
+              # We also exclude specific duo workflow definitions (e.g., sast_fp_detection/v1)
+              # to prevent rate limiting when processing multiple vulnerabilities concurrently.
               # when processing multiple vulnerabilities concurrently.
-              #
-              return if pipeline.parent_pipeline? || creating_policy_pipeline? || sast_fp_detection_workflow?
+              return if excluded_from_rate_limit?
 
               throttled_keys = find_throttled_keys
 
@@ -37,8 +42,20 @@ module Gitlab
 
             private
 
+            def excluded_from_rate_limit?
+              pipeline.parent_pipeline? ||
+                creating_policy_pipeline? ||
+                excluded_duo_workflow?
+            end
+
             def creating_policy_pipeline?
               command.pipeline_policy_context&.pipeline_execution_context&.creating_policy_pipeline?
+            end
+
+            def excluded_duo_workflow?
+              return false unless pipeline.duo_workflow?
+
+              EXCLUDED_WORKFLOW_DEFINITIONS.include?(command.duo_workflow_definition)
             end
 
             def find_throttled_keys
@@ -74,14 +91,6 @@ module Gitlab
             def throttle_override?
               strong_memoize(:throttle_override) do
                 ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation_override, project, type: :ops)
-              end
-            end
-
-            def sast_fp_detection_workflow?
-              return false unless pipeline.duo_workflow?
-
-              pipeline.workload&.workflows&.any? do |workflow|
-                workflow.workflow_definition == 'sast_fp_detection/v1'
               end
             end
           end

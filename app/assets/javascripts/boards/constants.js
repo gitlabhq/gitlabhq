@@ -1,5 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { TYPE_ISSUE, WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import createBoardListMutation from './graphql/board_list_create.mutation.graphql';
@@ -51,7 +51,7 @@ export const INCIDENT = 'INCIDENT';
 export const flashAnimationDuration = 2000;
 
 export const boardQuery = {
-  [WORKSPACE_GROUP]: {
+  [NAMESPACE_GROUP]: {
     query: groupBoardQuery,
   },
   [NAMESPACE_PROJECT]: {

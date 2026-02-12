@@ -955,45 +955,6 @@ describe('IssuableItem', () => {
   });
 
   describe('Navigation guards for issues and work items SPA', () => {
-    describe('when canRouterNav should be called', () => {
-      describe.each`
-        useIssueView | isGroup      | workItemType                     | expectedIssueAsWorkItem | description
-        ${false}     | ${undefined} | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${true}                 | ${'when useIssueView is false for a test case'}
-        ${false}     | ${true}      | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${false}                | ${'when useIssueView is false and isGroup is true'}
-        ${false}     | ${false}     | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${true}                 | ${'when useIssueView is false and isGroup is false'}
-        ${false}     | ${undefined} | ${WORK_ITEM_TYPE_NAME_INCIDENT}  | ${true}                 | ${'when useIssueView is false and work item type is unsupported'}
-      `('$description', ({ useIssueView, isGroup, workItemType, expectedIssueAsWorkItem }) => {
-        beforeEach(async () => {
-          jest.spyOn(utils, 'canRouterNav');
-
-          mockWorkItemConfigGetter.mockReturnValue({
-            ...defaultWorkItemConfig,
-            useIssueView,
-          });
-
-          const provide = isGroup !== undefined ? { isGroup } : {};
-
-          wrapper = createComponent({
-            preventRedirect: true,
-            showCheckbox: false,
-            provide,
-            issuable: {
-              ...mockIssuable,
-              workItemType: { name: workItemType },
-            },
-          });
-
-          await findIssuableItemWrapper().trigger('click');
-        });
-
-        it('passes correct issueAsWorkItem value to canRouterNav', () => {
-          expect(utils.canRouterNav).toHaveBeenCalledWith(
-            expect.objectContaining({ issueAsWorkItem: expectedIssueAsWorkItem }),
-          );
-        });
-      });
-    });
-
     describe('when canRouterNav should not be called', () => {
       beforeEach(async () => {
         jest.spyOn(utils, 'canRouterNav');

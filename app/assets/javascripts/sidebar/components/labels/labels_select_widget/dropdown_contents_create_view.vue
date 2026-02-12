@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { GlAlert, GlTooltipDirective, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import produce from 'immer';
 import { createAlert } from '~/alert';
-import { WORKSPACE_GROUP } from '~/issues/constants';
+import { NAMESPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
 import SidebarColorPicker from '../../sidebar_color_picker.vue';
 import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '../../../queries/constants';
@@ -69,7 +69,7 @@ export default {
 
       if (this.labelCreateType) {
         const attributePath =
-          this.labelCreateType === WORKSPACE_GROUP ? 'groupPath' : 'projectPath';
+          this.labelCreateType === NAMESPACE_GROUP ? 'groupPath' : 'projectPath';
 
         return { ...variables, [attributePath]: this.attrWorkspacePath };
       }

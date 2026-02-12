@@ -11,7 +11,7 @@ import {
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
-import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
@@ -163,7 +163,7 @@ export default {
       return this.itemToDelete?.id ? [this.itemToDelete] : [];
     },
     graphqlResource() {
-      return this.config.isGroupPage ? WORKSPACE_GROUP : NAMESPACE_PROJECT;
+      return this.config.isGroupPage ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     pageSize() {
       return this.config.isMetadataDatabaseEnabled

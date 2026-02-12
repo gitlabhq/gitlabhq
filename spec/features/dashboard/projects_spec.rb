@@ -246,7 +246,10 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     end
   end
 
-  it 'avoids an N+1 query in dashboard index' do
+  it 'avoids an N+1 query in dashboard index', quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/589685',
+    type: :investigating
+  } do
     visit member_dashboard_projects_path
     wait_for_requests
 

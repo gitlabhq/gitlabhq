@@ -231,6 +231,10 @@ Diff-based scanning has the following known issues:
   excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call
   graph is not available, making it impossible to confirm if a vulnerability has been fixed. A full
   scan always runs on the default branch after the merge, where fixed vulnerabilities are reported.
+  As a result, any potential gaps from diff-based scanning are mitigated by the full scan that runs
+  automatically on merges to the default branch, ensuring comprehensive coverage. This layered
+  approach balances fast feedback loops during development with thorough security analysis before
+  code reaches production.
 
 #### Turn on diff-based scanning
 

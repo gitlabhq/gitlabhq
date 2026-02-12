@@ -31,7 +31,7 @@ RSpec.describe Admin::ApplicationsController do
 
   describe 'GET #edit' do
     it 'renders the application form' do
-      get :edit, params: { id: application.id }
+      get :edit, params: { id: application.id, extra_params: 'should be filtered out' }
 
       expect(response).to render_template :edit
       expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -180,6 +180,48 @@ RSpec.describe Admin::ApplicationsController do
       reset_oauth_application_settings
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
+  describe '#pagination_params' do
+    it 'permits only cursor parameter' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          cursor: 'abc123',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:pagination_params)
+
+      expect(result.keys).to contain_exactly('cursor')
+      expect(result[:cursor]).to eq('abc123')
+      expect(result[:extra_param]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
+    end
+  end
+
+  describe '#applications_finder_params' do
+    it 'permits only id parameter' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: application.id,
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:applications_finder_params)
+
+      expect(result.keys).to contain_exactly('id')
+      expect(result[:id]).to eq(application.id)
+      expect(result[:extra_param]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
     end
   end
 end

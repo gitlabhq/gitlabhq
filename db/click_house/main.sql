@@ -104,6 +104,17 @@ CREATE TABLE ci_finished_builds
     `version` DateTime64(6, 'UTC') DEFAULT now(),
     `deleted` Bool DEFAULT false,
     `group_name` String DEFAULT '',
+    `namespace_path` String DEFAULT '0/',
+    `failure_reason` LowCardinality(String) DEFAULT '',
+    `when` LowCardinality(String) DEFAULT '',
+    `manual` Bool DEFAULT false,
+    `allow_failure` Bool DEFAULT false,
+    `user_id` UInt64 DEFAULT 0,
+    `artifacts_filename` String DEFAULT '',
+    `artifacts_size` UInt64 DEFAULT 0,
+    `retries_count` UInt16 DEFAULT 0,
+    `runner_tags` Array(String) DEFAULT [],
+    `job_definition_id` UInt64 DEFAULT 0,
     PROJECTION build_stats_by_project_pipeline_name_stage_name
     (
         SELECT

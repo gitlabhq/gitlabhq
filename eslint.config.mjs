@@ -452,6 +452,7 @@ export default [
       'local-rules/require-valid-help-page-path': 'error',
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
+      'local-rules/no-orphaned-feature-flag-references': 'error',
     },
   },
   {

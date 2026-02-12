@@ -6,7 +6,7 @@ class Admin::KeysController < Admin::ApplicationController
   feature_category :user_management
 
   def show
-    @key = user.keys.find(params[:id])
+    @key = user.keys.find(key_params[:id])
 
     respond_to do |format|
       format.html
@@ -15,7 +15,7 @@ class Admin::KeysController < Admin::ApplicationController
   end
 
   def destroy
-    key = user.keys.find(params[:id])
+    key = user.keys.find(key_params[:id])
 
     respond_to do |format|
       if key.destroy
@@ -32,11 +32,11 @@ class Admin::KeysController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def user
-    @user ||= User.find_by!(username: params[:user_id])
+    @user ||= User.find_by!(username: key_params[:user_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def key_params
-    params.require(:user_id, :id)
+    params.permit(:user_id, :id)
   end
 end

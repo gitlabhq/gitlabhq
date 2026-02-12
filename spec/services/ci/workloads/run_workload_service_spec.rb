@@ -153,5 +153,34 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(execute.message).to eq('Error in creating workload: I am an error')
       end
     end
+
+    context 'when duo_workflow_definition is provided' do
+      subject(:execute) do
+        described_class
+          .new(
+            project: project,
+            current_user: user,
+            source: source,
+            workload_definition: workload_definition,
+            ref: ref,
+            duo_workflow_definition: 'sast_fp_detection/v1'
+          ).execute
+      end
+
+      it 'forwards duo_workflow_definition to CreatePipelineService' do
+        expect_next_instance_of(Ci::CreatePipelineService, project, user,
+          hash_including(ref: ref)) do |pipeline_service|
+          expect(pipeline_service).to receive(:execute)
+            .with(:duo_workflow,
+              ignore_skip_ci: true,
+              save_on_errors: false,
+              content: anything,
+              duo_workflow_definition: 'sast_fp_detection/v1')
+            .and_call_original
+        end
+
+        execute
+      end
+    end
   end
 end

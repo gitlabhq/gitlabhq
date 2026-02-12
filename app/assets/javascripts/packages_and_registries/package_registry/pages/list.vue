@@ -2,7 +2,7 @@
 <script>
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { WORKSPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -150,7 +150,7 @@ export default {
       };
     },
     graphqlResource() {
-      return this.isGroupPage ? WORKSPACE_GROUP : NAMESPACE_PROJECT;
+      return this.isGroupPage ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     pageInfo() {
       return this.packages?.pageInfo ?? {};

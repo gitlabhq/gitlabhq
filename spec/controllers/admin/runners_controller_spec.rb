@@ -187,4 +187,67 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
       expect(json_response.size).to eq(1)
     end
   end
+
+  describe '#page_params' do
+    it 'only permits page param' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: runner.id,
+          page: 2,
+          search: 'test search',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:page_params)
+
+      expect(result.keys).to contain_exactly('page')
+      expect(result[:page]).to eq(2)
+      expect(result.permitted?).to be true
+    end
+  end
+
+  describe '#search_params' do
+    it 'only permits search param' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: runner.id,
+          page: 2,
+          search: 'test search',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:search_params)
+
+      expect(result.keys).to contain_exactly('search')
+      expect(result[:search]).to eq('test search')
+      expect(result.permitted?).to be true
+    end
+  end
+
+  describe '#ci_runner_finder_params' do
+    it 'only permits id param' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: runner.id,
+          page: 2,
+          search: 'test search',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:ci_runner_finder_params)
+
+      expect(result.keys).to contain_exactly('id')
+      expect(result[:id]).to eq(runner.id)
+      expect(result.permitted?).to be true
+    end
+  end
 end

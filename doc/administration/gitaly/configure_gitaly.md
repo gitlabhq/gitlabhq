@@ -1243,6 +1243,112 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 {{< /tabs >}}
 
+## Configure custom Git configuration
+
+Gitaly does not read the system or user level Git configuration files. To provide custom Git
+configuration on the Gitaly server, use the `git.config` setting.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitaly['configuration'] = {
+  # ...
+  git: {
+    # ...
+    config: [
+      { key: "fsck.badDate", value: "ignore" },
+      ...
+    ],
+  },
+}
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+Edit `/home/git/gitaly/config.toml`:
+
+```toml
+[[git.config]]
+key = "fsck.badDate"
+value = "ignore"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Git configuration set by Gitaly
+
+Gitaly sets the following Git configuration values, which cannot be overridden using
+the `git.config` setting:
+
+- `advice.fetchShowForcedUpdates`
+- `attr.tree`
+- `bundle.heuristic`
+- `bundle.mode`
+- `bundle.version`
+- `core.alternateRefsCommand`
+- `core.autocrlf`
+- `core.bigFileThreshold`
+- `core.filesRefLockTimeout`
+- `core.fsync`
+- `core.fsyncMethod`
+- `core.hooksPath`
+- `core.packedRefsTimeout`
+- `core.useReplaceRefs`
+- `diff.noprefix`
+- `fetch.fsck.badTimezone`
+- `fetch.fsck.missingSpaceBeforeDate`
+- `fetch.fsck.zeroPaddedFilemode`
+- `fetch.fsckObjects`
+- `fetch.negotiationAlgorithm`
+- `fetch.recurseSubmodules`
+- `fetch.writeCommitGraph`
+- `fsck.badTimezone`
+- `fsck.missingSpaceBeforeDate`
+- `fsck.zeroPaddedFilemode`
+- `gc.auto`
+- `grep.threads`
+- `http.<url>.extraHeader`
+- `http.curloptResolve`
+- `http.extraHeader`
+- `http.followRedirects`
+- `init.defaultBranch`
+- `init.templateDir`
+- `maintenance.auto`
+- `pack.allowPackReuse`
+- `pack.island`
+- `pack.islandCore`
+- `pack.threads`
+- `pack.windowMemory`
+- `pack.writeBitmapLookupTable`
+- `pack.writeReverseIndex`
+- `receive.advertisePushOptions`
+- `receive.autogc`
+- `receive.fsck.badTimezone`
+- `receive.fsck.missingSpaceBeforeDate`
+- `receive.fsck.zeroPaddedFilemode`
+- `receive.hideRefs`
+- `receive.procReceiveRefs`
+- `remote.inmemory.fetch`
+- `remote.inmemory.url`
+- `remote.origin.fetch`
+- `remote.origin.url`
+- `repack.updateServerInfo`
+- `repack.writeBitmaps`
+- `transfer.bundleURI`
+- `transfer.fsckObjects`
+- `uploadpack.advertiseBundleURIs`
+- `uploadpack.allowAnySHA1InWant`
+- `uploadpack.allowFilter`
+- `uploadpack.hideRefs`
+
 ## Generate configuration using an external command
 
 You can generate parts of the Gitaly configuration using an external command. You might do this:

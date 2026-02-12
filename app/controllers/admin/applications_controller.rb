@@ -10,7 +10,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def index
     applications = ApplicationsFinder.new.execute
-    @applications = applications.keyset_paginate(cursor: params[:cursor])
+    @applications = applications.keyset_paginate(cursor: pagination_params[:cursor])
     @applications_total_count = applications.count
   end
 
@@ -69,7 +69,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   private
 
   def set_application
-    @application = ApplicationsFinder.new(id: params[:id]).execute
+    @application = ApplicationsFinder.new(id: applications_finder_params[:id]).execute
   end
 
   def permitted_params
@@ -81,5 +81,13 @@ class Admin::ApplicationsController < Admin::ApplicationController
       params[:owner] = nil
       params[:organization] = Current.organization
     end
+  end
+
+  def pagination_params
+    params.permit(:cursor)
+  end
+
+  def applications_finder_params
+    params.permit(:id)
   end
 end

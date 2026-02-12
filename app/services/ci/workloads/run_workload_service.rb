@@ -13,13 +13,14 @@ module Ci
     class RunWorkloadService
       def initialize(
         project:, current_user:, source:, workload_definition:, ref: nil,
-        ci_variables_included: [])
+        ci_variables_included: [], duo_workflow_definition: nil)
         @project = project
         @current_user = current_user
         @source = source
         @workload_definition = workload_definition
         @ref = ref || @project.default_branch_or_main
         @ci_variables_included = ci_variables_included
+        @duo_workflow_definition = duo_workflow_definition
       end
 
       def execute
@@ -31,7 +32,8 @@ module Ci
           @source,
           ignore_skip_ci: true,
           save_on_errors: false,
-          content: ci_job_yaml
+          content: ci_job_yaml,
+          duo_workflow_definition: @duo_workflow_definition
         )
 
         pipeline = response.payload

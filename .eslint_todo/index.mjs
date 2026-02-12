@@ -19,3 +19,5 @@ export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-u
 export { default as localRulesGraphqlRequireFeatureCategory } from './local-rules-graphql-require-feature-category.mjs';
 
 export { default as localRulesVueRequireVueConstructorName } from './local-rules-vue-require-vue-constructor-name.mjs';
+
+export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-rules-no-orphaned-feature-flag-references.mjs';

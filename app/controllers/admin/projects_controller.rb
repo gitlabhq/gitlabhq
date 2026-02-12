@@ -13,11 +13,11 @@ class Admin::ProjectsController < Admin::ApplicationController
   def show
     if @group
       @group_members = present_members(
-        @group.members.order("access_level DESC").page(params[:group_members_page]))
+        @group.members.order("access_level DESC").page(page_params[:group_members_page]))
     end
 
     @project_members = present_members(
-      @project.members.page(params[:project_members_page]))
+      @project.members.page(page_params[:project_members_page]))
     @requesters = present_members(
       AccessRequestsFinder.new(@project).execute(current_user))
   end
@@ -34,8 +34,8 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def transfer
-    namespace = Namespace.find_by(id: params[:new_namespace_id])
-    ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
+    namespace = Namespace.find_by(id: transfer_params[:new_namespace_id])
+    ::Projects::TransferService.new(@project, current_user).execute(namespace)
 
     flash[:alert] = @project.errors[:new_namespace].first if @project.errors[:new_namespace].present?
 
@@ -74,7 +74,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def project
     @project = Project.find_by_full_path(
-      [params[:namespace_id], '/', params[:id]].join('')
+      [project_identifier_params[:namespace_id], '/', project_identifier_params[:id]].join('')
     )
     @project || render_404
   end
@@ -93,6 +93,20 @@ class Admin::ProjectsController < Admin::ApplicationController
       :name,
       :runner_registration_enabled
     ]
+  end
+
+  private
+
+  def project_identifier_params
+    params.permit(:namespace_id, :id)
+  end
+
+  def transfer_params
+    params.permit(:new_namespace_id)
+  end
+
+  def page_params
+    params.permit(:group_members_page, :project_members_page)
   end
 end
 

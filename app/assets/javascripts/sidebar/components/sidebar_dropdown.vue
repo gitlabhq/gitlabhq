@@ -12,7 +12,7 @@ import {
   TYPE_EPIC,
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
-  WORKSPACE_GROUP,
+  NAMESPACE_GROUP,
   NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { __ } from '~/locale';
@@ -85,7 +85,7 @@ export default {
       required: false,
       default: NAMESPACE_PROJECT,
       validator(value) {
-        return [WORKSPACE_GROUP, NAMESPACE_PROJECT].includes(value);
+        return [NAMESPACE_GROUP, NAMESPACE_PROJECT].includes(value);
       },
     },
     showWorkItemEpics: {

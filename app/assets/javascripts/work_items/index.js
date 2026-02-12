@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { DESIGN_MARK_APP_START, DESIGN_MEASURE_BEFORE_APP } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { WORKSPACE_GROUP } from '~/issues/constants';
+import { NAMESPACE_GROUP } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -42,7 +42,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     serviceDeskSettingsPath,
   } = el.dataset;
 
-  const isGroup = workspaceType === WORKSPACE_GROUP;
+  const isGroup = workspaceType === NAMESPACE_GROUP;
   const router = createRouter({ fullPath, workspaceType, defaultBranch, workItemType });
 
   const breadcrumbParams = { workItemType };

@@ -180,9 +180,6 @@ export default {
         ? this.getWorkItemTypeConfiguration(this.workItemType)
         : {};
     },
-    useIssueView() {
-      return this.workItemConfig?.useIssueView;
-    },
     author() {
       return this.issuable.author || {};
     },
@@ -328,7 +325,8 @@ export default {
       if (this.isGroup) return false;
 
       // Use new config-based check first, fall back to legacy hardcoded checks for backward compatibility
-      return !this.useIssueView || this.isAllowedType;
+      // TODO: Add back !this.useIssueView once it is populated by the backend
+      return this.isAllowedType;
     },
     hiddenIssuableTitle() {
       if (this.isMergeRequest) {

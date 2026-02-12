@@ -260,11 +260,11 @@ class IssuableBaseService < ::BaseContainerService
     author_id = params.delete(:author_id)
 
     if author
-      issuable.author = Gitlab::Auth::Identity.invert_composite_identity(author)
+      issuable.author = author
     elsif author_id
       issuable.author_id = author_id
     else
-      issuable.author ||= Gitlab::Auth::Identity.invert_composite_identity(current_user)
+      issuable.author ||= current_user
     end
   end
 
