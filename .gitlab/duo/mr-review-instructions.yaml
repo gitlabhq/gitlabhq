@@ -96,7 +96,7 @@ instructions:
             - Group fixed-width columns together in descending size order (8-byte types first, then 4-byte, etc.)
             - Place variable-width columns (text, varchar, arrays, json, jsonb) at the end
           - Ask: "Have you ordered the columns to minimize space usage by grouping fixed-width columns together and placing variable-width columns at the end?"
-          - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/ee/development/database/ordering_table_columns.html"
+          - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/development/database/ordering_table_columns/"
       14. For migrations that drop or replace an index:
           - Remind: "Before removing an index, verify queries can use other existing indexes efficiently. Confirm the index is unused on GitLab.com and Self-Managed."
           - Suggest: "For investigating index usage you can start by gathering all the metadata available for the index. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/TsYVxcBHR?orgId=1)"

@@ -110,7 +110,7 @@ db:rollback single-db:
     - .single-db
     - .rails:rules:single-db
 
-# https://docs.gitlab.com/ee/development/database/dbmigrate_multi_version_upgrade_job.html
+# https://docs.gitlab.com/development/database/dbmigrate_multi_version_upgrade_job/
 db:migrate:multi-version-upgrade:
   extends:
     - .single-db

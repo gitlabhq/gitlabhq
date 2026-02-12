@@ -52,8 +52,8 @@ _Provide your justification for this change. See https://handbook.gitlab.com/han
 - [ ] Add relevant information to the issue description detailing your proposal, including usage and business drivers.
 - [ ] List at least two other places you considered to introduce your feature.
 - [ ] Add relevant designs to the Design Management area of the issue.
-- [ ] Ensure your UI suggestion align with the [Documentation Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
-- [ ] Engage ~"Technical Writing". They can help craft a term that best describes the feature(s) you’re proposing. 
+- [ ] Ensure your UI suggestion align with the [Documentation Style Guide](https://docs.gitlab.com/development/documentation/styleguide/).
+- [ ] Engage ~"Technical Writing". They can help craft a term that best describes the feature(s) you’re proposing.
 - [ ] Follow the [product development workflow](https://handbook.gitlab.com/handbook/product-development-flow/#validation-phase-2-problem-validation) validation process to ensure you are solving a well understood problem and that the proposed change is understandable and non-disruptive to users. Navigation-specific research is mandatory for additions or when restructuring.
 - [ ] Engage the [Foundations Product Manager](https://handbook.gitlab.com/handbook/product/categories/#foundations-group) for approval. The Foundations DRI (@jtucker_gl) will work with UX partners in product design, research, and technical writing, as applicable.
 - [ ] Consider whether you need to [communicate the change somehow](https://design.gitlab.com/patterns/navigation#messaging-changes-to-users), or if you will have an interim period in the UI where your item will live in more than one place.

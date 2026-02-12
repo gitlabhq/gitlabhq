@@ -36,7 +36,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - [ ] Create a merge request to remove `<feature-flag-name>` feature flag. Ask for review and merge it.
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
-    - [ ] Create [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog).
+    - [ ] Create [a changelog entry](https://docs.gitlab.com/development/feature_flags/#changelog).
 - [ ] Ensure that the cleanup MR has been deployed to both production and canary.
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.

@@ -34346,6 +34346,7 @@ Describes paid tier trial information for the subscription.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionpaidtiertrialdailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of the subscription's paid tier trial. |
 | <a id="gitlabsubscriptionpaidtiertrialisactive"></a>`isActive` | [`Boolean!`](#boolean) | Indicates whether the subscription is currently in a paid tier trial for GitLab Credits. |
 
 ### `GitlabSubscriptionUsage`

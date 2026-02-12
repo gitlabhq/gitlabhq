@@ -3,4 +3,5 @@ name: create_service_account
 description: Grants the ability to create service accounts
 boundaries:
   - group
+  - project
   - instance

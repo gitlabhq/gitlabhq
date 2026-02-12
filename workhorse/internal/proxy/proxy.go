@@ -65,6 +65,14 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 		r.Header.Set("Gitlab-Workhorse", p.Version)
 		r.Header.Set("Gitlab-Workhorse-Proxy-Start", fmt.Sprintf("%d", time.Now().UnixNano()))
 
+		if r.Header.Get("X-Forwarded-Proto") == "" {
+			if r.TLS != nil {
+				r.Header.Set("X-Forwarded-Proto", "https")
+			} else {
+				r.Header.Set("X-Forwarded-Proto", "http")
+			}
+		}
+
 		for k, v := range p.customHeaders {
 			r.Header.Set(k, v)
 		}

@@ -8,7 +8,7 @@
       - scheduler_failure
       - stuck_or_timeout_failure
       - unknown_failure
-    # See https://docs.gitlab.com/ee/development/pipelines/internals.html#custom-exit-codes
+    # See https://docs.gitlab.com/development/pipelines/internals/#custom-exit-codes
     exit_codes:
       - 201  # low free disk space
 

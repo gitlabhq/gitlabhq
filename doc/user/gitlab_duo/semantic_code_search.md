@@ -18,6 +18,7 @@ title: Semantic code search
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16910) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 18.7.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/588259) to GitLab Duo Core in GitLab 18.8.
 
 {{< /history >}}
 
