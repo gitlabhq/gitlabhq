@@ -130,26 +130,6 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
 
         service_response
       end
-
-      context 'when `cascade_unarchive_group` flag is disabled' do
-        before do
-          stub_feature_flags(cascade_unarchive_group: false)
-        end
-
-        it 'archives the group' do
-          service_response
-
-          expect(group.namespace_settings.reload.archived).to be(true)
-        end
-
-        it 'does not modify descendant and projects archived state' do
-          expect { service_response }
-            .to not_change { subgroup.namespace_settings.reload.archived }
-              .and not_change { sub_subgroup.namespace_settings.reload.archived }
-                .and not_change { archived_project.reload.archived }
-                  .and not_change { archived_subgroup_project.reload.archived }
-        end
-      end
     end
 
     context 'when archiving fails' do

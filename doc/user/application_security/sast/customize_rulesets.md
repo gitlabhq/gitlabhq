@@ -97,13 +97,12 @@ You can provide your ruleset customizations in the following ways:
 
 Local ruleset file
 : Define your customizations in a `sast-ruleset.toml` file committed to your
-  repository. This approach keeps your ruleset configuration under version control alongside your
-  code.
+  repository. This approach keeps your ruleset configuration under version control, together with
+  the source code.
 
 Remote ruleset file
-: Specify a remote location (Git repository, URL, or other source) where your
-  ruleset configuration is hosted. This approach lets you manage rulesets centrally and reuse them
-  across multiple projects.
+: Specify a remote location (Git repository, URL, or other source) where your ruleset file is
+  hosted. This approach lets you manage a ruleset centrally and reuse it across multiple projects.
 
 > [!note]
 > A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
@@ -113,42 +112,83 @@ combined into a ruleset.
 
 All ruleset customization must comply with the [SAST ruleset schema](#schema).
 
-### Local ruleset file
+### Use a local ruleset file
 
-To create the local ruleset configuration file:
+Use a local ruleset file when you want to store the customizations together with the source code.
+Local customizations apply only to an individual project.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To create the local ruleset file:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a file named `sast-ruleset.toml` in the `.gitlab` directory.
 1. Add your custom ruleset to the `sast-ruleset.toml` file.
-1. Commit the local ruleset configuration file to the repository.
+1. Commit the local ruleset file to the repository.
 
-For examples of a local ruleset file, see [examples](#examples).
+See [examples](#examples) of a local ruleset file.
 
-### Remote ruleset file
+### Use a remote ruleset file
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in GitLab 16.1.
 
 {{< /history >}}
 
-You can set a [CI/CD variable](../../../ci/variables/_index.md) to use a ruleset configuration file
-that's stored outside of the current repository. This can help you apply the same rules across
-multiple projects.
+Use a remote ruleset file when you want to apply the same customizations to multiple projects.
+A remote ruleset file is stored outside the repository of the projects that use it.
 
-The `SAST_RULESET_GIT_REFERENCE` variable uses a format similar to
-[Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a project URI,
-optional authentication, and optional Git SHA. The variable uses the following format:
+To use a remote ruleset file, do the following:
 
-```plaintext
-[<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
-```
+- Create a remote ruleset.
+- Reference the remote ruleset from each project.
 
 > [!note]
 > A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
 
-The following example enables SAST and uses a shared ruleset customization file. In this example,
-the file is committed on the default branch of `example-ruleset-project` at the path
+#### Create a remote ruleset file
+
+Create a remote ruleset file as a central ruleset for multiple projects.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To create a remote ruleset:
+
+- Create the ruleset in the project's repository.
+
+  For example ruleset files, see [examples](#examples).
+
+#### Reference the remote ruleset file
+
+Reference a remote ruleset file to apply its rules to a project.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- [Remote ruleset in a project](#create-a-remote-ruleset-file).
+- Read access to the project in which the remote ruleset is stored. For example, use a job token or
+  a group access token.
+
+To reference a remote ruleset file, do the following in each project:
+
+- Set the CI/CD variable `SAST_RULESET_GIT_REFERENCE` variable to specify the location of the
+  remote ruleset file.
+
+  The remote ruleset file reference uses a format similar to
+  [Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a project URI, optional
+  authentication, and optional Git SHA. The variable uses the following format:
+
+  ```plaintext
+  [<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
+  ```
+
+The following example enables SAST and uses a remote ruleset file. In this example, the file is
+committed on the default branch of `example-ruleset-project` at the path
 `.gitlab/sast-ruleset.toml`.
 
 ```yaml
@@ -177,7 +217,7 @@ If remote configuration file doesn't seem to be applying customizations correctl
 The ruleset configuration file uses TOML syntax. The following sections describe the structure and
 valid settings for each configuration element.
 
-### The top-level section
+### Top-level section
 
 The top-level section contains one or more configuration sections, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
 
@@ -195,7 +235,7 @@ Configuration example:
 Avoid creating configuration sections that modify existing rules and build a custom ruleset, as
 the latter replaces default rules completely.
 
-### The `[$analyzer]` configuration section
+### `[$analyzer]` configuration section
 
 The `[$analyzer]` section lets you customize the behavior of an analyzer. Valid properties
 differ based on the kind of configuration you're making.
@@ -230,7 +270,7 @@ they're not explicitly stored in the configuration file.
     ref = "main"
 ```
 
-### The `[[$analyzer.ruleset]]` section
+### `[[$analyzer.ruleset]]` section
 
 The `[[$analyzer.ruleset]]` section targets and modifies a single default rule. You can define
 one to many of these sections per analyzer.
@@ -250,7 +290,7 @@ Configuration example:
     ...
 ```
 
-### The `[$analyzer.ruleset.identifier]` section
+### `[$analyzer.ruleset.identifier]` section
 
 The `[$analyzer.ruleset.identifier]` section defines the identifiers of the default
 rule that you wish to modify.
@@ -312,7 +352,7 @@ Configuration example:
     ...
 ```
 
-### The `[$analyzer.ruleset.override]` section
+### `[$analyzer.ruleset.override]` section
 
 The `[$analyzer.ruleset.override]` section allows you to override attributes of a default rule.
 
@@ -338,7 +378,7 @@ Configuration example:
     ...
 ```
 
-### The `[[$analyzer.passthrough]]` section
+### `[[$analyzer.passthrough]]` section
 
 > [!note]
 > Passthrough configurations are available for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) only.
@@ -683,27 +723,30 @@ rules:
 
 ### Specify a private remote configuration
 
-The following example enables SAST and uses a shared ruleset customization file. The file is:
+The following example enables SAST and uses a shared ruleset customization file:
 
-- Downloaded from a private project that requires authentication, by using a [Group Access Token](../../group/settings/group_access_tokens.md) securely stored within a CI variable.
-- Checked out at a specific Git commit SHA instead of the default branch.
-
-See [group access tokens](../../group/settings/group_access_tokens.md#bot-users-for-groups) for how to find the username associated with a group token.
+- The file is downloaded from a private project that requires authentication. This example uses a
+  [group access token](../../group/settings/group_access_tokens.md) securely stored in a CI/CD
+  variable.
+- The file is checked out at a specific Git commit SHA instead of the default branch.
 
 ```yaml
 include:
   - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
-  SAST_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$PERSONAL_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
+  SAST_RULESET_GIT_REFERENCE: "oauth2:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
 ```
 
-### Demo Projects
+### Demonstration projects
 
-There are [demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations) that illustrate some of these configuration options.
+Browse the
+[demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations)
+that illustrate some of these configuration options.
 
-Many of these projects illustrate using remote rulesets to override or disable rules and are grouped together by which analyzer they are for.
+Many of these projects demonstrate using remote rulesets to override or disable rules and are
+grouped together by which analyzer they are for.
 
-There are also some video demonstrations walking through setting up remote rulesets:
+You can also watch video demonstrations of setting up remote rulesets:
 
 - [IaC analyzer with a remote ruleset](https://youtu.be/VzJFyaKpA-8)

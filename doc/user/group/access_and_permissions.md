@@ -290,6 +290,11 @@ After you lock the membership for a group:
 - All users who previously had permissions can no longer add members to a group.
 - API requests to add a new user to a project are not possible.
 
+> [!NOTE]
+> When you turn on this setting, [flows](../../user/duo_agent_platform/flows/_index.md)
+> cannot add their service accounts to projects and do not run until you turn off this setting.
+> For more information, see [allow members to be added to projects](../../user/duo_agent_platform/troubleshooting.md#allow-members-to-be-added-to-projects).
+
 ## Manage group memberships with LDAP
 
 {{< details >}}

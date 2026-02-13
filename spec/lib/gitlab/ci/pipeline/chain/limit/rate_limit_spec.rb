@@ -122,6 +122,12 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       it_behaves_like 'excluded from rate limits'
     end
 
+    context 'with secret detection FP detection duo_workflow pipelines' do
+      include_context 'with duo_workflow pipeline', workflow_def: 'secrets_fp_detection/v1'
+
+      it_behaves_like 'excluded from rate limits'
+    end
+
     context 'with non-excluded duo_workflow pipelines' do
       include_context 'with duo_workflow pipeline', workflow_def: 'other_workflow/v1'
 

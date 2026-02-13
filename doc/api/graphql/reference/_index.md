@@ -60315,6 +60315,7 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aggregationorderdirection"></a>`direction` | [`SortDirectionEnum!`](#sortdirectionenum) | Sorting direction. |
 | <a id="aggregationorderidentifier"></a>`identifier` | [`String!`](#string) | Dimension or metric identifier. |
+| <a id="aggregationorderparameters"></a>`parameters` | [`JSON`](#json) | Parameters for parameterized dimensions. |
 
 ### `AiAdditionalContextInput`
 

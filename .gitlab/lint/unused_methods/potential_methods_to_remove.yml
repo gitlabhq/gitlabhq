@@ -284,7 +284,6 @@ app/models/todo.rb:
 - for_alert?
 - for_issue_or_work_item?
 - for_ssh_key?
-- self_assigned?
 app/models/user.rb:
 - legacy_otp_secret
 ee/app/models/ai/duo_code_review.rb:

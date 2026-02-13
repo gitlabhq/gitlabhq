@@ -266,11 +266,12 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     # - User#max_member_access_for_project_ids
     # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
     # - Ci::Pipeline#detailed_status
+    # - Checking the callout status before saving the new one
 
     expect do
       visit member_dashboard_projects_path
       wait_for_requests
-    end.not_to exceed_query_limit(control).with_threshold(4)
+    end.not_to exceed_query_limit(control).with_threshold(6)
   end
 
   context 'for delayed deletion' do

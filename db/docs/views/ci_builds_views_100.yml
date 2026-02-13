@@ -1,0 +1,9 @@
+---
+view_name: ci_builds_views_100
+classes: []
+feature_categories:
+  - continuous_integration
+description: SQL view to parallelize migration running on this partition
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430
+milestone: '18.9'
+gitlab_schema: gitlab_ci

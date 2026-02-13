@@ -405,6 +405,11 @@ To prevent invitations:
 1. Select the **Prevent group member invitations** checkbox.
 1. Select **Save changes**.
 
+> [!NOTE]
+> When you turn on this setting, [flows](../../user/duo_agent_platform/flows/_index.md)
+> cannot add their service accounts to projects and do not run until you turn off this setting.
+> For more information, see [allow members to be added to projects](../../user/duo_agent_platform/troubleshooting.md#allow-members-to-be-added-to-projects).
+
 ## Display GitLab Credits user data
 
 {{< details >}}

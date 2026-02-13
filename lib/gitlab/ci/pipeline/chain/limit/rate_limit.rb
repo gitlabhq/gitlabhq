@@ -16,6 +16,7 @@ module Gitlab
 
             EXCLUDED_WORKFLOW_DEFINITIONS = [
               'sast_fp_detection/v1',
+              'secrets_fp_detection/v1',
               'resolve_sast_vulnerability/v1'
             ].freeze
 

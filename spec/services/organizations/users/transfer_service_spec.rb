@@ -463,6 +463,84 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
         end
       end
 
+      context 'for notes on personal snippets' do
+        let_it_be(:personal_snippet) { create(:personal_snippet, author: user1, organization: old_organization) }
+        let_it_be(:other_user) { create(:user, organization: create(:organization)) }
+
+        let_it_be(:note_by_owner) do
+          create(:note_on_personal_snippet, noteable: personal_snippet, author: user1, organization: old_organization)
+        end
+
+        let_it_be(:note_by_other_transferred_user) do
+          create(:note_on_personal_snippet, noteable: personal_snippet, author: user2, organization: old_organization)
+        end
+
+        let_it_be(:note_by_external_user) do
+          create(:note_on_personal_snippet, noteable: personal_snippet, author: other_user,
+            updated_by: other_user, organization: old_organization)
+        end
+
+        let_it_be(:ghost_user) do
+          Users::Internal.in_organization(new_organization).ghost
+        end
+
+        before do
+          Users::Internal.in_organization(old_organization).ghost
+        end
+
+        it 'updates organization_id for notes on personal snippets' do
+          service.execute
+
+          expect(note_by_owner.reload.organization_id).to eq(new_organization.id)
+          expect(note_by_other_transferred_user.reload.organization_id).to eq(new_organization.id)
+          expect(note_by_external_user.reload.organization_id).to eq(new_organization.id)
+          expect(note_by_external_user.reload.author).to eq(ghost_user)
+        end
+
+        it 'performs a single UPDATE query per batch for notes' do
+          recorder = ActiveRecord::QueryRecorder.new { service.execute }
+
+          update_queries = recorder.log.select { |q| q.include?('UPDATE "notes"') }
+          expect(update_queries.size).to eq(1)
+        end
+
+        it 'does not update notes for personal snippets owned by users not in the group' do
+          non_group_snippet = create(:personal_snippet, author: non_group_user, organization: old_organization)
+          non_group_note = create(:note_on_personal_snippet, noteable: non_group_snippet,
+            organization: old_organization)
+
+          expect { service.execute }.not_to change { non_group_note.reload.organization_id }
+        end
+
+        context 'when reassigning user associations to ghost user' do
+          it 'has the associations we expect' do
+            associations = Note.reflect_on_all_associations.select { |assoc| assoc.class_name == 'User' }
+
+            expect(associations.map(&:foreign_key)).to match_array(%w[author_id updated_by_id resolved_by_id])
+          end
+
+          %i[author_id updated_by_id resolved_by_id].each do |foreign_key|
+            context "for #{foreign_key}" do
+              it 'reassigns to ghost user when user is not being transferred' do
+                note_by_external_user.update_column(foreign_key, other_user.id)
+
+                service.execute
+
+                expect(note_by_external_user.reload.public_send(foreign_key)).to eq(ghost_user.id)
+              end
+
+              it 'does not reassign when user is being transferred' do
+                note_by_owner.update_column(foreign_key, user1.id)
+
+                service.execute
+
+                expect(note_by_owner.reload.public_send(foreign_key)).to eq(user1.id)
+              end
+            end
+          end
+        end
+      end
+
       context 'with nested groups' do
         let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
         let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }

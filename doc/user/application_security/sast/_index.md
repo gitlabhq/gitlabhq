@@ -107,25 +107,11 @@ The following table lists the GitLab tiers in which each feature is available.
 Enable SAST in your project by using either the UI or editing your project's GitLab CI/CD
 configuration file.
 
-Prerequisites:
-
-- Linux-based GitLab Runner with either the Docker or Kubernetes executor. If you're using hosted
-  runners for GitLab.com, this is enabled by default.
-  - Windows Runners are not supported.
-  - CPU architectures other than amd64 are not supported.
-- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by
-  default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
-
 > [!note]
 > By default, SAST runs only in branch pipelines. To run SAST in merge request pipelines, see
 > [use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Enable SAST by using the UI
-
-You can enable and configure SAST by using the UI, either with the default settings or with
-customizations. The method you can use depends on your GitLab license tier.
-
-#### Enable SAST with customizations
 
 {{< details >}}
 
@@ -140,10 +126,25 @@ customizations. The method you can use depends on your GitLab license tier.
 
 {{< /history >}}
 
+You can enable and configure SAST by using the UI, either with the default settings or with
+customizations. The method you can use depends on your GitLab license tier.
+
 > [!note]
 > The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
 > have a complex configuration, the tool might fail to parse it. In that case,
 > [edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
+
+#### Enable SAST with customizations
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- Linux-based GitLab Runner with either the Docker or Kubernetes executor. If you're using hosted
+  runners for GitLab.com, the Docker or Kubernetes executor is enabled by default.
+  - GitLab Runner on Windows Runners are not supported.
+  - CPU architectures other than AMD64 are not supported.
+- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by
+  default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 To enable and configure SAST with customizations:
 
@@ -165,10 +166,15 @@ appear under the `test` stage in the project's pipeline.
 
 #### Enable SAST with default settings only
 
-> [!note]
-> The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
-> have a complex configuration, the tool might fail to parse it. In that case,
-> [edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- Linux-based GitLab Runner with either the Docker or Kubernetes executor. If you're using hosted
+  runners for GitLab.com, the Docker or Kubernetes executor is enabled by default.
+  - GitLab Runner on Windows Runners are not supported.
+  - CPU architectures other than AMD64 are not supported.
+- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by
+  default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 To enable and configure SAST with default settings:
 
@@ -186,6 +192,16 @@ default rules automatically scan for vulnerabilities when a pipeline runs. The c
 appear under the `test` stage in the project's pipeline.
 
 ### Enable SAST by editing the CI/CD file
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+- Linux-based GitLab Runner with either the Docker or Kubernetes executor. If you're using hosted
+  runners for GitLab.com, the Docker or Kubernetes executor is enabled by default.
+  - GitLab Runner on Windows Runners are not supported.
+  - CPU architectures other than AMD64 are not supported.
+- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by
+  default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 To enable SAST in your project:
 
@@ -239,6 +255,10 @@ After enabling SAST, you can:
 
 ## Understanding the results
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 You can review vulnerabilities in a pipeline:
 
 1. On the top bar, select **Search or go to** and find your project.
@@ -261,7 +281,15 @@ For more information on SAST coverage, see [SAST rules](rules.md).
 
 In Ultimate, you can also download the security scan results:
 
-- In the pipeline's **Security** tab, select **Download results**.
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+1. On the top bar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build** > **Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. In the pipeline's **Security** tab, select **Download results**.
 
 For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
@@ -288,10 +316,10 @@ the analyzer outputs an exit code.
 {{< /details >}}
 
 SAST results display in the merge request widget area if a report from the target branch is available for comparison.
-The merge request widget shows:
+The merge request widget shows the following:
 
-- new SAST findings that are introduced by the MR.
-- existing findings that are resolved by the MR.
+- New SAST findings that are introduced by the MR.
+- Existing findings that are resolved by the MR.
 
 The results are compared using advanced vulnerability tracking whenever it is available.
 
@@ -327,6 +355,10 @@ To optimize SAST according to your requirements you can:
 
 ### Disable a rule
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 To disable a rule, for example because it generates too many false positives:
 
 1. On the top bar, select **Search or go to** and find your project.
@@ -347,6 +379,10 @@ For more details on customizing rulesets, see [Customize rulesets](customize_rul
 
 ### Exclude files or paths from being scanned
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 To exclude files or paths from being scanned, for example test or temporary code, set the `SAST_EXCLUDED_PATHS` variable.
 For example, to skip `rule-template-injection.go`, add the following to your `.gitlab-ci.yml`:
 
@@ -362,7 +398,7 @@ For more information about configuration options, see [Available CI/CD variables
 After you are confident in the SAST results for a single project, you can extend its implementation to additional projects:
 
 - Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply SAST settings across groups.
-- Share and reuse a central ruleset by [specifying a remote configuration file](customize_rulesets.md#remote-ruleset-file).
+- Share and reuse a central ruleset by [specifying a remote configuration file](customize_rulesets.md#use-a-remote-ruleset-file).
 - If you have unique requirements, SAST can be run in an offline environment or under SELinux constraints.
 
 ## Supported languages and frameworks
@@ -538,6 +574,10 @@ A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgre
 
 ## Download a SAST report
 
+Prerequisites:
+
+- The Developer, Maintainer or Owner role for the project.
+
 Each SAST analyzer outputs a JSON report as a job artifact. The file contains details of all
 detected vulnerabilities. You can download the file for processing outside GitLab.
 
@@ -559,12 +599,22 @@ template, used by default for production use, and a
 template for testing cutting-edge features. For details on the differences and when to use each, see
 [template editions](../detect/security_configuration.md#template-editions).
 
-### Overriding SAST jobs
+### Override SAST jobs
 
-To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../ci/yaml/_index.md#rules)),
-declare a job with the same name as the SAST job to override. Place this new job after the template
-inclusion and specify any additional keys under it. For example, this enables `FAIL_NEVER` for the
-`spotbugs` analyzer:
+Override SAST jobs when you want to customize properties such as `variables`, `dependencies`, and
+[`rules`](../../../ci/yaml/_index.md#rules).
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To override a job definition:
+
+- Declare a job with the same name as the SAST job to override.
+
+  Place this new job after the template inclusion and specify any additional keys under it.
+
+In the following example, the CI/CD variable `FAIL_NEVER` is enabled for the `spotbugs` analyzer:
 
 ```yaml
 include:
@@ -575,26 +625,36 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
-### Pinning to minor image version
+### Pin analyzer image version
 
-The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
+Pin the image version when you want to use a specific analyzer image version in the pipeline. The
+GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer
+release within that major version. In some cases, you may need to use a specific version. For
+example, you might need to avoid a regression in a later release.
 
-In some cases, you may need to use a specific version.
-For example, you might need to avoid a regression in a later release.
+You can set the tag to one of the following options:
 
-To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
-in your CI/CD configuration file after you include the `SAST.gitlab-ci.yml` template.
+- A major version, for example `3`. Your pipelines use any minor or patch updates that are released
+  within this major version.
+- A minor version, for example `3.7`. Your pipelines use any patch updates that are released within
+  this minor version.
+- A patch version, for example `3.7.0`. Your pipelines don't receive any updates.
 
-Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
+Only set this variable within a specific job. If you set it
+[at the top level](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
+the version you set is used for all SAST analyzers.
 
-You can set the tag to:
+Prerequisites:
 
-- A major version, like `3`. Your pipelines use any minor or patch updates that are released within this major version.
-- A minor version, like `3.7`. Your pipelines use any patch updates that are released within this minor version.
-- A patch version, like `3.7.0`. Your pipelines don't receive any updates.
+- The Developer, Maintainer, or Owner role for the project.
 
-This example uses a specific minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
+To pin the analyzer image to a specific version:
+
+- Set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable in the project's `.gitlab-ci.yml` file. This
+  CI/CD variable must be listed after you include the `SAST.gitlab-ci.yml` template.
+
+In the following example, a specific minor version of the `semgrep` analyzer and a specific patch
+version of the `brakeman` analyzer are set:
 
 ```yaml
 include:
@@ -615,7 +675,7 @@ Some analyzers require downloading the project's dependencies to
 perform the analysis. In turn, such dependencies may live in private Git
 repositories and thus require credentials like username and password to download them.
 Depending on the analyzer, such credentials can be provided to
-it via [custom CI/CD variables](#custom-cicd-variables).
+it by using [custom CI/CD variables](#available-cicd-variables).
 
 #### Using a CI/CD variable to pass username and password to a private Maven repository
 
@@ -625,6 +685,10 @@ you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 For more information, see [how to use private Maven repositories](../dependency_scanning/_index.md#authenticate-with-a-private-maven-repository).
 
 ### Enabling Kubesec analyzer
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
 
 You need to set `SCAN_KUBERNETES_MANIFESTS` to `"true"` to enable the
 Kubesec analyzer. In `.gitlab-ci.yml`, define:
@@ -648,9 +712,16 @@ when the relevant files are modified.
 
 #### Scan a Rust application
 
-For example, to scan a Rust application, you must:
+Prerequisites:
 
-1. Provide a custom ruleset for Rust. Create a file named `sast-ruleset.toml` in a `.gitlab/` directory at the root of your repository. The following example uses the Semgrep registry's default ruleset for Rust:
+- The Developer, Maintainer, or Owner role for the project.
+
+To scan a Rust application, complete these steps:
+
+1. Provide a custom ruleset for Rust. Create a file named `sast-ruleset.toml` in a `.gitlab/`
+   directory at the root of your repository.
+
+   The following example uses the Semgrep registry's default ruleset for Rust:
 
    ```toml
    [semgrep]
@@ -664,9 +735,12 @@ For example, to scan a Rust application, you must:
        target = "rust.yml"
    ```
 
-   For more details, see [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
+   For more details, see
+   [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
 
-1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files. Define the following in the `.gitlab-ci.yml` file:
+1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files.
+
+   Define the following in the `.gitlab-ci.yml` file:
 
    ```yaml
    include:
@@ -682,8 +756,11 @@ For example, to scan a Rust application, you must:
 
 ### JDK21 support for SpotBugs analyzer
 
-Version `6` of the SpotBugs analyzer adds support for JDK21 and removes JDK11. The default version remains at `5` as discussed in [issue 517169](https://gitlab.com/gitlab-org/gitlab/-/issues/517169).
-To use version `6`, manually pin the version by following the instructions [Pinning to minor image version](#pinning-to-minor-image-version).
+Version `6` of the SpotBugs analyzer adds support for JDK21 and removes JDK11. The default version
+remains at `5` as discussed in [issue 517169](https://gitlab.com/gitlab-org/gitlab/-/issues/517169).
+
+To use version `6`, pin the analyzer version. For details, see
+[pin analyzer image version](#pin-analyzer-image-version).
 
 ```yaml
 spotbugs-sast:
@@ -704,7 +781,13 @@ Automatic compilation can fail if either:
 To resolve these issues, skip the analyzer's compilation step and directly provide artifacts from an
 earlier stage in your pipeline instead. This strategy is called pre-compilation.
 
-#### Sharing pre-compiled artifacts
+#### Share pre-compiled artifacts
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To share precompiled artifacts, make the following changes to your project's `.gitlab-ci.yml` file:
 
 1. Use a compilation job (typically named `build`) to compile your project and store the compiled
    output as a `job artifact` by using the CI/CD `artifacts: paths` variable.
@@ -713,11 +796,15 @@ earlier stage in your pipeline instead. This strategy is called pre-compilation.
    - For Gradle projects, it's typically the `build` directory.
    - If your project uses a custom output location, set the artifacts path accordingly.
 
-1. Disable automatic compilation by setting the `COMPILE: "false"` CI/CD variable in the `spotbugs-sast` job.
+1. Disable automatic compilation by setting the `COMPILE: "false"` CI/CD variable in the
+   `spotbugs-sast` job.
 
-1. Ensure the `spotbugs-sast` job depends on the compilation job by setting the `dependencies` keyword. This allows the `spotbugs-sast` job to download and use the artifacts created in the compilation job.
+1. Ensure the `spotbugs-sast` job depends on the compilation job by setting the `dependencies`
+   keyword. This allows the `spotbugs-sast` job to download and use the artifacts created in the
+   compilation job.
 
-The following example pre-compiles a Gradle project and provides the compiled bytecode to the analyzer:
+The following example pre-compiles a Gradle project and provides the compiled bytecode to the
+analyzer:
 
 ```yaml
 stages:
@@ -744,13 +831,28 @@ spotbugs-sast:
     SECURE_LOG_LEVEL: debug
 ```
 
-#### Specifying dependencies (Maven only)
+### Specify dependencies (Maven only)
 
-If your project requires external dependencies to be recognized by the analyzer and you're using Maven, you can specify the location of the local repository by using the `MAVEN_REPO_PATH` variable.
+Prerequisites:
 
-Specifying dependencies is only supported for Maven-based projects. Other build tools (for example, Gradle) do not have an equivalent mechanism for specifying dependencies. In that case, ensure that your compiled artifacts include all necessary dependencies.
+- The Developer, Maintainer, or Owner role for the project.
 
-The following example pre-compiles a Maven project and provides the compiled bytecode along with the dependencies to the analyzer:
+If your project requires external dependencies to be recognized by the analyzer and you're using
+Maven, you can specify the location of the local repository by using the `MAVEN_REPO_PATH` variable.
+
+Specifying dependencies is only supported for Maven-based projects. Other build tools (for example,
+Gradle) do not have an equivalent mechanism for specifying dependencies. In that case, ensure that
+your compiled artifacts include all necessary dependencies.
+
+To specify Maven dependencies make the following changes to your project's `.gitlab-ci.yml` file:
+
+1. Set the `MAVEN_REPO_PATH` variable to point to your local Maven repository.
+1. Ensure your build job creates the repository at that path (for example, by running `mvn package
+   -Dmaven.repo.local=./.m2/repository`).
+1. Configure the `spotbugs-sast` job to depend on your build job and disable compilation.
+
+The following example pre-compiles a Maven project and provides the compiled bytecode along with the
+dependencies to the analyzer:
 
 ```yaml
 stages:
@@ -779,9 +881,15 @@ spotbugs-sast:
     SECURE_LOG_LEVEL: debug
 ```
 
+The analyzer now recognizes your project's dependencies during scanning.
+
 ### Available CI/CD variables
 
 SAST can be configured using the `variables` parameter in `.gitlab-ci.yml`.
+
+When the GitLab SAST template is used, all standard SAST configuration CI/CD variables
+and [custom variables](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui) are
+propagated to the underlying SAST analyzer images.
 
 > [!warning]
 > All customization of GitLab security scanning tools should be tested in a merge request before
@@ -802,8 +910,36 @@ variables:
 
 #### Custom Certificate Authority
 
-To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
-of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+Support for a custom Certificate Authority (CA) was introduced in the following analyzer versions.
+
+| Analyzer   | Version                                                                                        |
+|------------|------------------------------------------------------------------------------------------------|
+| `kubesec`  | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0)  |
+| `pmd-apex` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0) |
+| `semgrep`  | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)  |
+| `sobelow`  | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)  |
+| `spotbugs` | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1) |
+
+##### Use a custom Certificate Authority
+
+Prerequisites:
+
+- The Maintainer or Developer role for the project.
+- [Text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1).
+
+  You can provide the certificate by any of the following methods:
+
+  - Add the certificate directly in your project's `.gitlab-ci.yml` file.
+  - Create a `file` CI/CD variable that provides the path to the certificate.
+  - Set up a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project) that contains the
+    text representation of the certificate.
+
+To trust a custom CA certificate:
+
+- Set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle of CA certificates that you want to
+  trust in the SAST environment.
+
+For example, to configure this value in your project's `.gitlab-ci.yml` file, use the following:
 
 ```yaml
 variables:
@@ -815,20 +951,21 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
-
 #### Docker images
 
 The following are Docker image-related CI/CD variables.
 
-| CI/CD variable            | Description |
-|---------------------------|-------------|
-| `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. Read more about [customizing analyzers](analyzers.md). |
-| `SAST_ANALYZER_IMAGE_TAG` | Override the default version of analyzer image. Read more about [pinning the analyzer image version](#pinning-to-minor-image-version). |
+| CI/CD variable            | Description                                                                                                                                                   |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). For more details, see [customizing analyzers](analyzers.md).                   |
+| `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. For more details, see [customize analyzers](analyzers.md).                                                     |
+| `SAST_ANALYZER_IMAGE_TAG` | Override the default version of analyzer image. For more details, see [pin the analyzer image version](#pin-analyzer-image-version).                          |
 | `SAST_IMAGE_SUFFIX`       | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. |
 
 #### Vulnerability filters
+
+SAST can be configured to exclude code based on file paths and search depth. The following CI/CD
+variables control which files are scanned and how thoroughly the analyzer searches your codebase.
 
 <table class="sast-table">
   <thead>
@@ -987,7 +1124,7 @@ The following are Docker image-related CI/CD variables.
 
 #### Analyzer settings
 
-Some analyzers can be customized with CI/CD variables.
+Some analyzers can be customized by using CI/CD variables.
 
 | CI/CD variable                      | Analyzer             | Default                                  | Description |
 |-------------------------------------|----------------------|------------------------------------------|-------------|
@@ -1111,12 +1248,6 @@ flags are added to the scanner's CLI options.
   </tbody>
 </table>
 
-#### Custom CI/CD variables
-
-When the GitLab SAST template is used, all standard SAST configuration CI/CD variables
-and [custom variables](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui) are
-propagated to the underlying SAST analyzer images.
-
 ### Exclude code from analysis
 
 You can mark individual lines, or blocks, of code to be excluded from being analyzed for
@@ -1203,27 +1334,20 @@ For details on saving and transporting Docker images as a file, see the Docker d
 - `docker export`
 - `docker import`
 
-#### If support for Custom Certificate Authorities are needed
+### Use local SAST analyzers
 
-Support for custom certificate authorities was introduced in the following versions.
+Prerequisites:
 
-| Analyzer   | Version |
-|------------|---------|
-| `kubesec`  | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0) |
-| `pmd-apex` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0) |
-| `semgrep`  | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1) |
-| `sobelow`  | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0) |
-| `spotbugs` | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1) |
+- The Developer, Maintainer, or Owner role for the project.
 
-### Set SAST CI/CD variables to use local SAST analyzers
+To use local SAST analyzers:
 
-Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+- In your project's `.gitlab-ci.yml` file, define the CI/CD variable `SECURE_ANALYZERS_PREFIX` to
+  refer to your local Docker container registry.
+
+For example:
 
 ```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-
 variables:
   SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
 ```
@@ -1240,4 +1364,4 @@ documentation for instructions.
 
 ## Running SAST in SELinux
 
-By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overridden SAST job](#overriding-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.
+By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overridden SAST job](#override-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.

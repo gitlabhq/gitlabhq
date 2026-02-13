@@ -33,7 +33,7 @@ Prerequisites:
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
-1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#configuration-types).
+1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#ai-gateway-configurations).
 1. Configure your GitLab instance to access the AI Gateway.
 1. In GitLab 18.4 and later, configure your GitLab instance to access the GitLab Duo Agent Platform service.
 1. Configure the self-hosted model.
@@ -257,4 +257,4 @@ For more information, see [Host the GitLab product documentation](../docs_self_h
 
 - [Supported models](supported_models_and_hardware_requirements.md#supported-models)
 - [Compatible models](supported_models_and_hardware_requirements.md#compatible-models)
-- [GitLab Duo Self-Hosted configuration types](_index.md#configuration-types)
+- [AI Gateway configuration types](_index.md#ai-gateway-configurations)

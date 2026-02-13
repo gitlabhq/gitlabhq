@@ -72,6 +72,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
           end
         end
 
+        let(:dynamic_views) do
+          ['ci_builds_views_100']
+        end
+
         db_infos.to_h { |db_info| [db_info.name, db_info.connection_class] }
           .compact.each do |db_config_name, connection_class|
           context "validates '#{db_config_name}' using '#{connection_class}'" do
@@ -89,7 +93,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
             end
 
             it 'non-existing data sources are removed' do
-              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources
+              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources - dynamic_views
 
               expect(extra_data_sources).to be_empty, \
                 "Extra table/view(s) #{extra_data_sources.to_a} found in " \

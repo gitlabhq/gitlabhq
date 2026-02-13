@@ -47,7 +47,7 @@ possible.
 GitLab SAST [analyzers](analyzers.md) are released as container images. If you're seeing a new error
 that doesn't appear to be related to the GitLab-managed SAST CI/CD template or changes in your own
 project, you can try
-[pinning the affected analyzer to a specific older version](_index.md#pinning-to-minor-image-version).
+[pinning the affected analyzer to a specific older version](_index.md#pin-analyzer-image-version).
 You should only use this solution temporarily. Return to the standard template as soon as
 possible.
 

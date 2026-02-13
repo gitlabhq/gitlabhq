@@ -984,8 +984,6 @@ export default {
     'ee/app/assets/javascripts/packages_and_registries/google_artifact_registry/components/list/table.vue',
     'ee/app/assets/javascripts/packages_and_registries/settings/group/components/virtual_registries_setting.vue',
     'ee/app/assets/javascripts/packages_and_registries/settings/project/components/maven_form.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries/show/add_upstream.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/shared/upstream_clear_cache_modal.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/before_submit_user_cap_over_licensed_users_modal.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/seat_control_section.vue',

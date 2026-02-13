@@ -75433,6 +75433,12 @@ msgstr ""
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
+msgid "VirtualRegistryCacheEntry|Download count"
+msgstr ""
+
+msgid "VirtualRegistryCacheEntry|Last checked"
+msgstr ""
+
 msgid "VirtualRegistryCleanupPolicyForm|%{nextRunAt} (estimated cleanup time)"
 msgstr ""
 
@@ -75728,9 +75734,6 @@ msgid "VirtualRegistry|Delete registry"
 msgstr ""
 
 msgid "VirtualRegistry|Delete upstream"
-msgstr ""
-
-msgid "VirtualRegistry|Delete upstream?"
 msgstr ""
 
 msgid "VirtualRegistry|Description"
@@ -76077,9 +76080,6 @@ msgid "VirtualRegistry|You can review the full cleanup details in the %{audit_ev
 msgstr ""
 
 msgid "VirtualRegistry|audit log"
-msgstr ""
-
-msgid "VirtualRegistry|last checked %{date}"
 msgstr ""
 
 msgid "Visibility"

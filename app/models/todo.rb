@@ -428,10 +428,6 @@ class Todo < ApplicationRecord
     author == user
   end
 
-  def self_assigned?
-    self_added? && (assigned? || review_requested?)
-  end
-
   private
 
   def set_sharding_key

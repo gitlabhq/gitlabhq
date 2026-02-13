@@ -105,14 +105,14 @@ Unable to run pipeline
     jobs:sast config key may not be used with `rules`: only/except
 ```
 
-This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
+This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#override-sast-jobs)
 with [the deprecated `only` or `except` syntax.](../../ci/yaml/deprecated_keywords.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/_index.md#override-sast-jobs).
 
 ### Transitioning your `only/except` syntax to `rules`
 

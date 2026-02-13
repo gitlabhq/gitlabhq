@@ -60,7 +60,7 @@ Your organization can self-host your language models.
 
 To learn which GitLab Duo features are available with GitLab Duo Self-Hosted,
 see the
-[supported features list](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
+[supported features list](../../administration/gitlab_duo_self_hosted/_index.md#feature-versions-and-status).
 
 ## Amazon Q Developer Pro included with GitLab Duo With Amazon Q
 

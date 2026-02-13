@@ -192,7 +192,7 @@ file.
 
 For more information about overriding security jobs, see:
 
-- [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
+- [Override SAST jobs](../sast/_index.md#override-sast-jobs).
 - [Overriding dependency scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
 - [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
 - [Overriding secret detection jobs](../secret_detection/pipeline/configure.md).

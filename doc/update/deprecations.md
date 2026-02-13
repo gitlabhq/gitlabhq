@@ -45,6 +45,26 @@ For deprecation reviewers (Technical Writers only):
   https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
+## GitLab 20.0
+
+### Support for NGINX Ingress, HAProxy, and Traefik charts
+
+- Announced in GitLab 18.9
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+
+The GitLab Helm chart bundles several Ingress controllers as an alternative to
+the default Envoy Gateway which uses the Kubernetes Gateway API.
+
+These bundled Ingress controllers, namely NGINX Ingress, HAProxy, and
+Traefik will be dropped from the GitLab Helm chart and GitLab Operator.
+Using Ingresses will still be supported by the GitLab Helm chart and GitLab Operator,
+but a external Ingress controller must be deployed to do so.
+
+We recommend to migrate to the bundled Envoy Gateway and Gateway API.
+Alternatively, you can deploy and configure an
+[external Ingress controller and class](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings).
+
 ## GitLab 19.1
 
 ### Linux package support for Amazon Linux 2
@@ -291,6 +311,27 @@ If you currently use the bundled Spamcheck, you can deploy it separately by usin
 [Docker](https://gitlab.com/gitlab-org/gl-security/security-engineering/security-automation/spam/spamcheck).
 
 No data migration is required. Configuration guidance is available in the linked documentation.
+
+### Support for NGINX Ingress
+
+- Announced in GitLab 18.9
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+
+The GitLab Helm chart currently bundles NGINX Ingress as the default networking component. With
+NGINX Ingress reaching end-of-life in March 2026, we are transitioning to Gateway API with Envoy
+Gateway.
+
+Starting with GitLab 19.0, Gateway API and the bundled Envoy Gateway become the default configuration.
+If migration to Envoy Gateway isn't feasible for your deployment, you can explicitly re-enable the
+bundled NGINX Ingress, which remains available until its planned removal in GitLab 20.0.
+
+This change does not impact the NGINX in the Linux package, or GitLab Helm chart and GitLab Operator instances
+that use an externally managed Ingress or Gateway API controller.
+
+We will provide best-effort security maintenance for our forked NGINX Ingress chart and builds until
+the full removal. To ensure a smooth transition, we recommend planning your migration to the provided
+Gateway API solution or an externally managed Ingress controller.
 
 ### Support for PostgreSQL 16
 

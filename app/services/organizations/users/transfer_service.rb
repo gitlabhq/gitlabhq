@@ -103,8 +103,8 @@ module Organizations
           update_users(user_ids)
           update_user_projects(user_ids)
           update_todos(user_ids)
-
           update_associated_organization_ids(user_ids)
+          update_personal_snippet_notes(user_ids)
         end
       end
 
@@ -174,7 +174,7 @@ module Organizations
       # These are organization-specific bots that may be the author of Todos.
       def old_organization_bots
         bot_types =
-          %w[ghost support_bot alert_bot security_bot automation_bot duo_code_review_bot admin_bot]
+          %i[ghost support_bot alert_bot security_bot automation_bot duo_code_review_bot admin_bot]
 
         bot_types.index_with do |user_type|
           User.with_user_types(user_type).in_organization(old_organization).first
@@ -198,6 +198,36 @@ module Organizations
       def user_namespaces(user_ids)
         Namespaces::UserNamespace.for_owner(user_ids)
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
+      def update_personal_snippet_notes(user_ids)
+        personal_snippets = PersonalSnippet.where(author_id: user_ids)
+
+        Note
+          .where(noteable: personal_snippets, organization: old_organization)
+          .each_batch(of: BATCH_SIZE) do |notes_batch|
+            update_attributes = note_transfer_attributes(user_ids)
+
+            notes_batch.update_all(update_attributes)
+          end
+      end
+
+      def note_transfer_attributes(transferring_user_ids)
+        table = Note.arel_table
+        ghost_id = new_organization_bots[:ghost].id
+
+        attributes = { organization_id: new_organization.id }
+
+        %i[author_id updated_by_id resolved_by_id].each do |column|
+          attributes[column] = Arel::Nodes::Case.new
+            .when(table[column].eq(nil)).then(nil)
+            .when(table[column].in(transferring_user_ids)).then(table[column])
+            .else(ghost_id)
+        end
+
+        attributes
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       def organization_not_found_error
         s_("TransferOrganization|Cannot transfer users because the existing organization could not be found.")

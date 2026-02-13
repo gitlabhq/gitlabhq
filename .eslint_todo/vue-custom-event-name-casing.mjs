@@ -329,8 +329,6 @@ export default {
     'ee/app/assets/javascripts/metrics/details/filter_bar/groupby_filter.vue',
     'ee/app/assets/javascripts/on_demand_scans/components/action_button.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_modal.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries/show/registry_upstream_item.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries/show/upstreams_list.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/seat_control_section.vue',
     'ee/app/assets/javascripts/protected_environments/add_rule_modal.vue',
     'ee/app/assets/javascripts/protected_environments/edit_protected_environment_rules_card.vue',

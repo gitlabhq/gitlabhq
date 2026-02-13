@@ -436,6 +436,8 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+    # EE extensions for controllers are allowed to set instance variables to be used in the views
+    - ee/app/controllers/**/*.rb
 
 Gitlab/ConstGetInheritFalse:
   Enabled: true

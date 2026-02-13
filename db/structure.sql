@@ -17316,6 +17316,7 @@ CREATE TABLE ci_secure_file_states (
     verification_checksum bytea,
     verification_failure text,
     project_id bigint,
+    CONSTRAINT check_7c571e87ba CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_a79e5a9261 CHECK ((char_length(verification_failure) <= 255))
 );
 

@@ -66,7 +66,7 @@ The rules for these scans are defined in the upstream projects for each scanner.
 
 GitLab updates rules regularly based on customer feedback and internal research.
 Rules are released as part of the container image for each analyzer.
-You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](_index.md#pinning-to-minor-image-version).
+You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](_index.md#pin-analyzer-image-version).
 
 Analyzers and their rules are updated [at least monthly](../detect/vulnerability_scanner_maintenance.md) if relevant updates are available.
 
@@ -101,7 +101,7 @@ If your customization would benefit other users, consider [reporting a problem t
 
 ### Coordinate rule rollouts
 
-To control the rollout of rule changes, you can [pin SAST analyzers to a specific version](_index.md#pinning-to-minor-image-version).
+To control the rollout of rule changes, you can [pin SAST analyzers to a specific version](_index.md#pin-analyzer-image-version).
 
 If you want to make these changes at the same time across multiple projects, consider setting the variables in:
 

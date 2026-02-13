@@ -3,13 +3,12 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Host your own AI Gateway and language models.
-title: GitLab Duo Self-Hosted
+title: Self-hosted models
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -22,82 +21,83 @@ title: GitLab Duo Self-Hosted
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- Changed to require the GitLab Duo Agent Platform Self-Hosted add-on for offline licenses in GitLab 18.8
+- Changed to usage billing of features in GitLab Duo Agent Platform for online licenses in GitLab 18.9
 
 {{< /history >}}
 
-Use GitLab Duo Self-Hosted to integrate your own large language models (LLMs)
-with GitLab Duo features and control your data privacy and security.
+Host your own AI infrastructure to use GitLab Duo features with the LLMs of your choice. Use a
+self-hosted AI Gateway to keep all request and response data in your own environment,
+avoid external API calls, and manage the full lifecycle of requests to your LLM backends.
 
-With GitLab Duo Self-Hosted, you can:
+## Deployment options
 
-- Choose any GitLab-supported LLM or your own compatible model.
-- Choose specific GitLab Duo features for your users.
-- Keep all request/response logs in your domain with no external API calls.
-- Isolate the GitLab instance, AI Gateway, and models in your own environment.
-- Eliminate reliance on the shared GitLab AI Gateway.
-- Manage the lifecycle of requests to LLM backends for GitLab Duo features,
-  and avoid external dependencies so that requests stay in your enterprise network.
+You can use self-hosted models with different deployment options.
 
-For a click-through demo, see [GitLab Duo Self-Hosted product tour](https://gitlab.navattic.com/gitlab-duo-self-hosted).
-<!-- Demo published on 2025-02-13 -->
+### GitLab Duo (Classic)
 
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [GitLab Duo Self-Hosted: AI in your private environment](https://youtu.be/TQoO3sFnb28?si=uD-ps6aRnE28xNv3).
-<!-- Video published on 2025-02-20 -->
+GitLab Duo Self-Hosted for customers with GitLab Duo Enterprise who are using GitLab Duo (Classic)
+features. You can use:
 
-## Prerequisites
+- On-premise models or private cloud-hosted models
+- GitLab-managed models in a hybrid deployment
 
-- Have a cloud-based or on-premise supported model.
-- Have a cloud-based or on-premise supported serving platform.
-- Have a locally hosted AI Gateway.
+This option uses seat-based pricing.
 
-## Supported GitLab Duo features
+### GitLab Duo Agent Platform
+
+GitLab Duo Agent Platform Self-Hosted to use on-premise models or private cloud-hosted models in the GitLab Duo Agent Platform.
+
+For customers with an offline license, billing is seat based and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
+
+For customers with an online license, billing is usage based. You can also use GitLab-managed models in a hybrid deployment.
+
+### Feature versions and status
 
 The following table lists:
 
-- The GitLab Duo features supported by GitLab Duo Self-Hosted.
-- The GitLab version required to use the feature on GitLab Duo Self-Hosted.
-- The feature status. A feature status for GitLab Duo Self-Hosted might be different to the status listed in the [Feature summary](../../user/gitlab_duo/feature_summary.md).
+- The GitLab version required to use the feature.
+- The feature status. A feature status in the deployment might be different to the status listed in the feature.
 
-> [!note]
-> You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
-> This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
-> when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../../administration/gitlab_duo/gateway.md).
+To use GitLab Duo (Classic) features with GitLab Duo Self-Hosted, you must have the GitLab
+Duo Enterprise add-on. This applies even if you can use these features with GitLab Duo Core
+or GitLab Duo Pro when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../../administration/gitlab_duo/gateway.md).
 
 | Feature                                                                                                                                | GitLab version          | Status              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
-| [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)                                                           | GitLab 17.9 and later   | Generally available |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.4 and later   | Generally available |
+| **GitLab Duo (Classic)** | | |
+| [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9 and later   | Generally available |
 | [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
 | [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9 and later   | Generally available |
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.9 and later   | Generally available |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)                             | GitLab 18.3 and later   | Generally available |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)                           | GitLab 18.3 and later   | Generally available |
 | [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.10 and later  | Beta                |
 | [Vulnerability Explanation](../../user/application_security/analyze/duo.md)                                                            | GitLab 18.1.2 and later | Beta                |
 | [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | GitLab 18.1.2 and later | Beta                |
 | [Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | GitLab 18.1.2 and later | Beta                |
 | [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat)                                | GitLab 18.1.2 and later | Beta                |
 | [GitLab Duo for the CLI](https://docs.gitlab.com/cli/)                                                                                 | GitLab 18.1.2 and later | Beta                |
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.4 and later   | Generally available |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 18.1.2 and later | Beta                |
 | [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9 and later   | Beta                |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2 and later | Experiment          |
 
-## Configuration types
+## AI Gateway configurations
 
-Use one of the following options to implement AI-native features:
+After you choose a product option, configure how your AI Gateway connects to LLMs:
 
 - **Self-hosted AI Gateway and LLMs**: Use your own AI Gateway and models for full control over your AI infrastructure.
 - **Hybrid AI Gateway and model configuration**: For each feature, use either your self-hosted AI Gateway with self-hosted models, or the GitLab.com AI Gateway with GitLab AI vendor models.
 - **GitLab.com AI Gateway with default GitLab external vendor LLMs**: Use GitLab managed AI infrastructure.
 
-| Configuration                     | Self-hosted AI Gateway                                                        | Hybrid AI Gateway and model configuration | GitLab.com AI Gateway                        |
-| --------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------- |
-| Infrastructure requirements | Requires hosting your own AI Gateway and models                               | Requires hosting your own AI Gateway and models | No additional infrastructure needed          |
+| Configuration               | Self-hosted AI Gateway                                                                    | Hybrid AI Gateway and model configuration                                                                                                        | GitLab.com AI Gateway                    |
+|-----------------------------|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
+| Infrastructure requirements | Requires hosting your own AI Gateway and models                                           | Requires hosting your own AI Gateway and models                                                                                                  | No additional infrastructure needed      |
 | Model options               | Choose from [supported self-hosted models](supported_models_and_hardware_requirements.md) | Choose from [supported self-hosted models](supported_models_and_hardware_requirements.md) or GitLab AI vendor models for each GitLab Duo feature | Uses the default GitLab AI vendor models |
-| Network requirements        | Can operate in fully isolated networks                                        | Requires internet connectivity for GitLab Duo features that use GitLab AI vendor models | Requires internet connectivity               |
-| Responsibilities            | You set up your infrastructure, and do your own maintenance                   | You set up your infrastructure, do your own maintenance, and choose which features use GitLab AI vendor models and AI Gateway | GitLab does the set up and maintenance       |
+| Network requirements        | Can operate in fully isolated networks                                                    | Requires internet connectivity for GitLab Duo features that use GitLab AI vendor models                                                          | Requires internet connectivity           |
+| Responsibilities            | You set up your infrastructure, and do your own maintenance                               | You set up your infrastructure, do your own maintenance, and choose which features use GitLab AI vendor models and AI Gateway                    | GitLab does the set up and maintenance   |
 
 ### Self-hosted AI Gateway and LLMs
 
@@ -112,7 +112,6 @@ If you have an offline environment with physical barriers or security policies t
 
 For more information, see:
 
-- [Set up a GitLab Duo Self-Hosted infrastructure](#set-up-a-gitlab-duo-self-hosted-infrastructure)
 - The [self-hosted AI Gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
 
 ### Hybrid AI Gateway and model configuration
@@ -132,7 +131,7 @@ This option provides flexibility by allowing you to:
 - Use your own self-hosted models for features where you want full control.
 - Use GitLab-managed vendor models for specific features where you prefer the models GitLab has curated.
 
-> [!warning]
+> [!note]
 > When features are configured to use GitLab AI vendor models:
 >
 > - All calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
@@ -184,9 +183,9 @@ For more information, see the [GitLab.com AI Gateway configuration diagram](conf
 
 To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
 
-## Set up a GitLab Duo Self-Hosted infrastructure
+## Set up a private infrastructure
 
-To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
+If you have an offline license, you can set up a fully private infrastructure:
 
 1. Install a Large Language Model (LLM) serving infrastructure.
 
@@ -196,9 +195,9 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
    - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
    see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
-1. [Install the AI Gateway](../../install/install_ai_gateway.md) to access AI-native GitLab Duo features.
+1. [Install the AI Gateway](../../install/install_ai_gateway.md) to access GitLab Duo features.
 
-1. [Configure your GitLab instance](configure_duo_features.md) for features to access self-hosted models.
+1. [Configure your GitLab instance](configure_duo_features.md) for features to use self-hosted models.
 
 1. [Enable logging](logging.md) to track and manage your system's performance.
 

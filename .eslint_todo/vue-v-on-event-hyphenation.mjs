@@ -271,7 +271,6 @@ export default {
     'ee/app/assets/javascripts/metrics/list/metrics_list.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedules_wrapper.vue',
     'ee/app/assets/javascripts/operations/components/dashboard/dashboard.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries/show/upstreams_list.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/registries/show.vue',
     'ee/app/assets/javascripts/projects/merge_requests/blocking_mr_input_root.vue',
     'ee/app/assets/javascripts/protected_environments/edit_protected_environments_list.vue',

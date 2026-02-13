@@ -79,8 +79,8 @@ module Resolvers
 
             order_by.map do |order_input|
               order = order_input.to_hash
-              order[:identifier] = order[:identifier].to_sym
-              order[:parameters] ||= {}
+              order[:identifier] = order[:identifier].underscore.to_sym
+              order[:parameters] = (order[:parameters] || {}).symbolize_keys
               order
             end
           end
