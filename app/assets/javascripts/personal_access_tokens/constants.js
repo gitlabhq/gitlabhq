@@ -191,7 +191,7 @@ export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
 
 export const MAX_DESCRIPTION_LENGTH = 255;
 
-export const FILTERED_SEARCH_TERM_KEY = 'search';
+export const SEARCH = 'search';
 
 export const ACTIONS = {
   REVOKE: 'revoke',

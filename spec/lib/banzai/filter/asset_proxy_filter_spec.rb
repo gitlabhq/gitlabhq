@@ -67,12 +67,11 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :markdown do
     using RSpec::Parameterized::TableSyntax
 
     before do
-      stub_asset_proxy_setting(enabled: true)
-      stub_asset_proxy_setting(secret_key: 'shared-secret')
-      stub_asset_proxy_setting(url: 'https://assets.example.com')
-      stub_asset_proxy_setting(allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}])
-      stub_asset_proxy_setting(
-        domain_regexp: described_class.host_regexp_for_allowlist(Gitlab.config.asset_proxy.allowlist))
+      stub_asset_proxy_enabled(
+        url: 'https://assets.example.com',
+        secret_key: 'shared-secret',
+        allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
+      )
       @context = described_class.transform_context({})
     end
 

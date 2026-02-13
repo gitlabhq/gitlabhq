@@ -5,6 +5,10 @@ import axios from './lib/utils/axios_utils';
 import { toggleCheckbox } from './behaviors/markdown/utils';
 
 export default class TaskList {
+  // Tracks instances by selector to prevent duplicate event handlers when
+  // TaskList is re-instantiated (e.g., via onSuccess callback after checkbox update).
+  static instances = new Map();
+
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
@@ -32,7 +36,12 @@ export default class TaskList {
   }
 
   init() {
-    this.disable(); // Prevent duplicate event bindings
+    // Disable previous instance to remove its event handler before adding a new one
+    const previousInstance = TaskList.instances.get(this.selector);
+    if (previousInstance) {
+      previousInstance.disable();
+    }
+    TaskList.instances.set(this.selector, this);
 
     const taskListFields = document.querySelectorAll(
       `${this.taskListContainerSelector} .js-task-list-field[data-value]`,

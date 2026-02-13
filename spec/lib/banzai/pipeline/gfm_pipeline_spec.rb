@@ -219,11 +219,11 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
     let(:version) { Gitlab::CurrentSettings.current_application_settings.local_markdown_version }
 
     before do
-      stub_asset_proxy_setting(enabled: true)
-      stub_asset_proxy_setting(secret_key: 'shared-secret')
-      stub_asset_proxy_setting(url: 'https://assets.example.com')
-      stub_asset_proxy_setting(allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}])
-      stub_asset_proxy_setting(domain_regexp: Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(Gitlab.config.asset_proxy.allowlist))
+      stub_asset_proxy_enabled(
+        url: 'https://assets.example.com',
+        secret_key: 'shared-secret',
+        allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
+      )
     end
 
     it 'replaces a lazy loaded img src' do

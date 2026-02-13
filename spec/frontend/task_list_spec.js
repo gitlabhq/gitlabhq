@@ -1,6 +1,8 @@
-import { TEST_HOST } from 'spec/test_constants';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import TaskList from '~/task_list';
 
 describe('TaskList', () => {
@@ -215,6 +217,66 @@ describe('TaskList', () => {
     return update.then(() => {
       expect(taskList.enableTaskListItems).toHaveBeenCalledWith(checkbox);
       expect(taskList.onError).toHaveBeenCalledWith(response.data);
+    });
+  });
+
+  describe('multiple instances with same selector', () => {
+    const selector = '.unique-task-list';
+    let axiosMock;
+    let patchRequestCount;
+
+    // Simulates the pattern used in notes/store/legacy_notes/actions.js startTaskList()
+    // where onSuccess creates a new TaskList instance to re-initialize after content changes
+    const startTaskList = () =>
+      new TaskList({
+        selector,
+        dataType: 'issue',
+        fieldName: 'description',
+        onSuccess: () => startTaskList(),
+      });
+
+    beforeEach(() => {
+      patchRequestCount = 0;
+      axiosMock = new AxiosMockAdapter(axios);
+      axiosMock.onPatch(`${TEST_HOST}/update`).reply(() => {
+        patchRequestCount += 1;
+        return [HTTP_STATUS_OK, { lock_version: 1 }];
+      });
+
+      setHTMLFixture(`
+        <div class="unique-task-list">
+          <div class="js-task-list-container">
+            <input type="checkbox" class="task-list-item-checkbox" data-checkbox-sourcepos="1:1-1:1">
+            <textarea class="js-task-list-field" data-update-url="${TEST_HOST}/update"></textarea>
+          </div>
+        </div>
+      `);
+
+      startTaskList();
+    });
+
+    afterEach(() => {
+      TaskList.instances.get(selector)?.disable();
+      TaskList.instances.delete(selector);
+      axiosMock.restore();
+    });
+
+    it('should not accumulate event handlers after multiple checkbox updates', async () => {
+      const checkbox = document.querySelector('.task-list-item-checkbox');
+
+      // Simulate user clicking checkbox 3 times
+      // Each click: checkbox change -> PATCH request -> onSuccess -> new TaskList instance
+      // Previous instance should be disabled before creating new one, causing only 3 requests
+      checkbox.click();
+      await axios.waitForAll();
+
+      checkbox.click();
+      await axios.waitForAll();
+
+      checkbox.click();
+      await axios.waitForAll();
+
+      expect(patchRequestCount).toBe(3);
     });
   });
 });

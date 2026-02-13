@@ -157,10 +157,10 @@ RSpec.describe Badge do
         let(:placeholder_url) { 'http://www.example.com/image' }
 
         before do
-          stub_asset_proxy_setting(
-            enabled: true,
+          stub_asset_proxy_enabled(
             url: 'https://assets.example.com',
-            secret_key: 'shared-secret'
+            secret_key: 'shared-secret',
+            allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
           )
         end
 

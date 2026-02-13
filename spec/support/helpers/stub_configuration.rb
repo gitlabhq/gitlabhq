@@ -111,6 +111,20 @@ module StubConfiguration
     stub_config(messages, Gitlab.config.asset_proxy)
   end
 
+  def stub_asset_proxy_enabled(url:, secret_key:, allowlist:)
+    domain_regexp = Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(allowlist)
+    csp_directives = Banzai::Filter::AssetProxyFilter.csp_for_allowlist(allowlist, asset_proxy_url: url)
+
+    stub_asset_proxy_setting(
+      enabled: true,
+      url: url,
+      secret_key: secret_key,
+      allowlist: allowlist,
+      domain_regexp: domain_regexp,
+      csp_directives: csp_directives
+    )
+  end
+
   def stub_rack_attack_setting(messages)
     stub_config({ git_basic_auth: messages }, Gitlab.config.rack_attack)
   end
@@ -165,8 +179,6 @@ module StubConfiguration
     stub_application_setting(usage_ping_enabled: value)
     stub_application_setting(usage_ping_features_enabled: value)
   end
-
-  private
 
   # Modifies stubbed messages to also stub possible predicate versions
   #

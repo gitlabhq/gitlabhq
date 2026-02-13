@@ -11,6 +11,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include IconsHelper
   include IssuablesHelper
   include MarkupHelper
+  include SafeFormatHelper
 
   let_it_be(:current_user) { create(:user) }
 

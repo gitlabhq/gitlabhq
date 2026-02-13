@@ -82,7 +82,6 @@ Gitlab/JsonSafeParse:
     - 'app/services/packages/npm/check_manifest_coherence_service.rb'
     - 'app/services/packages/npm/process_temporary_package_file_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_download_link_list_service.rb'
-    - 'app/services/security/ci_configuration/sast_parser_service.rb'
     - 'app/services/web_hook_service.rb'
     - 'app/validators/json_schema_validator.rb'
     - 'app/workers/gitlab/version/version_check_cron_worker.rb'

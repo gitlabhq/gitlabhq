@@ -130,6 +130,7 @@ $diff-file-header: 41px;
     @apply gl-bg-strong;
     text-align: center;
     padding: $gl-padding;
+    border-radius: var(--diff-file-image-viewer-border-radius);
 
     &:has(> .view) {
       padding-bottom: $gl-padding-32;

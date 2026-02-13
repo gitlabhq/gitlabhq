@@ -1,0 +1,32 @@
+- title: "Spamcheck support in the Linux package and GitLab Helm chart"
+  # The milestones for the deprecation announcement, and the removal.
+  announcement_milestone: "18.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # window:  # Does not impact .com so no rollout window.
+  reporter: mbruemmer  # The GitLab username of the person reporting the change
+  stage: gitlab_delivery  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-com/Product/-/work_items/14404
+  check_impact:  # Impacted instances should be easy to assess from descritpion - Link to a resource, like a tool, issue, docs section, or KB article, that has *concrete steps* for customers to assess the impact of this change.
+  impact: low # Can be one of: [critical, high, medium, low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=major_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=none&pipeline_impact=none&compliance_impact=none&availability_impact=minor&authorization_impact=none&API_impact=none
+  impact_offering: self-managed # The offering this impacts. Can be one or a combination of: [GitLab.com, Dedicated, self-managed]
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 19.0, we are removing [Spamcheck](https://docs.gitlab.com/administration/reporting/spamcheck/) from the
+    Linux package and GitLab Helm chart.
+
+    Spamcheck is a service to combat spam on public-facing GitLab instances. By its nature, this feature is primarily
+    relevant to large public instances, which represents an edge case in our customer base.
+
+    Given the low adoption and the availability of standalone deployment options, we are removing Spamcheck from the
+    Linux package and GitLab Helm chart. Customers not using Spamcheck will not be impacted by this change.
+    The removal will reduce package size and dependency footprint (and thus security) for the majority of customers.
+
+    If you currently use the bundled Spamcheck, you can deploy it separately by using
+    [Docker](https://gitlab.com/gitlab-org/gl-security/security-engineering/security-automation/spam/spamcheck).
+
+    No data migration is required. Configuration guidance is available in the linked documentation.

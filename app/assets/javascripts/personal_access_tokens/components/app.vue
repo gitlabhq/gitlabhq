@@ -7,16 +7,16 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { fetchPolicies } from '~/lib/graphql';
-import getUserPersonalAccessTokens from '../graphql/get_user_personal_access_tokens.query.graphql';
+import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import {
-  DEFAULT_FILTER,
-  FILTER_OPTIONS,
-  SORT_OPTIONS,
-  DEFAULT_SORT,
-  PAGE_SIZE,
-  ACTIONS,
-} from '../constants';
-import { convertFiltersToVariables } from '../utils';
+  initializeFilterFromQueryParams,
+  initializeSortFromQueryParams,
+  convertFiltersToQueryParams,
+  convertSortToQueryParams,
+  convertFiltersToVariables,
+} from '../utils';
+import getUserPersonalAccessTokens from '../graphql/get_user_personal_access_tokens.query.graphql';
+import { FILTER_OPTIONS, SORT_OPTIONS, PAGE_SIZE, ACTIONS } from '../constants';
 import CreatePersonalAccessTokenDropdown from './create_personal_access_token_dropdown.vue';
 import PersonalAccessTokensTable from './personal_access_tokens_table.vue';
 import PersonalAccessTokenDrawer from './personal_access_token_drawer.vue';
@@ -40,14 +40,17 @@ export default {
     RotatedPersonalAccessToken,
   },
   data() {
+    const filter = initializeFilterFromQueryParams();
+    const sort = initializeSortFromQueryParams();
+
     return {
       tokens: {
         list: [],
         pageInfo: {},
       },
-      filter: structuredClone(DEFAULT_FILTER),
-      filterObject: convertFiltersToVariables(DEFAULT_FILTER),
-      sort: structuredClone(DEFAULT_SORT),
+      filter,
+      filterObject: convertFiltersToVariables(filter),
+      sort,
       selectedToken: null,
       selectedActionableToken: {
         token: null,
@@ -102,7 +105,40 @@ export default {
       return this.tokens?.pageInfo?.hasNextPage || this.tokens?.pageInfo?.hasPreviousPage;
     },
   },
+  watch: {
+    filterObject: {
+      handler() {
+        this.updateQueryParams();
+      },
+      deep: true,
+    },
+    sort: {
+      handler() {
+        this.updateQueryParams();
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.updateQueryParams();
+  },
   methods: {
+    updateQueryParams() {
+      const params = {
+        ...convertFiltersToQueryParams(this.filterObject),
+        ...convertSortToQueryParams(this.sort),
+      };
+
+      updateHistory({
+        url: setUrlParams(params, {
+          url: window.location.href,
+          clearParams: true,
+          decodeParams: true,
+        }),
+        title: document.title,
+        replace: true,
+      });
+    },
     handleFilter() {
       this.filterObject = convertFiltersToVariables(this.filter);
     },

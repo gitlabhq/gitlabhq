@@ -76,7 +76,7 @@ describe('MergeRequest', () => {
               description: '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
               lock_version: 0,
               update_task: {
-                line_source: '- [x] Task List Item',
+                line_source: '- [ ] Task List Item',
                 line_sourcepos: lineSourcepos,
                 checked,
               },

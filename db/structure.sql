@@ -22667,6 +22667,7 @@ CREATE TABLE merge_request_diff_details (
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_started_at timestamp with time zone,
     project_id bigint,
+    CONSTRAINT check_24220df02d CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_81429e3622 CHECK ((char_length(verification_failure) <= 255))
 );
 

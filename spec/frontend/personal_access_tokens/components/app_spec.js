@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokensApp from '~/personal_access_tokens/components/app.vue';
 import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
@@ -18,6 +19,12 @@ import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
 import { mockTokens, mockPageInfo, mockQueryResponse } from '../mock_data';
 
 jest.mock('~/alert');
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  setUrlParams: jest.fn(() => '/-/personal_access_tokens'),
+  updateHistory: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -90,6 +97,13 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        1,
+        { sort: 'expires_asc', state: 'active' },
+        { url: 'http://test.host/', clearParams: true, decodeParams: true },
+      );
+      expect(updateHistory).toHaveBeenCalled();
     });
 
     it('passes tokens to the table', async () => {
@@ -124,6 +138,8 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(2, { sort: 'expires_asc' }, expect.anything());
     });
 
     it('refetches when date field with less than operator is set', async () => {
@@ -148,6 +164,17 @@ describe('PersonalAccessTokensApp', () => {
         createdBefore: '2026-01-20',
         lastUsedBefore: '2026-01-20',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        {
+          sort: 'expires_asc',
+          expires_before: '2026-01-20',
+          created_before: '2026-01-20',
+          last_used_before: '2026-01-20',
+        },
+        expect.anything(),
+      );
     });
 
     it('refetches when date field with greater than or equal to operator is set', async () => {
@@ -172,6 +199,17 @@ describe('PersonalAccessTokensApp', () => {
         createdAfter: '2026-01-20',
         lastUsedAfter: '2026-01-20',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        {
+          sort: 'expires_asc',
+          expires_after: '2026-01-20',
+          created_after: '2026-01-20',
+          last_used_after: '2026-01-20',
+        },
+        expect.anything(),
+      );
     });
 
     it('refetches when when search term is set', async () => {
@@ -192,6 +230,12 @@ describe('PersonalAccessTokensApp', () => {
         before: null,
         search: 'token name',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_asc', search: 'token name' },
+        expect.anything(),
+      );
     });
 
     it('refetches when filter is submitted', async () => {
@@ -214,6 +258,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_asc', state: 'inactive', revoked: 'true' },
+        expect.anything(),
+      );
     });
 
     it('does not refetch if submit button is not clicked', async () => {
@@ -245,6 +295,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'name_asc', state: 'active' },
+        expect.anything(),
+      );
     });
 
     it('updates sort direction when changed', async () => {
@@ -260,6 +316,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_desc', state: 'active' },
+        expect.anything(),
+      );
     });
   });
 

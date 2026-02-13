@@ -14596,7 +14596,7 @@ msgstr ""
 msgid "Check the %{code_open}elasticsearch.log%{code_close} file to debug why the migration halted and make any changes before retrying the migration. When you fix the cause of the failure, select %{strong_open}Retry migration%{strong_close}, and the migration is scheduled to retry in the background."
 msgstr ""
 
-msgid "Check the current instance configuration "
+msgid "Check the current instance configuration."
 msgstr ""
 
 msgid "Check with your administrator."
@@ -26959,9 +26959,6 @@ msgstr ""
 msgid "Each element in 'components' must be a Hash"
 msgstr ""
 
-msgid "Each project can also have an issue tracker and a wiki."
-msgstr ""
-
 msgid "Eclipse"
 msgstr ""
 
@@ -31999,7 +31996,7 @@ msgstr ""
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
 msgstr ""
 
-msgid "GitLab is open source software to collaborate on code."
+msgid "GitLab is the most comprehensive DevSecOps platform, built for intelligent orchestration."
 msgstr ""
 
 msgid "GitLab is undergoing maintenance"
@@ -41166,9 +41163,6 @@ msgstr ""
 msgid "Manage framework"
 msgstr ""
 
-msgid "Manage git repositories with fine-grained access controls that keep your code secure."
-msgstr ""
-
 msgid "Manage group labels"
 msgstr ""
 
@@ -49465,9 +49459,6 @@ msgstr ""
 msgid "Perform advanced options such as changing path, transferring, exporting, or deleting the group."
 msgstr ""
 
-msgid "Perform code reviews and enhance collaboration with merge requests."
-msgstr ""
-
 msgid "Perform common operations on GitLab project"
 msgstr ""
 
@@ -55821,7 +55812,7 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-msgid "Read more about GitLab at %{link_to_promo}."
+msgid "Read more at %{link_to_promo}."
 msgstr ""
 
 msgid "Read the documentation before applying changes."
@@ -73968,9 +73959,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Used by members to sign in to your group in GitLab"
-msgstr ""
-
-msgid "Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises."
 msgstr ""
 
 msgid "Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."

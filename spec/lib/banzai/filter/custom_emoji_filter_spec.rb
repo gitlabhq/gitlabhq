@@ -72,10 +72,10 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :markdown do
 
   context 'when asset proxy is configured' do
     before do
-      stub_asset_proxy_setting(
-        enabled: true,
+      stub_asset_proxy_enabled(
+        url: 'https://assets.example.com',
         secret_key: 'shared-secret',
-        url: 'https://assets.example.com'
+        allowlist: []
       )
     end
 

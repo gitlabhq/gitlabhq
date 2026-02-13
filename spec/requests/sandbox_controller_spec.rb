@@ -68,18 +68,11 @@ RSpec.describe SandboxController, feature_category: :shared do
 
       context 'with asset proxy enabled' do
         before do
-          # TODO: refactor this (and similar usages elsewhere) so we don't have to
-          # manually recapitulate the work of AssetProxy.initialize_settings.
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/582610
-          allowlist = %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
-          stub_asset_proxy_setting(
-            enabled: true,
-            secret_key: 'shared-secret',
+          stub_asset_proxy_enabled(
             url: 'https://assets.example.com',
-            allowlist: allowlist)
-          stub_asset_proxy_setting(
-            domain_regexp: Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(allowlist),
-            csp_directives: Banzai::Filter::AssetProxyFilter.csp_for_allowlist(allowlist))
+            secret_key: 'shared-secret',
+            allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
+          )
         end
 
         it 'overrides the img-src and media-src CSPs to self, the allowlist, and the asset proxy' do
