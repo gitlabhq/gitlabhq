@@ -451,6 +451,7 @@ class MergeRequest < ApplicationRecord
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
+  scope :by_source_branch, ->(branch_name) { where(source_branch: branch_name) }
   scope :order_by_metric, ->(metric, direction) do
     order = order_by_metric_column(metric, direction)
     order.apply_cursor_conditions(join_metrics).order(order)
