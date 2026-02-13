@@ -51,13 +51,14 @@ For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.n
 | Works with GitLab Duo Vulnerability Explanation and Vulnerability Resolution | Yes.                                                                                                                                      | Yes.                                                                                                                                        |
 | Language coverage                                                            | [More expansive](_index.md#supported-languages-and-frameworks).                                                                           | [More limited](#supported-languages).                                                                                                       |
 
-## Getting started
+## Turn on GitLab Advanced SAST
 
-If you are new to GitLab Advanced SAST, use the pipeline editor to enable it for your project.
+Follow these steps to turn on GitLab Advanced SAST in your project.
 
 Prerequisites:
 
-- Enable the standard SAST analyzer. For details, see [SAST prerequisites](_index.md#getting-started).
+- The Maintainer or Owner role for the project.
+- Turn on the standard SAST analyzer. For details, see [SAST prerequisites](_index.md#getting-started).
 - For GitLab Self-Managed, use a supported GitLab version:
   - Minimum version: GitLab 17.1 or later
   - Recommended version: GitLab 17.4 or later (includes code-flow view, vulnerability deduplication, and updated templates)
@@ -66,7 +67,7 @@ Prerequisites:
     - Latest template: GitLab 17.2 or later
     - Do not mix [stable and latest templates](../detect/security_configuration.md#template-editions) in the same project
 
-To enable GitLab Advanced SAST:
+Turn on GitLab Advanced SAST:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Go to **Build** > **Pipeline** editor.
@@ -118,6 +119,10 @@ For more information on SAST coverage, see [SAST rules](rules.md).
 
 ### View results
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 To view vulnerabilities in your pipeline:
 
 1. On the top bar, select **Search or go to** and find your project.
@@ -165,12 +170,19 @@ If scans still run longer than expected, see [troubleshooting](#troubleshooting)
 
 ### Exclude paths
 
-Exclude paths to optimize performance and focus on relevant repository content.
+You can exclude paths to optimize performance by focusing on only relevant repository content.
 
-List excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD variable.
+Prerequisites:
 
-When excluding paths, be selective to avoid hiding vulnerabilities. Common candidates include the
-following:
+- The Maintainer or Owner role for the project.
+
+To exclude paths:
+
+- List the excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD
+  variable.
+
+When excluding paths, be selective to avoid hiding vulnerabilities. Common candidates for exclusion
+include the following:
 
 - Database migrations
 - Unit tests
@@ -238,9 +250,17 @@ Diff-based scanning has the following known issues:
 
 #### Turn on diff-based scanning
 
-To turn on diff-based scanning in merge request pipelines, set the CI/CD variable
-`ADVANCED_SAST_PARTIAL_SCAN` to `differential` in either the project's CI/CD configuration file, a
-scan execution policy, or pipeline execution policy.
+You can turn on diff-based scanning to optimize performance by focusing on only the changes in the
+merge request.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To turn on diff-based scanning in merge request pipelines:
+
+- Set the `ADVANCED_SAST_PARTIAL_SCAN` CI/CD variable to `differential` in the project's
+  `.gitlab-ci.yml` file.
 
 #### Dependent files
 

@@ -22,24 +22,28 @@ module Ci
       # rubocop: disable CodeReuse/ActiveRecord
       def enqueue_upcoming_processables(free_resources, resource_group)
         resource_group.upcoming_processables.take(free_resources).each do |upcoming|
+          enqueued = false
+
           Gitlab::OptimisticLocking.retry_lock(upcoming, name: 'enqueue_waiting_for_resource') do |processable|
             if processable.has_outdated_deployment?
               processable.drop!(:failed_outdated_deployment_job)
             else
-              processable.enqueue_waiting_for_resource
-
-              track_internal_event(
-                "job_enqueued_by_resource_group",
-                user: processable.user,
-                project: resource_group.project,
-                additional_properties: {
-                  label: resource_group.process_mode,
-                  property: processable.id.to_s,
-                  resource_group_id: resource_group.id
-                }
-              )
+              enqueued = processable.enqueue_waiting_for_resource
             end
           end
+
+          next unless enqueued
+
+          track_internal_event(
+            "job_enqueued_by_resource_group",
+            user: upcoming.user,
+            project: resource_group.project,
+            additional_properties: {
+              label: resource_group.process_mode,
+              property: upcoming.id.to_s,
+              resource_group_id: resource_group.id
+            }
+          )
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

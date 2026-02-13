@@ -14,7 +14,7 @@ module Gitlab
         class << self
           def from_commands(job)
             self.new(:script).tap do |step|
-              step.script = job.options[:before_script].to_a + job.options[:script].to_a
+              step.script = Array.wrap(job.options[:before_script]) + Array.wrap(job.options[:script])
               step.timeout = job.timeout_value
               step.when = WHEN_ON_SUCCESS
             end

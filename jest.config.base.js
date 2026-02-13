@@ -31,11 +31,19 @@ module.exports = (path, options = {}) => {
     // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
     '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
     '@gitlab/ui$': '@gitlab/ui/src',
+    '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
   };
   const globals = {};
 
   const customElements = ['fe-island-duo-next'];
   const isCE = (tag) => customElements.includes(tag);
+
+  if (!USE_VUE_3) {
+    Object.assign(vueModuleNameMappers, {
+      '^portal-vue-vue3-impl$':
+        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
+    });
+  }
 
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
@@ -47,9 +55,10 @@ module.exports = (path, options = {}) => {
       '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
       '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
       '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
-      '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue.js',
       '^vendor/vue-virtual-scroller$':
         '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+      '^portal-vue-vue3-impl$':
+        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     });
     Object.assign(globals, {
       'vue-jest': {
@@ -192,6 +201,7 @@ module.exports = (path, options = {}) => {
     '@gitlab/web-ide',
     '@gitlab/query-language',
     'bootstrap-vue',
+    'portal-vue',
     'gridstack',
     'three',
     'monaco-editor',

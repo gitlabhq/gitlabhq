@@ -144,6 +144,12 @@ const alias = {
   // load mjs version instead of cjs
   'markdown-it': path.join(ROOT_PATH, 'node_modules/markdown-it/index.mjs'),
 
+  // Alias portal-vue to resolve dynamically to pick proper vue version
+  'portal-vue$': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
+  ),
+
   // test-environment-only aliases duplicated from Jest config
   'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),
   ee_else_ce_jest: path.join(ROOT_PATH, 'spec/frontend'),
@@ -271,13 +277,16 @@ if (USE_VUE3) {
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
-    'portal-vue': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/portal_vue.js'),
     // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
     // use an alias to ensure vue-demi finds the right version
     'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),
     'vendor/vue-virtual-scroller': path.join(
       ROOT_PATH,
       'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+    ),
+    'portal-vue-vue3-impl$': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     ),
   });
 
@@ -293,6 +302,13 @@ if (USE_VUE3) {
   // Has no real effect here, since we're using thread-loader which serializes config passing to threads
   // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
   vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
+} else {
+  Object.assign(alias, {
+    'portal-vue-vue3-impl$': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
+    ),
+  });
 }
 
 const entriesState = {

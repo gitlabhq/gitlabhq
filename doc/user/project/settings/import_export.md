@@ -171,7 +171,7 @@ Before you can import a project, you must export it.
 Prerequisites:
 
 - Review the list of [items that are exported](#project-items-that-are-exported). Not all items are exported.
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - For significantly improved performance for repositories with a large number of Git references, use GitLab 18.0 or later. For more information, see our
   [blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
 
@@ -230,7 +230,7 @@ For a quick overview, items that are exported include:
 - Push rules
 - Emoji reactions
 - Direct project members
-  (if you have at least the Maintainer role for the exported project's group)
+  (if you have the Maintainer or Owner role for the exported project's group)
 - Inherited project members as direct project members
   (if you have the Owner role for the exported project's group or administrator access to the instance)
 - Some merge request approval rules:
@@ -284,7 +284,7 @@ You can import a project and its data. The amount of data you can import depends
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
   than the GitLab version you exported from.
 - Review [compatibility](#compatibility) for any issues.
-- At least the Maintainer role on the destination group to migrate to.
+- The Maintainer or Owner role on the destination group to migrate to.
 - The `tar` command must be installed on both the source and destination GitLab instances.
 
 #### Import a project

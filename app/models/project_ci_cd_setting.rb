@@ -81,7 +81,7 @@ class ProjectCiCdSetting < ApplicationRecord
     project_ids = settings_relation.limit(limit).pluck(:project_id)
 
     projects_with_vars =
-      Ci::PipelineVariable.projects_with_variables(project_ids, limit) +
+      Ci::Pipeline.projects_with_variables(project_ids, limit) +
       Ci::JobVariable.projects_with_variables(project_ids, limit)
 
     project_ids - projects_with_vars

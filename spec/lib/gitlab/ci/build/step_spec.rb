@@ -49,6 +49,13 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
         expect(subject.timeout).to eq(3)
       end
     end
+
+    context 'when script is a string' do
+      let(:job) { create(:ci_build, options: { script: "ls -la\necho aaa" }) }
+      let(:script) { ["ls -la\necho aaa"] }
+
+      it_behaves_like 'has correct script'
+    end
   end
 
   describe '#from_release' do

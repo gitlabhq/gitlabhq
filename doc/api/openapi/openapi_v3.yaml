@@ -15603,6 +15603,74 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/runner_controllers/{id}/scopes":
+    get:
+      operationId: getApiV4RunnerControllersIdScopes
+      summary: List runner controller scopes
+      description: Get all scopes for a specific runner controller.
+      tags:
+      - Runner controllers
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: ID of the runner controller
+        schema:
+          type: integer
+        in: path
+  "/api/v4/runner_controllers/{id}/scopes/instance":
+    post:
+      operationId: postApiV4RunnerControllersIdScopesInstance
+      summary: Add instance-level scope
+      description: Add an instance-level scope to a runner controller.
+      tags:
+      - Runner controllers
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCiRunnerControllerInstanceLevelScoping"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+      parameters:
+      - name: id
+        required: true
+        description: ID of the runner controller
+        schema:
+          type: integer
+        in: path
+    delete:
+      operationId: deleteApiV4RunnerControllersIdScopesInstance
+      summary: Remove instance-level scope
+      description: Remove an instance-level scope from a runner controller.
+      tags:
+      - Runner controllers
+      responses:
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: ID of the runner controller
+        schema:
+          type: integer
+        in: path
   "/api/v4/runner_controllers":
     get:
       operationId: getApiV4RunnerControllers
@@ -92175,6 +92243,13 @@ components:
         description:
           type: string
           example: Controller for managing runner
+        created_at:
+          type: DateTime
+        updated_at:
+          type: DateTime
+    APIEntitiesCiRunnerControllerInstanceLevelScoping:
+      type: object
+      properties:
         created_at:
           type: DateTime
         updated_at:

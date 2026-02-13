@@ -2291,6 +2291,70 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it { is_expected.to eq(runner_manager) }
   end
 
+  describe '#run_steps' do
+    subject(:run_steps) { job.run_steps }
+
+    let(:job) { FactoryBot.build(:ci_build, job_definition: job_definition, execution_config: job_execution_config) }
+    let(:job_definition) { FactoryBot.build(:ci_job_definition, config: { run_steps: job_definition_run_steps }) }
+    let(:job_definition_run_steps) { [{ name: 'hello_steps' }, { name: 'bye_steps' }] }
+    let(:job_execution_config) { FactoryBot.build(:ci_builds_execution_configs, run_steps: job_execution_config_run_steps) }
+    let(:job_execution_config_run_steps) { [{ 'name' => 'first execution' }, { 'name' => 'last execution' }] }
+
+    it 'returns run_steps from job definition' do
+      expect(subject).to eq(job_definition_run_steps)
+    end
+
+    context 'with nil run_steps' do
+      let(:job_definition) { FactoryBot.build(:ci_job_definition, config: {}) }
+
+      it 'returns run_steps from execution config' do
+        expect(subject).to eq(job_execution_config_run_steps)
+      end
+
+      context 'with nil execution config' do
+        let(:job_execution_config) { nil }
+
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+
+        context 'with nil run_steps' do
+          let(:job_execution_config_run_steps) { nil }
+
+          it 'returns an empty array' do
+            expect(subject).to eq([])
+          end
+        end
+      end
+    end
+
+    context 'when feature flag read_from_ci_job_definition_run_steps is disabled' do
+      before do
+        stub_feature_flags(read_from_ci_job_definition_run_steps: false)
+      end
+
+      it 'returns run_steps from execution config' do
+        expect(subject).to eq(job_execution_config_run_steps)
+      end
+
+      context 'with nil run_steps' do
+        let(:job_execution_config_run_steps) { nil }
+
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'with nil job_execution_config' do
+        let(:job_execution_config) { nil }
+
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+    end
+  end
+
   describe '#tag_list' do
     let_it_be(:build) { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
 
@@ -6568,6 +6632,52 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when project exists' do
       it 'executes the query path through integration accessors' do
         expect(build.harbor_integration).to be_nil
+      end
+    end
+  end
+
+  describe '#read_job_definition_attribute' do
+    let(:job) { FactoryBot.build(:ci_build, job_definition: job_definition) }
+    let(:job_definition) { FactoryBot.build(:ci_job_definition, interruptible: false, config: { tag_list: ['prod'] }) }
+    let(:temp_job_definition) { FactoryBot.build(:ci_job_definition, interruptible: true, config: { tag_list: ['test'] }) }
+
+    before do
+      job.temp_job_definition = temp_job_definition
+    end
+
+    it 'returns the value for normalized attribute' do
+      expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(false)
+    end
+
+    it 'returns the value for non-normalized attribute' do
+      expect(job.send(:read_job_definition_attribute, :tag_list)).to eq(['prod'])
+    end
+
+    context 'when job definition is nil' do
+      before do
+        job.job_definition = nil
+      end
+
+      it 'returns the value for normalized attribute from temp_job_definition' do
+        expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(true)
+      end
+
+      it 'returns the value for non-normalized attribute from temp_job_definition' do
+        expect(job.send(:read_job_definition_attribute, :tag_list)).to eq(['test'])
+      end
+
+      context 'when temp job definition is nil' do
+        before do
+          job.temp_job_definition = nil
+        end
+
+        it 'returns nil' do
+          expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(nil)
+        end
+
+        it 'returns nil' do
+          expect(job.send(:read_job_definition_attribute, :tag_list)).to eq(nil)
+        end
       end
     end
   end

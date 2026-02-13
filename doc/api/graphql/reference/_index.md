@@ -2258,6 +2258,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="queryvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="queryvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="queryvulnerabilitiestrackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | **Introduced** in GitLab 18.10. **Status**: Experiment. Filter vulnerabilities by tracked ref IDs. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. |
 | <a id="queryvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ### `Query.vulnerabilitiesCountByDay`
@@ -36411,6 +36412,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="groupvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="groupvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="groupvulnerabilitiestrackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | **Introduced** in GitLab 18.10. **Status**: Experiment. Filter vulnerabilities by tracked ref IDs. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. |
 | <a id="groupvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ##### `Group.vulnerabilitiesCountByDay`
@@ -45755,6 +45757,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="projectvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="projectvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="projectvulnerabilitiestrackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | **Introduced** in GitLab 18.10. **Status**: Experiment. Filter vulnerabilities by tracked ref IDs. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. |
 | <a id="projectvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ##### `Project.vulnerabilitiesCountByDay`
@@ -58246,6 +58249,12 @@ An example `SecurityOrchestrationPolicyConfigurationID` is: `"gid://gitlab/Secur
 A `SecurityProjectSecurityExclusionID` is a global ID. It is encoded as a string.
 
 An example `SecurityProjectSecurityExclusionID` is: `"gid://gitlab/Security::ProjectSecurityExclusion/1"`.
+
+### `SecurityProjectTrackedContextID`
+
+A `SecurityProjectTrackedContextID` is a global ID. It is encoded as a string.
+
+An example `SecurityProjectTrackedContextID` is: `"gid://gitlab/Security::ProjectTrackedContext/1"`.
 
 ### `SecurityScanProfileID`
 

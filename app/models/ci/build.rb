@@ -920,6 +920,13 @@ module Ci
     end
     strong_memoize_attr :tag_list
 
+    override :run_steps
+    def run_steps
+      return execution_config&.run_steps || [] if Feature.disabled?(:read_from_ci_job_definition_run_steps, project)
+
+      read_job_definition_attribute(:run_steps) || execution_config&.run_steps || []
+    end
+
     def any_runners_online?
       cache_for_online_runners do
         project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
@@ -1540,6 +1547,17 @@ module Ci
         .index_by(&:type_new)
     end
     strong_memoize_attr :project_integrations
+
+    def read_job_definition_attribute(key, default_value = nil)
+      result =
+        if key.in?(::Ci::JobDefinition::NORMALIZED_DATA_COLUMNS)
+          [job_definition&.read_attribute(key), temp_job_definition&.read_attribute(key)].find { |v| !v.nil? }
+        else
+          [job_definition&.config&.dig(key), temp_job_definition&.config&.dig(key)].find { |v| !v.nil? }
+        end
+
+      [result, default_value].find { |v| !v.nil? }
+    end
   end
 end
 

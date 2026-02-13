@@ -589,4 +589,10 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       it_behaves_like 'job_source processable'
     end
   end
+
+  describe '#run_steps' do
+    it 'returns an empty array for run_steps' do
+      expect(subject.run_steps).to eq([])
+    end
+  end
 end

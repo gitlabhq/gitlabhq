@@ -59337,9 +59337,6 @@ msgstr ""
 msgid "ScanProfiles|General Details"
 msgstr ""
 
-msgid "ScanProfiles|Git Push Events"
-msgstr ""
-
 msgid "ScanProfiles|Information about this configuration profile."
 msgstr ""
 
@@ -59350,6 +59347,9 @@ msgid "ScanProfiles|Scan triggers"
 msgstr ""
 
 msgid "ScanProfiles|Secret detection profile"
+msgstr ""
+
+msgid "ScanProfiles|Secret push protection"
 msgstr ""
 
 msgid "ScanProfiles|View documentation"

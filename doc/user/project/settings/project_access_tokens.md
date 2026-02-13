@@ -195,7 +195,7 @@ automatically applied:
 
 {{< /history >}}
 
-GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Members of the project with at least the Maintainer role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Members of the project with the Maintainer or Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
 
 - In GitLab 17.6 and later, project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next 60 days. An additional email is sent when the check identifies their project access tokens as expiring in the next 30 days.
 - Project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next seven days.

@@ -266,14 +266,6 @@ It provides support for composite primary key and maintainability simplicity com
 
 The `queue_batched_background_migration` helper automatically detects whether your migration job uses cursor strategy and configures the migration accordingly.
 
-#### When to use cursor strategy
-
-Cursor strategy should be used in most cases. It is especially recommended for:
-
-- Tables with single-column primary keys
-- Tables with composite primary keys
-- Any table where you want more reliable and efficient iteration
-
 #### How to use cursor strategy
 
 Define cursor columns in your migration job class using the `cursor` DSL:

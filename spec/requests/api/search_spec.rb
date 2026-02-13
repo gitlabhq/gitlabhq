@@ -527,6 +527,13 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :use_global_search do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'john doe' }
+        end
+      end
     end
 
     context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
@@ -755,6 +762,17 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
+
+    it_behaves_like 'authorizing granular token permissions', :use_global_search do
+      let(:boundary_object) { group }
+      let(:request) do
+        get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'awesome' }
+      end
+
+      before_all do
+        group.add_developer(user)
+      end
+    end
   end
 
   describe "GET /projects/:id/search" do
@@ -1162,5 +1180,16 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
+
+    it_behaves_like 'authorizing granular token permissions', :use_global_search do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'awesome' }
+      end
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
   end
 end

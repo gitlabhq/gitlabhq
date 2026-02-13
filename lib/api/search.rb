@@ -215,6 +215,7 @@ module API
         use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :user
       route_setting :mcp, tool_name: :gitlab_search_in_instance,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get do
@@ -248,6 +249,7 @@ module API
         use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :group
       route_setting :mcp, tool_name: :gitlab_search_in_group,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do
@@ -284,6 +286,7 @@ module API
         use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :project
       route_setting :mcp, tool_name: :gitlab_search_in_project,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do

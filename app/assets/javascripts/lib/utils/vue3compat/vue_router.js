@@ -37,7 +37,8 @@ const toNewCatchAllPath = (path, { isRoot } = {}) => {
 
 const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: true }) => {
   if (!value) return null;
-  const newRoutes = value.map((route) => {
+  const newRoutes = [];
+  value.forEach((route) => {
     const newRoute = {
       ...route,
       path: toNewCatchAllPath(route.path, transformOptions),
@@ -45,12 +46,15 @@ const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: tru
     if (route.children) {
       newRoute.children = transformRoutes(route.children, _routerOptions, { isRoot: false }).routes;
     }
-    // Vue Router 4 requires a component for catchall routes, even when using redirect.
-    // Add a dummy component to suppress the warning.
-    if (route.path === '*' && route.redirect && !route.component) {
-      newRoute.component = { render: () => null };
+    newRoutes.push(newRoute);
+
+    // In Vue Router 3, a child catch-all `*` with redirect would also match when
+    // the parent path was visited with no trailing child segment (e.g., `/`).
+    // Vue Router 4's `:pathMatch(.*)*` does NOT match the empty string in child routes.
+    // Add an empty-path sibling with the same redirect to preserve this behavior.
+    if (route.path === '*' && route.redirect && !transformOptions.isRoot) {
+      newRoutes.push({ path: '', redirect: route.redirect });
     }
-    return newRoute;
   });
   return { routes: newRoutes };
 };
@@ -132,23 +136,20 @@ const stripTrailingSlash = (fullPath) => {
 export default class VueRouterCompat {
   constructor(options) {
     const router = createRouter(transformOptions(options));
-
     // Patch history to strip trailing slashes (mimic Vue Router 3 behavior)
     const { history } = router.options;
-    if (history) {
-      const originalPush = history.push.bind(history);
-      const originalReplace = history.replace.bind(history);
+    const originalPush = history.push.bind(history);
+    const originalReplace = history.replace.bind(history);
 
-      history.push = (to, ...args) => {
-        const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
-        return originalPush(normalizedTo, ...args);
-      };
+    history.push = (to, ...args) => {
+      const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
+      return originalPush(normalizedTo, ...args);
+    };
 
-      history.replace = (to, ...args) => {
-        const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
-        return originalReplace(normalizedTo, ...args);
-      };
-    }
+    history.replace = (to, ...args) => {
+      const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
+      return originalReplace(normalizedTo, ...args);
+    };
 
     // Synchronously resolve initial route to match Vue Router 3 behavior.
     // Vue Router 4's initial navigation is async, but components that read
@@ -171,9 +172,32 @@ export default class VueRouterCompat {
         pathname = pathname.slice(historyBase.length) || '/';
       }
       const currentLocation = pathname + window.location.search + window.location.hash;
-      const resolved = router.resolve(currentLocation);
+      let resolved = router.resolve(currentLocation);
+
+      // Vue Router 4's resolve() does not follow redirects (unlike Vue Router 3's
+      // synchronous behavior). We need to manually follow redirect chains so that
+      // components reading $route in data() see the final destination immediately.
+      const maxRedirects = 10;
+      let didRedirect = false;
+      for (let i = 0; i < maxRedirects; i += 1) {
+        const lastMatched = resolved.matched[resolved.matched.length - 1];
+        if (!lastMatched?.redirect) break;
+
+        const { redirect } = lastMatched;
+        const redirectTarget = typeof redirect === 'function' ? redirect(resolved) : redirect;
+        resolved = router.resolve(redirectTarget);
+        didRedirect = true;
+      }
 
       router.currentRoute.value = resolved;
+
+      // When a redirect was followed, update the browser URL to reflect the
+      // final destination. Setting currentRoute.value above prevents Vue Router 4's
+      // initial async navigation (which checks currentRoute === START_LOCATION),
+      // so the URL would otherwise remain at the pre-redirect path.
+      if (didRedirect) {
+        history.replace(resolved.fullPath);
+      }
     } catch {
       // If resolution fails, let the async navigation handle it
     }

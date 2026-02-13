@@ -1,0 +1,15 @@
+---
+name: query_projects_with_variables_from_ci_pipeline_artifacts
+description: |
+  Enables querying projects_with_variables from both ci_pipeline_variables (current behaviour) and
+  ci_pipeline_artifacts (new behaviour). This feature flag has a current request actor.
+  It MUST be enabled before we enable `stop_writing_to_ci_pipeline_variables`.
+  Ideally, it should also be enabled after enabling `ci_write_pipeline_variables_artifact`
+  so there's data to read from ci_pipeline_artifacts table, but this isn't critical.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584542
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222375
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587839
+milestone: '18.9'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

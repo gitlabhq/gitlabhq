@@ -24,9 +24,10 @@ title: Runner controllers API
 
 {{< /history >}}
 
-The runner controllers API allows you to manage runner controllers for GitLab Runner job
-orchestration and admission control. This API provides endpoints to create, read, update,
-and delete runner controllers.
+The runner controllers API allows you to manage runner controllers for CI/CD job admission
+control. Runner controllers connect to the job router and evaluate jobs against custom
+policies, deciding whether to admit or reject them. This API provides endpoints to create,
+read, update, and delete runner controllers.
 
 Prerequisites:
 
@@ -231,4 +232,126 @@ If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 curl --request DELETE \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/runner_controllers/3"
+```
+
+## Runner controller scopes
+
+Runner controller scopes define which jobs a runner controller evaluates for admission control.
+A runner controller must have at least one scope to receive admission requests. Without a scope,
+the controller remains inactive even when its state is `enabled` or `dry_run`.
+
+- **Instance-level scope**: The runner controller evaluates jobs for all runners in the GitLab instance.
+
+NOTE:
+Only instance-level scoping is currently available. Runner-level scoping and additional
+scope types are planned. For more information, see [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
+
+### List all scopes for a runner controller
+
+Lists all scopes configured for a specific runner controller.
+
+```plaintext
+GET /runner_controllers/:id/scopes
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description                              |
+|-----------|---------|----------|------------------------------------------|
+| `id`      | integer | Yes      | The ID of the runner controller.         |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute                                    | Type         | Description                                                |
+|----------------------------------------------|--------------|------------------------------------------------------------|
+| `instance_level_scopings`                    | object array | List of instance-level scopings for the runner controller. |
+| `instance_level_scopings[].created_at`       | datetime     | The date and time when the scoping was created.            |
+| `instance_level_scopings[].updated_at`       | datetime     | The date and time when the scoping was last updated.       |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes"
+```
+
+Example response:
+
+```json
+{
+    "instance_level_scopings": [
+        {
+            "created_at": "2026-01-01T00:00:00Z",
+            "updated_at": "2026-01-01T00:00:00Z"
+        }
+    ]
+}
+```
+
+### Add instance-level scope
+
+Adds an instance-level scope to a runner controller. When added, the runner controller
+evaluates jobs for all runners in the GitLab instance.
+
+A runner controller can have only one instance-level scope. If an instance-level scope
+already exists, this endpoint returns an error.
+
+```plaintext
+POST /runner_controllers/:id/scopes/instance
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description                              |
+|-----------|---------|----------|------------------------------------------|
+| `id`      | integer | Yes      | The ID of the runner controller.         |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute               | Type     | Description                                          |
+|-------------------------|----------|------------------------------------------------------|
+| `created_at`            | datetime | The date and time when the scoping was created.      |
+| `updated_at`            | datetime | The date and time when the scoping was last updated. |
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes/instance"
+```
+
+Example response:
+
+```json
+{
+    "created_at": "2026-01-01T00:00:00Z",
+    "updated_at": "2026-01-01T00:00:00Z"
+}
+```
+
+### Remove instance-level scope
+
+Removes an instance-level scope from a runner controller.
+
+```plaintext
+DELETE /runner_controllers/:id/scopes/instance
+```
+
+Supported attributes:
+
+| Attribute     | Type    | Required | Description                                          |
+|---------------|---------|----------|------------------------------------------------------|
+| `id`          | integer | Yes      | The ID of the runner controller.                     |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes/instance"
 ```

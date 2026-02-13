@@ -189,6 +189,22 @@ describe('VueRouterCompat', () => {
       expect(router).toBeDefined();
       expect(router.currentRoute).toBeDefined();
     });
+
+    it('updates URL hash on redirect in hash mode', async () => {
+      const router = new VueRouter({
+        mode: 'hash',
+        routes: [
+          { path: '/', component: { template: '<div />' } },
+          { path: '/target', component: { template: '<div />' } },
+          { path: '/source', redirect: '/target' },
+        ],
+      });
+
+      await router.push('/source');
+
+      expect(router.currentRoute.path).toBe('/target');
+      expect(window.location.hash).toBe('#/target');
+    });
   });
 
   describe('navigation methods', () => {
@@ -288,6 +304,179 @@ describe('VueRouterCompat', () => {
       await nextTick();
 
       expect(wrapper.text()).toBe('/target');
+    });
+  });
+
+  describe('redirect following', () => {
+    it('follows child catch-all redirect on navigation', async () => {
+      const ParentComponent = { template: '<div><router-view /></div>' };
+      const DashboardComponent = { template: '<div>dashboard</div>' };
+
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          {
+            path: '/',
+            component: ParentComponent,
+            children: [
+              { path: 'dashboard', name: 'dashboard', component: DashboardComponent },
+              { path: '*', redirect: { name: 'dashboard' } },
+            ],
+          },
+        ],
+      });
+
+      await router.push('/');
+
+      expect(router.currentRoute.name).toBe('dashboard');
+      expect(router.currentRoute.path).toBe('/dashboard');
+    });
+
+    it('follows string redirect on navigation', async () => {
+      const TargetComponent = { template: '<div>target</div>' };
+
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          { path: '/old', redirect: '/new' },
+          { path: '/new', name: 'new', component: TargetComponent },
+        ],
+      });
+
+      await router.push('/old');
+
+      expect(router.currentRoute.path).toBe('/new');
+    });
+
+    it('follows function redirect on navigation', async () => {
+      const TargetComponent = { template: '<div>target</div>' };
+      const redirect = jest.fn(() => '/resolved');
+
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          { path: '/dynamic', redirect },
+          { path: '/resolved', name: 'resolved', component: TargetComponent },
+        ],
+      });
+
+      await router.push('/dynamic');
+
+      expect(redirect).toHaveBeenCalledWith(expect.objectContaining({ path: '/dynamic' }));
+      expect(router.currentRoute.path).toBe('/resolved');
+    });
+  });
+
+  describe('initial redirect URL update', () => {
+    let originalPathname;
+
+    beforeEach(() => {
+      originalPathname = window.location.pathname;
+    });
+
+    afterEach(() => {
+      window.history.replaceState({}, '', originalPathname);
+    });
+
+    it('updates the browser URL when initial route follows a child catch-all redirect', async () => {
+      const base = '/group/-/compliance_dashboard';
+      window.history.replaceState({}, '', base);
+
+      const ParentComponent = { template: '<div><router-view /></div>' };
+      const DashboardComponent = { template: '<div>dashboard</div>' };
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          {
+            path: '/',
+            component: ParentComponent,
+            children: [
+              { path: 'dashboard', name: 'dashboard', component: DashboardComponent },
+              { path: '*', redirect: { name: 'dashboard' } },
+            ],
+          },
+        ],
+      });
+
+      shallowMount(ParentComponent, { router });
+      await nextTick();
+
+      expect(window.location.pathname).toBe(`${base}/dashboard`);
+    });
+
+    it('does not update the browser URL when no redirect is followed', async () => {
+      const base = '/group/-/compliance_dashboard';
+      const initialPath = `${base}/dashboard`;
+      window.history.replaceState({}, '', initialPath);
+
+      const ParentComponent = { template: '<div><router-view /></div>' };
+      const DashboardComponent = { template: '<div>dashboard</div>' };
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          {
+            path: '/',
+            component: ParentComponent,
+            children: [
+              { path: 'dashboard', name: 'dashboard', component: DashboardComponent },
+              { path: '*', redirect: { name: 'dashboard' } },
+            ],
+          },
+        ],
+      });
+
+      shallowMount(ParentComponent, { router });
+      await nextTick();
+
+      expect(window.location.pathname).toBe(initialPath);
+    });
+
+    it('updates the browser URL when following a string redirect', async () => {
+      const base = '/app';
+      window.history.replaceState({}, '', `${base}/old`);
+
+      const TargetComponent = { template: '<div>target</div>' };
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          { path: '/old', redirect: '/new' },
+          { path: '/new', name: 'new', component: TargetComponent },
+        ],
+      });
+
+      shallowMount(TargetComponent, { router });
+      await nextTick();
+
+      expect(window.location.pathname).toBe(`${base}/new`);
+    });
+
+    it('updates the browser URL when following a function redirect', async () => {
+      const base = '/app';
+      window.history.replaceState({}, '', `${base}/dynamic`);
+
+      const TargetComponent = { template: '<div>target</div>' };
+      const redirect = jest.fn(() => '/resolved');
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          { path: '/dynamic', redirect },
+          { path: '/resolved', name: 'resolved', component: TargetComponent },
+        ],
+      });
+
+      shallowMount(TargetComponent, { router });
+      await nextTick();
+
+      expect(redirect).toHaveBeenCalledWith(expect.objectContaining({ path: '/dynamic' }));
+      expect(window.location.pathname).toBe(`${base}/resolved`);
     });
   });
 

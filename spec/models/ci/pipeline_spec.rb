@@ -2080,6 +2080,102 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#variables' do
+    let(:variables_attributes) do
+      [
+        { key: 'ENV_VAR', value: 'env var value', variable_type: 'env_var', raw: false },
+        { key: 'FILE_VAR', value: 'file var value', variable_type: 'file', raw: true }
+      ]
+    end
+
+    shared_examples 'when pipeline has pipeline variables' do
+      it 'returns an array of Ci::PipelineVariableItem objects' do
+        expect(pipeline.variables).to match_array([
+          have_attributes(class: Ci::PipelineVariableItem, **variables_attributes.first),
+          have_attributes(class: Ci::PipelineVariableItem, **variables_attributes.last)
+        ])
+      end
+
+      context 'when pipeline does not have a pipeline variables artifact' do
+        before do
+          pipeline.pipeline_artifacts_pipeline_variables&.destroy!
+          pipeline.association(:pipeline_artifacts_pipeline_variables).reset
+        end
+
+        it 'returns an array of Ci::PipelineVariable objects' do
+          expect(pipeline.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+
+      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
+        before do
+          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
+        end
+
+        it 'returns an array of Ci::PipelineVariable objects' do
+          expect(pipeline.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+    end
+
+    shared_examples 'when pipeline does not have pipeline variables' do
+      it 'returns an empty result' do
+        expect(pipeline.variables).to be_empty
+      end
+
+      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
+        before do
+          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
+        end
+
+        it 'returns an empty result' do
+          expect(pipeline.variables).to be_empty
+        end
+      end
+    end
+
+    context 'when pipeline variables are not persisted' do
+      let(:pipeline) { build(:ci_pipeline, project: project) }
+
+      it_behaves_like 'when pipeline has pipeline variables' do
+        before do
+          variables_attributes.each do |var_attrs|
+            pipeline.association(:variables).target <<
+              FactoryBot.build(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(pipeline, variables_attributes).run
+        end
+      end
+
+      it_behaves_like 'when pipeline does not have pipeline variables'
+    end
+
+    context 'when pipeline variables are persisted' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it_behaves_like 'when pipeline has pipeline variables' do
+        before do
+          variables_attributes.each do |var_attrs|
+            pipeline.association(:variables).target <<
+              FactoryBot.create(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(pipeline, variables_attributes).run
+          pipeline.pipeline_artifacts_pipeline_variables.save!
+        end
+      end
+
+      it_behaves_like 'when pipeline does not have pipeline variables'
+    end
+  end
+
   describe '#auto_canceled?' do
     subject { pipeline.auto_canceled? }
 
@@ -7110,6 +7206,117 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'return the default initial value' do
         expect(subject).to eq(100)
       end
+    end
+  end
+
+  describe '.projects_with_variables' do
+    let_it_be(:project_with_ci_pipeline_variable1) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create_list(:ci_pipeline_variable, 2, pipeline: pipeline) # To ensure only unique project_ids returned
+      end
+    end
+
+    let_it_be(:project_with_ci_pipeline_variable2) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_variable, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_ci_pipeline_variable_and_pipeline_variables_artifact) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_variable, pipeline: pipeline)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_pipeline_variables_artifact1) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_pipeline_variables_artifact2) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_code_coverage_artifact) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files, pipeline: pipeline)
+      end
+    end
+
+    let(:limit) { 100 }
+    let(:project_ids) do
+      [
+        project.id,
+        project_with_ci_pipeline_variable1.id,
+        project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id,
+        project_with_pipeline_variables_artifact1.id,
+        project_with_code_coverage_artifact.id
+      ]
+    end
+
+    subject(:projects_with_variables) { described_class.projects_with_variables(project_ids, limit) }
+
+    it 'returns project IDs within the given project_ids list that have pipeline variables' do
+      expect(projects_with_variables).to contain_exactly(
+        project_with_ci_pipeline_variable1.id,
+        project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id,
+        project_with_pipeline_variables_artifact1.id
+      )
+    end
+
+    shared_examples 'when no projects have variables' do
+      let(:project_ids) { [project.id, project_with_code_coverage_artifact.id] }
+
+      it 'returns an empty result' do
+        expect(projects_with_variables).to be_empty
+      end
+    end
+
+    shared_examples 'when project_ids contain non-existent project IDs' do
+      let(:project_ids) { [project_with_ci_pipeline_variable1.id, non_existing_record_id] }
+
+      it 'returns existing project IDs that have pipeline variables' do
+        expect(projects_with_variables).to contain_exactly(project_with_ci_pipeline_variable1.id)
+      end
+    end
+
+    shared_examples 'when there are more projects with pipeline variables than the limit' do
+      let(:limit) { 1 }
+
+      it 'returns project IDs that have pipeline variables up to the limit' do
+        expect(projects_with_variables.size).to eq(1)
+      end
+    end
+
+    it_behaves_like 'when no projects have variables'
+    it_behaves_like 'when project_ids contain non-existent project IDs'
+    it_behaves_like 'when there are more projects with pipeline variables than the limit'
+
+    context 'when FF `query_projects_with_variables_from_ci_pipeline_artifacts` is disabled' do
+      before do
+        stub_feature_flags(query_projects_with_variables_from_ci_pipeline_artifacts: false)
+      end
+
+      it 'returns project IDs within the given project_ids list that have ci_pipeline_variables records' do
+        expect(projects_with_variables).to contain_exactly(
+          project_with_ci_pipeline_variable1.id,
+          project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id
+        )
+      end
+
+      it_behaves_like 'when no projects have variables'
+      it_behaves_like 'when project_ids contain non-existent project IDs'
+      it_behaves_like 'when there are more projects with pipeline variables than the limit'
     end
   end
 

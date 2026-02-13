@@ -17,7 +17,7 @@ If it's not active, you can do it in the project's settings.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - On GitLab Self-Managed, you must [set up incoming email](../../../administration/incoming_email.md#set-it-up)
   for the GitLab instance. You should use
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
@@ -211,7 +211,7 @@ To edit the custom email display name:
 
 {{< /history >}}
 
-New tickets are confidential by default, so only project members with at least the Planner role
+New tickets are confidential by default, so only project members with the Planner, Reporter, Developer, Maintainer, or Owner role
 can view them.
 
 In private and internal projects, you can configure GitLab so that new tickets are not confidential by default, and any project member can view them.
@@ -220,7 +220,7 @@ In public projects, this setting is not available because new tickets are always
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable this setting:
 
@@ -248,7 +248,7 @@ For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable this setting:
 
@@ -307,7 +307,7 @@ The custom email address you want to use must meet all of the following requirem
   with a 256-bit key.
 - The **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab Self-Managed)
   or the public internet (on GitLab.com).
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Service Desk must be configured for the project.
 
 ### Configure a custom email address

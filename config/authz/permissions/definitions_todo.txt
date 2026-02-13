@@ -387,7 +387,6 @@ provision_cloud_runner
 provision_gke_runner
 public_access
 public_user_access
-publish_catalog_version
 publish_status_page
 push_code_to_protected_branches
 push_to_delete_protected_branch

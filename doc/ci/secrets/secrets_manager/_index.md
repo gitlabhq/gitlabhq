@@ -24,7 +24,8 @@ ignore_in_report: true
 
 > [!warning]
 > This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
-> notice. This feature is not ready for public testing or production use.
+> notice. Secrets stored in experiment or beta versions will not be kept when the Secrets Manager is released as generally available.
+> This feature is not ready for public testing or production use.
 
 Secrets represent sensitive information your CI/CD jobs need to function. Secrets could be access tokens,
 database credentials, private keys, or similar.

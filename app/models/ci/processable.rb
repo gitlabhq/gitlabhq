@@ -352,6 +352,10 @@ module Ci
     end
     strong_memoize_attr :source
 
+    def run_steps
+      []
+    end
+
     private
 
     def dependencies

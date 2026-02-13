@@ -36,15 +36,21 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
 
       context 'when failed to request resource' do
         before do
-          allow_next_instance_of(Ci::Build) do |job|
-            allow(job).to receive(:enqueue_waiting_for_resource) { false }
+          allow_next_found_instance_of(Ci::Build) do |job|
+            allow(job).to receive(:enqueue_waiting_for_resource).and_return(false)
           end
         end
 
         it 'has a build waiting for resource' do
           subject
 
-          expect(ci_build).to be_waiting_for_resource
+          expect(ci_build.reload).to be_waiting_for_resource
+        end
+
+        it 'does not track the internal event' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+          subject
         end
       end
 

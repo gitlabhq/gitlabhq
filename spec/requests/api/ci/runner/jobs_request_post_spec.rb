@@ -582,9 +582,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'with run keyword' do
-            let(:execution_config) { create(:ci_builds_execution_configs, :with_step_and_script) }
+            let(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
 
-            context 'when job has execution_config with run_steps' do
+            context 'when job has run_steps' do
               let(:job) do
                 create(
                   :ci_build,
@@ -594,7 +594,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   name: 'spinach',
                   stage: 'test',
                   stage_idx: 0,
-                  execution_config: execution_config
+                  temp_job_definition: job_definition
                 )
               end
 
@@ -602,7 +602,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 request_job
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(json_response['run']).to eq(execution_config.run_steps.to_json)
+                expect(json_response['run']).to eq(job_definition.config[:run_steps].to_json)
               end
 
               it 'returns nil for the steps' do

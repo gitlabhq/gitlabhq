@@ -46,7 +46,7 @@ can create a new requirement.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To create a requirement:
 
@@ -81,7 +81,7 @@ You can edit a requirement from the requirements list page.
 
 Prerequisites:
 
-- You must have at least the Planner role or be the author or assignee of the requirement.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role or be the author or assignee of the requirement.
 
 To edit a requirement:
 
@@ -104,7 +104,7 @@ you're in the **Open** tab.
 
 Prerequisites:
 
-- You must have at least the Planner role or be the author or assignee of the requirement.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role or be the author or assignee of the requirement.
 
 To archive a requirement, select **Archive** ({{< icon name="archive" >}}).
 
@@ -123,7 +123,7 @@ You can view the list of archived requirements in the **Archived** tab.
 
 Prerequisites:
 
-- You must have at least the Planner role or be the author or assignee of the requirement.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role or be the author or assignee of the requirement.
 
 ![archived requirements list](img/requirements_archived_list_view_v13_1.png)
 
@@ -248,7 +248,7 @@ in a project, you must replace `requirements` in the previous config with `requi
 
 {{< /history >}}
 
-You must have at least the Planner role.
+You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 You can import requirements to a project by uploading a [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values)
 with the columns `title` and `description`.
@@ -325,7 +325,7 @@ audit and regulatory compliance tasks.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To export requirements:
 

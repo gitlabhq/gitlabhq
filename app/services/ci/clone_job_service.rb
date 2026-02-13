@@ -97,7 +97,7 @@ module Ci
         id_tokens: metadata.id_tokens,
         secrets: metadata.secrets,
         tag_list: job.tag_list.to_a,
-        run_steps: job.try(:execution_config)&.run_steps || []
+        run_steps: job.run_steps
       }
 
       attrs[:interruptible] = metadata.interruptible unless metadata.interruptible.nil?

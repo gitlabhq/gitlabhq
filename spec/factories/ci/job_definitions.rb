@@ -6,5 +6,24 @@ FactoryBot.define do
 
     checksum { Digest::SHA256.hexdigest(rand.to_s) }
     interruptible { false }
+
+    trait :with_step_and_script do
+      config do
+        {
+          run_steps:
+          [
+            {
+              'name' => 'step1',
+              'step' => 'echo',
+              'inputs' => { 'message' => 'Hello, World!' }
+            },
+            {
+              'name' => 'script1',
+              'script' => 'ls -l'
+            }
+          ]
+        }
+      end
+    end
   end
 end
