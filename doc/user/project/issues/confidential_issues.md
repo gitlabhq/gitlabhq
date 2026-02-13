@@ -29,7 +29,7 @@ You can make an issue confidential when you create or edit an issue.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project to convert an existing issue to confidential.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project to convert an existing issue to confidential.
 - If the issue you want to make confidential has any child [tasks](../../tasks.md),
   you must first make all the child tasks confidential.
   A confidential issue can have only confidential children.
@@ -70,7 +70,7 @@ Alternatively, you can use the [`/confidential` quick action](../quick_actions.m
 
 {{< /history >}}
 
-When an issue is made confidential, only users with at least the Planner role
+When an issue is made confidential, only users with the Planner, Reporter, Developer, Maintainer, or Owner role
 for the project have access to the issue.
 Users with Guest or [Minimal](../../permissions.md#users-with-minimal-access) roles can't access
 the issue even if they were actively participating before the change.

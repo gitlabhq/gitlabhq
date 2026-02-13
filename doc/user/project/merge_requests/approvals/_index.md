@@ -38,7 +38,7 @@ You can configure approvals to be optional or required, depending on your projec
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To configure approval rules:
 

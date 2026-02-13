@@ -125,19 +125,26 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
       expect(retry_in).to eq(10)
     end
 
-    context 'when service raises a retriable error' do
+    context 'when service returns a retriable error' do
+      let(:error_message) { 'Temporary failure' }
+
       before do
         allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
-          allow(service).to receive(:execute).and_raise(StandardError, 'Temporary failure')
+          allow(service).to receive(:execute)
+            .and_return(ServiceResponse.error(message: error_message, reason: :retriable_error))
         end
       end
 
-      it 'raises the error to trigger Sidekiq retry' do
-        expect { subject }.to raise_error(StandardError, 'Temporary failure')
+      it 'raises PipelineCreationRetryError to trigger Sidekiq retry' do
+        expect { subject }.to raise_error(described_class::PipelineCreationRetryError, error_message)
+      end
+
+      it 'raises an error that inherits from Gitlab::SidekiqMiddleware::RetryError' do
+        expect { subject }.to raise_error(Gitlab::SidekiqMiddleware::RetryError)
       end
 
       it 'keeps status as IN_PROGRESS during retries', :clean_gitlab_redis_shared_state do
-        expect { subject }.to raise_error(StandardError)
+        expect { subject }.to raise_error(described_class::PipelineCreationRetryError)
 
         result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
         expect(result['status']).to eq('in_progress')

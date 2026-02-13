@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:bitbucket_user) { create(:user) }
   let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
-  let_it_be(:default_work_item_type) { create(:work_item_type) }
+  let_it_be(:default_work_item_type) { build(:work_item_system_defined_type) }
   let_it_be(:label) { create(:label, project: project) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
 

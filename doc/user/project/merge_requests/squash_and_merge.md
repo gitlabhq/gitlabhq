@@ -75,7 +75,7 @@ squash the commits as part of the merge process:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for this project.
+- You must have the Maintainer or Owner role for this project.
 
 To configure the default squashing behavior for all merge requests in your project:
 

@@ -46,7 +46,7 @@ and their protection methods:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To view the branch rules overview list:
 
@@ -78,7 +78,7 @@ To view branch rules and protections for a single branch:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a branch rule:
 
@@ -125,7 +125,7 @@ To add protections to a new branch:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To add a merge request approval rule:
 
@@ -164,7 +164,7 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - In GitLab Free, this feature is available only if the branch rule targets **All branches**.
 - In GitLab Premium and GitLab Ultimate, this feature is available for all branch rules.
 
@@ -231,7 +231,7 @@ For more information, see [External status checks](../../merge_requests/status_c
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To edit a branch rule target:
 
@@ -264,7 +264,7 @@ For information about branch protection controls, see [Protected branches](prote
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To delete a branch rule:
 

@@ -14,7 +14,7 @@ module WorkItems
     private
 
     def associations_to_preload
-      [:project, { work_item_type: :enabled_widget_definitions }, :author, *widget_preloads]
+      [:namespace, :project, { work_item_type: :enabled_widget_definitions }, :author, *widget_preloads]
     end
 
     def widget_preloads

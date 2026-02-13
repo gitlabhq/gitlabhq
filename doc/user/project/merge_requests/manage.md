@@ -41,7 +41,7 @@ These attributes are editable when bulk editing merge requests:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To do this:
 
@@ -68,7 +68,7 @@ These attributes are editable when you bulk edit merge requests for a group:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To update multiple group merge requests at the same time:
 

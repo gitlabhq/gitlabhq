@@ -44,7 +44,7 @@ Make sure you have:
 - GitLab Self-Managed or GitLab Dedicated with Ultimate tier
 - Administrator access to your GitLab instance
 - One of the following to interact with the GitLab API:
-  - [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) 1.83.0 or later, authenticated with `glab auth login`
+  - [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) 1.85.0 or later, authenticated with `glab auth login`
   - `curl` or another HTTP client
 - Go 1.21 or later installed
 - [The `buf` CLI](https://buf.build/docs/installation) installed for generating Protobuf code

@@ -5,6 +5,10 @@ module API
   module Conan
     module V1
       class ProjectPackages < ::API::Base
+        def self.authorization_boundary_options
+          { boundary_type: :project }
+        end
+
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end

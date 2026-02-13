@@ -14,6 +14,9 @@ export default {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     frecentProjects: {
       query: currentUserFrecentProjectsQuery,
+      context: {
+        featureCategory: 'navigation',
+      },
     },
   },
   i18n: {

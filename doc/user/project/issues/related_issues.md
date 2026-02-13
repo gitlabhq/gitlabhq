@@ -31,7 +31,7 @@ issue that has open blockers, a warning is displayed.
 
 Prerequisites:
 
-- You must have at least the Guest role for both projects.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both projects.
 
 To link one issue to another:
 

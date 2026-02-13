@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include EachBatch
   include PgFullTextSearchable
   include Gitlab::DueAtFilterable
+  include WorkItems::TypesFramework::HasType
   include Gitlab::Utils::StrongMemoize
 
   extend ::Gitlab::Utils::Override
@@ -826,7 +827,7 @@ class Issue < ApplicationRecord
   # Persisted records will always have a work_item_type. This method is useful
   # in places where we use a non persisted issue to perform feature checks
   def work_item_type_with_default
-    work_item_type || work_item_type_provider.default_issue_type
+    work_item_type || work_items_types_provider.default_issue_type
   end
 
   def issue_type
@@ -1009,7 +1010,7 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type.present? || work_item_type_id.present? || work_item_type_id_change&.last.present?
 
-    self.work_item_type = work_item_type_provider.default_issue_type
+    self.work_item_type = work_items_types_provider.default_issue_type
   end
 
   def ensure_namespace_traversal_ids
@@ -1019,7 +1020,7 @@ class Issue < ApplicationRecord
   def allowed_work_item_type_change
     return unless changes[:work_item_type_id]
 
-    involved_types = work_item_type_provider.base_types_by_ids(changes[:work_item_type_id].compact)
+    involved_types = work_items_types_provider.base_types_by_ids(changes[:work_item_type_id].compact)
     disallowed_types = involved_types - CHANGEABLE_BASE_TYPES
 
     return if disallowed_types.empty?
@@ -1038,11 +1039,6 @@ class Issue < ApplicationRecord
   def validate_due_date?
     true
   end
-
-  def work_item_type_provider
-    ::WorkItems::TypesFramework::Provider.new(namespace)
-  end
-  strong_memoize_attr :work_item_type_provider
 end
 
 Issue.prepend_mod_with('Issue')

@@ -211,17 +211,39 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
 
       context 'when unsupported widget input is sent' do
+        let(:work_item_type) { build(:work_item_system_defined_type) }
         let(:input) do
           {
             'title' => 'new title',
             'description' => 'new description',
-            'workItemTypeId' => create(:work_item_type, :test_case).to_global_id.to_s,
+            'workItemTypeId' => work_item_type.to_global_id.to_s,
             'hierarchyWidget' => {}
           }
         end
 
+        before do
+          # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
+          # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
+          widgets = work_item_type.widget_classes(project).reject do |widget|
+            widget == WorkItems::Widgets::Hierarchy
+          end
+
+          allow(work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+        end
+
         it_behaves_like 'a mutation that returns top-level errors',
-          errors: ['Following widget keys are not supported by Test Case type: [:hierarchy_widget]']
+          errors: ['Following widget keys are not supported by Issue type: [:hierarchy_widget]']
+
+        context "when FF for system defined types is disabled" do
+          let(:work_item_type) { create(:work_item_type, :test_case) }
+
+          before do
+            stub_feature_flags(work_item_system_defined_type: false)
+          end
+
+          it_behaves_like 'a mutation that returns top-level errors',
+            errors: ['Following widget keys are not supported by Test Case type: [:hierarchy_widget]']
+        end
       end
     end
 

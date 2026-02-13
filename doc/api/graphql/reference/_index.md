@@ -16127,6 +16127,34 @@ Input type: `WorkItemSubscribeInput`
 | <a id="mutationworkitemsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemsubscribeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
+### `Mutation.workItemTypeUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemTypeUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypeupdatearchive"></a>`archive` | [`Boolean`](#boolean) | Whether to archive the work item type. |
+| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypeupdatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the root group. |
+| <a id="mutationworkitemtypeupdateiconname"></a>`iconName` | [`String`](#string) | New icon name for the work item type. |
+| <a id="mutationworkitemtypeupdateid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type to update. |
+| <a id="mutationworkitemtypeupdatename"></a>`name` | [`String`](#string) | New name for the work item type. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypeupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemtypeupdateworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Work item type that was updated. |
+
 ### `Mutation.workItemUpdate`
 
 {{< details >}}
@@ -37078,7 +37106,7 @@ Returns [`String`](#string).
 | <a id="grouppermissionsadminallresources"></a>`adminAllResources` | [`Boolean!`](#boolean) | If `true`, the user is an instance administrator. |
 | <a id="grouppermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
 | <a id="grouppermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
-| <a id="grouppermissionsarchivegroup"></a>`archiveGroup` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. If `true`, the user can perform `archive_group` on this resource. |
+| <a id="grouppermissionsarchivegroup"></a>`archiveGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_group` on this resource. |
 | <a id="grouppermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this group. |
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |

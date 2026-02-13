@@ -3,6 +3,9 @@
 module MergeRequests
   class CreatePipelineWorker
     include ApplicationWorker
+    include PipelineQueue
+
+    PipelineCreationRetryError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
     data_consistency :sticky
 
@@ -10,7 +13,6 @@ module MergeRequests
     sidekiq_retry_in do |_count|
       10
     end
-    include PipelineQueue
 
     queue_namespace :pipeline_creation
     feature_category :pipeline_composition
@@ -60,7 +62,7 @@ module MergeRequests
           }
         ).execute(merge_request)
 
-      raise StandardError, result.message if result&.error? && result.reason == :retriable_error
+      raise PipelineCreationRetryError, result.message if result&.error? && result.reason == :retriable_error
 
       merge_request.update_head_pipeline
 

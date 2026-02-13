@@ -209,7 +209,7 @@ To remove approvals only from Code Owners whose files change in a new commit:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for a project.
+- You must have the Maintainer or Owner role for a project.
 
 To do this:
 

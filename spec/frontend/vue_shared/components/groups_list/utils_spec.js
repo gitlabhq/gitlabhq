@@ -68,36 +68,23 @@ describe('availableGraphQLGroupActions', () => {
 
   describe('when user has archiveGroup permission', () => {
     describe.each`
-      description                                                  | featureFlag | archived | isSelfArchived | markedForDeletion | expectedActions
-      ${'group is not archived'}                                   | ${true}     | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
-      ${'group is archived'}                                       | ${true}     | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
-      ${'group belongs to an archived group'}                      | ${true}     | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
-      ${'group is scheduled for deletion'}                         | ${true}     | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
-      ${'group is not archived but flag is disabled'}              | ${false}    | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
-      ${'group is archived but flag is disabled'}                  | ${false}    | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
-      ${'group belongs to an archived group but flag is disabled'} | ${false}    | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
-      ${'group is scheduled for deletion but flag is disabled'}    | ${false}    | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
-    `(
-      'when $description',
-      ({ featureFlag, archived, isSelfArchived, markedForDeletion, expectedActions }) => {
-        beforeEach(() => {
-          window.gon = {
-            features: { archiveGroup: featureFlag },
-          };
+      description                             | archived | isSelfArchived | markedForDeletion | expectedActions
+      ${'group is not archived'}              | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
+      ${'group is archived'}                  | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+      ${'group belongs to an archived group'} | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
+      ${'group is scheduled for deletion'}    | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
+    `('when $description', ({ archived, isSelfArchived, markedForDeletion, expectedActions }) => {
+      it('returns expected actions', () => {
+        const availableActions = availableGraphQLGroupActions({
+          userPermissions: { archiveGroup: true },
+          archived,
+          isSelfArchived,
+          markedForDeletion,
         });
 
-        it('returns expected actions', () => {
-          const availableActions = availableGraphQLGroupActions({
-            userPermissions: { archiveGroup: true },
-            archived,
-            isSelfArchived,
-            markedForDeletion,
-          });
-
-          expect(availableActions).toStrictEqual(expectedActions);
-        });
-      },
-    );
+        expect(availableActions).toStrictEqual(expectedActions);
+      });
+    });
   });
 
   describe('when user has no archiveGroup permission', () => {

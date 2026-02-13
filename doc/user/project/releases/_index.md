@@ -231,7 +231,7 @@ You can create a release ahead of time by using the [Releases API](../../../api/
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
 release tag. When the `released_at` date and time has passed, the badge is automatically removed.
 
-![An upcoming release](img/upcoming_release_v12_7.png)
+![An upcoming release](img/upcoming_release_v18_8.png)
 
 ## Historical releases
 

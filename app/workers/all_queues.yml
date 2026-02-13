@@ -103,16 +103,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :auto_merge
-- :name: auto_merge:merge_requests_ship_merge_request
-  :worker_name: MergeRequests::ShipMergeRequestWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :auto_merge
 - :name: background_operations:database_background_operation_base_orchestrator
   :worker_name: Database::BackgroundOperation::BaseOrchestratorWorker
   :feature_category: :database

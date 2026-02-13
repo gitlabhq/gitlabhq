@@ -26,8 +26,7 @@ export const availableGraphQLGroupActions = ({
 
   // Rules
   const canEdit = userPermissions.viewEditPage;
-  const canArchive =
-    userPermissions.archiveGroup && !archived && !markedForDeletion && gon.features?.archiveGroup;
+  const canArchive = userPermissions.archiveGroup && !archived && !markedForDeletion;
   const canUnarchive = userPermissions.archiveGroup && isSelfArchived;
   const canRestore = userPermissions.removeGroup && isSelfDeletionScheduled;
   const { canLeave } = userPermissions;

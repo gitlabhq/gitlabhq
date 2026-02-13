@@ -193,7 +193,7 @@ To restrict group access by domain:
 The next time you attempt to add a user to the group, their [primary email](../profile/_index.md#change-your-primary-email)
 must match one of the allowed domains.
 
-You cannot restrict the most popular public email domains, such as:
+You cannot restrict using the most popular public email domains, such as:
 
 - `aol.com`, `gmail.com`, `hotmail.co.uk`, `hotmail.com`,
 - `hotmail.fr`, `icloud.com`, `live.com`, `mail.com`,

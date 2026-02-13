@@ -126,7 +126,13 @@ describe('GroupListItemActions', () => {
             action: expect.any(Function),
           },
         },
-        availableActions: [ACTION_COPY_ID, ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
+        availableActions: [
+          ACTION_COPY_ID,
+          ACTION_EDIT,
+          ACTION_ARCHIVE,
+          ACTION_LEAVE,
+          ACTION_DELETE,
+        ],
       });
     });
   });

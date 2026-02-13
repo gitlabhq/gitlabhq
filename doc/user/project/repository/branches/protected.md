@@ -41,7 +41,7 @@ Configure protected branches for individual projects or for all projects in a gr
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 - When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the project must be accessible and shared with the group.
   For more information, see [Shared projects](../../members/sharing_projects_groups.md).
@@ -181,7 +181,7 @@ how the branch behaves. For merge controls to work properly, set
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To protect multiple branches at the same time:
 
@@ -426,7 +426,7 @@ their feature branches. Thus, they can skip merge request approval rules, Code O
 {{< /details >}}
 
 When you protect a branch, you can also control who can unprotect it later.
-By default, users with at least the Maintainer role can unprotect protected branches.
+By default, users with the Maintainer or Owner role can unprotect protected branches.
 
 For organizations with regulatory or compliance requirements, you can restrict these permissions to
 specific users, groups, or access levels.
@@ -451,7 +451,7 @@ The following table shows who can unprotect a branch based on your configuration
 
 | Configuration                     | Who can unprotect |
 |-----------------------------------|-------------------|
-| Default behavior                  | Users with at least the Maintainer role |
+| Default behavior                  | Users with the Maintainer or Owner role |
 | Specific users configured         | Only designated users |
 | Specific groups configured        | Only members of designated groups |
 | Multiple access levels configured | Any user, group, or role from the configured access levels |
@@ -471,7 +471,7 @@ For more information, see [Control access to protected variables and runners](..
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 - To create a protected branch, branch protection must be configured to
   [require everyone to submit merge requests for a protected branch](#require-merge-requests).
 
@@ -490,7 +490,7 @@ If branch protection is configured to [allow everyone to push directly to a prot
 
 ## Delete protected branches
 
-Users with at least the Maintainer role can manually delete protected
+Users with the Maintainer or Owner role can manually delete protected
 branches by using the GitLab web interface:
 
 1. On the top bar, select **Search or go to** and find your project.

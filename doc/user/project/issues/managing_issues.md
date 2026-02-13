@@ -34,7 +34,7 @@ You can edit an issue's title and description.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be assigned to the issue.
 
 To edit an issue:
 
@@ -110,7 +110,7 @@ You can edit multiple issues at a time when you're in a group or project.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group or project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group or project.
 
 To edit multiple issues at the same time:
 
@@ -151,7 +151,7 @@ Be careful when moving an issue to a project with different access rules. Before
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To move an issue:
 
@@ -206,7 +206,7 @@ You can't move tasks or test cases.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To move multiple issues at the same time:
 
@@ -262,7 +262,7 @@ When you use ordered lists, unordered lists, or task lists in issue descriptions
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project, or be the author or assignee of the issue.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project, or be the author or assignee of the issue.
 
 In an issue description with task list items:
 
@@ -284,7 +284,7 @@ When you view an issue that has a list in the description, you can also reorder 
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the issue, or be
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be
   assigned to the issue.
 - The issue's description must have an [ordered, unordered](../../markdown.md#lists), or
   [task](../../markdown.md#task-lists) list.
@@ -309,7 +309,7 @@ The issue is marked as closed but is not deleted.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be assigned to the issue.
 
 To close an issue, you can either:
 
@@ -331,7 +331,7 @@ You can also use the [`/close` quick action](../quick_actions.md#close) in a com
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be assigned to the issue.
 
 To reopen a closed issue, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen issue**.
 A reopened issue is no different from any other open issue.
@@ -441,7 +441,7 @@ in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable automatic issue closing:
 
@@ -544,7 +544,7 @@ To delete an issue:
 
 Prerequisites:
 
-- You must be the issue author or have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+- You must be the issue author or have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be assigned to the issue.
 
 To change issue type:
 
@@ -601,9 +601,9 @@ The following issue metadata is copied to the epic:
 Prerequisites:
 
 - The project to which the issue belongs must be in a group.
-- You must have at least the Planner role the project's immediate parent group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role the project's immediate parent group.
 - You must either:
-  - Have at least the Planner role for the project.
+  - Have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
   - Be the author of the issue.
   - Be assigned to the issue.
 
@@ -841,7 +841,7 @@ themselves or another project member assigns them.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To change the assignee on an issue:
 
@@ -887,7 +887,7 @@ Incorporate a review of issue health status into your daily stand-up, project st
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To edit health status of an issue:
 
@@ -943,7 +943,7 @@ For more information about status, including how to configure custom statuses, s
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the issue, or be assigned to the issue.
 
 To change the status of an issue:
 

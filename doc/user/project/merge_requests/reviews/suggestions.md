@@ -114,7 +114,7 @@ To add or subtract changed lines, next to **From line**, select **+** or **-**.
 
 Prerequisites:
 
-- You must be the author of the merge request, or have at least the Developer role for the project.
+- You must be the author of the merge request, or have the Developer, Maintainer, or Owner role for the project.
 
 To apply suggested changes directly from the merge request:
 
@@ -139,7 +139,7 @@ After you apply a suggestion, GitLab:
 
 Prerequisites:
 
-- You must be the author of the merge request, or have at least the Developer role for the project.
+- You must be the author of the merge request, or have the Developer, Maintainer, or Owner role for the project.
 
 To reject a suggested change directly from the merge request:
 

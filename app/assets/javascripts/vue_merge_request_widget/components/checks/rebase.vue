@@ -26,6 +26,9 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
+      context: {
+        featureCategory: 'source_code_management',
+      },
       update: (data) => data.project || null,
     },
   },

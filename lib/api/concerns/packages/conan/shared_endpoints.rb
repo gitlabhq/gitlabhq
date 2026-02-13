@@ -69,8 +69,7 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, skip_job_token_policies: true,
-                permissions: :authenticate_conan_package,
-                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
+                permissions: :authenticate_conan_package, **authorization_boundary_options
 
               get 'authenticate', urgency: :low do
                 unauthorized! unless token
@@ -90,8 +89,7 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, skip_job_token_policies: true,
-                permissions: :authenticate_conan_package,
-                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
+                permissions: :authenticate_conan_package, **authorization_boundary_options
 
               get 'check_credentials', urgency: :default do
                 :ok
@@ -118,8 +116,7 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, skip_job_token_policies: true,
-                permissions: :search_conan_package,
-                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
+                permissions: :search_conan_package, **authorization_boundary_options
 
               get 'search', urgency: :low do
                 response = ::Packages::Conan::SearchService.new(

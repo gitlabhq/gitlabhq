@@ -109,6 +109,9 @@ export default {
         } = await this.$apollo.mutate({
           mutation: this.$options.JOB_ACTIONS[this.actionType].mutation,
           variables: { id: this.jobId },
+          context: {
+            featureCategory: 'continuous_integration',
+          },
         });
         if (errors.length) {
           reportToSentry(this.$options.name, new Error(errors.join(', ')));

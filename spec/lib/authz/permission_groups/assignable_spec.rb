@@ -50,6 +50,13 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         expect(described_class.for_permission(:delete_other_resource))
           .to match_array([another_assignable])
       end
+
+      context 'with a string permission name' do
+        it 'returns assignables that include the given permission' do
+          expect(described_class.for_permission('delete_other_resource'))
+            .to match_array([another_assignable])
+        end
+      end
     end
   end
 

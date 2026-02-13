@@ -281,6 +281,9 @@ export default {
           variables: {
             id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id),
           },
+          context: {
+            featureCategory: 'continuous_integration',
+          },
         });
         const [errorMessage] = data[mutationType]?.errors ?? [];
 

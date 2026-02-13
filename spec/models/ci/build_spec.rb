@@ -151,29 +151,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    describe 'timed_out_running_builds', :freeze_time do
-      let!(:running_build) { create(:ci_running_build, build: build) }
-      let!(:timed_out_running_build) do
-        create(:ci_running_build,
-          build: timed_out_build,
-          created_at: timed_out_build.timeout.seconds.ago)
-      end
-
-      let!(:pending_build) { create(:ci_build, :pending, timeout: 600) }
-      let(:build) { create(:ci_build, :running, timeout: 600) }
-      let(:timed_out_build) { create(:ci_build, :running, timeout: 300) }
-
-      it 'only fetches the timed out running builds' do
-        expect(described_class.timed_out_running_builds.pluck(:id)).to contain_exactly(timed_out_build.id)
-      end
-
-      context 'when a time buffer is provided' do
-        it 'applies the buffer' do
-          expect(described_class.timed_out_running_builds(10.minutes).pluck(:id)).to be_empty
-        end
-      end
-    end
-
     describe 'not_timed_out_builds', :freeze_time do
       let!(:running_build) { create(:ci_running_build, build: build) }
       let!(:timed_out_running_build) do

@@ -124,7 +124,7 @@ other specific work merges. This dependency works even if the merge request is i
 
 Prerequisites:
 
-- You must have at least the Developer role, or have permission to create merge requests in the project.
+- You must have the Developer, Maintainer, or Owner role, or have permission to create merge requests in the project.
 - The dependent merge request must be in a project in the Premium or Ultimate tier.
 
 To create a new merge request and mark it as dependent on another:
@@ -141,7 +141,7 @@ You can edit an existing merge request and mark it as dependent on another.
 
 Prerequisites:
 
-- You must have at least the Developer role or have permission to edit merge requests in the project.
+- You must have the Developer, Maintainer, or Owner role or have permission to edit merge requests in the project.
 
 To do this:
 

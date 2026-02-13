@@ -14,7 +14,7 @@ module Authz
         end
 
         def for_permission(permission)
-          definitions.filter { |a| a.permissions.include?(permission) }
+          definitions.filter { |a| a.permissions.include?(permission.to_sym) }
         end
 
         def config_path

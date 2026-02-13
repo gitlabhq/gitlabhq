@@ -45,7 +45,7 @@ You can export issues from individual projects, but not groups.
 
 Prerequisites:
 
-- You must have at least the Guest role.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.

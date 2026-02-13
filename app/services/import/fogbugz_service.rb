@@ -38,7 +38,7 @@ module Import
     rescue StandardError => e
       log_and_return_error(
         "Fogbugz import failed due to an error: #{e}",
-        s_("Fogbugz|Fogbugz import failed due to an error: %{error}" % { error: e }),
+        s_("Fogbugz|Fogbugz import failed due to an error: %{error}") % { error: e },
         :bad_request)
     end
 

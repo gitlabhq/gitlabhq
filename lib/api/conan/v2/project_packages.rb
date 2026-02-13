@@ -6,6 +6,10 @@ module API
       class ProjectPackages < ::API::Base
         MAX_FILES_COUNT = MAX_PACKAGE_REVISIONS_COUNT = 1000
 
+        def self.authorization_boundary_options
+          { boundary_type: :project }
+        end
+
         helpers do
           include Gitlab::Utils::StrongMemoize
           def package_files(finder_params)

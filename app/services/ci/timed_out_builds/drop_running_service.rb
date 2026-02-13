@@ -15,11 +15,20 @@ module Ci
         end
       end
 
+      # rubocop:disable CodeReuse/ActiveRecord -- We want to avoid misusage of this query
       def timed_out_builds(partition)
         Ci::Build
-          .timed_out_running_builds(MINUTE_BUFFER)
+          .joins(:runtime_metadata)
+          .where(
+            "#{Ci::RunningBuild.table_name}.created_at + " \
+              "INTERVAL '1 second' * #{Ci::Build.table_name}.timeout <= ?",
+            Time.current - MINUTE_BUFFER
+          )
+          .where(Ci::Build.arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
+          .running
           .in_partition(partition.id)
       end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
   end
 end

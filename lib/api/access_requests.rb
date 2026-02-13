@@ -120,7 +120,7 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :delete_access_request,
-          boundaries: [{ boundary_type: :group }, { boundary_type: :project }, { boundary_type: :user }]
+          boundaries: [{ boundary_type: source_type.to_sym }, { boundary_type: :user }]
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
           member = source.requesters.find_by!(user_id: params[:user_id])

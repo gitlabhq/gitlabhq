@@ -39,7 +39,7 @@ Alternatively, you can [move an issue](managing_issues.md#move-an-issue). Moving
 
 The user uploading the CSV file is set as the author of the imported issues.
 
-You must have the Planner role or at least the Developer role for a project to import issues.
+You must have the Planner role or the Developer, Maintainer, or Owner role for a project to import issues.
 
 ## Prepare for the import
 

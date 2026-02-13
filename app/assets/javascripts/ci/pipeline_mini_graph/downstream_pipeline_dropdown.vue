@@ -52,7 +52,10 @@ export default {
   apollo: {
     pipelineJobs: {
       context() {
-        return getQueryHeaders(this.graphqlEtag);
+        return {
+          ...getQueryHeaders(this.graphqlEtag),
+          featureCategory: 'continuous_integration',
+        };
       },
       query: getDownstreamPipelineJobsQuery,
       variables() {

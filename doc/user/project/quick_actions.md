@@ -1099,7 +1099,6 @@ Merge the changes.
 **Additional details**:
 
 - Depending on the project setting, this may be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
-- To start a new pipeline and set auto-merge, use [`/ship`](#ship).
 
 ### `milestone`
 
@@ -1942,36 +1941,6 @@ Set the severity of an incident.
   ```plaintext
   /severity S1
   ```
-
-### `ship`
-
-Create a merge request pipeline and set auto-merge.
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78998) in GitLab 18.6 [with a flag](../../administration/feature_flags/list.md) named `ship_mr_quick_action`. Disabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-**Availability**:
-
-- Merge request
-
-**Examples**:
-
-- Ship the merge request:
-
-  ```plaintext
-  /ship
-  ```
-
-**Additional details**:
-
-- This is an experimental feature.
-- To merge immediately, use [`/merge`](#merge).
 
 ### `shrug`
 

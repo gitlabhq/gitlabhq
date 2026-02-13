@@ -92,7 +92,7 @@ To address specific security requirements:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or Owner role for the group.
+- You must have the Maintainer or Owner role for the project, or the Owner role for the group.
 - Identify which branches need protection.
 - Determine your compliance and security requirements.
 

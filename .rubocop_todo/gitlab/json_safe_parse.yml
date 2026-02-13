@@ -92,7 +92,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/helpers/ee/organizations/organization_helper.rb'
     - 'ee/app/models/ai/conversation/message.rb'
     - 'ee/app/models/compliance_management/compliance_framework/compliance_requirements_control.rb'
-    - 'ee/app/models/compliance_management/control_expression.rb'
     - 'ee/app/models/concerns/audit_events/externally_streamable.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/ci/pipeline.rb'

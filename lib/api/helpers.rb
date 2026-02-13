@@ -276,32 +276,57 @@ module API
 
     # find_namespace returns the namespace regardless of user access level on the namespace
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_namespace(id)
+    def find_namespace(id, allow_project_namespaces: false)
       if INTEGER_ID_REGEX.match?(id.to_s)
         # We need to stick to an up-to-date replica or primary db here in order to properly observe the namespace
         # recently created by GitlabSubscriptions::Trials::UltimateCreateService.
         # See https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9808
         ::Namespace.sticking.find_caught_up_replica(:namespace, id)
 
-        Namespace.without_project_namespaces.find_by(id: id)
+        scope = allow_project_namespaces ? Namespace : Namespace.without_project_namespaces
+        scope.find_by(id: id)
       else
-        find_namespace_by_path(id)
+        find_namespace_by_path(id, allow_project_namespaces: allow_project_namespaces)
       end
+    end
+
+    def find_namespace_by_path(path, allow_project_namespaces: false)
+      scope = allow_project_namespaces ? Namespace : Namespace.without_project_namespaces
+      namespace = scope.find_by_full_path(path)
+
+      return namespace if namespace
+      return unless allow_project_namespaces
+
+      Project.find_by_full_path(path)&.project_namespace
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # find_namespace! returns the namespace if the current user can read the given namespace
     # Otherwise, returns a not_found! error
-    def find_namespace!(id)
-      check_namespace_access(find_namespace(id))
+    def find_namespace!(id, allow_project_namespaces: false)
+      namespace = find_namespace(id, allow_project_namespaces: allow_project_namespaces)
+
+      if namespace.is_a?(::Namespaces::ProjectNamespace)
+        return namespace if can?(current_user, read_project_ability, namespace)
+        return unauthorized! if authenticate_non_public?
+
+        return not_found!('Project')
+      end
+
+      check_namespace_access(namespace)
     end
 
-    def find_namespace_by_path(path)
-      Namespace.without_project_namespaces.find_by_full_path(path)
-    end
+    def find_namespace_by_path!(path, allow_project_namespaces: false)
+      namespace = find_namespace_by_path(path, allow_project_namespaces: allow_project_namespaces)
 
-    def find_namespace_by_path!(path)
-      check_namespace_access(find_namespace_by_path(path))
+      if namespace.is_a?(::Namespaces::ProjectNamespace)
+        return namespace if can?(current_user, read_project_ability, namespace)
+        return unauthorized! if authenticate_non_public?
+
+        return not_found!('Project')
+      end
+
+      check_namespace_access(namespace)
     end
 
     def find_branch!(branch_name)

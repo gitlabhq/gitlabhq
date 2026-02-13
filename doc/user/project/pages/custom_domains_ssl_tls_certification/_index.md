@@ -59,7 +59,7 @@ To add your custom domain to GitLab Pages:
 After you add a new domain to Pages, GitLab displays a verification code. Copy the values
 and paste them in your domain's control panel as a `TXT` record in the next step.
 
-![GitLab Pages showing the generated verification code for a new domain.](img/get_domain_verification_code_v12_0.png)
+![GitLab Pages showing the generated verification code for a new domain.](img/get_domain_verification_code_v18_8.png)
 
 The structure of the **Verification status** field is:
 
@@ -172,7 +172,7 @@ After you have added all the DNS records:
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
 
-![GitLab Pages settings showing the Retry verification option for a domain.](img/retry_domain_verification_v12_0.png)
+![GitLab Pages settings showing the Retry verification option for a domain.](img/retry_domain_verification_v18_8.png)
 
 When your domain becomes active, your website is available through your domain name.
 

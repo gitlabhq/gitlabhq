@@ -55,7 +55,7 @@ upstream members of the project you're contributing to:
 You can push directly to the branch of the forked repository if:
 
 - The author of the merge request enabled contributions from upstream members.
-- You have at least the Developer role for the upstream project.
+- You have the Developer, Maintainer, or Owner role for the upstream project.
 
 To push changes, or add a commit, to the branch of a fork, you can use command line Git.
 For more information, see [use Git to push to a fork as an upstream member](../../../topics/git/forks.md#push-to-a-fork-as-an-upstream-member).

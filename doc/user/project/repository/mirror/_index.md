@@ -45,7 +45,7 @@ The following is not supported:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
@@ -153,7 +153,7 @@ While mirrors are scheduled to update automatically, you can force an immediate 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.

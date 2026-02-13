@@ -66,19 +66,16 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       end
 
       context 'when source project is not available' do
-        it 'does not set the default organization_id' do
-          # Use insert_all to bypass ActiveRecord callbacks and model hooks
-          #
-          result = described_class.insert_all([{
-            source_project_id: nil,
-            organization_id: nil,
-            disk_path: 'pool/trigger_default_test',
-            state: 'ready',
-            shard_id: shard.id
-          }], returning: [:id, :organization_id])
-
-          pool_repo = described_class.find(result.rows.first[0])
-          expect(pool_repo.organization_id).to be_nil
+        it 'raises an exception' do
+          expect do
+            described_class.insert_all([{
+              source_project_id: nil,
+              organization_id: nil,
+              disk_path: 'pool/trigger_default_test',
+              state: 'ready',
+              shard_id: shard.id
+            }], returning: [:id, :organization_id])
+          end.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
 

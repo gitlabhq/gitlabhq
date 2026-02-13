@@ -75,9 +75,8 @@ To give a user access to specific features:
 These settings apply to:
 
 - Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Users who do not have access through their default namespace
-  but can use the features through their top-level group.
-- Users who are direct members of the top-level group.
+- Users who execute actions in the top-level group and are direct members of that group.
+- Users who are [inherited members](../../../user/project/members/_index.md#membership-types) of the top-level group.
 
 > [!note]
 > When you configure group-based access controls, you can select only groups

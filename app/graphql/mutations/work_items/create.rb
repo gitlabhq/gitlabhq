@@ -24,7 +24,7 @@ module Mutations
         GraphQL::Types::String,
         required: false,
         description: 'Source which triggered the creation of the work item. Used only for tracking purposes.'
-      argument :created_at, Types::TimeType,
+      argument :created_at, ::Types::TimeType,
         required: false,
         description: 'Timestamp when the work item was created. Available only for admins and project owners.'
       argument :crm_contacts_widget,
@@ -34,7 +34,7 @@ module Mutations
       argument :description,
         GraphQL::Types::String,
         required: false,
-        description: copy_field_description(Types::WorkItemType, :description),
+        description: copy_field_description(::Types::WorkItemType, :description),
         deprecated: { milestone: '16.9', reason: 'use description widget instead' }
       argument :discussions_to_resolve,
         ::Types::WorkItems::ResolveDiscussionsInputType,
@@ -72,7 +72,7 @@ module Mutations
       argument :title,
         GraphQL::Types::String,
         required: true,
-        description: copy_field_description(Types::WorkItemType, :title)
+        description: copy_field_description(::Types::WorkItemType, :title)
       argument :work_item_type_id,
         ::Types::GlobalIDType[::WorkItems::Type],
         required: true,

@@ -381,7 +381,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'MergeRequests::HandleAssigneesChangeWorker' => 3,
         'MergeRequests::MergeabilityCheckBatchWorker' => 3,
         'MergeRequests::ResolveTodosWorker' => 3,
-        'MergeRequests::ShipMergeRequestWorker' => 3,
         'MergeRequests::SyncCodeOwnerApprovalRulesWorker' => 3,
         'MergeTrains::RefreshWorker' => 3,
         'MergeWorker' => 3,

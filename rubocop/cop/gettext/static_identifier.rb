@@ -15,7 +15,7 @@ module RuboCop
       #
       #   # good
       #   _('Hi %{name}') % { name: 'Luki' }
-      #   format(_('Hi %{name}', name: 'Luki'))
+      #   format(_('Hi %{name}'), name: 'Luki')
       #
       #   # also good
       #   var = "Hi"

@@ -82,7 +82,7 @@ The **Designs** section is in the issue description.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To view a design:
 
@@ -130,7 +130,7 @@ To move around the image while zoomed in, drag the image.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - The names of the uploaded files must be no longer than 255 characters.
 
 To add a design to an issue:
@@ -172,7 +172,7 @@ As discussion on a design continues, you might want to upload a new version of a
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To do so, [add a design](#add-a-design-to-an-issue) with the same filename.
 
@@ -205,7 +205,7 @@ URL.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - You can archive only the latest version of a design.
 
 To archive a single design:
@@ -279,7 +279,7 @@ so that everyone involved can participate in the discussion.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To delete a comment from a design:
 

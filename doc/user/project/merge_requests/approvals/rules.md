@@ -41,7 +41,7 @@ Merge request approvals can be configured globally to apply across all (or a sub
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - To add a group as an approver in GitLab.com, you must be a member of the group or the
   group must be public.
 
@@ -76,7 +76,7 @@ to existing merge requests:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - To add a group as an approver in GitLab.com, you must be a member of the group or the
   group must be public.
 
@@ -98,7 +98,7 @@ To edit a merge request approval rule:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To delete a merge request approval rule:
 
@@ -139,8 +139,8 @@ Prerequisites:
   is disabled.
 - One of the following must be true:
   - You have administrator access.
-  - You are the author of the merge request, and have at least the Developer role in the project.
-  - You have at least the Maintainer role for the project.
+  - You are the author of the merge request, and have the Developer, Maintainer, or Owner role in the project.
+  - You have the Maintainer or Owner role for the project.
 
 To override approvers of a merge request:
 
@@ -201,7 +201,7 @@ Some users (like managers) might not need permission to push or merge code, but 
 oversight on proposed work.
 
 Users with the Planner or Reporter role can approve merge requests only through regular approval rules.
-Code owner approval rules require users to have at least the Developer role. For more information,
+Code owner approval rules require users to have the Developer, Maintainer, or Owner role. For more information,
 see [Eligible approvers](#eligible-approvers).
 
 Prerequisites:
@@ -215,9 +215,9 @@ To enable approval permissions for these users without granting them push access
 1. [Create a new group](../../../group/_index.md#create-a-group) for the users with the
    Planner or Reporter role that need approval permissions.
 1. [Add the users to the group](../../../group/_index.md#add-users-to-a-group).
-   The users must have at least the Planner role.
+   The users must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
-   with at least the Reporter role.
+   with the Reporter, Developer, Maintainer, or Owner role.
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section:
@@ -275,7 +275,7 @@ Users with the Developer role can approve merge requests if one of the following
 Users with the Planner or Reporter role can approve only if all of the following are true:
 
 - The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
-  The group must have at least the Reporter role.
+  The group must have the Reporter, Developer, Maintainer, or Owner role.
 - Approval permissions for users with the Planner and Reporter role [are enabled](#enable-approval-permissions-for-additional-users).
 
 To show who has participated in the merge request review, the Approvals widget in
@@ -284,7 +284,7 @@ who commented on the merge request. It helps authors and reviewers identify who 
 contact with questions about the merge request's content.
 
 If the number of required approvals is greater than the number of assigned approvers,
-approvals from other users with at least the Developer role
+approvals from other users with the Developer, Maintainer, or Owner role
 in the project count toward meeting the required number of approvals, even if the
 users were not explicitly listed in the approval rules.
 

@@ -259,4 +259,4 @@ namespace, even if their project limit has been increased.
 
 When using a service account to fork a project, the workaround is to specify a target group namespace
 using either `namespace_id` or `namespace_path` in the [Project forks API](../../../api/project_forks.md).
-The service account must be a member of the target group with at least the Developer role.
+The service account must be a member of the target group with the Developer, Maintainer, or Owner role.

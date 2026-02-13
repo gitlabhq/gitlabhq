@@ -35,6 +35,9 @@ export default {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     reportArtifacts: {
       query: securityReportMergeRequestDownloadPathsQuery,
+      context: {
+        featureCategory: 'vulnerability_management',
+      },
       variables() {
         return {
           projectPath: this.mr.targetProjectFullPath,

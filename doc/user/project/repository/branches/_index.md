@@ -65,7 +65,7 @@ On this page, you can:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a new branch from the GitLab UI:
 
@@ -84,7 +84,7 @@ you can add one.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - If you don't have the Maintainer or Owner role, the
   [default branch protection](../../../group/manage.md#change-the-default-branch-protection-of-a-group)
   must be set to `Partially protected` or `Not protected` for you to push a commit
@@ -109,7 +109,7 @@ including variables.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a branch from an issue:
 
@@ -134,7 +134,7 @@ the issue and related merge request.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a branch directly from a task:
 
@@ -207,7 +207,7 @@ an issue, but you can change this pattern.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To change the default pattern for branches created from issues:
 
@@ -317,7 +317,7 @@ Merged branches can be deleted in bulk if they meet all of these criteria:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To do this:
 
@@ -361,7 +361,7 @@ Rules are processed on a "first-match" basis - if two rules match the same branc
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To create a target branch workflow:
 
@@ -400,7 +400,7 @@ When you remove a target branch workflow, existing merge requests remain unchang
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To do this:
 

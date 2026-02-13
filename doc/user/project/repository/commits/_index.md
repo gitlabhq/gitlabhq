@@ -116,7 +116,7 @@ Apply changes from a specific commit to another.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - The target branch must exist.
 
 To cherry-pick a commit:
@@ -140,7 +140,7 @@ Create a new commit that undoes changes from a previous commit.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To revert a commit:
 

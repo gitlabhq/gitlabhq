@@ -101,6 +101,9 @@ export default {
           mergeRequestIid: String(this.mergeRequestId),
         };
       },
+      context: {
+        featureCategory: 'continuous_integration',
+      },
       skip() {
         return !this.isMergeRequestTable || !this.mergeRequestId || !this.targetProjectFullPath;
       },

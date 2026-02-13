@@ -31,7 +31,7 @@ contain the information you need.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for a project.
+- You must have the Maintainer or Owner role for a project.
 
 To do this:
 

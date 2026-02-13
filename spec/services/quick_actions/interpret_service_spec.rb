@@ -3473,51 +3473,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
-    describe 'ship command' do
-      let_it_be(:merge_request) do
-        create(:merge_request, source_project: project)
-      end
-
-      let(:content) { '/ship' }
-
-      before do
-        allow(::MergeRequests::ShipMergeRequestWorker)
-          .to receive(:allowed?)
-          .with(merge_request: merge_request, current_user: current_user)
-          .and_return(is_allowed)
-      end
-
-      context 'when action is not allowed' do
-        let(:is_allowed) { false }
-
-        it 'does not run the command' do
-          expect(::MergeRequests::ShipMergeRequestWorker)
-            .not_to receive(:perform_async)
-
-          result = service.execute(content, merge_request)
-          expect(result).to eq(
-            ['', {}, 'Could not apply ship command.', ['ship']]
-          )
-        end
-      end
-
-      context 'when action is allowed' do
-        let(:is_allowed) { true }
-
-        it 'runs the pipeline async' do
-          expect(::MergeRequests::ShipMergeRequestWorker)
-            .to receive(:perform_async)
-            .with(current_user.id, merge_request.id)
-
-          result = service.execute(content, merge_request)
-
-          expect(result).to eq(
-            ['', {}, 'Actions to ship this merge request have been scheduled.', ['ship']]
-          )
-        end
-      end
-    end
-
     describe 'run_pipeline command' do
       let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 

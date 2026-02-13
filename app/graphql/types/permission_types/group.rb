@@ -13,11 +13,9 @@ module Types
         :view_edit_page,
         :admin_issue,
         :read_crm_contact,
-        :read_crm_organization
+        :read_crm_organization,
+        :archive_group
       )
-
-      ability_field :archive_group,
-        experiment: { milestone: '18.3' }
 
       permission_field :can_leave,
         description: 'If `true`, the user can leave this group.'

@@ -886,11 +886,53 @@ RSpec.describe API::Helpers, feature_category: :api do
       it_behaves_like 'namespace finder'
     end
 
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project) }
+
+      it 'returns nil by id by default' do
+        expect(helper.find_namespace(project.project_namespace.id)).to be_nil
+      end
+
+      it 'returns nil by full path by default' do
+        expect(helper.find_namespace(project.full_path)).to be_nil
+      end
+
+      context 'when project namespaces are allowed' do
+        it 'returns the project namespace by id' do
+          expect(helper.find_namespace(project.project_namespace.id, allow_project_namespaces: true)).to eq(project.project_namespace)
+        end
+
+        it 'returns the project namespace by full path' do
+          expect(helper.find_namespace(project.full_path, allow_project_namespaces: true)).to eq(project.project_namespace)
+        end
+      end
+    end
+
     context 'when ID is a negative number' do
       let(:existing_id) { namespace.id }
       let(:non_existing_id) { -1 }
 
       it_behaves_like 'namespace finder'
+    end
+  end
+
+  describe '#find_namespace_by_path' do
+    context 'when project namespaces are allowed' do
+      let_it_be(:project) { create(:project, :private) }
+
+      it 'falls back to the project namespace when not found via namespace lookup' do
+        expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
+        expect(::Project).to receive(:find_by_full_path).with(project.full_path).and_call_original
+
+        expect(helper.find_namespace_by_path(project.full_path, allow_project_namespaces: true))
+          .to eq(project.project_namespace)
+      end
+
+      it 'returns nil when no namespace or project matches the path' do
+        path = "nonexistent/#{non_existing_record_id}"
+
+        expect(helper.find_namespace_by_path(path, allow_project_namespaces: true)).to be_nil
+      end
     end
   end
 
@@ -952,6 +994,126 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     it_behaves_like 'user namespace finder'
+
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project, :private) }
+      let(:current_user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:initial_current_user).and_return(current_user)
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      it 'renders namespace not found by default' do
+        expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+        helper.find_namespace!(project.project_namespace.id)
+      end
+
+      context 'when project namespaces are allowed' do
+        context 'when user has project access' do
+          let_it_be(:developer_user) { create(:user) }
+          let(:current_user) { developer_user }
+
+          before do
+            project.add_developer(current_user)
+          end
+
+          it 'returns the project namespace' do
+            expect(helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true))
+              .to eq(project.project_namespace)
+          end
+        end
+
+        context 'when user lacks project access' do
+          let_it_be(:non_member_user) { create(:user) }
+          let(:current_user) { non_member_user }
+
+          it 'renders project not found' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(false)
+            expect(helper).to receive(:not_found!).with('Project').and_return(nil)
+
+            helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+          end
+
+          it 'renders unauthorized when non-public authentication is required' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(true)
+            expect(helper).to receive(:unauthorized!).and_return(nil)
+
+            helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+          end
+        end
+      end
+
+      context 'when project namespaces are not allowed' do
+        it 'renders namespace not found' do
+          expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+          helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: false)
+        end
+      end
+    end
+  end
+
+  describe '#find_namespace_by_path!' do
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project, :private) }
+      let(:current_user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:initial_current_user).and_return(current_user)
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      it 'renders namespace not found by default' do
+        expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+        helper.find_namespace_by_path!(project.full_path)
+      end
+
+      context 'when project namespaces are allowed' do
+        context 'when user has project access' do
+          let_it_be(:developer_user) { create(:user) }
+          let(:current_user) { developer_user }
+
+          before do
+            project.add_developer(current_user)
+          end
+
+          it 'returns the project namespace' do
+            expect(helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true))
+              .to eq(project.project_namespace)
+          end
+        end
+
+        context 'when user lacks project access' do
+          let_it_be(:non_member_user) { create(:user) }
+          let(:current_user) { non_member_user }
+
+          it 'renders project not found' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(false)
+            expect(helper).to receive(:not_found!).with('Project').and_return(nil)
+
+            helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true)
+          end
+
+          it 'renders unauthorized when non-public authentication is required' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(true)
+            expect(helper).to receive(:unauthorized!).and_return(nil)
+
+            helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true)
+          end
+        end
+      end
+
+      context 'when project namespaces are not allowed' do
+        it 'renders namespace not found' do
+          expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+          helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: false)
+        end
+      end
+    end
   end
 
   describe '#authorized_project_scope?' do

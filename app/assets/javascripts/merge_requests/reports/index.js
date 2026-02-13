@@ -31,6 +31,7 @@ export default () => {
       projectPath,
       iid,
       hasPolicies: parseBoolean(hasPolicies),
+      dismissalDescriptions: JSON.parse(window.gl?.mrWidgetData?.dismissal_descriptions || '{}'),
     },
     render(createElement) {
       return createElement(MergeRequestReportsApp);

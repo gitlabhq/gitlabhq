@@ -269,7 +269,6 @@ app/models/project.rb:
 - valid_runners_token?
 - storage_upgradable?
 - deploy_token_create_url
-- deploy_token_revoke_url_for
 app/models/project_statistics.rb:
 - update_wiki_size
 - update_snippets_size

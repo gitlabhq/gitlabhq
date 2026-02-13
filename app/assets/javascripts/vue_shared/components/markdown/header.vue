@@ -544,8 +544,8 @@ export default {
     findAndReplace_replaceNext() {
       const textArea = this.getCurrentTextArea();
 
-      if (!textArea) {
-        return;
+      if (!textArea || !textArea.value.length) {
+        return false;
       }
 
       function findNthOccurrence(str, searchStr, n) {
@@ -565,11 +565,24 @@ export default {
         this.findAndReplace.highlightedMatchIndex,
       );
 
+      if (index === -1) {
+        return false;
+      }
+
       textArea.setSelectionRange(index, index + this.findAndReplace.find.length);
       insertText(textArea, this.findAndReplace.replace);
 
       // Re-higlight
       this.findAndReplace_highlightMatchingText(this.findAndReplace.find);
+
+      return true;
+    },
+    async findAndReplace_replaceAll() {
+      let hasNextMatch = null;
+
+      while (hasNextMatch !== false) {
+        hasNextMatch = this.findAndReplace_replaceNext();
+      }
     },
     skipToInput() {
       this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
@@ -871,70 +884,91 @@ export default {
     </div>
     <div
       v-if="findAndReplace.shouldShowBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-items-baseline gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
-      <div class="gl-mr-3">
-        <gl-button
-          category="tertiary"
-          size="small"
-          data-testid="replace-toggle"
-          aria-controls="replace-section"
-          :aria-expanded="findAndReplace.shouldShowReplaceInput"
-          :icon="findAndReplace_ToggleIcon"
-          :aria-label="s__('MarkdownEditor|Toggle section')"
-          @click="findAndReplace.shouldShowReplaceInput = !findAndReplace.shouldShowReplaceInput"
-        />
-      </div>
-      <div>
-        <gl-form-input
-          v-model="findAndReplace.find"
-          :placeholder="s__('MarkdownEditor|Find')"
-          autofocus
-          class="gl-min-w-36 gl-mb-3"
-          data-testid="find-input"
-          @keydown="findAndReplace_handleKeyDown"
-          @keyup="findAndReplace_handleKeyUp"
-        />
-        <div v-if="findAndReplace.shouldShowReplaceInput" aria-describedby="replace-section">
-          <gl-form-input
-            v-model="findAndReplace.replace"
-            :placeholder="s__('MarkdownEditor|Replace')"
-            class="gl-mb-3"
-            data-testid="replace-input"
+      <div class="gl-flex gl-items-baseline">
+        <div class="gl-mr-3">
+          <gl-button
+            category="tertiary"
+            size="small"
+            data-testid="replace-section-toggle"
+            aria-controls="replace-section"
+            :aria-expanded="findAndReplace.shouldShowReplaceInput"
+            :icon="findAndReplace_ToggleIcon"
+            :aria-label="s__('MarkdownEditor|Toggle section')"
+            @click="findAndReplace.shouldShowReplaceInput = !findAndReplace.shouldShowReplaceInput"
           />
-          <gl-button @click="findAndReplace_replaceNext">
-            {{ s__('MarkdownEditor|Replace') }}
-          </gl-button>
+        </div>
+        <div>
+          <gl-form-input
+            v-model="findAndReplace.find"
+            :placeholder="s__('MarkdownEditor|Find')"
+            autofocus
+            class="gl-mb-3 gl-w-20"
+            data-testid="find-input"
+            @keydown="findAndReplace_handleKeyDown"
+            @keyup="findAndReplace_handleKeyUp"
+          />
+        </div>
+        <div
+          class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap"
+          data-testid="find-and-replace-matches"
+        >
+          {{ findAndReplace_MatchCountText }}
+        </div>
+        <div class="gl-ml-2">
+          <gl-button
+            category="tertiary"
+            icon="arrow-up"
+            size="small"
+            data-testid="find-prev"
+            :aria-label="s__('MarkdownEditor|Find previous')"
+            @click="findAndReplace_handlePrev"
+          />
+          <gl-button
+            category="tertiary"
+            icon="arrow-down"
+            size="small"
+            data-testid="find-next"
+            :aria-label="s__('MarkdownEditor|Find next')"
+            @click="findAndReplace_handleNext"
+          />
+          <gl-button
+            category="tertiary"
+            icon="close"
+            size="small"
+            data-testid="find-and-replace-close"
+            :aria-label="s__('MarkdownEditor|Close find and replace bar')"
+            @click="findAndReplace_close"
+          />
         </div>
       </div>
-      <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap" data-testid="find-and-replace-matches">
-        {{ findAndReplace_MatchCountText }}
-      </div>
-      <div class="gl-ml-2">
-        <gl-button
-          category="tertiary"
-          icon="arrow-up"
-          size="small"
-          data-testid="find-prev"
-          :aria-label="s__('MarkdownEditor|Find previous')"
-          @click="findAndReplace_handlePrev"
+      <div
+        v-if="findAndReplace.shouldShowReplaceInput"
+        aria-describedby="replace-section"
+        class="gl-ml-7 gl-flex gl-items-center"
+      >
+        <gl-form-input
+          v-model="findAndReplace.replace"
+          :placeholder="s__('MarkdownEditor|Replace')"
+          data-testid="replace-input"
+          class="gl-mr-4 gl-w-20"
         />
         <gl-button
           category="tertiary"
-          icon="arrow-down"
+          icon="replace"
+          class="gl-mr-2"
           size="small"
-          data-testid="find-next"
-          :aria-label="s__('MarkdownEditor|Find next')"
-          @click="findAndReplace_handleNext"
+          data-testid="replace-button"
+          @click="findAndReplace_replaceNext"
         />
         <gl-button
           category="tertiary"
-          icon="close"
+          icon="replace-all"
           size="small"
-          data-testid="find-and-replace-close"
-          :aria-label="s__('MarkdownEditor|Close find and replace bar')"
-          @click="findAndReplace_close"
+          data-testid="replace-all-button"
+          @click="findAndReplace_replaceAll"
         />
       </div>
     </div>

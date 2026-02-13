@@ -65,7 +65,7 @@ when the merge request merges.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - If your project configuration requires it, all threads in the
   merge request must be resolved.
 - The merge request must have received all required approvals.
@@ -99,7 +99,7 @@ You can cancel auto-merge on a merge request.
 Prerequisites:
 
 - You must either be the author of the merge request, or a project member with
-  at least the Developer role.
+  the Developer, Maintainer, or Owner role.
 - The merge request's pipeline must still be in progress.
 
 To do this:
@@ -141,7 +141,7 @@ CI providers with it.
 Prerequisites:
 
 - Ensure your project's CI/CD configuration runs a pipeline for every merge request.
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable this setting:
 
@@ -165,7 +165,7 @@ merge requests from merging.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To change this behavior:
 
@@ -190,7 +190,7 @@ however, depending on the satisfaction of other merge checks or the length of yo
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To do this:
 

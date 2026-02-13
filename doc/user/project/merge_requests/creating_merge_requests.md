@@ -231,7 +231,7 @@ You can configure your forked repository to be the default target, rather than t
 Prerequisites:
 
 - You're working in a fork.
-- You must have at least the Developer role, or be allowed to create merge requests in the project.
+- You must have the Developer, Maintainer, or Owner role, or be allowed to create merge requests in the project.
 - The upstream repository allows merge requests to be created.
 - The [visibility settings](../../public_access.md#change-project-visibility) for
   the fork must match, or be less strict than, the upstream repository. For example:
@@ -263,7 +263,7 @@ Prerequisites:
   This setting is enabled on GitLab.com.
 - A GitLab administrator must configure [Reply by email](../../../administration/reply_by_email.md).
   This setting is enabled on GitLab.com.
-- You must have at least the Developer role, or be allowed to create merge requests in the project.
+- You must have the Developer, Maintainer, or Owner role, or be allowed to create merge requests in the project.
 
 To create a merge request by sending an email:
 
