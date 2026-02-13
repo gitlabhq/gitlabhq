@@ -120,6 +120,11 @@ To use Valkey instead of Redis on a standalone node:
 The GitLab Rails application configuration remains the same. Configure `gitlab_rails['redis_host']`,
 `gitlab_rails['redis_port']`, and `gitlab_rails['redis_password']` as you would for Redis.
 
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
+
 ## Troubleshooting
 
 See the [Redis troubleshooting guide](troubleshooting.md).

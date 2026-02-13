@@ -53,7 +53,13 @@ module ActiveContext
         # can verify embeddings are populated. The '*' wildcard includes all
         # non-vector fields, and we add vector fields explicitly.
         def add_source_fields(es_query, collection)
-          es_query.merge(_source: { includes: ['*'] + collection.current_embedding_fields })
+          # we temporarily include the fields from both the
+          # version-based model design AND the hash/object-based model design
+          # during the switching period when both values are available,
+          # this should still resolve to unique values
+          embedding_fields = (collection.current_embedding_fields + collection.indexing_embedding_fields).uniq
+
+          es_query.merge(_source: { includes: ['*'] + embedding_fields })
         end
       end
     end

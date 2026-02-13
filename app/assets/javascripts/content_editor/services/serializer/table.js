@@ -1,5 +1,5 @@
-import { uniq } from 'lodash';
-import { renderTagClose, renderTagOpen } from '../serialization_helpers';
+import { flatten } from 'lodash';
+import { renderTagClose, renderTagOpen, tableCellAsTaskTableItem } from '../serialization_helpers';
 
 const tableMap = new WeakMap();
 
@@ -40,38 +40,47 @@ function unsetIsInBlockTable(t) {
   });
 }
 
+function cellsOkayForMarkdown(cells, validCellType) {
+  return cells.every((cell) => {
+    if (cell.type.name !== validCellType || cell.childCount !== 1) {
+      return false;
+    }
+
+    const child = cell.child(0);
+    if (child.type.name === 'paragraph') {
+      return true;
+    }
+
+    return Boolean(tableCellAsTaskTableItem(cell));
+  });
+}
+
 export function shouldRenderHTMLTable(t) {
   const { rows, cells } = getRowsAndCells(t);
 
-  const cellChildCount = Math.max(...cells.map((cell) => cell.childCount));
   const maxColspan = Math.max(...cells.map((cell) => cell.attrs.colspan));
   const maxRowspan = Math.max(...cells.map((cell) => cell.attrs.rowspan));
 
-  const rowChildren = rows.map((row) => uniq(getChildren(row).map((cell) => cell.type.name)));
-  const cellTypeInFirstRow = rowChildren[0];
-  const cellTypesInOtherRows = uniq(rowChildren.slice(1).map(([type]) => type));
-
-  // if the first row has headers, and there are no headers anywhere else, render markdown table
-  if (
-    !(
-      cellTypeInFirstRow.length === 1 &&
-      cellTypeInFirstRow[0] === 'tableHeader' &&
-      cellTypesInOtherRows.length === 1 &&
-      cellTypesInOtherRows[0] === 'tableCell'
-    )
-  ) {
+  if (maxColspan !== 1 || maxRowspan !== 1) {
+    // We can't represent colspan/rowspan in Markdown tables, so we must render this as HTML.
     return true;
   }
 
-  if (cellChildCount === 1 && maxColspan === 1 && maxRowspan === 1) {
-    // if all rows contain only one paragraph each and no rowspan/colspan, render markdown table
-    const children = uniq(cells.map((cell) => cell.child(0).type.name));
-    if (children.length === 1 && children[0] === 'paragraph') {
-      return false;
-    }
-  }
+  const rowChildren = rows.map((row) => getChildren(row));
+  const cellsInFirstRow = rowChildren[0];
+  const cellsInOtherRows = flatten(rowChildren.slice(1));
 
-  return true;
+  // To render as a Markdown table, all cells must only contain either:
+  //
+  // (a) a single paragraph, or
+  // (b) a task list, containing a single task item, with no children.
+  //
+  // Additionally, the first row must only contain TableHeaders as the cell type,
+  // and remaining rows must contain only TableCells.
+  return (
+    !cellsOkayForMarkdown(cellsInFirstRow, 'tableHeader') ||
+    !cellsOkayForMarkdown(cellsInOtherRows, 'tableCell')
+  );
 }
 
 export function isInBlockTable(node) {

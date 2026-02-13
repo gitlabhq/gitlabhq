@@ -18,7 +18,8 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
       allow(collection).to receive_messages(
         collection_name: 'test',
         redact_unauthorized_results!: [[], []],
-        current_embedding_fields: %w[embedding_v1 embedding_v2]
+        current_embedding_fields: %w[embedding_v1 embedding_v2],
+        indexing_embedding_fields: %w[embedding_v1 embedding_v2]
       )
     end
 
@@ -28,6 +29,40 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
         body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
       )
       client.search(collection: collection, query: query, user: user)
+    end
+
+    context 'when only the `current_embedding_fields` is set' do
+      before do
+        allow(collection).to receive_messages(
+          current_embedding_fields: %w[embedding_v1 embedding_v2],
+          indexing_embedding_fields: []
+        )
+      end
+
+      it 'calls search on the Elasticsearch client including the expected embedding fields' do
+        expect(elasticsearch_client).to receive(:search).with(
+          index: 'test',
+          body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
+        )
+        client.search(collection: collection, query: query, user: user)
+      end
+    end
+
+    context 'when only the `indexing_embedding_fields` is set' do
+      before do
+        allow(collection).to receive_messages(
+          current_embedding_fields: [],
+          indexing_embedding_fields: %w[embedding_v1 embedding_v2]
+        )
+      end
+
+      it 'calls search on the Elasticsearch client including the expected embedding fields' do
+        expect(elasticsearch_client).to receive(:search).with(
+          index: 'test',
+          body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
+        )
+        client.search(collection: collection, query: query, user: user)
+      end
     end
   end
 

@@ -147,7 +147,7 @@ it('correctly renders a table with checkboxes', () => {
 <tr>
 <td>
 
-* [ ] 
+* [ ]
 </td>
 <td>Item 1</td>
 <td>Description 1</td>
@@ -544,6 +544,37 @@ it('correctly adds a space between a preceding block element and a markdown tabl
 | header |
 |--------|
 | cell |
+    `.trim(),
+  );
+});
+
+it('correctly serializes task table items', () => {
+  expect(
+    serialize(
+      table(
+        tableRow(tableHeader(paragraph('header')), tableHeader(paragraph('header'))),
+        // Task item containing empty paragraph --- this is what the editor consistently produces.
+        tableRow(tableCell(taskList(taskItem(paragraph()))), tableCell(paragraph('content'))),
+        // Task item (checked) with _no_ content --- theoretical but should still be handled.
+        tableRow(
+          tableCell(paragraph('more content')),
+          tableCell(taskList(taskItem({ checked: true }))),
+        ),
+        // Inapplicable task items with empty paragraph or no content.
+        tableRow(
+          tableCell(taskList(taskItem({ inapplicable: true }))),
+          tableCell(taskList(taskItem({ inapplicable: true }, paragraph()))),
+          tableCell(taskList(taskItem({ inapplicable: true }, paragraph()))),
+        ),
+      ),
+    ).trim(),
+  ).toBe(
+    `
+| header | header |
+|--------|--------|
+| [ ] | content |
+| more content | [x] |
+| [~] | [~] | [~] |
     `.trim(),
   );
 });

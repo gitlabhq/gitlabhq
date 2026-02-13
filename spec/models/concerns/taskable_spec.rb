@@ -36,18 +36,21 @@ RSpec.describe Taskable, feature_category: :team_planning do
 
     let(:expected_result) do
       [
-        Taskable::Item.new(complete?: false, text: 'First item', source: ' First item'),
-        Taskable::Item.new(complete?: true, text: 'Second item', source: ' Second item'),
-        Taskable::Item.new(complete?: true, text: 'Third item', source: ' Third item'),
+        Taskable::Item.new(complete?: false, text: 'First item', source: ' First item', task_table_item?: false),
+        Taskable::Item.new(complete?: true, text: 'Second item', source: ' Second item', task_table_item?: false),
+        Taskable::Item.new(complete?: true, text: 'Third item', source: ' Third item', task_table_item?: false),
         Taskable::Item.new(complete?: false, text: 'Fourth item',
-          source: ' <strong data-sourcepos="5:7-5:16">Fourth</strong> item'),
-        Taskable::Item.new(complete?: false, text: 'No-break space (U+00A0)', source: ' No-break space (U+00A0)'),
-        Taskable::Item.new(complete?: false, text: 'Figure space (U+2007)', source: ' Figure space (U+2007)'),
+          source: ' <strong>Fourth</strong> item', task_table_item?: false),
+        Taskable::Item.new(complete?: false, text: 'No-break space (U+00A0)', source: ' No-break space (U+00A0)',
+          task_table_item?: false),
+        Taskable::Item.new(complete?: false, text: 'Figure space (U+2007)', source: ' Figure space (U+2007)',
+          task_table_item?: false),
         Taskable::Item.new(complete?: false, text: 'Narrow no-break space (U+202F)',
-          source: ' Narrow no-break space (U+202F)'),
-        Taskable::Item.new(complete?: false, text: 'Thin space (U+2009)', source: ' Thin space (U+2009)'),
-        Taskable::Item.new(complete?: false, text: 'Numbered 1', source: ' Numbered 1'),
-        Taskable::Item.new(complete?: true, text: 'Numbered 2', source: ' Numbered 2')
+          source: ' Narrow no-break space (U+202F)', task_table_item?: false),
+        Taskable::Item.new(complete?: false, text: 'Thin space (U+2009)', source: ' Thin space (U+2009)',
+          task_table_item?: false),
+        Taskable::Item.new(complete?: false, text: 'Numbered 1', source: ' Numbered 1', task_table_item?: false),
+        Taskable::Item.new(complete?: true, text: 'Numbered 2', source: ' Numbered 2', task_table_item?: false)
       ]
     end
 
@@ -67,8 +70,47 @@ RSpec.describe Taskable, feature_category: :team_planning do
       end
 
       let(:expected_result) do
-        [Taskable::Item.new(complete?: false, text: 'only task item', source: ' only task item')]
+        [Taskable::Item.new(complete?: false, text: 'only task item', source: ' only task item',
+          task_table_item?: false)]
       end
+
+      it { is_expected.to match(expected_result) }
+    end
+
+    context 'with table task items' do
+      let(:description) do
+        <<~MARKDOWN
+          |     | Action       | When    |
+          | --- | ------------ | ------- |
+          | [ ] | Do something | Soon    |
+          | [x] | Do nothing   | **Now** |
+        MARKDOWN
+      end
+
+      let(:expected_result) do
+        [
+          Taskable::Item.new(complete?: false, text: 'Do something | Soon',
+            source: '<td>Do something</td><td>Soon</td>', task_table_item?: true),
+          Taskable::Item.new(complete?: true, text: 'Do nothing | Now',
+            source: '<td>Do nothing</td><td><strong>Now</strong></td>', task_table_item?: true)
+        ]
+      end
+
+      it { is_expected.to match(expected_result) }
+    end
+
+    context 'with pathological input' do
+      let(:description) do
+        <<~MARKDOWN
+          <table>
+          <td class="task-table-item">
+          <input type="checkbox" class="task-list-item-checkbox">
+          </td>
+          </table>
+        MARKDOWN
+      end
+
+      let(:expected_result) { [Taskable::Item.new(complete?: false, text: '', source: '', task_table_item?: true)] }
 
       it { is_expected.to match(expected_result) }
     end
@@ -119,14 +161,83 @@ RSpec.describe Taskable, feature_category: :team_planning do
 
       # We don't report on tasks being added, removed, or 'edited' --- only
       # when an existing task's completed status is changed without other modifications.
-      # If the task's index or source position is changed, we won't recognise it.
+      # If the task's index or source content has changed, we won't recognise it.
       # Ideally the frontend only sends single task updates at a time, so we mostly
       # don't deal with that situation.
       it_behaves_like 'get_updated_tasks',
         [
           Taskable::Item.new(complete?: true, text: 'And that.',
-            source: ' And <em data-sourcepos="4:11-4:16">that</em>.')
+            source: ' And <em>that</em>.', task_table_item?: false)
         ]
+    end
+
+    context 'with task table items' do
+      let(:old_content) do
+        <<~MARKDOWN
+          My task table:
+
+          |     | Action       | When    |
+          | --- | ------------ | ------- |
+          | [ ] | Do something | Soon    |
+          | [x] | Do nothing   | **Now** |
+        MARKDOWN
+      end
+
+      context 'when no tasks have changed' do
+        let(:new_content) do
+          <<~MARKDOWN
+            A task table:
+
+            |     | Action       | When    |
+            | --- | ------------ | ------- |
+            | [ ] | Do something | Soon    |
+            | [x] | Do nothing   | **Now** |
+          MARKDOWN
+        end
+
+        it_behaves_like 'get_updated_tasks', []
+      end
+
+      context 'when a task has changed status' do
+        let(:new_content) do
+          <<~MARKDOWN
+            A task table:
+
+            |     | Action       | When    |
+            | --- | ------------ | ------- |
+            | [ ] | Do something | Soon    |
+            | [ ] | Do nothing   | **Now** |
+          MARKDOWN
+        end
+
+        it_behaves_like 'get_updated_tasks',
+          [
+            Taskable::Item.new(complete?: false, text: 'Do nothing | Now',
+              source: '<td>Do nothing</td><td><strong>Now</strong></td>', task_table_item?: true)
+          ]
+      end
+
+      context 'when a task has changed status causing sourcepos adjustment' do
+        # We've replaced the 'x' on line 6 with a no-break space. This should still work,
+        # even though it adjusts the sourcepos of everything on the line (due to the space
+        # occupying two bytes, not one).
+        let(:new_content) do
+          <<~MARKDOWN
+            A task table:
+
+            |     | Action       | When    |
+            | --- | ------------ | ------- |
+            | [ ] | Do something | Soon    |
+            | [ ] | Do nothing   | **Now** |
+          MARKDOWN
+        end
+
+        it_behaves_like 'get_updated_tasks',
+          [
+            Taskable::Item.new(complete?: false, text: 'Do nothing | Now',
+              source: '<td>Do nothing</td><td><strong>Now</strong></td>', task_table_item?: true)
+          ]
+      end
     end
   end
 

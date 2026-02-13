@@ -1,4 +1,4 @@
-import { GlLink, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { PROMO_URL } from '~/constants';
 import ScanProfileConfiguration from '~/security_configuration/components/scan_profiles/scan_profile_configuration.vue';
@@ -23,7 +23,7 @@ describe('ScanProfileConfiguration', () => {
   };
 
   const findTable = () => wrapper.findComponent(ScanProfileTable);
-  const findLink = () => wrapper.findComponent(GlLink);
+  const findLink = () => wrapper.findByTestId('learn-more-ultimate-link');
   const findButtonAt = (i) => wrapper.findAllComponents(GlButton).at(i);
 
   describe('table rendering', () => {

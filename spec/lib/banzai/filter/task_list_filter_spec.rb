@@ -37,6 +37,16 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
     expect(aria_labels[9].value).to eq("Check option: \" hijacking quotes \" a ' b ' c")
   end
 
+  it 'adds `aria-label` to task list items when no text content is available' do
+    doc = reference_filter(<<~MARKDOWN)
+      * [ ]
+    MARKDOWN
+
+    aria_label = doc.xpath('.//input/@aria-label').first
+
+    expect(aria_label.value).to eq('Check option')
+  end
+
   it 'ignores checkbox on following line' do
     doc = reference_filter(<<~MARKDOWN)
       * one
@@ -115,6 +125,66 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
 
       expect(doc.to_html).not_to include('<s class="inapplicable"><s class="inapplicable">')
       expect(doc.css('li.inapplicable s.inapplicable').count).to eq(4)
+    end
+  end
+
+  describe 'task table items' do
+    it 'adds `aria-label` to table task items' do
+      doc = reference_filter(<<~MARKDOWN)
+        | Emoji | Status **(important)** | Task |
+        | ----- | ---------------------- | ---- |
+        | 🐰    | [ ]                    | ---- |
+      MARKDOWN
+
+      aria_label = doc.xpath('.//input/@aria-label').first
+
+      expect(aria_label.value).to eq('Check option in column "Status (important)"')
+    end
+
+    it 'adds `aria-label` to table task items when no header text is available' do
+      doc = reference_filter(<<~MARKDOWN)
+        | Emoji |     | Task |
+        | ----- | --- | ---- |
+        | 🐰    | [ ] | ---- |
+      MARKDOWN
+
+      aria_label = doc.xpath('.//input/@aria-label').first
+
+      expect(aria_label.value).to eq('Check option')
+    end
+
+    it "doesn't crash when input lacks row, isn't in a table" do
+      expect do
+        reference_filter(<<~MARKDOWN)
+          <td class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></td>
+        MARKDOWN
+      end.not_to raise_error
+    end
+
+    it "doesn't crash when input is in a table but there's no <tr>" do
+      expect do
+        reference_filter(<<~MARKDOWN)
+          <table>
+          <td class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></td>
+          </table>
+        MARKDOWN
+      end.not_to raise_error
+    end
+
+    it "doesn't crash when header has fewer cells than target row" do
+      expect do
+        reference_filter(<<~MARKDOWN)
+          <table>
+          <tr>
+          <th>Emoji</th>
+          </tr>
+          <tr>
+          <td>🐰</td>
+          <td class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></td>
+          </tr>
+          </table>
+        MARKDOWN
+      end.not_to raise_error
     end
   end
 

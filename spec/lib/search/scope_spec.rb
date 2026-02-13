@@ -74,7 +74,8 @@ RSpec.describe Search::Scope, feature_category: :global_search do
     subject(:project) { described_class.project }
 
     it 'includes all global scopes plus project-specific scopes' do
-      expect(described_class.project).to match_array(described_class::PROJECT_SCOPES)
+      expect(described_class.project).to match_array(described_class::ALWAYS_ALLOWED_SCOPES +
+        described_class::GLOBAL_SCOPES + described_class::PROJECT_SCOPES)
     end
 
     context 'when all global search settings are disabled' do
@@ -88,7 +89,8 @@ RSpec.describe Search::Scope, feature_category: :global_search do
       end
 
       it 'includes all global scopes plus project-specific scopes' do
-        expect(described_class.project).to match_array(described_class::PROJECT_SCOPES)
+        expect(described_class.project).to match_array(described_class::ALWAYS_ALLOWED_SCOPES +
+          described_class::GLOBAL_SCOPES + described_class::PROJECT_SCOPES)
       end
     end
   end

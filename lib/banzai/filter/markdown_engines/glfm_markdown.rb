@@ -39,7 +39,7 @@ module Banzai
           tagfilter: false,
           tasklist: true,
           tasklist_classes: true,
-          tasklist_in_table: false,
+          tasklist_in_table: true,
           wikilinks_title_before_pipe: true,
           unsafe: true
         }.freeze

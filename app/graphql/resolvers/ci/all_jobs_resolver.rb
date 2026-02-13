@@ -71,16 +71,9 @@ module Resolvers
           web_path: [{ project: { namespace: [:route] } }],
           tags: [:tags],
           trace: [{ project: [:namespace] }, :job_artifacts_trace],
-          source: [:job_source]
+          source: [:job_source],
+          [:trace, :html_summary] => [:trace_chunks]
         }
-      end
-
-      def nested_preloads
-        super.merge({
-          trace: {
-            html_summary: [:trace_chunks]
-          }
-        })
       end
 
       # Overridden in EE

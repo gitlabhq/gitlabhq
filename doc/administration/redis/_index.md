@@ -48,6 +48,11 @@ To switch to Valkey on Redis nodes, add the following to `/etc/gitlab/gitlab.rb`
 redis['backend'] = 'valkey'
 ```
 
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
+
 ## Redis replication and failover using the Linux package
 
 This setup is for when you have installed GitLab using the

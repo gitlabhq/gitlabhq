@@ -32,36 +32,21 @@ module LooksAhead
     {}
   end
 
-  def nested_preloads
-    {}
-  end
-
   def filtered_preloads
     nodes = node_selection
 
     return [] unless nodes&.selected?
 
-    selected_fields = nodes.selections.map(&:name)
-    root_level_preloads = preloads_from_node_selection(selected_fields, preloads)
+    preloads.each_with_object([]) do |(fields, associations_to_preload), result|
+      lookahead_node = nodes
 
-    root_level_preloads + nested_filtered_preloads(nodes, selected_fields)
-  end
+      Array.wrap(fields).each do |field|
+        next if lookahead_node.nil?
 
-  def nested_filtered_preloads(nodes, selected_root_fields)
-    return [] if nested_preloads.empty?
+        lookahead_node = lookahead_node.selections.find { |s| s.name == field }
+      end
 
-    nested_preloads.each_with_object([]) do |(root_field, fields), result|
-      next unless selected_root_fields.include?(root_field)
-
-      selected_fields = nodes.selection(root_field).selections.map(&:name)
-
-      result << preloads_from_node_selection(selected_fields, fields)
-    end.flatten
-  end
-
-  def preloads_from_node_selection(selected_fields, fields)
-    fields.each_with_object([]) do |(field, requirements), result|
-      result << requirements if selected_fields.include?(field)
+      result << associations_to_preload if lookahead_node&.selected?
     end.flatten
   end
 

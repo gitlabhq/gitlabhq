@@ -102,6 +102,10 @@ module ActiveContext
         def indexing_embedding_models
           [current_indexing_embedding_model, next_indexing_embedding_model].compact
         end
+
+        def indexing_embedding_fields
+          indexing_embedding_models.map(&:field)
+        end
       end
 
       attr_reader :object

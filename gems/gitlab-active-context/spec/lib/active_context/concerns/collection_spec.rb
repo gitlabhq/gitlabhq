@@ -284,7 +284,7 @@ RSpec.describe ActiveContext::Concerns::Collection do
     end
   end
 
-  describe '.indexing_embedding_models' do
+  describe 'indexing embedding models' do
     let(:current_indexing_embedding_model) do
       ::ActiveContext::EmbeddingModel.new(
         model_name: 'some-model-01',
@@ -310,10 +310,18 @@ RSpec.describe ActiveContext::Concerns::Collection do
       )
     end
 
-    it 'returns the current and next indexing embedding models' do
-      expect(collection_class.indexing_embedding_models).to eq(
-        [current_indexing_embedding_model, next_indexing_embedding_model]
-      )
+    describe '.indexing_embedding_models' do
+      it 'returns the current and next indexing embedding models' do
+        expect(collection_class.indexing_embedding_models).to eq(
+          [current_indexing_embedding_model, next_indexing_embedding_model]
+        )
+      end
+    end
+
+    describe '.indexing_embedding_fields' do
+      it 'returns the current and next indexing fields' do
+        expect(collection_class.indexing_embedding_fields).to eq(%w[current_model_field next_model_field])
+      end
     end
   end
 

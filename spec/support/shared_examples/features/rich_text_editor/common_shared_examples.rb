@@ -133,8 +133,8 @@ RSpec.shared_examples 'rich text editor - common' do
       type_in_content_editor '* list item'
 
       expect(page).to have_text(
-        "Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not \
-supported in Markdown and will be converted to HTML."
+        "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task \
+lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
       )
 
       switch_to_markdown_editor

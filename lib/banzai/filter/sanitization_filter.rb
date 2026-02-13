@@ -10,6 +10,7 @@ module Banzai
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
       ALLOWED_IDIFF_CLASSES = %w[idiff left right deletion addition].freeze
       HEADER_NODE_NAMES = %w[h1 h2 h3 h4 h5 h6].freeze
+      TASK_LIST_ITEM_CHECKBOX_PARENTS = %w[li td th].freeze
 
       def customize_allowlist(allowlist)
         allowlist[:allow_comments] = context[:allow_comments]
@@ -69,6 +70,8 @@ module Banzai
         allowlist[:attributes]['ul'] = %w[class]
         allowlist[:attributes]['ol'] = %w[class]
         allowlist[:attributes]['li'].push('class')
+        allowlist[:attributes]['th'].push('class')
+        allowlist[:attributes]['td'].push('class')
         allowlist[:attributes]['input'] = %w[class]
         allowlist[:transformers].push(self.class.method(:remove_unsafe_classes))
       end
@@ -125,6 +128,8 @@ module Banzai
             node.remove_attribute('class') if remove_ul_ol_class?(node)
           when 'li'
             node.remove_attribute('class') if remove_li_class?(node)
+          when 'th', 'td'
+            node.remove_attribute('class') if remove_th_td_class?(node)
           when 'input'
             node.remove_attribute('class') if remove_input_class?(node)
           end
@@ -165,6 +170,10 @@ module Banzai
             node['class'] != 'inapplicable task-list-item'
         end
 
+        def remove_th_td_class?(node)
+          node['class'] != 'task-table-item'
+        end
+
         def remove_input_class?(node)
           node['class'] != 'task-list-item-checkbox'
         end
@@ -197,7 +206,10 @@ module Banzai
 
           return unless node.name == 'input'
 
-          return if node['type'] == 'checkbox' && node['class'] == 'task-list-item-checkbox' && node.parent.name == 'li'
+          if node['type'] == 'checkbox' && node['class'] == 'task-list-item-checkbox' &&
+              TASK_LIST_ITEM_CHECKBOX_PARENTS.include?(node.parent.name)
+            return
+          end
 
           node.remove
         end

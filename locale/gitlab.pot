@@ -14584,6 +14584,12 @@ msgstr ""
 msgid "Check feature availability on namespace plan"
 msgstr ""
 
+msgid "Check option"
+msgstr ""
+
+msgid "Check option in column \"%{column}\""
+msgstr ""
+
 msgid "Check option: %{option}"
 msgstr ""
 
@@ -63279,6 +63285,12 @@ msgstr ""
 msgid "SecurityProfiles|Apply profile to enable"
 msgstr ""
 
+msgid "SecurityProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret push protection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "SecurityProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityProfiles|Configure once. Apply everywhere. Profiles make it easier to configure and manage your security tools at scale. Secret push protection is the first type of scan supported by this new feature."
 msgstr ""
 
@@ -63318,9 +63330,6 @@ msgstr ""
 msgid "SecurityProfiles|Only a project maintainer or owner can apply or disable profiles."
 msgstr ""
 
-msgid "SecurityProfiles|Prevents secrets from being pushed to your repository"
-msgstr ""
-
 msgid "SecurityProfiles|Preview default profile"
 msgstr ""
 
@@ -63330,13 +63339,16 @@ msgstr ""
 msgid "SecurityProfiles|Profile disabled successfully."
 msgstr ""
 
-msgid "SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects"
-msgstr ""
-
 msgid "SecurityProfiles|Secret Detection"
 msgstr ""
 
 msgid "SecurityProfiles|Security configuration illustration"
+msgstr ""
+
+msgid "SecurityProfiles|What are configuration profiles?"
+msgstr ""
+
+msgid "SecurityProfiles|What is secret push protection?"
 msgstr ""
 
 msgid "SecurityProfiles|You are about to disable %{scannerName} for this project. Are you sure you want to proceed?"
@@ -67921,7 +67933,7 @@ msgstr ""
 msgid "Table size"
 msgstr ""
 
-msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not supported in Markdown and will be converted to HTML."
+msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr ""
 
 msgid "Tag"

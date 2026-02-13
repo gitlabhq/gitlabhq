@@ -146,7 +146,13 @@ export const SCAN_PROFILE_CATEGORIES = {
   [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
     name: s__('SecurityProfiles|Secret Detection'),
     label: 'SD',
-    tooltip: s__('SecurityProfiles|Prevents secrets from being pushed to your repository'),
+    helpTitle: s__('SecurityProfiles|What is secret push protection?'),
+    helpDescription: s__(
+      'SecurityProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret push protection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked. %{linkStart}Learn more%{linkEnd}.',
+    ),
+    helpLink: helpPagePath(
+      '/user/application_security/configuration/security_configuration_profiles',
+    ),
   },
 };
 export const SCAN_PROFILE_PROMO_ITEMS = [
@@ -157,8 +163,9 @@ export const SCAN_PROFILE_I18N = {
   notConfigured: s__('SecurityProfiles|Not configured'),
   applyToEnable: s__('SecurityProfiles|Apply profile to enable'),
   active: s__('SecurityProfiles|Active'),
-  profilesDefine: s__(
-    'SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects',
+  profileHelpTitle: s__('SecurityProfiles|What are configuration profiles?'),
+  profileHelpDescription: s__(
+    'SecurityProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage. %{linkStart}Learn more%{linkEnd}.',
   ),
   applyDefault: s__('SecurityProfiles|Apply default profile'),
   previewDefault: s__('SecurityProfiles|Preview default profile'),

@@ -4,11 +4,13 @@ import {
   GlButtonGroup,
   GlButton,
   GlIcon,
-  GlTooltipDirective,
+  GlPopover,
   GlLink,
+  GlSprintf,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { PROMO_URL } from '~/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { SCAN_PROFILE_CATEGORIES, SCAN_PROFILE_I18N } from '~/security_configuration/constants';
 
 export default {
@@ -18,10 +20,9 @@ export default {
     GlButtonGroup,
     GlButton,
     GlIcon,
+    GlPopover,
     GlLink,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlSprintf,
   },
   props: {
     tableItems: {
@@ -38,6 +39,11 @@ export default {
         { key: 'lastScan', label: __('Last scan'), tdClass: '!gl-align-middle' },
         { key: 'actions', label: '' },
       ];
+    },
+    scanProfileHelpPath() {
+      return helpPagePath(
+        '/user/application_security/configuration/security_configuration_profiles',
+      );
     },
   },
   methods: {
@@ -56,11 +62,22 @@ export default {
       <div class="gl-flex gl-items-center">
         <span>{{ data.label }}</span>
         <gl-icon
-          v-gl-tooltip
+          id="profile-info-icon"
           name="information-o"
-          :title="$options.SCAN_PROFILE_I18N.profilesDefine"
+          variant="info"
           class="gl-ml-2 gl-text-secondary"
         />
+        <gl-popover
+          target="profile-info-icon"
+          placement="top"
+          :title="$options.SCAN_PROFILE_I18N.profileHelpTitle"
+        >
+          <gl-sprintf :message="$options.SCAN_PROFILE_I18N.profileHelpDescription">
+            <template #link="{ content }">
+              <gl-link :href="scanProfileHelpPath" target="_blank">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-popover>
       </div>
     </template>
 
@@ -81,12 +98,24 @@ export default {
         </div>
         <span class="gl-font-bold">{{ getScannerMetadata(item.scanType).name }}</span>
         <gl-icon
-          v-gl-tooltip
+          :id="`scanner-info-${item.scanType}`"
           name="information-o"
           variant="info"
-          :title="getScannerMetadata(item.scanType).tooltip"
           class="gl-ml-2"
         />
+        <gl-popover
+          :target="`scanner-info-${item.scanType}`"
+          placement="top"
+          :title="getScannerMetadata(item.scanType).helpTitle"
+        >
+          <gl-sprintf :message="getScannerMetadata(item.scanType).helpDescription">
+            <template #link="{ content }">
+              <gl-link :href="getScannerMetadata(item.scanType).helpLink" target="_blank">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-popover>
       </div>
     </template>
 
@@ -106,7 +135,11 @@ export default {
           {{ __('Available with Ultimate') }}
         </span>
         <span class="gl-mt-1 gl-text-sm gl-text-secondary">
-          <gl-link :href="$options.LEARN_MORE_LINK" target="_blank">
+          <gl-link
+            :href="$options.LEARN_MORE_LINK"
+            target="_blank"
+            data-testid="learn-more-ultimate-link"
+          >
             {{ __('Learn more about the Ultimate security suite') }}
             <gl-icon name="external-link" :aria-label="__('(external link)')" />
           </gl-link>

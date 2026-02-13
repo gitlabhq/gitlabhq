@@ -44,4 +44,52 @@ describe('toggleCheckbox', () => {
     expect(result.newMarkdown).toEqual('- [x] todo 1\n- [x] todo 2');
     expect(result.sourcepos).toEqual('2:1-2:12');
   });
+
+  const tableMarkdown = `
+| t | table | t | table | t | table | t | table |
+| - | ----- | - | ----- | - | ----- | - | ----- |
+| 1 |  [ ]  | 2 |  [x]  | 3 |  [ ]  | 4 |  [x]  |
+`;
+
+  it('marks a table checkbox when precisely located', () => {
+    expect(
+      toggleCheckbox({ rawMarkdown: tableMarkdown, sourcepos: '4:9-4:9', checkboxChecked: true }),
+    ).toEqual({
+      oldLine: '| 1 |  [ ]  | 2 |  [x]  | 3 |  [ ]  | 4 |  [x]  |',
+      newMarkdown: tableMarkdown.replace('1 |  [ ]', '1 |  [x]'),
+      sourcepos: '4:9-4:9',
+    });
+    expect(
+      toggleCheckbox({ rawMarkdown: tableMarkdown, sourcepos: '4:33-4:33', checkboxChecked: true }),
+    ).toEqual({
+      oldLine: '| 1 |  [ ]  | 2 |  [x]  | 3 |  [ ]  | 4 |  [x]  |',
+      newMarkdown: tableMarkdown.replace('3 |  [ ]', '3 |  [x]'),
+      sourcepos: '4:33-4:33',
+    });
+  });
+
+  it('unmarks a table checkbox when precisely located', () => {
+    expect(
+      toggleCheckbox({
+        rawMarkdown: tableMarkdown,
+        sourcepos: '4:21-4:21',
+        checkboxChecked: false,
+      }),
+    ).toEqual({
+      oldLine: '| 1 |  [ ]  | 2 |  [x]  | 3 |  [ ]  | 4 |  [x]  |',
+      newMarkdown: tableMarkdown.replace('2 |  [x]', '2 |  [ ]'),
+      sourcepos: '4:21-4:21',
+    });
+    expect(
+      toggleCheckbox({
+        rawMarkdown: tableMarkdown,
+        sourcepos: '4:45-4:45',
+        checkboxChecked: false,
+      }),
+    ).toEqual({
+      oldLine: '| 1 |  [ ]  | 2 |  [x]  | 3 |  [ ]  | 4 |  [x]  |',
+      newMarkdown: tableMarkdown.replace('4 |  [x]', '4 |  [ ]'),
+      sourcepos: '4:45-4:45',
+    });
+  });
 });

@@ -296,8 +296,9 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_task_status(new_task)
+      item_kind = new_task.task_table_item? ? 'task table item' : 'checklist item'
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-      body = "marked the checklist item **#{::GLFMMarkdown.escape_commonmark_inline(new_task.text)}** as #{status_label}"
+      body = "marked the #{item_kind} **#{::GLFMMarkdown.escape_commonmark_inline(new_task.text)}** as #{status_label}"
 
       track_issue_event(:track_issue_description_changed_action)
 

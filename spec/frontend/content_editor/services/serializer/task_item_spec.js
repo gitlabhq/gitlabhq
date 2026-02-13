@@ -19,7 +19,7 @@ it('correctly serializes an inapplicable task item', () => {
 });
 
 it('correctly serializes an empty task item', () => {
-  expect(serialize(taskList(taskItem(paragraph())))).toBe('* [ ] ');
+  expect(serialize(taskList(taskItem(paragraph())))).toBe('* [ ]');
 });
 
 it('correctly serializes a task item with only whitespace', () => {

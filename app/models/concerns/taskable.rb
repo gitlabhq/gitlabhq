@@ -18,7 +18,10 @@ module Taskable
   # determine whether a task that was checked or unchecked hasn't otherwise changed. Depending on
   # the kind of task item (task list vs. task table), it might take different forms, and shouldn't
   # be presented to the user or otherwise stored.
-  Item = Struct.new(:complete?, :text, :source, keyword_init: true)
+  #
+  # "task_table_item?" is whether the item was from a task table. If false, it's from a regular
+  # task list.
+  Item = Struct.new(:complete?, :text, :source, :task_table_item?, keyword_init: true)
 
   COMPLETED          = 'completed'
   INCOMPLETE         = 'incomplete'
@@ -53,7 +56,8 @@ module Taskable
       items << Taskable::Item.new(
         complete?: node.has_attribute?('checked'),
         text: text,
-        source: source)
+        source: source,
+        task_table_item?: Banzai::Filter::TaskListFilter.task_table_item?(node))
     end
 
     items

@@ -144,6 +144,12 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)\n"
+
+    # Note the data-checkbox-sourcepos has changed, since the 'x' is one byte wide.
+    checkbox = toggler_updated_fragment(toggler).css(
+      'input.task-list-item-checkbox[data-checkbox-sourcepos="13:4-13:4"]').first
+    expect(checkbox['checked']).not_to be_nil
+    expect(checkbox['disabled']).not_to be_nil
   end
 
   it 'checks task with no-break space given imprecise sourcepos' do
@@ -156,6 +162,15 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)\n"
+
+    # Note that, as an imprecise sourcepos was used, the data-checkbox-sourcepos has
+    # not changed. Imprecise sourcepos is only used when there is a maximum of a single
+    # task item on any given line, so no special care is needed -- future partial updates
+    # will also use imprecise sourcepos.
+    checkbox = toggler_updated_fragment(toggler).css(
+      'input.task-list-item-checkbox[data-checkbox-sourcepos="13:4-13:5"]').first
+    expect(checkbox['checked']).not_to be_nil
+    expect(checkbox['disabled']).not_to be_nil
   end
 
   it 'checks Another item given precise sourcepos' do
@@ -360,6 +375,143 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
         'input.task-list-item-checkbox[data-checkbox-sourcepos="1:7-1:7"]').first
       expect(checkbox['checked']).not_to be_nil
       expect(checkbox['disabled']).not_to be_nil
+    end
+  end
+
+  context 'with tables' do
+    let(:markdown) do
+      <<~EOT
+        A delicious table awaits:
+
+        | omg | no way | for me?? |
+        | --- | ------ | -------- |
+        | [ ] | [x]    | [ ] |
+        |    [~] |   [ ] |    [x] |
+
+        They might be embedded in any kind of syntax.
+
+        > 3. Ordered list in blockquote ...
+        > 4. [ ] With a task item.
+        >
+        >    And a table inside that task item, with a no-break space:
+        >
+        >    | wow | woah | how? | guau  |
+        >    | --- | ---- | ---- | ----: |
+        >    | [x] | [ ]  | [ ]  |   [ ] |
+
+        Shrimple.
+      EOT
+    end
+
+    it 'toggles precisely what is asked for' do
+      toggler = described_class.new(
+        markdown,
+        markdown_html,
+        toggle_as_checked: true,
+        line_source: '|    [~] |   [ ] |    [x] |',
+        line_sourcepos: '6:15-6:15'
+      )
+
+      expect(toggler.execute).to be_truthy
+      expect(toggler.updated_markdown.lines[5]).to eq "|    [~] |   [x] |    [x] |\n"
+
+      # Assert that the targetted checkbox was indeed in exactly the table, row and cell we expect.
+      checkbox = toggler_updated_fragment(toggler).xpath(
+        '(((.//table)[1]//tr)[3]/td)[2]/input[@data-checkbox-sourcepos="6:15-6:15"]').first
+      expect(checkbox['checked']).not_to be_nil
+      expect(checkbox['disabled']).not_to be_nil
+    end
+
+    it 'handles nested block elements and no-break spaces' do
+      toggler = described_class.new(
+        markdown,
+        markdown_html,
+        toggle_as_checked: true,
+        line_source: '>    | [x] | [ ]  | [ ]  |   [ ] |',
+        line_sourcepos: '17:15-17:16'
+      )
+
+      expect(toggler.execute).to be_truthy
+      expect(toggler.updated_markdown.lines[16]).to eq ">    | [x] | [x]  | [ ]  |   [ ] |\n"
+
+      # Assert that the checkbox sourcepos has been updated (was two bytes, now one),
+      # and that the subsequent checkboxes' sourcepos have also been adjusted backwards.
+      # Likewise assert the preceding checkbox's sourcepos has not been modified.
+
+      checkboxes = toggler_updated_fragment(toggler).xpath(
+        '((.//table)[2]//tr)[2]/td').map { |td| td.css('input.task-list-item-checkbox').first }
+      expect(checkboxes.length).to eq(4)
+
+      expect(checkboxes[0]['data-checkbox-sourcepos']).to eq('17:9-17:9')
+      expect(checkboxes[0]['checked']).not_to be_nil
+      expect(checkboxes[0]['disabled']).not_to be_nil
+
+      expect(checkboxes[1]['data-checkbox-sourcepos']).to eq('17:15-17:15')
+      expect(checkboxes[1]['checked']).not_to be_nil
+      expect(checkboxes[1]['disabled']).not_to be_nil
+
+      expect(checkboxes[2]['data-checkbox-sourcepos']).to eq('17:22-17:22')
+      expect(checkboxes[2]['checked']).to be_nil
+      expect(checkboxes[2]['disabled']).not_to be_nil
+
+      expect(checkboxes[3]['data-checkbox-sourcepos']).to eq('17:31-17:32')
+      expect(checkboxes[3]['checked']).to be_nil
+      expect(checkboxes[3]['disabled']).not_to be_nil
+    end
+
+    context 'when a multi-byte character precedes the checkbox on the same line' do
+      let(:markdown) do
+        <<~EOT
+          | 🐰 | [ ] | [ ] |
+          | -- | --- | --- |
+        EOT
+      end
+
+      it 'correctly locates and modifies the target checkbox' do
+        # rubocop:disable Style/AsciiComments -- Unicode handling discussion.
+        #
+        # Sourcepos is byte-based. '🐰' is 4 bytes in UTF-8 (0xF0 0x9F 0x90 0xB0), so:
+        #
+        #         11    17
+        # | 🐰 | [ ] | [ ] |
+        # 123…78911111111112
+        #        01234567890
+        #
+        # The first checkbox's symbol is at 1:11, and the second's is at 1:17.
+        #
+        # rubocop:enable Style/AsciiComments
+
+        toggler = described_class.new(
+          markdown,
+          markdown_html,
+          toggle_as_checked: true,
+          line_source: '| 🐰 | [ ] | [ ] |',
+          line_sourcepos: '1:17-1:17'
+        )
+
+        expect(toggler.execute).to be_truthy
+        expect(toggler.updated_markdown.lines[0]).to eq "| 🐰 | [ ] | [x] |\n"
+      end
+    end
+  end
+
+  describe '.adjust_sourcepos' do
+    let(:sourcepos) { { start: { line: 10, column: 5 }, end: { line: 10, column: 8 } } }
+
+    it 'adjusts all positions' do
+      result = described_class.adjust_sourcepos(
+        sourcepos,
+        start: { line: 1, column: 2 },
+        end: { line: 3, column: -4 }
+      )
+
+      expect(result).to eq({ start: { line: 11, column: 7 }, end: { line: 13, column: 4 } })
+    end
+
+    it 'returns the input unchanged when no adjustments are made' do
+      result = described_class.adjust_sourcepos(sourcepos)
+
+      expect(result).to eq(sourcepos)
     end
   end
 

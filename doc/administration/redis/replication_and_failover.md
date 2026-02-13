@@ -899,6 +899,11 @@ sentinel['quorum'] = 2
 All other Sentinel configuration options remain the same as documented in
 [Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances).
 
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
+
 ## Troubleshooting
 
 See the [Redis troubleshooting guide](troubleshooting.md).

@@ -34,7 +34,7 @@ module Banzai
       class << self
         # Parses string representing a sourcepos in format
         # "start_line:start_column-end_line:end_column" into 0-based
-        # attributes. For example, "1:10-14:1" becomes
+        # byte indices. For example, "1:10-14:1" becomes
         # {
         #   start: { line: 0, column: 9 },
         #   end: { line: 13, column: 0 }

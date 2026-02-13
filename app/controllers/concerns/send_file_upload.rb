@@ -58,19 +58,15 @@ module SendFileUpload
   end
 
   def image_scaling_request?(file_upload)
-    avatar_safe_for_scaling?(file_upload) || pwa_icon_safe_for_scaling?(file_upload)
-  end
+    return false unless file_upload.try(:image_safe_for_scaling?)
 
-  def pwa_icon_safe_for_scaling?(file_upload)
-    file_upload.try(:image_safe_for_scaling?) &&
-      mounted_as_pwa_icon?(file_upload) &&
-      valid_image_scaling_width?(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS)
-  end
-
-  def avatar_safe_for_scaling?(file_upload)
-    file_upload.try(:image_safe_for_scaling?) &&
-      mounted_as_avatar?(file_upload) &&
+    if mounted_as_avatar?(file_upload)
       valid_image_scaling_width?(Avatarable::ALLOWED_IMAGE_SCALER_WIDTHS)
+    elsif mounted_as_pwa_icon?(file_upload)
+      valid_image_scaling_width?(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS)
+    else
+      false
+    end
   end
 
   def mounted_as_avatar?(file_upload)

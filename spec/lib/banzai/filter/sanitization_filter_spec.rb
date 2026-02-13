@@ -274,6 +274,9 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
 
         %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>) | %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>)
         %q(<ul><li><input type="checkbox" class="other-checkbox"></li></ul>) | %q(<ul><li></li></ul>)
+
+        %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>) | %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>)
+        %(<table><tr><th class="other-class"><input type="checkbox" class="other-checkbox"></th></tr></table>) | %(<table><tr><th></th></tr></table>)
       end
       # rubocop:enable Layout/LineLength
 

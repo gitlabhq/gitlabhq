@@ -74,8 +74,8 @@ export function openTag(tagName, attrs) {
 
   str += Object.entries(attrs || {})
     .map(([key, value]) => {
-      if (shouldIgnoreAttr(tagName, key, value)) return '';
-
+      if (value === false || shouldIgnoreAttr(tagName, key, value)) return '';
+      if (value === true) return ` ${key}`;
       return ` ${key}="${escape(value?.toString())}"`;
     })
     .join('');
@@ -165,4 +165,26 @@ export const findChildWithMark = (mark, parent) => {
 
 export function getMarkText(mark, parent) {
   return findChildWithMark(mark, parent).child?.text || '';
+}
+
+// Given a table cell (TableCell or TableHeader), if it's a valid table task item ---
+// that is, it contains *only* a single task item, with no other content --- returns the
+// TaskItem cell within.
+//
+// Returns null otherwise.
+export function tableCellAsTaskTableItem(cell) {
+  if (cell.childCount !== 1) return null;
+
+  const child = cell.child(0);
+  if (child.type.name === 'taskList') {
+    const taskItem = child.child(0);
+    // The editor always has a paragraph beside a task item (so there's somewhere for the
+    // cursor to sit if you want to enter content), so we permit it if the task item contains
+    // just an empty paragraph. We also permit no child at all for completeness.
+    if (taskItem.childCount === 0 || containsEmptyParagraph(taskItem)) {
+      return child.child(0);
+    }
+  }
+
+  return null;
 }

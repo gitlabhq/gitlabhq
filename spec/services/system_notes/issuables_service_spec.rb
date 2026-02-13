@@ -657,7 +657,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
   describe '#change_task_status' do
     let(:noteable) { create(:issue, project: project) }
-    let(:task)     { double(:task, complete?: true, text: 'task', source: ' task') }
+    let(:task)     { double(:task, complete?: true, text: 'task', source: ' task', task_table_item?: false) }
 
     subject { service.change_task_status(task) }
 
@@ -692,6 +692,39 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it 'does not leak Markdown into the system note' do
         expect(subject.note).to eq("marked the checklist item **task with\\*\\* Markdown** as completed")
+      end
+    end
+
+    context 'with task table items' do
+      let(:markdown_before) do
+        <<~MARKDOWN
+          My task table:
+
+          |     | Action       | When    |
+          | --- | ------------ | ------- |
+          | [ ] | Do something | Soon    |
+          | [x] | Do nothing   | **Now** |
+        MARKDOWN
+      end
+
+      let(:markdown_after) do
+        <<~MARKDOWN
+            My task table, with an extra newline to
+            shift sourcepos:
+
+            |     | Action       | When     |
+            | --- | ------------ | -------- |
+            | [ ] | Do something | Whenever |
+            | [ ] | Do nothing   | **Now**  |
+        MARKDOWN
+      end
+
+      let(:task) do
+        Taskable.get_updated_tasks(old_content: markdown_before, new_content: markdown_after).first
+      end
+
+      it "posts the 'marked the checklist item as complete' system note" do
+        expect(subject.note).to eq("marked the task table item **Do nothing | Now** as incomplete")
       end
     end
   end

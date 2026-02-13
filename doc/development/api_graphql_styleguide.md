@@ -1700,29 +1700,27 @@ class MyThingResolver < BaseResolver
 end
 ```
 
-The `LooksAhead` concern also provides basic support for preloading associations based on nested GraphQL field
-definitions. The [WorkItemsResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/e824a7e39e08a83fb162db6851de147cf0bfe14a/app/graphql/resolvers/work_items_resolver.rb#L46)
-is a good example for this. `nested_preloads` is another method you can define to return a hash, but unlike the
-`preloads` method, the value for each hash key is another hash and not the list of associations to preload. So in
-the previous example, you could override `nested_preloads` like this:
+The `LooksAhead` concern also provides support for preloading associations based on nested GraphQL field
+definitions. Use an array of field names as the hash key to preload the given associations when the nested field is selected.
+For example:
 
 ```ruby
 class MyThingResolver < BaseResolver
   # ...
 
-  def nested_preloads
+  def preloads
     {
-      root_field: {
-        nested_field1: :association_to_preload,
-        nested_field2: [:association1, :association2]
-      }
+      [:root_field, :nested_field1] => :association_to_preload,
+      [:root_field, :nested_field2] => [:association1, :association2],
+      [:root_field, :nested_field2, :nested_field3] => :association3,
+      other_root_field: :other_association,
     }
   end
 end
 ```
 
 For an example of real world use,
-see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+see [`WorkItems::LookAheadPreloads`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/work_items/look_ahead_preloads.rb).
 
 #### `before_connection_authorization`
 
