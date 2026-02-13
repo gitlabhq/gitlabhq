@@ -36,6 +36,10 @@ The sandbox is enabled when:
 If you specify a [custom Docker image](flows/execution.md#change-the-default-docker-image),
 the sandbox is not applied, and your flow can access any domain reachable from your runner.
 
+For information about CI/CD variable differences between default and custom
+image configurations, see
+[Flow execution variables](flows/execution_variables.md).
+
 ## Prerequisites
 
 To use the execution environment sandbox, you need:

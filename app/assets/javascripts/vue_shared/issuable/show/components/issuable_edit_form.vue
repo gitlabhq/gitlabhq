@@ -9,6 +9,7 @@ import ZenMode from '~/zen_mode';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'IssuableEditForm',
   components: {
     GlForm,
     GlFormGroup,
@@ -47,8 +48,10 @@ export default {
   },
   data() {
     return {
-      title: '',
-      description: '',
+      issuableMeta: {
+        issuableTitle: '',
+        issuableDescription: '',
+      },
       formFieldProps: {
         id: 'issuable-description',
         name: 'issuable-description',
@@ -68,8 +71,8 @@ export default {
   watch: {
     issuable: {
       handler(value) {
-        this.title = value?.title || '';
-        this.description = value?.description || '';
+        this.issuableMeta.issuableTitle = value?.title || '';
+        this.issuableMeta.issuableDescription = value?.description || '';
       },
       deep: true,
       immediate: true,
@@ -108,8 +111,8 @@ export default {
     },
     handleKeydown(e, inputType) {
       this.$emit(`keydown-${inputType}`, e, {
-        issuableTitle: this.title,
-        issuableDescription: this.description,
+        issuableTitle: this.issuableMeta.issuableTitle,
+        issuableDescription: this.issuableMeta.issuableDescription,
       });
     },
   },
@@ -128,7 +131,7 @@ export default {
       <gl-form-input
         id="issuable-title"
         ref="titleInput"
-        v-model.trim="title"
+        v-model.trim="issuableMeta.issuableTitle"
         :placeholder="__('Title')"
         :aria-label="__('Title')"
         :autofocus="true"
@@ -143,7 +146,7 @@ export default {
       class="gl-col-12 common-note-form gl-px-0"
     >
       <markdown-editor
-        v-model="description"
+        v-model="issuableMeta.issuableDescription"
         :render-markdown-path="descriptionPreviewPath"
         :markdown-docs-path="descriptionHelpPath"
         :enable-autocomplete="enableAutocomplete"
@@ -153,11 +156,7 @@ export default {
       />
     </gl-form-group>
     <div data-testid="actions" class="gl-my-3 gl-flex gl-flex-col gl-gap-3">
-      <slot
-        name="edit-form-actions"
-        :issuable-title="title"
-        :issuable-description="description"
-      ></slot>
+      <slot name="edit-form-actions" :issuable-meta="issuableMeta"></slot>
     </div>
   </gl-form>
 </template>

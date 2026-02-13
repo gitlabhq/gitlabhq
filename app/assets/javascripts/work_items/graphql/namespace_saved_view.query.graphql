@@ -3,6 +3,12 @@
 query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
   namespace(fullPath: $fullPath) {
     id
+    currentSavedViews: savedViews(subscribedOnly: true) {
+      nodes {
+        id
+      }
+    }
+    subscribedSavedViewLimit
     savedViews(id: $id) {
       nodes {
         id
@@ -12,6 +18,7 @@ query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
         filters
         sort
         subscribed
+        isPrivate: private
         userPermissions {
           updateSavedView
           deleteSavedView

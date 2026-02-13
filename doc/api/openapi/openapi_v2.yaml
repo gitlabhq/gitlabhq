@@ -47887,6 +47887,16 @@ definitions:
         example: https://gitlab.example.com/root
       requested_at:
         type: string
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - requested_at
     description: API_Entities_AccessRequester model
   API_Entities_CustomAttribute:
     type: object
@@ -47897,6 +47907,9 @@ definitions:
       value:
         type: string
         example: bar
+    required:
+    - key
+    - value
     description: API_Entities_CustomAttribute model
   putApiV4GroupsIdAccessRequestsUserIdApprove:
     type: object
@@ -47937,6 +47950,15 @@ definitions:
       url:
         type: string
         example: https://example.com/emojis/example.gif
+    required:
+    - id
+    - name
+    - user
+    - created_at
+    - updated_at
+    - awardable_id
+    - awardable_type
+    - url
     description: API_Entities_AwardEmoji model
   API_Entities_UserBasic:
     type: object
@@ -47972,6 +47994,15 @@ definitions:
       web_url:
         type: string
         example: https://gitlab.example.com/root
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
     description: API_Entities_UserBasic model
   postApiV4GroupsIdEpicsEpicIidAwardEmoji:
     type: object
@@ -48008,6 +48039,14 @@ definitions:
         type: string
       kind:
         type: string
+    required:
+    - name
+    - link_url
+    - image_url
+    - rendered_link_url
+    - rendered_image_url
+    - id
+    - kind
     description: API_Entities_Badge model
   API_Entities_BasicBadgeDetails:
     type: object
@@ -48022,6 +48061,12 @@ definitions:
         type: string
       rendered_image_url:
         type: string
+    required:
+    - name
+    - link_url
+    - image_url
+    - rendered_link_url
+    - rendered_image_url
     description: API_Entities_BasicBadgeDetails model
   postApiV4GroupsIdBadges:
     type: object
@@ -48152,6 +48197,16 @@ definitions:
             type: string
           uploads_size:
             type: string
+        required:
+        - storage_size
+        - repository_size
+        - wiki_size
+        - lfs_objects_size
+        - job_artifacts_size
+        - pipeline_artifacts_size
+        - packages_size
+        - snippets_size
+        - uploads_size
       marked_for_deletion_on:
         type: string
       root_storage_statistics:
@@ -48186,6 +48241,43 @@ definitions:
         type: string
       duo_namespace_access_rules:
         type: string
+    required:
+    - id
+    - web_url
+    - name
+    - path
+    - description
+    - visibility
+    - share_with_group_lock
+    - require_two_factor_authentication
+    - two_factor_grace_period
+    - project_creation_level
+    - auto_devops_enabled
+    - subgroup_creation_level
+    - emails_disabled
+    - emails_enabled
+    - show_diff_preview_in_email
+    - mentions_disabled
+    - lfs_enabled
+    - archived
+    - math_rendering_limits_enabled
+    - lock_math_rendering_limits_enabled
+    - default_branch
+    - default_branch_protection
+    - default_branch_protection_defaults
+    - avatar_url
+    - request_access_enabled
+    - full_name
+    - full_path
+    - created_at
+    - parent_id
+    - organization_id
+    - shared_runners_setting
+    - max_artifacts_size
+    - marked_for_deletion_on
+    - ldap_cn
+    - ldap_access
+    - wiki_access_level
     description: API_Entities_Group model
   API_Entities_Namespace_RootStorageStatistics:
     type: object
@@ -48238,6 +48330,19 @@ definitions:
         type: integer
         format: int32
         description: Wiki size in bytes.
+    required:
+    - build_artifacts_size
+    - container_registry_size
+    - container_registry_size_is_estimated
+    - dependency_proxy_size
+    - lfs_objects_size
+    - packages_size
+    - pipeline_artifacts_size
+    - repository_size
+    - snippets_size
+    - storage_size
+    - uploads_size
+    - wiki_size
   API_Entities_LdapGroupLink:
     type: object
     properties:
@@ -48258,6 +48363,10 @@ definitions:
         type: integer
         format: int32
         example: 12
+    required:
+    - cn
+    - group_access
+    - provider
   API_Entities_SamlGroupLink:
     type: object
     properties:
@@ -48275,6 +48384,10 @@ definitions:
       provider:
         type: string
         example: saml
+    required:
+    - name
+    - access_level
+    - provider
   postApiV4Groups:
     type: object
     properties:
@@ -49038,6 +49151,16 @@ definitions:
             type: string
           uploads_size:
             type: string
+        required:
+        - storage_size
+        - repository_size
+        - wiki_size
+        - lfs_objects_size
+        - job_artifacts_size
+        - pipeline_artifacts_size
+        - packages_size
+        - snippets_size
+        - uploads_size
       marked_for_deletion_on:
         type: string
       root_storage_statistics:
@@ -49117,6 +49240,48 @@ definitions:
         type: string
       auto_ban_user_on_excessive_projects_download:
         type: string
+    required:
+    - id
+    - web_url
+    - name
+    - path
+    - description
+    - visibility
+    - share_with_group_lock
+    - require_two_factor_authentication
+    - two_factor_grace_period
+    - project_creation_level
+    - auto_devops_enabled
+    - subgroup_creation_level
+    - emails_disabled
+    - emails_enabled
+    - show_diff_preview_in_email
+    - mentions_disabled
+    - lfs_enabled
+    - archived
+    - math_rendering_limits_enabled
+    - lock_math_rendering_limits_enabled
+    - default_branch
+    - default_branch_protection
+    - default_branch_protection_defaults
+    - avatar_url
+    - request_access_enabled
+    - full_name
+    - full_path
+    - created_at
+    - parent_id
+    - organization_id
+    - shared_runners_setting
+    - max_artifacts_size
+    - marked_for_deletion_on
+    - ldap_cn
+    - ldap_access
+    - wiki_access_level
+    - shared_with_groups
+    - shared_runners_minutes_limit
+    - extra_shared_runners_minutes_limit
+    - prevent_forking_outside_group
+    - membership_lock
     description: API_Entities_GroupDetail model
   API_Entities_Project:
     type: object
@@ -49231,6 +49396,13 @@ definitions:
           cluster_agents:
             type: string
             example: https://gitlab.example.com/api/v4/projects/4/cluster_agents
+        required:
+        - self
+        - repo_branches
+        - labels
+        - events
+        - members
+        - cluster_agents
       marked_for_deletion_at:
         type: string
       marked_for_deletion_on:
@@ -49537,6 +49709,92 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
+    - tag_list
+    - topics
+    - ssh_url_to_repo
+    - http_url_to_repo
+    - web_url
+    - avatar_url
+    - star_count
+    - last_activity_at
+    - visibility
+    - namespace
+    - _links
+    - marked_for_deletion_at
+    - marked_for_deletion_on
+    - packages_enabled
+    - empty_repo
+    - archived
+    - resolve_outdated_diff_discussions
+    - repository_object_format
+    - issues_enabled
+    - merge_requests_enabled
+    - wiki_enabled
+    - jobs_enabled
+    - snippets_enabled
+    - container_registry_enabled
+    - service_desk_enabled
+    - can_create_merge_request_in
+    - issues_access_level
+    - repository_access_level
+    - merge_requests_access_level
+    - forking_access_level
+    - wiki_access_level
+    - builds_access_level
+    - snippets_access_level
+    - pages_access_level
+    - analytics_access_level
+    - container_registry_access_level
+    - security_and_compliance_access_level
+    - releases_access_level
+    - environments_access_level
+    - feature_flags_access_level
+    - infrastructure_access_level
+    - monitor_access_level
+    - model_experiments_access_level
+    - model_registry_access_level
+    - package_registry_access_level
+    - emails_disabled
+    - emails_enabled
+    - show_diff_preview_in_email
+    - shared_runners_enabled
+    - lfs_enabled
+    - creator_id
+    - import_status
+    - description_html
+    - updated_at
+    - public_jobs
+    - shared_with_groups
+    - only_allow_merge_if_pipeline_succeeds
+    - allow_merge_on_skipped_pipeline
+    - request_access_enabled
+    - only_allow_merge_if_all_discussions_are_resolved
+    - remove_source_branch_after_merge
+    - printing_merge_request_link_enabled
+    - merge_method
+    - merge_request_title_regex
+    - merge_request_title_regex_description
+    - squash_option
+    - enforce_auth_checks_on_uploads
+    - suggestion_commit_message
+    - merge_commit_template
+    - squash_commit_template
+    - issue_branch_template
+    - warn_about_potentially_unwanted_characters
+    - autoclose_referenced_issues
+    - max_artifacts_size
+    - requirements_enabled
+    - requirements_access_level
+    - security_and_compliance_enabled
+    - compliance_frameworks
     description: API_Entities_Project model
   API_Entities_LicenseBasic:
     type: object
@@ -49555,6 +49813,12 @@ definitions:
         example: http://choosealicense.com/licenses/gpl-3.0
       source_url:
         type: string
+    required:
+    - key
+    - name
+    - nickname
+    - html_url
+    - source_url
   API_Entities_NamespaceBasic:
     type: object
     properties:
@@ -49584,6 +49848,15 @@ definitions:
       web_url:
         type: string
         example: https://example.com/group/my_project
+    required:
+    - id
+    - name
+    - path
+    - kind
+    - full_path
+    - parent_id
+    - avatar_url
+    - web_url
   API_Entities_BasicProjectDetails:
     type: object
     properties:
@@ -49665,6 +49938,24 @@ definitions:
       repository_storage:
         type: string
         example: default
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
+    - tag_list
+    - topics
+    - ssh_url_to_repo
+    - http_url_to_repo
+    - web_url
+    - avatar_url
+    - star_count
+    - last_activity_at
+    - visibility
+    - namespace
     description: API_Entities_BasicProjectDetails model
   API_Entities_ContainerExpirationPolicy:
     type: object
@@ -49683,6 +49974,14 @@ definitions:
         type: string
       next_run_at:
         type: string
+    required:
+    - cadence
+    - enabled
+    - keep_n
+    - older_than
+    - name_regex
+    - name_regex_keep
+    - next_run_at
   API_Entities_ProjectStatistics:
     type: object
     properties:
@@ -49708,6 +50007,18 @@ definitions:
         type: string
       container_registry_size:
         type: string
+    required:
+    - commit_count
+    - storage_size
+    - repository_size
+    - wiki_size
+    - lfs_objects_size
+    - job_artifacts_size
+    - pipeline_artifacts_size
+    - packages_size
+    - snippets_size
+    - uploads_size
+    - container_registry_size
   postApiV4GroupsIdTransfer:
     type: object
     properties:
@@ -49775,6 +50086,14 @@ definitions:
         type: string
       created_at:
         type: string
+    required:
+    - id
+    - author_id
+    - entity_id
+    - entity_type
+    - event_name
+    - details
+    - created_at
     description: API_Entities_AuditEvent model
   API_Entities_UserPublic:
     type: object
@@ -49902,6 +50221,47 @@ definitions:
         type: string
       scim_identities:
         "$ref": "#/definitions/API_Entities_ScimIdentity"
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - bio
+    - location
+    - linkedin
+    - twitter
+    - discord
+    - website_url
+    - github
+    - job_title
+    - pronouns
+    - organization
+    - bot
+    - work_information
+    - local_time
+    - last_sign_in_at
+    - confirmed_at
+    - last_activity_on
+    - email
+    - theme_id
+    - color_scheme_id
+    - projects_limit
+    - current_sign_in_at
+    - identities
+    - can_create_group
+    - can_create_project
+    - two_factor_enabled
+    - external
+    - private_profile
+    - commit_email
+    - preferred_language
+    - shared_runners_minutes_limit
+    - extra_shared_runners_minutes_limit
+    - scim_identities
     description: API_Entities_UserPublic model
   API_Entities_Identity:
     type: object
@@ -49912,6 +50272,10 @@ definitions:
         type: string
       saml_provider_id:
         type: string
+    required:
+    - provider
+    - extern_uid
+    - saml_provider_id
   API_Entities_ScimIdentity:
     type: object
     properties:
@@ -49921,6 +50285,10 @@ definitions:
         type: string
       active:
         type: string
+    required:
+    - extern_uid
+    - group_id
+    - active
   API_Entities_SshCertificate:
     type: object
     properties:
@@ -49937,6 +50305,11 @@ definitions:
         type: string
         format: date-time
         example: '2022-01-31T15:10:45.080Z'
+    required:
+    - id
+    - title
+    - key
+    - created_at
     description: API_Entities_SshCertificate model
   postApiV4GroupsIdSshCertificates:
     type: object
@@ -50001,6 +50374,19 @@ definitions:
         - active
         - idle
         example: idle
+    required:
+    - id
+    - description
+    - ip_address
+    - active
+    - paused
+    - is_shared
+    - runner_type
+    - name
+    - online
+    - created_at
+    - status
+    - job_execution_status
     description: API_Entities_Ci_Runner model
   API_Entities_Ci_ResetTokenResult:
     type: object
@@ -50009,6 +50395,8 @@ definitions:
         type: string
       token_expires_at:
         type: string
+    required:
+    - token
     description: API_Entities_Ci_ResetTokenResult model
   API_Entities_DeployToken:
     type: object
@@ -50035,6 +50423,14 @@ definitions:
         type: boolean
       expired:
         type: boolean
+    required:
+    - id
+    - name
+    - username
+    - expires_at
+    - scopes
+    - revoked
+    - expired
     description: API_Entities_DeployToken model
   postApiV4GroupsIdDeployTokens:
     type: object
@@ -50096,6 +50492,15 @@ definitions:
       token:
         type: string
         example: jMRvtPNxrn3crTAGukpZ
+    required:
+    - id
+    - name
+    - username
+    - expires_at
+    - scopes
+    - revoked
+    - expired
+    - token
     description: API_Entities_DeployTokenWithToken model
   API_Entities_Cluster:
     type: object
@@ -50130,6 +50535,22 @@ definitions:
         "$ref": "#/definitions/API_Entities_Provider_Gcp"
       management_project:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
+    required:
+    - id
+    - name
+    - created_at
+    - domain
+    - enabled
+    - managed
+    - provider_type
+    - platform_type
+    - environment_scope
+    - cluster_type
+    - namespace_per_environment
+    - user
+    - platform_kubernetes
+    - provider_gcp
+    - management_project
     description: API_Entities_Cluster model
   API_Entities_Platform_Kubernetes:
     type: object
@@ -50142,6 +50563,11 @@ definitions:
         type: string
       ca_cert:
         type: string
+    required:
+    - api_url
+    - namespace
+    - authorization_type
+    - ca_cert
   API_Entities_Provider_Gcp:
     type: object
     properties:
@@ -50159,6 +50585,14 @@ definitions:
         type: string
       endpoint:
         type: string
+    required:
+    - cluster_id
+    - status_name
+    - gcp_project_id
+    - zone
+    - machine_type
+    - num_nodes
+    - endpoint
   API_Entities_ProjectIdentity:
     type: object
     properties:
@@ -50185,6 +50619,14 @@ definitions:
         type: string
         format: date-time
         example: '2020-05-07T04:27:17.016Z'
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
   API_Entities_ClusterGroup:
     type: object
     properties:
@@ -50220,6 +50662,23 @@ definitions:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       group:
         "$ref": "#/definitions/API_Entities_BasicGroupDetails"
+    required:
+    - id
+    - name
+    - created_at
+    - domain
+    - enabled
+    - managed
+    - provider_type
+    - platform_type
+    - environment_scope
+    - cluster_type
+    - namespace_per_environment
+    - user
+    - platform_kubernetes
+    - provider_gcp
+    - management_project
+    - group
     description: API_Entities_ClusterGroup model
   API_Entities_BasicGroupDetails:
     type: object
@@ -50230,6 +50689,10 @@ definitions:
         type: string
       name:
         type: string
+    required:
+    - id
+    - web_url
+    - name
     description: API_Entities_BasicGroupDetails model
   postApiV4GroupsIdClustersUser:
     type: object
@@ -50382,6 +50845,15 @@ definitions:
       status:
         type: string
         example: delete_scheduled
+    required:
+    - id
+    - name
+    - path
+    - project_id
+    - location
+    - created_at
+    - cleanup_policy_started_at
+    - status
     description: API_Entities_ContainerRegistry_Repository model
   API_Entities_ContainerRegistry_Tag:
     type: object
@@ -50395,6 +50867,10 @@ definitions:
       location:
         type: string
         example: registry.dev/namespace1/project1/test_image_1:latest
+    required:
+    - name
+    - path
+    - location
     description: API_Entities_ContainerRegistry_Tag model
   postApiV4GroupsIdDebianDistributions:
     type: object
@@ -50483,6 +50959,17 @@ definitions:
         items:
           type: string
         example: amd64
+    required:
+    - id
+    - codename
+    - suite
+    - origin
+    - label
+    - version
+    - description
+    - valid_time_duration_seconds
+    - components
+    - architectures
     description: API_Entities_Packages_Debian_Distribution model
   putApiV4GroupsIdDebianDistributionsCodename:
     type: object
@@ -50567,6 +51054,14 @@ definitions:
         example: 100
       batches:
         "$ref": "#/definitions/API_Entities_BulkImports_ExportBatchStatus"
+    required:
+    - relation
+    - status
+    - error
+    - updated_at
+    - batched
+    - batches_count
+    - total_objects_count
     description: API_Entities_BulkImports_ExportStatus model
   API_Entities_BulkImports_ExportBatchStatus:
     type: object
@@ -50593,6 +51088,12 @@ definitions:
         type: string
         format: date-time
         example: '2012-05-28T04:42:42-07:00'
+    required:
+    - status
+    - batch_number
+    - objects_count
+    - error
+    - updated_at
   API_Entities_Package:
     type: object
     properties:
@@ -50644,6 +51145,16 @@ definitions:
         "$ref": "#/definitions/API_Entities_Package_Pipeline"
       versions:
         "$ref": "#/definitions/API_Entities_PackageVersion"
+    required:
+    - id
+    - name
+    - version
+    - package_type
+    - status
+    - _links
+    - created_at
+    - last_downloaded_at
+    - tags
     description: API_Entities_Package model
   API_Entities_Package_Pipeline:
     type: object
@@ -50685,6 +51196,18 @@ definitions:
         example: https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61
       user:
         "$ref": "#/definitions/API_Entities_UserBasic"
+    required:
+    - id
+    - iid
+    - project_id
+    - sha
+    - ref
+    - status
+    - source
+    - created_at
+    - updated_at
+    - web_url
+    - user
     description: API_Entities_Package_Pipeline model
   API_Entities_PackageVersion:
     type: object
@@ -50699,6 +51222,11 @@ definitions:
         type: string
       pipeline:
         "$ref": "#/definitions/API_Entities_Package_Pipeline"
+    required:
+    - id
+    - version
+    - created_at
+    - tags
   postApiV4GroupsIdPlaceholderReassignments:
     type: object
     properties:
@@ -50733,6 +51261,10 @@ definitions:
       description:
         type: string
         example: This variable is being used for ...
+    required:
+    - variable_type
+    - key
+    - value
     description: API_Entities_Ci_Variable model
   postApiV4GroupsIdVariables:
     type: object
@@ -50859,6 +51391,30 @@ definitions:
         type: boolean
       vulnerability_events:
         type: boolean
+    required:
+    - id
+    - title
+    - slug
+    - created_at
+    - updated_at
+    - active
+    - commit_events
+    - push_events
+    - issues_events
+    - incident_events
+    - alert_events
+    - confidential_issues_events
+    - merge_requests_events
+    - tag_push_events
+    - deployment_events
+    - note_events
+    - confidential_note_events
+    - pipeline_events
+    - wiki_page_events
+    - job_events
+    - comment_on_event_enabled
+    - inherited
+    - vulnerability_events
     description: API_Entities_IntegrationBasic model
   putApiV4GroupsIdIntegrationsAppleAppStore:
     type: object
@@ -52848,6 +53404,31 @@ definitions:
         type: object
         example:
           token: secr3t
+    required:
+    - id
+    - title
+    - slug
+    - created_at
+    - updated_at
+    - active
+    - commit_events
+    - push_events
+    - issues_events
+    - incident_events
+    - alert_events
+    - confidential_issues_events
+    - merge_requests_events
+    - tag_push_events
+    - deployment_events
+    - note_events
+    - confidential_note_events
+    - pipeline_events
+    - wiki_page_events
+    - job_events
+    - comment_on_event_enabled
+    - inherited
+    - vulnerability_events
+    - properties
     description: API_Entities_Integration model
   postApiV4GroupsIdInvitations:
     type: object
@@ -52907,6 +53488,13 @@ definitions:
         type: string
       created_by_name:
         type: string
+    required:
+    - access_level
+    - created_at
+    - expires_at
+    - invite_email
+    - invite_token
+    - created_by_name
     description: API_Entities_Invitation model
   putApiV4GroupsIdInvitationsEmail:
     type: object
@@ -53038,6 +53626,12 @@ definitions:
             type: string
           closed_as_duplicate_of:
             type: string
+        required:
+        - self
+        - notes
+        - award_emoji
+        - project
+        - closed_as_duplicate_of
       references:
         "$ref": "#/definitions/API_Entities_IssuableReferences"
       severity:
@@ -53062,6 +53656,44 @@ definitions:
         "$ref": "#/definitions/API_Entities_Iteration"
       health_status:
         type: string
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - closed_at
+    - closed_by
+    - labels
+    - milestone
+    - assignees
+    - author
+    - type
+    - assignee
+    - user_notes_count
+    - merge_requests_count
+    - upvotes
+    - downvotes
+    - start_date
+    - due_date
+    - confidential
+    - discussion_locked
+    - issue_type
+    - web_url
+    - time_stats
+    - task_completion_status
+    - blocking_issues_count
+    - has_tasks
+    - _links
+    - references
+    - severity
+    - moved_to_id
+    - imported
+    - imported_from
+    - service_desk_reply_to
     description: API_Entities_Issue model
   API_Entities_Milestone:
     type: object
@@ -53092,6 +53724,18 @@ definitions:
         type: string
       web_url:
         type: string
+    required:
+    - id
+    - iid
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - due_date
+    - start_date
+    - expired
+    - web_url
   API_Entities_IssuableTimeStats:
     type: object
     properties:
@@ -53109,6 +53753,11 @@ definitions:
       human_total_time_spent:
         type: string
         example: 1h
+    required:
+    - time_estimate
+    - total_time_spent
+    - human_time_estimate
+    - human_total_time_spent
     description: API_Entities_IssuableTimeStats model
   API_Entities_IssuableReferences:
     type: object
@@ -53122,6 +53771,10 @@ definitions:
       full:
         type: string
         example: test&6
+    required:
+    - short
+    - relative
+    - full
   EpicBaseEntity:
     type: object
     properties:
@@ -53139,6 +53792,12 @@ definitions:
         type: string
       human_readable_timestamp:
         type: string
+    required:
+    - id
+    - iid
+    - title
+    - url
+    - group_id
   API_Entities_Iteration:
     type: object
     properties:
@@ -53166,6 +53825,19 @@ definitions:
         type: string
       web_url:
         type: string
+    required:
+    - id
+    - iid
+    - sequence
+    - group_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - start_date
+    - due_date
+    - web_url
   API_Entities_MarkdownUploadAdmin:
     type: object
     properties:
@@ -53179,6 +53851,12 @@ definitions:
         type: string
       uploaded_by:
         "$ref": "#/definitions/API_Entities_UserSafe"
+    required:
+    - id
+    - size
+    - filename
+    - created_at
+    - uploaded_by
     description: API_Entities_MarkdownUploadAdmin model
   API_Entities_UserSafe:
     type: object
@@ -53196,6 +53874,11 @@ definitions:
       name:
         type: string
         example: Administrator
+    required:
+    - id
+    - username
+    - public_email
+    - name
   API_Entities_Member:
     type: object
     properties:
@@ -53252,6 +53935,19 @@ definitions:
         type: string
       member_role:
         "$ref": "#/definitions/API_Entities_MemberRole"
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - access_level
+    - created_at
+    - expires_at
+    - membership_state
     description: API_Entities_Member model
   API_Entities_MemberRole:
     type: object
@@ -53357,6 +54053,50 @@ definitions:
         type: boolean
       read_vulnerability:
         type: boolean
+    required:
+    - id
+    - group_id
+    - name
+    - description
+    - base_access_level
+    - apply_security_scan_profiles
+    - admin_merge_request
+    - archive_project
+    - remove_group
+    - remove_project
+    - manage_security_policy_link
+    - admin_compliance_framework
+    - admin_cicd_variables
+    - manage_deploy_tokens
+    - manage_group_access_tokens
+    - admin_group_member
+    - admin_integrations
+    - manage_merge_request_settings
+    - manage_project_access_tokens
+    - admin_protected_branch
+    - admin_protected_environments
+    - manage_protected_tags
+    - admin_push_rules
+    - admin_runners
+    - admin_security_attributes
+    - admin_security_testing
+    - admin_terraform_state
+    - admin_vulnerability
+    - admin_web_hook
+    - read_compliance_dashboard
+    - read_security_scan_profiles
+    - read_admin_cicd
+    - read_crm_contact
+    - read_dependency
+    - read_admin_groups
+    - read_admin_projects
+    - read_code
+    - read_runners
+    - read_security_attribute
+    - read_admin_subscription
+    - read_admin_monitoring
+    - read_admin_users
+    - read_vulnerability
   postApiV4GroupsIdMembers:
     type: object
     properties:
@@ -53437,6 +54177,18 @@ definitions:
             type: string
           custom_role:
             type: string
+        required:
+        - string_value
+        - integer_value
+        - custom_role
+    required:
+    - id
+    - source_id
+    - source_full_name
+    - source_members_url
+    - created_at
+    - expires_at
+    - access_level
     description: API_Entities_BillableMembership model
   API_Entities_MergeRequestBasic:
     type: object
@@ -53565,6 +54317,58 @@ definitions:
         type: string
       approvals_before_merge:
         type: string
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - merged_by
+    - merge_user
+    - merged_at
+    - closed_by
+    - closed_at
+    - target_branch
+    - source_branch
+    - user_notes_count
+    - upvotes
+    - downvotes
+    - author
+    - assignees
+    - assignee
+    - reviewers
+    - source_project_id
+    - target_project_id
+    - labels
+    - draft
+    - imported
+    - imported_from
+    - work_in_progress
+    - milestone
+    - merge_when_pipeline_succeeds
+    - merge_status
+    - detailed_merge_status
+    - merge_after
+    - sha
+    - merge_commit_sha
+    - squash_commit_sha
+    - discussion_locked
+    - should_remove_source_branch
+    - force_remove_source_branch
+    - prepared_at
+    - reference
+    - references
+    - web_url
+    - time_stats
+    - squash
+    - squash_on_merge
+    - task_completion_status
+    - has_conflicts
+    - blocking_discussions_resolved
+    - approvals_before_merge
     description: API_Entities_MergeRequestBasic model
   API_Entities_NpmPackageTag:
     type: object
@@ -53572,6 +54376,8 @@ definitions:
       dist_tags:
         type: object
         example: '{ "latest":"1.0.1" }'
+    required:
+    - dist_tags
     description: API_Entities_NpmPackageTag model
   putApiV4GroupsIdPackagesNpmPackage*packageNameDistTagsTag:
     type: object
@@ -53601,6 +54407,10 @@ definitions:
       dist-tags:
         type: object
         example: '{ "latest":"1.0.1" }'
+    required:
+    - name
+    - versions
+    - dist-tags
     description: API_Entities_NpmPackage model
   API_Entities_Nuget_ServiceIndex:
     type: object
@@ -53615,6 +54425,9 @@ definitions:
         example: '{ "@id": "https://gitlab.com/api/v4/projects/1/packages/nuget/query",
           "@type": "SearchQueryService", "comment": "Filter and search for packages
           by keyword."}'
+    required:
+    - version
+    - resources
     description: API_Entities_Nuget_ServiceIndex model
   API_Entities_Nuget_PackagesMetadata:
     type: object
@@ -53627,6 +54440,9 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_Nuget_PackagesMetadataItem"
+    required:
+    - count
+    - items
     description: API_Entities_Nuget_PackagesMetadata model
   API_Entities_Nuget_PackagesMetadataItem:
     type: object
@@ -53648,6 +54464,12 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_Nuget_PackageMetadata"
+    required:
+    - "@id"
+    - lower
+    - upper
+    - count
+    - items
   API_Entities_Nuget_PackageMetadata:
     type: object
     properties:
@@ -53659,6 +54481,10 @@ definitions:
         example: https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg
       catalogEntry:
         "$ref": "#/definitions/API_Entities_Nuget_PackageMetadataCatalogEntry"
+    required:
+    - "@id"
+    - packageContent
+    - catalogEntry
     description: API_Entities_Nuget_PackageMetadata model
   API_Entities_Nuget_PackageMetadataCatalogEntry:
     type: object
@@ -53703,6 +54529,17 @@ definitions:
       published:
         type: string
         example: '2023-05-08T17:23:25Z'
+    required:
+    - "@id"
+    - dependencyGroups
+    - id
+    - version
+    - tags
+    - packageContent
+    - authors
+    - description
+    - summary
+    - published
   API_Entities_Nuget_DependencyGroup:
     type: object
     properties:
@@ -53719,6 +54556,9 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_Nuget_Dependency"
+    required:
+    - "@id"
+    - "@type"
   API_Entities_Nuget_Dependency:
     type: object
     properties:
@@ -53734,6 +54574,11 @@ definitions:
       range:
         type: string
         example: 2.0.0
+    required:
+    - "@id"
+    - "@type"
+    - id
+    - range
   API_Entities_Nuget_SearchResults:
     type: object
     properties:
@@ -53745,6 +54590,9 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_Nuget_SearchResult"
+    required:
+    - totalHits
+    - data
     description: API_Entities_Nuget_SearchResults model
   API_Entities_Nuget_SearchResult:
     type: object
@@ -53790,6 +54638,18 @@ definitions:
       iconUrl:
         type: string
         example: http://sandbox.com/icon
+    required:
+    - "@type"
+    - id
+    - title
+    - totalDownloads
+    - verified
+    - version
+    - versions
+    - tags
+    - authors
+    - description
+    - summary
   API_Entities_Nuget_SearchResultVersion:
     type: object
     properties:
@@ -53803,6 +54663,10 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - "@id"
+    - version
+    - downloads
   API_Entities_Release:
     type: object
     properties:
@@ -53850,6 +54714,9 @@ definitions:
             "$ref": "#/definitions/API_Entities_Releases_Source"
           links:
             "$ref": "#/definitions/API_Entities_Releases_Link"
+        required:
+        - count
+        - links
       evidences:
         "$ref": "#/definitions/API_Entities_Releases_Evidence"
       _links:
@@ -53869,6 +54736,15 @@ definitions:
             type: string
           self:
             type: string
+    required:
+    - name
+    - tag_name
+    - description
+    - created_at
+    - released_at
+    - upcoming_release
+    - assets
+    - _links
     description: API_Entities_Release model
   API_Entities_Commit:
     type: object
@@ -53924,6 +54800,22 @@ definitions:
       web_url:
         type: string
         example: https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746
+    required:
+    - id
+    - short_id
+    - created_at
+    - parent_ids
+    - title
+    - message
+    - author_name
+    - author_email
+    - authored_date
+    - committer_name
+    - committer_email
+    - committed_date
+    - trailers
+    - extended_trailers
+    - web_url
     description: API_Entities_Commit model
   API_Entities_MilestoneWithStats:
     type: object
@@ -53961,6 +54853,22 @@ definitions:
             type: string
           closed:
             type: string
+        required:
+        - total
+        - closed
+    required:
+    - id
+    - iid
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - due_date
+    - start_date
+    - expired
+    - web_url
+    - issue_stats
   API_Entities_Releases_Source:
     type: object
     properties:
@@ -53970,6 +54878,9 @@ definitions:
       url:
         type: string
         example: https://gitlab.example.com/root/app/-/archive/v1.0/app-v1.0.zip
+    required:
+    - format
+    - url
   API_Entities_Releases_Link:
     type: object
     properties:
@@ -53989,6 +54900,12 @@ definitions:
       link_type:
         type: string
         example: other
+    required:
+    - id
+    - name
+    - url
+    - direct_asset_url
+    - link_type
     description: API_Entities_Releases_Link model
   API_Entities_Releases_Evidence:
     type: object
@@ -54003,6 +54920,10 @@ definitions:
         type: string
         format: date-time
         example: '2019-01-03T01:56:19.539Z'
+    required:
+    - sha
+    - filepath
+    - collected_at
   postApiV4GroupsIdAccessTokensSelfRotate:
     type: object
     properties:
@@ -54070,6 +54991,21 @@ definitions:
         example: 1234
       token:
         type: string
+    required:
+    - id
+    - name
+    - revoked
+    - created_at
+    - description
+    - scopes
+    - user_id
+    - last_used_at
+    - active
+    - expires_at
+    - access_level
+    - resource_type
+    - resource_id
+    - token
     description: API_Entities_ResourceAccessTokenWithToken model
   API_Entities_WikiPageBasic:
     type: object
@@ -54088,6 +55024,11 @@ definitions:
         format: int32
         example:
           wiki_page_meta_id: 123
+    required:
+    - format
+    - slug
+    - title
+    - wiki_page_meta_id
     description: API_Entities_WikiPageBasic model
   API_Entities_WikiPage:
     type: object
@@ -54116,6 +55057,14 @@ definitions:
         type: object
         example:
           title: deploy
+    required:
+    - format
+    - slug
+    - title
+    - wiki_page_meta_id
+    - content
+    - encoding
+    - front_matter
     description: API_Entities_WikiPage model
   postApiV4GroupsIdWikis:
     type: object
@@ -54207,6 +55156,14 @@ definitions:
           markdown:
             type: string
             example: "![dk](uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png)"
+        required:
+        - url
+        - markdown
+    required:
+    - file_name
+    - file_path
+    - branch
+    - link
     description: API_Entities_WikiAttachment model
   putApiV4ProjectsIdAccessRequestsUserIdApprove:
     type: object
@@ -54240,6 +55197,13 @@ definitions:
       url_text:
         type: string
         example: An example metric
+    required:
+    - id
+    - created_at
+    - filename
+    - file_path
+    - url
+    - url_text
     description: API_Entities_MetricImage model
   postApiV4ProjectsIdIssuesIssueIidAwardEmoji:
     type: object
@@ -54353,6 +55317,16 @@ definitions:
       web_url:
         type: string
         example: https://gitlab.example.com/Commit921/the-dude/-/tree/master
+    required:
+    - name
+    - commit
+    - merged
+    - protected
+    - developers_can_push
+    - developers_can_merge
+    - can_push
+    - default
+    - web_url
     description: API_Entities_Branch model
   putApiV4ProjectsIdRepositoryBranchesBranchProtect:
     type: object
@@ -54396,6 +55370,8 @@ definitions:
       catalog_url:
         type: string
         example: https://gitlab.example.com/explore/catalog/my-namespace/my-component-project
+    required:
+    - catalog_url
     description: API_Entities_Ci_Catalog_Resources_Version model
   API_Entities_Ci_JobArtifactEntry:
     type: object
@@ -54419,6 +55395,11 @@ definitions:
       mode:
         type: string
         example: '100644'
+    required:
+    - name
+    - path
+    - type
+    - mode
     description: API_Entities_Ci_JobArtifactEntry model
   API_Entities_Ci_Job:
     type: object
@@ -54491,6 +55472,8 @@ definitions:
           ci_job_token_scope_enabled:
             type: string
             example: false
+        required:
+        - ci_job_token_scope_enabled
       artifacts_file:
         "$ref": "#/definitions/API_Entities_Ci_JobArtifactFile"
       artifacts:
@@ -54515,6 +55498,31 @@ definitions:
         example:
         - ubuntu18
         - docker runner
+    required:
+    - id
+    - status
+    - stage
+    - name
+    - ref
+    - tag
+    - coverage
+    - allow_failure
+    - created_at
+    - started_at
+    - finished_at
+    - erased_at
+    - duration
+    - queued_duration
+    - user
+    - commit
+    - pipeline
+    - web_url
+    - project
+    - artifacts
+    - runner
+    - artifacts_expire_at
+    - archived
+    - tag_list
     description: API_Entities_Ci_Job model
   API_Entities_User:
     type: object
@@ -54584,6 +55592,28 @@ definitions:
         type: string
       local_time:
         type: string
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - bio
+    - location
+    - linkedin
+    - twitter
+    - discord
+    - website_url
+    - github
+    - job_title
+    - pronouns
+    - organization
+    - bot
+    - work_information
+    - local_time
   API_Entities_Ci_PipelineBasic:
     type: object
     properties:
@@ -54622,6 +55652,17 @@ definitions:
       web_url:
         type: string
         example: https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61
+    required:
+    - id
+    - iid
+    - project_id
+    - sha
+    - ref
+    - status
+    - source
+    - created_at
+    - updated_at
+    - web_url
     description: API_Entities_Ci_PipelineBasic model
   API_Entities_Ci_JobArtifactFile:
     type: object
@@ -54633,6 +55674,9 @@ definitions:
         type: integer
         format: int32
         example: 1000
+    required:
+    - filename
+    - size
   API_Entities_Ci_JobArtifact:
     type: object
     properties:
@@ -54687,6 +55731,11 @@ definitions:
         - zip
         - gzip
         example: zip
+    required:
+    - file_type
+    - size
+    - filename
+    - file_format
   API_Entities_Ci_RunnerManager:
     type: object
     properties:
@@ -54727,6 +55776,18 @@ definitions:
         - active
         - idle
         example: idle
+    required:
+    - id
+    - system_id
+    - version
+    - revision
+    - platform
+    - architecture
+    - created_at
+    - contacted_at
+    - ip_address
+    - status
+    - job_execution_status
     description: API_Entities_Ci_RunnerManager model
   postApiV4ProjectsIdJobsJobIdCancel:
     type: object
@@ -54843,6 +55904,28 @@ definitions:
           ci_job_token_scope_enabled:
             type: string
             example: false
+        required:
+        - ci_job_token_scope_enabled
+    required:
+    - id
+    - status
+    - stage
+    - name
+    - ref
+    - tag
+    - coverage
+    - allow_failure
+    - created_at
+    - started_at
+    - finished_at
+    - erased_at
+    - duration
+    - queued_duration
+    - user
+    - commit
+    - pipeline
+    - web_url
+    - project
     description: API_Entities_Ci_JobBasic model
   API_Entities_Ci_ResourceGroup:
     type: object
@@ -54865,6 +55948,12 @@ definitions:
         type: string
         format: date-time
         example: '2021-09-01T08:04:59.650Z'
+    required:
+    - id
+    - key
+    - process_mode
+    - created_at
+    - updated_at
     description: API_Entities_Ci_ResourceGroup model
   putApiV4ProjectsIdResourceGroupsKey:
     type: object
@@ -54919,6 +56008,15 @@ definitions:
       file_extension:
         type: string
         example: jks
+    required:
+    - id
+    - name
+    - checksum
+    - checksum_algorithm
+    - created_at
+    - expires_at
+    - metadata
+    - file_extension
     description: API_Entities_Ci_SecureFile model
   postApiV4ProjectsIdSecureFiles:
     type: object
@@ -55050,6 +56148,29 @@ definitions:
       archived:
         type: boolean
         example: false
+    required:
+    - id
+    - iid
+    - project_id
+    - sha
+    - ref
+    - status
+    - source
+    - created_at
+    - updated_at
+    - web_url
+    - before_sha
+    - tag
+    - yaml_errors
+    - user
+    - started_at
+    - finished_at
+    - committed_at
+    - duration
+    - queued_duration
+    - coverage
+    - detailed_status
+    - archived
     description: API_Entities_Ci_Pipeline model
   DetailedStatusEntity:
     type: object
@@ -55108,6 +56229,23 @@ definitions:
           confirmation_message:
             type: string
             example: Are you sure?
+        required:
+        - icon
+        - title
+        - path
+        - method
+        - button_title
+        - confirmation_message
+    required:
+    - icon
+    - text
+    - label
+    - group
+    - tooltip
+    - has_details
+    - details_path
+    - illustration
+    - favicon
   API_Entities_Ci_PipelineWithMetadata:
     type: object
     properties:
@@ -55191,6 +56329,30 @@ definitions:
       name:
         type: string
         example: Build pipeline
+    required:
+    - id
+    - iid
+    - project_id
+    - sha
+    - ref
+    - status
+    - source
+    - created_at
+    - updated_at
+    - web_url
+    - before_sha
+    - tag
+    - yaml_errors
+    - user
+    - started_at
+    - finished_at
+    - committed_at
+    - duration
+    - queued_duration
+    - coverage
+    - detailed_status
+    - archived
+    - name
     description: API_Entities_Ci_PipelineWithMetadata model
   API_Entities_Ci_Bridge:
     type: object
@@ -55263,8 +56425,31 @@ definitions:
           ci_job_token_scope_enabled:
             type: string
             example: false
+        required:
+        - ci_job_token_scope_enabled
       downstream_pipeline:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
+    required:
+    - id
+    - status
+    - stage
+    - name
+    - ref
+    - tag
+    - coverage
+    - allow_failure
+    - created_at
+    - started_at
+    - finished_at
+    - erased_at
+    - duration
+    - queued_duration
+    - user
+    - commit
+    - pipeline
+    - web_url
+    - project
+    - downstream_pipeline
     description: API_Entities_Ci_Bridge model
   TestReportEntity:
     type: object
@@ -55297,6 +56482,14 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/TestSuiteEntity"
+    required:
+    - total_time
+    - total_count
+    - success_count
+    - failed_count
+    - skipped_count
+    - error_count
+    - test_suites
     description: TestReportEntity model
   TestSuiteEntity:
     type: object
@@ -55335,6 +56528,14 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/TestCaseEntity"
+    required:
+    - name
+    - total_time
+    - total_count
+    - success_count
+    - failed_count
+    - skipped_count
+    - error_count
   TestCaseEntity:
     type: object
     properties:
@@ -55368,6 +56569,15 @@ definitions:
       attachment_url:
         type: string
         example: http://localhost/namespace1/project1/-/jobs/1/artifacts/file/some/path.png
+    required:
+    - status
+    - name
+    - classname
+    - file
+    - execution_time
+    - system_output
+    - stack_trace
+    - recent_failures
   TestReportSummaryEntity:
     type: object
     properties:
@@ -55383,6 +56593,9 @@ definitions:
           suite_error:
       test_suites:
         "$ref": "#/definitions/TestSuiteSummaryEntity"
+    required:
+    - total
+    - test_suites
     description: TestReportSummaryEntity model
   TestSuiteSummaryEntity:
     type: object
@@ -55428,6 +56641,16 @@ definitions:
           format: int32
         example:
         - 66004
+    required:
+    - name
+    - total_time
+    - total_count
+    - success_count
+    - failed_count
+    - skipped_count
+    - error_count
+    - suite_error
+    - build_ids
   putApiV4ProjectsIdPipelinesPipelineIdMetadata:
     type: object
     properties:
@@ -55476,6 +56699,17 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       inputs:
         "$ref": "#/definitions/API_Entities_Ci_Input"
+    required:
+    - id
+    - description
+    - ref
+    - cron
+    - cron_timezone
+    - next_run_at
+    - active
+    - created_at
+    - updated_at
+    - owner
     description: API_Entities_Ci_PipelineSchedule model
   API_Entities_Ci_Input:
     type: object
@@ -55484,6 +56718,9 @@ definitions:
         type: string
       value:
         type: string
+    required:
+    - name
+    - value
   API_Entities_Ci_PipelineScheduleDetails:
     type: object
     properties:
@@ -55526,6 +56763,18 @@ definitions:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
       variables:
         "$ref": "#/definitions/API_Entities_Ci_Variable"
+    required:
+    - id
+    - description
+    - ref
+    - cron
+    - cron_timezone
+    - next_run_at
+    - active
+    - created_at
+    - updated_at
+    - owner
+    - last_pipeline
     description: API_Entities_Ci_PipelineScheduleDetails model
   postApiV4ProjectsIdPipelineSchedules:
     type: object
@@ -55717,6 +56966,15 @@ definitions:
         example: '2015-12-24T17:54:31.198Z'
       owner:
         "$ref": "#/definitions/API_Entities_UserBasic"
+    required:
+    - id
+    - token
+    - description
+    - created_at
+    - updated_at
+    - last_used
+    - expires_at
+    - owner
     description: API_Entities_Trigger model
   postApiV4ProjectsIdTriggers:
     type: object
@@ -55829,6 +57087,14 @@ definitions:
         type: string
       created_by_user_id:
         type: string
+    required:
+    - id
+    - name
+    - description
+    - agent_id
+    - status
+    - created_at
+    - created_by_user_id
     description: API_Entities_Clusters_AgentTokenBasic model
   API_Entities_Clusters_AgentToken:
     type: object
@@ -55849,6 +57115,15 @@ definitions:
         type: string
       last_used_at:
         type: string
+    required:
+    - id
+    - name
+    - description
+    - agent_id
+    - status
+    - created_at
+    - created_by_user_id
+    - last_used_at
     description: API_Entities_Clusters_AgentToken model
   postApiV4ProjectsIdClusterAgentsAgentIdTokens:
     type: object
@@ -55883,6 +57158,16 @@ definitions:
         type: string
       token:
         type: string
+    required:
+    - id
+    - name
+    - description
+    - agent_id
+    - status
+    - created_at
+    - created_by_user_id
+    - last_used_at
+    - token
     description: API_Entities_Clusters_AgentTokenWithToken model
   API_Entities_Clusters_Agent:
     type: object
@@ -55899,6 +57184,13 @@ definitions:
         type: string
       is_receptive:
         type: string
+    required:
+    - id
+    - name
+    - config_project
+    - created_at
+    - created_by_user_id
+    - is_receptive
     description: API_Entities_Clusters_Agent model
   postApiV4ProjectsIdClusterAgents:
     type: object
@@ -55983,6 +57275,25 @@ definitions:
         example: 1
       last_pipeline:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
+    required:
+    - id
+    - short_id
+    - created_at
+    - parent_ids
+    - title
+    - message
+    - author_name
+    - author_email
+    - authored_date
+    - committer_name
+    - committer_email
+    - committed_date
+    - trailers
+    - extended_trailers
+    - web_url
+    - status
+    - project_id
+    - last_pipeline
     description: API_Entities_CommitDetail model
   API_Entities_CommitStats:
     type: object
@@ -55999,6 +57310,10 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - additions
+    - deletions
+    - total
   API_Entities_Diff:
     type: object
     properties:
@@ -56029,6 +57344,18 @@ definitions:
         type: boolean
       generated_file:
         type: boolean
+    required:
+    - diff
+    - collapsed
+    - too_large
+    - new_path
+    - old_path
+    - a_mode
+    - b_mode
+    - new_file
+    - renamed_file
+    - deleted_file
+    - generated_file
     description: API_Entities_Diff model
   API_Entities_CommitNote:
     type: object
@@ -56052,6 +57379,13 @@ definitions:
         type: string
         format: date-time
         example: '2016-01-19T09:44:55.600Z'
+    required:
+    - note
+    - path
+    - line
+    - line_type
+    - author
+    - created_at
     description: API_Entities_CommitNote model
   API_Entities_CommitSequence:
     type: object
@@ -56060,6 +57394,8 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - count
     description: API_Entities_CommitSequence model
   postApiV4ProjectsIdRepositoryCommitsShaCherryPick:
     type: object
@@ -56102,6 +57438,9 @@ definitions:
       name:
         type: string
         example: v1.1.0
+    required:
+    - type
+    - name
     description: API_Entities_BasicRef model
   postApiV4ProjectsIdRepositoryCommitsShaComments:
     type: object
@@ -56142,6 +57481,10 @@ definitions:
       commit_source:
         type: string
         example: gitaly
+    required:
+    - signature_type
+    - signature
+    - commit_source
     description: API_Entities_CommitSignature model
   API_Entities_CommitStatus:
     type: object
@@ -56192,6 +57535,21 @@ definitions:
         example: 101
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
+    required:
+    - id
+    - sha
+    - ref
+    - status
+    - name
+    - target_url
+    - description
+    - created_at
+    - started_at
+    - finished_at
+    - allow_failure
+    - coverage
+    - pipeline_id
+    - author
     description: API_Entities_CommitStatus model
   postApiV4ProjectsIdStatusesSha:
     type: object
@@ -56261,6 +57619,8 @@ definitions:
       package_snapshot:
         type: object
         example: '{ "conan_package.tgz": "749b29bdf72587081ca03ec033ee59dc" }'
+    required:
+    - package_snapshot
     description: API_Entities_Packages_Conan_PackageSnapshot model
   API_Entities_Packages_Conan_RecipeSnapshot:
     type: object
@@ -56268,6 +57628,8 @@ definitions:
       recipe_snapshot:
         type: object
         example: '{ "conan_sources.tgz": "eadf19b33f4c3c7e113faabf26e76277" }'
+    required:
+    - recipe_snapshot
     description: API_Entities_Packages_Conan_RecipeSnapshot model
   API_Entities_Packages_Conan_PackageManifest:
     type: object
@@ -56275,6 +57637,8 @@ definitions:
       package_urls:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"'
+    required:
+    - package_urls
     description: API_Entities_Packages_Conan_PackageManifest model
   API_Entities_Packages_Conan_RecipeManifest:
     type: object
@@ -56283,6 +57647,8 @@ definitions:
         type: object
         example: '{ "conan_sources.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conan_sources.tgz"
           }'
+    required:
+    - recipe_urls
     description: API_Entities_Packages_Conan_RecipeManifest model
   API_Entities_Packages_Conan_UploadUrls:
     type: object
@@ -56291,6 +57657,8 @@ definitions:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"
           }'
+    required:
+    - upload_urls
     description: API_Entities_Packages_Conan_UploadUrls model
   putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
@@ -56321,6 +57689,9 @@ definitions:
         type: string
         example: '2024-12-17T09:16:40.334Z'
         description: The UTC timestamp when the revision was created
+    required:
+    - revision
+    - time
     description: API_Entities_Packages_Conan_Revision model
   API_Entities_Packages_Conan_RecipeRevisions:
     type: object
@@ -56334,6 +57705,9 @@ definitions:
         items:
           "$ref": "#/definitions/API_Entities_Packages_Conan_Revision"
         description: List of recipe revisions
+    required:
+    - reference
+    - revisions
     description: API_Entities_Packages_Conan_RecipeRevisions model
   API_Entities_Packages_Conan_FilesList:
     type: object
@@ -56342,6 +57716,8 @@ definitions:
         type: object
         example: '{ "files" : { "conan_sources.tgz" : { }, "conanmanifest.txt" : {
           }, "conanfile.py" : { } } }'
+    required:
+    - files
     description: API_Entities_Packages_Conan_FilesList model
   ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
   : type: object
@@ -56364,6 +57740,9 @@ definitions:
         items:
           "$ref": "#/definitions/API_Entities_Packages_Conan_Revision"
         description: List of package revisions
+    required:
+    - packageReference
+    - revisions
     description: API_Entities_Packages_Conan_PackageRevisions model
   ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
   : type: object
@@ -56442,6 +57821,16 @@ definitions:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       can_push:
         type: boolean
+    required:
+    - id
+    - title
+    - created_at
+    - expires_at
+    - last_used_at
+    - key
+    - usage_type
+    - fingerprint_sha256
+    - can_push
     description: API_Entities_DeployKeysProject model
   postApiV4ProjectsIdDeployKeys:
     type: object
@@ -56511,6 +57900,15 @@ definitions:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       projects_with_readonly_access:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
+    required:
+    - id
+    - title
+    - created_at
+    - expires_at
+    - last_used_at
+    - key
+    - usage_type
+    - fingerprint_sha256
     description: API_Entities_DeployKey model
   postApiV4ProjectsIdDeployTokens:
     type: object
@@ -56579,6 +57977,17 @@ definitions:
       status:
         type: string
         example: created
+    required:
+    - id
+    - iid
+    - ref
+    - sha
+    - created_at
+    - updated_at
+    - user
+    - environment
+    - deployable
+    - status
     description: API_Entities_Deployment model
   API_Entities_EnvironmentBasic:
     type: object
@@ -56604,6 +58013,13 @@ definitions:
         type: string
         format: date-time
         example: '2019-05-25T18:55:13.252Z'
+    required:
+    - id
+    - name
+    - slug
+    - external_url
+    - created_at
+    - updated_at
     description: API_Entities_EnvironmentBasic model
   API_Entities_DeploymentExtended:
     type: object
@@ -56647,6 +58063,20 @@ definitions:
         "$ref": "#/definitions/API_Entities_Deployments_Approval"
       approval_summary:
         "$ref": "#/definitions/API_Entities_Deployments_ApprovalSummary"
+    required:
+    - id
+    - iid
+    - ref
+    - sha
+    - created_at
+    - updated_at
+    - user
+    - environment
+    - deployable
+    - status
+    - pending_approval_count
+    - approvals
+    - approval_summary
     description: API_Entities_DeploymentExtended model
   API_Entities_Deployments_Approval:
     type: object
@@ -56663,12 +58093,19 @@ definitions:
       comment:
         type: string
         example: LGTM
+    required:
+    - user
+    - status
+    - created_at
+    - comment
     description: API_Entities_Deployments_Approval model
   API_Entities_Deployments_ApprovalSummary:
     type: object
     properties:
       rules:
         "$ref": "#/definitions/API_Entities_ProtectedEnvironments_ApprovalRuleForSummary"
+    required:
+    - rules
   API_Entities_ProtectedEnvironments_ApprovalRuleForSummary:
     type: object
     properties:
@@ -56688,6 +58125,15 @@ definitions:
         type: string
       deployment_approvals:
         "$ref": "#/definitions/API_Entities_Deployments_Approval"
+    required:
+    - id
+    - user_id
+    - group_id
+    - access_level
+    - access_level_description
+    - required_approvals
+    - group_inheritance_type
+    - deployment_approvals
   postApiV4ProjectsIdDeployments:
     type: object
     properties:
@@ -56808,6 +58254,16 @@ definitions:
               type:
               old_line: 2
               new_line: 4
+    required:
+    - id
+    - author_id
+    - merge_request_id
+    - resolve_discussion
+    - discussion_id
+    - note
+    - commit_id
+    - line_code
+    - position
     description: API_Entities_DraftNote model
   postApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotes:
     type: object
@@ -57074,6 +58530,19 @@ definitions:
       auto_stop_setting:
         type: string
         example: always
+    required:
+    - id
+    - name
+    - slug
+    - external_url
+    - created_at
+    - updated_at
+    - tier
+    - project
+    - state
+    - auto_stop_at
+    - description
+    - auto_stop_setting
     description: API_Entities_Environment model
   postApiV4ProjectsIdEnvironments:
     type: object
@@ -57188,6 +58657,11 @@ definitions:
       sentry_dsn:
         type: string
         example: https://glet_aa77551d849c083f76d0bc545ed053a3@example.com/errortracking/api/v1/projects/5
+    required:
+    - id
+    - active
+    - public_key
+    - sentry_dsn
     description: API_Entities_ErrorTracking_ClientKey model
   API_Entities_ErrorTracking_ProjectSetting:
     type: object
@@ -57205,6 +58679,12 @@ definitions:
         example: https://sentry.io/api/0/projects/myawesomeproject/project
       integrated:
         type: boolean
+    required:
+    - active
+    - project_name
+    - sentry_external_url
+    - api_url
+    - integrated
     description: API_Entities_ErrorTracking_ProjectSetting model
   patchApiV4ProjectsIdErrorTrackingSettings:
     type: object
@@ -57261,6 +58741,15 @@ definitions:
         type: string
       strategies:
         "$ref": "#/definitions/API_Entities_FeatureFlag_Strategy"
+    required:
+    - name
+    - description
+    - active
+    - version
+    - created_at
+    - updated_at
+    - scopes
+    - strategies
     description: API_Entities_FeatureFlag model
   API_Entities_FeatureFlag_Strategy:
     type: object
@@ -57279,6 +58768,12 @@ definitions:
         "$ref": "#/definitions/API_Entities_FeatureFlag_Scope"
       user_list:
         "$ref": "#/definitions/API_Entities_FeatureFlag_BasicUserList"
+    required:
+    - id
+    - name
+    - parameters
+    - scopes
+    - user_list
   API_Entities_FeatureFlag_Scope:
     type: object
     properties:
@@ -57289,6 +58784,9 @@ definitions:
       environment_scope:
         type: string
         example: production
+    required:
+    - id
+    - environment_scope
   API_Entities_FeatureFlag_BasicUserList:
     type: object
     properties:
@@ -57306,6 +58804,11 @@ definitions:
       user_xids:
         type: string
         example: user1,user2
+    required:
+    - id
+    - iid
+    - name
+    - user_xids
   postApiV4ProjectsIdFeatureFlags:
     type: object
     properties:
@@ -57445,6 +58948,16 @@ definitions:
         type: string
       edit_path:
         type: string
+    required:
+    - id
+    - iid
+    - name
+    - user_xids
+    - project_id
+    - created_at
+    - updated_at
+    - path
+    - edit_path
     description: API_Entities_FeatureFlag_UserList model
   postApiV4ProjectsIdFeatureFlagsUserLists:
     type: object
@@ -57476,6 +58989,9 @@ definitions:
         "$ref": "#/definitions/API_Entities_BlameRangeCommit"
       lines:
         type: string
+    required:
+    - commit
+    - lines
     description: API_Entities_BlameRange model
   API_Entities_BlameRangeCommit:
     type: object
@@ -57498,6 +59014,16 @@ definitions:
         type: string
       committer_email:
         type: string
+    required:
+    - id
+    - parent_ids
+    - message
+    - authored_date
+    - author_name
+    - author_email
+    - committed_date
+    - committer_name
+    - committer_email
   postApiV4ProjectsIdRepositoryFilesFilePath:
     type: object
     properties:
@@ -57540,6 +59066,13 @@ definitions:
         type: string
         format: date-time
         example: '2020-05-15T17:03:35.702Z'
+    required:
+    - id
+    - freeze_start
+    - freeze_end
+    - cron_timezone
+    - created_at
+    - updated_at
     description: API_Entities_FreezePeriod model
   postApiV4ProjectsIdFreezePeriods:
     type: object
@@ -57626,6 +59159,9 @@ definitions:
       Time:
         type: string
         example: 1617822312 -0600
+    required:
+    - Version
+    - Time
     description: API_Entities_GoModuleVersion model
   postApiV4ProjectsIdPackagesHelmApiChannelCharts:
     type: object
@@ -61695,6 +63231,12 @@ definitions:
             type: string
           closed_as_duplicate_of:
             type: string
+        required:
+        - self
+        - notes
+        - award_emoji
+        - project
+        - closed_as_duplicate_of
       references:
         "$ref": "#/definitions/API_Entities_IssuableReferences"
       severity:
@@ -61727,6 +63269,48 @@ definitions:
         type: string
       link_updated_at:
         type: string
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - closed_at
+    - closed_by
+    - labels
+    - milestone
+    - assignees
+    - author
+    - type
+    - assignee
+    - user_notes_count
+    - merge_requests_count
+    - upvotes
+    - downvotes
+    - start_date
+    - due_date
+    - confidential
+    - discussion_locked
+    - issue_type
+    - web_url
+    - time_stats
+    - task_completion_status
+    - blocking_issues_count
+    - has_tasks
+    - _links
+    - references
+    - severity
+    - moved_to_id
+    - imported
+    - imported_from
+    - service_desk_reply_to
+    - issue_link_id
+    - link_type
+    - link_created_at
+    - link_updated_at
     description: API_Entities_RelatedIssue model
   postApiV4ProjectsIdIssuesIssueIidLinks:
     type: object
@@ -61762,6 +63346,11 @@ definitions:
         "$ref": "#/definitions/API_Entities_IssueBasic"
       link_type:
         type: string
+    required:
+    - id
+    - source_issue
+    - target_issue
+    - link_type
     description: API_Entities_IssueLink model
   API_Entities_IssueBasic:
     type: object
@@ -61853,6 +63442,36 @@ definitions:
         type: string
       blocking_issues_count:
         type: string
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - closed_at
+    - closed_by
+    - labels
+    - milestone
+    - assignees
+    - author
+    - type
+    - assignee
+    - user_notes_count
+    - merge_requests_count
+    - upvotes
+    - downvotes
+    - start_date
+    - due_date
+    - confidential
+    - discussion_locked
+    - issue_type
+    - web_url
+    - time_stats
+    - task_completion_status
+    - blocking_issues_count
   postApiV4ProjectsIdIssuesIssueIidTimeEstimate:
     type: object
     properties:
@@ -62094,6 +63713,10 @@ definitions:
       akismet_submitted:
         type: boolean
         example: false
+    required:
+    - user_agent
+    - ip_address
+    - akismet_submitted
     description: API_Entities_UserAgentDetail model
   postApiV4ProjectsIdIssuesIssueIidMetricImages:
     type: object
@@ -62125,6 +63748,13 @@ definitions:
         type: string
       url_text:
         type: string
+    required:
+    - id
+    - created_at
+    - filename
+    - file_path
+    - url
+    - url_text
     description: API_Entities_IssuableMetricImage model
   putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId:
     type: object
@@ -62166,6 +63796,12 @@ definitions:
         items:
           type: object
         example: '{ "name": "test: .... }'
+    required:
+    - valid
+    - errors
+    - warnings
+    - merged_yaml
+    - includes
     description: API_Entities_Ci_Lint_Result model
   API_Entities_Ci_Lint_Result_Include:
     type: object
@@ -62192,6 +63828,14 @@ definitions:
       context_sha:
         type: string
         example: e52d6d0246d7375291850e61f0abc101fbda9dc2
+    required:
+    - type
+    - location
+    - blob
+    - raw
+    - extra
+    - context_project
+    - context_sha
   postApiV4ProjectsIdCiLint:
     type: object
     properties:
@@ -62237,6 +63881,12 @@ definitions:
         type: string
       markdown:
         type: string
+    required:
+    - id
+    - alt
+    - url
+    - full_path
+    - markdown
     description: API_Entities_ProjectUpload model
   putApiV4ProjectsIdPackagesMaven*pathFileNameAuthorize:
     type: object
@@ -62564,6 +64214,64 @@ definitions:
         properties:
           can_merge:
             type: string
+        required:
+        - can_merge
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - merged_by
+    - merge_user
+    - merged_at
+    - closed_by
+    - closed_at
+    - target_branch
+    - source_branch
+    - user_notes_count
+    - upvotes
+    - downvotes
+    - author
+    - assignees
+    - assignee
+    - reviewers
+    - source_project_id
+    - target_project_id
+    - labels
+    - draft
+    - imported
+    - imported_from
+    - work_in_progress
+    - milestone
+    - merge_when_pipeline_succeeds
+    - merge_status
+    - detailed_merge_status
+    - merge_after
+    - sha
+    - merge_commit_sha
+    - squash_commit_sha
+    - discussion_locked
+    - should_remove_source_branch
+    - force_remove_source_branch
+    - prepared_at
+    - reference
+    - references
+    - web_url
+    - time_stats
+    - squash
+    - squash_on_merge
+    - task_completion_status
+    - has_conflicts
+    - blocking_discussions_resolved
+    - approvals_before_merge
+    - changes_count
+    - diff_refs
+    - merge_error
+    - user
     description: API_Entities_MergeRequest model
   API_Entities_DiffRefs:
     type: object
@@ -62574,6 +64282,10 @@ definitions:
         type: string
       start_sha:
         type: string
+    required:
+    - base_sha
+    - head_sha
+    - start_sha
   API_Entities_MergeRequestReviewer:
     type: object
     properties:
@@ -62583,6 +64295,10 @@ definitions:
         type: string
       created_at:
         type: string
+    required:
+    - user
+    - state
+    - created_at
     description: API_Entities_MergeRequestReviewer model
   postApiV4ProjectsIdMergeRequestsMergeRequestIidContextCommits:
     type: object
@@ -62751,10 +64467,70 @@ definitions:
         properties:
           can_merge:
             type: string
+        required:
+        - can_merge
       changes:
         "$ref": "#/definitions/API_Entities_Diff"
       overflow:
         type: string
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - merged_by
+    - merge_user
+    - merged_at
+    - closed_by
+    - closed_at
+    - target_branch
+    - source_branch
+    - user_notes_count
+    - upvotes
+    - downvotes
+    - author
+    - assignees
+    - assignee
+    - reviewers
+    - source_project_id
+    - target_project_id
+    - labels
+    - draft
+    - imported
+    - imported_from
+    - work_in_progress
+    - milestone
+    - merge_when_pipeline_succeeds
+    - merge_status
+    - detailed_merge_status
+    - merge_after
+    - sha
+    - merge_commit_sha
+    - squash_commit_sha
+    - discussion_locked
+    - should_remove_source_branch
+    - force_remove_source_branch
+    - prepared_at
+    - reference
+    - references
+    - web_url
+    - time_stats
+    - squash
+    - squash_on_merge
+    - task_completion_status
+    - has_conflicts
+    - blocking_discussions_resolved
+    - approvals_before_merge
+    - changes_count
+    - diff_refs
+    - merge_error
+    - user
+    - changes
+    - overflow
     description: API_Entities_MergeRequestChanges model
   postApiV4ProjectsIdMergeRequestsMergeRequestIidPipelines:
     type: object
@@ -62894,6 +64670,9 @@ definitions:
         type: string
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
+    required:
+    - note
+    - author
     description: API_Entities_MRNote model
   API_Entities_MergeRequestApprovals:
     type: object
@@ -62906,6 +64685,11 @@ definitions:
         type: boolean
       approved_by:
         "$ref": "#/definitions/API_Entities_Approvals"
+    required:
+    - user_has_approved
+    - user_can_approve
+    - approved
+    - approved_by
     description: API_Entities_MergeRequestApprovals model
   API_Entities_Approvals:
     type: object
@@ -62916,6 +64700,9 @@ definitions:
         type: string
         format: date-time
         example: '2025-01-01T10:00:00Z'
+    required:
+    - user
+    - approved_at
   postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove:
     type: object
     properties:
@@ -62940,6 +64727,9 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_MergeRequestApprovalStateRule"
+    required:
+    - approval_rules_overwritten
+    - rules
     description: API_Entities_MergeRequestApprovalState model
   API_Entities_MergeRequestApprovalStateRule:
     type: object
@@ -62989,6 +64779,22 @@ definitions:
           "$ref": "#/definitions/API_Entities_UserBasic"
       approved:
         type: boolean
+    required:
+    - id
+    - name
+    - rule_type
+    - eligible_approvers
+    - approvals_required
+    - users
+    - groups
+    - contains_hidden_groups
+    - report_type
+    - section
+    - source_rule
+    - overridden
+    - code_owner
+    - approved_by
+    - approved
   API_Entities_MergeRequestApprovalRule_SourceRule:
     type: object
     properties:
@@ -62996,6 +64802,8 @@ definitions:
         type: integer
         format: int32
         example: 2
+    required:
+    - approvals_required
   postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals:
     type: object
     properties:
@@ -63085,6 +64893,31 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_ApprovalRuleShort"
+    required:
+    - id
+    - iid
+    - project_id
+    - title
+    - description
+    - state
+    - created_at
+    - updated_at
+    - merge_status
+    - approved
+    - approvals_required
+    - approvals_left
+    - require_password_to_approve
+    - approved_by
+    - suggested_approvers
+    - approvers
+    - approver_groups
+    - user_has_approved
+    - user_can_approve
+    - approval_rules_left
+    - has_approval_rules
+    - merge_request_approvers_available
+    - multiple_approval_rules_available
+    - invalid_approvers_rules
     description: API_Entities_ApprovalState model
   API_Entities_ApprovalRuleShort:
     type: object
@@ -63099,6 +64932,10 @@ definitions:
       rule_type:
         type: string
         example: regular
+    required:
+    - id
+    - name
+    - rule_type
   API_Entities_MergeRequestDiff:
     type: object
     properties:
@@ -63120,6 +64957,16 @@ definitions:
         type: string
       patch_id_sha:
         type: string
+    required:
+    - id
+    - head_commit_sha
+    - base_commit_sha
+    - start_commit_sha
+    - created_at
+    - merge_request_id
+    - state
+    - real_size
+    - patch_id_sha
     description: API_Entities_MergeRequestDiff model
   API_Entities_MergeRequestDiffFull:
     type: object
@@ -63146,6 +64993,18 @@ definitions:
         "$ref": "#/definitions/API_Entities_Commit"
       diffs:
         "$ref": "#/definitions/API_Entities_Diff"
+    required:
+    - id
+    - head_commit_sha
+    - base_commit_sha
+    - start_commit_sha
+    - created_at
+    - merge_request_id
+    - state
+    - real_size
+    - patch_id_sha
+    - commits
+    - diffs
     description: API_Entities_MergeRequestDiffFull model
   putApiV4ProjectsIdPackagesMlModelsModelVersionIdFiles(*path)FileNameAuthorize:
     type: object
@@ -63204,6 +65063,8 @@ definitions:
         items:
           type: string
         example: 1.3.0.17
+    required:
+    - versions
     description: API_Entities_Nuget_PackagesVersions model
   putApiV4ProjectsIdPackagesNuget:
     type: object
@@ -63265,6 +65126,15 @@ definitions:
         example: a903393463d3915d7e22219f52740056dfd26cbfeff321b
       pipelines:
         "$ref": "#/definitions/API_Entities_Package_Pipeline"
+    required:
+    - id
+    - package_id
+    - created_at
+    - file_name
+    - size
+    - file_md5
+    - file_sha1
+    - file_sha256
     description: API_Entities_PackageFile model
   patchApiV4ProjectsIdPages:
     type: object
@@ -63296,6 +65166,13 @@ definitions:
         type: string
       certificate:
         "$ref": "#/definitions/API_Entities_PagesDomainCertificate"
+    required:
+    - domain
+    - url
+    - verified
+    - verification_code
+    - enabled_until
+    - auto_ssl_enabled
     description: API_Entities_PagesDomain model
   API_Entities_PagesDomainCertificate:
     type: object
@@ -63308,6 +65185,11 @@ definitions:
         type: string
       certificate_text:
         type: string
+    required:
+    - subject
+    - expired
+    - certificate
+    - certificate_text
   postApiV4ProjectsIdPagesDomains:
     type: object
     properties:
@@ -63381,6 +65263,23 @@ definitions:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       project:
         "$ref": "#/definitions/API_Entities_BasicProjectDetails"
+    required:
+    - id
+    - name
+    - created_at
+    - domain
+    - enabled
+    - managed
+    - provider_type
+    - platform_type
+    - environment_scope
+    - cluster_type
+    - namespace_per_environment
+    - user
+    - platform_kubernetes
+    - provider_gcp
+    - management_project
+    - project
     description: API_Entities_ClusterProject model
   postApiV4ProjectsIdClustersUser:
     type: object
@@ -63518,6 +65417,15 @@ definitions:
         type: integer
         format: int32
         example: 3
+    required:
+    - name
+    - path
+    - location
+    - revision
+    - short_revision
+    - digest
+    - created_at
+    - total_size
     description: API_Entities_ContainerRegistry_TagDetails model
   API_Entities_Projects_ContainerRegistry_Protection_Rule:
     type: object
@@ -63539,6 +65447,12 @@ definitions:
       minimum_access_level_for_delete:
         type: string
         example: maintainer
+    required:
+    - id
+    - project_id
+    - repository_path_pattern
+    - minimum_access_level_for_push
+    - minimum_access_level_for_delete
     description: API_Entities_Projects_ContainerRegistry_Protection_Rule model
   postApiV4ProjectsIdRegistryProtectionRepositoryRules:
     type: object
@@ -63618,6 +65532,12 @@ definitions:
       minimum_access_level_for_delete:
         type: string
         example: maintainer
+    required:
+    - id
+    - project_id
+    - tag_name_pattern
+    - minimum_access_level_for_push
+    - minimum_access_level_for_delete
     description: API_Entities_Projects_ContainerRegistry_Protection_TagRule model
   postApiV4ProjectsIdRegistryProtectionTagRules:
     type: object
@@ -63818,6 +65738,19 @@ definitions:
       author_username:
         type: string
         example: root
+    required:
+    - id
+    - project_id
+    - action_name
+    - target_id
+    - target_iid
+    - target_type
+    - author_id
+    - target_title
+    - created_at
+    - imported
+    - imported_from
+    - author_username
     description: API_Entities_Event model
   API_Entities_Note:
     type: object
@@ -63869,6 +65802,24 @@ definitions:
         type: string
       commands_changes:
         type: string
+    required:
+    - id
+    - type
+    - body
+    - author
+    - created_at
+    - updated_at
+    - system
+    - noteable_id
+    - noteable_type
+    - project_id
+    - resolvable
+    - confidential
+    - internal
+    - imported
+    - imported_from
+    - noteable_iid
+    - commands_changes
   API_Entities_Suggestion:
     type: object
     properties:
@@ -63886,6 +65837,14 @@ definitions:
         type: string
       to_content:
         type: string
+    required:
+    - id
+    - from_line
+    - to_line
+    - appliable
+    - applied
+    - from_content
+    - to_content
     description: API_Entities_Suggestion model
   API_Entities_PushEventPayload:
     type: object
@@ -63916,6 +65875,15 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - commit_count
+    - action
+    - ref_type
+    - commit_from
+    - commit_to
+    - ref
+    - commit_title
+    - ref_count
   API_Entities_ProjectExportStatus:
     type: object
     properties:
@@ -63959,6 +65927,18 @@ definitions:
           web_url:
             type: string
             example: https://gitlab.example.com/gitlab-org/gitlab-test/download_export
+        required:
+        - api_url
+        - web_url
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
+    - export_status
     description: API_Entities_ProjectExportStatus model
   postApiV4ProjectsIdExport:
     type: object
@@ -64098,6 +66078,37 @@ definitions:
         type: boolean
       vulnerability_events:
         type: boolean
+    required:
+    - id
+    - url
+    - name
+    - description
+    - created_at
+    - push_events
+    - tag_push_events
+    - merge_requests_events
+    - repository_update_events
+    - enable_ssl_verification
+    - alert_status
+    - disabled_until
+    - push_events_branch_filter
+    - branch_filter_strategy
+    - custom_webhook_template
+    - project_id
+    - issues_events
+    - confidential_issues_events
+    - note_events
+    - confidential_note_events
+    - pipeline_events
+    - wiki_page_events
+    - deployment_events
+    - feature_flag_events
+    - job_events
+    - releases_events
+    - milestone_events
+    - emoji_events
+    - resource_access_token_events
+    - vulnerability_events
     description: API_Entities_ProjectHook model
   putApiV4ProjectsIdHooksHookId:
     type: object
@@ -64384,6 +66395,20 @@ definitions:
         example: Error message
       stats:
         type: object
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
+    - import_status
+    - import_type
+    - correlation_id
+    - failed_relations
+    - import_error
+    - stats
     description: API_Entities_ProjectImportStatus model
   API_Entities_ProjectImportFailedRelation:
     type: object
@@ -64410,6 +66435,14 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - id
+    - created_at
+    - exception_class
+    - source
+    - exception_message
+    - relation_name
+    - line_number
   API_Entities_RelationImportTracker:
     type: object
     properties:
@@ -64434,6 +66467,13 @@ definitions:
         type: string
         format: date-time
         example: '2022-01-31T15:10:45.080Z'
+    required:
+    - id
+    - project_path
+    - relation
+    - status
+    - created_at
+    - updated_at
     description: API_Entities_RelationImportTracker model
   API_Entities_ProjectJobTokenScope:
     type: object
@@ -64442,6 +66482,9 @@ definitions:
         type: boolean
       outbound_enabled:
         type: boolean
+    required:
+    - inbound_enabled
+    - outbound_enabled
     description: API_Entities_ProjectJobTokenScope model
   patchApiV4ProjectsIdJobTokenScope:
     type: object
@@ -64498,6 +66541,13 @@ definitions:
       minimum_access_level_for_push:
         type: string
         example: maintainer
+    required:
+    - id
+    - project_id
+    - package_name_pattern
+    - package_type
+    - minimum_access_level_for_delete
+    - minimum_access_level_for_push
     description: API_Entities_Projects_Packages_Protection_Rule model
   postApiV4ProjectsIdPackagesProtectionRules:
     type: object
@@ -64640,6 +66690,21 @@ definitions:
         example: none
       repository_storage:
         type: string
+    required:
+    - id
+    - title
+    - description
+    - visibility
+    - author
+    - created_at
+    - updated_at
+    - project_id
+    - web_url
+    - raw_url
+    - file_name
+    - files
+    - imported
+    - imported_from
     description: API_Entities_ProjectSnippet model
   postApiV4ProjectsIdSnippets:
     type: object
@@ -64746,6 +66811,11 @@ definitions:
             type: array
             items:
               "$ref": "#/definitions/API_Entities_ProjectDailyFetches"
+        required:
+        - total
+        - days
+    required:
+    - fetches
     description: API_Entities_ProjectDailyStatistics model
   API_Entities_ProjectDailyFetches:
     type: object
@@ -64758,6 +66828,9 @@ definitions:
         type: string
         format: date
         example: '2022-01-01'
+    required:
+    - count
+    - date
   API_Entities_TemplatesList:
     type: object
     properties:
@@ -64767,6 +66840,9 @@ definitions:
       name:
         type: string
         example: MIT License
+    required:
+    - key
+    - name
     description: API_Entities_TemplatesList model
   API_Entities_License:
     type: object
@@ -64808,6 +66884,18 @@ definitions:
       content:
         type: string
         example: GNU GENERAL PUBLIC LICENSE
+    required:
+    - key
+    - name
+    - nickname
+    - html_url
+    - source_url
+    - popular
+    - description
+    - conditions
+    - permissions
+    - limitations
+    - content
     description: API_Entities_License model
   putApiV4ProjectsIdCustomAttributesKey:
     type: object
@@ -65834,6 +67922,13 @@ definitions:
           cluster_agents:
             type: string
             example: https://gitlab.example.com/api/v4/projects/4/cluster_agents
+        required:
+        - self
+        - repo_branches
+        - labels
+        - events
+        - members
+        - cluster_agents
       marked_for_deletion_at:
         type: string
       marked_for_deletion_on:
@@ -66147,6 +68242,96 @@ definitions:
             "$ref": "#/definitions/API_Entities_ProjectAccess"
           group_access:
             "$ref": "#/definitions/API_Entities_GroupAccess"
+        required:
+        - project_access
+        - group_access
+    required:
+    - id
+    - description
+    - name
+    - name_with_namespace
+    - path
+    - path_with_namespace
+    - created_at
+    - tag_list
+    - topics
+    - ssh_url_to_repo
+    - http_url_to_repo
+    - web_url
+    - avatar_url
+    - star_count
+    - last_activity_at
+    - visibility
+    - namespace
+    - _links
+    - marked_for_deletion_at
+    - marked_for_deletion_on
+    - packages_enabled
+    - empty_repo
+    - archived
+    - resolve_outdated_diff_discussions
+    - repository_object_format
+    - issues_enabled
+    - merge_requests_enabled
+    - wiki_enabled
+    - jobs_enabled
+    - snippets_enabled
+    - container_registry_enabled
+    - service_desk_enabled
+    - can_create_merge_request_in
+    - issues_access_level
+    - repository_access_level
+    - merge_requests_access_level
+    - forking_access_level
+    - wiki_access_level
+    - builds_access_level
+    - snippets_access_level
+    - pages_access_level
+    - analytics_access_level
+    - container_registry_access_level
+    - security_and_compliance_access_level
+    - releases_access_level
+    - environments_access_level
+    - feature_flags_access_level
+    - infrastructure_access_level
+    - monitor_access_level
+    - model_experiments_access_level
+    - model_registry_access_level
+    - package_registry_access_level
+    - emails_disabled
+    - emails_enabled
+    - show_diff_preview_in_email
+    - shared_runners_enabled
+    - lfs_enabled
+    - creator_id
+    - import_status
+    - description_html
+    - updated_at
+    - public_jobs
+    - shared_with_groups
+    - only_allow_merge_if_pipeline_succeeds
+    - allow_merge_on_skipped_pipeline
+    - request_access_enabled
+    - only_allow_merge_if_all_discussions_are_resolved
+    - remove_source_branch_after_merge
+    - printing_merge_request_link_enabled
+    - merge_method
+    - merge_request_title_regex
+    - merge_request_title_regex_description
+    - squash_option
+    - enforce_auth_checks_on_uploads
+    - suggestion_commit_message
+    - merge_commit_template
+    - squash_commit_template
+    - issue_branch_template
+    - warn_about_potentially_unwanted_characters
+    - autoclose_referenced_issues
+    - max_artifacts_size
+    - requirements_enabled
+    - requirements_access_level
+    - security_and_compliance_enabled
+    - compliance_frameworks
+    - permissions
     description: API_Entities_ProjectWithAccess model
   API_Entities_ProjectAccess:
     type: object
@@ -66155,6 +68340,9 @@ definitions:
         type: string
       notification_level:
         type: string
+    required:
+    - access_level
+    - notification_level
   API_Entities_GroupAccess:
     type: object
     properties:
@@ -66162,6 +68350,9 @@ definitions:
         type: string
       notification_level:
         type: string
+    required:
+    - access_level
+    - notification_level
   postApiV4ProjectsIdFork:
     type: object
     properties:
@@ -66779,6 +68970,12 @@ definitions:
         type: integer
         format: int32
         example: 12
+    required:
+    - id
+    - project_id
+    - group_id
+    - group_access
+    - expires_at
     description: API_Entities_ProjectGroupLink model
   API_Entities_PublicGroupDetails:
     type: object
@@ -66795,6 +68992,13 @@ definitions:
         type: string
       full_path:
         type: string
+    required:
+    - id
+    - web_url
+    - name
+    - avatar_url
+    - full_name
+    - full_path
     description: API_Entities_PublicGroupDetails model
   postApiV4ProjectsIdHousekeeping:
     type: object
@@ -66835,6 +69039,11 @@ definitions:
         type: string
         format: date-time
         example: '2012-10-12T17:04:47Z'
+    required:
+    - disk_path
+    - project_id
+    - repository_storage
+    - created_at
     description: API_Entities_ProjectRepositoryStorage model
   API_Entities_ProtectedBranch:
     type: object
@@ -66864,6 +69073,15 @@ definitions:
         type: boolean
       inherited:
         type: boolean
+    required:
+    - id
+    - name
+    - push_access_levels
+    - merge_access_levels
+    - allow_force_push
+    - unprotect_access_levels
+    - code_owner_approval_required
+    - inherited
     description: API_Entities_ProtectedBranch model
   API_Entities_ProtectedRefAccess:
     type: object
@@ -66891,6 +69109,12 @@ definitions:
         type: integer
         format: int32
         example: 1
+    required:
+    - id
+    - access_level
+    - access_level_description
+    - user_id
+    - group_id
   postApiV4ProjectsIdProtectedBranches:
     type: object
     properties:
@@ -67176,6 +69400,9 @@ definitions:
         example: release-1-0
       create_access_levels:
         "$ref": "#/definitions/API_Entities_ProtectedRefAccess"
+    required:
+    - name
+    - create_access_levels
     description: API_Entities_ProtectedTag model
   postApiV4ProjectsIdProtectedTags:
     type: object
@@ -67488,12 +69715,28 @@ definitions:
           "$ref": "#/definitions/API_Entities_MirrorHostKey"
       mirror_branch_regex:
         type: string
+    required:
+    - id
+    - enabled
+    - url
+    - update_status
+    - last_update_at
+    - last_update_started_at
+    - last_successful_update_at
+    - last_error
+    - only_protected_branches
+    - keep_divergent_refs
+    - auth_method
+    - host_keys
+    - mirror_branch_regex
     description: API_Entities_RemoteMirror model
   API_Entities_MirrorHostKey:
     type: object
     properties:
       fingerprint_sha256:
         type: string
+    required:
+    - fingerprint_sha256
   postApiV4ProjectsIdRemoteMirrors:
     type: object
     properties:
@@ -67560,6 +69803,12 @@ definitions:
       mode:
         type: string
         example: '040000'
+    required:
+    - id
+    - name
+    - type
+    - path
+    - mode
     description: API_Entities_TreeObject model
   API_Entities_Compare:
     type: object
@@ -67581,6 +69830,13 @@ definitions:
       web_url:
         type: string
         example: https://gitlab.example.com/gitlab/gitlab-foss/-/compare/main...feature
+    required:
+    - commit
+    - commits
+    - diffs
+    - compare_timeout
+    - compare_same_ref
+    - web_url
     description: API_Entities_Compare model
   API_Entities_RepositoryHealth:
     type: object
@@ -67610,6 +69866,18 @@ definitions:
         type: string
         format: date-time
         example: '2025-02-24T09:05:50.355Z'
+    required:
+    - size
+    - references
+    - objects
+    - commit_graph
+    - bitmap
+    - multi_pack_index
+    - multi_pack_index_bitmap
+    - alternates
+    - is_object_pool
+    - last_full_repack
+    - updated_at
     description: API_Entities_RepositoryHealth model
   API_Entities_RepositoryHealth_References:
     type: object
@@ -67622,6 +69890,10 @@ definitions:
         format: int32
       reference_backend:
         type: string
+    required:
+    - loose_count
+    - packed_size
+    - reference_backend
   API_Entities_RepositoryHealth_Objects:
     type: object
     properties:
@@ -67658,6 +69930,18 @@ definitions:
       loose_objects_garbage_count:
         type: integer
         format: int32
+    required:
+    - size
+    - recent_size
+    - stale_size
+    - keep_size
+    - packfile_count
+    - reverse_index_count
+    - cruft_count
+    - keep_count
+    - loose_objects_count
+    - stale_loose_objects_count
+    - loose_objects_garbage_count
   API_Entities_RepositoryHealth_CommitGraph:
     type: object
     properties:
@@ -67670,6 +69954,11 @@ definitions:
         type: boolean
       has_generation_data_overflow:
         type: boolean
+    required:
+    - commit_graph_chain_length
+    - has_bloom_filters
+    - has_generation_data
+    - has_generation_data_overflow
   API_Entities_RepositoryHealth_Bitmap:
     type: object
     properties:
@@ -67680,6 +69969,10 @@ definitions:
       version:
         type: integer
         format: int32
+    required:
+    - has_hash_cache
+    - has_lookup_table
+    - version
   API_Entities_RepositoryHealth_MultiPackIndex:
     type: object
     properties:
@@ -67689,6 +69982,9 @@ definitions:
       version:
         type: integer
         format: int32
+    required:
+    - packfile_count
+    - version
   API_Entities_RepositoryHealth_LastFullRepack:
     type: object
     properties:
@@ -67698,6 +69994,9 @@ definitions:
       nanos:
         type: integer
         format: int32
+    required:
+    - seconds
+    - nanos
   API_Entities_Contributor:
     type: object
     properties:
@@ -67719,12 +70018,20 @@ definitions:
         type: integer
         format: int32
         example: 5
+    required:
+    - name
+    - email
+    - commits
+    - additions
+    - deletions
     description: API_Entities_Contributor model
   API_Entities_Changelog:
     type: object
     properties:
       notes:
         type: string
+    required:
+    - notes
     description: API_Entities_Changelog model
   postApiV4ProjectsIdRepositoryChangelog:
     type: object
@@ -67816,6 +70123,15 @@ definitions:
       state:
         type: string
         example: active
+    required:
+    - id
+    - user
+    - created_at
+    - resource_type
+    - resource_id
+    - milestone
+    - action
+    - state
     description: API_Entities_ResourceMilestoneEvent model
   postApiV4ProjectsIdPackagesRubygemsApiV1Gems:
     type: object
@@ -67889,6 +70205,19 @@ definitions:
         example: 5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa
       download_url:
         type: string
+    required:
+    - id
+    - iid
+    - created_at
+    - updated_at
+    - expire_at
+    - project_id
+    - build_id
+    - status
+    - predicate_kind
+    - predicate_type
+    - subject_digest
+    - download_url
     description: API_Entities_SupplyChain_Attestation model
   API_Entities_Tag:
     type: object
@@ -67913,6 +70242,13 @@ definitions:
         type: string
         format: date-time
         example: '2023-10-12T02:16:52.000Z'
+    required:
+    - name
+    - message
+    - target
+    - commit
+    - protected
+    - created_at
     description: API_Entities_Tag model
   API_Entities_TagRelease:
     type: object
@@ -67923,6 +70259,9 @@ definitions:
       description:
         type: string
         example: Amazing release. Wow
+    required:
+    - tag_name
+    - description
   postApiV4ProjectsIdRepositoryTags:
     type: object
     properties:
@@ -67950,6 +70289,9 @@ definitions:
         example: PGP
       signature:
         type: string
+    required:
+    - signature_type
+    - signature
     description: API_Entities_TagSignature model
   putApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem*moduleVersionFileAuthorize:
     type: object
@@ -68100,6 +70442,15 @@ definitions:
       estimated_time_remaining:
         type: string
         example: 1 day
+    required:
+    - id
+    - job_class_name
+    - table_name
+    - column_name
+    - status
+    - progress
+    - created_at
+    - estimated_time_remaining
     description: API_Entities_BatchedBackgroundMigration model
   putApiV4AdminBatchedBackgroundMigrationsIdResume:
     type: object
@@ -68198,6 +70549,9 @@ definitions:
         items:
           type: string
         example: database
+    required:
+    - table_name
+    - feature_categories
     description: API_Entities_Dictionary_Table model
   postApiV4AdminClustersAdd:
     type: object
@@ -68347,6 +70701,19 @@ definitions:
         type: string
       active:
         type: string
+    required:
+    - id
+    - message
+    - starts_at
+    - ends_at
+    - color
+    - font
+    - target_access_levels
+    - target_path
+    - broadcast_type
+    - dismissable
+    - theme
+    - active
     description: API_Entities_System_BroadcastMessage model
   postApiV4BroadcastMessages:
     type: object
@@ -68520,6 +70887,13 @@ definitions:
       secret:
         type: string
         example: ee1dd64b6adc89cf7e2c23099301ccc2c61b441064e9324d963c46902a85ec34
+    required:
+    - id
+    - application_id
+    - application_name
+    - callback_url
+    - confidential
+    - secret
     description: API_Entities_ApplicationWithSecret model
   API_Entities_Application:
     type: object
@@ -68538,12 +70912,20 @@ definitions:
       confidential:
         type: boolean
         example: true
+    required:
+    - id
+    - application_id
+    - application_name
+    - callback_url
+    - confidential
     description: API_Entities_Application model
   API_Entities_Avatar:
     type: object
     properties:
       avatar_url:
         type: string
+    required:
+    - avatar_url
     description: API_Entities_Avatar model
   API_Entities_BulkImport:
     type: object
@@ -68578,6 +70960,14 @@ definitions:
       has_failures:
         type: boolean
         example: false
+    required:
+    - id
+    - status
+    - source_type
+    - source_url
+    - created_at
+    - updated_at
+    - has_failures
     description: API_Entities_BulkImport model
   API_Entities_BulkImports:
     type: object
@@ -68654,6 +71044,26 @@ definitions:
         example: false
       stats:
         type: object
+    required:
+    - id
+    - bulk_import_id
+    - status
+    - entity_type
+    - source_full_path
+    - destination_full_path
+    - destination_name
+    - destination_slug
+    - destination_namespace
+    - parent_id
+    - namespace_id
+    - project_id
+    - created_at
+    - updated_at
+    - failures
+    - migrate_projects
+    - migrate_memberships
+    - has_failures
+    - stats
     description: API_Entities_BulkImports model
   API_Entities_BulkImports_EntityFailure:
     type: object
@@ -68676,6 +71086,13 @@ definitions:
       source_title:
         type: string
         example: title
+    required:
+    - relation
+    - exception_message
+    - exception_class
+    - correlation_id_value
+    - source_url
+    - source_title
     description: API_Entities_BulkImports_EntityFailure model
   postApiV4Runners:
     type: object
@@ -68752,6 +71169,10 @@ definitions:
         type: string
       token_expires_at:
         type: string
+    required:
+    - id
+    - token
+    - token_expires_at
     description: API_Entities_Ci_RunnerRegistrationDetails model
   postApiV4RunnersVerify:
     type: object
@@ -68780,6 +71201,8 @@ definitions:
       server_url:
         type: string
         example: wss://kas.example.com
+    required:
+    - server_url
     description: API_Entities_Ci_JobRouter_DiscoveryInformation model
   API_Entities_Ci_RunnerDetails:
     type: object
@@ -68857,6 +71280,31 @@ definitions:
         "$ref": "#/definitions/API_Entities_BasicProjectDetails"
       groups:
         "$ref": "#/definitions/API_Entities_BasicGroupDetails"
+    required:
+    - id
+    - description
+    - ip_address
+    - active
+    - paused
+    - is_shared
+    - runner_type
+    - name
+    - online
+    - created_at
+    - status
+    - job_execution_status
+    - tag_list
+    - run_untagged
+    - locked
+    - maximum_timeout
+    - access_level
+    - version
+    - revision
+    - platform
+    - architecture
+    - contacted_at
+    - maintenance_note
+    - groups
     description: API_Entities_Ci_RunnerDetails model
   putApiV4RunnersId:
     type: object
@@ -68965,6 +71413,26 @@ definitions:
         example: https://example.com/foo/bar/-/jobs/1
       project:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
+    required:
+    - id
+    - status
+    - stage
+    - name
+    - ref
+    - tag
+    - coverage
+    - allow_failure
+    - created_at
+    - started_at
+    - finished_at
+    - erased_at
+    - duration
+    - queued_duration
+    - user
+    - commit
+    - pipeline
+    - web_url
+    - project
     description: API_Entities_Ci_JobBasicWithProject model
   postApiV4JobsRequest:
     type: object
@@ -69220,6 +71688,8 @@ definitions:
     properties:
       modules:
         type: string
+    required:
+    - modules
     description: API_Entities_Terraform_ModuleVersions model
   API_Entities_Terraform_ModuleVersion:
     type: object
@@ -69240,6 +71710,15 @@ definitions:
         type: string
       versions:
         type: string
+    required:
+    - name
+    - provider
+    - providers
+    - root
+    - source
+    - submodules
+    - version
+    - versions
     description: API_Entities_Terraform_ModuleVersion model
   API_Entities_Feature:
     type: object
@@ -69254,6 +71733,11 @@ definitions:
         "$ref": "#/definitions/API_Entities_FeatureGate"
       definition:
         "$ref": "#/definitions/API_Entities_Feature_Definition"
+    required:
+    - name
+    - state
+    - gates
+    - definition
     description: API_Entities_Feature model
   API_Entities_FeatureGate:
     type: object
@@ -69265,6 +71749,9 @@ definitions:
         type: integer
         format: int32
         example: 34
+    required:
+    - key
+    - value
   API_Entities_Feature_Definition:
     type: object
     properties:
@@ -69288,6 +71775,17 @@ definitions:
         type: string
       intended_to_rollout_by:
         type: string
+    required:
+    - name
+    - feature_issue_url
+    - introduced_by_url
+    - rollout_issue_url
+    - milestone
+    - log_state_changes
+    - type
+    - group
+    - default_enabled
+    - intended_to_rollout_by
     description: API_Entities_Feature_Definition model
   postApiV4FeaturesName:
     type: object
@@ -69340,6 +71838,8 @@ definitions:
           type: string
         example:
         - refs/pipelines/1
+    required:
+    - pipeline_refs
     description: API_Entities_Geo_PipelineRefs model
   postApiV4GeoStatus:
     type: object
@@ -70505,12 +73005,290 @@ definitions:
             type: string
           node:
             type: string
+        required:
+        - self
+        - node
+    required:
+    - geo_node_id
+    - projects_count
+    - container_repositories_replication_enabled
+    - ci_secure_files_count
+    - ci_secure_files_checksum_total_count
+    - ci_secure_files_checksummed_count
+    - ci_secure_files_checksum_failed_count
+    - ci_secure_files_synced_count
+    - ci_secure_files_failed_count
+    - ci_secure_files_registry_count
+    - ci_secure_files_verification_total_count
+    - ci_secure_files_verified_count
+    - ci_secure_files_verification_failed_count
+    - container_repositories_count
+    - container_repositories_checksum_total_count
+    - container_repositories_checksummed_count
+    - container_repositories_checksum_failed_count
+    - container_repositories_synced_count
+    - container_repositories_failed_count
+    - container_repositories_registry_count
+    - container_repositories_verification_total_count
+    - container_repositories_verified_count
+    - container_repositories_verification_failed_count
+    - dependency_proxy_blobs_count
+    - dependency_proxy_blobs_checksum_total_count
+    - dependency_proxy_blobs_checksummed_count
+    - dependency_proxy_blobs_checksum_failed_count
+    - dependency_proxy_blobs_synced_count
+    - dependency_proxy_blobs_failed_count
+    - dependency_proxy_blobs_registry_count
+    - dependency_proxy_blobs_verification_total_count
+    - dependency_proxy_blobs_verified_count
+    - dependency_proxy_blobs_verification_failed_count
+    - dependency_proxy_manifests_count
+    - dependency_proxy_manifests_checksum_total_count
+    - dependency_proxy_manifests_checksummed_count
+    - dependency_proxy_manifests_checksum_failed_count
+    - dependency_proxy_manifests_synced_count
+    - dependency_proxy_manifests_failed_count
+    - dependency_proxy_manifests_registry_count
+    - dependency_proxy_manifests_verification_total_count
+    - dependency_proxy_manifests_verified_count
+    - dependency_proxy_manifests_verification_failed_count
+    - design_management_repositories_count
+    - design_management_repositories_checksum_total_count
+    - design_management_repositories_checksummed_count
+    - design_management_repositories_checksum_failed_count
+    - design_management_repositories_synced_count
+    - design_management_repositories_failed_count
+    - design_management_repositories_registry_count
+    - design_management_repositories_verification_total_count
+    - design_management_repositories_verified_count
+    - design_management_repositories_verification_failed_count
+    - group_wiki_repositories_count
+    - group_wiki_repositories_checksum_total_count
+    - group_wiki_repositories_checksummed_count
+    - group_wiki_repositories_checksum_failed_count
+    - group_wiki_repositories_synced_count
+    - group_wiki_repositories_failed_count
+    - group_wiki_repositories_registry_count
+    - group_wiki_repositories_verification_total_count
+    - group_wiki_repositories_verified_count
+    - group_wiki_repositories_verification_failed_count
+    - job_artifacts_count
+    - job_artifacts_checksum_total_count
+    - job_artifacts_checksummed_count
+    - job_artifacts_checksum_failed_count
+    - job_artifacts_synced_count
+    - job_artifacts_failed_count
+    - job_artifacts_registry_count
+    - job_artifacts_verification_total_count
+    - job_artifacts_verified_count
+    - job_artifacts_verification_failed_count
+    - lfs_objects_count
+    - lfs_objects_checksum_total_count
+    - lfs_objects_checksummed_count
+    - lfs_objects_checksum_failed_count
+    - lfs_objects_synced_count
+    - lfs_objects_failed_count
+    - lfs_objects_registry_count
+    - lfs_objects_verification_total_count
+    - lfs_objects_verified_count
+    - lfs_objects_verification_failed_count
+    - merge_request_diffs_count
+    - merge_request_diffs_checksum_total_count
+    - merge_request_diffs_checksummed_count
+    - merge_request_diffs_checksum_failed_count
+    - merge_request_diffs_synced_count
+    - merge_request_diffs_failed_count
+    - merge_request_diffs_registry_count
+    - merge_request_diffs_verification_total_count
+    - merge_request_diffs_verified_count
+    - merge_request_diffs_verification_failed_count
+    - package_files_count
+    - package_files_checksum_total_count
+    - package_files_checksummed_count
+    - package_files_checksum_failed_count
+    - package_files_synced_count
+    - package_files_failed_count
+    - package_files_registry_count
+    - package_files_verification_total_count
+    - package_files_verified_count
+    - package_files_verification_failed_count
+    - pages_deployments_count
+    - pages_deployments_checksum_total_count
+    - pages_deployments_checksummed_count
+    - pages_deployments_checksum_failed_count
+    - pages_deployments_synced_count
+    - pages_deployments_failed_count
+    - pages_deployments_registry_count
+    - pages_deployments_verification_total_count
+    - pages_deployments_verified_count
+    - pages_deployments_verification_failed_count
+    - pipeline_artifacts_count
+    - pipeline_artifacts_checksum_total_count
+    - pipeline_artifacts_checksummed_count
+    - pipeline_artifacts_checksum_failed_count
+    - pipeline_artifacts_synced_count
+    - pipeline_artifacts_failed_count
+    - pipeline_artifacts_registry_count
+    - pipeline_artifacts_verification_total_count
+    - pipeline_artifacts_verified_count
+    - pipeline_artifacts_verification_failed_count
+    - project_repositories_count
+    - project_repositories_checksum_total_count
+    - project_repositories_checksummed_count
+    - project_repositories_checksum_failed_count
+    - project_repositories_synced_count
+    - project_repositories_failed_count
+    - project_repositories_registry_count
+    - project_repositories_verification_total_count
+    - project_repositories_verified_count
+    - project_repositories_verification_failed_count
+    - project_wiki_repositories_count
+    - project_wiki_repositories_checksum_total_count
+    - project_wiki_repositories_checksummed_count
+    - project_wiki_repositories_checksum_failed_count
+    - project_wiki_repositories_synced_count
+    - project_wiki_repositories_failed_count
+    - project_wiki_repositories_registry_count
+    - project_wiki_repositories_verification_total_count
+    - project_wiki_repositories_verified_count
+    - project_wiki_repositories_verification_failed_count
+    - snippet_repositories_count
+    - snippet_repositories_checksum_total_count
+    - snippet_repositories_checksummed_count
+    - snippet_repositories_checksum_failed_count
+    - snippet_repositories_synced_count
+    - snippet_repositories_failed_count
+    - snippet_repositories_registry_count
+    - snippet_repositories_verification_total_count
+    - snippet_repositories_verified_count
+    - snippet_repositories_verification_failed_count
+    - terraform_state_versions_count
+    - terraform_state_versions_checksum_total_count
+    - terraform_state_versions_checksummed_count
+    - terraform_state_versions_checksum_failed_count
+    - terraform_state_versions_synced_count
+    - terraform_state_versions_failed_count
+    - terraform_state_versions_registry_count
+    - terraform_state_versions_verification_total_count
+    - terraform_state_versions_verified_count
+    - terraform_state_versions_verification_failed_count
+    - uploads_count
+    - uploads_checksum_total_count
+    - uploads_checksummed_count
+    - uploads_checksum_failed_count
+    - uploads_synced_count
+    - uploads_failed_count
+    - uploads_registry_count
+    - uploads_verification_total_count
+    - uploads_verified_count
+    - uploads_verification_failed_count
+    - packages_nuget_symbols_count
+    - packages_nuget_symbols_checksum_total_count
+    - packages_nuget_symbols_checksummed_count
+    - packages_nuget_symbols_checksum_failed_count
+    - packages_nuget_symbols_synced_count
+    - packages_nuget_symbols_failed_count
+    - packages_nuget_symbols_registry_count
+    - packages_nuget_symbols_verification_total_count
+    - packages_nuget_symbols_verified_count
+    - packages_nuget_symbols_verification_failed_count
+    - supply_chain_attestations_count
+    - supply_chain_attestations_checksum_total_count
+    - supply_chain_attestations_checksummed_count
+    - supply_chain_attestations_checksum_failed_count
+    - supply_chain_attestations_synced_count
+    - supply_chain_attestations_failed_count
+    - supply_chain_attestations_registry_count
+    - supply_chain_attestations_verification_total_count
+    - supply_chain_attestations_verified_count
+    - supply_chain_attestations_verification_failed_count
+    - packages_helm_metadata_caches_count
+    - packages_helm_metadata_caches_checksum_total_count
+    - packages_helm_metadata_caches_checksummed_count
+    - packages_helm_metadata_caches_checksum_failed_count
+    - packages_helm_metadata_caches_synced_count
+    - packages_helm_metadata_caches_failed_count
+    - packages_helm_metadata_caches_registry_count
+    - packages_helm_metadata_caches_verification_total_count
+    - packages_helm_metadata_caches_verified_count
+    - packages_helm_metadata_caches_verification_failed_count
+    - git_fetch_event_count_weekly
+    - git_push_event_count_weekly
+    - proxy_remote_requests_event_count_weekly
+    - proxy_local_requests_event_count_weekly
+    - repositories_checked_in_percentage
+    - replication_slots_used_in_percentage
+    - ci_secure_files_synced_in_percentage
+    - ci_secure_files_verified_in_percentage
+    - container_repositories_synced_in_percentage
+    - container_repositories_verified_in_percentage
+    - dependency_proxy_blobs_synced_in_percentage
+    - dependency_proxy_blobs_verified_in_percentage
+    - dependency_proxy_manifests_synced_in_percentage
+    - dependency_proxy_manifests_verified_in_percentage
+    - design_management_repositories_synced_in_percentage
+    - design_management_repositories_verified_in_percentage
+    - group_wiki_repositories_synced_in_percentage
+    - group_wiki_repositories_verified_in_percentage
+    - job_artifacts_synced_in_percentage
+    - job_artifacts_verified_in_percentage
+    - lfs_objects_synced_in_percentage
+    - lfs_objects_verified_in_percentage
+    - merge_request_diffs_synced_in_percentage
+    - merge_request_diffs_verified_in_percentage
+    - package_files_synced_in_percentage
+    - package_files_verified_in_percentage
+    - pages_deployments_synced_in_percentage
+    - pages_deployments_verified_in_percentage
+    - pipeline_artifacts_synced_in_percentage
+    - pipeline_artifacts_verified_in_percentage
+    - project_repositories_synced_in_percentage
+    - project_repositories_verified_in_percentage
+    - project_wiki_repositories_synced_in_percentage
+    - project_wiki_repositories_verified_in_percentage
+    - snippet_repositories_synced_in_percentage
+    - snippet_repositories_verified_in_percentage
+    - terraform_state_versions_synced_in_percentage
+    - terraform_state_versions_verified_in_percentage
+    - uploads_synced_in_percentage
+    - uploads_verified_in_percentage
+    - packages_nuget_symbols_synced_in_percentage
+    - packages_nuget_symbols_verified_in_percentage
+    - supply_chain_attestations_synced_in_percentage
+    - supply_chain_attestations_verified_in_percentage
+    - packages_helm_metadata_caches_synced_in_percentage
+    - packages_helm_metadata_caches_verified_in_percentage
+    - repositories_count
+    - replication_slots_count
+    - replication_slots_used_count
+    - healthy
+    - health
+    - health_status
+    - missing_oauth_application
+    - db_replication_lag_seconds
+    - replication_slots_max_retained_wal_bytes
+    - repositories_checked_count
+    - repositories_checked_failed_count
+    - last_event_id
+    - last_event_timestamp
+    - cursor_last_event_id
+    - cursor_last_event_timestamp
+    - last_successful_status_check_timestamp
+    - version
+    - revision
+    - selective_sync_type
+    - namespaces
+    - updated_at
+    - storage_shards_match
+    - _links
     description: API_Entities_GeoNodeStatus model
   StorageShardEntity:
     type: object
     properties:
       name:
         type: string
+    required:
+    - name
   postApiV4GeoProxyGitSshInfoRefsUploadPack:
     type: object
     properties:
@@ -70642,7 +73420,8 @@ definitions:
     type: object
     properties:
       data:
-        "$ref": "#/definitions/API_Entities_Glql_Data"
+        allOf:
+        - "$ref": "#/definitions/API_Entities_Glql_Data"
         description: Query result data containing count, nodes, and pagination info
       error:
         type: string
@@ -70655,6 +73434,11 @@ definitions:
       success:
         type: boolean
         example: true
+    required:
+    - data
+    - error
+    - fields
+    - success
     description: API_Entities_Glql_Result model
   API_Entities_Glql_Data:
     type: object
@@ -70671,8 +73455,13 @@ definitions:
         example: []
         description: The list of found items
       pageInfo:
-        "$ref": "#/definitions/API_Entities_Glql_PageInfo"
+        allOf:
+        - "$ref": "#/definitions/API_Entities_Glql_PageInfo"
         description: Pagination information
+    required:
+    - count
+    - nodes
+    - pageInfo
   API_Entities_Glql_PageInfo:
     type: object
     properties:
@@ -70692,6 +73481,11 @@ definitions:
         type: string
         example: eyJpZCI6IjE3In0
         description: Cursor for the first item
+    required:
+    - endCursor
+    - hasNextPage
+    - hasPreviousPage
+    - startCursor
   API_Entities_Glql_Field:
     type: object
     properties:
@@ -70709,6 +73503,10 @@ definitions:
         description: Underlying name of field, often the same as `key`, but it may
           be different if one type of field has multiple possible keys. Example `created`
           and `createdAt`
+    required:
+    - key
+    - label
+    - name
   postApiV4IntegrationsSlackEvents:
     type: object
     properties:
@@ -70759,6 +73557,8 @@ definitions:
       success:
         type: object
         properties: {}
+    required:
+    - success
     description: API_Entities_BasicSuccess model
   API_Entities_SSHKeyWithUser:
     type: object
@@ -70793,6 +73593,15 @@ definitions:
         example: auth
       user:
         "$ref": "#/definitions/API_Entities_UserPublic"
+    required:
+    - id
+    - title
+    - created_at
+    - expires_at
+    - last_used_at
+    - key
+    - usage_type
+    - user
     description: API_Entities_SSHKeyWithUser model
   API_Entities_UserWithAdmin:
     type: object
@@ -70938,6 +73747,52 @@ definitions:
         type: string
       enterprise_group_associated_at:
         type: string
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - bio
+    - location
+    - linkedin
+    - twitter
+    - discord
+    - website_url
+    - github
+    - job_title
+    - pronouns
+    - organization
+    - bot
+    - work_information
+    - local_time
+    - last_sign_in_at
+    - confirmed_at
+    - last_activity_on
+    - email
+    - theme_id
+    - color_scheme_id
+    - projects_limit
+    - current_sign_in_at
+    - identities
+    - can_create_group
+    - can_create_project
+    - two_factor_enabled
+    - external
+    - private_profile
+    - commit_email
+    - preferred_language
+    - shared_runners_minutes_limit
+    - extra_shared_runners_minutes_limit
+    - scim_identities
+    - is_admin
+    - note
+    - namespace_id
+    - created_by
+    - using_license_seat
     description: API_Entities_UserWithAdmin model
   postApiV4Markdown:
     type: object
@@ -70961,6 +73816,8 @@ definitions:
       html:
         type: string
         example: <p dir=\"auto\">Hello world!</p>"
+    required:
+    - html
     description: API_Entities_Markdown model
   putApiV4NamespacesId:
     type: object
@@ -71109,6 +73966,16 @@ definitions:
         example: '2022-06-18'
       trial:
         type: boolean
+    required:
+    - id
+    - name
+    - path
+    - kind
+    - full_path
+    - parent_id
+    - avatar_url
+    - web_url
+    - billable_members_count
     description: API_Entities_Namespace model
   API_Entities_GitlabSubscription:
     type: object
@@ -71128,6 +73995,13 @@ definitions:
             type: string
           exclude_guests:
             type: string
+        required:
+        - code
+        - name
+        - trial
+        - auto_renew
+        - upgradable
+        - exclude_guests
       usage:
         type: object
         properties:
@@ -71139,6 +74013,11 @@ definitions:
             type: string
           seats_owed:
             type: string
+        required:
+        - seats_in_subscription
+        - seats_in_use
+        - max_seats_used
+        - seats_owed
       billing:
         type: object
         properties:
@@ -71148,6 +74027,14 @@ definitions:
             type: string
           trial_ends_on:
             type: string
+        required:
+        - subscription_start_date
+        - subscription_end_date
+        - trial_ends_on
+    required:
+    - plan
+    - usage
+    - billing
     description: API_Entities_GitlabSubscription model
   postApiV4NamespacesIdStorageLimitExclusion:
     type: object
@@ -71175,6 +74062,11 @@ definitions:
       reason:
         type: string
         example: a reason
+    required:
+    - id
+    - namespace_id
+    - namespace_name
+    - reason
     description: API_Entities_Namespaces_Storage_LimitExclusion model
   API_Entities_NamespaceExistence:
     type: object
@@ -71186,6 +74078,9 @@ definitions:
         items:
           type: string
         example: my-group1
+    required:
+    - exists
+    - suggests
     description: API_Entities_NamespaceExistence model
   postApiV4OfflineExports:
     type: object
@@ -71304,6 +74199,15 @@ definitions:
       avatar_url:
         type: string
         example: https://example.com/uploads/-/system/organizations/organization_detail/avatar/1/avatar.png
+    required:
+    - id
+    - name
+    - path
+    - description
+    - created_at
+    - updated_at
+    - web_url
+    - avatar_url
     description: API_Entities_Organizations_Organization model
   API_Entities_PagesDomainBasic:
     type: object
@@ -71324,6 +74228,14 @@ definitions:
         type: string
       certificate_expiration:
         "$ref": "#/definitions/API_Entities_PagesDomainCertificateExpiration"
+    required:
+    - domain
+    - url
+    - project_id
+    - verified
+    - verification_code
+    - enabled_until
+    - auto_ssl_enabled
     description: API_Entities_PagesDomainBasic model
   API_Entities_PagesDomainCertificateExpiration:
     type: object
@@ -71332,6 +74244,9 @@ definitions:
         type: string
       expiration:
         type: string
+    required:
+    - expired
+    - expiration
   API_Entities_PersonalAccessTokenWithLastUsedIps:
     type: object
     properties:
@@ -71374,6 +74289,18 @@ definitions:
         - 127.0.0.1
         - 127.0.0.2
         - 127.0.0.3
+    required:
+    - id
+    - name
+    - revoked
+    - created_at
+    - description
+    - scopes
+    - user_id
+    - last_used_at
+    - active
+    - expires_at
+    - last_used_ips
     description: API_Entities_PersonalAccessTokenWithLastUsedIps model
   API_Entities_PersonalAccessToken:
     type: object
@@ -71411,6 +74338,17 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
+    required:
+    - id
+    - name
+    - revoked
+    - created_at
+    - description
+    - scopes
+    - user_id
+    - last_used_at
+    - active
+    - expires_at
     description: API_Entities_PersonalAccessToken model
   postApiV4PersonalAccessTokensSelfRotate:
     type: object
@@ -71459,6 +74397,18 @@ definitions:
         example: '2020-08-31T15:53:00.073Z'
       token:
         type: string
+    required:
+    - id
+    - name
+    - revoked
+    - created_at
+    - description
+    - scopes
+    - user_id
+    - last_used_at
+    - active
+    - expires_at
+    - token
     description: API_Entities_PersonalAccessTokenWithToken model
   postApiV4PersonalAccessTokensIdRotate:
     type: object
@@ -71527,6 +74477,21 @@ definitions:
         example: none
       repository_storage:
         type: string
+    required:
+    - id
+    - title
+    - description
+    - visibility
+    - author
+    - created_at
+    - updated_at
+    - project_id
+    - web_url
+    - raw_url
+    - file_name
+    - files
+    - imported
+    - imported_from
     description: API_Entities_Snippet model
   API_Entities_PersonalSnippet:
     type: object
@@ -71586,6 +74551,21 @@ definitions:
         example: none
       repository_storage:
         type: string
+    required:
+    - id
+    - title
+    - description
+    - visibility
+    - author
+    - created_at
+    - updated_at
+    - project_id
+    - web_url
+    - raw_url
+    - file_name
+    - files
+    - imported
+    - imported_from
     description: API_Entities_PersonalSnippet model
   postApiV4Snippets:
     type: object
@@ -71782,6 +74762,22 @@ definitions:
           type: object
         example:
           X-Custom-Header: value
+    required:
+    - id
+    - url
+    - name
+    - description
+    - created_at
+    - push_events
+    - tag_push_events
+    - merge_requests_events
+    - repository_update_events
+    - enable_ssl_verification
+    - alert_status
+    - disabled_until
+    - push_events_branch_filter
+    - branch_filter_strategy
+    - custom_webhook_template
     description: API_Entities_Hook model
   postApiV4Hooks:
     type: object
@@ -72071,6 +75067,12 @@ definitions:
         type: integer
         format: int32
         example: 10
+    required:
+    - merge_requests
+    - assigned_issues
+    - assigned_merge_requests
+    - review_requested_merge_requests
+    - todos
     description: API_Entities_UserCounts model
   postApiV4UserRunners:
     type: object
@@ -72238,6 +75240,33 @@ definitions:
         type: integer
         format: int32
         example: 500
+    required:
+    - ci_instance_level_variables
+    - ci_pipeline_size
+    - ci_active_jobs
+    - ci_project_subscriptions
+    - ci_pipeline_schedules
+    - ci_needs_size_limit
+    - ci_registered_group_runners
+    - ci_registered_project_runners
+    - conan_max_file_size
+    - dotenv_variables
+    - dotenv_size
+    - enforcement_limit
+    - generic_packages_max_file_size
+    - helm_max_file_size
+    - limits_history
+    - maven_max_file_size
+    - notification_limit
+    - npm_max_file_size
+    - nuget_max_file_size
+    - pipeline_hierarchy_size
+    - pypi_max_file_size
+    - terraform_module_max_file_size
+    - storage_size_limit
+    - web_hook_calls
+    - web_hook_calls_low
+    - web_hook_calls_mid
     description: API_Entities_PlanLimit model
   putApiV4ApplicationPlanLimits:
     type: object
@@ -72405,6 +75434,24 @@ definitions:
         type: string
       email_header_and_footer_enabled:
         type: string
+    required:
+    - title
+    - description
+    - pwa_name
+    - pwa_short_name
+    - pwa_description
+    - logo
+    - pwa_icon
+    - header_logo
+    - favicon
+    - new_project_guidelines
+    - member_guidelines
+    - profile_image_guidelines
+    - header_message
+    - footer_message
+    - message_background_color
+    - message_font_color
+    - email_header_and_footer_enabled
     description: API_Entities_Appearance model
   API_Entities_ApplicationStatistics:
     type: object
@@ -72464,6 +75511,18 @@ definitions:
         format: int32
         example: 21
         description: Number of active users
+    required:
+    - forks
+    - issues
+    - merge_requests
+    - notes
+    - snippets
+    - ssh_keys
+    - milestones
+    - users
+    - projects
+    - groups
+    - active_users
     description: API_Entities_ApplicationStatistics model
   API_Entities_DiscoveredClusters:
     type: object
@@ -72472,6 +75531,9 @@ definitions:
         type: string
       projects:
         type: string
+    required:
+    - groups
+    - projects
     description: API_Entities_DiscoveredClusters model
   postApiV4DeployKeys:
     type: object
@@ -72563,6 +75625,18 @@ definitions:
         type: string
       relation_type:
         type: string
+    required:
+    - id
+    - name
+    - full_path
+    - full_name
+    - refs_url
+    - forked
+    - import_source
+    - import_status
+    - human_import_status_name
+    - provider_link
+    - relation_type
     description: ProjectImportEntity model
   postApiV4ImportBitbucketServer:
     type: object
@@ -72622,6 +75696,13 @@ definitions:
       forked:
         type: boolean
         example: true
+    required:
+    - id
+    - name
+    - full_path
+    - full_name
+    - refs_url
+    - forked
     description: ProjectEntity model
   postApiV4ImportGithub:
     type: object
@@ -72714,8 +75795,18 @@ definitions:
           version:
             type: string
             example: 15.0.0
+        required:
+        - enabled
+        - externalUrl
+        - externalK8sProxyUrl
+        - version
       enterprise:
         type: boolean
+    required:
+    - version
+    - revision
+    - kas
+    - enterprise
     description: API_Entities_Metadata model
   API_Entities_Projects_Topic:
     type: object
@@ -72734,6 +75825,14 @@ definitions:
         type: string
       avatar_url:
         type: string
+    required:
+    - id
+    - name
+    - title
+    - description
+    - total_projects_count
+    - organization_id
+    - avatar_url
     description: API_Entities_Projects_Topic model
   postApiV4Topics:
     type: object

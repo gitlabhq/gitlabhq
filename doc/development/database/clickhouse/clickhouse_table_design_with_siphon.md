@@ -226,6 +226,10 @@ Generated `CREATE TABLE` statement:
 
 The primary keys for the table are: `(traversal_path, id)`. Additionally, the generator adds an extra [projection](https://clickhouse.com/docs/data-modeling/projections) for looking up records via the original PostgreSQL primary keys (name: `pg_pkey_ordered`). This is needed for Siphon to quickly locate existing records when replicating `DELETE` statements.
 
+#### The `deduplicate_merge_projection_mode` setting
+
+For tables utilizing projections, we explicitly set `deduplicate_merge_projection_mode` to `rebuild`. This configuration, which is automatically injected by our generator script, is critical for maintaining strict consistency between the parent table and its projections. During a merge, specifically when rows are being deduplicated, this mode instructs ClickHouse to discard the existing projection data and recalculate it from scratch using the newly deduplicated rows. Without this setting, the projection risks becoming stale or mathematically inconsistent with the source data.
+
 #### Querying the Table
 
 When querying hierarchy-optimized tables it's important to ensure that the `traversal_path` filter is part of the query and duplicates are filtered during query time.
@@ -330,6 +334,292 @@ Find the `ENGINE` clause and look at the arguments:
 ```sql
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 ```
+
+### Near Real-Time Denormalization via `NULL` Engine
+
+The GitLab PostgreSQL schema is optimized for normalized, transactional workloads. However, ClickHouse performance scales best with **denormalized** (wide) tables. While ClickHouse supports `JOINs`, they are computationally expensive. As a rule of thumb, **if a JOIN more than triples your query I/O, you should denormalize at ingestion time.**
+
+This strategy is ideal for enrichment where relationships are `1:1` or `1:N` (where `N` is small, e.g., < 500 rows), such as adding **Assignee** and **Reviewer** data directly to a **Merge Request** record.
+
+#### High-Level Overview
+
+To avoid the cost of storing raw data twice, we utilize a "pass-through" pipeline:
+
+1. **The Ingestion Point (Siphon Table):** Define a "landing" table using the `NULL` engine. This engine acts as a bufferless pipe that receives data from Siphon and triggers downstream logic, immediately discarding the raw bytes to save disk space.
+1. **The Storage Table (Destination):** Define the final `ReplacingMergeTree` table. This schema includes both the source columns and the extra columns intended for denormalized data.
+1. **The Logic Engine (Materialized View):** Define a Materialized View (MV) that "watches" the `NULL` table. Upon every insert, the MV performs the `JOIN` logic against existing reference tables to fetch enrichment data.
+1. **The Landing:** The MV pushes the enriched, "wide" rows into the storage table.
+
+#### Implementation Example: Denormalized Merge Request Reviewers
+
+**Architecture Overview:**
+
+```mermaid
+graph TD
+    subgraph Ingestion_Source [Data Source]
+        CDC[Siphon / CDC Data]
+    end
+
+    subgraph ClickHouse_Engine [Pipeline]
+        NullTable[<b>siphon_merge_requests</b><br/>ENGINE = Null]
+
+        MV{<b>merge_requests_mv</b><br/>Materialized View}
+
+        RefTable[(<b>siphon_merge_request_reviewers</b><br/>ENGINE = ReplacingMergeTree)]
+    end
+
+    subgraph Storage [Destination]
+        FinalTable[(<b>merge_requests</b><br/>ENGINE = ReplacingMergeTree)]
+    end
+
+    %% Data Flow
+    CDC -->|INSERT| NullTable
+    NullTable -->|Triggers| MV
+    RefTable -.->|Lookup/JOIN/Format| MV
+    MV -->|Enriched Data| FinalTable
+
+    %% Styling
+    style NullTable fill:#f9f,stroke:#333,stroke-width:2px
+    style FinalTable fill:#00ff00,color:#000,stroke:#333,stroke-width:2px
+    style MV fill:#fff4dd,stroke:#d4a017,stroke-width:2px
+```
+
+*Note: For the sake of simplicity, unnecessary columns are omitted from the `merge_requests` table.*
+
+##### 1. Create the `NULL` `siphon_merge_requests` table
+
+First, generate a Siphon table for `merge_requests`:
+
+```shell
+bundle exec rails generate gitlab:click_house:siphon merge_requests --with-traversal-path
+```
+
+The resulting schema (after removing the projection and non-essential columns) appears as follows:
+
+```sql
+CREATE TABLE IF NOT EXISTS siphon_merge_requests
+(
+  id Int64 CODEC(DoubleDelta, ZSTD),
+  target_branch String,
+  source_branch String,
+  source_project_id Nullable(Int64),
+  author_id Nullable(Int64),
+  title Nullable(String),
+  created_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
+  updated_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
+  target_project_id Int64,
+  iid Nullable(Int64),
+  description Nullable(String),
+  traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
+)
+ENGINE = Null;
+```
+
+**Key Notes:**
+
+- The `ENGINE` is explicitly set to `Null`.
+- Column compression remains defined but has no performance impact as data is never written to disk by this engine.
+
+##### 2. Create the `siphon_merge_request_reviewers` table
+
+Generate the reviewers table:
+
+```shell
+bundle exec rails generate gitlab:click_house:siphon merge_request_reviewers --with-traversal-path
+```
+
+**The generated schema:**
+
+```sql
+CREATE TABLE IF NOT EXISTS siphon_merge_request_reviewers
+(
+  id Int64 CODEC(DoubleDelta, ZSTD),
+  user_id Int64,
+  merge_request_id Int64,
+  created_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
+  state Int8 DEFAULT 0,
+  project_id Int64,
+  traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
+  PROJECTION pg_pkey_ordered (
+    SELECT *
+    ORDER BY id
+  )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, merge_request_id, id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 1024;
+```
+
+**Modifications made:**
+
+- `merge_request_id` is included in the primary key to optimize reviewer lookups per MR.
+- `index_granularity` is decreased to 1024 to improve `JOIN` performance during the MV trigger.
+
+##### 3. Create the `merge_requests` destination table
+
+This table contains all columns from `siphon_merge_requests` plus additional denormalized columns (in this case, for reviewers). Reviewers are modeled as an array of `Tuples`, where each tuple contains the `user_id` and the review `state`.
+
+```sql
+CREATE TABLE IF NOT EXISTS merge_requests
+(
+  id Int64 CODEC(DoubleDelta, ZSTD),
+  target_branch String,
+  source_branch String,
+  source_project_id Nullable(Int64),
+  author_id Nullable(Int64),
+  title Nullable(String),
+  created_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
+  updated_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
+  target_project_id Int64,
+  iid Nullable(Int64),
+  description Nullable(String),
+  traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
+  reviewers Array(Tuple(UInt64, Int8)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
+  PROJECTION pg_pkey_ordered (
+    SELECT *
+    ORDER BY id
+  )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild'
+```
+
+##### 4. Creating the JOIN Materialized View
+
+The Materialized View ensures that every insert into `siphon_merge_requests` is enriched with current reviewer data.
+
+```sql
+CREATE MATERIALIZED VIEW merge_requests_mv TO merge_requests
+AS WITH
+    cte AS
+    (
+        -- Store the current INSERT block for siphon_merge_requests table
+        SELECT *
+        FROM siphon_merge_requests
+    ),
+    collected_reviewers AS
+    (
+        SELECT
+            traversal_path,
+            merge_request_id,
+            groupArray((user_id, state)) AS reviewers -- Build the Array(Tuple(UInt64, Int8)) value
+        FROM
+        (
+            -- Load the deduplicated reviewer records for the given merge request values
+            SELECT
+                traversal_path,
+                merge_request_id,
+                id,
+                argMax(user_id, _siphon_replicated_at) AS user_id,
+                argMax(state, _siphon_replicated_at) AS state,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted
+            FROM siphon_merge_request_reviewers
+            WHERE (traversal_path, merge_request_id) IN (
+                SELECT traversal_path, id
+                FROM cte
+            )
+            GROUP BY traversal_path, merge_request_id, id
+            HAVING _siphon_deleted = false
+        )
+        GROUP BY traversal_path, merge_request_id
+    )
+SELECT
+    cte.id AS id,
+    cte.target_branch AS target_branch,
+    cte.source_branch AS source_branch,
+    cte.source_project_id AS source_project_id,
+    cte.author_id AS author_id,
+    cte.title AS title,
+    cte.created_at AS created_at,
+    cte.updated_at AS updated_at,
+    cte.target_project_id AS target_project_id,
+    cte.iid AS iid,
+    cte.description AS description,
+    cte.traversal_path AS traversal_path,
+    collected_reviewers.reviewers AS reviewers,
+    cte._siphon_replicated_at AS _siphon_replicated_at,
+    cte._siphon_deleted AS _siphon_deleted
+FROM cte
+LEFT JOIN collected_reviewers ON collected_reviewers.merge_request_id = cte.id AND collected_reviewers.traversal_path = cte.traversal_path
+```
+
+##### Siphon Configuration and the "Chicken-and-Egg" Problem
+
+Materialized Views trigger on inserts to the source table (`siphon_merge_requests`). However, if an update occurs in the `siphon_merge_request_reviewers` table, the denormalized `merge_requests` table will not automatically update.
+
+Because Siphon replicates tables independently, transactional dependencies from PostgreSQL are not natively preserved. To resolve this, Siphon includes a "refresh" callback feature. When a downstream record (reviewer) changes, Siphon can trigger an asynchronous "refresh" of the parent record (Merge Request). This re-inserts the parent row into the `Null` table after a short delay, re-triggering the MV and ensuring it picks up the latest reviewer state.
+
+This is conceptually similar to the `.touch` method in Ruby on Rails, executed asynchronously across a collection of records.
+
+**Siphon ClickHouse consumer configuration:**
+
+```yaml
+streams:
+  # Note: to properly work with hierarchy de-normalization, the following tables also need to be replicated: namespaces, projects, organizations
+  - identifier: merge_requests
+    subject: merge_requests
+    target: siphon_merge_requests
+    # required for handling refresh callbacks from downstream tables
+    enable_refresh_package: true
+  - identifier: merge_request_reviewers
+    subject: merge_request_reviewers
+    target: siphon_merge_request_reviewers
+    dedup_by:
+      - id
+
+clickhouse:
+  # connectivity configuration is disabled
+  refresh_on_change:
+    - source_stream_identifier: merge_request_reviewers
+      source_keys:
+        - merge_request_id
+      target_stream_identifier: merge_requests
+      target_keys:
+        - id
+  # dedup_ configuration is needed for properly applying DELETE and UPDATE events
+  dedup_config:
+    - stream_identifier: merge_requests
+      dedup_by_table: merge_requests
+      dedup_by:
+        - id
+    - stream_identifier: merge_request_reviewers
+      dedup_by:
+        - id
+```
+
+##### Querying the Table
+
+After the configuration is finished and data is replicated to the ClickHouse tables we can run a query on the `merge_requests` table. The following query counts Merge Requests for a project (`id = 12`) that are being reviewed by a specific user (`id = 73`) with a status of "requested changes" (`state = 3`).
+
+```sql
+SELECT COUNT(*)
+FROM (
+  SELECT
+    id,
+    argMax(reviewers, _siphon_replicated_at) AS reviewers,
+    argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted
+  FROM merge_requests
+  WHERE
+  -- Filter for the project
+  startsWith(traversal_path, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', 12, '0/'))
+  GROUP BY traversal_path, id
+  HAVING _siphon_deleted = false
+)
+WHERE
+-- x.1: user id filter
+-- x.2: review state filter
+arrayExists(x -> x.1 = 73 AND x.2 = 3, reviewers);
+
+```
+
+*Note: Array data types may add extra overhead during parsing and filtering. When denormalized data is a simple list of IDs without associated state, a delimited string field (e.g., `'/user_id1/user_id2/'`) combined with `hasSubstr` can offer higher performance.*
 
 ### Consistency Guarantees
 

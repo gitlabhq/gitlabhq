@@ -1,0 +1,11 @@
+---
+table_name: ci_runner_controller_runner_level_scopings_instance_type
+classes:
+- Ci::RunnerControllerRunnerLevelScoping
+feature_categories:
+- continuous_integration
+description: Manages runner-level scoping for GitLab Runner controllers in instance
+  type, partition of `ci_runner_controller_runner_level_scopings`.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221277
+milestone: '18.9'
+gitlab_schema: gitlab_ci_cell_local

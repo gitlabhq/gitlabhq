@@ -295,7 +295,7 @@ describe('handleEnforceSubscriptionLimit', () => {
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('unsubscribes from second-to-last view when over the limit', async () => {
+  it('unsubscribes from second-to-last view when over the limit when creating a view', async () => {
     mockQuery.mockResolvedValue({
       data: {
         namespace: {
@@ -316,6 +316,7 @@ describe('handleEnforceSubscriptionLimit', () => {
       subscribedSavedViewLimit: 3,
       apolloClient: mockApolloClient,
       namespacePath: 'my-group',
+      creating: true,
     });
 
     expect(mockMutate).toHaveBeenCalledWith(
@@ -323,6 +324,41 @@ describe('handleEnforceSubscriptionLimit', () => {
         variables: {
           input: {
             id: 'gid://gitlab/SavedView/3', // Second-to-last view
+          },
+        },
+      }),
+    );
+  });
+
+  it('unsubscribes from second-to-last view when over the limit not creating a view', async () => {
+    mockQuery.mockResolvedValue({
+      data: {
+        namespace: {
+          savedViews: {
+            nodes: [
+              { id: 'gid://gitlab/SavedView/1', name: 'View 1' },
+              { id: 'gid://gitlab/SavedView/2', name: 'View 2' },
+              { id: 'gid://gitlab/SavedView/3', name: 'View 3' },
+              { id: 'gid://gitlab/SavedView/4', name: 'View 4' },
+            ],
+          },
+        },
+      },
+    });
+    mockMutate.mockResolvedValue({});
+
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit: 3,
+      apolloClient: mockApolloClient,
+      namespacePath: 'my-group',
+      creating: false,
+    });
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: {
+            id: 'gid://gitlab/SavedView/4', // Second-to-last view
           },
         },
       }),

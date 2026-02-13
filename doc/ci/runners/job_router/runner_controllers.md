@@ -100,6 +100,7 @@ Runner controllers are managed through the REST API. There is no UI for managing
 runner controllers yet.
 
 - To create, list, update, or delete runner controllers, see the [runner controllers API](../../../api/runner_controllers.md).
+- To create, list, or delete scopes for runner controllers, see the [runner controller scopes API](../../../api/runner_controllers.md#runner-controller-scopes).
 - To manage authentication tokens for runner controllers, see the [runner controller tokens API](../../../api/runner_controller_tokens.md).
 
 Prerequisites:
@@ -110,7 +111,9 @@ Prerequisites:
 
 To implement your own runner controller, you need to:
 
-1. Create a runner controller in GitLab and obtain a token.
+1. Create a runner controller in GitLab.
+1. Scope the runner controller.
+1. Obtain a runner controller token.
 1. Connect to the job router with the token.
 1. Register your controller with the job router.
 1. Handle admission requests and send decisions.
@@ -125,6 +128,7 @@ For a step-by-step guide, see [Tutorial: Build a runner admission controller](..
 
 - [Job Router](_index.md)
 - [Runner controllers API](../../../api/runner_controllers.md)
+- [Runner controller scopes API](../../../api/runner_controllers.md#runner-controller-scopes)
 - [Runner controller tokens API](../../../api/runner_controller_tokens.md)
 - [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md)
 - [Runner controller example](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example) - Reference implementation

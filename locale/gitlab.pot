@@ -75424,6 +75424,9 @@ msgstr ""
 msgid "VirtualRegistries|Edit registry"
 msgstr ""
 
+msgid "VirtualRegistries|Edit upstream"
+msgstr ""
+
 msgid "VirtualRegistries|New registry"
 msgstr ""
 
@@ -76006,6 +76009,12 @@ msgid "VirtualRegistry|URL"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Upstream %{name} was successfully deleted."
+msgstr ""
+
+msgid "VirtualRegistry|Upstream %{name} was successfully updated."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream URL"
@@ -78249,6 +78258,9 @@ msgstr ""
 msgid "WorkItem|Add %{linkStart}description templates%{linkEnd} to help your contributors communicate effectively!"
 msgstr ""
 
+msgid "WorkItem|Add %{viewName} view?"
+msgstr ""
+
 msgid "WorkItem|Add %{workItemType}"
 msgstr ""
 
@@ -79045,6 +79057,9 @@ msgstr ""
 msgid "WorkItem|Not used on any items."
 msgstr ""
 
+msgid "WorkItem|Note: removed views can be added back by going to %{boldStart}+ Add view %{arrow} Browse views%{boldEnd}."
+msgstr ""
+
 msgid "WorkItem|Notifications"
 msgstr ""
 
@@ -79486,6 +79501,9 @@ msgstr ""
 msgid "WorkItem|This status is set as the Open default, and no other Open statuses exist. Create a \"Triage\", \"To do\", or \"In progress\" status to remove this status."
 msgstr ""
 
+msgid "WorkItem|This view either no longer exists or you do not have access to it. Make sure the view exists and the visibility is set to %{boldStart}Shared%{boldEnd} if you are not the owner."
+msgstr ""
+
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
 msgstr ""
 
@@ -79588,6 +79606,9 @@ msgstr ""
 msgid "WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
+msgid "WorkItem|View added to your list."
+msgstr ""
+
 msgid "WorkItem|View current version"
 msgstr ""
 
@@ -79595,6 +79616,9 @@ msgid "WorkItem|View has been deleted"
 msgstr ""
 
 msgid "WorkItem|View has been saved."
+msgstr ""
+
+msgid "WorkItem|View not found"
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"
@@ -79652,6 +79676,9 @@ msgid "WorkItem|You have reached the maximum number of views in your list."
 msgstr ""
 
 msgid "WorkItem|You have reached the maximum number of views in your list. If you add a view, the last view in your list will be removed."
+msgstr ""
+
+msgid "WorkItem|You have reached the maximum number of views in your list. If you add this view, the last view currently in your list will be removed (not deleted). %{linkStart}Learn more about view limits%{linkEnd}."
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."

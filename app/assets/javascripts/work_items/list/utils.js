@@ -892,6 +892,7 @@ export const handleEnforceSubscriptionLimit = async ({
   subscribedSavedViewLimit,
   apolloClient,
   namespacePath,
+  creating,
 }) => {
   const { data } = await apolloClient.query({
     query: getSubscribedSavedViewsQuery,
@@ -907,9 +908,13 @@ export const handleEnforceSubscriptionLimit = async ({
 
   const subscribedViews = data.namespace.savedViews.nodes;
 
+  const needToUnsub = creating
+    ? subscribedViews.length > subscribedSavedViewLimit
+    : subscribedViews.length >= subscribedSavedViewLimit;
   // Check if we're over the limit
-  if (subscribedViews.length > subscribedSavedViewLimit) {
-    const viewToUnsubscribe = subscribedViews[subscribedViews.length - 2];
+  if (needToUnsub) {
+    const viewToUnsubscribe =
+      subscribedViews[creating ? subscribedViews.length - 2 : subscribedViews.length - 1];
 
     await apolloClient.mutate({
       mutation: workItemSavedViewUnsubscribe,
@@ -1050,6 +1055,7 @@ export const saveSavedView = async ({
       subscribedSavedViewLimit,
       apolloClient,
       namespacePath,
+      creating: true,
     });
   }
 
@@ -1142,5 +1148,19 @@ export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) =
     });
 
     cache.writeQuery({ ...query, data: newData });
+  });
+};
+
+export const subscribeWithLimitEnforce = async ({
+  view,
+  apolloClient,
+  namespacePath,
+  subscribedSavedViewLimit,
+}) => {
+  await handleEnforceSubscriptionLimit({ apolloClient, namespacePath, subscribedSavedViewLimit });
+  return subscribeToSavedView({
+    view,
+    cache: apolloClient,
+    fullPath: namespacePath,
   });
 };

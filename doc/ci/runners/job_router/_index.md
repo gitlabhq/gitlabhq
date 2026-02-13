@@ -68,5 +68,6 @@ For more information, see [runner controllers](runner_controllers.md).
 
 - [Runner controllers](runner_controllers.md)
 - [Runner controllers API](../../../api/runner_controllers.md)
+- [Runner controller scopes API](../../../api/runner_controllers.md#runner-controller-scopes)
 - [Runner controller tokens API](../../../api/runner_controller_tokens.md)
 - [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md)

@@ -40,6 +40,32 @@ Formerly known as GitLab Duo Workflow, this flow:
 
 This flow is available in VS Code, Visual Studio, and JetBrains.
 
+## Flow and Chat comparison
+
+Both the Software Development Flow and GitLab Duo Chat are available in your IDE in different tabs.
+
+Use the Software Development Flow for complex development tasks.
+
+- The flow gathers comprehensive context, creates a detailed plan for you to review, and works through
+  tasks methodically.
+- The flow uses a structured approach that is ideal for longer, deeper sessions where you need a large context window
+  and produces better results for code generation that requires iteration.
+- Each flow has a beginning and end. When you start a new flow, it gathers context again and creates a
+  new plan based on the current state of your project.
+
+Use GitLab Duo Chat for conversational interactions where you guide the direction.
+
+- Chat can gather information to answer questions, provide suggestions, and autonomously perform
+  actions on your behalf in response to your prompts.
+- Chat maintains continuous conversations, so you can return to any ongoing discussion and
+  continue where you left off.
+
+While both can help with similar tasks, they work differently.
+The flow gathers comprehensive context upfront and runs with minimal human interaction.
+Chat operates as a constant feedback loop with you and gathers context as needed during conversation.
+For example, the flow considers different solutions before it proposes an approach, while Chat jumps
+to the first viable path to provide quick results.
+
 ## Use the Software Development Flow
 
 Prerequisites:
@@ -55,6 +81,15 @@ To use the flow:
    - The flow is aware of all files available to Git in the project branch.
    - You can provide additional [context](../../../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
    - The flow cannot access external sources or the web.
+   - For example:
+
+     ```plaintext
+     I have a large Ruby class that is used in a few places and I want to break it down.
+     Analyze this class and see what sub-methods or properties can be delegated to a
+     separate class. Then, propose a transition plan to implement this new sub-class
+     and update all of the required tests.
+     ```
+
 1. Select **Start**.
 
 After you describe your task, a plan is generated and executed.

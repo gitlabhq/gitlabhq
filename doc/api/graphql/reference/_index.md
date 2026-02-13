@@ -1082,6 +1082,45 @@ Returns [`Group`](#group).
 | ---- | ---- | ----------- |
 | <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.groupSecret`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+View a specific group secret.
+
+Returns [`GroupSecret`](#groupsecret).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygroupsecretgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the secret belongs to. |
+| <a id="querygroupsecretname"></a>`name` | [`String!`](#string) | Name of the group secret to view. |
+
+### `Query.groupSecrets`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+List group secrets.
+
+Returns [`GroupSecretConnection`](#groupsecretconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygroupsecretsgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the secrets belong to. |
+
 ### `Query.groupSecretsManager`
 
 {{< details >}}
@@ -16127,34 +16166,6 @@ Input type: `WorkItemSubscribeInput`
 | <a id="mutationworkitemsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemsubscribeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
-### `Mutation.workItemTypeUpdate`
-
-{{< details >}}
-**Introduced** in GitLab 18.9.
-**Status**: Experiment.
-{{< /details >}}
-
-Input type: `WorkItemTypeUpdateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemtypeupdatearchive"></a>`archive` | [`Boolean`](#boolean) | Whether to archive the work item type. |
-| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemtypeupdatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the root group. |
-| <a id="mutationworkitemtypeupdateiconname"></a>`iconName` | [`String`](#string) | New icon name for the work item type. |
-| <a id="mutationworkitemtypeupdateid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type to update. |
-| <a id="mutationworkitemtypeupdatename"></a>`name` | [`String`](#string) | New name for the work item type. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemtypeupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationworkitemtypeupdateworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Work item type that was updated. |
-
 ### `Mutation.workItemUpdate`
 
 {{< details >}}
@@ -20718,6 +20729,29 @@ The edge type for [`GroupSavedReply`](#groupsavedreply).
 | ---- | ---- | ----------- |
 | <a id="groupsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="groupsavedreplyedgenode"></a>`node` | [`GroupSavedReply`](#groupsavedreply) | The item at the end of the edge. |
+
+#### `GroupSecretConnection`
+
+The connection type for [`GroupSecret`](#groupsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretconnectionedges"></a>`edges` | [`[GroupSecretEdge]`](#groupsecretedge) | A list of edges. |
+| <a id="groupsecretconnectionnodes"></a>`nodes` | [`[GroupSecret]`](#groupsecret) | A list of nodes. |
+| <a id="groupsecretconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupSecretEdge`
+
+The edge type for [`GroupSecret`](#groupsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupsecretedgenode"></a>`node` | [`GroupSecret`](#groupsecret) | The item at the end of the edge. |
 
 #### `GroupSecretsPermissionConnection`
 

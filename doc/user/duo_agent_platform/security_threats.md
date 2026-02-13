@@ -141,7 +141,7 @@ To reduce the risk and impact of prompt injection attacks, apply the principle o
 
 #### Turn Off Duo
 
-To prevent GitLab Duo from accessing resources on a specific group or project, you can [turn off flow execution](../gitlab_duo/turn_on_off.md).
+To prevent GitLab Duo from accessing resources on a specific group or project, you can [turn off flow execution](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 #### Scope agents to specific tasks
 

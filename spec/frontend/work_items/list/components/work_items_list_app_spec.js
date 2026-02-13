@@ -37,6 +37,7 @@ import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_ite
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -108,6 +109,11 @@ import {
   singleSavedView,
   workItemsQueryResponseWithFeatures,
 } from '../../mock_data';
+import {
+  exampleSavedViewResponse,
+  mockSavedViewsData,
+  savedViewResponseFactory,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -148,29 +154,15 @@ const emptyHasWorkItemsResponse = {
   },
 };
 
-const mockSavedViewsData = [
-  {
-    __typename: 'SavedView',
-    id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
-    name: 'My Private View',
-    description: 'Only I can see this',
-    isPrivate: true,
-    subscribed: true,
-    filters: {},
-    displaySettings: {},
-    sort: CREATED_DESC,
-    userPermissions: {
-      updateSavedView: true,
-      deleteSavedView: true,
-    },
-  },
-];
-
 const emptySavedViewsResult = {
   data: {
     namespace: {
       __typename: 'Namespace',
       id: 'namespace',
+      currentSavedViews: {
+        nodes: mockSavedViewsData,
+      },
+      subscribedSavedViewLimit: 100,
       savedViews: {
         __typename: 'SavedViewConnection',
         nodes: [],
@@ -207,18 +199,8 @@ const mockPreferencesQueryHandler = jest.fn().mockResolvedValue({
 const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 const defaultHasWorkItemsHandler = jest.fn().mockResolvedValue(hasWorkItemsData);
 const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
-const namespaceSavedViewHandler = jest.fn().mockResolvedValue({
-  data: {
-    namespace: {
-      __typename: 'Namespace',
-      id: 'namespace',
-      savedViews: {
-        __typename: 'SavedViewConnection',
-        nodes: singleSavedView,
-      },
-    },
-  },
-});
+const namespaceSavedViewHandler = jest.fn().mockResolvedValue(exampleSavedViewResponse);
+
 const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
   data: {
     namespace: {
@@ -227,6 +209,19 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
       savedViews: {
         __typename: 'SavedViewConnection',
         nodes: mockSavedViewsData,
+      },
+    },
+  },
+});
+
+const subscribeToSavedViewHandler = jest.fn().mockResolvedValue({
+  data: {
+    workItemSavedViewSubscribe: {
+      __typename: 'WorkItemSavedViewSubscribePayload',
+      errors: [],
+      savedView: {
+        __typename: 'WorkItemSavedViewType',
+        id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
       },
     },
   },
@@ -261,6 +256,8 @@ const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
 const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 const findWorkItemsOnboardingModal = () => wrapper.findComponent(WorkItemsOnboardingModal);
+const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
+const findViewLimitWarningModal = () => wrapper.findByTestId('view-limit-warning-modal');
 
 const mountComponent = ({
   provide = {},
@@ -272,6 +269,7 @@ const mountComponent = ({
   mockPreferencesHandler = mockPreferencesQueryHandler,
   userPreferenceMutationResponse = userPreferenceMutationHandler,
   savedViewHandler = namespaceSavedViewHandler,
+  subscribeHandler = subscribeToSavedViewHandler,
   workItemPlanningView = false,
   workItemFeaturesField = false,
   workItemsSavedViewsEnabled = false,
@@ -312,6 +310,7 @@ const mountComponent = ({
     [getWorkItemsCountOnlyQuery, countsOnlyHandler],
     [namespaceSavedViewQuery, savedViewHandler],
     [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
+    [subscribeToSavedViewMutation, subscribeHandler],
     ...additionalHandlers,
   ]);
 
@@ -2240,6 +2239,28 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
 
       expect(findNewSavedViewModal().exists()).toBe(true);
     });
+
+    it('displays the "not found" modal when the "sv_not_found" query parameter is in the URL', async () => {
+      await router.replace({ query: { sv_not_found: true } });
+
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+
+      await waitForPromises();
+
+      expect(findViewNotFoundModal().props('show')).toBe(true);
+    });
+
+    it('displays the "at limit" modal when the "sv_limit_id" query parameter is in the URL', async () => {
+      await router.replace({
+        query: { sv_limit_id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3' },
+      });
+
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+
+      await waitForPromises();
+
+      expect(findViewLimitWarningModal().props('show')).toBe(true);
+    });
   });
 
   describe('when on a saved view', () => {
@@ -2267,18 +2288,69 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       });
     });
 
-    it('captures error alert when saved view cannot be found', async () => {
-      const error = new Error(
-        'Unable to find saved view with id gid://gitlab/WorkItems::SavedViews::SavedView/3 in full/path',
-      );
+    it('navigates to /work_items with sv_not_found query parameter when saved view cannot be found', async () => {
       mountComponent({
         workItemPlanningView: true,
         workItemsSavedViewsEnabled: true,
         savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
       });
-      await waitForPromises();
 
-      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      expect(window.location.pathname).toBe('/work_items/views/3');
+
+      await waitForPromises();
+      await nextTick();
+
+      expect(window.location.pathname).toBe('/work_items');
+      expect(window.location.search).toContain('sv_not_found');
+    });
+
+    describe('when visiting an unsubscribed view', () => {
+      describe('when at subsription limit', () => {
+        it('navigates to /work_items with sv_limit_id query parameter', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler: jest
+              .fn()
+              .mockResolvedValue(savedViewResponseFactory({ subscribed: false, limit: 1 })),
+          });
+
+          expect(window.location.pathname).toBe('/work_items/views/3');
+
+          await waitForPromises();
+          await nextTick();
+
+          expect(window.location.pathname).toBe('/work_items');
+          expect(window.location.search).toContain('sv_limit_id');
+        });
+      });
+
+      describe('when not at subscription limit', () => {
+        it('calls the subscribe mutation with the correct parameters', async () => {
+          const savedViewHandler = jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ subscribed: false }));
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler,
+          });
+
+          // need to update this so that we don't start an infinte loop
+          // if the saved view is still unsubscribed, we'll try to subscribe again
+          savedViewHandler.mockResolvedValue(savedViewResponseFactory({ subscribed: true }));
+
+          await waitForPromises();
+
+          expect(subscribeToSavedViewHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+            },
+          });
+
+          expect(showToast).toHaveBeenCalledWith('View added to your list.');
+        });
+      });
     });
 
     it('captures error alert when saved view cannot be fetched', async () => {

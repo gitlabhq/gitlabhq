@@ -20,6 +20,8 @@ import {
   TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
+import { CREATED_DESC } from '~/work_items/list/constants';
+import { singleSavedView } from '../mock_data';
 
 export const setSortPreferenceMutationResponse = {
   data: {
@@ -547,4 +549,110 @@ export const editSavedViewFormOnlyResponse = {
       },
     },
   },
+};
+
+export const mockSavedViewsData = [
+  {
+    __typename: 'SavedView',
+    id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
+    name: 'My Private View',
+    description: 'Only I can see this',
+    isPrivate: true,
+    subscribed: true,
+    filters: {},
+    displaySettings: {},
+    sort: CREATED_DESC,
+    userPermissions: {
+      updateSavedView: true,
+      deleteSavedView: true,
+    },
+  },
+];
+
+export const exampleSavedViewResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      currentSavedViews: {
+        nodes: mockSavedViewsData,
+      },
+      subscribedSavedViewLimit: 100,
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: singleSavedView,
+      },
+    },
+  },
+};
+
+export const unsubscribedSavedView = [
+  {
+    __typename: 'SavedView',
+    name: 'Current sprint 3',
+    description: 'The things I am focused on for the sprint',
+    subscribed: false,
+    isPrivate: true,
+    id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+    displaySettings: {
+      assignee: true,
+      blocked: true,
+      blocking: true,
+      dates: true,
+      health: true,
+      labels: true,
+      milestone: true,
+      popularity: true,
+      weight: true,
+      comments: true,
+      iteration: true,
+      status: true,
+    },
+    filters: {
+      state: 'opened',
+      assigneeUsernames: 'root',
+      labelName: 'Broffe',
+    },
+    sort: 'UPDATED_DESC',
+    userPermissions: {
+      updateSavedView: true,
+      deleteSavedView: true,
+    },
+  },
+];
+
+export const unsubscribedSavedViewResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      currentSavedViews: {
+        nodes: mockSavedViewsData,
+      },
+      subscribedSavedViewLimit: 100,
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: unsubscribedSavedView,
+      },
+    },
+  },
+};
+
+export const savedViewResponseFactory = ({ limit, subscribed }) => {
+  return {
+    data: {
+      namespace: {
+        __typename: 'Namespace',
+        id: 'namespace',
+        currentSavedViews: {
+          nodes: mockSavedViewsData,
+        },
+        subscribedSavedViewLimit: limit || 100,
+        savedViews: {
+          __typename: 'SavedViewConnection',
+          nodes: subscribed ? singleSavedView : unsubscribedSavedView,
+        },
+      },
+    },
+  };
 };

@@ -156,8 +156,8 @@ export default {
       <template #status-badge>
         <slot name="status-badge"></slot>
       </template>
-      <template #edit-form-actions="actionsProps">
-        <slot name="edit-form-actions" v-bind="actionsProps"></slot>
+      <template #edit-form-actions="{ issuableMeta }">
+        <slot name="edit-form-actions" v-bind="{ issuableMeta }"></slot>
       </template>
     </issuable-body>
 

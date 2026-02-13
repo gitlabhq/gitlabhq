@@ -49,7 +49,7 @@ The external agent:
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
-- Allow [flow execution](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- Have [flow execution turned on](../flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 ## Security considerations
 

@@ -135,6 +135,52 @@ RSpec.describe Lfs::FinalizeUploadService, feature_category: :source_code_manage
           expect(lfs_object.reload.file).to exist
         end
       end
+
+      context 'when create! hits a duplicate key from a concurrent insert' do
+        let!(:existing_lfs_object) do
+          create(:lfs_object, :with_file, size: params[:size], oid: params[:oid])
+        end
+
+        before do
+          call_count = 0
+          allow(LfsObject).to receive(:for_oid_and_size)
+            .with(params[:oid], params[:size])
+            .and_wrap_original do |method, *args|
+              call_count += 1
+              call_count == 1 ? nil : method.call(*args)
+            end
+
+          allow(LfsObject).to receive(:create!)
+            .with(oid: params[:oid], size: params[:size], file: uploaded_file)
+            .and_raise(
+              ActiveRecord::RecordNotUnique.new(
+                'PG::UniqueViolation: ERROR: duplicate key value ' \
+                  'violates unique constraint "index_lfs_objects_on_oid"'
+              )
+            )
+        end
+
+        it 'recovers by finding the existing object and links to project' do
+          expect { service }.to change { LfsObjectsProject.count }.by(1)
+            .and not_change { LfsObject.count }
+
+          expect(service).to be_success
+          expect(existing_lfs_object.projects).to include(project)
+        end
+
+        context 'when the existing file is missing' do
+          before do
+            FileUtils.rm(existing_lfs_object.file.path)
+          end
+
+          it 'links to project but cannot replace file since upload was consumed' do
+            service
+
+            expect(service).to be_success
+            expect(existing_lfs_object.projects).to include(project)
+          end
+        end
+      end
     end
 
     def temp_file

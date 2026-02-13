@@ -121,4 +121,4 @@ is considered the author because:
 - From a compliance perspective, prompting an AI system to write code is equivalent to writing the code yourself.
 - The service account acts as a proxy for the human user's intent.
 
-Organizations subject to compliance requirements should [turn off foundational flows](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off) that create merge requests.
+Organizations subject to compliance requirements should [turn off foundational flows](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off) that create merge requests.

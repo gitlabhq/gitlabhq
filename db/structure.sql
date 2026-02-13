@@ -10,6 +10,19 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+CREATE FUNCTION assign_ci_runner_controller_runner_level_scopings_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_runner_controller_runner_level_scopings_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_ci_runner_machines_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16615,7 +16628,8 @@ CREATE TABLE ci_job_artifact_states (
     verification_failure text,
     partition_id bigint NOT NULL,
     project_id bigint,
-    CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255))
+    CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_fe0ce03ded CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_job_artifacts_id_seq
@@ -17070,6 +17084,34 @@ CREATE SEQUENCE ci_runner_controller_instance_level_scopings_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_runner_controller_instance_level_scopings_id_seq OWNED BY ci_runner_controller_instance_level_scopings.id;
+
+CREATE TABLE ci_runner_controller_runner_level_scopings (
+    id bigint NOT NULL,
+    runner_controller_id bigint NOT NULL,
+    runner_id bigint NOT NULL,
+    runner_type smallint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+)
+PARTITION BY LIST (runner_type);
+
+CREATE SEQUENCE ci_runner_controller_runner_level_scopings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_runner_controller_runner_level_scopings_id_seq OWNED BY ci_runner_controller_runner_level_scopings.id;
+
+CREATE TABLE ci_runner_controller_runner_level_scopings_instance_type (
+    id bigint NOT NULL,
+    runner_controller_id bigint NOT NULL,
+    runner_id bigint NOT NULL,
+    runner_type smallint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
 
 CREATE TABLE ci_runner_controller_tokens (
     id bigint NOT NULL,
@@ -29839,6 +29881,7 @@ CREATE TABLE subscription_add_on_purchases (
     trial boolean DEFAULT false NOT NULL,
     started_at date,
     organization_id bigint NOT NULL,
+    subscription_add_on_uid smallint,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255)),
     CONSTRAINT check_d79ce199b3 CHECK ((started_at IS NOT NULL))
 );
@@ -34160,6 +34203,8 @@ ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION appearance_uploads FOR VALU
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION bulk_import_export_upload_uploads FOR VALUES IN ('BulkImports::ExportUpload');
 
+ALTER TABLE ONLY ci_runner_controller_runner_level_scopings ATTACH PARTITION ci_runner_controller_runner_level_scopings_instance_type FOR VALUES IN ('1');
+
 ALTER TABLE ONLY ci_runner_taggings ATTACH PARTITION ci_runner_taggings_group_type FOR VALUES IN ('2');
 
 ALTER TABLE ONLY ci_runner_taggings ATTACH PARTITION ci_runner_taggings_instance_type FOR VALUES IN ('1');
@@ -37756,6 +37801,12 @@ ALTER TABLE ONLY ci_resources
 
 ALTER TABLE ONLY ci_runner_controller_instance_level_scopings
     ADD CONSTRAINT ci_runner_controller_instance_level_scopings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_runner_controller_runner_level_scopings
+    ADD CONSTRAINT ci_runner_controller_runner_level_scopings_pkey PRIMARY KEY (id, runner_type);
+
+ALTER TABLE ONLY ci_runner_controller_runner_level_scopings_instance_type
+    ADD CONSTRAINT ci_runner_controller_runner_level_scopings_instance_type_pkey PRIMARY KEY (id, runner_type);
 
 ALTER TABLE ONLY ci_runner_controller_tokens
     ADD CONSTRAINT ci_runner_controller_tokens_pkey PRIMARY KEY (id);
@@ -42683,6 +42734,14 @@ CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytic
 CREATE UNIQUE INDEX ci_job_token_scope_links_source_and_target_project_direction ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id, direction);
 
 CREATE INDEX ci_pipeline_artifacts_on_expire_at_for_removal ON ci_pipeline_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (expire_at IS NOT NULL));
+
+CREATE UNIQUE INDEX index_ci_rcrl_scopings_on_controller_id_and_runner_id_and_type ON ONLY ci_runner_controller_runner_level_scopings USING btree (runner_controller_id, runner_id, runner_type);
+
+CREATE UNIQUE INDEX ci_runner_controller_runner_l_runner_controller_id_runner_i_idx ON ci_runner_controller_runner_level_scopings_instance_type USING btree (runner_controller_id, runner_id, runner_type);
+
+CREATE INDEX index_ci_rcrl_scopings_on_runner_id_and_type ON ONLY ci_runner_controller_runner_level_scopings USING btree (runner_id, runner_type);
+
+CREATE INDEX ci_runner_controller_runner_level_sco_runner_id_runner_type_idx ON ci_runner_controller_runner_level_scopings_instance_type USING btree (runner_id, runner_type);
 
 CREATE INDEX code_owner_approval_required ON protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
 
@@ -47838,6 +47897,8 @@ CREATE INDEX index_status_page_settings_on_project_id ON status_page_settings US
 
 CREATE INDEX index_subscription_add_on_purchases_on_namespace_id_add_on_id ON subscription_add_on_purchases USING btree (namespace_id, subscription_add_on_id);
 
+CREATE INDEX index_subscription_add_on_purchases_on_subscription_add_on_uid ON subscription_add_on_purchases USING btree (subscription_add_on_uid);
+
 CREATE UNIQUE INDEX index_subscription_add_ons_on_name ON subscription_add_ons USING btree (name);
 
 CREATE INDEX index_subscription_addon_purchases_on_expires_on ON subscription_add_on_purchases USING btree (expires_on);
@@ -52634,6 +52695,12 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION bul
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION bulk_import_export_upload_uploads_uploader_path_idx;
 
+ALTER INDEX index_ci_rcrl_scopings_on_controller_id_and_runner_id_and_type ATTACH PARTITION ci_runner_controller_runner_l_runner_controller_id_runner_i_idx;
+
+ALTER INDEX index_ci_rcrl_scopings_on_runner_id_and_type ATTACH PARTITION ci_runner_controller_runner_level_sco_runner_id_runner_type_idx;
+
+ALTER INDEX ci_runner_controller_runner_level_scopings_pkey ATTACH PARTITION ci_runner_controller_runner_level_scopings_instance_type_pkey;
+
 ALTER INDEX ci_runner_taggings_pkey ATTACH PARTITION ci_runner_taggings_group_type_pkey;
 
 ALTER INDEX ci_runner_taggings_pkey ATTACH PARTITION ci_runner_taggings_instance_type_pkey;
@@ -53127,6 +53194,8 @@ CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conve
 CREATE TRIGGER approval_policy_rules_loose_fk_trigger AFTER DELETE ON approval_policy_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ascp_scans_loose_fk_trigger AFTER DELETE ON ascp_scans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER assign_ci_runner_controller_runner_level_scopings_id_trigger BEFORE INSERT ON ci_runner_controller_runner_level_scopings FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_controller_runner_level_scopings_id_value();
 
 CREATE TRIGGER assign_ci_runner_machines_id_trigger BEFORE INSERT ON ci_runner_machines FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_machines_id_value();
 
@@ -56056,6 +56125,9 @@ ALTER TABLE ONLY work_item_type_custom_fields
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_cfd2073177 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ci_runner_controller_runner_level_scopings
+    ADD CONSTRAINT fk_ci_rcrl_scopings_runner_id_runner_type FOREIGN KEY (runner_id, runner_type) REFERENCES ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT fk_custom_emoji_creator_id FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -58749,6 +58821,9 @@ ALTER TABLE ONLY banned_users
 
 ALTER TABLE ONLY targeted_message_dismissals
     ADD CONSTRAINT fk_rails_fa9d2df3f9 FOREIGN KEY (targeted_message_id) REFERENCES targeted_messages(id) ON DELETE CASCADE;
+
+ALTER TABLE ci_runner_controller_runner_level_scopings
+    ADD CONSTRAINT fk_rails_fb0d2ffed1 FOREIGN KEY (runner_controller_id) REFERENCES ci_runner_controllers(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_fb4d2a7cb1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

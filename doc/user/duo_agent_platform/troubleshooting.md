@@ -21,6 +21,7 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
+1. Ensure the group you are in has been given permission [to use flows](../../administration/gitlab_duo/configure/access_control.md).
 1. If the top-level group is configured correctly but flows are not visible for an individual project:
    1. Go to the project.
    1. Select **Automate** > **Flows**.

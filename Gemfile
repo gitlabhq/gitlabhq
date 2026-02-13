@@ -162,7 +162,7 @@ gem 'net-ldap', '~> 0.20.0', feature_category: :system_access
 gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 1.0.1', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
-gem 'grape-swagger-entity', '~> 0.5.5', group: [:development, :test], feature_category: :api
+gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
 gem 'gitlab-grape-openapi', path: 'gems/gitlab-grape-openapi', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

@@ -214,9 +214,10 @@ To view details:
 1. Hover over a data point to see the vulnerability count for that day.
 1. Use the **time frame selector** to switch between 30, 60, or 90 days.
 1. Drag the range handles ({{< icon name="scroll-handle" >}}) to zoom in on a specific period.
-1. Use the dropdowns to filter the chart by:
-   - **Severity** (for example: Critical, High, Medium)
-   - **Report type** (SAST, DAST, dependency scanning, and others)
+1. Use the dropdown to filter by **Severity** (for example, **Critical**, **High**, **Medium**)
+1. Use the buttons to group the data by either of the following options:
+   - **Severity**: Critical, high, medium, low, info, and unknown.
+   - **Report type**: SAST, DAST, and dependency scanning and others.
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
@@ -237,6 +238,21 @@ To view details:
    - Any page-level filters you have set are also applied.
 
 ![severity level](img/security_dashboard_severity_panels_v18_5.png)
+
+#### Vulnerabilities by age
+
+The **Vulnerabilities by age** chart is available on group dashboards. It shows the distribution of unresolved vulnerabilities based on the amount of time
+since they were first detected. You can group vulnerabilities by severity or by report type, helping you identify where remediation activities may be needed.
+
+To view details:
+
+1. Hover over a data point to see the vulnerability count for that age grouping.
+1. Use the dropdown list to filter by **Severity** (for example, **Critical**, **High**, **Medium**)
+1. Use the buttons to group the data by either of the following options:
+   - **Severity**: Critical, high, medium, low, info, and unknown.
+   - **Report type**: SAST, DAST, and dependency scanning and others.
+
+![vulnerabilities by age](img/vulnerabilities_by_age_chart_v18_9.png)
 
 ### Filter the entire dashboard
 

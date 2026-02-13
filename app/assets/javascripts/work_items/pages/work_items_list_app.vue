@@ -28,6 +28,7 @@ import {
   getSortOptions,
   groupMultiSelectFilterTokens,
   saveSavedView,
+  subscribeToSavedView,
 } from 'ee_else_ce/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -59,7 +60,7 @@ import {
 } from '~/work_items/list/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
-import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -133,6 +134,8 @@ import WorkItemListActions from '../list/components/work_item_list_actions.vue';
 import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
 import WorkItemsSavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
+import WorkItemsSavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
+import WorkItemsSavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -211,6 +214,8 @@ export default {
     WorkItemsNewSavedViewModal,
     WorkItemsOnboardingModal,
     UserCalloutDismisser,
+    WorkItemsSavedViewsNotFoundModal,
+    WorkItemsSavedViewsLimitWarningModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -309,6 +314,8 @@ export default {
       workItemsCount: null,
       isNewViewModalVisible: false,
       savedView: null,
+      showSavedViewNotFoundModal: false,
+      showLimitWarningModal: false,
     };
   },
   apollo: {
@@ -392,7 +399,7 @@ export default {
           (this.isPlanningViewsEnabled && !this.isServiceDeskList) ||
           isEmpty(this.pageParams) ||
           this.metadataLoading ||
-          this.savedViewNotFound
+          this.shouldSkipDueToSavedViewState
         );
       },
       error(error) {
@@ -450,32 +457,51 @@ export default {
       update(data) {
         return data?.namespace?.savedViews?.nodes[0];
       },
-      result({ data }) {
+      async result({ data }) {
         try {
-          const draft = localStorage.getItem(this.savedViewDraftStorageKey);
           const savedView = data?.namespace?.savedViews?.nodes[0];
+          const limit = data?.namespace?.subscribedSavedViewLimit;
+          const count = data?.namespace?.currentSavedViews?.nodes.length;
           if (!savedView) {
-            throw new Error(
-              `Unable to find saved view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
-            );
+            this.$router.push({ name: ROUTES.index, query: { sv_not_found: true } });
+            return;
           }
-          const tokens = this.getFilterTokensFromSavedView(savedView?.filters || {});
-          this.initialViewTokens = tokens;
-          this.initialViewSortKey = savedView?.sort;
-          this.initialViewDisplaySettings = {
-            commonPreferences: { ...this.displaySettings.commonPreferences },
-            namespacePreferences: savedView.displaySettings,
-          };
-
-          if (draft) {
-            this.restoreViewDraft();
+          if (!savedView.subscribed) {
+            if (count >= limit) {
+              this.$router.push({ name: ROUTES.index, query: { sv_limit_id: savedView.id } });
+            } else {
+              const success = await this.attemptSubscription(savedView);
+              if (success) {
+                this.$toast.show(s__('WorkItem|View added to your list.'));
+                // simple way to just restart the flow once we're subscribed.
+                this.$apollo.queries.savedView.refetch();
+                this.$apollo.queries.subscribedSavedViews.refetch();
+              } else {
+                throw new Error(
+                  `Unable to subscribe to view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
+                );
+              }
+            }
           } else {
-            this.filterTokens = tokens;
-            this.sortKey = savedView?.sort;
-            this.localDisplaySettings = {
+            const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+            const tokens = this.getFilterTokensFromSavedView(savedView?.filters || {});
+            this.initialViewTokens = tokens;
+            this.initialViewSortKey = savedView?.sort;
+            this.initialViewDisplaySettings = {
               commonPreferences: { ...this.displaySettings.commonPreferences },
               namespacePreferences: savedView.displaySettings,
             };
+
+            if (draft) {
+              this.restoreViewDraft();
+            } else {
+              this.filterTokens = tokens;
+              this.sortKey = savedView?.sort;
+              this.localDisplaySettings = {
+                commonPreferences: { ...this.displaySettings.commonPreferences },
+                namespacePreferences: savedView.displaySettings,
+              };
+            }
           }
         } catch (error) {
           Sentry.captureException(error);
@@ -486,7 +512,7 @@ export default {
       },
     },
     subscribedSavedViews: {
-      query: getSubscribedSavedViewsQuery,
+      query: getNamespaceSavedViewsQuery,
       variables() {
         return {
           fullPath: this.rootPageFullPath,
@@ -506,11 +532,20 @@ export default {
     },
   },
   computed: {
+    isSubscribedToSavedView() {
+      return this.isSavedView && this.savedView.subscribed;
+    },
     savedViewId() {
       return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
     },
     savedViewNotFound() {
       return this.isSavedView && !this.savedView;
+    },
+    shouldSkipDueToSavedViewState() {
+      if (!this.isSavedView) {
+        return false;
+      }
+      return this.savedViewNotFound || !this.isSubscribedToSavedView;
     },
     displaySettingsSoT() {
       return this.isSavedView ? this.localDisplaySettings : this.displaySettings;
@@ -1107,7 +1142,7 @@ export default {
       }
     },
     eeSearchTokens() {
-      if (this.isSavedView && this.savedView !== null) {
+      if (this.isSavedView && Boolean(this.savedView)) {
         const draft = localStorage.getItem(this.savedViewDraftStorageKey);
         const tokens = this.getFilterTokensFromSavedView(this.savedView.filters);
         this.initialViewTokens = tokens;
@@ -1151,6 +1186,12 @@ export default {
   },
   mounted() {
     setPageFullWidth();
+    if (this.$route.query.sv_limit_id) {
+      this.showLimitWarningModal = true;
+    }
+    if (this.$route.query.sv_not_found) {
+      this.showSavedViewNotFoundModal = true;
+    }
   },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
@@ -1170,7 +1211,9 @@ export default {
           return data?.namespace?.workItems.nodes ?? [];
         },
         skip() {
-          return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
+          return (
+            isEmpty(this.pageParams) || this.metadataLoading || this.shouldSkipDueToSavedViewState
+          );
         },
         result({ data }) {
           this.namespaceId = data?.namespace?.id;
@@ -1183,6 +1226,17 @@ export default {
           Sentry.captureException(error);
         },
       };
+    },
+    async attemptSubscription(view) {
+      try {
+        await subscribeToSavedView({ view, cache: this.$apollo, fullPath: this.rootPageFullPath });
+        return true;
+      } catch (e) {
+        this.error = s__(
+          'WorkItem|An error occurred while subscribing to the view. Please try again.',
+        );
+        return false;
+      }
     },
     getFilterTokensFromSavedView(savedViewFilters) {
       const tokens = getSavedViewFilterTokens(savedViewFilters, {
@@ -1767,6 +1821,20 @@ export default {
         <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
       </template>
     </user-callout-dismisser>
+    <template v-if="workItemsSavedViewsEnabled">
+      <work-items-saved-views-not-found-modal
+        :show="showSavedViewNotFoundModal"
+        data-testid="view-not-found-modal"
+        @hide="showSavedViewNotFoundModal = false"
+      />
+      <work-items-saved-views-limit-warning-modal
+        :show="showLimitWarningModal"
+        :view-id="$route.query.sv_limit_id"
+        :full-path="rootPageFullPath"
+        data-testid="view-limit-warning-modal"
+        @hide="showLimitWarningModal = false"
+      />
+    </template>
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>

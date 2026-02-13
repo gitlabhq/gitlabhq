@@ -216,6 +216,7 @@ export default {
       const nextNearestView = this.getNextNearestView(viewIndex);
 
       try {
+        await this.navigateAfterViewRemoval(nextNearestView);
         await this.$apollo.mutate({
           mutation: workItemSavedViewUnsubscribe,
           variables: {
@@ -239,7 +240,6 @@ export default {
             }),
         });
 
-        await this.navigateAfterViewRemoval(nextNearestView);
         this.$toast.show(s__('WorkItem|View removed from your list'));
       } catch (e) {
         this.$emit(

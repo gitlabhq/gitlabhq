@@ -15436,7 +15436,8 @@ paths:
     get:
       operationId: getApiV4RunnerControllersRunnerControllerIdTokens
       summary: List runner controller tokens
-      description: Get all tokens for a specific runner controller.
+      description: Get all tokens for a specific runner controller. This feature is
+        experimental.
       tags:
       - Runners
       responses:
@@ -15476,7 +15477,8 @@ paths:
     post:
       operationId: postApiV4RunnerControllersRunnerControllerIdTokens
       summary: Create a runner controller token
-      description: Create a new token for a specific runner controller.
+      description: Create a new token for a specific runner controller. This feature
+        is experimental.
       tags:
       - Runner controller tokens
       responses:
@@ -15514,8 +15516,9 @@ paths:
     get:
       operationId: getApiV4RunnerControllersRunnerControllerIdTokensId
       summary: Get single runner controller token
-      description: Get a token for a specific runner controller by using the ID of
-        the token.
+      description: |-
+        Get a token for a specific runner controller by using the ID of the token. \
+                    This feature is experimental.
       tags:
       - Runner controller tokens
       responses:
@@ -15545,7 +15548,8 @@ paths:
     delete:
       operationId: deleteApiV4RunnerControllersRunnerControllerIdTokensId
       summary: Revoke a runner controller token
-      description: Revoke a token for a specific runner controller.
+      description: Revoke a token for a specific runner controller. This feature is
+        experimental.
       tags:
       - Runner controller tokens
       responses:
@@ -15574,7 +15578,8 @@ paths:
     post:
       operationId: postApiV4RunnerControllersRunnerControllerIdTokensIdRotate
       summary: Rotate a runner controller token
-      description: Rotate an existing token for a specific runner controller.
+      description: Rotate an existing token for a specific runner controller. This
+        feature is experimental.
       tags:
       - Runner controller tokens
       responses:
@@ -15607,7 +15612,8 @@ paths:
     get:
       operationId: getApiV4RunnerControllersIdScopes
       summary: List runner controller scopes
-      description: Get all scopes for a specific runner controller.
+      description: Get all scopes for a specific runner controller. This feature is
+        experimental.
       tags:
       - Runner controllers
       responses:
@@ -15628,7 +15634,8 @@ paths:
     post:
       operationId: postApiV4RunnerControllersIdScopesInstance
       summary: Add instance-level scope
-      description: Add an instance-level scope to a runner controller.
+      description: Add an instance-level scope to a runner controller. This feature
+        is experimental.
       tags:
       - Runner controllers
       responses:
@@ -15654,7 +15661,8 @@ paths:
     delete:
       operationId: deleteApiV4RunnerControllersIdScopesInstance
       summary: Remove instance-level scope
-      description: Remove an instance-level scope from a runner controller.
+      description: Remove an instance-level scope from a runner controller. This feature
+        is experimental.
       tags:
       - Runner controllers
       responses:
@@ -15675,7 +15683,7 @@ paths:
     get:
       operationId: getApiV4RunnerControllers
       summary: List runner controllers
-      description: Get all runner controllers.
+      description: Get all runner controllers. This feature is experimental.
       tags:
       - Runners
       responses:
@@ -15707,7 +15715,7 @@ paths:
     post:
       operationId: postApiV4RunnerControllers
       summary: Register a runner controller
-      description: Register a new runner controller.
+      description: Register a new runner controller. This feature is experimental.
       tags:
       - Runner controllers
       responses:
@@ -15744,7 +15752,8 @@ paths:
     get:
       operationId: getApiV4RunnerControllersId
       summary: Get single runner controller
-      description: Get a runner controller by using the ID of the controller.
+      description: Get a runner controller by using the ID of the controller. This
+        feature is experimental.
       tags:
       - Runner controllers
       responses:
@@ -15768,7 +15777,8 @@ paths:
     put:
       operationId: putApiV4RunnerControllersId
       summary: Update a runner controller
-      description: Update a runner controller by using the ID of the controller.
+      description: Update a runner controller by using the ID of the controller. This
+        feature is experimental.
       tags:
       - Runner controllers
       responses:
@@ -15813,7 +15823,8 @@ paths:
     delete:
       operationId: deleteApiV4RunnerControllersId
       summary: Delete a runner controller
-      description: Delete a runner controller by using the ID of the controller.
+      description: Delete a runner controller by using the ID of the controller. This
+        feature is experimental.
       tags:
       - Runner controllers
       responses:

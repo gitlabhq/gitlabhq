@@ -10609,7 +10609,7 @@ export const singleSavedView = [
     __typename: 'SavedView',
     name: 'Current sprint 3',
     description: 'The things I am focused on for the sprint',
-    subscribed: false,
+    subscribed: true,
     isPrivate: true,
     id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
     displaySettings: {

@@ -165,13 +165,6 @@ To change GitLab Duo availability for the top-level group:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-   It can take a few minutes for these settings to propagate across groups.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -188,12 +181,6 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability**, select an option.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -210,12 +197,6 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 ### On GitLab Self-Managed
@@ -235,13 +216,6 @@ To change GitLab Duo availability for the instance:
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-   It can take a few minutes for these settings to propagate across groups.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the entire instance.
@@ -258,12 +232,6 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability**, select an option.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -280,12 +248,6 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. To use [foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md),
-   turn on the **Allow foundational flows** toggle.
-   Individual foundational flows are only available if the corresponding flows
-   are turned on for the top-level group and their prerequisites are met.
-1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
-   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the project.

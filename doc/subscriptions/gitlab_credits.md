@@ -16,6 +16,7 @@ title: GitLab Credits and usage billing
 {{< history >}}
 
 - Introduced in GitLab 18.7.
+- GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
 
 {{< /history >}}
 
@@ -181,6 +182,8 @@ Some features have multiple model options to choose from, while other features u
 
 The following table lists the number of requests you can make with one GitLab Credit for different models.
 Newer, more complex models have a higher multiplier and require more credits.
+
+For self-hosted models, you can make eight requests for one credit for any [supported](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) or [compatible](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models) model.
 
 For subsidized models with basic integration:
 
