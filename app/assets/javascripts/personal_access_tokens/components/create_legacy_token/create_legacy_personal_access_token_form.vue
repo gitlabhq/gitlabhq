@@ -13,7 +13,13 @@ export default {
     AccessTokenForm,
     CreatedPersonalAccessToken,
   },
-  inject: ['accessTokenCreate', 'accessTokenTableUrl'],
+  inject: [
+    'accessTokenCreate',
+    'accessTokenTableUrl',
+    'accessTokenName',
+    'accessTokenDescription',
+    'accessTokenScopes',
+  ],
   computed: {
     ...mapState(useAccessTokens, ['token']),
   },
@@ -45,6 +51,10 @@ export default {
       </template>
     </page-heading>
 
-    <access-token-form />
+    <access-token-form
+      :name="accessTokenName"
+      :description="accessTokenDescription"
+      :scopes="accessTokenScopes"
+    />
   </div>
 </template>

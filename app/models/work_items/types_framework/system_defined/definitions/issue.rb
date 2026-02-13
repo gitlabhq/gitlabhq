@@ -58,6 +58,10 @@ module WorkItems
             def supports_move_action?
               true
             end
+
+            def filterable?
+              true
+            end
           end
         end
       end

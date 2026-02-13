@@ -43,6 +43,10 @@ module WorkItems
                 icon_name: "work-item-task"
               }
             end
+
+            def filterable?
+              true
+            end
           end
         end
       end

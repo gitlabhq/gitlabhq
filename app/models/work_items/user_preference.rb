@@ -2,8 +2,6 @@
 
 module WorkItems
   class UserPreference < ApplicationRecord
-    include WorkItems::TypesFramework::HasType
-
     self.table_name = 'work_item_type_user_preferences'
 
     belongs_to :user

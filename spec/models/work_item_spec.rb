@@ -468,18 +468,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       it_behaves_like "supports quick action commands"
     end
-
-    context "when using the system defined work_item_type model" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: true)
-        allow(custom_type_without_widgets).to receive(:widget_definitions).and_return([])
-      end
-
-      let_it_be(:custom_type_without_widgets) { build(:work_item_system_defined_type, :task) }
-      let_it_be(:custom_work_item_type) { build(:work_item_system_defined_type) }
-
-      it_behaves_like "supports quick action commands"
-    end
   end
 
   describe 'transform_quick_action_params' do
@@ -721,38 +709,16 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#allowed_work_item_type_change' do
-    context "when using the WorkItems::TypesFramework::SytemDefined::Type model" do
-      let_it_be(:all_types) { WorkItems::TypesFramework::SystemDefined::Type.all }
+    let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
 
-      it 'is possible to change between all types', :aggregate_failures do
-        all_types.each do |type|
-          work_item = build(:work_item, work_item_type: type, project: reusable_project)
+    it 'is possible to change between all types', :aggregate_failures do
+      all_types.each do |type|
+        work_item = build(:work_item, type, project: reusable_project)
 
-          (all_types - [type]).each do |new_type|
-            work_item.work_item_type_id = new_type
+        (all_types - [type]).each do |new_type|
+          work_item.work_item_type_id = create(:work_item_type, new_type).id
 
-            expect(work_item).to be_valid, "#{type} to #{new_type}"
-          end
-        end
-      end
-    end
-
-    context "when using the WorkItems::Type model" do
-      let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'is possible to change between all types', :aggregate_failures do
-        all_types.each do |type|
-          work_item = build(:work_item, type, project: reusable_project)
-
-          (all_types - [type]).each do |new_type|
-            work_item.work_item_type_id = create(:work_item_type, new_type).id
-
-            expect(work_item).to be_valid, "#{type} to #{new_type}"
-          end
+          expect(work_item).to be_valid, "#{type} to #{new_type}"
         end
       end
     end

@@ -177,7 +177,7 @@ The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
-### Disable an agent
+## Disable an agent
 
 Prerequisites:
 
@@ -210,22 +210,46 @@ To duplicate an agent:
 1. Optional. Edit any fields you want to change.
 1. Select **Create agent**.
 
-## Manage agents
+## Edit an agent
 
-Edit an agent to change its configuration, or delete it to remove it from the AI Catalog.
+Edit an agent to change its configuration.
 
 Prerequisites:
 
 - You must be a member of the managing project and have the Maintainer or Owner role.
 
-To manage an agent:
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Select the agent you want to edit.
+1. In the upper-right corner, select **Edit**.
+1. Edit any fields you want to change, then select **Save changes**.
 
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the agent you want to manage.
-   - To edit an agent:
-     1. In the upper-right corner, select **Edit**.
-     1. Edit any fields you want to change, then select **Save changes**.
-   - To delete an agent:
-     1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
-     1. On the confirmation dialog, select **Delete**.
+## Hide an agent
+
+Hide an agent to remove it from the AI Catalog.
+
+After you hide an agent, users can't enable it. However, they can still interact with the agent in the groups and projects it is already enabled in.
+
+Prerequisites:
+
+- You must be a member of the managing project and have the Maintainer or Owner role.
+
+To hide an agent:
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Find the agent you want to hide and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Hide**.
+1. In the confirmation dialog, select **Confirm**.
+
+## Delete an agent
+
+Delete an agent to permanently remove it from the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Find the agent you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. In the confirmation dialog, select **Delete**.

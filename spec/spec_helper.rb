@@ -161,6 +161,7 @@ RSpec.configure do |config|
   config.include SelectionHelper, :js
   config.include InspectRequests, :js
   config.include LiveDebugger, :js
+  config.include Database::BatchedBackgroundMigrationHelpers, :migration
   config.include MigrationsHelpers, :migration
   config.include MigrationsHelpers, :background_operation
   config.include RedisHelpers

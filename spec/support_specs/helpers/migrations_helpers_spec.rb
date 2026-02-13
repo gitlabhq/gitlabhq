@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MigrationsHelpers, feature_category: :database do
   include StubENV
+  include Database::BatchedBackgroundMigrationHelpers
 
   let(:helper_class) do
     Class.new.tap do |klass|
@@ -113,32 +114,6 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
     end
   end
 
-  describe '#finalized_by_version' do
-    let(:dictionary_entry) { nil }
-
-    before do
-      allow(helper).to receive(:described_class)
-      allow(::Gitlab::Utils::BatchedBackgroundMigrationsDictionary).to(
-        receive(:entry).and_return(dictionary_entry)
-      )
-    end
-
-    context 'when no dictionary was found' do
-      it { expect(helper.finalized_by_version).to be_nil }
-    end
-
-    context 'when finalized_by is a string' do
-      let(:dictionary_entry) do
-        instance_double(
-          ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary,
-          finalized_by: '20240104155616'
-        )
-      end
-
-      it { expect(helper.finalized_by_version).to eq(20240104155616) }
-    end
-  end
-
   describe '#migration_out_of_test_window?' do
     before do
       allow(Gitlab::Database).to receive(:min_schema_gitlab_version).and_return(Gitlab::VersionInfo.new(17, 8))
@@ -185,75 +160,83 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
       let(:migration_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
 
       it 'returns false if the migration is not finalized' do
-        allow(helper).to receive(:finalized_by_version).and_return('')
+        allow(helper).to receive(:finalized?).and_return(false)
 
         expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
       end
 
-      it 'returns false if the finalizing migration file can not be found' do
-        finalized_by = '20240104155616'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+      context 'when migration is finalized' do
+        before do
+          allow(helper).to receive(:finalized?).and_return(true)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by)).and_return([])
-        #   File.join(Rails.root, "db/migrate/#{finalized_by}_*.rb"),
-        #   File.join(Rails.root, "db/post_migrate/#{finalized_by}_*.rb")
-        # ).and_return([])
+        it 'returns false if the finalizing migration file can not be found' do
+          finalized_by = '20240104155616'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
-      end
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by)).and_return([])
+          #   File.join(Rails.root, "db/migrate/#{finalized_by}_*.rb"),
+          #   File.join(Rails.root, "db/post_migrate/#{finalized_by}_*.rb")
+          # ).and_return([])
 
-      it 'returns false if the finalizing migration class name can not be found' do
-        finalized_by = '20240104155616'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
-          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_file.rb"])
+        it 'returns false if the finalizing migration class name can not be found' do
+          finalized_by = '20240104155616'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
-      end
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+            .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_file.rb"])
 
-      it 'returns false if the finalizing migration class name can not be constantized' do
-        finalized_by = '20240104155616'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
-          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_class.rb"])
+        it 'returns false if the finalizing migration class name can not be constantized' do
+          finalized_by = '20240104155616'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
-      end
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+            .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_class.rb"])
 
-      it 'returns true if the finalizing migration milestone is missing' do
-        finalized_by = '20240104155616'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
-          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_no_milestone.rb"])
+        it 'returns true if the finalizing migration milestone is missing' do
+          finalized_by = '20240104155616'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
-      end
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+            .and_return(
+              ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_no_milestone.rb"]
+            )
 
-      it 'returns true if the finalizing migration milestone is before min milestone' do
-        finalized_by = '20240104155617'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
-          .and_return(
-            ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_7.rb"]
-          )
+        it 'returns true if the finalizing migration milestone is before min milestone' do
+          finalized_by = '20240104155617'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
-      end
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+            .and_return(
+              ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_7.rb"]
+            )
 
-      it 'returns false if the finalizing migration milestone is equal or after min milestone' do
-        finalized_by = '20240104155618'
-        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+        end
 
-        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
-          .and_return(
-            ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_8.rb"]
-          )
+        it 'returns false if the finalizing migration milestone is equal or after min milestone' do
+          finalized_by = '20240104155618'
+          allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
 
-        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+          expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+            .and_return(
+              ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_8.rb"]
+            )
+
+          expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+        end
       end
     end
   end

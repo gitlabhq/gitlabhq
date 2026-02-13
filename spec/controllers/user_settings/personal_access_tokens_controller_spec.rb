@@ -11,57 +11,73 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   end
 
   describe '#create' do
+    let(:token_params) { token_attributes }
+
+    subject(:create_token) { post :create, params: { personal_access_token: token_params } }
+
     def created_token
       PersonalAccessToken.order(:created_at).last
     end
 
-    it "allows creation of a token with scopes" do
-      name = 'My PAT'
-      scopes = %w[api read_user]
+    context 'with scopes' do
+      let(:name) { 'My PAT' }
+      let(:scopes) { %w[api read_user] }
+      let(:token_params) { token_attributes.merge(scopes: scopes, name: name) }
 
-      post :create, params: { personal_access_token: token_attributes.merge(scopes: scopes, name: name) }
+      it "allows creation of a token with scopes" do
+        create_token
 
-      expect(created_token).not_to be_nil
-      expect(created_token.name).to eq(name)
-      expect(created_token.scopes).to eq(scopes)
-      expect(PersonalAccessToken.active).to include(created_token)
+        expect(created_token).not_to be_nil
+        expect(created_token.name).to eq(name)
+        expect(created_token.scopes).to eq(scopes)
+        expect(PersonalAccessToken.active).to include(created_token)
+      end
     end
 
-    it "does not allow creation of a token with workflow scope" do
-      name = 'My PAT'
-      scopes = %w[ai_workflow]
+    context 'with workflow scope' do
+      let(:token_params) { token_attributes.merge(scopes: %w[ai_workflow], name: 'My PAT') }
 
-      post :create, params: { personal_access_token: token_attributes.merge(scopes: scopes, name: name) }
+      it "does not allow creation of a token with workflow scope" do
+        create_token
 
-      expect(created_token).to be_nil
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(created_token).to be_nil
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
     end
 
-    it "does not allow creation of a token with a dynamic user scope" do
-      name = 'My PAT'
-      scopes = %w[user:*]
+    context 'with dynamic user scope' do
+      let(:token_params) { token_attributes.merge(scopes: %w[user:*], name: 'My PAT') }
 
-      post :create, params: { personal_access_token: token_attributes.merge(scopes: scopes, name: name) }
+      it "does not allow creation of a token with a dynamic user scope" do
+        create_token
 
-      expect(created_token).to be_nil
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(created_token).to be_nil
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
     end
 
-    it "allows creation of a token with an expiry date" do
-      expires_at = 5.days.from_now.to_date
+    context 'with expiry date' do
+      let(:expires_at) { 5.days.from_now.to_date }
+      let(:token_params) { token_attributes.merge(expires_at: expires_at) }
 
-      post :create, params: { personal_access_token: token_attributes.merge(expires_at: expires_at) }
+      it "allows creation of a token with an expiry date" do
+        create_token
 
-      expect(created_token).not_to be_nil
-      expect(created_token.expires_at).to eq(expires_at)
+        expect(created_token).not_to be_nil
+        expect(created_token.expires_at).to eq(expires_at)
+      end
     end
 
-    it 'does not allow creation when personal access tokens are disabled' do
-      allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
+    context 'when personal access tokens are disabled' do
+      before do
+        allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
+      end
 
-      post :create, params: { personal_access_token: token_attributes }
+      it 'does not allow creation' do
+        create_token
 
-      expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     it_behaves_like "create access token" do
@@ -70,26 +86,37 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   end
 
   describe '#toggle_dpop' do
-    context "when feature flag is enabled" do
+    let(:dpop_enabled) { "1" }
+
+    subject(:toggle_dpop) { put :toggle_dpop, params: { user: { dpop_enabled: dpop_enabled } } }
+
+    context "when `dpop_authentication` feature flag is enabled" do
       before do
         stub_feature_flags(dpop_authentication: true)
       end
 
       context "when toggling dpop" do
         it "enables dpop" do
-          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          toggle_dpop
+
           expect(access_token_user.dpop_enabled).to be(true)
         end
 
-        it "disables dpop" do
-          put :toggle_dpop, params: { user: { dpop_enabled: "0" } }
-          expect(access_token_user.dpop_enabled).to be(false)
+        context 'when disabling' do
+          let(:dpop_enabled) { "0" }
+
+          it "disables dpop" do
+            toggle_dpop
+
+            expect(access_token_user.dpop_enabled).to be(false)
+          end
         end
       end
 
       context 'when user preference update succeeds' do
         it 'shows a success flash message' do
-          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          toggle_dpop
+
           expect(flash[:notice]).to eq(_('DPoP preference updated.'))
         end
       end
@@ -103,19 +130,20 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         end
 
         it 'shows a failure flash message' do
-          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          toggle_dpop
+
           expect(flash[:warning]).to eq(_('Unable to update DPoP preference.'))
         end
       end
     end
 
-    context "when feature flag is disabled" do
+    context "when `dpop_authentication` feature flag is disabled" do
       before do
         stub_feature_flags(dpop_authentication: false)
       end
 
       it "redirects to controller" do
-        put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+        toggle_dpop
 
         expect(response).to redirect_to(user_settings_personal_access_tokens_path)
         expect(access_token_user.dpop_enabled).to be(false)
@@ -124,26 +152,110 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   end
 
   describe '#index' do
-    it "builds a PAT with name, description and scopes from params" do
-      name = 'My PAT'
-      scopes = 'api,read_user,invalid'
-      description = 'My PAT description'
+    let(:params) { {} }
 
-      get :index, params: { name: name, scopes: scopes, description: description }
+    subject(:get_index) { get :index, params: params }
 
-      expect(assigns(:access_token_params)).to include(
-        name: eq(name),
-        description: eq(description),
-        scopes: contain_exactly(:api, :read_user)
-      )
+    context 'when `granular_personal_access_tokens` feature flag is enabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens: true)
+      end
+
+      context 'when VSCode extension parameters are present' do
+        let(:params) do
+          {
+            name: 'GitLab Workflow Extension',
+            scopes: 'api,read_user',
+            description: 'Token for VSCode'
+          }
+        end
+
+        it 'redirects to legacy_new with VSCode extension params' do
+          get_index
+
+          expect(response).to redirect_to(action: :legacy_new, **params)
+        end
+      end
+
+      context 'when VSCode extension parameters are present but in a different case' do
+        let(:params) do
+          {
+            name: 'gitLab workflow extension',
+            scopes: 'api,read_user',
+            description: 'Token for VSCode'
+          }
+        end
+
+        it 'redirects to legacy_new with VSCode extension params' do
+          get_index
+
+          expect(response).to redirect_to(action: :legacy_new, **params)
+        end
+      end
+
+      context 'when name is not `GitLab Workflow Extension`' do
+        let(:params) { { name: 'Other Token', scopes: 'api' } }
+
+        it 'does not redirect' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).not_to be_redirect
+        end
+      end
+
+      context 'when no name parameter is provided' do
+        it 'does not redirect' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).not_to be_redirect
+        end
+      end
     end
 
-    it 'returns 404 when personal access tokens are disabled' do
-      allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
+    context 'when `granular_personal_access_tokens` feature flag is disabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens: false)
+      end
 
-      get :index
+      let(:params) { { name: 'GitLab Workflow Extension', scopes: 'api' } }
 
-      expect(response).to have_gitlab_http_status(:not_found)
+      it 'does not redirect' do
+        get_index
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).not_to be_redirect
+      end
+    end
+
+    context 'with query parameters' do
+      let(:name) { 'My PAT' }
+      let(:scopes) { 'api,read_user,invalid' }
+      let(:description) { 'My PAT description' }
+      let(:params) { { name: name, scopes: scopes, description: description } }
+
+      it 'sets access_token_params from query parameters' do
+        get_index
+
+        expect(assigns(:access_token_params)).to include(
+          name: eq(name),
+          description: eq(description),
+          scopes: contain_exactly(:api, :read_user)
+        )
+      end
+    end
+
+    context 'when personal access tokens are disabled' do
+      before do
+        allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
+      end
+
+      it 'returns 404' do
+        get_index
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     it 'returns an iCalendar after redirect for ics format' do
@@ -164,25 +276,27 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   end
 
   describe '#granular_new' do
-    context 'when granular_personal_access_tokens feature flag is disabled' do
+    subject(:get_granular_new) { get :granular_new }
+
+    context 'when `granular_personal_access_tokens` feature flag is disabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       it 'returns 404' do
-        get :granular_new
+        get_granular_new
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    context 'when feature flag is enabled' do
+    context 'when `granular_personal_access_tokens` feature flag is enabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: true)
       end
 
       it 'renders the granular_new template' do
-        get :granular_new
+        get_granular_new
 
         expect(response).to render_template(:granular_new)
       end
@@ -190,27 +304,48 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   end
 
   describe '#legacy_new' do
-    context 'when granular_personal_access_tokens feature flag is disabled' do
+    let(:params) { {} }
+
+    subject(:get_legacy_new) { get :legacy_new, params: params }
+
+    context 'when `granular_personal_access_tokens` feature flag is disabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       it 'returns 404' do
-        get :legacy_new
+        get_legacy_new
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    context 'when feature flag is enabled' do
+    context 'when `granular_personal_access_tokens` feature flag is enabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: true)
       end
 
       it 'renders the legacy_new template' do
-        get :legacy_new
+        get_legacy_new
 
         expect(response).to render_template(:legacy_new)
+      end
+
+      context 'with query parameters' do
+        let(:name) { 'GitLab Workflow Extension' }
+        let(:scopes) { 'api,read_user,invalid' }
+        let(:description) { 'VSCode token' }
+        let(:params) { { name: name, scopes: scopes, description: description } }
+
+        it 'sets access_token_params from query parameters' do
+          get_legacy_new
+
+          expect(assigns(:access_token_params)).to include(
+            name: eq(name),
+            description: eq(description),
+            scopes: contain_exactly(:api, :read_user)
+          )
+        end
       end
     end
   end

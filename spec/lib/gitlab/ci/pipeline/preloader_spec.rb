@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Preloader do
+RSpec.describe Gitlab::Ci::Pipeline::Preloader, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:stage) { double(:stage) }
@@ -38,6 +38,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       expect(pipeline).to receive(:lazy_ref_commit)
       expect(pipeline).to receive(:number_of_warnings)
       expect(stage).to receive(:number_of_warnings)
+      expect(scheduled_action).to receive(:persisted_environment)
+      expect(manual_action).to receive(:persisted_environment)
 
       described_class.preload!([pipeline])
     end
@@ -47,27 +49,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       allow(pipeline).to receive(:lazy_ref_commit)
       allow(pipeline).to receive(:number_of_warnings)
       allow(stage).to receive(:number_of_warnings)
+      allow(scheduled_action).to receive(:persisted_environment)
+      allow(manual_action).to receive(:persisted_environment)
 
       pipelines = [pipeline, pipeline]
 
       expect(described_class.preload!(pipelines)).to eq pipelines
-    end
-
-    context 'when stop_preloading_manual_builds_for_pipeline feature flag is disabled' do
-      before do
-        stub_feature_flags(stop_preloading_manual_builds_for_pipeline: false)
-        allow(commit).to receive(:lazy_author)
-        allow(pipeline).to receive(:lazy_ref_commit)
-        allow(pipeline).to receive(:number_of_warnings)
-        allow(stage).to receive(:number_of_warnings)
-      end
-
-      it 'preloads manual and scheduled actions' do
-        expect(scheduled_action).to receive(:persisted_environment)
-        expect(manual_action).to receive(:persisted_environment)
-
-        described_class.preload!([pipeline])
-      end
     end
   end
 end

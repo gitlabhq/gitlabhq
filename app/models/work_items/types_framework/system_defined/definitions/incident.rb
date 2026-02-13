@@ -53,6 +53,10 @@ module WorkItems
             def configurable?
               false
             end
+
+            def filterable?
+              true
+            end
           end
         end
       end

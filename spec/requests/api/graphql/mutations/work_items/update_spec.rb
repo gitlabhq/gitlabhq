@@ -1067,18 +1067,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           context 'when new type does not support a widget' do
-            let(:issue_type) { build(:work_item_system_defined_type, :issue) }
-
             before do
               (work_item.dates_source || work_item.build_dates_source)
                 .update!(start_date: Date.current, due_date: Date.tomorrow)
 
-              # As we want to stub the widgets of issue type and work item is a type of task, we can not use the
-              # # stub_all_work_item_widgets method.
-              widget_definitions = issue_type.widget_classes(work_item.namespace).reject do |widget|
-                widget == WorkItems::Widgets::StartAndDueDate
-              end
-              allow(issue_type).to receive(:widget_classes).with(project).and_return(widget_definitions)
+              WorkItems::Type.default_by_type(:issue).widget_definitions
+                .find_by_widget_type(:start_and_due_date).update!(disabled: true)
             end
 
             it 'updates the work item type and clear widget attributes' do

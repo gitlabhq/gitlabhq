@@ -9,8 +9,28 @@ RSpec.describe 'Query.project.workItemTypes.unavailableWidgetsOnConversion', fea
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:current_user) { create(:user, developer_of: group) }
 
-  let_it_be(:source_type) { build(:work_item_system_defined_type, :ticket) }
-  let_it_be(:target_type) { build(:work_item_system_defined_type, :incident) }
+  let_it_be(:source_type) { create(:work_item_type, :non_default) }
+  let_it_be(:target_type) { create(:work_item_type, :non_default) }
+
+  let_it_be(:shared_widget1) do
+    create(:widget_definition, work_item_type: source_type, widget_type: 'description', name: 'Description')
+  end
+
+  let_it_be(:shared_widget2) do
+    create(:widget_definition, work_item_type: target_type, widget_type: 'description', name: 'Description')
+  end
+
+  let_it_be(:source_only_widget1) do
+    create(:widget_definition, work_item_type: source_type, widget_type: 'labels', name: 'Labels')
+  end
+
+  let_it_be(:source_only_widget2) do
+    create(:widget_definition, work_item_type: source_type, widget_type: 'assignees', name: 'Assignees')
+  end
+
+  let_it_be(:target_only_widget) do
+    create(:widget_definition, work_item_type: target_type, widget_type: 'milestone', name: 'Milestone')
+  end
 
   let(:query) do
     <<~QUERY
@@ -52,7 +72,7 @@ RSpec.describe 'Query.project.workItemTypes.unavailableWidgetsOnConversion', fea
     expect(widgets_lost.size).to eq(2)
 
     widget_types = widgets_lost.pluck('type')
-    expect(widget_types).to contain_exactly("DESIGNS", "START_AND_DUE_DATE")
+    expect(widget_types).to contain_exactly('LABELS', 'ASSIGNEES')
 
     expect(widgets_lost).to all(have_key('type'))
   end

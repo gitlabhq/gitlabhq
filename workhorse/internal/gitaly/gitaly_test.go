@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/metadata"
 
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v18/client"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
@@ -162,4 +164,66 @@ func TestCorrelationIDPropagationWithoutCorrelationID(t *testing.T) {
 	userIDValues := md.Get("user_id")
 	require.Len(t, userIDValues, 1, "should still preserve other metadata")
 	require.Equal(t, "123", userIDValues[0], "user_id should be preserved")
+}
+
+func TestParseRetryPolicy(t *testing.T) {
+	tests := []struct {
+		name         string
+		callMetadata map[string]string
+		expectNil    bool
+		validate     func(t *testing.T, policy *gitalyclient.RetryPolicy)
+	}{
+		{
+			name:         "no retry_config",
+			callMetadata: map[string]string{"username": "janedoe"},
+			expectNil:    true,
+		},
+		{
+			name:         "empty retry_config",
+			callMetadata: map[string]string{"retry_config": ""},
+			expectNil:    true,
+		},
+		{
+			name:         "invalid JSON retry_config",
+			callMetadata: map[string]string{"retry_config": "not-json"},
+			expectNil:    true,
+		},
+		{
+			name: "valid retry_config",
+			callMetadata: map[string]string{
+				"retry_config": `{"maxAttempts":4,"initialBackoff":"0.4s","maxBackoff":"1.4s","backoffMultiplier":2,"retryableStatusCodes":["UNAVAILABLE","ABORTED"]}`,
+			},
+			expectNil: false,
+			validate: func(t *testing.T, policy *gitalyclient.RetryPolicy) {
+				require.Equal(t, uint32(4), policy.GetMaxAttempts())
+				require.Equal(t, int64(0), policy.GetInitialBackoff().GetSeconds())
+				require.Equal(t, int32(400000000), policy.GetInitialBackoff().GetNanos())
+				require.Equal(t, int64(1), policy.GetMaxBackoff().GetSeconds())
+				require.Equal(t, int32(400000000), policy.GetMaxBackoff().GetNanos())
+				require.InEpsilon(t, float32(2), policy.GetBackoffMultiplier(), 0.000001)
+				require.Contains(t, policy.GetRetryableStatusCodes(), "UNAVAILABLE")
+				require.Contains(t, policy.GetRetryableStatusCodes(), "ABORTED")
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := api.GitalyServer{
+				Address:      "tcp://localhost:123",
+				CallMetadata: tt.callMetadata,
+			}
+
+			policy := parseRetryPolicy(server)
+
+			if tt.expectNil {
+				require.Nil(t, policy)
+			} else {
+				require.NotNil(t, policy)
+				if tt.validate != nil {
+					tt.validate(t, policy)
+				}
+			}
+		})
+	}
 }

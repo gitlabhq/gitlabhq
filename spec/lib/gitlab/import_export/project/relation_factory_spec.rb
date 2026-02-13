@@ -255,7 +255,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       let(:additional_relation_attributes) { { 'issue_type' => 'task' } }
 
       it 'sets the correct work_item_type' do
-        expect(created_object.work_item_type_id).to eq(build(:work_item_system_defined_type, :task).id)
+        expect(created_object.work_item_type).to eq(WorkItems::Type.default_by_type(:task))
       end
 
       context 'when the provided issue_type is invalid' do
@@ -268,22 +268,22 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     context 'when work_item_type is provided in the hash' do
-      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+      let(:incident_type) { WorkItems::Type.default_by_type(:incident) }
       let(:additional_relation_attributes) { { 'work_item_type' => incident_type } }
 
       it 'sets the correct work_item_type' do
-        expect(created_object.work_item_type_id).to eq(incident_type.id)
+        expect(created_object.work_item_type).to eq(incident_type)
       end
     end
 
     context 'when issue_type is provided in the hash as well as a work_item_type' do
-      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+      let(:incident_type) { WorkItems::Type.default_by_type(:incident) }
       let(:additional_relation_attributes) do
         { 'issue_type' => 'task', 'work_item_type' => incident_type }
       end
 
       it 'makes work_item_type take precedence over issue_type' do
-        expect(created_object.work_item_type_id).to eq(incident_type.id)
+        expect(created_object.work_item_type).to eq(incident_type)
       end
     end
 

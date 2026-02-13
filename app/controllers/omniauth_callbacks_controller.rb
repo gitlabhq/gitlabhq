@@ -488,8 +488,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Users::RespondToTermsService.new(user, terms).execute(accepted: true)
   end
 
-  def perform_registration_tasks(user, _provider)
-    store_location_for(:user, after_sign_up_path(user))
+  def perform_registration_tasks(_user, _provider)
+    store_location_for(:user, after_sign_up_path)
   end
 
   def onboarding_status_presenter

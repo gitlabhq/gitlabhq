@@ -190,7 +190,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
       create_list(:issue, 2, project: project, labels: [project_label], relative_position: 1)
 
-      expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control).with_threshold(2)
+      expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control)
       expect_graphql_errors_to_be_empty
     end
   end

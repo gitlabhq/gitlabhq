@@ -1696,7 +1696,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/pipeline/expression/statement_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/token_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/metrics_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/preloader_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/quota/deployments_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/pipeline_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/processable/resource_group_spec.rb'

@@ -363,12 +363,9 @@ To disable group mentions:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can prevent [enterprise users](../enterprise_user/_index.md) in your group from creating
 [snippets](../snippets.md) in their personal namespace. When disabled, enterprise users

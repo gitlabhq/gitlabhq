@@ -227,10 +227,6 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           let_it_be(:production) { create(:environment, :production, project: project) }
           let_it_be(:staging) { create(:environment, :staging, project: project) }
 
-          before do
-            stub_feature_flags(stop_preloading_manual_builds_for_pipeline: false)
-          end
-
           it 'executes one query to fetch all related environments', :request_store do
             pipeline = create(:ci_pipeline, project: project)
             create(:ci_build, :manual, pipeline: pipeline, environment: production.name)
@@ -313,54 +309,10 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
     it_behaves_like 'represents'
   end
 
-  describe '#represent_stages' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-
-    subject(:represent_stages_result) { serializer.represent_stages(pipeline) }
-
-    context 'when stop_preloading_manual_builds_for_pipeline feature flag is enabled' do
-      it 'tracks exception and returns empty hash' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-          an_instance_of(RuntimeError)
-        )
-
-        expect(represent_stages_result).to eq({})
-      end
-    end
-  end
-
   describe '#preloaded_relations' do
     subject(:preloaded_relations_result) { serializer.send(:preloaded_relations, **options) }
 
     let(:options) { {} }
-
-    context 'when stop_preloading_manual_builds_for_pipeline feature flag is disabled' do
-      before do
-        stub_feature_flags(stop_preloading_manual_builds_for_pipeline: false)
-      end
-
-      it 'includes manual_actions and scheduled_actions' do
-        hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
-
-        expect(hash_relation).to include(
-          manual_actions: [:metadata, :job_definition],
-          scheduled_actions: [:metadata, :job_definition]
-        )
-      end
-
-      context 'when disable_manual_and_scheduled_actions option is passed' do
-        let(:options) { { disable_manual_and_scheduled_actions: true } }
-
-        it 'still includes manual_actions and scheduled_actions' do
-          hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
-
-          expect(hash_relation).to include(
-            manual_actions: [:metadata, :job_definition],
-            scheduled_actions: [:metadata, :job_definition]
-          )
-        end
-      end
-    end
 
     it 'includes manual_actions and scheduled_actions by default' do
       hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
