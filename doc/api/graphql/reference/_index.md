@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GraphQL API resources
 ---
@@ -56794,6 +56794,7 @@ Workflow name for vulnerability triggered workflows.
 | ----- | ----------- |
 | <a id="vulnerabilityworkflownameresolve_sast_vulnerability"></a>`RESOLVE_SAST_VULNERABILITY` | Workflow name is resolve sast vulnerability. |
 | <a id="vulnerabilityworkflownamesast_fp_detection"></a>`SAST_FP_DETECTION` | Workflow name is sast fp detection. |
+| <a id="vulnerabilityworkflownamesecrets_fp_detection"></a>`SECRETS_FP_DETECTION` | Workflow name is secrets fp detection. |
 
 ### `WebhookAlertStatus`
 

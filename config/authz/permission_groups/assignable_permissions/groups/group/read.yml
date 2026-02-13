@@ -7,8 +7,8 @@ boundaries:
 permissions:
   - read_descendant_group
   - read_group
-  - read_invited_group
+  - read_group_invited_group
+  - read_group_transfer_location
   - read_shared_group
   - read_shared_project
   - read_sub_group
-  - read_transfer_location

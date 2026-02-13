@@ -33,7 +33,8 @@ module Tasks
             file: {},
             unknown_permission: [],
             missing_resource_metadata: [],
-            resource_metadata_schema: {}
+            resource_metadata_schema: {},
+            empty_resource_directory: []
           }
           @declarative_policy_permissions = load_declarative_policy_permissions
           @resources = []
@@ -47,6 +48,7 @@ module Tasks
           declarative_policy_permissions.each { |permission| validate_permission(permission) }
           validate_unknown_permissions
           validate_resources
+          validate_empty_resource_directories
 
           super
         end
@@ -150,6 +152,10 @@ module Tasks
           end
         end
 
+        def validate_empty_resource_directories
+          violations[:empty_resource_directory] = find_empty_directories("#{PERMISSION_DIR}/*/")
+        end
+
         def format_all_errors
           out = format_error_list(:definition)
           out += format_error_list(:excluded)
@@ -159,7 +165,8 @@ module Tasks
           out += format_file_errors
           out += format_error_list(:unknown_permission)
           out += format_error_list(:missing_resource_metadata)
-          out + format_schema_errors(:resource_metadata_schema)
+          out += format_schema_errors(:resource_metadata_schema)
+          out + format_error_list(:empty_resource_directory)
         end
 
         def format_action_errors
@@ -204,7 +211,10 @@ module Tasks
               "declarative policy.\nRemove the definition files for the unknown permissions.",
             missing_resource_metadata:
               "The following permission resource directories are missing a _metadata.yml file.",
-            resource_metadata_schema: "The following resource metadata files failed schema validation."
+            resource_metadata_schema: "The following resource metadata files failed schema validation.",
+            empty_resource_directory:
+              "The following resource directories contain only a _metadata.yml file with no permission definitions." \
+              "\nEither add permission definitions or remove the directory."
           }
         end
 

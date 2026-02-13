@@ -27,7 +27,7 @@ module Authz
       end
 
       def permissions
-        definition[:permissions].map(&:to_sym).uniq
+        Array(definition[:permissions]).map(&:to_sym).uniq
       end
 
       def category

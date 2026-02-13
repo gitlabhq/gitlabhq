@@ -377,7 +377,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
           end
 
           context 'when the granular token scopes are sufficient' do
-            let(:granular_pat) { create(:granular_pat, user:, permissions:, boundary:) }
+            let(:granular_pat) { create(:granular_pat, user: user, permissions: :write_work_item, boundary: boundary) }
 
             it 'does not raise an error and returns the token user' do
               expect(current_user).to eq(user)

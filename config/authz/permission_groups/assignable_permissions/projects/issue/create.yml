@@ -1,7 +1,0 @@
----
-name: create_issue
-description: Grants the ability to create issues
-boundaries:
-  - project
-permissions:
-  - create_issue

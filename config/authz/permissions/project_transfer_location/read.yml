@@ -1,0 +1,5 @@
+---
+name: read_project_transfer_location
+description: Grants the ability to read transfer locations for a project
+boundaries:
+  - project

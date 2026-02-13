@@ -10,4 +10,3 @@ permissions:
   - create_container_virtual_registry_upstream
   - create_maven_virtual_registry
   - create_maven_virtual_registry_upstream
-  - upload_maven_package_file

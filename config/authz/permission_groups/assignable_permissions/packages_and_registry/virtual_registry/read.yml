@@ -4,7 +4,6 @@ boundaries:
   - group
   - instance
 permissions:
-  - download_maven_package_file
   - read_container_virtual_registry
   - read_container_virtual_registry_upstream
   - read_container_virtual_registry_upstream_cache_entry

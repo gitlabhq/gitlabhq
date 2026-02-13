@@ -22,6 +22,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       encrypted_password
       feed_token
       incoming_email_token
+      note_html
       otp_backup_codes
       otp_required_for_login
       otp_secret_expires_at
@@ -32,11 +33,13 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       static_object_token
       static_object_token_encrypted
       unlock_token
+      cached_markdown_version
     )
   end
 
   let_it_be(:ch_database_name) { ClickHouse::Client.configuration.databases[:main].database }
   let_it_be(:pg_type_map) { Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP }
+  let_it_be(:ch_type_map) { pg_type_map.invert }
 
   let(:siphon_tables) { ch_table_names - skip_tables }
 
@@ -72,6 +75,10 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       end
 
       next if ch_field_type.include?(pg_type_map[type_id])
+
+      # Using Int8 can be allowed for smallint (Int16) PG columns
+      # in cases when the ActiveRecord ENUM contains only a few values.
+      next if ch_field_type.include?('Int8') && type_id == ch_type_map['Int16']
 
       raise("Postgres field '#{field_name}' of table #{pg_table} does not  " \
         "have the same correspondent type in ClickHouse. Expected #{ch_field_type}, got #{pg_type_map[type_id]}"

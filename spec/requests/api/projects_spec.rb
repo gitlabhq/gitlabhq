@@ -4089,7 +4089,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(group_ids).to contain_exactly(direct_group1.id, direct_group2.id, inherited_group.id)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_invited_group do
+      it_behaves_like 'authorizing granular token permissions', :read_project_invited_group do
         let(:boundary_object) { main_project }
         let(:request) do
           get api("/projects/#{main_project.id}/invited_groups", personal_access_token: pat)
@@ -6633,7 +6633,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         owner_group.add_owner(user)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_transfer_location do
+      it_behaves_like 'authorizing granular token permissions', :read_project_transfer_location do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/transfer_locations", personal_access_token: pat)

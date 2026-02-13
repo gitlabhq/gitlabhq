@@ -2625,7 +2625,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
-      it_behaves_like 'authorizing granular token permissions', :read_invited_group do
+      it_behaves_like 'authorizing granular token permissions', :read_group_invited_group do
         let(:boundary_object) { main_group }
         let(:user) { user1 }
         let(:request) do
@@ -3879,7 +3879,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to include_pagination_headers
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_transfer_location do
+      it_behaves_like 'authorizing granular token permissions', :read_group_transfer_location do
         let(:boundary_object) { source_group }
         let(:request) do
           get api("/groups/#{source_group.id}/transfer_locations", personal_access_token: pat)

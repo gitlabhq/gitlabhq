@@ -1,6 +1,0 @@
----
-name: read_transfer_location
-description: Grants the ability to read a transfer location
-boundaries:
-  - group
-  - project

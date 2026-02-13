@@ -490,7 +490,7 @@ module API
         use :pagination
         use :with_custom_attributes
       end
-      route_setting :authorization, permissions: :read_invited_group, boundary_type: :group
+      route_setting :authorization, permissions: :read_group_invited_group, boundary_type: :group
       get ":id/invited_groups", feature_category: :groups_and_projects do
         check_rate_limit_by_user_or_ip!(:group_invited_groups_api)
 
@@ -638,7 +638,7 @@ module API
         optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
         use :pagination
       end
-      route_setting :authorization, permissions: :read_transfer_location, boundary_type: :group
+      route_setting :authorization, permissions: :read_group_transfer_location, boundary_type: :group
       get ':id/transfer_locations', feature_category: :groups_and_projects do
         authorize! :admin_group, user_group
         args = declared_params(include_missing: false)

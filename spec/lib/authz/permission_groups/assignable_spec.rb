@@ -58,6 +58,14 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       it 'returns unique permissions as symbols' do
         expect(assignable.permissions).to match_array([:read_resource, :write_resource])
       end
+
+      context 'when permissions key is missing from definition' do
+        let(:definition) { { name: 'action_resource' } }
+
+        it 'returns an empty array' do
+          expect(assignable.permissions).to eq([])
+        end
+      end
     end
 
     describe '#category' do

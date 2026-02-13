@@ -143,6 +143,47 @@ Workflows requiring access to more data must use keyset-based pagination paramet
 
 This limit ensures consistent service quality and performance across GitLab.com by managing resource utilization effectively.
 
+### Linux package support for SUSE distributions
+
+- Announced in GitLab 18.9
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14411).
+
+We are ending support for SUSE distributions in GitLab 19.0. This affects:
+
+- openSUSE Leap 15.6
+- SUSE Linux Enterprise Server 12.5
+- SUSE Linux Enterprise Server 15.6
+
+openSUSE Leap 15.6 is approaching end-of-life. While SUSE Linux Enterprise Server remains supported by SUSE via
+long-term service, adoption among GitLab customers is too low to make continued support commercially viable.
+
+Customers on SUSE distributions that use the Linux package will not be able to upgrade GitLab past version `18.11.x`.
+
+For customers on one of these distributions, we recommend migrating to a
+[Docker deployment of GitLab](https://docs.gitlab.com/install/docker/installation/) on your existing distribution.
+This avoids having to migrate to a different Linux distribution to continue to receive GitLab upgrades.
+
+### Mattermost bundled with Linux package
+
+- Announced in GitLab 18.9
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14319).
+
+In GitLab 19.0, we plan to remove bundled Mattermost from the Linux package.
+
+Mattermost was first bundled with GitLab in 2015 as an open source team messaging solution, with GitLab SSO included
+to support the integration. Since then, Mattermost has significantly matured its own packaging and deployment
+options, and adoption of the bundled Mattermost among GitLab customers has remained relatively low.
+
+With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.cloudron.io/topic/14298/upcoming-removal-of-gitlab-sso-in-mattermost-v11-suggestion-for-cloudron).
+Given this change, the maturity of Mattermost standalone deployment options, and the low adoption in our customer
+base, we are removing Mattermost from the Linux package.
+
+If you currently use Mattermost bundled with GitLab, refer to
+[Migrating from GitLab Omnibus to Mattermost Standalone](https://docs.mattermost.com/administration-guide/onboard/migrate-gitlab-omnibus.html)
+in the Mattermost documentation for migration instructions and available Mattermost editions.
+
 ### Resource owner password credentials grant is deprecated
 
 - Announced in GitLab 18.0

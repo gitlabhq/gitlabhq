@@ -31,7 +31,7 @@ module Gitlab
         16 => 'Bool',
         17 => 'String',
         20 => 'Int64',
-        21 => 'Int8',
+        21 => 'Int16',
         23 => 'Int64',
         25 => 'String',
         869 => 'String', # ip address type

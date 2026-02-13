@@ -73,6 +73,12 @@ Consider these factors when selecting regions:
 
 ### Primary regions
 
+> [!warning] US East (N. Virginia) dependency risk
+> AWS hosts global identity and access management (IAM) services in the `us-east-1` region. 
+> An outage in `us-east-1` prevents GitLab from performing operations on tenants, including failover to secondary regions.
+> Tenants with `us-east-1` as their primary region experience downtime that GitLab cannot mitigate during an outage.
+> Consider selecting a different primary region to reduce this risk.
+
 You can deploy your instance in the following AWS regions:
 
 | Region                    | Code             | ClickHouse Cloud |
