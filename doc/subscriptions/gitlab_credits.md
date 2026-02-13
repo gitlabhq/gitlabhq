@@ -16,6 +16,7 @@ title: GitLab Credits
 {{< history >}}
 
 - Introduced in GitLab 18.7.
+- GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
 
 {{< /history >}}
 
