@@ -27,7 +27,7 @@ Status: Experiment
 
 {{< /history >}}
 
-Use this API to seed the AI Catalog with [GitLab-managed external agents](../../user/duo_agent_platform/agents/external.md#gitlab-managed-external-agents).
+Use this API to seed the AI Catalog with [GitLab-managed external agents](../../user/duo_agent_platform/agents/external.md).
 
 This feature is an [experiment](../../policy/development_stages_support.md) and may change or be removed in future releases.
 

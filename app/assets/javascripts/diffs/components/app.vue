@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
@@ -88,7 +88,7 @@ export default {
     CollapsedFilesWarning,
     CommitWidget,
     GlLoadingIcon,
-    GlPagination,
+    GlKeysetPagination,
     GlSprintf,
     GlAlert,
   },
@@ -284,15 +284,11 @@ export default {
     currentFileNumber() {
       return this.currentDiffIndex + 1;
     },
-    previousFileNumber() {
-      const { currentDiffIndex } = this;
-
-      return currentDiffIndex >= 1 ? currentDiffIndex : null;
-    },
-    nextFileNumber() {
-      const { currentFileNumber, flatBlobsList } = this;
-
-      return currentFileNumber < flatBlobsList.length ? currentFileNumber + 1 : null;
+    fileNavigationPageInfo() {
+      return {
+        hasPreviousPage: this.currentDiffIndex > 0,
+        hasNextPage: this.currentDiffIndex < this.flatBlobsList.length - 1,
+      };
     },
     visibleWarning() {
       let visible = false;
@@ -560,8 +556,12 @@ export default {
         this.fetchFileByFile();
       }
     },
-    navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex(number - 1);
+    handleFilePaginationChange(direction) {
+      if (direction === 'prev' && this.currentDiffIndex > 0) {
+        this.navigateToDiffFileIndex(this.currentDiffIndex - 1);
+      } else if (direction === 'next' && this.currentDiffIndex < this.flatBlobsList.length - 1) {
+        this.navigateToDiffFileIndex(this.currentDiffIndex + 1);
+      }
     },
     refetchDiffData({ refetchMeta = true } = {}) {
       this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
@@ -930,12 +930,11 @@ export default {
               data-testid="file-by-file-navigation"
               class="gl-grid gl-text-center"
             >
-              <gl-pagination
+              <gl-keyset-pagination
                 class="gl-mx-auto"
-                :value="currentFileNumber"
-                :prev-page="previousFileNumber"
-                :next-page="nextFileNumber"
-                @input="navigateToDiffFileNumber"
+                v-bind="fileNavigationPageInfo"
+                @prev="handleFilePaginationChange('prev')"
+                @next="handleFilePaginationChange('next')"
               />
               <gl-sprintf :message="__('File %{current} of %{total}')">
                 <template #current>{{ currentFileNumber }}</template>

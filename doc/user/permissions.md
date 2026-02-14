@@ -886,6 +886,7 @@ For more information, see
 {{< history >}}
 
 - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
+- Minimal Access users [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216727) to non-billable in GitLab 18.9.
 
 {{< /history >}}
 
@@ -894,7 +895,10 @@ Users with the Minimal Access role do not:
 - Automatically have access to projects and subgroups in that top-level group.
   Owners must explicitly add these users to the specific subgroups and
   projects.
-- Count as licensed seats on GitLab Self-Managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab.com namespace.
+- Count as licensed seats, provided the user has no other role anywhere on the instance or in the GitLab.com namespace.
+
+If a user with the Minimal Access role is granted a [billable role](../subscriptions/manage_users_and_seats.md#billable-users)
+in any project or subgroup, they consume a license seat based on their highest role.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/_index.md)
 to control access to groups and projects in the group hierarchy. You can set the default role to
