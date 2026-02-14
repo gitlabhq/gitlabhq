@@ -2228,7 +2228,7 @@ If the user selects the tooltip, a related glossary page opens.
 
 ### Create a glossary term
 
-A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary.yaml)
+A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary-tooltips/glossary.yaml)
 exists in the `docs-gitlab-com` repo.
 
 - Add definitions to this file. Each definition should be short and not contain links.
