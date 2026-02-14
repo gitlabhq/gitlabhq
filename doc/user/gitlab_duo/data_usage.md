@@ -56,6 +56,8 @@ You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise
 retain input and output data unless customers provide consent through a GitLab
 [support ticket](https://about.gitlab.com/support/portal/).
 
+When groups or instances enable extended logging for GitLab Duo Agent Platform workflows, trace data is retained. This is separate from the zero-day retention policy with AI model providers.
+
 For more information, see [AI feature logging](../../administration/logs/_index.md).
 
 ## Training data
@@ -125,6 +127,42 @@ Secret scanning runs in the following scenarios:
 
 > [!note]
 > Secret scanning does not occur when you interact with GitLab Duo Chat through the web interface.
+
+## Collecting usage data
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+
+{{< /history >}}
+
+You can enable extended logging to collect detailed AI interaction data from the GitLab Duo Agent Platform.
+
+This data is used exclusively for service improvement and debugging, and not for training AI models.
+
+### Which data is logged
+
+When data collection is enabled, the following data is logged:
+
+- Full prompt and response text from interactions with GitLab Duo.
+- Session context, including sessions that were ongoing at the time the setting is enabled.
+- Model metadata (model version, token counts, latency).
+- Tool calls and their results.
+- Session IDs to correlate with user feedback.
+
+The following information is not included in logs, as long as users don't include it in their own prompts:
+
+- User IDs or usernames.
+- Email addresses or personal identifiers.
+- Project or namespace identifiers.
+
+GitLab does not remove identifiers that users have included in their prompt.
+
+### Configure data collection for an instance
+
+To configure data collection for GitLab Self-Managed, see [these instructions](../../administration/gitlab_duo_self_hosted/configure_duo_features.md#enable-extended-logging-for-debugging).
+
+When you turn on logging in a fully self-hosted configuration, detailed logs are stored on your infrastructure and are not shared with GitLab unless your self-hosted AI Gateway is explicitly configured to send traces to an external observability service.
 
 ## GitLab Duo Self-Hosted
 

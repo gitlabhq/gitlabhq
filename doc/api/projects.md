@@ -1813,9 +1813,9 @@ Example response:
 
 List attributes of a project.
 
-### List users
+### List all members of a project
 
-Get the users list of a project.
+Lists all members with access to a specified project.
 
 ```plaintext
 GET /projects/:id/users
@@ -1826,8 +1826,27 @@ Supported attributes:
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
 | `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `search`     | string            | No       | Search for specific users. |
-| `skip_users` | integer array     | No       | Filter out users with the specified IDs. |
+| `search`     | string            | No       | Search for a specific member by their `username` or `name`. |
+| `skip_users` | integer array     | No       | Filter out members with the specified IDs. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute | Type | Description |
+|:----------|:-----|:------------|
+| `id` | integer | ID of the user. |
+| `username` | string | Username of the user. |
+| `name` | string | Full name of the user. |
+| `state` | string | State of the user account. Possible values: `active` or `blocked`. |
+| `avatar_url` | string | URL of the user's avatar image. |
+| `web_url` | string | URL to access the user's profile in a browser. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.com/api/v4/projects/<project_id>/users" \
+```
 
 Example response:
 
@@ -1852,9 +1871,9 @@ Example response:
 ]
 ```
 
-### List groups
+### List all ancestor groups
 
-Get a list of ancestor groups for this project.
+Lists all ancestor groups for a specified project.
 
 ```plaintext
 GET /projects/:id/groups
@@ -1865,11 +1884,30 @@ Supported attributes:
 | Attribute                 | Type              | Required | Description |
 |:--------------------------|:------------------|:---------|:------------|
 | `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `search`                  | string            | No       | Search for specific groups. |
+| `search`                  | string            | No       | Search for specific groups by group ID. |
 | `shared_min_access_level` | integer           | No       | Limit to shared groups with at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
-| `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
+| `shared_visible_only`     | boolean           | No       | If `true`, returns only shared groups the authenticated user can access. |
 | `skip_groups`             | array of integers | No       | Skip the group IDs passed. |
 | `with_shared`             | boolean           | No       | Include projects shared with this group. Default is `false`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute | Type | Description |
+|:----------|:-----|:------------|
+| `id` | integer | ID of the group. |
+| `name` | string | Name of the group. |
+| `avatar_url` | string | URL of the group's avatar image. |
+| `web_url` | string | URL to access the group in a browser. |
+| `full_name` | string | Full name of the group. |
+| `full_path` | string | Full path of the group. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<project_id>/groups"
+```
 
 Example response:
 
@@ -1894,9 +1932,9 @@ Example response:
 ]
 ```
 
-### List shareable groups
+### List all groups available to invite to a project
 
-Get a list of groups that can be shared with a project
+Lists all groups that can be invited to a project.
 
 ```plaintext
 GET /projects/:id/share_locations
@@ -1907,7 +1945,26 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `search`  | string            | No       | Search for specific groups. |
+| `search`  | string            | No       | Search for specific groups by group ID. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute | Type | Description |
+|:----------|:-----|:------------|
+| `id` | integer | ID of the group. |
+| `web_url` | string | URL to access the group in a browser. |
+| `name` | string | Name of the group. |
+| `avatar_url` | string | URL of the group's avatar image. |
+| `full_name` | string | Full name of the group. |
+| `full_path` | string | Full path of the group. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<project_id>/share_locations"
+```
 
 Example response:
 
@@ -1932,15 +1989,20 @@ Example response:
 ]
 ```
 
-### List a project's invited groups
+### List all invited groups in a project
 
-Get a list of invited groups in a project. When accessed without authentication, only public invited groups are returned.
+Lists all invited groups in a project. When accessed without authentication, returns only public invited groups.
 This endpoint is rate-limited to 60 requests per minute per:
 
-- User for authenticated users.
-- IP address for unauthenticated users.
+- User for authenticated users
+- IP address for unauthenticated users
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
+This endpoint supports pagination:
+
+- Use offset-based pagination to access up to 50,000 projects.
+- Use keyset-based pagination to list more than 50,000 projects.
+
+For more information, see [Pagination](rest/_index.md#pagination).
 
 ```plaintext
 GET /projects/:id/invited_groups
@@ -1950,11 +2012,30 @@ Supported attributes:
 
 | Attribute                | Type             | Required | Description |
 |:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer or string   | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
-| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
+| `id`                     | integer or string   | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria. |
 | `min_access_level`       | integer          | no       | Limit to groups where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
-| `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
-| `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+| `relation`               | array of strings | no       | Filter the groups by relation. Possible values: `direct` or `inherited`. |
+| `with_custom_attributes` | boolean          | no       | If `true`, returns [custom attributes](custom_attributes.md) in response. Requires administrator access. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute | Type | Description |
+|:----------|:-----|:------------|
+| `id` | integer | ID of the group. |
+| `web_url` | string | URL to access the group in a browser. |
+| `name` | string | Name of the group. |
+| `avatar_url` | string | URL of the group's avatar image. |
+| `full_name` | string | Full name of the group. |
+| `full_path` | string | Full path of the group. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<project_id>/invited_groups"
+```
 
 Example response:
 
@@ -1971,9 +2052,9 @@ Example response:
 ]
 ```
 
-### List programming languages used
+### Retrieve programming language usage information
 
-Get the list and usage percentage of programming languages used in a project.
+Retrieves information about all programming languages used in a specified project.
 
 ```plaintext
 GET /projects/:id/languages
@@ -1984,6 +2065,9 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and
+a list of programming languages and usage percentages.
 
 Example request:
 

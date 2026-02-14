@@ -233,6 +233,30 @@ You can configure a GitLab Duo feature to use the GitLab AI vendor model, even i
 
 ![GitLab Duo Self-Hosted feature configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
 
+### Enable extended logging for debugging
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+
+{{< /history >}}
+
+You can enable extended logging to collect detailed AI interaction data from the GitLab Duo Agent Platform.
+
+- On GitLab Self-Managed, the detailed logs are shared with GitLab.
+- When you host your own models and AI Gateway, this data remains on your infrastructure and is not shared with GitLab.
+
+To view which information is logged,
+see [Collecting usage data](../../user/gitlab_duo/data_usage.md#collecting-usage-data).
+
+To enable extended logging:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Select the **Collect usage data** checkbox.
+1. Select **Save changes**.
+
 ### Disable GitLab Duo features
 
 GitLab Duo features remain turned on even if you have not chosen a model for a sub-feature.

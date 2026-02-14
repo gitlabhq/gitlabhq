@@ -6,6 +6,10 @@ class RemoteMirror < ApplicationRecord
   include SafeUrl
   include Gitlab::EncryptedAttribute
 
+  # Limit push mirrors per project to prevent performance issues from
+  # excessive concurrent sync jobs.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/580289
+  MAX_MIRRORS_PER_PROJECT = 10
   MAX_FIRST_RUNTIME = 3.hours
   MAX_INCREMENTAL_RUNTIME = 1.hour
   PROTECTED_BACKOFF_DELAY   = 1.minute
@@ -24,6 +28,8 @@ class RemoteMirror < ApplicationRecord
   validates :project, presence: true
   validates :url, presence: true, public_url: { schemes: Project::VALID_MIRROR_PROTOCOLS, allow_blank: true, enforce_user: true }
   validates :only_protected_branches, inclusion: { in: [true, false], message: :blank }
+  validate :validate_mirror_count, on: :create
+  validate :validate_mirror_count, if: :enabling_mirror?
 
   before_validation :store_credentials
   after_update :reset_fields, if: :saved_change_to_mirror_url?
@@ -242,6 +248,10 @@ class RemoteMirror < ApplicationRecord
 
   private
 
+  def enabling_mirror?
+    enabled_changed? && enabled?
+  end
+
   def store_credentials
     # This is a necessary workaround for attr_encrypted, which doesn't otherwise
     # notice that the credentials have changed
@@ -282,6 +292,12 @@ class RemoteMirror < ApplicationRecord
 
   def saved_change_to_mirror_url?
     saved_change_to_url? || saved_change_to_credentials?
+  end
+
+  def validate_mirror_count
+    return unless project.remote_mirrors.enabled.count >= MAX_MIRRORS_PER_PROJECT
+
+    errors.add(:base, format(_("Maximum number of push mirrors (%{max_mirrors}) exceeded for this project."), max_mirrors: MAX_MIRRORS_PER_PROJECT))
   end
 end
 

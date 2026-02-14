@@ -1556,6 +1556,22 @@ Issues and merge requests enforce these maximums:
 - Maximum assignees: 200
 - Maximum reviewers: 200
 
+## Maximum number of project push mirrors
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221965) in GitLab 18.9.
+
+{{< /history >}}
+
+Each project can have a maximum of 10 enabled push mirrors.
+This limit prevents performance issues from excessive concurrent sync jobs.
+
+If you require more mirrors, you can:
+
+- Disable unused mirrors.
+- Consolidate mirrors by combining multiple destinations into a single mirror.
+
 ## CDN-based limits on GitLab.com
 
 In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are not public because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.

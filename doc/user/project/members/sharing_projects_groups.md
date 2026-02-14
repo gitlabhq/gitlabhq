@@ -145,7 +145,7 @@ To invite a group to a project:
 1. Select **Invite**.
 
 The invited group is displayed on the **Groups** tab.
-You can also use the REST API to [list a project's invited groups](../../../api/projects.md#list-a-projects-invited-groups).
+You can also use the REST API to [list a project's invited groups](../../../api/projects.md#list-all-invited-groups-in-a-project).
 
 Private groups are:
 

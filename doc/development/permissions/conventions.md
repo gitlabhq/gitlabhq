@@ -67,6 +67,7 @@ The following action patterns are examples of those that should not be introduce
 |-----------|--------------------|
 | `admin`   | Implies broad, undefined authority with unclear scope |
 | `change`  | Redundant with `update` |
+| `configure` | Redundant with `update` |
 | `destroy` | Reflects implementation semantics rather than the domain action; prefer `delete` |
 | `edit`    | Redundant with `update` |
 | `list`    | Ambiguous read semantics; use `read` |

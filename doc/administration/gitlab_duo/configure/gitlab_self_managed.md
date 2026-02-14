@@ -20,21 +20,15 @@ gitlab_dedicated: no
   - You cannot use a license key.
   - You cannot use GitLab Duo with an offline license, with the exception of [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md).
 
-## Turn on composite identity
+## Turn on composite identity (removed)
 
-You must turn on [composite identity](../../../user/duo_agent_platform/composite_identity.md)
-so that the `@duo-developer` service account can perform actions
-on behalf of users.
+---
 
-Prerequisites:
+<!--- start_remove The following content will be removed on remove_date: '2026-04-11' -->
 
-- Administrator access.
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588629) in GitLab 18.9.
 
-To turn on composite identity:
-
-1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
-1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
+<!--- end_remove -->
 
 ## Allow outbound connections from the GitLab instance to GitLab Duo
 

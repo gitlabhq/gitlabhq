@@ -36,6 +36,11 @@ displays an error.
 [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables pushing to,
 and pulling from, remote mirrors.
 
+## Push mirror limits
+
+Each project can have a maximum of 10 enabled push mirrors.
+For more information, see [Maximum number of project push mirrors](../../../../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
+
 ## Configure push mirroring
 
 To set up push mirroring for an existing project:
