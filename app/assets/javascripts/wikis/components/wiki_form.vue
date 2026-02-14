@@ -675,12 +675,14 @@ export default {
           >
             <template v-if="glFeatures.wikiImmersiveEditor" #header>
               <div
-                class="gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
+                class="gl-flex gl-items-start gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
               >
-                <wiki-sidebar-toggle action="open" class="gl-my-2 gl-shrink-0" />
+                <div class="toggle-with-hide-transition gl-my-2 gl-shrink-0 gl-p-2">
+                  <wiki-sidebar-toggle action="open" />
+                </div>
                 <div
-                  class="flexible-input-container gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
+                  class="flexible-input-container gl-my-2 gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >
                   <h1 v-if="isCustomSidebar" class="gl-heading-3 !gl-mb-0 md:gl-heading-2">
                     {{ s__('Wiki|Edit Sidebar') }}

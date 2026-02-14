@@ -77,14 +77,33 @@
       @apply gl-duration-medium;
       @apply motion-reduce:gl-transition-none;
     }
+
+    &.sidebar-expanded {
+      .wiki-sidebar-toggle.toggle-action-open {
+        @apply gl-transition-all;
+        @apply gl-duration-medium;
+        /* wait until the sidebar has finished opening to hide the toggle */
+        transition-delay: $gl-transition-duration-medium;
+      }
+    }
+
+    + * .toggle-with-hide-transition {
+      @apply gl-transition-all;
+      @apply gl-overflow-hidden;
+      @apply gl-duration-medium;
+    }
   }
 
   &.sidebar-expanded {
-    /* Hide the open toggle. It can be both a descendant as well as a descendant
-     of a sibling to the wiki sidebar */
-    .wiki-sidebar-toggle.toggle-action-open,
-    + * .wiki-sidebar-toggle.toggle-action-open {
-      @apply gl-hidden;
+    /* Hide the open toggle. It can be both a descendant... */
+    .wiki-sidebar-toggle.toggle-action-open {
+      @apply gl-opacity-0;
+    }
+
+    /* ...as well as a descendant of a sibling to the wiki sidebar */
+    + * .toggle-with-hide-transition {
+      @apply gl-w-0;
+      @apply gl-px-0;
     }
   }
 
@@ -100,6 +119,10 @@
     .resizer {
       display: none;
     }
+
+    + * .toggle-with-hide-transition {
+      @apply gl-w-9;
+    }
   }
 
   .sidebar-container {
@@ -112,6 +135,7 @@
     position: relative;
     @apply gl-flex;
     @apply gl-flex-col;
+    @apply gl-bg-default;
 
     .blocks-container {
       @apply gl-flex;
