@@ -55,18 +55,6 @@ query getPipelines(
             }
           }
         }
-        upstream {
-          id
-          detailedStatus {
-            ...CiIcon
-            tooltip
-            label
-          }
-          project {
-            id
-            name
-          }
-        }
       }
       pageInfo {
         ...PageInfo

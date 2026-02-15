@@ -148,9 +148,6 @@ export default {
 
       return keepLatestDownstreamPipelines(downstream);
     },
-    getUpstreamPipeline(pipeline) {
-      return pipeline.triggered_by || pipeline.upstream;
-    },
     getProjectPath(item) {
       return cleanLeadingSeparator(item.project.full_path || item.project.fullPath);
     },
@@ -267,7 +264,7 @@ export default {
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
-          :upstream-pipeline="getUpstreamPipeline(item)"
+          :upstream-pipeline="item.triggered_by"
           @mini-graph-stage-click="trackPipelineMiniGraph"
         />
       </template>

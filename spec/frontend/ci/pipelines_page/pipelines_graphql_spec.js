@@ -42,7 +42,6 @@ import {
   mockRunnerCacheClearPayloadWithError,
   mockPipelinesFilteredSearch,
   mockPipelineWithDownstream,
-  mockPipelineWithUpstream,
   mockBatchResponse,
   mockSinglePipelineResponse,
 } from './mock_data';
@@ -65,7 +64,6 @@ describe('Pipelines app', () => {
   const countHandler = jest.fn().mockResolvedValue(mockPipelinesCount);
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
   const downstreamHandler = jest.fn().mockResolvedValue(mockPipelineWithDownstream);
-  const upstreamHandler = jest.fn().mockResolvedValue(mockPipelineWithUpstream);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
   const singlePipelineHandler = jest.fn().mockResolvedValue(mockSinglePipelineResponse);
@@ -322,21 +320,6 @@ describe('Pipelines app', () => {
 
       expect(findTable().props('pipelines')[0].downstream.nodes[0]).toEqual(
         mockPipelineWithDownstream.data.project.pipelines.nodes[0].downstream.nodes[0],
-      );
-    });
-
-    it('passes upstream pipeline data to mini graph', async () => {
-      createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, upstreamHandler],
-          [getAllPipelinesCountQuery, countHandler],
-        ],
-      });
-
-      await waitForPromises();
-
-      expect(findTable().props('pipelines')[0].upstream).toEqual(
-        mockPipelineWithUpstream.data.project.pipelines.nodes[0].upstream,
       );
     });
   });
