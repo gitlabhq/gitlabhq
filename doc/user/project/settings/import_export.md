@@ -13,6 +13,12 @@ description: "Use file exports to migrate GitLab data."
 
 {{< /details >}}
 
+{{< history >}}
+
+- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.9.
+
+{{< /history >}}
+
 File exports give you a portable package of your GitLab data that works in offline environments.
 This migration method preserves most project data, including
 repositories, issues, merge requests, and comments.
@@ -41,6 +47,9 @@ Using project export files for backups does not always work, and not all items a
   to the importing user rather than the original author.
 - For merge requests, only the latest diff is preserved during import or export.
   After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
+- Imported milestones with titles [matching existing milestones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
+  destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
+  (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 
 ## Migrate projects by uploading an export file
 
