@@ -38,6 +38,9 @@ module Gitlab
           notes
         ].freeze
 
+        MILESTONE_TITLE_UPDATE_MSG = '[Project/Group Import] Updating milestone title - ' \
+          'source title used by existing group or project milestone'
+
         private
 
         def setup_models
@@ -45,6 +48,7 @@ module Gitlab
           when :notes then setup_note
           when :'Iterations::Cadence' then setup_iterations_cadence
           when :events then setup_event
+          when :milestone, :milestones then ensure_milestone_title_is_unique
           end
 
           update_group_references
@@ -75,6 +79,50 @@ module Gitlab
 
         def setup_event
           @relation_hash = {} if @relation_hash['author_id'].nil?
+        end
+
+        def ensure_milestone_title_is_unique
+          title = @relation_hash['title']
+          return unless title.present?
+
+          existing_milestone = Milestone.for_projects_and_groups(project_ids, group_ids)
+    .find_by_title(title)
+
+          return unless existing_milestone
+
+          # If Milestone was created during this import - let ObjectBuilder reuse it
+          return if existing_milestone.group_id == @importable.id
+
+          new_milestone_title = unique_milestone_title(title)
+
+          logger.info(
+            message: MILESTONE_TITLE_UPDATE_MSG,
+            importable_id: @importable.id,
+            relation_key: @relation_name,
+            existing_milestone_title: title,
+            existing_group_id: existing_milestone.group_id,
+            existing_project_id: existing_milestone.project_id,
+            new_milestone_title: new_milestone_title
+          )
+
+          @relation_hash['title'] = new_milestone_title
+        end
+
+        def group_ids
+          @group_ids ||= @importable.self_and_hierarchy.pluck(:id)
+        end
+
+        def project_ids
+          @project_ids ||= @importable.all_project_ids.pluck(:id)
+        end
+
+        def unique_milestone_title(title)
+          suffix = "(imported-#{SecureRandom.hex(1)}-#{Time.current.to_i})"
+          "#{title} #{suffix}"
+        end
+
+        def logger
+          @logger ||= ::Import::Framework::Logger.build
         end
       end
     end
