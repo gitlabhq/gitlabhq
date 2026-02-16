@@ -173,9 +173,7 @@ module API
       end
 
       def immediately_delete_subgroup_error(group)
-        if !Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
-          '`permanently_remove` option is not permitted on this instance.'
-        elsif !group.subgroup?
+        if !group.subgroup?
           '`permanently_remove` option is only available for subgroups.'
         elsif !group.self_deletion_scheduled?
           'Group must be marked for deletion first.'

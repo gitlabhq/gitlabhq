@@ -32,7 +32,7 @@ To assess and manage your profiles, use the [security inventory](../security_inv
 
 ### Review test coverage
 
-To view a high-level status (**Enabled**, **Not Enabled**, or **Failed**) for scanners in the group like SAST, DAST, and Secret Detection.
+To view a high-level status (**Enabled**, **Not Enabled**, or **Failed**) for scanners in the group like SAST, DAST, and secret detection:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Security inventory**.
@@ -65,7 +65,7 @@ GitLab provides default profiles that are preconfigured scanner settings so you 
 
 When you apply the secret detection profile, a default profile, you enable the recommended baseline protection for secrets across your development workflow. Protection includes:
 
-- Git Push Protection: Actively blocks secrets from being committed to your repositories in real-time during `git push`.
+- Git push protection: Actively blocks secrets from being committed to your repositories in real-time during `git push`.
 
 ### Profile details
 
@@ -76,7 +76,7 @@ To view technical details about the secret detection profile:
 1. Select the **Secret Detection** profile.
 1. Review the following information:
    - **Analyzer Type**: The type of profile (for example, **Secret Detection**)
-   - **Active Triggers**: The types of triggers that the profile supports (for example, **Git push protection**).
+   - **Active Triggers**: The types of triggers that the profile supports (for example, **Git push events**).
    - **Status**: Displays whether the profile is currently **Active** or **Disabled** for the current context using coverage status indicators.
 
 ## Coverage status indicators

@@ -6,7 +6,7 @@ column: search_rate_limit_unauthenticated
 db_type: integer
 default: '100'
 description: 'Max number of requests per minute for performing a search while unauthenticated.
-  Default: 10. To disable throttling set to 0.'
+  Default: 10. To disable throttling, set to 0.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

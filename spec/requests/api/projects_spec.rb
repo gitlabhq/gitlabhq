@@ -5977,39 +5977,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           params.merge!(permanently_remove: true)
         end
 
-        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-          before do
-            stub_application_setting(allow_immediate_namespaces_deletion: false)
-          end
-
-          it_behaves_like 'immediately delete project error' do
-            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-          end
-
-          context 'when current user is an admin' do
-            let_it_be(:user) { admin }
-            let(:admin_mode) { true }
-
-            context 'when project is already marked for deletion' do
-              before do
-                project.update!(marked_for_deletion_at: 1.day.ago, deleting_user: admin)
-                params[:full_path] = project.full_path
-                project.add_owner(admin)
-              end
-
-              it_behaves_like 'deletes project immediately'
-
-              context 'when admin_mode is false' do
-                let(:admin_mode) { false }
-
-                it_behaves_like 'immediately delete project error' do
-                  let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-                end
-              end
-            end
-          end
-        end
-
         context 'when project is not marked for deletion' do
           let(:error_message) { 'Project must be marked for deletion first.' }
 
@@ -6027,14 +5994,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             end
 
             it_behaves_like 'deletes project immediately'
-
-            context 'when the allow_immediate_namespaces_deletion FF is disabled' do
-              before do
-                stub_feature_flags(allow_immediate_namespaces_deletion: false)
-              end
-
-              it_behaves_like 'deletes project immediately'
-            end
           end
 
           context 'with incorrect project full path' do

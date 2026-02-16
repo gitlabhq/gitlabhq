@@ -670,33 +670,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         context 'when permanently_remove param is set' do
           let(:params) { { permanently_remove: true } }
 
-          describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-            before do
-              stub_application_setting(allow_immediate_namespaces_deletion: false)
-            end
-
-            it 'returns error' do
-              Sidekiq::Testing.fake! do
-                expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
-              end
-
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
-          end
-
-          context 'when current user is an admin' do
-            let_it_be(:user) { admin_with_admin_mode }
-
-            it 'deletes the group immediately and redirects to root path' do
-              expect(GroupDestroyWorker).to receive(:perform_async)
-
-              subject
-
-              expect(response).to redirect_to(root_path)
-              expect(flash[:toast]).to include "#{group.name} is being deleted."
-            end
-          end
-
           context 'for a html request' do
             it 'deletes the group immediately and redirects to root path' do
               expect(GroupDestroyWorker).to receive(:perform_async)

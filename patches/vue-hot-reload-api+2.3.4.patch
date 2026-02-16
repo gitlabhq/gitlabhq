@@ -1,0 +1,14 @@
+diff --git a/node_modules/vue-hot-reload-api/dist/index.js b/node_modules/vue-hot-reload-api/dist/index.js
+index 3fc33bf..0a8a7a0 100644
+--- a/node_modules/vue-hot-reload-api/dist/index.js
++++ b/node_modules/vue-hot-reload-api/dist/index.js
+@@ -17,7 +17,8 @@ exports.install = function (vue, browserify) {
+   isBrowserify = browserify
+ 
+   // compat with < 2.0.0-alpha.7
+-  if (Vue.config._lifecycleHooks.indexOf('init') > -1) {
++  // Note: Vue 3 / @vue/compat doesn't have _lifecycleHooks
++  if (Vue.config._lifecycleHooks && Vue.config._lifecycleHooks.indexOf('init') > -1) {
+     initHookName = 'init'
+   }
+ 

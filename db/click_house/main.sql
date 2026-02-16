@@ -347,18 +347,6 @@ PARTITION BY toYear(created_at)
 ORDER BY (path, created_at, author_id, id)
 SETTINGS index_granularity = 8192;
 
-CREATE TABLE duo_chat_daily_events
-(
-    `user_id` UInt64 DEFAULT 0,
-    `date` Date32 DEFAULT toDate(now64()),
-    `event` UInt8 DEFAULT 0,
-    `occurrences` UInt64 DEFAULT 0
-)
-ENGINE = SummingMergeTree
-PARTITION BY toYear(date)
-ORDER BY (user_id, date, event)
-SETTINGS index_granularity = 64;
-
 CREATE TABLE duo_chat_events
 (
     `user_id` UInt64 DEFAULT 0,

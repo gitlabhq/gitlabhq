@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_new_project_projects_explore_weekly
 description: Weekly count of unique users that click "New project" button on projects explore
 product_group: organizations
+product_categories:
+- groups_and_projects
 performance_indicator_type: []
 value_type: number
 status: active

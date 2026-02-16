@@ -18,6 +18,7 @@ title: Check migrations before upgrade
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191722) in GitLab 18.5.
 - [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
+- [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222806) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -28,6 +29,8 @@ migrations when the Admin UI is not available, such as during downtime upgrades 
 All Rake tasks work across all databases (main and ci) and use a unified migration ID format: `{database}_{id}`.
 For example, `main_85` refers to migration ID 85 in the main database, and `ci_10` refers to migration ID 10
 in the ci database.
+
+For active migrations, the `progress` column includes an estimated time remaining when available (for example, `42.50% (estimated time remaining: 5 minutes)`).
 
 ### List all background migrations
 
@@ -44,16 +47,16 @@ sudo gitlab-rake gitlab:background_migrations:list
 Example output:
 
 ```plaintext
-id      | table_name                                              | job_class_name                                              | status
---------|---------------------------------------------------------|-------------------------------------------------------------|----------
-main_1  | namespace_settings                                      | UpdateRequireDpopForManageApiEndpointsToFalse               | finished
-main_2  | resource_iteration_events                               | BackfillResourceIterationEventsNamespaceId                  | finalized
-main_3  | identities                                              | DeleteTwitterIdentities                                     | finalized
-main_4  | software_license_policies                               | BackfillLicensesOutsideSpdxCatalogue                        | finalized
-main_5  | security_policies                                       | BackfillPipelineExecutionPoliciesMetadata                   | finished
-ci_1    | ci_runners                                              | MarkAdminBotRunnersAsHosted                                 | finalized
-ci_2    | p_ci_build_trace_metadata                               | BackfillUpsertedCiBuildTraceMetadataProjectId               | finalized
-ci_3    | ci_runners                                              | BackfillOrganizationIdOnCiRunners                           | finalized
+id      | table_name                       | job_class_name                                | status    | progress
+--------|----------------------------------|-----------------------------------------------|-----------|----------------------------------------------------------
+main_1  | namespace_settings               | UpdateRequireDpopForManageApiEndpointsToFalse | finished  | 100.00%
+main_2  | resource_iteration_events        | BackfillResourceIterationEventsNamespaceId    | finalized | 100.00%
+main_3  | identities                       | DeleteTwitterIdentities                       | finalized | 100.00%
+main_4  | software_license_policies        | BackfillLicensesOutsideSpdxCatalogue          | finalized | 100.00%
+main_5  | security_policies                | BackfillPipelineExecutionPoliciesMetadata     | active    | 42.50% (estimated time remaining: 5 minutes)
+ci_1    | ci_runners                       | MarkAdminBotRunnersAsHosted                   | finalized | 100.00%
+ci_2    | p_ci_build_trace_metadata        | BackfillUpsertedCiBuildTraceMetadataProjectId | finalized | 100.00%
+ci_3    | ci_runners                       | BackfillOrganizationIdOnCiRunners             | active    | 78.30% (estimated time remaining: about 1 hour)
 ```
 
 {{< /tab >}}

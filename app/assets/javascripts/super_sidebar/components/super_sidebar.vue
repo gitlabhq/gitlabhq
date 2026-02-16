@@ -128,14 +128,10 @@ export default {
       if (this.canIconOnly) {
         this.wasToggledManually = true;
         toggleSuperSidebarIconOnly();
-        return;
+      } else {
+        // on mobile
+        toggleSuperSidebarCollapsed(!isCollapsed());
       }
-
-      this.track(isCollapsed() ? 'nav_show' : 'nav_hide', {
-        label: 'nav_toggle_keyboard_shortcut',
-        property: 'nav_sidebar',
-      });
-      toggleSuperSidebarCollapsed(!isCollapsed(), true);
     },
     isOverlapping() {
       return GlBreakpointInstance.windowWidth() < breakpoints.xl;
@@ -155,7 +151,7 @@ export default {
       }
     },
     collapseSidebar() {
-      toggleSuperSidebarCollapsed(true, false);
+      toggleSuperSidebarCollapsed(true);
     },
     handleEscKey() {
       if (this.isOverlapping() && this.isNotPeeking()) {

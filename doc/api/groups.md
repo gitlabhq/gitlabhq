@@ -1372,9 +1372,8 @@ curl --request POST \
 
 {{< history >}}
 
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
-- `permanently_remove` controlled by [permanent deletion instance setting](../administration/settings/visibility_and_access_controls.md#permanent-deletion) in GitLab 18.5. [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) and [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/582574) by default.
 
 {{< /history >}}
 
@@ -1415,12 +1414,6 @@ curl --request DELETE \
 > You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
 
 #### Delete a group permanently
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
 
 Bypasses the configured retention period and
 deletes a group and its data permanently.

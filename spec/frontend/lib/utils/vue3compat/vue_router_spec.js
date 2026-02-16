@@ -367,8 +367,10 @@ describe('VueRouterCompat', () => {
     });
   });
 
-  describe('initial redirect URL update', () => {
+  describe('initial route and redirect', () => {
     let originalPathname;
+
+    const ParentComponent = { template: '<div><router-view /></div>' };
 
     beforeEach(() => {
       originalPathname = window.location.pathname;
@@ -378,11 +380,58 @@ describe('VueRouterCompat', () => {
       window.history.replaceState({}, '', originalPathname);
     });
 
+    describe('executes afterEach hook', () => {
+      let mockAfterEach;
+
+      beforeEach(() => {
+        mockAfterEach = jest.fn();
+      });
+
+      it('for initial route', async () => {
+        window.history.replaceState({}, '', '/list');
+
+        const router = new VueRouter({
+          mode: 'history',
+          routes: [
+            { path: '/', name: 'index' },
+            { path: '/list', name: 'list' },
+          ],
+        });
+        router.afterEach((route) => {
+          mockAfterEach(route.name);
+        });
+
+        shallowMount(ParentComponent, { router });
+        await nextTick();
+
+        expect(mockAfterEach.mock.calls).toEqual([['list']]);
+      });
+
+      it('for initial route after redirection', async () => {
+        window.history.replaceState({}, '', '/not-a-path');
+
+        const router = new VueRouter({
+          mode: 'history',
+          routes: [
+            { path: '/list', name: 'list' },
+            { path: '*', redirect: { name: 'list' } },
+          ],
+        });
+        router.afterEach(({ name }) => {
+          mockAfterEach(name);
+        });
+
+        shallowMount(ParentComponent, { router });
+        await nextTick();
+
+        expect(mockAfterEach.mock.calls).toEqual([['list']]);
+      });
+    });
+
     it('updates the browser URL when initial route follows a child catch-all redirect', async () => {
       const base = '/group/-/compliance_dashboard';
       window.history.replaceState({}, '', base);
 
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const DashboardComponent = { template: '<div>dashboard</div>' };
 
       const router = new VueRouter({
@@ -411,7 +460,6 @@ describe('VueRouterCompat', () => {
       const initialPath = `${base}/dashboard`;
       window.history.replaceState({}, '', initialPath);
 
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const DashboardComponent = { template: '<div>dashboard</div>' };
 
       const router = new VueRouter({

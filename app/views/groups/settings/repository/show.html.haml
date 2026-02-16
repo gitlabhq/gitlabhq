@@ -1,6 +1,5 @@
 - breadcrumb_title s_('Navigation|Repository settings')
 - page_title _('Repository')
-- @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_group, @group)
   = render_if_exists "groups/settings/repository/general", group: @group

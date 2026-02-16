@@ -41,8 +41,9 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 
 | VM image                   | Status       |              |
 |----------------------------|--------------|--------------|
-| `macos-14-xcode-15`        | `GA`         | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-14-xcode-15/) |
+| `macos-14-xcode-15`        | `deprecated` | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-14-xcode-15/) |
 | `macos-15-xcode-16`        | `GA`         | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-15-xcode-16/) |
+| `macos-26-xcode-26`        | `beta`       | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-26-xcode-26/) |
 
 If no image is specified, the macOS runner uses `macos-15-xcode-16`.
 

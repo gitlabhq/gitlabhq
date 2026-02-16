@@ -181,7 +181,6 @@ class ApplicationSettingsAnalysis
       mirror_capacity_threshold
       mirror_max_capacity
       mirror_max_delay
-      namespace_deletion_settings
       namespace_storage_forks_cost_factor
       notes_create_limit
       notes_create_limit_allowlist

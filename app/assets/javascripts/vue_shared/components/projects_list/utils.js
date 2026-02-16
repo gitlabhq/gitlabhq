@@ -32,12 +32,7 @@ export const availableGraphQLProjectActions = ({
   const { canLeave } = userPermissions;
   // Projects that are not marked for deletion can be deleted (delayed)
   const canDelete = userPermissions.removeProject && !markedForDeletion;
-  // Projects with self deletion scheduled can be deleted immediately if the
-  // allow_immediate_namespaces_deletion application setting is enabled
-  const canDeleteImmediately =
-    userPermissions.removeProject &&
-    isSelfDeletionScheduled &&
-    gon?.allow_immediate_namespaces_deletion;
+  const canDeleteImmediately = userPermissions.removeProject && isSelfDeletionScheduled;
 
   // Actions mapped to rules
   const actions = {

@@ -1,11 +1,11 @@
 ---
-api_type: string
+api_type:
 attr: duo_workflows_default_image_registry
 clusterwide: true
 column: duo_workflows_default_image_registry
 db_type: text
 default:
-description: 'Setting to allow custom registry e.g. registry.customer.com'
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

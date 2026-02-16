@@ -22083,8 +22083,6 @@ paths:
                     required:
                     - through_namespace
                     - features
-                allow_immediate_namespaces_deletion:
-                  type: string
                 allow_local_requests_from_web_hooks_and_services:
                   type: string
                 allow_local_requests_from_system_hooks:
@@ -92770,8 +92768,6 @@ components:
         akismet_api_key:
           type: string
         akismet_enabled:
-          type: string
-        allow_immediate_namespaces_deletion:
           type: string
         allow_local_requests_from_web_hooks_and_services:
           type: string

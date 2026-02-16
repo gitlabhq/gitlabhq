@@ -1,13 +1,11 @@
 - return unless can?(current_user, :remove_project, @project)
 
-- allow_immediate_namespaces_deletion = Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
-
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
   - c.with_header do
     %h4.gl-text-base.gl-leading-24.gl-m-0
       = s_('ProjectSettings|Delete project')
   - c.with_body do
-    - if @project.self_deletion_scheduled? && allow_immediate_namespaces_deletion
+    - if @project.self_deletion_scheduled?
       %p= delete_immediately_namespace_scheduled_for_deletion_message(@project)
       #js-project-delete-button{ data: project_delete_immediately_button_data(@project) }
     - elsif @project.scheduled_for_deletion_in_hierarchy_chain?

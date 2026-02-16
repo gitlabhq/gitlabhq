@@ -3,12 +3,14 @@ const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
 if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
   throw new Error(
     `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
   );
 }
 const USE_VUE_3 = EXPLICIT_VUE_VERSION === '3';
+const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
 
 const { TEST_HOST } = require('./spec/frontend/__helpers__/test_constants');
 
@@ -25,7 +27,7 @@ module.exports = (path, options = {}) => {
   } = options;
 
   const reporters = ['default'];
-  const VUE_JEST_TRANSFORMER = USE_VUE_3 ? '@vue/vue3-jest' : '@vue/vue2-jest';
+  const VUE_JEST_TRANSFORMER = USE_VUE3_COMPILER ? '@vue/vue3-jest' : '@vue/vue2-jest';
   const setupFilesAfterEnv = [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'];
   const vueModuleNameMappers = {
     // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
@@ -60,19 +62,21 @@ module.exports = (path, options = {}) => {
       '^portal-vue-vue3-impl$':
         '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     });
-    Object.assign(globals, {
-      'vue-jest': {
-        experimentalCSSCompile: false,
-        compiler: require.resolve('./config/vue3migration/compiler'),
-        compilerOptions: {
-          whitespace: 'preserve',
-          compatConfig: {
-            MODE: 2,
+    if (USE_VUE3_COMPILER) {
+      Object.assign(globals, {
+        'vue-jest': {
+          experimentalCSSCompile: false,
+          compiler: require.resolve('./config/vue3migration/vue3_template_compiler'),
+          compilerOptions: {
+            whitespace: 'preserve',
+            compatConfig: {
+              MODE: 2,
+            },
+            isCustomElement: isCE,
           },
-          isCustomElement: isCE,
         },
-      },
-    });
+      });
+    }
   }
 
   // To have consistent date time parsing both in local and CI environments we set

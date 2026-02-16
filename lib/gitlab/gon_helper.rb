@@ -20,8 +20,6 @@ module Gitlab
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
-      gon.allow_immediate_namespaces_deletion =
-        Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
       gon.iframe_rendering_enabled      = Gitlab::CurrentSettings.iframe_rendering_enabled?
       gon.iframe_rendering_allowlist    = Gitlab::CurrentSettings.iframe_rendering_allowlist
 

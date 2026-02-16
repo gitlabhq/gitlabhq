@@ -1,7 +1,6 @@
 - breadcrumb_title s_('Navigation|Repository settings')
 - page_title _("Repository")
 - deploy_token_description = s_('DeployTokens|Deploy tokens allow access to packages, your repository, and registry images.')
-- @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_project, @project)
   = render_if_exists "projects/settings/repository/general", project: @project

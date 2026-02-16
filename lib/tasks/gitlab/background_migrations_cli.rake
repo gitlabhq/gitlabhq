@@ -22,17 +22,26 @@ namespace :gitlab do
             .for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
             .queue_order
             .each do |migration|
+              progress = if migration.progress.present?
+                           ActiveSupport::NumberHelper.number_to_percentage(migration.progress, precision: 2)
+                         end
+
+              if progress.present? && migration.estimated_time_remaining.present?
+                progress = "#{progress} (estimated time remaining: #{migration.estimated_time_remaining})"
+              end
+
               migrations << migration.slice(attributes)
                 .merge(
                   'id' => "#{database_name}_#{migration.id}",
-                  'status' => migration.status_name
+                  'status' => migration.status_name,
+                  'progress' => progress
                 )
                 .values
             end
         end
       end
 
-      print_table([%w[id table_name job_class_name status]] + migrations)
+      print_table([%w[id table_name job_class_name status progress]] + migrations)
     end
 
     desc 'GitLab | DB | Show background migration details'

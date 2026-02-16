@@ -1042,6 +1042,25 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#succeeded_job_stats' do
+    let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100) }
+
+    context 'when query times out' do
+      before do
+        allow(batched_migration.batched_jobs).to receive(:with_status).and_raise(ActiveRecord::ConnectionTimeoutError)
+      end
+
+      it 'tracks exception and returns nil' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(ActiveRecord::ConnectionTimeoutError),
+          hash_including(migration_id: batched_migration.id)
+        )
+
+        expect(batched_migration.send(:succeeded_job_stats)).to be_nil
+      end
+    end
+  end
+
   describe '.for_job_class' do
     let(:other_migration) { create(:batched_background_migration) }
     let(:my_migration) { create(:batched_background_migration, job_class_name: "MyJob") }

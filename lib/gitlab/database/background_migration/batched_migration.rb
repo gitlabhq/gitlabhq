@@ -377,6 +377,9 @@ module Gitlab
           return if job_count.nil? || job_count == 0
 
           { job_count: job_count, total_duration: total_duration.to_f }
+        rescue *BatchedJob::TIMEOUT_EXCEPTIONS => e
+          Gitlab::ErrorTracking.track_exception(e, migration_id: id)
+          nil
         end
         strong_memoize_attr :succeeded_job_stats
 

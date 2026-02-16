@@ -24,5 +24,18 @@ module Admin
 
       [100 * completed_rows / migration.total_tuple_count, 99].min
     end
+
+    def batched_migration_progress_with_estimate(migration, completed_rows)
+      progress = batched_migration_progress(migration, completed_rows)
+      return unless progress
+
+      formatted_progress = number_to_percentage(progress, precision: 2)
+
+      if migration.estimated_time_remaining.present?
+        "#{formatted_progress} (estimated time remaining: #{migration.estimated_time_remaining})"
+      else
+        formatted_progress
+      end
+    end
   end
 end

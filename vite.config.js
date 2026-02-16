@@ -27,15 +27,18 @@ import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
 import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
-import vue3migrationCompiler from './config/vue3migration/compiler';
+import vue3TemplateCompiler from './config/vue3migration/vue3_template_compiler';
+import * as vue3SfcCompiler from './config/vue3migration/vue3_sfc_compiler.mjs';
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
 if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
   throw new Error(
     `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
   );
 }
 const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
+const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
 
 if (USE_VUE3) {
   console.log('[V] Using Vue.js 3');
@@ -130,8 +133,11 @@ export default defineConfig({
     viteGDKConfig.enabled ? AutoStopPlugin() : null,
     FixedRubyPlugin(),
     vue({
+      // For Vue 3: use custom SFC compiler (top-level `compiler` option)
+      // For Vue 2: use custom template compiler (`template.compiler` option)
+      ...(USE_VUE3 && USE_VUE3_COMPILER ? { compiler: vue3SfcCompiler } : {}),
       template: {
-        compiler: USE_VUE3 ? vue3migrationCompiler : undefined,
+        ...(!USE_VUE3 && USE_VUE3_COMPILER ? { compiler: vue3TemplateCompiler } : {}),
         compilerOptions: vueRule.options.compilerOptions,
       },
     }),

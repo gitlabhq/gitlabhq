@@ -3619,40 +3619,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           group.update!(parent: parent_group)
         end
 
-        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-          before do
-            stub_application_setting(allow_immediate_namespaces_deletion: false)
-          end
-
-          it_behaves_like 'does not immediately enqueues the job to delete the group' do
-            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-          end
-
-          context 'when current user is an admin' do
-            let_it_be(:user) { admin }
-            let(:admin_mode) { true }
-
-            context 'when group is already marked for deletion' do
-              let(:params) { { permanently_remove: true, full_path: group.full_path } }
-
-              before do
-                create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
-                group.add_owner(admin)
-              end
-
-              it_behaves_like 'immediately enqueues the job to delete the group'
-
-              context 'when admin_mode is false' do
-                let(:admin_mode) { false }
-
-                it_behaves_like 'does not immediately enqueues the job to delete the group' do
-                  let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-                end
-              end
-            end
-          end
-        end
-
         context 'when group is not marked for deletion' do
           it_behaves_like 'does not immediately enqueues the job to delete the group' do
             let(:error_message) { 'Group must be marked for deletion first.' }
@@ -3687,16 +3653,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'if group is not a subgroup' do
-        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-          before do
-            stub_application_setting(allow_immediate_namespaces_deletion: false)
-          end
-
-          it_behaves_like 'does not immediately enqueues the job to delete the group' do
-            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-          end
-        end
-
         it_behaves_like 'does not immediately enqueues the job to delete the group' do
           let(:error_message) { '`permanently_remove` option is only available for subgroups.' }
         end

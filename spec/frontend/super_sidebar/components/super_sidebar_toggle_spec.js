@@ -125,7 +125,7 @@ describe('SuperSidebarToggle component', () => {
       createWrapper({ type: 'collapse' });
       findButton().vm.$emit('click');
       await nextTick();
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true);
       expect(document.activeElement).toEqual(document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`));
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
         label: 'nav_toggle',
@@ -137,7 +137,7 @@ describe('SuperSidebarToggle component', () => {
       createWrapper({ type: 'expand' });
       findButton().vm.$emit('click');
       await nextTick();
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false);
       expect(document.activeElement).toEqual(
         document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
       );

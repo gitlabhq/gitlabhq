@@ -52,7 +52,7 @@ class StaticAnalysis
     Task.new(%w[yarn run check-dependencies], 1),
     Task.new(%w[scripts/gemfile_lock_changed.sh], 1),
     Task.new(%w[yarn run deps:check:all --no-cache], 60),
-    Task.new(%w[bin/rake gitlab:openapi:v2:check_docs], 30),
+    (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:openapi:v2:check_docs], 30) : nil),
     (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:openapi:v3:check_docs], 30) : nil)
   ].compact.freeze
 

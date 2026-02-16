@@ -99,9 +99,7 @@ module API
       end
 
       def immediately_delete_project_error(project)
-        if !Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
-          '`permanently_remove` option is not permitted on this instance.'
-        elsif !project.self_deletion_scheduled?
+        if !project.self_deletion_scheduled?
           'Project must be marked for deletion first.'
         elsif project.full_path != params[:full_path]
           '`full_path` is incorrect. You must enter the complete path for the project.'

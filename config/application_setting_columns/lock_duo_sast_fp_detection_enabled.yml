@@ -1,3 +1,4 @@
+---
 api_type:
 attr: lock_duo_sast_fp_detection_enabled
 clusterwide: false

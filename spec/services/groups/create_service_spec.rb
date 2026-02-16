@@ -140,16 +140,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
             expect(created_group.allow_runner_registration_token?).to eq true
           end
         end
-
-        context 'when instance is dedicated' do
-          before do
-            stub_application_setting(gitlab_dedicated_instance: true, allow_immediate_namespaces_deletion: false)
-          end
-
-          it 'does not disallow runner registration token' do
-            expect(created_group.allow_runner_registration_token?).to eq true
-          end
-        end
       end
     end
 

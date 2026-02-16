@@ -62,6 +62,43 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.8.2
+
+### Deploy keys and personal access tokens for blocked users are invalidated
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+If you have deploy keys associated with blocked users, these no longer work after upgrading to the aforementioned versions.
+This is a security fix to prevent blocked users from accessing GitLab resources through their keys and tokens.
+
+You must:
+
+1. Identify any deploy keys or PATs owned by blocked users.
+1. Reassign them to billable users, or delete them and
+   create new keys/tokens with billable users or service accounts.
+
+The following query can be used to identify all deploy keys associated with blocked accounts and have been used at least once in the past 365 days:
+
+```sql
+SELECT
+  k.id,
+  k.user_id,
+  u.username,
+  u.state as user_state,
+  k.title,
+  k.fingerprint,
+  k.fingerprint_sha256,
+  k.usage_type,
+  k.last_used_at,
+  k.created_at,
+  k.updated_at
+FROM keys k
+INNER JOIN users u ON k.user_id = u.id
+WHERE u.state IN ('blocked', 'ldap_blocked', 'blocked_pending_approval', 'banned')
+  AND k.type = 'DeployKey'
+  AND k.last_used_at >= NOW() - INTERVAL '365 days'
+ORDER BY u.state, u.username, k.last_used_at DESC;
+```
+
 ## 18.8.0
 
 ### Batched background migration for merge request merge data
@@ -87,6 +124,11 @@ permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this err
 The [batched background migrations](../background_migrations.md) introduced in [18.7.0](#1870) had
 to be reintroduced to handle an edge case in the data structure and ensure that they would complete.
 
+## 18.7.2
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+For more information, see [Deploy keys and personal access tokens for blocked users are invalidated](#deploy-keys-and-personal-access-tokens-for-blocked-users-are-invalidated).
+
 ## 18.7.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)
@@ -107,6 +149,11 @@ to be reintroduced to handle an edge case in the data structure and ensure that 
 ### Geo installations 18.6.5
 
 - Fixed the Geo [issue 587407](https://gitlab.com/gitlab-org/gitlab/-/work_items/587407) where `Geo::VerificationStateBackfillWorker` generated large slow queries for the `merge_request_diff_details` table.
+
+## 18.6.4
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+For more information, see [Deploy keys and personal access tokens for blocked users are invalidated](#deploy-keys-and-personal-access-tokens-for-blocked-users-are-invalidated).
 
 ## 18.6.2
 

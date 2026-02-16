@@ -2,6 +2,8 @@
 key_path: counts.count_total_fallback_current_organization_to_default
 description: Total count of instances where the current organization fallbacks to the Default organization
 product_group: organizations
+product_categories:
+- organization
 performance_indicator_type: []
 value_type: number
 status: active

@@ -23854,9 +23854,6 @@ msgstr ""
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for."
 msgstr ""
 
-msgid "DeletionSettings|Permanent deletion"
-msgstr ""
-
 msgid "DeletionSettings|Retention period"
 msgstr ""
 
@@ -35768,12 +35765,6 @@ msgid "ImageViewerDimensions|W"
 msgstr ""
 
 msgid "Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior."
-msgstr ""
-
-msgid "ImmediateNamespacesDeletionSettings|Allow permanent deletion"
-msgstr ""
-
-msgid "ImmediateNamespacesDeletionSettings|Permanently delete groups and projects scheduled for deletion and bypass the configured retention period. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Immutable tag rules require an Ultimate license"
@@ -81722,9 +81713,6 @@ msgid "cannot be enabled because parent group does not allow it"
 msgstr ""
 
 msgid "cannot be enabled because parent group has shared Runners disabled"
-msgstr ""
-
-msgid "cannot be enabled on Dedicated"
 msgstr ""
 
 msgid "cannot be enabled unless all domains have TLS certificates"

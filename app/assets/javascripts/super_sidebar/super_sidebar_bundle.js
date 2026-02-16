@@ -50,7 +50,7 @@ export const getSuperSidebarData = () => {
   const el = document.querySelector('.js-super-sidebar');
   if (!el) return false;
 
-  const { rootPath, sidebar, forceDesktopExpandedSidebar, commandPalette, isSaas } = el.dataset;
+  const { rootPath, sidebar, commandPalette, isSaas } = el.dataset;
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
   const { searchPath, issuesPath, mrPath, autocompletePath, settingsPath, searchContext } =
@@ -71,7 +71,6 @@ export const getSuperSidebarData = () => {
     el,
     rootPath,
     currentPath,
-    forceDesktopExpandedSidebar,
     isSaas,
     sidebarData,
     searchPath,
@@ -96,7 +95,6 @@ export const initSuperSidebar = ({
   el,
   rootPath,
   currentPath,
-  forceDesktopExpandedSidebar,
   isSaas,
   sidebarData,
   searchPath,
@@ -117,8 +115,8 @@ export const initSuperSidebar = ({
 }) => {
   if (!el) return false;
 
-  bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
-  initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
+  bindSuperSidebarCollapsedEvents();
+  initSuperSidebarCollapsedState();
 
   return new Vue({
     el,

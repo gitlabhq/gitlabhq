@@ -106,27 +106,19 @@ describe('availableGraphQLProjectActions', () => {
 
   describe('when user has removeProject permission', () => {
     describe.each`
-      description                                      | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | allowImmediateNamespacesDeletion | expectedActions
-      ${'project is not marked for deletion'}          | ${false}          | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_DELETE]}
-      ${'project is scheduled for deletion'}           | ${true}           | ${true}                 | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-      ${'project is scheduled but immediate disabled'} | ${true}           | ${true}                 | ${false}                 | ${false}                         | ${[ACTION_COPY_ID, ACTION_RESTORE]}
-      ${'project belongs to a deleted group'}          | ${true}           | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID]}
-      ${'project deletion is in progress'}             | ${true}           | ${true}                 | ${true}                  | ${true}                          | ${[]}
+      description                             | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | expectedActions
+      ${'project is not marked for deletion'} | ${false}          | ${false}                | ${false}                 | ${[ACTION_COPY_ID, ACTION_DELETE]}
+      ${'project is scheduled for deletion'}  | ${true}           | ${true}                 | ${false}                 | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+      ${'project belongs to a deleted group'} | ${true}           | ${false}                | ${false}                 | ${[ACTION_COPY_ID]}
+      ${'project deletion is in progress'}    | ${true}           | ${true}                 | ${true}                  | ${[]}
     `(
       'when $description',
       ({
         markedForDeletion,
         isSelfDeletionScheduled,
         isSelfDeletionInProgress,
-        allowImmediateNamespacesDeletion,
         expectedActions,
       }) => {
-        beforeEach(() => {
-          window.gon = {
-            allow_immediate_namespaces_deletion: allowImmediateNamespacesDeletion,
-          };
-        });
-
         it('returns expected actions', () => {
           const availableActions = availableGraphQLProjectActions({
             userPermissions: { removeProject: true },

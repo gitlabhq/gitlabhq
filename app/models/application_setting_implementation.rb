@@ -40,7 +40,6 @@ module ApplicationSettingImplementation
         after_sign_up_text: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
-        allow_immediate_namespaces_deletion: true,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
         allow_possible_spam: false,
@@ -706,13 +705,6 @@ module ApplicationSettingImplementation
     end
 
     Hash[storages_map]
-  end
-
-  def allow_immediate_namespaces_deletion_for_user?(user)
-    # Keep the previous behavior when the feature flag is disabled
-    return true unless Feature.enabled?(:allow_immediate_namespaces_deletion, user)
-
-    allow_immediate_namespaces_deletion? || user&.can_admin_all_resources?
   end
 
   private

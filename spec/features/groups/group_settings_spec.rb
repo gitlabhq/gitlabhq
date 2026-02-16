@@ -447,41 +447,6 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
           expect(page).to have_content "The parent group is pending deletion. This project will be permanently deleted on #{permanent_deletion_date_formatted(group)}."
         end
       end
-
-      context 'when "Allow permanent deletion" setting is disabled' do
-        before do
-          stub_application_setting(allow_immediate_namespaces_deletion: false)
-        end
-
-        context 'when allow_immediate_namespaces_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(allow_immediate_namespaces_deletion: false)
-            visit edit_group_path(group)
-          end
-
-          it 'allows permanent deletion', :sidekiq_inline do
-            expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
-
-            expect(page).to have_content "#{group.name} is being deleted."
-          end
-        end
-
-        it 'allows permanent deletion for admins', :enable_admin_mode, :sidekiq_inline do
-          sign_in(admin)
-          visit edit_group_path(group)
-
-          expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
-
-          expect(page).to have_content "#{group.name} is being deleted."
-        end
-
-        it 'does not allow permanent deletion' do
-          visit edit_group_path(group)
-
-          expect(page).not_to have_button('Delete permanently')
-          expect(page).to have_content "This group and all its data will be permanently deleted on #{permanent_deletion_date_formatted(group)}."
-        end
-      end
     end
   end
 

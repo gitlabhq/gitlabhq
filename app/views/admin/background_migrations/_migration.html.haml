@@ -3,11 +3,8 @@
     = link_to admin_background_migration_path(migration, database: params[:database]), class: 'gl-break-anywhere' do
       = migration.job_class_name + ': ' + migration.table_name
   %td{ role: 'cell', data: { label: _('Progress') } }
-    - progress = batched_migration_progress(migration, @successful_rows_counts[migration.id])
-    - if progress
-      = number_to_percentage(progress, precision: 2)
-    - else
-      = _('Unknown')
+    - progress = batched_migration_progress_with_estimate(migration, @successful_rows_counts[migration.id])
+    = progress || _('Unknown')
   %td{ role: 'cell', data: { label: _('Status') } }
     = gl_badge_tag migration.status_name.to_s.humanize, { variant: batched_migration_status_badge_variant(migration) }
   %td{ role: 'cell', data: { label: _('Action') } }

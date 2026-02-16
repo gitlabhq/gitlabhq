@@ -191,6 +191,9 @@ export default class VueRouterCompat {
 
       router.currentRoute.value = resolved;
 
+      // Forces afterEach hooks to run on the first route (e.g. updates to document.title)
+      router.replace(resolved);
+
       // When a redirect was followed, update the browser URL to reflect the
       // final destination. Setting currentRoute.value above prevents Vue Router 4's
       // initial async navigation (which checks currentRoute === START_LOCATION),

@@ -32,12 +32,7 @@ export const availableGraphQLGroupActions = ({
   const { canLeave } = userPermissions;
   // Groups that are not marked for deletion can be deleted (delayed)
   const canDelete = userPermissions.removeGroup && !markedForDeletion;
-  // Groups with self deletion scheduled can be deleted immediately if the
-  // allow_immediate_namespaces_deletion application setting is enabled
-  const canDeleteImmediately =
-    userPermissions.removeGroup &&
-    isSelfDeletionScheduled &&
-    gon?.allow_immediate_namespaces_deletion;
+  const canDeleteImmediately = userPermissions.removeGroup && isSelfDeletionScheduled;
 
   // Actions mapped to rules
   const actions = {

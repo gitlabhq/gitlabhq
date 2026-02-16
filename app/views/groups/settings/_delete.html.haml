@@ -1,6 +1,5 @@
 - return unless can?(current_user, :remove_group, @group)
 
-- allow_immediate_namespaces_deletion = Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 - remove_form_id = 'js-remove-group-form'
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
@@ -10,7 +9,7 @@
   - c.with_body do
     - if @group.linked_to_subscription?
       = html_escape(_("This group can't be deleted because it is linked to a subscription. To delete this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/manage_subscription.md', anchor: 'link-subscription-to-a-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
-    - elsif @group.self_deletion_scheduled? && allow_immediate_namespaces_deletion
+    - elsif @group.self_deletion_scheduled?
       = form_tag(@group, method: :delete, id: remove_form_id) do
         %p= delete_immediately_namespace_scheduled_for_deletion_message(@group)
         = hidden_field_tag(:permanently_remove, true)

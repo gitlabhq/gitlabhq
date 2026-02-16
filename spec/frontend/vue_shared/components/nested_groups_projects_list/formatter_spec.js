@@ -42,7 +42,7 @@ const mockGroupsAndProjects = [
 
 describe('formatGraphQLGroupsAndProjects', () => {
   it('correctly formats the groups and projects', () => {
-    window.gon = { relative_url_root: '/gitlab', allow_immediate_namespaces_deletion: true };
+    window.gon = { relative_url_root: '/gitlab' };
     const [firstItem] = formatGraphQLGroupsAndProjects(
       mockGroupsAndProjects,
       (group) => ({

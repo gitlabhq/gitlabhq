@@ -99,27 +99,19 @@ describe('availableGraphQLGroupActions', () => {
 
   describe('when user has removeGroup permission', () => {
     describe.each`
-      description                                    | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | allowImmediateNamespacesDeletion | expectedActions
-      ${'group is not marked for deletion'}          | ${false}          | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_DELETE]}
-      ${'group is scheduled for deletion'}           | ${true}           | ${true}                 | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-      ${'group is scheduled but immediate disabled'} | ${true}           | ${true}                 | ${false}                 | ${false}                         | ${[ACTION_COPY_ID, ACTION_RESTORE]}
-      ${'group belongs to a deleted group'}          | ${true}           | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID]}
-      ${'group deletion is in progress'}             | ${true}           | ${true}                 | ${true}                  | ${true}                          | ${[]}
+      description                           | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | expectedActions
+      ${'group is not marked for deletion'} | ${false}          | ${false}                | ${false}                 | ${[ACTION_COPY_ID, ACTION_DELETE]}
+      ${'group is scheduled for deletion'}  | ${true}           | ${true}                 | ${false}                 | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+      ${'group belongs to a deleted group'} | ${true}           | ${false}                | ${false}                 | ${[ACTION_COPY_ID]}
+      ${'group deletion is in progress'}    | ${true}           | ${true}                 | ${true}                  | ${[]}
     `(
       'when $description',
       ({
         markedForDeletion,
         isSelfDeletionScheduled,
         isSelfDeletionInProgress,
-        allowImmediateNamespacesDeletion,
         expectedActions,
       }) => {
-        beforeEach(() => {
-          window.gon = {
-            allow_immediate_namespaces_deletion: allowImmediateNamespacesDeletion,
-          };
-        });
-
         it('returns expected actions', () => {
           const availableActions = availableGraphQLGroupActions({
             userPermissions: { removeGroup: true },

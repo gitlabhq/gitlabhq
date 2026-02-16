@@ -1280,22 +1280,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
-      describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-        before do
-          stub_application_setting(allow_immediate_namespaces_deletion: false)
-        end
-
-        subject(:request) { delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true } }
-
-        it 'returns error' do
-          Sidekiq::Testing.fake! do
-            expect { request }.not_to change { ProjectDestroyWorker.jobs.size }
-          end
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'when permanently_delete param is set' do
         it 'deletes project right away' do
           expect(ProjectDestroyWorker).to receive(:perform_async)

@@ -323,43 +323,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
           expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
         end
       end
-
-      context 'when "Allow permanent deletion" setting is disabled' do
-        before do
-          stub_application_setting(allow_immediate_namespaces_deletion: false)
-        end
-
-        context 'when allow_immediate_namespaces_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(allow_immediate_namespaces_deletion: false)
-            sign_in user
-            visit edit_project_path(project_aimed_for_deletion)
-          end
-
-          it 'allows permanent deletion', :sidekiq_inline do
-            remove_with_confirm('Delete permanently', project_aimed_for_deletion.path_with_namespace)
-
-            expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
-          end
-        end
-
-        it 'allows permanent deletion for admins', :enable_admin_mode, :sidekiq_inline do
-          sign_in admin
-          visit edit_project_path(project_aimed_for_deletion)
-
-          remove_with_confirm('Delete permanently', project_aimed_for_deletion.path_with_namespace)
-
-          expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
-        end
-
-        it 'does not allow permanent deletion' do
-          sign_in user
-          visit edit_project_path(project_aimed_for_deletion)
-
-          expect(page).not_to have_button('Delete permanently')
-          expect(page).to have_content("This project and all its data will be permanently deleted on #{permanent_deletion_date_formatted(project_aimed_for_deletion)}.")
-        end
-      end
     end
   end
 

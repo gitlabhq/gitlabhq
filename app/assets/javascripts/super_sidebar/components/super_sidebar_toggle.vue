@@ -80,7 +80,7 @@ export default {
         label: 'nav_toggle',
         property: 'nav_sidebar',
       });
-      toggleSuperSidebarCollapsed(!this.isTypeExpand, true);
+      toggleSuperSidebarCollapsed(!this.isTypeExpand);
       this.focusOtherToggle();
     },
     focusOtherToggle() {

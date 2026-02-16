@@ -1,13 +1,13 @@
 ---
-api_type: string
+api_type: string or array of strings
 attr: elasticsearch_url
 clusterwide: false
 column: elasticsearch_url
 db_type: character
 default: "'http://localhost:9200'::character"
 description: The URL to use for connecting to Elasticsearch. Use a comma-separated
-  list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`).
-  Premium and Ultimate only.
+  list or an array to support cluster (for example, `http://localhost:9200, http://localhost:9201`
+  or `["http://localhost:9200", "http://localhost:9201"]`). Premium and Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: true
 jihu: false
