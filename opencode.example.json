@@ -17,7 +17,6 @@
       "bundle exec rspec*": "allow",
       "bundle exec rubocop -A *": "allow",
       "echo*": "allow",
-      "find*": "allow",
       "git add*": "allow",
       "git blame*": "allow",
       "git branch*": "allow",

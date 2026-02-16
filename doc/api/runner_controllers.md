@@ -240,15 +240,15 @@ Runner controller scopes define which jobs a runner controller evaluates for adm
 A runner controller must have at least one scope to receive admission requests. Without a scope,
 the controller remains inactive even when its state is `enabled` or `dry_run`.
 
-- **Instance-level scope**: The runner controller evaluates jobs for all runners in the GitLab instance.
+Instance scope: The runner controller evaluates jobs for all runners in the GitLab instance.
 
-NOTE:
-Only instance-level scoping is currently available. Runner-level scoping and additional
-scope types are planned. For more information, see [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
+> [!note]
+> Only instance scoping is available. Runner scoping and additional
+> scope types are proposed in [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
 
 ### List all scopes for a runner controller
 
-Lists all scopes configured for a specific runner controller.
+Lists all scopes configured for a specific runner controller:
 
 ```plaintext
 GET /runner_controllers/:id/scopes
@@ -263,11 +263,11 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
-| Attribute                                    | Type         | Description                                                |
-|----------------------------------------------|--------------|------------------------------------------------------------|
-| `instance_level_scopings`                    | object array | List of instance-level scopings for the runner controller. |
-| `instance_level_scopings[].created_at`       | datetime     | The date and time when the scoping was created.            |
-| `instance_level_scopings[].updated_at`       | datetime     | The date and time when the scoping was last updated.       |
+| Attribute                              | Type         | Description                                               |
+|----------------------------------------|--------------|-----------------------------------------------------------|
+| `instance_level_scopings`              | object array | List of instance-level scoping for the runner controller. |
+| `instance_level_scopings[].created_at` | datetime     | The date and time when the scoping was created.           |
+| `instance_level_scopings[].updated_at` | datetime     | The date and time when the scoping was last updated.      |
 
 Example request:
 
@@ -289,12 +289,12 @@ Example response:
 }
 ```
 
-### Add instance-level scope
+### Add instance scope
 
-Adds an instance-level scope to a runner controller. When added, the runner controller
+Adds an instance scope to a runner controller. When added, the runner controller
 evaluates jobs for all runners in the GitLab instance.
 
-A runner controller can have only one instance-level scope. If an instance-level scope
+A runner controller can have only one instance scope. If an instance scope
 already exists, this endpoint returns an error.
 
 ```plaintext
@@ -332,9 +332,9 @@ Example response:
 }
 ```
 
-### Remove instance-level scope
+### Remove instance scope
 
-Removes an instance-level scope from a runner controller.
+Removes an instance scope from a runner controller.
 
 ```plaintext
 DELETE /runner_controllers/:id/scopes/instance

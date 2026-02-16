@@ -470,24 +470,23 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
 
       context 'for the hierarchy widget' do
-        let(:opts) { { title: 'changed' } }
+        let(:opts) { { title: 'hierarchy updated title' } }
         let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
+        let_it_be_with_refind(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
         let(:widget_params) { { hierarchy_widget: { children: [child_work_item] } } }
 
-        context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485044' do
-          include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
-            attributes: %w[
-              title
-              title_html
-              lock_version
-              updated_at
-              updated_by_id
-            ],
-            widgets: %w[
-              hierarchy_widget
-            ]
-        end
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            title
+            title_html
+            lock_version
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            hierarchy_widget
+          ]
 
         it 'updates the children of the work item' do
           expect do

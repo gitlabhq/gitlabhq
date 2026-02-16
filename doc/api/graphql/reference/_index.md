@@ -9704,6 +9704,30 @@ Input type: `MavenUpstreamCreateInput`
 | <a id="mutationmavenupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationmavenupstreamcreateupstream"></a>`upstream` | [`MavenUpstreamDetails`](#mavenupstreamdetails) | Maven upstream after the mutation. |
 
+### `Mutation.mavenUpstreamDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MavenUpstreamDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenupstreamdeleteid"></a>`id` | [`VirtualRegistriesPackagesMavenUpstreamID!`](#virtualregistriespackagesmavenupstreamid) | ID of the upstream to be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenupstreamdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationmavenupstreamdeleteupstream"></a>`upstream` | [`MavenUpstreamDetails`](#mavenupstreamdetails) | Destroyed upstream. |
+
 ### `Mutation.mavenVirtualRegistryCreate`
 
 {{< details >}}

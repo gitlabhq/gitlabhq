@@ -44,6 +44,9 @@ Capybara.register_driver :chrome do |app|
 
   options.add_argument("disable-search-engine-choice-screen")
 
+  # This option allows to capture `console.log` in Vue apps via `browser_logs` helper method in spec.
+  options.add_option("goog:loggingPrefs", { browser: 'ALL' })
+
   # Ensure the Chrome locale is `en` so all dates are deterministic regardless of local settings
   options.add_preference('intl.accept_languages', 'en')
 

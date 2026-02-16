@@ -2,8 +2,8 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Job Router
-description: Route CI/CD jobs through the Job Router for advanced job orchestration.
+title: Job router
+description: Route CI/CD jobs through the job router for advanced job orchestration.
 ---
 
 {{< details >}}

@@ -95,7 +95,7 @@ The following information is displayed:
 
 | Field                       | Description |
 |:----------------------------|:------------|
-| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
+| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group (including Enterprise Agile Planning seats). |
 | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. |
 | **Maximum seats used**      | Highest number of seats you've used. |
 | **Seats owed**              | **Max seats used** - **Seats in subscription**. |
@@ -125,7 +125,7 @@ The **Subscription** page includes the following information:
 - Licensee
 - Plan
 - When it was uploaded, started, and when it expires
-- Number of users in subscription
+- Number of users in subscription (including Enterprise Agile Planning seats)
 - Number of billable users
 - Maximum users
 - Number of users over subscription
@@ -534,13 +534,10 @@ You cannot transfer:
 
 {{< /details >}}
 
-GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
+GitLab Enterprise Agile Planning is an add-on that helps bring non-engineering users into the same
 DevSecOps platform where engineers build, test, secure, and deploy code.
 The add-on enables cross-team collaboration between developers and non-developers
 without having to purchase GitLab Ultimate licenses for non-engineering team members.
-
-If you have an active Ultimate license, you can purchase additional
-Enterprise Agile Planning seats for non-engineering team members.
 
 With Enterprise Agile Planning seats, non-engineering team members can participate in planning
 workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
@@ -548,3 +545,25 @@ executive dashboards to drive organizational visibility.
 
 For more information about Enterprise Agile Planning seats and how to purchase them,
 contact your [GitLab sales representative](https://customers.gitlab.com/contact_us).
+
+### Using Enterprise Agile Planning seats 
+
+A user occupies an Enterprise Agile Planning seat if:
+
+- Your subscription includes purchased Enterprise Agile Planning seats.
+- The highest [role](../user/permissions.md#default-roles) the user has across the top-level group, its subgroups, and projects is Planner.
+
+A user occupies an Ultimate seat instead of an Enterprise Agile Planning seat if either:
+
+- Your subscription does not include purchased Enterprise Agile Planning seats.
+- The user with the Planner role is assigned a higher role (such as Developer or Maintainer) anywhere in the organization hierarchy.
+
+To use your purchased Enterprise Agile Planning seats, you must first assign the Planner role to users
+in the [group](../user/group/_index.md#add-users-to-a-group) or [project](../user/project/members/_index.md#add-users-to-a-project).
+
+To prevent users with the Planner role from being assigned a different role and consequently consume Ultimate seats,
+you can use [global SAML group membership lock](../user/group/saml_sso/group_sync.md).
+
+You can view the number of Enterprise Agile Planning seats used in your
+[subscription details](#view-subscription) and in [Customers Portal](billing_account.md).
+On GitLab Self-Managed, you can also view the total number of users by role in [user statistics](../administration/admin_area.md#users-statistics).

@@ -36,7 +36,6 @@ module Gitlab
     config.active_record.run_after_transaction_callbacks_in_order_defined = false # New default is `true`
     config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = true # New default is `false`
     config.active_record.sqlite3_adapter_strict_strings_by_default = false # New default is `true`
-    config.action_controller.allow_deprecated_parameters_hash_equality = true
     config.action_view.sanitizer_vendor = Rails::HTML4::Sanitizer # New default is `Rails::HTML5::Sanitizer`
     config.add_autoload_paths_to_load_path = true # New default is `false`
     config.active_record.generate_secure_token_on = :create # New default is `:initialize`

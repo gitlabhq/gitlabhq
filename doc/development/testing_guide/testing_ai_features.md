@@ -74,8 +74,35 @@ NOTE:
 1. Open terminal at `<gdk-root>/gitlab` and use one of the following options:
    - Run `export TEST_AI_GATEWAY_REPO_BRANCH=<your-remote-feature-branch>` and delete `<gitlab-rails-root>/tmp/tests/gitlab-ai-gateway/` cache dir, _OR_
    - Run `export TEST_DUO_WORKFLOW_SERVICE_ENABLED="false" && export TEST_DUO_WORKFLOW_SERVICE_PORT=<your-local-dws-port>`.
-     This allows the feature tests to request to your local DWS instance (make sure that `PORT` env var matches in DWS side)
+     This allows the feature tests to request to your local DWS instance. Make sure the following configuration is set to your local DWS and it's running:
+     - Set `true` to `AIGW_MOCK_MODEL_RESPONSES`
+     - Set `true` to `AIGW_USE_AGENTIC_MOCK`
 1. Run a feature spec e.g. `bundle exec rspec ee/spec/features/epic_boards/epic_boards_spec.rb`.
+
+### See logs of a test case
+
+DAP consists of multiple services and API calls.
+To debug a test case failure, you may need to examine service logs to identify the root cause.
+Here are the couple of pointers:
+
+- GitLab-Rails REST API ... `log/api_json.log`
+- GitLab-Rails GraphQL API ... `log/graphql_json.log`
+- GitLab-Workhorse ... `log/workhorse-test.log`
+- DWS ... Either stdout or `DUO_WORKFLOW_LOGGING__TO_FILE` in `gitlab-ai-gateway` repo.
+- You can also examine the state of VueJS app by having JS console log output:
+
+  ```ruby
+  it 'runs a test' do
+    ...
+
+    # This prints the browser logs. Combine with `console.log()` in JavaScript.
+    browser_logs.each do |log|
+      puts "#{log.level}: #{log.message}"
+    end
+
+    ...
+  end
+  ```
 
 ## End-to-End testing
 

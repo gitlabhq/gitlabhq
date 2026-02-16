@@ -131,4 +131,4 @@ For a step-by-step guide, see [Tutorial: Build a runner admission controller](..
 - [Runner controller scopes API](../../../api/runner_controllers.md#runner-controller-scopes)
 - [Runner controller tokens API](../../../api/runner_controller_tokens.md)
 - [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md)
-- [Runner controller example](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example) - Reference implementation
+- [Runner controller example](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example) (reference implementation)
