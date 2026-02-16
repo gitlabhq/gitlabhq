@@ -161,6 +161,13 @@ To create a milestone:
 
 ![The form for creating a new milestone, with fields for a title, description, start date, and due date.](img/milestones_new_project_milestone_v16_11.png)
 
+### Milestone title rules
+
+To avoid confusion within group hierarchies, duplicate milestone titles are not permitted.
+
+- For **project milestones**, titles must be unique in the project's ancestor hierarchy for both project and milestone titles.
+- For **group milestones**, titles must be unique within the group's hierarchy, for both ancestors and children, including group and project milestones.
+
 ## Edit a milestone
 
 {{< history >}}
