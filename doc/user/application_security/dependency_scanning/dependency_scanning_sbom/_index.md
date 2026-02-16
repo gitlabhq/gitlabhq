@@ -671,6 +671,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `DS_ENABLE_VULNERABILITY_SCAN`| Enable vulnerability scanning of generated SBOM files. Generates a [dependency scanning report](#dependency-scanning-report). Default: `"true"`. |
 | `DS_API_TIMEOUT` | Dependency scanning SBOM API request timeout in seconds (minimum: `5`, maximum: `300`) Default: `10` |
 | `DS_API_SCAN_DOWNLOAD_DELAY` | Initial delay in seconds before downloading scan results (minimum: 1, maximum: 120) Default: `3` |
+| `DS_ENABLE_MANIFEST_FALLBACK` | Enable manifest fallback when no lock file or dependency graph is available. See [Manifest fallback](#manifest-fallback). Default: `"false"`. |
 | `SECURE_LOG_LEVEL` | Log level. Default: `"info"`. |
 
 ### Custom TLS certificate authority
@@ -695,6 +696,26 @@ variables:
       jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
       -----END CERTIFICATE-----
 ```
+
+### Manifest fallback
+
+When a supported lock file or dependency graph export is not available, the dependency scanning analyzer can extract dependencies from supported manifest files as a fallback.
+
+The following manifest files are supported:
+
+| Language | Package manager | Manifest file      |
+|----------|-----------------|--------------------|
+| Java     | Maven           | `pom.xml`          |
+| Python   | pip             | `requirements.txt` |
+
+> [!warning]
+>
+> Manifest fallback has reduced accuracy compared to lock file scanning:
+>
+> - No transitive dependencies: Only direct dependencies are detected.
+> - Exact resolved versions cannot always be determined.
+
+To enable manifest fallback, set the `DS_ENABLE_MANIFEST_FALLBACK` CI/CD variable to `"true"`.
 
 ## How it scans an application
 

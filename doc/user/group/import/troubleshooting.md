@@ -206,13 +206,15 @@ When importing records, you might get the following error:
 PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
 ```
 
-This error might occur when a Sidekiq worker processing the import
-restarts due to high memory or CPU usage during import.
+This error can occur when:
 
-To reduce Sidekiq memory or CPU issues during import:
-
-- Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-- Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
+- A Sidekiq worker processing the import restarts due to high memory or CPU usage.
+  To reduce Sidekiq resource issues during import:
+  - Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+  - Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
+- You are [consolidating groups or projects from different source groups into a single destination group](_index.md#known-issues).
+  When epics from different source groups have the same internal ID (which are only unique within a single group), importing them to a single destination group
+  causes conflicts. This conflict causes `PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint` errors referencing `index_issues_on_namespace_id_iid_unique` or `index_epics_on_group_id_and_iid`.
 
 ## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
 

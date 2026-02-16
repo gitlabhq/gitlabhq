@@ -17,7 +17,7 @@
     Support for PostgreSQL 16 is scheduled for removal in GitLab 19.0.
     In GitLab 19.0, PostgreSQL 17 becomes the minimum required PostgreSQL version.
 
-    PostgreSQL 17 will be supported for instances that want to upgrade prior to GitLab 19.0.
+    PostgreSQL 17 is available as of GitLab 18.9, and you can upgrade at any time before the removal of PostgreSQL 16 in GitLab 19.0.
 
     If you are running a single PostgreSQL instance you installed by using the Linux package, an automatic upgrade may
     be attempted with 18.11. Make sure you have enough disk space to accommodate the upgrade.

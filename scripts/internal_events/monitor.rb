@@ -77,8 +77,16 @@ def current_timestamp
 end
 
 def snowplow_data
-  url = Gitlab::Tracking::Destinations::SnowplowMicro.new.uri.merge('/micro/good')
-  response = Net::HTTP.get_response(url)
+  query_snowplow('/micro/good')
+end
+
+def snowplow_all_data(server)
+  server.blank? ? (query_snowplow('/micro/bad') + snowplow_data) : snowplow_data
+end
+
+def query_snowplow(url)
+  full_url = Gitlab::Tracking::Destinations::SnowplowMicro.new.uri.merge(url)
+  response = Net::HTTP.get_response(full_url)
 
   return JSON.parse(response.body) if response.is_a?(Net::HTTPSuccess)
 
@@ -100,13 +108,14 @@ def extract_standard_context(event)
   {}
 end
 
-def generate_snowplow_table
+def generate_snowplow_table(server)
   return event_tracking_disabled_table unless Gitlab::CurrentSettings.gitlab_product_usage_data_enabled?
 
-  events = snowplow_data.select { |d| ARGV.include?(d["event"]["se_action"]) }
-            .filter { |e| e['rawEvent']['parameters']['dtm'].to_i > @min_timestamp }
+  event_errors = []
 
-  @initial_max_timestamp ||= events.map { |e| e['rawEvent']['parameters']['dtm'].to_i }.max || 0
+  events = snowplow_all_data(server).select { |data| relevant_event(data) && valid_event?(data, server, event_errors) }
+
+  @initial_max_timestamp ||= events.map { |e| event_parameters(e)['dtm'].to_i }.max || 0
 
   rows = []
   rows << [
@@ -142,15 +151,56 @@ def generate_snowplow_table
       standard_context[:extra]
     ]
 
-    row.map! { |value| red(value) } if event['rawEvent']['parameters']['dtm'].to_i > @initial_max_timestamp
+    row.map! { |value| red(value) } if event_parameters(event)['dtm'].to_i > @initial_max_timestamp
 
     rows << row
   end
 
-  Terminal::Table.new(
-    title: 'SNOWPLOW EVENTS',
-    rows: rows
-  )
+  [
+    Terminal::Table.new(
+      title: 'SNOWPLOW EVENTS',
+      rows: rows
+    ),
+    display_event_error(event_errors)
+  ].join("\n\n")
+end
+
+def relevant_event(event)
+  event_param = event_parameters(event)
+
+  ARGV.include?(event_param['se_ac']) && event_param['dtm'].to_i > @min_timestamp
+end
+
+def event_parameters(event)
+  event&.dig('rawEvent', 'parameters') || []
+end
+
+def validate_event!(event_context)
+  return unless event_context
+
+  decoded_context = Gitlab::Json.safe_parse(Base64.decode64(event_context))
+  Gitlab::Tracking::Destinations::SnowplowContextValidator.new.validate!(decoded_context['data'])
+end
+
+def valid_event?(event, server, errors)
+  return false if event.blank?
+
+  context = event_parameters(event)['cx']
+  se_action = event_parameters(event)['se_ac']
+
+  # Validate events loaded from the mock server or
+  # snowplow bad event to ensure uniform error format.
+  validate_event!(context) if event["errors"] || server.present?
+
+  true
+rescue StandardError => e
+  errors.push(event: se_action, message: e.message)
+
+  false
+end
+
+def display_event_error(errors)
+  errors.map { |error| red("!! ERROR: #{error[:message]} for Event: #{error[:event]}") }.join("\n")
 end
 
 def relevant_events_from_args(metric_definition)
@@ -189,9 +239,9 @@ def generate_metrics_table
   )
 end
 
-def render_screen(paused)
+def render_screen(paused, server)
   metrics_table = generate_metrics_table
-  events_table = generate_snowplow_table
+  events_table = generate_snowplow_table(server)
 
   print TTY::Cursor.clear_screen
   print TTY::Cursor.move_to(0, 0)
@@ -265,7 +315,7 @@ begin
     case reader.read_keypress(nonblock: true)
     when 'p'
       paused = !paused
-      render_screen(paused)
+      render_screen(paused, server)
     when 'r'
       @min_timestamp = current_timestamp
       @initial_values = {}
@@ -274,7 +324,7 @@ begin
       break
     end
 
-    render_screen(paused) unless paused
+    render_screen(paused, server) unless paused
 
     sleep 1
   end

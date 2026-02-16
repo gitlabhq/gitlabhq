@@ -2,6 +2,8 @@
 key_path: counts.count_total_push_package_to_registry_generic_weekly
 description: Weekly count of generic packages pushed to the package registry.
 product_group: package_registry
+product_categories:
+- package_registry
 performance_indicator_type: []
 value_type: number
 status: active
