@@ -13,6 +13,10 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
 
   around do |example|
     Gitlab::Database::QueryAnalyzer.instance.within { example.run }
+  ensure
+    # Ensure analyzer context is cleaned up after each test to prevent
+    # transaction depth tracking from leaking between tests
+    described_class.context&.clear
   end
 
   describe 'context and suppress key names' do
@@ -61,7 +65,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     let(:model) { model }
 
     context "within #{model} transaction" do
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
+      it 'raises error' do
         model.transaction do
           expect { run_queries }.to raise_error do |error|
             expect(error.message).to include 'Cross-database data modification'
@@ -136,7 +140,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       end
 
       context 'when data modification happens in nested transactions' do
-        it 'raises error, with the generated sql queries included', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
+        it 'raises error, with the generated sql queries included' do
           Project.transaction(requires_new: true) do
             project.touch
             Project.transaction(requires_new: true) do
@@ -227,14 +231,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
   end
 
   context 'when execution is rescued with StandardError' do
-    it 'raises cross-database data modification exception', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
+    it 'raises cross-database data modification exception' do
       expect do
         Project.transaction do
           project.touch
           project.connection.execute('UPDATE p_ci_pipelines SET id=1 WHERE id = -1')
         end
       rescue StandardError
-        # Ensures that standard rescue does not silence errors
+        # Deliberately rescue StandardError here
       end.to raise_error(/Cross-database data modification/)
     end
   end
@@ -268,6 +272,19 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
           # the ensure of `.transaction` executes `ROLLBACK TO SAVEPOINT`
         end
       end.to raise_error(/force rollback/)
+    end
+  end
+
+  context 'when not in dev or test environment' do
+    it 'does not raise the error' do
+      allow(described_class).to receive(:dev_or_test_env?).and_return(false)
+
+      expect do
+        Project.transaction do
+          project.touch
+          pipeline.touch
+        end
+      end.not_to raise_error
     end
   end
 end

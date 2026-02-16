@@ -564,10 +564,16 @@ func (r *runner) stopWorkflow(reason string, closeErr error) error {
 }
 
 // Shutdown gracefully stops the workflow runner during server shutdown.
-// It sends a stop workflow request to the agent platform and waits for acknowledgment.
+// It releases the distributed lock immediately to allow other instances to acquire it.
+// Then it waits for shutdown timeout to expire, sends a stop workflow request to the agent platform, and waits for
+// acknowledgment.
 // If the original request context is already canceled, it returns immediately.
 // Errors during shutdown are logged but not returned to allow other runners to proceed.
 func (r *runner) Shutdown(ctx context.Context) error {
+	if r.lockFlow {
+		r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+	}
+
 	select {
 	case <-r.originalReq.Context().Done():
 		return nil

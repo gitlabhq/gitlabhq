@@ -27,7 +27,7 @@ module Organizations
         current_user = User.find_by_id(current_user_id)
         return unless current_user
 
-        Organizations::Groups::TransferService.new(
+        Organizations::Transfer::GroupsService.new(
           group: group,
           new_organization: organization,
           current_user: current_user

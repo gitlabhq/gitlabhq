@@ -1,0 +1,26 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index d6fcbe4..fe072bd 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6442,7 +6442,7 @@ function legacyRenderSlot(instance, name, fallback, props, bindObject) {
+   if (bindObject) {
+     props = mergeProps(props, bindObject);
+   }
+-  return renderSlot(instance.slots, name, props, fallback && (() => fallback));
++  return renderSlot(instance.slots, name, props, fallback && (typeof fallback === 'function' ? fallback : () => fallback));
+ }
+ function legacyResolveScopedSlots(fns, raw, hasDynamicKeys) {
+   return createSlots(
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 33bd9dc..3d4f234 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6349,7 +6349,7 @@ function legacyRenderSlot(instance, name, fallback, props, bindObject) {
+   if (bindObject) {
+     props = mergeProps(props, bindObject);
+   }
+-  return renderSlot(instance.slots, name, props, fallback && (() => fallback));
++  return renderSlot(instance.slots, name, props, fallback && (typeof fallback === 'function' ? fallback : () => fallback));
+ }
+ function legacyResolveScopedSlots(fns, raw, hasDynamicKeys) {
+   return createSlots(

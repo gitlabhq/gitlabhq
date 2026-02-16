@@ -373,6 +373,38 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryaicatalogitemsitemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
 | <a id="queryaicatalogitemssearch"></a>`search` | [`String`](#string) | Search items by name and description. |
 
+### `Query.aiCatalogMcpServer`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Find an AI Catalog MCP server by ID.
+
+Returns [`AiCatalogMcpServer`](#aicatalogmcpserver).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogmcpserverid"></a>`id` | [`AiCatalogMcpServerID!`](#aicatalogmcpserverid) | Global ID of the MCP server. |
+
+### `Query.aiCatalogMcpServers`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+List of AI Catalog MCP servers.
+
+Returns [`AiCatalogMcpServerConnection!`](#aicatalogmcpserverconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.aiChatAvailableModels`
 
 {{< details >}}
@@ -3089,6 +3121,37 @@ Input type: `AiCatalogItemReportInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemreportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogitemreporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiCatalogMcpServerCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogMcpServerCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogmcpservercreateauthtype"></a>`authType` | [`AiCatalogMcpServerAuthType!`](#aicatalogmcpserverauthtype) | Authentication type for the MCP server. |
+| <a id="mutationaicatalogmcpservercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogmcpservercreatedescription"></a>`description` | [`String`](#string) | Description for the MCP server. |
+| <a id="mutationaicatalogmcpservercreatehomepageurl"></a>`homepageUrl` | [`String`](#string) | Homepage URL for the MCP server. |
+| <a id="mutationaicatalogmcpservercreatename"></a>`name` | [`String!`](#string) | Name for the MCP server. |
+| <a id="mutationaicatalogmcpservercreateoauthclientid"></a>`oauthClientId` | [`String`](#string) | OAuth client ID for the MCP server. |
+| <a id="mutationaicatalogmcpservercreateoauthclientsecret"></a>`oauthClientSecret` | [`String`](#string) | OAuth client secret for the MCP server. |
+| <a id="mutationaicatalogmcpservercreatetransport"></a>`transport` | [`AiCatalogMcpServerTransport!`](#aicatalogmcpservertransport) | Transport type for the MCP server. |
+| <a id="mutationaicatalogmcpservercreateurl"></a>`url` | [`String!`](#string) | URL for the MCP server. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogmcpservercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogmcpservercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogmcpservercreatemcpserver"></a>`mcpServer` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | MCP server created. |
 
 ### `Mutation.aiCatalogThirdPartyFlowCreate`
 
@@ -16975,6 +17038,29 @@ The edge type for [`AiCatalogItemVersion`](#aicatalogitemversion).
 | <a id="aicatalogitemversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aicatalogitemversionedgenode"></a>`node` | [`AiCatalogItemVersion`](#aicatalogitemversion) | The item at the end of the edge. |
 
+#### `AiCatalogMcpServerConnection`
+
+The connection type for [`AiCatalogMcpServer`](#aicatalogmcpserver).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogmcpserverconnectionedges"></a>`edges` | [`[AiCatalogMcpServerEdge]`](#aicatalogmcpserveredge) | A list of edges. |
+| <a id="aicatalogmcpserverconnectionnodes"></a>`nodes` | [`[AiCatalogMcpServer]`](#aicatalogmcpserver) | A list of nodes. |
+| <a id="aicatalogmcpserverconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiCatalogMcpServerEdge`
+
+The edge type for [`AiCatalogMcpServer`](#aicatalogmcpserver).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogmcpserveredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aicatalogmcpserveredgenode"></a>`node` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | The item at the end of the edge. |
+
 #### `AiConversationsThreadConnection`
 
 The connection type for [`AiConversationsThread`](#aiconversationsthread).
@@ -26873,6 +26959,26 @@ Check permissions for the current user on an AI catalog item.
 | <a id="aicatalogitempermissionsforceharddeleteaicatalogitem"></a>`forceHardDeleteAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `force_hard_delete_ai_catalog_item` on this resource. |
 | <a id="aicatalogitempermissionsreadaicatalogitem"></a>`readAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_ai_catalog_item` on this resource. |
 | <a id="aicatalogitempermissionsreportaicatalogitem"></a>`reportAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `report_ai_catalog_item` on this resource. |
+
+### `AiCatalogMcpServer`
+
+An MCP (Model Context Protocol) server.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogmcpserverauthtype"></a>`authType` | [`AiCatalogMcpServerAuthType!`](#aicatalogmcpserverauthtype) | Authentication type for the MCP server. |
+| <a id="aicatalogmcpservercreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the MCP server was created. |
+| <a id="aicatalogmcpserverdescription"></a>`description` | [`String`](#string) | Description of the MCP server. |
+| <a id="aicatalogmcpserverhomepageurl"></a>`homepageUrl` | [`String`](#string) | Homepage URL of the MCP server. |
+| <a id="aicatalogmcpserverid"></a>`id` | [`ID!`](#id) | ID of the MCP server. |
+| <a id="aicatalogmcpservername"></a>`name` | [`String!`](#string) | Name of the MCP server. |
+| <a id="aicatalogmcpserveroauthclientid"></a>`oauthClientId` | [`String`](#string) | OAuth client ID for the MCP server. |
+| <a id="aicatalogmcpserverorganization"></a>`organization` | [`Organization!`](#organization) | Organization that owns the MCP server. |
+| <a id="aicatalogmcpservertransport"></a>`transport` | [`AiCatalogMcpServerTransport!`](#aicatalogmcpservertransport) | Transport type for the MCP server. |
+| <a id="aicatalogmcpserverupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the MCP server was last updated. |
+| <a id="aicatalogmcpserverurl"></a>`url` | [`String!`](#string) | URL of the MCP server. |
 
 ### `AiCatalogThirdPartyFlow`
 
@@ -52676,6 +52782,23 @@ Possible item types for AI items.
 | <a id="aicatalogitemverificationlevelverified_creator_maintained"></a>`VERIFIED_CREATOR_MAINTAINED` | The item is Verified Creator Maintained. |
 | <a id="aicatalogitemverificationlevelverified_creator_self_managed"></a>`VERIFIED_CREATOR_SELF_MANAGED` | The item is Verified Creator Self Managed. |
 
+### `AiCatalogMcpServerAuthType`
+
+Authentication types for MCP servers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogmcpserverauthtypeno_auth"></a>`NO_AUTH` | No authentication. |
+| <a id="aicatalogmcpserverauthtypeoauth"></a>`OAUTH` | OAuth authentication. |
+
+### `AiCatalogMcpServerTransport`
+
+Transport types for MCP servers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogmcpservertransporthttp"></a>`HTTP` | HTTP transport. |
+
 ### `AiCatalogVersionBump`
 
 Possible version bumps for AI catalog items.
@@ -57303,6 +57426,12 @@ An example `AiCatalogItemID` is: `"gid://gitlab/Ai::Catalog::Item/1"`.
 A `AiCatalogItemVersionID` is a global ID. It is encoded as a string.
 
 An example `AiCatalogItemVersionID` is: `"gid://gitlab/Ai::Catalog::ItemVersion/1"`.
+
+### `AiCatalogMcpServerID`
+
+A `AiCatalogMcpServerID` is a global ID. It is encoded as a string.
+
+An example `AiCatalogMcpServerID` is: `"gid://gitlab/Ai::Catalog::McpServer/1"`.
 
 ### `AiConversationThreadID`
 

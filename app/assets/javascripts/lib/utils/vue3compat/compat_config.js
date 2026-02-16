@@ -26,6 +26,7 @@ export const compatConfig = {
   OPTIONS_DATA_MERGE: 'suppress-warning',
   OPTIONS_DATA_FN: false,
   OPTIONS_DESTROYED: 'suppress-warning',
+  ATTR_ENUMERATED_COERCION: 'suppress-warning',
   ATTR_FALSE_VALUE: 'suppress-warning',
 
   CONFIG_WHITESPACE: 'suppress-warning',

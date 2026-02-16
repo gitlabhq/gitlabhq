@@ -4038,7 +4038,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     context 'when authenticated as group owner' do
       it 'initiates the transfer' do
-        expect_next_instance_of(Organizations::Groups::TransferService) do |service|
+        expect_next_instance_of(Organizations::Transfer::GroupsService) do |service|
           expect(service).to receive(:async_execute).and_return(
             ServiceResponse.success(message: 'Group transfer to organization initiated')
           )
@@ -4059,14 +4059,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
 
         before do
-          allow(Organizations::Groups::TransferService).to receive_message_chain(:new, :async_execute)
+          allow(Organizations::Transfer::GroupsService).to receive_message_chain(:new, :async_execute)
             .and_return(ServiceResponse.success(message: 'Group transfer to organization initiated'))
         end
       end
 
       context 'when service returns error' do
         it 'returns bad request' do
-          expect_next_instance_of(Organizations::Groups::TransferService) do |service|
+          expect_next_instance_of(Organizations::Transfer::GroupsService) do |service|
             expect(service).to receive(:async_execute).and_return(
               ServiceResponse.error(message: 'Group must be a top-level group')
             )

@@ -69,6 +69,7 @@ describe('RegistrationDropdown', () => {
       stubs: {
         GlDisclosureDropdownItem,
       },
+      apolloProvider: createMockApollo(),
       ...options,
     });
   };

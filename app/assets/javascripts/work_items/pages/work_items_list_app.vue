@@ -311,7 +311,7 @@ export default {
       isLoggedIn: isLoggedIn(),
       isSortKeyInitialized: !this.isLoggedIn,
       hasWorkItems: false,
-      workItemsCount: null,
+      workItemsCount: 0,
       isNewViewModalVisible: false,
       savedView: null,
       showSavedViewNotFoundModal: false,

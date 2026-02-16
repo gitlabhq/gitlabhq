@@ -14,7 +14,7 @@ describe('validation directive', () => {
 
     const defaultTemplate = `
       <form>
-        <input v-validation:[showValidation] name="exampleField" v-bind="attributes" />
+        <input v-validation:[showValidation] v-bind="attributes" name="exampleField" />
       </form>
     `;
 
@@ -73,7 +73,7 @@ describe('validation directive', () => {
       },
       template: `
         <form>
-          <input v-validation:[form.showValidation] name="exampleField" v-bind="attributes" />
+          <input v-validation:[form.showValidation] v-bind="attributes" name="exampleField" />
         </form>
       `,
       feedbackMap,
@@ -170,7 +170,7 @@ describe('validation directive', () => {
     const template = `
       <form>
         <div v-validation:[showValidation]>
-          <input name="exampleField" v-bind="attributes" />
+          <input v-bind="attributes" name="exampleField" />
         </div>
       </form>
     `;
@@ -219,7 +219,7 @@ describe('validation directive', () => {
     const template = `
       <form>
         <div v-validation:[showValidation]>
-          <input name="exampleField" v-bind="attributes" />
+          <input v-bind="attributes" name="exampleField" />
         </div>
       </form>
     `;
@@ -272,7 +272,7 @@ describe('validation directive', () => {
     const template = `
       <form>
         <div v-validation:[showValidation]>
-          <input name="exampleField" v-bind="attributes" validation-message="${customMessage}" />
+          <input v-bind="attributes" name="exampleField" validation-message="${customMessage}" />
         </div>
       </form>
     `;

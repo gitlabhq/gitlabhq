@@ -697,7 +697,7 @@ module API
 
         authorize! :admin_group, group
 
-        service = ::Organizations::Groups::TransferService.new(
+        service = ::Organizations::Transfer::GroupsService.new(
           group: group,
           new_organization: organization,
           current_user: current_user

@@ -289,9 +289,9 @@ describe('GlobalSearchModal', () => {
                 template: `
                   <div>
                     <input
+                      v-bind="$attrs"
                       :value="value"
                       ref="input"
-                      v-bind="$attrs"
                       v-on="$listeners"
                       data-testid="search-input-field"
                       @input="$emit('input', $event.target.value)"

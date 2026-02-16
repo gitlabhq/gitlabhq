@@ -84,7 +84,7 @@ describe('note_app', () => {
           NotesApp,
         },
         template: `<div class="js-vue-notes-event">
-            <notes-app ref="notesApp" v-bind="$attrs" />
+            <notes-app v-bind="$attrs" ref="notesApp" />
           </div>`,
         inheritAttrs: false,
       },

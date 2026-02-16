@@ -31485,8 +31485,8 @@ CREATE TABLE virtual_registries_packages_npm_upstreams (
     url text NOT NULL,
     name text NOT NULL,
     description text,
+    auth_token jsonb,
     CONSTRAINT check_298b611283 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_33b72b4447 CHECK (((num_nonnulls(username, password) = 2) OR (num_nulls(username, password) = 2))),
     CONSTRAINT check_721335b8c3 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_b1a7ef9b09 CHECK ((cache_validity_hours >= 0)),
     CONSTRAINT check_b8f37fb49e CHECK ((char_length(url) <= 255)),
@@ -37687,6 +37687,15 @@ ALTER TABLE sprints
 
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE packages_conan_package_references
+    ADD CONSTRAINT check_reference_length CHECK ((octet_length(reference) <= 20)) NOT VALID;
+
+ALTER TABLE packages_conan_package_revisions
+    ADD CONSTRAINT check_revision_length CHECK ((octet_length(revision) <= 20)) NOT VALID;
+
+ALTER TABLE packages_conan_recipe_revisions
+    ADD CONSTRAINT check_revision_length CHECK ((octet_length(revision) <= 20)) NOT VALID;
 
 ALTER TABLE vulnerability_statistics
     ADD CONSTRAINT check_vulnerability_statistics_traversal_ids_not_empty CHECK ((cardinality(traversal_ids) > 0)) NOT VALID;
