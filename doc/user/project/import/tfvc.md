@@ -3,7 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate from TFVC
-description: "Migrate from Team Foundation Version Control (TFVC) to Git."
+description: "Migrate from TFVC to Git."
 ---
 
 {{< details >}}
