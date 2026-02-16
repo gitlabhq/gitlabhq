@@ -56,21 +56,46 @@ The GitLab Duo CLI offers two modes:
 
 ## Install the GitLab Duo CLI
 
+You can install the GitLab Duo CLI as an npm package or a compiled binary.
+
+### npm package
+
 Prerequisites:
 
 - Node.js 22 or later.
+- For GitLab Self-Managed with a self-signed certificate, either:
+  - Node.js LTS 22.20.0 or later
+  - Node.js 23.8.0 or later
 
-To install the GitLab Duo CLI, run:
+To install the GitLab Duo CLI as an npm package, run:
 
 ```shell
 npm install --global @gitlab/duo-cli
 ```
 
-To start the GitLab Duo CLI, run:
+### Compiled binary
+
+To install the GitLab Duo CLI as a compiled binary, download and run the install script.
+
+{{< tabs >}}
+
+{{< tab title="macOS and Linux" >}}
 
 ```shell
-duo
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
 ```
+
+{{< /tab >}}
+
+{{< tab title="Windows" >}}
+
+```shell
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Authenticate with GitLab
 
@@ -232,11 +257,11 @@ To resolve certificate errors, use one of the following methods:
 
 ### Ignore certificate errors
 
-If you still encounter certificate errors, you can disable certificate verification. 
+If you still encounter certificate errors, you can disable certificate verification.
 
 > [!warning]
 > Disabling certificate verification is a security risk.
-> You should not disable verification in production environments. 
+> You should not disable verification in production environments.
 
 Certificate errors alert you to potential security breaches, so you should disable certificate verification only when you are confident that it is safe to do so.
 

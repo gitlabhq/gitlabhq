@@ -21,16 +21,27 @@ module Gitlab
         logger.info("Altering sequences with minval: #{minval}, maxval: #{maxval}")
 
         sequences.each do |sequence|
-          # Ensures sequence will not provide already existing IDs
-          if minval <= sequence.last_value.to_i
-            raise "`minval` should be greater than the `last_value` of the sequence #{sequence.seq_name}"
-          end
+          # Skip if sequence already has the correct boundaries
+          next if sequence.seq_min == minval && sequence.seq_max == maxval
 
           with_lock_retries do
-            alter_sequence_query = <<~SQL
-              ALTER SEQUENCE #{sequence.seq_name}
-              START #{minval} RESTART #{minval} MINVALUE #{minval} MAXVALUE #{maxval}
-            SQL
+            if minval > sequence.last_value.to_i
+              # New cell case: sequence hasn't reached minval yet, safe to restart
+              alter_sequence_query = <<~SQL
+                ALTER SEQUENCE #{sequence.seq_name}
+                START #{minval} RESTART #{minval} MINVALUE #{minval} MAXVALUE #{maxval}
+              SQL
+            else
+              # Legacy cell: sequence is already past minval, only set boundaries
+              logger.info(
+                "Sequence #{sequence.seq_name} already >= minval, skipping RESTART"
+              )
+
+              alter_sequence_query = <<~SQL
+                ALTER SEQUENCE #{sequence.seq_name}
+                MINVALUE #{minval} MAXVALUE #{maxval}
+              SQL
+            end
 
             connection.execute(alter_sequence_query)
           end
@@ -54,27 +65,36 @@ module Gitlab
             sequence_name text;
             current_minval BIGINT;
             current_maxval BIGINT;
+            current_last_value BIGINT;
           BEGIN
             FOR command_record IN SELECT * FROM pg_event_trigger_ddl_commands () LOOP
               -- CREATE TABLE, ALTER TABLE will fire ALTER SEQUENCE event when SERIAL, BIGSERIAL IDs are used.
               IF command_record.command_tag IN ('CREATE SEQUENCE', 'ALTER SEQUENCE') THEN
                 sequence_name := substring(command_record.object_identity FROM '([^.]+)$');
 
-                SELECT min_value, max_value INTO current_minval, current_maxval FROM pg_sequences
+                SELECT min_value, max_value, last_value INTO current_minval, current_maxval, current_last_value FROM pg_sequences
                 WHERE sequencename = sequence_name;
 
                 -- On bumping sequence ranges using gitlab:db:increase_sequences_range, new ranges will always be
                 -- greater than the existing ones. The below check catches the default minval (1) and updates accordingly.
-                IF current_minval < #{minval} OR current_maxval < #{maxval} THEN
-                  RAISE NOTICE 'Altering sequence "%" with range [%, %]', sequence_name, #{minval}, #{maxval};
+                -- Skip if sequence already has the correct boundaries (also prevents recursive trigger calls)
+                IF current_minval = #{minval} AND current_maxval = #{maxval} THEN
+                  CONTINUE;
+                END IF;
 
-                  EXECUTE FORMAT('ALTER SEQUENCE %I START %s RESTART %s MINVALUE %s MAXVALUE %s',
-                    sequence_name,
-                    #{minval},
-                    #{minval},
-                    #{minval},
-                    #{maxval}
-                  );
+                -- Only alter sequences whose current minval is <= our target minval.
+                -- This ensures new sequences (default minval=1) and legacy cell sequences get altered,
+                -- but sequences already bumped to a higher range via increase_sequences_range are left alone.
+                IF current_minval <= #{minval} THEN
+                  IF current_last_value IS NULL OR #{minval} > current_last_value THEN
+                    -- New cell: sequence hasn't reached minval yet, safe to restart
+                    EXECUTE FORMAT('ALTER SEQUENCE %I START %s RESTART %s MINVALUE %s MAXVALUE %s',
+                      sequence_name, #{minval}, #{minval}, #{minval}, #{maxval});
+                  ELSE
+                    -- Legacy cell: sequence is already past minval, only set boundaries
+                    EXECUTE FORMAT('ALTER SEQUENCE %I MINVALUE %s MAXVALUE %s',
+                      sequence_name, #{minval}, #{maxval});
+                  END IF;
                 END IF;
               END IF;
             END LOOP;

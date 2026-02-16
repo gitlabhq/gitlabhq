@@ -755,6 +755,15 @@ so `prepare_async_index` and `prepare_partitioned_async_index` are no-ops for ot
    [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. In the case of an [index created asynchronously](#schedule-the-index-to-be-created), wait
    until the next week so that the index can be created over a weekend.
+   - Async indexes are scheduled to run every 12th minute during weekends (`12 * * * 0,6`). The configuration is set in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/77e24f41130d9e6ae716860a2a46559b1d6312e1/roles/gprd-base-deploy-node.json#L84) and [omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/778a97e365b62e48eacde6c283b4fcaa0f240b43/files/gitlab-cookbooks/gitlab/recipes/database_reindexing_enable.rb#L19).
+   - If the index is not created after a weekend, check the status of queued index operations by running the below query in a recent DB thin clone.
+
+     ```postgresql
+     SELECT definition, created_at, attempts, last_error FROM postgres_async_indexes
+     WHERE definition ILIKE 'CREATE%'
+     ORDER BY attempts ASC, id ASC;
+     ```
+
 1. Use [Database Lab](database_lab.md) to check [if creation was successful](database_lab.md#checking-indexes).
    Ensure the output does not indicate the index is `invalid`.
 

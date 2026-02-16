@@ -223,6 +223,8 @@ To view details:
 
 > [!note]
 > Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
+>
+> Due to [issue 590022](https://gitlab.com/gitlab-org/gitlab/-/issues/590022) and [issue 590018](https://gitlab.com/gitlab-org/gitlab/-/issues/590018)), vulnerability counts in the **Vulnerabilities over time** chart may not be accurate. The first issue affects dependency scanning and container scanning vulnerabilities. The second issue affects vulnerabilities that were dismissed or resolved, and then confirmed.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
