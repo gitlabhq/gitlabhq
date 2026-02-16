@@ -3,7 +3,6 @@ import PersistentUserCallout from './persistent_user_callout';
 const PERSISTENT_USER_CALLOUTS = [
   '.js-persistent-callout',
   // NOTE: unique callouts selectors are to be removed within https://gitlab.com/gitlab-org/gitlab/-/issues/527723
-  '.js-recovery-settings-callout',
   '.js-users-over-license-callout',
   '.js-admin-licensed-user-count-threshold',
   '.js-token-expiry-callout',

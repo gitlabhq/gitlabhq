@@ -52415,9 +52415,6 @@ msgstr ""
 msgid "Profiles|Email one-time password (email OTP)"
 msgstr ""
 
-msgid "Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place."
-msgstr ""
-
 msgid "Profiles|Enter how your name is pronounced to help people address you correctly."
 msgstr ""
 
@@ -52518,9 +52515,6 @@ msgid "Profiles|Made a private contribution"
 msgstr ""
 
 msgid "Profiles|Main settings"
-msgstr ""
-
-msgid "Profiles|Manage two-factor authentication"
 msgstr ""
 
 msgid "Profiles|New Support PIN generated successfully."

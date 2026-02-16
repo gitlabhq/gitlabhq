@@ -24,8 +24,6 @@ module Users
 
     def render_dashboard_ultimate_trial(user); end
 
-    def render_two_factor_auth_recovery_settings_check; end
-
     def show_suggest_popover?
       !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
     end
@@ -53,8 +51,6 @@ module Users
         !user_dismissed?(OPENSSL_CALLOUT) &&
         controller.controller_path.match?(%r{^admin(/\S*)?$})
     end
-
-    def dismiss_two_factor_auth_recovery_settings_check; end
 
     def web_hook_disabled_dismissed?(object)
       return false unless object.is_a?(::WebHooks::HasWebHooks)

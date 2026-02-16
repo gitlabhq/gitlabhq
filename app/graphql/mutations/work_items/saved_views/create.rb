@@ -29,7 +29,7 @@ module Mutations
           description: 'Description of the saved view.'
 
         argument :filters,
-          Types::WorkItems::SavedViews::FilterInputType,
+          ::Types::WorkItems::SavedViews::FilterInputType,
           required: true,
           description: 'Filters associated with the saved view.'
 
@@ -41,7 +41,7 @@ module Mutations
         # rubocop:enable Graphql/JSONType
 
         argument :sort,
-          Types::WorkItems::SortEnum,
+          ::Types::WorkItems::SortEnum,
           required: true,
           description: 'Sort option associated with the saved view.'
 

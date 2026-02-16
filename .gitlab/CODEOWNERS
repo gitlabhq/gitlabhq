@@ -1469,7 +1469,6 @@ lib/gitlab/checks/
 /app/views/projects/mirrors/_authentication_method.html.haml
 /app/views/projects/settings/access_tokens/
 /app/views/shared/_no_password.html.haml
-/app/views/shared/_two_factor_auth_recovery_settings_check.html.haml
 /app/views/shared/access_tokens/
 /app/views/shared/doorkeeper/
 /app/views/shared/members/_two_factor_auth_badge.html.haml

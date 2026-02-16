@@ -39,8 +39,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         @codes = user.generate_otp_backup_codes!
       end
 
-      helpers.dismiss_two_factor_auth_recovery_settings_check
-
       render 'create'
     else
       @otp_error = { message: _('Invalid pin code.') }
@@ -74,7 +72,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         Users::UpdateService.new(current_user, user: current_user).execute! do |_user|
           @codes = current_user.generate_otp_backup_codes!
         end
-        helpers.dismiss_two_factor_auth_recovery_settings_check
         flash[:notice] = notice
         render 'create'
       end
@@ -91,8 +88,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def codes
     Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
-
-      helpers.dismiss_two_factor_auth_recovery_settings_check
     end
   end
 

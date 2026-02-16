@@ -417,3 +417,16 @@ To investigate the cause of this error:
 1. Check if the path in the `alternates` file is reachable from the `objects` directory in the project.
 
 After performing these checks, reach out to GitLab Support with the information collected.
+
+### Projects are stuck in read-only state after failed repository storage moves
+
+When using Horizontal Pod Autoscaler (HPA) with Sidekiq pods, repository storage moves can fail silently due to pod
+scaling during job execution. If a repository storage move has failed because of this issue, failed projects can remain
+stuck in a read-only state.
+
+To recover affected repositories:
+
+1. [Reset affected projects to read-write state](../../read_only_gitlab.md#make-the-repositories-read-only).
+1. [Disable HPA for Sidekiq pods](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#disable-hpa-scaling)
+1. [Re-run storage moves by using the REST API](../../operations/moving_repositories.md) for individual projects.
+1. Restore HPA configuration after migration completes.

@@ -16167,6 +16167,34 @@ Input type: `WorkItemSubscribeInput`
 | <a id="mutationworkitemsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemsubscribeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
+### `Mutation.workItemTypeUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemTypeUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypeupdatearchive"></a>`archive` | [`Boolean`](#boolean) | Whether to archive the work item type. |
+| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypeupdatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the root group. |
+| <a id="mutationworkitemtypeupdateiconname"></a>`iconName` | [`String`](#string) | New icon name for the work item type. |
+| <a id="mutationworkitemtypeupdateid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type to update. |
+| <a id="mutationworkitemtypeupdatename"></a>`name` | [`String`](#string) | New name for the work item type. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypeupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemtypeupdateworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Work item type that was updated. |
+
 ### `Mutation.workItemUpdate`
 
 {{< details >}}
@@ -56477,7 +56505,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumtransition_to_jihu_callout"></a>`TRANSITION_TO_JIHU_CALLOUT` | Callout feature name for transition_to_jihu_callout. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d14"></a>`TRIAL_STATUS_REMINDER_D14` | Callout feature name for trial_status_reminder_d14. |
 | <a id="usercalloutfeaturenameenumtrial_status_reminder_d3"></a>`TRIAL_STATUS_REMINDER_D3` | Callout feature name for trial_status_reminder_d3. |
-| <a id="usercalloutfeaturenameenumtwo_factor_auth_recovery_settings_check"></a>`TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` | Callout feature name for two_factor_auth_recovery_settings_check. |
 | <a id="usercalloutfeaturenameenumultimate_trial"></a>`ULTIMATE_TRIAL` | Callout feature name for ultimate_trial. |
 | <a id="usercalloutfeaturenameenumunfinished_tag_cleanup_callout"></a>`UNFINISHED_TAG_CLEANUP_CALLOUT` | Callout feature name for unfinished_tag_cleanup_callout. |
 | <a id="usercalloutfeaturenameenumuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |

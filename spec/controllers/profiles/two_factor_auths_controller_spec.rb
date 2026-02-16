@@ -189,12 +189,6 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         go
       end
 
-      it 'dismisses the `TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` callout' do
-        expect(controller.helpers).to receive(:dismiss_two_factor_auth_recovery_settings_check)
-
-        go
-      end
-
       it 'renders create' do
         go
         expect(response).to render_template(:create)
@@ -280,12 +274,6 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
       user.reload
       expect(user.otp_backup_codes).not_to be_empty
-    end
-
-    it 'dismisses the `TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` callout' do
-      expect(controller.helpers).to receive(:dismiss_two_factor_auth_recovery_settings_check)
-
-      post :codes, params: { current_password: current_password }
     end
 
     it_behaves_like 'user must enter a valid current password' do
