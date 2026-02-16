@@ -65,7 +65,7 @@ or GitLab Duo Pro when GitLab hosts and connects to those models through the clo
 
 | Feature                                                                                                                                | GitLab version          | Status              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.4 and later   | Generally available |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8 and later   | Generally available |
 | **GitLab Duo (Classic)** | | |
 | [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9 and later   | Generally available |
 | [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |

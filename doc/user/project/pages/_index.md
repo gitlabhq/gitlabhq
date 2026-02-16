@@ -185,7 +185,7 @@ selected primary domain. Browsers might cache this redirect.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - A [custom domain](custom_domains_ssl_tls_certification/_index.md#set-up-a-custom-domain) must be set up.
 
 1. On the top bar, select **Search or go to** and find your project.
@@ -229,7 +229,7 @@ The previous YAML example uses [user-defined job names](#user-defined-job-names)
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To recover a stopped deployment that has not yet been deleted:
 

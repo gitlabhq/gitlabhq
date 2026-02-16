@@ -110,7 +110,7 @@ You can create a release:
 
 Prerequisites:
 
-- You must have at least the Developer role for a project. For more information, read
+- You must have the Developer, Maintainer, or Owner role for a project. For more information, read
   [Release permissions](#release-permissions).
 
 To create a release in the Releases page:
@@ -254,7 +254,7 @@ To edit the details of a release after it's created, you can use the
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 In the UI:
 
@@ -277,7 +277,7 @@ Deleting a Git tag associated with a release also deletes the release.
 
 Prerequisites:
 
-- You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
+- You must have the Developer, Maintainer, or Owner role. Read more about [Release permissions](#release-permissions).
 
 To delete a release, use either the
 [Delete a release API](../../../api/releases/_index.md#delete-a-release) or the UI.
@@ -400,7 +400,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ### View a release and download assets
 
-- Users with at least the Reporter role
+- Users with the Reporter, Developer, Maintainer, or Owner role
   have read and download access to the project releases.
 - Users with the Guest role
   have read and download access to the project releases.
@@ -427,13 +427,13 @@ To make releases available publicly, set the following [project settings](../set
 
 ### Create, update, and delete a release and its assets
 
-- Users with at least the Developer role
+- Users with the Developer, Maintainer, or Owner role
   have write access to the project releases and assets.
 - If a release is associated with a [protected tag](../protected_tags.md),
   the user must be [allowed to create the protected tag](../protected_tags.md#configure-protected-tags) too.
 
 As an example of release permission control, you can allow only
-users with at least the Maintainer role
+users with the Maintainer or Owner role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 

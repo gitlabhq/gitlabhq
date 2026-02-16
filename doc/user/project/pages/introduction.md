@@ -338,7 +338,7 @@ If anyone tries to access the old URL, they receive a `404` error.
 
 Prerequisites
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The **Use unique domain** setting [must be enabled](_index.md#unique-domains) in your project's Pages settings.
 
 To regenerate a unique domain for your GitLab Pages site:

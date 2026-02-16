@@ -38,7 +38,7 @@ repositories like the Android Open Source Project (AOSP).
   by default on GitLab.com.
 - GitLab must use PostgreSQL for its database, because [subgroups](../../group/subgroups/_index.md) are needed for the manifest import
   to work. Read more about the [database requirements](../../../install/requirements.md#postgresql).
-- At least the Maintainer role on the destination group to import to.
+- The Maintainer or Owner role on the destination group to import to.
 
 ## Manifest format
 

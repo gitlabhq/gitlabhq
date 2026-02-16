@@ -148,7 +148,7 @@ You can create a milestone either in a project or a group.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To create a milestone:
 
@@ -179,7 +179,7 @@ To avoid confusion within group hierarchies, duplicate milestone titles are not 
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To edit a milestone:
 
@@ -205,7 +205,7 @@ When a milestone is closed, its open issues remain open.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To close a milestone:
 
@@ -226,7 +226,7 @@ To close a milestone:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To delete a milestone:
 
@@ -260,7 +260,7 @@ milestones become assigned to the new group milestone.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To promote a project milestone:
 

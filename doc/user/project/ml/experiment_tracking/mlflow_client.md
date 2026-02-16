@@ -30,7 +30,7 @@ Prerequisites:
 - A GitLab-compatible Python client:
   - Recommended: The [GitLab MLOps Python client](https://gitlab.com/gitlab-org/modelops/mlops/gitlab-mlops).
   - Another option is the MLflow client version. The MLflow client is [compatible with GitLab](https://gitlab.com/gitlab-org/modelops/mlops/mlflow-compatibility-qa).
-- A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
+- A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with the Developer, Maintainer, or Owner role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the top bar, select **Search or go to** and find your project.
   1. Select **Settings** > **General**.

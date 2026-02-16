@@ -34,7 +34,7 @@ You can import your Git repository by:
 - [Repository by URL import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Repository by URL import source is enabled
   by default on GitLab.com.
-- At least the Maintainer role on the destination group to import to.
+- The Maintainer or Owner role on the destination group to import to.
 - If importing a private repository, an access token for authenticated access to the source repository might be required
   instead of a password.
 

@@ -88,7 +88,7 @@ In the previous example:
 Git is a distributed version control system (DVCS).
 Everyone who works with the source code has a local copy of the complete repository.
 
-In GitLab, every project member with at least the Reporter role can clone the repository to create
+In GitLab, every project member with the Reporter, Developer, Maintainer, or Owner role can clone the repository to create
 a local copy.
 Users can upload the full repository anywhere after they obtain a local copy, including:
 
@@ -221,7 +221,7 @@ Imported project members retain the same permissions as the project you import t
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 If the importing member's role for the target project is:
 

@@ -57,7 +57,7 @@ by default on GitLab.com.
 To use the GitHub importer, you must have:
 
 - Access to the source GitHub project
-- At least the Maintainer role for the destination GitLab group (introduced in GitLab 16.0)
+- The Maintainer or Owner role for the destination GitLab group (introduced in GitLab 16.0)
 
 Also, the organization the GitHub repository belongs to must not impose restrictions of a
 [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
@@ -453,7 +453,7 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/about-custom-repository-roles).
 These roles aren't supported and cause partially completed imports.
 
-To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
+To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 

@@ -543,7 +543,7 @@ The settings set in the policy overwrite settings in the project.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
 You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
@@ -1076,7 +1076,7 @@ To resolve these issues:
 - For new projects, set up and run the necessary security scans on the default branch before creating merge requests.
 - Consider using scan execution policies or pipeline execution policies to ensure consistent execution of security scans across all branches.
 - Consider using [`fallback_behavior`](#fallback_behavior) with `open` to prevent invalid or unenforceable rules in a policy from requiring approval.
-- Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
+- Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the source branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
 
 ### `Target: none` in security bot comments
 
