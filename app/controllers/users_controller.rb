@@ -93,7 +93,7 @@ class UsersController < ApplicationController
 
         if Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage
           @events = if user.include_private_contributions?
-                      @events
+                      @events.reject(&:target_deleted?)
                     else
                       @events.select { |event| event.visible_to_user?(current_user) }
                     end

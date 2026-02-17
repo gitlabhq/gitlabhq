@@ -445,6 +445,10 @@ class Event < ApplicationRecord
     project_id.nil? && group_id.nil?
   end
 
+  def target_deleted?
+    target_id.present? && target.nil?
+  end
+
   protected
 
   def capability

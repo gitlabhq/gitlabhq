@@ -72,7 +72,7 @@ NOTE:
 
 1. Run `gdk start` to start services including DWS.
 1. Open terminal at `<gdk-root>/gitlab` and use one of the following options:
-   - Run `export TEST_AI_GATEWAY_REPO_BRANCH=<your-remote-feature-branch>` and delete `<gitlab-rails-root>/tmp/tests/gitlab-ai-gateway/` cache dir, _OR_
+   - Run `export TEST_AI_GATEWAY_REPO_REF=<your-remote-feature-branch>` and delete `<gitlab-rails-root>/tmp/tests/gitlab-ai-gateway/` cache dir, _OR_
    - Run `export TEST_DUO_WORKFLOW_SERVICE_ENABLED="false" && export TEST_DUO_WORKFLOW_SERVICE_PORT=<your-local-dws-port>`.
      This allows the feature tests to request to your local DWS instance. Make sure the following configuration is set to your local DWS and it's running:
      - Set `true` to `AIGW_MOCK_MODEL_RESPONSES`

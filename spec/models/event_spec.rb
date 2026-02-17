@@ -1502,6 +1502,30 @@ RSpec.describe Event, feature_category: :user_profile do
     end
   end
 
+  describe '#target_deleted?' do
+    it 'returns false when event does not have a target_id' do
+      event = build(:event, :destroyed, target_type: 'Milestone')
+
+      expect(event.target_deleted?).to be false
+    end
+
+    context 'when target_id is set' do
+      let_it_be(:issue) { create(:issue, project: project) }
+
+      let(:event) { build(:event, target_type: issue.class.name, target_id: issue.id) }
+
+      it 'returns false when target is present' do
+        expect(event.target_deleted?).to be false
+      end
+
+      it 'returns true when target is no longer present' do
+        event.target_id = non_existing_record_id
+
+        expect(event.target_deleted?).to be true
+      end
+    end
+  end
+
   def create_push_event(project, user, imported_from = 0)
     event = create(:push_event, project: project, author: user, imported_from: imported_from)
 
