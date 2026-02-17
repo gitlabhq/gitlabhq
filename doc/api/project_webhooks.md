@@ -35,9 +35,9 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-## Get a project webhook
+## Retrieve a project webhook
 
-Get a specific webhook for a project.
+Retrieves a specified webhook for a project.
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id
@@ -90,7 +90,7 @@ Example response:
 }
 ```
 
-## Get a list of project webhook events
+## List project webhook events
 
 {{< history >}}
 
@@ -98,7 +98,7 @@ Example response:
 
 {{< /history >}}
 
-Get a list of events for a specific project webhook in the past 7 days from start date.
+Lists all events for a specified project webhook in the past 7 days from start date.
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id/events
@@ -442,7 +442,7 @@ Supported attributes:
 | `token`                        | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki events. |
 
-## Edit a project webhook
+## Update a project webhook
 
 {{< history >}}
 
@@ -450,7 +450,7 @@ Supported attributes:
 
 {{< /history >}}
 
-Edit a project webhook for a specified project.
+Updates a project webhook for a specified project.
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id

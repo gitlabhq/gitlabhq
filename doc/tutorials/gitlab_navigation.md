@@ -16,6 +16,14 @@ and running quickly.
 | [Use the personal homepage](personal_homepage/_index.md) |  Learn how to use the personal homepage to keep track of your activity across GitLab. | |
 | <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Continuous Delivery overview](https://www.youtube.com/watch?v=M7rBDZYsx8U&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=193) (17m 2s) | Learn how to use GitLab features to continuously build, test, and deploy iterative code changes. | |
 
+## Contribute as a non-developer
+
+Onboard to an existing [project](../user/project/organize_work_with_projects.md) without any prerequisite software development knowledge. Assist with project management, issue tracking, reviews, and more.
+
+| Topic                                                                                                                                    | Description                                                                                         | Good for beginners |
+|------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|--------------------|
+| [Create an issue in an existing project](create_issue_in_existing_project/_index.md)                                                     | Use a project's issue board to track tasks and other work.                                          | {{< icon name="star" >}} |
+
 ## Find more tutorial content
 
 - Find learning tracks and certification options at [GitLab University](https://university.gitlab.com/).

@@ -1049,20 +1049,19 @@ class MergeRequest < ApplicationRecord
   def diffs_for_streaming(diff_options = {})
     return compare.diffs_for_streaming(diff_options) if compare
 
-    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
     diff.diffs_for_streaming(diff_options)
   end
 
   def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
     return compare.diffs_for_streaming_by_changed_paths(diff_options, &) if compare
 
-    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
-    offset = diff_options[:offset_index].to_i || 0
-    source_project.repository.diffs_by_changed_paths(diff.diff_refs, offset, &)
+    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
+    diff.diffs_for_streaming_by_changed_paths(diff_options, &)
   end
 
   def latest_diffs(diff_options = {})
-    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
 
     diff.diffs(diff_options)
   end
@@ -2661,8 +2660,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def first_diffs_slice(limit, diff_options = {})
-    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
-    diff.paginated_diffs(1, limit, diff_options).diff_files(sorted: true)
+    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
+    diff.first_diffs_slice(limit, diff_options)
   end
 
   def squash_option

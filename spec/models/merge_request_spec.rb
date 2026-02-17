@@ -7794,21 +7794,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
+    let(:diff) { base_diff }
     let(:merge_request) { build_stubbed(:merge_request) }
-    let(:diffable_merge_ref?) { false }
 
     before do
-      allow(merge_request)
-        .to receive(:diffable_merge_ref?)
-        .and_return(diffable_merge_ref?)
-
-      allow(merge_request)
-        .to receive(:merge_request_diff)
-        .and_return(base_diff)
-
-      allow(merge_request)
-        .to receive(:merge_head_diff)
-        .and_return(head_diff)
+      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request) do |version|
+        allow(version).to receive(:resolve).and_return(diff)
+      end
     end
 
     it 'returns diffs from base diff' do
@@ -7816,7 +7808,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when HEAD diff is diffable' do
-      let(:diffable_merge_ref?) { true }
+      let(:diff) { head_diff }
 
       it 'returns diffs from HEAD diff' do
         expect(merge_request.diffs_for_streaming).to eq(['HEAD diff'])
@@ -7842,46 +7834,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#diffs_for_streaming_by_changed_paths' do
-    let(:base_diff) do
-      instance_double(
-        MergeRequestDiff,
-        diff_refs: diff_refs
-      )
-    end
-
-    let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs) }
-    let(:expected_block) { proc {} }
+    let(:diff) { instance_double(MergeRequestDiff) }
     let(:merge_request) { build_stubbed(:merge_request) }
-    let(:repository) { merge_request.source_project.repository }
+    let(:expected_block) { proc {} }
 
     before do
-      allow(merge_request)
-        .to receive(:diffable_merge_ref?)
-        .and_return(false)
-
-      allow(merge_request)
-        .to receive(:merge_request_diff)
-        .and_return(base_diff)
+      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request) do |version|
+        allow(version).to receive(:resolve).and_return(diff)
+      end
     end
 
-    it 'calls diffs_by_changed_paths with given offset' do
-      expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
-        expect(block).to be(expected_block)
-      end
+    it 'delegates to diff' do
+      expect(diff).to receive(:diffs_for_streaming_by_changed_paths).with({}, &expected_block)
 
-      merge_request.diffs_for_streaming_by_changed_paths(&expected_block)
-    end
-
-    context 'when offset_index is given' do
-      let(:offset) { 5 }
-
-      it 'calls diffs_by_changed_paths with given offset' do
-        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
-          expect(block).to be(expected_block)
-        end
-
-        merge_request.diffs_for_streaming_by_changed_paths({ offset_index: offset }, &expected_block)
-      end
+      merge_request.diffs_for_streaming_by_changed_paths({}, &expected_block)
     end
 
     context 'when compare is present' do
@@ -7900,28 +7866,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(compare).to receive(:diffs_for_streaming_by_changed_paths).with({}, &expected_block)
 
         merge_request.diffs_for_streaming_by_changed_paths({}, &expected_block)
-      end
-    end
-
-    context 'when diffable_merge_ref? is true' do
-      let(:merge_head_diff) do
-        instance_double(
-          MergeRequestDiff,
-          diff_refs: diff_refs
-        )
-      end
-
-      before do
-        allow(merge_request).to receive(:diffable_merge_ref?).and_return(true)
-        allow(merge_request).to receive(:merge_head_diff).and_return(merge_head_diff)
-      end
-
-      it 'uses merge_head_diff instead of merge_request_diff' do
-        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
-          expect(block).to be(expected_block)
-        end
-
-        merge_request.diffs_for_streaming_by_changed_paths(&expected_block)
       end
     end
   end

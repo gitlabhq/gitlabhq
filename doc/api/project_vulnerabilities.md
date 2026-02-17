@@ -111,7 +111,7 @@ Example response:
 ]
 ```
 
-## New vulnerability
+## Create a vulnerability
 
 Creates a new vulnerability.
 

@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_create_group_wiki_page_weekly
 description: Weekly count of unique users who created a wiki page in group wiki
 product_group: knowledge
+product_categories:
+- wiki
 performance_indicator_type: []
 value_type: number
 status: active

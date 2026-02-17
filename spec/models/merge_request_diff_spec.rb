@@ -910,6 +910,32 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
 
+    describe '#diffs_for_streaming_by_changed_paths' do
+      let(:diff_refs) { diff_with_commits.diff_refs }
+      let(:expected_block) { proc {} }
+      let(:repository) { diff_with_commits.project.repository }
+
+      it 'calls diffs_by_changed_paths with given offset' do
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+          expect(block).to be(expected_block)
+        end
+
+        diff_with_commits.diffs_for_streaming_by_changed_paths(&expected_block)
+      end
+
+      context 'when offset_index is given' do
+        let(:offset) { 5 }
+
+        it 'calls diffs_by_changed_paths with given offset' do
+          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+            expect(block).to be(expected_block)
+          end
+
+          diff_with_commits.diffs_for_streaming_by_changed_paths({ offset_index: offset }, &expected_block)
+        end
+      end
+    end
+
     describe '#diffs' do
       let(:diff_options) { {} }
 
@@ -2029,6 +2055,27 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it 'returns false' do
         expect(merge_request_diff.has_encoded_file_paths?).to eq(false)
       end
+    end
+  end
+
+  describe '#first_diffs_slice' do
+    let(:merge_request_diff) { build_stubbed(:merge_request_diff) }
+
+    let(:paginated_diffs) do
+      instance_double(
+        Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff,
+        diff_files: ['paginated diffs']
+      )
+    end
+
+    it 'class #paginated_diffs with limit and options' do
+      expect(merge_request_diff)
+        .to receive(:paginated_diffs)
+        .with(1, 5, { expanded: true })
+        .and_return(paginated_diffs)
+
+      expect(merge_request_diff.first_diffs_slice(5, expanded: true))
+        .to eq(['paginated diffs'])
     end
   end
 

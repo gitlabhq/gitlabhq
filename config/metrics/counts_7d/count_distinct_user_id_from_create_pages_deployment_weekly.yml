@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_create_pages_deployment_weekly
 description: Weekly count of unique users who created a Pages deployment
 product_group: knowledge
+product_categories:
+- pages
 performance_indicator_type: []
 value_type: number
 status: active

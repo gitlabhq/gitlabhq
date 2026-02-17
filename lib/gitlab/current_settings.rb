@@ -25,13 +25,13 @@ module Gitlab
       end
 
       # rubocop:disable GitlabSecurity/PublicSend -- Method calls are forwarded to one of the setting classes
-      def method_missing(name, *args, **kwargs, &block)
+      def method_missing(name, ...)
         application_settings = current_application_settings
 
-        return application_settings.send(name, *args, **kwargs, &block) if application_settings.respond_to?(name)
+        return application_settings.send(name, ...) if application_settings.respond_to?(name)
 
         if respond_to_organization_setting?(name, false)
-          return ::Organizations::OrganizationSetting.for(::Current.organization.id).send(name, *args, **kwargs, &block)
+          return ::Organizations::OrganizationSetting.for(::Current.organization.id).send(name, ...)
         end
 
         super

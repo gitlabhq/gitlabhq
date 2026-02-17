@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_update_wiki_page_template_weekly
 description: Weekly count of unique users who updated a wiki page template
 product_group: knowledge
+product_categories:
+- wiki
 performance_indicator_type: []
 value_type: number
 status: active

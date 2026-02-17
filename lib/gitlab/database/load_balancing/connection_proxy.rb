@@ -62,20 +62,20 @@ module Gitlab
           end
         end
 
-        def schema_cache(*args, **kwargs, &block)
+        def schema_cache(...)
           # Ignore primary stickiness for schema_cache queries and always use replicas
           @load_balancer.read do |connection|
-            connection.schema_cache(*args, **kwargs, &block)
+            connection.schema_cache(...)
           end
         end
 
-        def transaction(*args, **kwargs, &block)
+        def transaction(...)
           if current_session.fallback_to_replicas_for_ambiguous_queries?
             track_read_only_transaction!
-            read_using_load_balancer(:transaction, *args, **kwargs, &block)
+            read_using_load_balancer(:transaction, ...)
           else
             current_session.write!
-            write_using_load_balancer(:transaction, *args, **kwargs, &block)
+            write_using_load_balancer(:transaction, ...)
           end
 
         ensure

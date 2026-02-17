@@ -485,6 +485,10 @@ class MergeRequestDiff < ApplicationRecord
     )
   end
 
+  def first_diffs_slice(limit, diff_options = {})
+    paginated_diffs(1, limit, diff_options).diff_files(sorted: true)
+  end
+
   def diffs_for_streaming(diff_options = {})
     fetching_repository_diffs(diff_options) do |comparison|
       reorder_diff_files!
@@ -507,6 +511,11 @@ class MergeRequestDiff < ApplicationRecord
         collection
       end
     end
+  end
+
+  def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
+    offset = diff_options[:offset_index].to_i || 0
+    repository.diffs_by_changed_paths(diff_refs, offset, &)
   end
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)

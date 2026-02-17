@@ -31187,6 +31187,7 @@ Represents a vulnerability. The connection type is countable.
 | <a id="countablevulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
 | <a id="countablevulnerabilitystatetransitions"></a>`stateTransitions` | [`VulnerabilityStateTransitionTypeConnection`](#vulnerabilitystatetransitiontypeconnection) | List of state transitions related to the vulnerability. (see [Connections](#connections)) |
 | <a id="countablevulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
+| <a id="countablevulnerabilitytrackedref"></a>`trackedRef` {{< icon name="warning-solid" >}} | [`SecurityTrackedRef`](#securitytrackedref) | **Introduced** in GitLab 18.10. **Status**: Experiment. Tracked ref (branch or tag) where the vulnerability was detected. |
 | <a id="countablevulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
 | <a id="countablevulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
 | <a id="countablevulnerabilityuserpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
@@ -50361,6 +50362,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
 | <a id="vulnerabilitystatetransitions"></a>`stateTransitions` | [`VulnerabilityStateTransitionTypeConnection`](#vulnerabilitystatetransitiontypeconnection) | List of state transitions related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
+| <a id="vulnerabilitytrackedref"></a>`trackedRef` {{< icon name="warning-solid" >}} | [`SecurityTrackedRef`](#securitytrackedref) | **Introduced** in GitLab 18.10. **Status**: Experiment. Tracked ref (branch or tag) where the vulnerability was detected. |
 | <a id="vulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
 | <a id="vulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
 | <a id="vulnerabilityuserpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |

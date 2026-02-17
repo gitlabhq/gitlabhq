@@ -659,6 +659,16 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers, fea
         )
       end
     end
+
+    context 'when index name exceeds 63 characters' do
+      let(:long_index_name) { 'a' * 64 }
+
+      it 'raises an ArgumentError and does not create async index records' do
+        expect { migration.prepare_partitioned_async_index(table_name, 'id', name: long_index_name) }
+          .to raise_error(ArgumentError, /too long/)
+          .and not_change { index_model.count }
+      end
+    end
   end
 
   describe '#unprepare_partitioned_async_index' do

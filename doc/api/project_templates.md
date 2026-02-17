@@ -27,9 +27,9 @@ templates are also available from this API endpoint.
 
 Support is also available for [file templates for groups](../user/group/manage.md#group-file-templates).
 
-## Get all templates of a particular type
+## List all templates of a particular type
 
-Get all templates of a specific type for a project.
+Lists all templates of a specified type for a project.
 
 ```plaintext
 GET /projects/:id/templates/:type
@@ -112,9 +112,9 @@ Example response (licenses):
 ]
 ```
 
-## Get one template of a particular type
+## Retrieve a template of a particular type
 
-Get a single template of a specific type for a project.
+Retrieves a template of a specified type for a project.
 
 ```plaintext
 GET /projects/:id/templates/:type/:name

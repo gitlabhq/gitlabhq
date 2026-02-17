@@ -77751,6 +77751,9 @@ msgstr ""
 msgid "WikiPage|Add a commit message"
 msgstr ""
 
+msgid "WikiPage|Automatically updates the path when you change the title."
+msgstr ""
+
 msgid "WikiPage|Cancel"
 msgstr ""
 
@@ -77778,6 +77781,9 @@ msgstr ""
 msgid "WikiPage|Format"
 msgstr ""
 
+msgid "WikiPage|Generate path from title"
+msgstr ""
+
 msgid "WikiPage|Learn more."
 msgstr ""
 
@@ -77803,6 +77809,9 @@ msgid "WikiPage|Save changes with message"
 msgstr ""
 
 msgid "WikiPage|Template title"
+msgstr ""
+
+msgid "WikiPage|The path where your page is located. Use \"/\" to create nested pages."
 msgstr ""
 
 msgid "WikiPage|Tip: You can move this page by adding the path to the beginning of the title."
