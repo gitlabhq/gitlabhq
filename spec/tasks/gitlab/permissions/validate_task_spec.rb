@@ -148,19 +148,23 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     end
 
     context 'when a defined permission contains a disallowed action' do
-      let(:permission_name) { 'admin_permission' }
-      let(:permission_source_file) { 'config/authz/permissions/permission/admin.yml' }
+      described_class::DISALLOWED_ACTIONS.each do |disallowed_action, preferred|
+        context "when action is #{disallowed_action}" do
+          let(:permission_name) { "#{disallowed_action}_permission" }
+          let(:permission_source_file) { "config/authz/permissions/permission/#{disallowed_action}.yml" }
 
-      it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          it 'returns an error' do
+            expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
           #  The following permissions contain a disallowed action.
           #
-          #    - admin_permission: Prefer a granular action over admin.
+          #    - #{permission_name}: Prefer #{preferred} over #{disallowed_action}.
           #
           #######################################################################
-        OUTPUT
+            OUTPUT
+          end
+        end
       end
     end
 

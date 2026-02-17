@@ -311,6 +311,27 @@ RSpec.describe Gitlab::ImportExport::MembersMapper, feature_category: :importers
           end
         end
 
+        context 'when importer is a project/group access token' do
+          let(:user) { create(:user, :project_bot) }
+          let(:creator) { create(:user) }
+          let(:exported_members) { [] }
+          let(:importable) { create(:project, :public, creator: creator) }
+
+          before do
+            importable.add_developer(create(:user))
+          end
+
+          it 'does not modify existing members on initialization' do
+            expect { members_mapper }.not_to change { importable.reload.members.count }
+          end
+
+          it 'does not add the importer as a member' do
+            members_mapper
+
+            expect(importable.members.find_by(user: user)).to be_nil
+          end
+        end
+
         context 'when importer mapping fails' do
           let(:exception_message) { 'Something went wrong' }
 

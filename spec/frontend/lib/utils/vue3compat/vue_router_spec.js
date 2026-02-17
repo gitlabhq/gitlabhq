@@ -5,6 +5,10 @@ import { shallowMount } from '@vue/test-utils';
 Vue.use(VueRouter);
 
 describe('VueRouterCompat', () => {
+  const ParentComponent = {
+    template: '<div><router-view /></div>',
+  };
+
   describe('$route.params normalization', () => {
     it('returns catch-all path params as a string via $route', async () => {
       const TestComponent = {
@@ -127,7 +131,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('handles nested routes with children', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const ChildComponent = { template: '<div>child</div>' };
 
       const router = new VueRouter({
@@ -148,7 +151,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('handles nested catch-all in children', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const CatchAllComponent = { template: '<div>catch all</div>' };
 
       const router = new VueRouter({
@@ -309,7 +311,6 @@ describe('VueRouterCompat', () => {
 
   describe('redirect following', () => {
     it('follows child catch-all redirect on navigation', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const DashboardComponent = { template: '<div>dashboard</div>' };
 
       const router = new VueRouter({
@@ -370,8 +371,6 @@ describe('VueRouterCompat', () => {
   describe('initial route and redirect', () => {
     let originalPathname;
 
-    const ParentComponent = { template: '<div><router-view /></div>' };
-
     beforeEach(() => {
       originalPathname = window.location.pathname;
     });
@@ -397,8 +396,8 @@ describe('VueRouterCompat', () => {
             { path: '/list', name: 'list' },
           ],
         });
-        router.afterEach((route) => {
-          mockAfterEach(route.name);
+        router.afterEach(({ name }) => {
+          mockAfterEach(name);
         });
 
         shallowMount(ParentComponent, { router });
@@ -544,7 +543,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('matched array contains multiple records for nested routes', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const ChildComponent = { template: '<div>child</div>' };
 
       const router = new VueRouter({

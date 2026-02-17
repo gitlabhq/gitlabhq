@@ -243,7 +243,6 @@ Style/GuardClause:
     - 'ee/app/services/ee/issuable/common_system_notes_service.rb'
     - 'ee/app/services/ee/issues/base_service.rb'
     - 'ee/app/services/ee/merge_requests/merge_base_service.rb'
-    - 'ee/app/services/ee/merge_requests/refresh_service.rb'
     - 'ee/app/services/ee/projects/create_service.rb'
     - 'ee/app/services/ee/projects/gitlab_projects_import_service.rb'
     - 'ee/app/services/ee/protected_branches/loggable.rb'

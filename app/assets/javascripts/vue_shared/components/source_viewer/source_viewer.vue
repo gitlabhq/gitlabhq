@@ -197,7 +197,6 @@ export default {
             toLine: chunk.startingFrom + chunk.totalLines,
             ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
           },
-          context: { batchKey: 'blameData' },
         });
 
         const blob = data?.project?.repository?.blobs?.nodes[0];

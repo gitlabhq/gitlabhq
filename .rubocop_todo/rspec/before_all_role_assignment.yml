@@ -76,7 +76,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/groups/members/list_members_spec.rb'
     - 'ee/spec/features/groups/members/manage_members_spec.rb'
     - 'ee/spec/features/groups/navbar_spec.rb'
-    - 'ee/spec/features/groups/new_spec.rb'
     - 'ee/spec/features/groups/push_rules_spec.rb'
     - 'ee/spec/features/groups/saml_group_links_spec.rb'
     - 'ee/spec/features/groups/scim_token_spec.rb'

@@ -18,7 +18,8 @@ module Tasks
           manage: 'a granular action',
           modify: 'update',
           set: 'update',
-          view: 'read'
+          view: 'read',
+          write: 'a granular action'
         }.freeze
 
         attr_reader :declarative_policy_permissions

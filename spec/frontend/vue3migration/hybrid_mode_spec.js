@@ -10,6 +10,7 @@ import OuterParentNoShownListener from './components/outer_parent_no_shown_liste
 import CustomEventOnElement from './components/custom_event_on_element.vue';
 import ParentWithCamelCaseEventHandler from './components/parent_with_camel_case_event_handler.vue';
 import ChildEmittingCamelCaseEvent from './components/child_emitting_camel_case_event.vue';
+import RefInVFor from './components/ref_in_v_for.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
   it('correctly renders fallback content', () => {
@@ -279,5 +280,29 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
 
     expect(wrapper.find('[data-testid="received"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="received"]').text()).toBe('test-payload');
+  });
+
+  /**
+   * Vue 2 compiler generates `refInFor: true` for refs inside v-for loops,
+   * which tells Vue to collect refs into an array. Vue 3 uses `ref_for` instead.
+   *
+   * In Vue 3's `normalizeRef`, only `ref_for` is checked to set the `f` flag
+   * (which controls array collection behavior). When using Vue 2 compiler with
+   * Vue 3 runtime, the `refInFor` prop is ignored, causing refs in v-for to
+   * not be collected into arrays as expected.
+   *
+   * Fix (v-for-ref-compat.patch): Add `refInFor` to `isReservedProp` and update
+   * `normalizeRef` to check both `ref_for` and `refInFor` when setting the `f` flag.
+   */
+  it('collects refs inside v-for into arrays', () => {
+    const wrapper = mount(RefInVFor);
+
+    const ref0 = wrapper.vm.$refs['item-0'];
+    const ref1 = wrapper.vm.$refs['item-1'];
+
+    expect(Array.isArray(ref0)).toBe(true);
+    expect(Array.isArray(ref1)).toBe(true);
+    expect(ref0).toHaveLength(1);
+    expect(ref1).toHaveLength(1);
   });
 });

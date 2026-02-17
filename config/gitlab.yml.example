@@ -832,6 +832,9 @@ production: &base
       # Set to 'gitlab-rails' or your GitLab instance identifier
       # audience: gitlab-rails
 
+      # JWKS cache TTL in seconds (how long to cache the signing keys)
+      # jwks_cache_ttl: 3600
+
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
   # access by running:

@@ -100,7 +100,7 @@ Prerequisites:
 
 To delete all of the data from a group wiki and recreate it in a blank state:
 
-1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run these commands:
 
    ```ruby

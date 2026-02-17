@@ -16,7 +16,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/controllers/ee/groups/group_members_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups/settings/ci_cd_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
-    - 'ee/spec/controllers/ee/projects/issues_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/merge_requests/creations_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/settings/ci_cd_controller_spec.rb'

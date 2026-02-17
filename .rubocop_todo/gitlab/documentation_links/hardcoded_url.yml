@@ -3,10 +3,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
   Exclude:
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/serializers/build_details_entity.rb'
-    - 'app/services/security/ci_configuration/container_scanning_create_service.rb'
-    - 'app/services/security/ci_configuration/dependency_scanning_create_service.rb'
-    - 'app/services/security/ci_configuration/sast_create_service.rb'
-    - 'app/services/security/ci_configuration/sast_iac_create_service.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
@@ -27,7 +23,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/slash_commands/presenters/help.rb'
     - 'lib/initializer_connections.rb'
-    - 'lib/security/ci_configuration/base_build_action.rb'
     - 'lib/tasks/db_obsolete_ignored_columns.rake'
     - 'lib/tasks/gitlab/docs/redirect.rake'
     - 'lib/tasks/migrate/schema_check.rake'

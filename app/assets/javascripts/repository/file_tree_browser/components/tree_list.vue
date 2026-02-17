@@ -77,6 +77,7 @@ export default {
       appearedItems: {},
       itemObserver: null,
       activeItemId: null,
+      focusRAFId: null,
     };
   },
   computed: {
@@ -146,6 +147,9 @@ export default {
   beforeDestroy() {
     this.itemObserver?.disconnect();
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
+    if (this.focusRAFId) {
+      cancelAnimationFrame(this.focusRAFId);
+    }
   },
   methods: {
     async loadInitialPath() {
@@ -445,7 +449,7 @@ export default {
         const index = event.key === 'Home' ? 0 : items.length - 1;
         if (items.length) {
           this.activeItemId = items[index].id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -471,7 +475,7 @@ export default {
 
         if (match) {
           this.activeItemId = match.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -486,7 +490,7 @@ export default {
         const child = items[current + 1];
         if (item?.type === 'tree' && child?.level > item.level) {
           this.activeItemId = child.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -504,7 +508,7 @@ export default {
           .find((i) => i.level === item.level - 1);
         if (parent) {
           this.activeItemId = parent.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -519,10 +523,21 @@ export default {
       if (next < 0 || next >= items.length) return;
 
       this.activeItemId = items[next].id;
-      this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+      this.$nextTick(() => this.focusActiveItemThrottled());
     },
     observeListItems() {
       this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
+    },
+    focusActiveItem() {
+      this.$refs.activeItem?.[0]?.focus();
+    },
+    focusActiveItemThrottled() {
+      if (this.focusRAFId) return;
+
+      this.focusRAFId = requestAnimationFrame(() => {
+        this.focusActiveItem();
+        this.focusRAFId = null;
+      });
     },
     handleClickSubmodule(webUrl) {
       visitUrl(webUrl);

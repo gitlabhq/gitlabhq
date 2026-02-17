@@ -1,0 +1,6 @@
+---
+name: configure_work_item_type
+description: Grants the ability to configure visibility, widgets, hierarchy etc. for a type on different hierarchy levels
+boundaries:
+  - group
+  - project

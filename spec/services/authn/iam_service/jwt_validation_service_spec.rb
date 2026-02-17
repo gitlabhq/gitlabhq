@@ -219,7 +219,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
           stub_jwks_endpoint_connection_error(url: iam_service_url, error: Errno::ECONNREFUSED)
         end
 
-        include_examples 'returns error', reason: :service_unavailable, message: /Cannot connect to IAM service/
+        include_examples 'returns error', reason: :service_unavailable, message: /Failed to connect to IAM service/
 
         it 'does not log the failure' do
           expect(Gitlab::AuthLogger).not_to receive(:warn)

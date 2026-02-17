@@ -38,8 +38,7 @@ title: Install the Linux package on Ubuntu
   Google Cloud Storage. If using a firewall, you will need to allow access to
   the following URL prefixes:
       - `https://packages.gitlab.com/*`
-      - `https://storage.googleapis.com/package-ops/*`
-      - `https://storage.googleapis.com/package-static-files-ops/*`
+      - `https://storage.googleapis.com/packages-ops/*`
 
 ## Enable SSH and open firewall ports
 

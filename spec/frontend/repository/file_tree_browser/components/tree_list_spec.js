@@ -822,6 +822,89 @@ describe('Tree List', () => {
         expect(focusedItem.findComponent(FileRow).props('file').name).toBe('dir_2');
       });
     });
+
+    describe('RAF throttling', () => {
+      beforeEach(() => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+          cb();
+          return 1;
+        });
+        jest.spyOn(window, 'cancelAnimationFrame');
+      });
+
+      it('throttles focus operations using requestAnimationFrame', async () => {
+        await createComponent();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        expect(window.requestAnimationFrame).toHaveBeenCalled();
+      });
+
+      it('does not schedule multiple RAF callbacks when navigating rapidly', async () => {
+        await createComponent();
+        await nextTick();
+
+        window.requestAnimationFrame.mockImplementation(() => {
+          // Don't execute callback immediately to simulate pending RAF
+          return 1;
+        });
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        // Should only schedule one RAF callback since previous ones are pending
+        expect(window.requestAnimationFrame).toHaveBeenCalledTimes(1);
+      });
+
+      it('cancels pending RAF on component destroy', async () => {
+        await createComponent();
+        await nextTick();
+
+        window.requestAnimationFrame.mockImplementation(() => 123); // Return a mock RAF ID
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        wrapper.destroy();
+
+        expect(window.cancelAnimationFrame).toHaveBeenCalledWith(123);
+      });
+
+      it('focuses correct item after RAF callback executes', async () => {
+        let rafCallback;
+        window.requestAnimationFrame.mockImplementation((cb) => {
+          rafCallback = cb;
+          return 1;
+        });
+
+        await createComponent();
+        await nextTick();
+
+        const items = findTreeItems();
+        const secondItem = items.at(1).element;
+
+        expect(items.at(0).attributes('tabindex')).toBe('0');
+        jest.spyOn(secondItem, 'focus');
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        // Active item ID changed but focus() not called yet (RAF pending)
+        expect(items.at(1).attributes('tabindex')).toBe('0');
+        expect(secondItem.focus).not.toHaveBeenCalled();
+
+        // Execute the RAF callback
+        rafCallback();
+        await nextTick();
+
+        // Now focus() should have been called
+        expect(secondItem.focus).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Tree toggle', () => {

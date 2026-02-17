@@ -465,39 +465,6 @@ Grants the ability to create, delete, read, and update CI variables.
 | Update | Project | `PUT` | `/projects/:id/variables/:key` |
 |   | Group | `PUT` | `/groups/:id/variables/:key` |
 
-### Category Placeholder resources
-
-#### Database Migration
-
-Grants the ability to mark database migrations.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Mark | Instance | `POST` | `/admin/migrations/:timestamp/mark` |
-
-#### Global Search
-
-Grants the ability to use global search functionality.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Use | Project | `GET` | `/projects/:id/(-/)search` |
-|   | Group | `GET` | `/groups/:id/(-/)search` |
-|   | User | `GET` | `/search` |
-
-#### Notification Setting
-
-Grants the ability to manage notification settings.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/notification_settings` |
-|   | Group | `GET` | `/groups/:id/notification_settings` |
-|   | User | `GET` | `/notification_settings` |
-| Update | Project | `PUT` | `/projects/:id/notification_settings` |
-|   | Group | `PUT` | `/groups/:id/notification_settings` |
-|   | User | `PUT` | `/notification_settings` |
-
 ### Duo resources
 
 #### Chat Completion
@@ -1798,6 +1765,16 @@ Grants the ability to read, update, delete, and disable two-factor authenticatio
 |   |   | `GET` | `/groups/:id/enterprise_users/:user_id` |
 | Update | Group | `PATCH` | `/groups/:id/enterprise_users/:user_id` |
 
+#### Global Search
+
+Grants the ability to use global search functionality.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Use | Project | `GET` | `/projects/:id/(-/)search` |
+|   | Group | `GET` | `/groups/:id/(-/)search` |
+|   | User | `GET` | `/search` |
+
 #### Invitation
 
 Grants the ability to create, read, update, and delete invitations.
@@ -1886,6 +1863,19 @@ Grants the ability to read instance metadata.
 | ------ | ------ | ------ | ---- |
 | Read | Instance | `GET` | `/metadata` |
 |   |   | `GET` | `/version` |
+
+#### Notification Setting
+
+Grants the ability to manage notification settings.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Project | `GET` | `/projects/:id/notification_settings` |
+|   | Group | `GET` | `/groups/:id/notification_settings` |
+|   | User | `GET` | `/notification_settings` |
+| Update | Project | `PUT` | `/projects/:id/notification_settings` |
+|   | Group | `PUT` | `/groups/:id/notification_settings` |
+|   | User | `PUT` | `/notification_settings` |
 
 #### OAuth Application
 
@@ -2099,6 +2089,14 @@ Grants the ability to read bulk import entity failures.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Instance | `GET` | `/bulk_imports/:import_id/entities/:entity_id/failures` |
+
+#### Database Migration
+
+Grants the ability to mark database migrations.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Mark | Instance | `POST` | `/admin/migrations/:timestamp/mark` |
 
 #### GitHub Gist Import
 

@@ -16,7 +16,6 @@ API/DescriptionDetail:
     - 'ee/lib/api/epic_links.rb'
     - 'ee/lib/api/geo_nodes.rb'
     - 'ee/lib/api/geo_sites.rb'
-    - 'ee/lib/api/gitlab_subscriptions/subscriptions.rb'
     - 'ee/lib/api/group_approval_rules.rb'
     - 'ee/lib/api/group_enterprise_users.rb'
     - 'ee/lib/api/group_protected_branches.rb'

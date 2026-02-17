@@ -2579,7 +2579,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             expect(json_response['labels']).to eq(%w[label label2])
             expect(json_response['milestone']['id']).to eq(milestone.id)
             expect(json_response['squash']).to be_truthy
-            expect(json_response['force_remove_source_branch']).to be_falsy
+            expect(json_response['force_remove_source_branch']).to be_truthy
           end
         end
 
@@ -2744,6 +2744,25 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           post api("/projects/#{project.id}/merge_requests", user), params: params.merge(remove_source_branch: true)
 
           expect(json_response['force_remove_source_branch']).to be_truthy
+        end
+      end
+
+      context 'with project remove_source_branch_after_merge setting' do
+        let(:params) do
+          {
+            title: 'Test merge_request',
+            source_branch: 'feature_conflict',
+            target_branch: 'master'
+          }
+        end
+
+        it 'defaults force_remove_source_branch to project setting when not provided' do
+          project.update!(remove_source_branch_after_merge: true)
+
+          post api("/projects/#{project.id}/merge_requests", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['force_remove_source_branch']).to be true
         end
       end
 

@@ -115,7 +115,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/wiki.rb'
     - 'app/policies/group_policy.rb'
     - 'app/presenters/clusterable_presenter.rb'
-    - 'app/presenters/project_presenter.rb'
     - 'app/serializers/feature_flags_client_serializer.rb'
     - 'app/serializers/group_child_serializer.rb'
     - 'app/services/auto_merge/base_service.rb'

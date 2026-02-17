@@ -250,7 +250,6 @@ RSpec/VerifiedDoubles:
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/integrations_helper_spec.rb'
     - 'spec/helpers/markup_helper_spec.rb'
-    - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/helpers/numbers_helper_spec.rb'
     - 'spec/helpers/preferences_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'

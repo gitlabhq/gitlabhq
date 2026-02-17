@@ -48,7 +48,7 @@ has [disabled it](#enable-or-disable-a-project-wiki).
 
 Your wiki repository inherits the [default branch name](../repository/branches/default.md)
 from your instance or group. If no custom branch name is configured, GitLab uses `main`.
-To rename your wiki's default branch,see [Update the default branch name in your repository](../repository/branches/default.md#update-the-default-branch-name-in-your-repository).
+To rename your wiki's default branch, [update the default branch name in your repository](../repository/branches/default.md#update-the-default-branch-name-in-your-repository).
 
 ## Create the wiki home page
 
@@ -257,7 +257,7 @@ section in the sidebar.
 
 You can also choose to optionally display a separate table of contents section on the page
 itself. To generate a table of contents from a wiki page's subheadings, use the
-`[[_TOC_]]` tag. For an example, read [Table of contents](../../markdown.md#table-of-contents).
+`[[_TOC_]]` tag. For an example, see [table of contents](../../markdown.md#table-of-contents).
 
 ## Delete a wiki page
 
@@ -403,8 +403,7 @@ To restore a wiki page template to a previous version:
 
 The page template is restored to the selected version. All previous versions remain in the page history.
 
-You can also restore wiki pages using the same process. For more information, see
-[Restore a wiki page to a previous version](#restore-a-wiki-page-to-a-previous-version).
+You can also [restore wiki pages](#restore-a-wiki-page-to-a-previous-version) using the same process.
 
 ## Wiki page subscriptions
 
@@ -491,8 +490,7 @@ To restore a wiki page to a previous version:
 
 The page is restored to the selected version. All previous versions remain in the page history.
 
-You can also restore wiki page templates using the same process. For more information, see
-[Restore a page template to a previous version](#restore-a-page-template-to-a-previous-version).
+You can also [restore wiki page templates](#restore-a-page-template-to-a-previous-version) using the same process.
 
 ## Sidebar
 
@@ -549,7 +547,7 @@ A `_sidebar` example, formatted with Markdown:
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
 can enable or disable a project wiki by following the instructions in
-[Sharing and permissions](../settings/_index.md#configure-project-features-and-permissions).
+[sharing and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 Administrators for GitLab Self-Managed can
 [configure additional wiki settings](../../../administration/wikis/_index.md).
@@ -680,7 +678,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 To clear all data from a project wiki and recreate it in a blank state:
 
-1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run these commands:
 
    ```ruby

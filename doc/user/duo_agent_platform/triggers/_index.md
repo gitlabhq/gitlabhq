@@ -21,7 +21,7 @@ title: Triggers
 {{< /history >}}
 
 > [!flag]
-> The availability of this feature is controlled by a feature flag.
+> To change the location of your flow configuration file, you must enable a feature flag.
 > For more information, see the history.
 
 A trigger determines when a flow runs.
@@ -61,6 +61,7 @@ To create a trigger:
      select a flow for the trigger to execute.
    - **Configuration path**: Enter the path to the flow configuration file
      (for example, `.gitlab/duo/flows/claude.yaml`).
+     To view this option, the `ai_catalog_create_third_party_flows` flag must be enabled.
 1. Select **Create flow trigger**.
 
 The trigger now appears in **Automate** > **Triggers**.

@@ -34,7 +34,7 @@ A wiki helps your planning tools by giving you:
 
 To use this guide effectively, you should be familiar with:
 
-- [GitLab Wiki basics](_index.md)
+- [GitLab Wiki](_index.md)
 - [GitLab Flavored Markdown](../../markdown.md)
 - Creating and managing various work items, such as [issues](../issues/_index.md) and [epics](../../group/epics/_index.md)
 
@@ -147,7 +147,7 @@ With custom text: [[Backend API Standards|backend/api:api-standards]]
 
 {{< /history >}}
 
-Transform your wiki pages into live dashboards using [GitLab Query Language](../../glql/_index.md) (GLQL).
+Transform your wiki pages into live dashboards using [GitLab Query Language (GLQL)](../../glql/_index.md).
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
@@ -510,8 +510,8 @@ query: project = "team/project" and milestone = "Sprint 23" and opened = true
 
 ## Work management
 
-- [Issue Board](https://gitlab.example.com/group/project/-/boards/123)
-- [Current Milestone](https://gitlab.example.com/group/project/-/milestones/45)
+- [Issue board](https://gitlab.example.com/group/project/-/boards/123)
+- [Current milestone](https://gitlab.example.com/group/project/-/milestones/45)
 - Label taxonomy: [[Label Definitions|label-definitions]]
 
 ## Onboarding

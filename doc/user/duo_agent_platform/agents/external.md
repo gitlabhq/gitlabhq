@@ -218,7 +218,7 @@ Add variables to your project to determine how GitLab connects to the third-part
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To add or update a variable in the project settings:
 
@@ -365,7 +365,7 @@ Start by creating the external agent in the AI Catalog.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create an external agent:
 

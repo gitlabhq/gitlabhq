@@ -554,6 +554,36 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
     end
 
+    context 'with project remove_source_branch_after_merge setting' do
+      let(:opts) do
+        {
+          title: 'Test merge_request',
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
+      end
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'defaults to project setting when force_remove_source_branch is not provided' do
+        project.update!(remove_source_branch_after_merge: true)
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts).execute
+
+        expect(merge_request.merge_params['force_remove_source_branch']).to be true
+      end
+
+      it 'prefers explicit param over project setting' do
+        project.update!(remove_source_branch_after_merge: true)
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts.merge(force_remove_source_branch: false)).execute
+
+        expect(merge_request.merge_params['force_remove_source_branch']).to be false
+      end
+    end
+
     shared_examples 'when source and target projects are different' do
       let(:target_project) { fork_project(project, nil, repository: true) }
 

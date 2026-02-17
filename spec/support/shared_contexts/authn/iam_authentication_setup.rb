@@ -3,7 +3,7 @@
 RSpec.shared_context 'with IAM authentication setup' do
   let(:iam_service_url) { 'https://iam.example.com' }
   let(:iam_issuer) { iam_service_url }
-  let(:iam_audience) { 'gitlab-rails' }
+  let(:iam_audience) { Authn::IamService::JwtValidationService::GITLAB_RAILS_AUDIENCE }
   let(:private_key) { OpenSSL::PKey::RSA.new(2048) }
   let(:kid) { 'test-key-id' }
 

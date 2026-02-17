@@ -1,0 +1,7 @@
+---
+name: create_work_item_type
+description: Grants the ability to create work item types
+boundaries:
+  - instance
+  - group
+  - project

@@ -39,7 +39,6 @@ title: Install the Linux package on Debian
   the following URL prefixes:
       - `https://packages.gitlab.com/*`
       - `https://storage.googleapis.com/packages-ops/*`
-      - `https://storage.googleapis.com/packages-static-files-ops/*`
 
 ## Enable SSH and open firewall ports
 

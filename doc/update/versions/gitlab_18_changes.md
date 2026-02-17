@@ -257,6 +257,18 @@ For more information, see [HTTP request limits](../../administration/instance_li
 - Elasticsearch indexing might fail with `strict_dynamic_mapping_exception` errors for Elasticsearch version 7. To resolve, see the "Possible fixes" section in [issue 566413](https://gitlab.com/gitlab-org/gitlab/-/issues/566413).
 - GitLab versions 18.1.0 and 18.1.1 show errors in PostgreSQL logs such as `ERROR:  relation "ci_job_artifacts" does not exist at ...`.
   These errors in the logs can be safely ignored but could trigger monitoring alerts, including on Geo sites. To resolve this issue, update to GitLab 18.1.2 or later.
+- Merge requests with commits by some users might not progress and continuously show `Your merge request is almost ready`. See [issue 554613](https://gitlab.com/gitlab-org/gitlab/-/issues/554613).
+  Additionally, [the `sidekiq/current` log](../../administration/logs/_index.md#sidekiq-logs) shows `undefined method 'id' for nil:NilClass` errors for `merge_request_diff_commit.rb`.
+  To fix this:
+
+  1. Start a [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console).
+  1. Run the following command:
+
+     ```sql
+     REINDEX TABLE CONCURRENTLY public.merge_request_diff_commit_users;
+     ```
+
+  1. Close and re-open the affected merge requests.
 
 ### Geo installations 18.1.0
 

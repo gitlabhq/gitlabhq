@@ -253,20 +253,6 @@ s.send(:save_upload)
 
 After the project is successfully uploaded, the exported project is located in a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
-## Import using the REST API fails when using a group access token
-
-[Group access tokens](../../group/settings/group_access_tokens.md)
-don't work for project or group import operations. When a group access token initiates an import,
-the import fails with this message:
-
-```plaintext
-Error adding importer user to Project members.
-Validation failed: User project bots cannot be added to other groups / projects
-```
-
-To use [Import REST API](../../../api/project_import_export.md),
-pass regular user account credentials such as [personal access tokens](../../profile/personal_access_tokens.md).
-
 ## Error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`
 
 Some migrations can time out with the error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.

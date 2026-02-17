@@ -74,10 +74,11 @@
 
 body.modal-open {
   overflow: hidden;
+  padding-right: 0 !important;
 }
 
-body.modal-open {
-  padding-right: 0 !important;
+.modal-open .modal-backdrop {
+  display: none;
 }
 
 .modal {

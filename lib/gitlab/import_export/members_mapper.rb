@@ -55,6 +55,7 @@ module Gitlab
       end
 
       def ensure_default_member!
+        return if @user.project_bot?
         return if user_already_member?
         return unless can_add_members?
 

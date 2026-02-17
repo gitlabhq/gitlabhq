@@ -23,6 +23,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:owner) { access_level >= GroupMember::OWNER }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
+  condition(:is_root_namespace, scope: :subject) { @subject.root? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }

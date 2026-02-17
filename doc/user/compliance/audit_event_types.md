@@ -284,6 +284,14 @@ Audit event types belong to the following product categories.
 | [`destroy_pipeline`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135255) | A pipeline is deleted | {{< yes >}} | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339041) | Project |
 | [`multi_project_downstream_pipeline_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168626) | Multi project downstream pipeline is created | {{< no >}} | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
 | [`project_cicd_merge_pipelines_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge pipelines setting for a project is updated | {{< yes >}} | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
+| [`runner_controller_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller is created | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller is deleted | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_instance_scope_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | Instance-level scope is added to a runner controller | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_instance_scope_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | Instance-level scope is removed from a runner controller | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller token is created | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller token is revoked | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_token_rotated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller token is rotated | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
+| [`runner_controller_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller is updated | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
 
 ### Delivery
 

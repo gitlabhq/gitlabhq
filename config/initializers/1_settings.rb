@@ -1263,6 +1263,7 @@ Settings.authn['iam_service'] ||= {}
 Settings.authn.iam_service['enabled'] ||= Gitlab::Utils.to_boolean(ENV['IAM_SERVICE_ENABLED']) || false
 Settings.authn.iam_service['url'] ||= ENV['IAM_SERVICE_URL'] || 'http://localhost:8084'
 Settings.authn.iam_service['audience'] ||= ENV['IAM_SERVICE_AUDIENCE'] || 'gitlab-rails'
+Settings.authn.iam_service['jwks_cache_ttl'] ||= 3600
 
 #
 # Gitlab Secrets Manager Openbao Integration

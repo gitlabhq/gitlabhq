@@ -46,7 +46,6 @@ title: Install the Linux package on AlmaLinux and RHEL-compatible distributions
   the following URL prefixes:
       - `https://packages.gitlab.com/*`
       - `https://storage.googleapis.com/packages-ops/*`
-      - `https://storage.googleapis.com/packages-static-files-ops/*`
 
 ## Enable SSH and open firewall ports
 

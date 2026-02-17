@@ -129,7 +129,6 @@ Rails/Pluck:
     - 'spec/graphql/types/ci/job_token_scope_type_spec.rb'
     - 'spec/graphql/types/snippet_type_spec.rb'
     - 'spec/helpers/groups/group_members_helper_spec.rb'
-    - 'spec/helpers/projects/project_members_helper_spec.rb'
     - 'spec/lib/atlassian/jira_connect/serializers/pull_request_entity_spec.rb'
     - 'spec/lib/banzai/reference_redactor_spec.rb'
     - 'spec/lib/bulk_imports/groups/stage_spec.rb'
