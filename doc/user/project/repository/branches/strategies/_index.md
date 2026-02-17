@@ -67,11 +67,10 @@ prepared to do:
   repository. Plan for engineering time to build custom release processes and manage the flow of code
   across repositories.
 
-{{< alert type="note" >}}
-If your organization uses a large monorepo or a megarepo, the
-[Professional Services](https://about.gitlab.com/services/) team at GitLab can help you construct a
-custom branching solution that meets your needs.
-{{< /alert >}}
+> [!note]
+> If your organization uses a large monorepo or a megarepo, the
+> [Professional Services](https://about.gitlab.com/services/) team at GitLab can help you construct a
+> custom branching solution that meets your needs.
 
 ## Major types of branching strategies
 

@@ -15,6 +15,7 @@ const initBeyondIdentityExclusions = () => {
 
   return new Vue({
     el,
+    name: 'IntegrationsExclusionsListRoot',
 
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),

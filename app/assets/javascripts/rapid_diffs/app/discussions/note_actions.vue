@@ -131,7 +131,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-1 gl-items-center gl-justify-end">
+  <div class="gl-flex gl-min-h-7 gl-flex-1 gl-items-center gl-justify-end">
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
@@ -163,7 +163,7 @@ export default {
       data-testid="note-emoji-button"
       @click="$emit('award', $event)"
     />
-    <reply-button v-if="showReply" ref="replyButton" @startReplying="$emit('startReplying')" />
+    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('start-replying')" />
     <gl-button
       v-if="canEdit"
       v-gl-tooltip

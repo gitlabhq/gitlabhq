@@ -3,5 +3,5 @@
 # Custom URL definitions for the Community Edition.
 
 draw 'directs/milestone'
-draw 'directs/subscription_portal'
+draw_all 'directs/subscription_portal'
 draw 'directs/promo'

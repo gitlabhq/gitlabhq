@@ -1,0 +1,6 @@
+---
+name: download_debian_package
+description: Grants the ability to download Debian package files
+boundaries:
+  - group
+  - project

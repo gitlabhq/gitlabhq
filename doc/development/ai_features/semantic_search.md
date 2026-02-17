@@ -45,7 +45,9 @@ The `BulkProcessWorker` is a cron job that runs every minute and processes embed
 
 Currently, semantic search uses **Vertex AI's `text-embedding-005` model** for generating embeddings. The model configuration is defined in the collection classes (for example, `Ai::ActiveContext::Collections::Code`).
 
-Support for selecting different embedding models is planned in [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110). Once available, administrators will be able to choose from multiple embedding models based on their needs.
+Support for setting the embeddings model in a [Self-hosted AI Gateway](../../administration/gitlab_duo_self_hosted/_index.md)
+setup is planned in [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110). Once available, administrators
+in Self-Managed instances with a Self-hosted AI Gateway will be able to select their own embeddings model.
 
 ### Query execution
 
@@ -341,6 +343,166 @@ Then create and activate a new connection. When creating a migration in Rails co
 ```ruby
 connection.activate!
 ```
+
+### Supporting a new embedding model
+
+In order for a new embedding model to be supported for Semantic Search, it must be:
+
+1. Evaluated
+1. Supported in AI Gateway
+1. Supported in the Rails LLM module
+1. Registered in the ActiveContext Collection
+
+#### Evaluation
+
+Each new model must be evaluated properly. GitLab may refuse to support models for certain reasons (e.g. legal, performance, etc).
+
+After the evaluation, you should have the following information:
+
+- model provider - e.g. Vertex, Anthropic, Fireworks, etc
+- specific model and version - e.g. `gemini-embedding-001`, `all-MiniLM-L6-v2`
+
+See [epic 17749](https://gitlab.com/groups/gitlab-org/-/work_items/17749) for further details on model evaluation.
+
+#### Add API support in AI Gateway
+
+1. Check if the model provider already has an existing [proxy API](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/api/v1/proxy) in AI Gateway
+1. If the provider does not yet have a proxy API:
+   - You can add a new proxy API for the new provider
+   - OR, you may need to route this through a different API group, i.e.: introduce an `/embeddings/<provider>/<model>` API.
+
+#### Add a request wrapper class in the Rails LLM module
+
+The [`Gitlab::Llm`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/gitlab/llm) module in Rails have
+wrapper classes that send requests to corresponding AI Gateway APIs.
+
+For example, the [`Gitlab::Llm::VertexAi::Embeddings::Text`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/vertex_ai/embeddings/text.rb)
+is a request wrapper class for different Vertex Text embedding models,
+e.g. `textembedding-gecko-003` and `text-embedding-005`.
+If applicable, you may reuse this for other Vertex embedding models.
+
+If it does not exist yet, you need to add a request wrapper class in
+`ee/lib/gitlab/llm/<provider>/embeddings/<model-base-name>.rb`
+or simply `ee/lib/gitlab/llm/<provider>/embeddings/default.rb`.
+Follow the standard interface of LLM request wrapper classes,
+with an `initialize` and `execute` method, example:
+
+```ruby
+class Gitlab::Llm::Anthropic::Embeddings::Voyage
+  def initialize(texts, unit_primitive:, tracking_context:, user: nil, model: nil)
+    # initialize instance variables
+  end
+
+  def execute
+    # code to send embeddings generation request to AIGW
+  end
+end
+```
+
+Where the `initialize` parameters are:
+
+- `texts` - the array of text contents to generate embeddings for
+- `unit_primitive` - a tracking identifier representing a specific operation
+- `tracking_context` - additional information used for analytics and observability
+- `user` - the user requesting the embeddings generation
+- `model` - the specific model name and version, e.g. `voyage-code-3`
+
+The `execute` method must:
+
+- take care of error handling, propagating either generic errors or errors that are expected by the calling classes
+- return an array of embeddings that follow the index of the given `texts` input. Example:
+
+  ```ruby
+  texts = ["one", "two", "three"]
+  embeddings = Gitlab::Llm::Anthropic::Embeddings::Voyage.new(texts, ...).execute
+  p embeddings
+  => [
+    [0.123, 0.456, 0.789], # embeddings for "one"
+    [0.234, 0.567, 0.890], # embeddings for "two"
+    [0.345, 0.678, 0.901] # embeddings for "three"
+  ]
+  ```
+
+You may use the existing [`Gitlab::Llm::VertexAi::Embeddings::Text`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/vertex_ai/embeddings/text.rb)
+class as an implementation reference.
+
+#### Register the model to the ActiveContext Collection
+
+1. Under `ee/lib/ai/active_context/embeddings/code`, add an ActiveContext Embeddings class to allow invocation of the `Gitlab::Llm` class from the ActiveContext pipeline. This class must have the `generate_embeddings` class method with the expected parameters.
+
+   Example:
+
+   ```ruby
+   class Ai::ActiveContext::Embeddings::Code::AnthropicVoyage
+     DEFAULT_UNIT_PRIMITIVE = 'generate_embeddings_codebase'
+
+     def self.generate_embeddings(
+       contents,
+       unit_primitive: nil,
+       model: nil,
+       user: nil,
+       batch_size: nil
+       )
+       embeddings = []
+       contents.each_slice(batch_size) do |batch_contents|
+         embeddings += Gitlab::Llm::Anthropic::Embeddings::Voyage.new(
+           batch_contents,
+           unit_primitive: unit_primitive || DEFAULT_UNIT_PRIMITIVE,
+           tracking_context: { action: 'embedding' },
+           user: user,
+           model: model
+         )
+       end
+
+       embeddings
+     end
+   end
+   ```
+
+   Notes:
+
+   - The `batch_size` is specified when the model provider has a token limit per request. The embeddings generation request should be done in batches if this is given.
+   - This class must return an array of embeddings that follow the index of the given `contents` input
+
+   You may use the existing [`Ai::ActiveContext::Embeddings::Code::VertexText`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/active_context/embeddings/code/vertex_text.rb)
+   class as an implementation reference.
+
+1. Update the [`Ai::ActiveContext::Collections::Code::MODELS`](https://gitlab.com/gitlab-org/gitlab/-/blob/51012cde6a104d5e2482454c2da15a161529dd9c/ee/lib/ai/active_context/collections/code.rb#L16) constant to register the new embedding model.
+
+   You must specify the following values:
+
+   - `field` - the embedding field or column in the index
+   - `class` - the ActiveContext Embeddings class from the previous step
+   - `model` - the specific model and version
+   - `batch_size` - the batch size of the content array sent to AI Gateway
+
+   Examples:
+
+   ```ruby
+   MODELS = {
+     # existing supported model
+     1 => {
+       field: :embeddings_v1,
+       class: Ai::ActiveContext::Embeddings::Code::VertexText,
+       model: 'text-embedding-005',
+       batch_size: EMBEDDINGS_V1_BATCH_SIZE
+     },
+     # new Vertex AI textembedding-gecko model, using the existing embeddings class
+     2 => {
+       field: :embeddings_v2,
+       class: Ai::ActiveContext::Embeddings::Code::VertexText, # existing class
+       model: 'text-embedding-006',
+       batch_size: 50
+     },
+     # new model under the Anthropic provider
+     3 => {
+       field: :embeddings_v3,
+       class: Ai::ActiveContext::Embeddings::Code::AnthropicVoyage, # new class
+       model: 'voyage-code-3',
+       batch_size: nil # not specified, assuming that the provider has no token limits per request
+     },
+   }.freeze
+   ```
 
 ### Troubleshooting
 

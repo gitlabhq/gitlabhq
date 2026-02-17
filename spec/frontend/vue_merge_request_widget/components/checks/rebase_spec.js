@@ -341,4 +341,34 @@ describe('Merge request merge checks rebase component', () => {
       expect(findRebaseWithoutCiButton().exists()).toBe(false);
     });
   });
+
+  describe('rebase message when merge trains are disabled', () => {
+    const mockQueryHandlerWithMergeTrains = () =>
+      jest.fn().mockResolvedValue({
+        data: {
+          project: {
+            id: '1',
+            allowMergeOnSkippedPipeline: true,
+            ciCdSettings: {
+              mergeTrainsEnabled: false,
+            },
+            mergeRequest: {
+              id: '2',
+              rebaseInProgress: false,
+              pipelines: {
+                nodes: mockPipelineNodes,
+              },
+            },
+          },
+        },
+      });
+
+    it('displays standard rebase message when merge trains are disabled', async () => {
+      createWrapper({ handler: mockQueryHandlerWithMergeTrains() });
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Fast forward merge is not possible. Please rebase.');
+    });
+  });
 });

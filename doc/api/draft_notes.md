@@ -20,7 +20,7 @@ Before publishing, draft notes are visible only to the author.
 
 ## List all merge request draft notes
 
-Gets a list of all draft notes for a single merge request.
+Lists all merge request draft notes.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
@@ -62,9 +62,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
 ```
 
-## Get a single draft note
+## Retrieve a draft note
 
-Returns a single draft note for a given merge request.
+Retrieves a draft note for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -109,7 +109,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Create a draft note
 
-Create a draft note for a given merge request.
+Creates a draft note for a merge request.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
@@ -143,9 +143,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes?note=note"
 ```
 
-## Modify existing draft note
+## Update a draft note
 
-Modify a draft note for a given merge request.
+Updates a draft note for a merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -180,7 +180,7 @@ curl --request PUT \
 
 ## Delete a draft note
 
-Deletes an existing draft note for a given merge request.
+Deletes a draft note for a merge request.
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -200,7 +200,7 @@ curl --request DELETE \
 
 ## Publish a draft note
 
-Publishes an existing draft note for a given merge request.
+Publishes a draft note for a merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish
@@ -220,7 +220,7 @@ curl --request PUT \
 
 ## Publish all pending draft notes
 
-Bulk publishes all existing draft notes for a given merge request that belong to the user.
+Publishes all pending draft notes for a merge request that belong to the user.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish

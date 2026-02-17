@@ -205,9 +205,10 @@ export default {
         @search="onSearch"
         @hidden="onHide"
       >
-        <template #toggle>
+        <template #toggle="{ accessibilityAttributes: { id, ...accessibilityAttributes } }">
           <gl-button
             id="board-value-dropdown"
+            v-bind="accessibilityAttributes"
             class="gl-flex gl-max-w-full gl-items-center gl-truncate"
             :class="{ '!gl-shadow-inner-1-red-400': !selectedIdValid }"
             button-text-classes="gl-flex"
@@ -219,10 +220,12 @@ export default {
                   backgroundColor: selectedLabel.color,
                 }"
               ></span>
-              <div class="gl-truncate">{{ selectedLabel.title }}</div>
+              <div :id="id" class="gl-truncate">{{ selectedLabel.title }}</div>
             </template>
 
-            <template v-else>{{ __('Select a label') }}</template>
+            <template v-else
+              ><span :id="id">{{ __('Select a label') }}</span></template
+            >
             <gl-icon class="dropdown-chevron gl-ml-2" name="chevron-down" />
           </gl-button>
         </template>

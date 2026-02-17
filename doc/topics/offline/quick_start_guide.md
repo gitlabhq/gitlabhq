@@ -17,13 +17,10 @@ instance entirely offline.
 
 ## Installation
 
-{{< alert type="note" >}}
-
-This guide assumes the server is Ubuntu 20.04 using the [Linux package installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
-This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
-server's FQDN, and that you have access to a different server with Internet access to download the required package files.
-
-{{< /alert >}}
+> [!note]
+> This guide assumes the server is Ubuntu 20.04 using the [Linux package installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
+> This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
+> server's FQDN, and that you have access to a different server with Internet access to download the required package files.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a video walkthrough of this process, see [Offline GitLab Installation: Downloading & Installing](https://www.youtube.com/watch?v=TJaq4ua2Prw).
@@ -129,7 +126,7 @@ Follow these steps to enable the container registry. These steps reflect those f
 ## Allow the Docker daemon to trust the registry and GitLab Runner
 
 Provide your Docker daemon with your certs by
-[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry_troubleshooting.md#using-self-signed-certificates-with-container-registry):
+[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry.md#configure-self-signed-certificates):
 
 ```shell
 sudo mkdir -p /etc/docker/certs.d/my-host.internal:5000
@@ -138,7 +135,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/docker/certs.d/my-host.interna
 ```
 
 Provide your GitLab Runner (to be installed next) with your certs by
-[following the steps for using trusted certificates with your runner](https://docs.gitlab.com/runner/install/docker.html#installing-trusted-ssl-server-certificates):
+[following the steps for using trusted certificates with your runner](https://docs.gitlab.com/runner/install/docker/#installing-trusted-ssl-server-certificates):
 
 ```shell
 sudo mkdir -p /etc/gitlab-runner/certs
@@ -148,7 +145,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/gitlab-runner/certs/ca.crt
 
 ## Enabling GitLab Runner
 
-[Following a similar process to the steps for installing our GitLab Runner as a Docker service](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container), you must first register your runner:
+[Following a similar process to the steps for installing our GitLab Runner as a Docker service](https://docs.gitlab.com/runner/install/docker/#install-the-docker-image-and-start-the-container), you must first register your runner:
 
 ```shell
 $ sudo docker run --rm -it -v /etc/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner register
@@ -435,7 +432,7 @@ Additionally, checkpoint data should exist for the particular package registry b
 
 The [`application_json.log`](../../administration/logs/_index.md#application_jsonlog) file will help verify the
 sync job has run and is without error. Events associated with the sync will have a `DEBUG` severity and the class is `PackageMetadata::SyncService`.
-Example: 
+Example:
 `{"severity":"DEBUG","time":"2026-01-07T02:15:49.618Z","meta.caller_id":"PackageMetadata::AdvisoriesSyncWorker","correlation_id":"43008e30dd708eadbe1ab16ad7fa953f","meta.root_caller_id":"Cronjob","meta.feature_category":"software_composition_analysis","meta.client_id":"ip/","class":"PackageMetadata::SyncService","message":"Evaluating data for advisories:offline//opt/gitlab/embedded/service/gitlab-rails/vendor/package_metadata/advisories/v2/maven/1761761049/0.ndjson"}`
 
 The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs will show if any errors have occurred during the sync job. Events logged for the sync will mention the relevant classes:

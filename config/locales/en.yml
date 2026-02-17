@@ -99,6 +99,7 @@ en:
     formats:
       default: "%Y-%m-%d"
       long: "%B %d, %Y"
+      long_unpadded: "%B %-d, %Y"
       short: "%b %d"
       admin: "%e %b, %Y"
     month_names:

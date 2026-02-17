@@ -200,7 +200,7 @@ module Keeps
     end
 
     def roulette
-      @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+      Keeps::Helpers::ReviewerRoulette.instance
     end
 
     def postgres_ai

@@ -100,8 +100,9 @@ When an older deployment job starts, it fails and is labeled:
 When an older deployment job is manual, the **Run** ({{< icon name="play" >}}) button is disabled with a message
 `This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.`.
 
-Job age is determined by the job start time, not the commit time, so a newer commit
-can be prevented in some circumstances.
+Job age is determined by the job start time, not the commit time, so a newer commit might be prevented in some circumstances.
+For example, pipeline A (older commit) and pipeline B (newer commit) both have manual deployment jobs. If you start pipeline A's
+job after you create pipeline B, pipeline B's manual deploy job is blocked as outdated, even though the pipeline itself is newer.
 
 ### Job retries for rollback deployments
 

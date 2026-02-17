@@ -3,3 +3,4 @@ name: transfer_project
 description: Grants the ability to transfer projects to a new namespace
 boundaries:
   - project
+  - instance

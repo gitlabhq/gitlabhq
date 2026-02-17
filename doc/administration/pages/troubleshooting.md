@@ -497,3 +497,22 @@ To resolve:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+## Error: `Response size over 104857600 bytes`
+
+If the **pages** job succeeds but the **deploy** job fails, you might get an error that states `Response size over 104857600 bytes`.
+
+This error occurs when the decompressed Pages content exceeds the
+[Maximum Gzip-compressed size](../instance_limits.md#maximum-gzip-compressed-size) limit.
+
+To resolve this issue, increase the `max_http_decompressed_size` limit.
+Use one of the following methods:
+
+- Run the following in a
+   [Rails console session](../operations/rails_console.md#starting-a-rails-console-session):
+
+  ```ruby
+  ApplicationSetting.update(max_http_decompressed_size: 1000)
+  ```
+
+- The [Application settings API](../../api/settings.md).

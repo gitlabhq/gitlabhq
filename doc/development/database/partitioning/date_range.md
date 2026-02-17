@@ -55,12 +55,9 @@ CREATE TABLE audit_events (
 PARTITION BY RANGE(created_at);
 ```
 
-{{< alert type="note" >}}
-
-The primary key of a partitioned table must include the partition key as
-part of the primary key definition.
-
-{{< /alert >}}
+> [!note]
+> The primary key of a partitioned table must include the partition key as
+> part of the primary key definition.
 
 And we might have a list of partitions for the table, such as:
 
@@ -198,14 +195,11 @@ The example includes the following:
 - `partitioned_column`: The column used for partitioning.
 - `strategy`: Either `:daily` or `:monthly`.
 
-{{< alert type="warning" >}}
-
-Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
-During the backfill, the partition manager might detach old partitions if `retain_for` is set,
-causing the backfill to fail when it tries to copy data into detached partitions.
-Add `retain_for` to your model only after the table swap is complete (Step 4).
-
-{{< /alert >}}
+> [!warning]
+> Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
+> During the backfill, the partition manager might detach old partitions if `retain_for` is set,
+> causing the backfill to fail when it tries to copy data into detached partitions.
+> Add `retain_for` to your model only after the table swap is complete (Step 4).
 
 After the table swap is complete (Step 4), you can remove this registration.
 
@@ -253,12 +247,9 @@ This step [queues a batched background migration](../batched_background_migratio
 
 ### Step 3: Post-backfill cleanup (Release after a required stop post Step 2)
 
-{{< alert type="warning" >}}
-
-A [required stop](../required_stops.md) must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully
-in GitLab Self-Managed instances.
-
-{{< /alert >}}
+> [!warning]
+> A [required stop](../required_stops.md) must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully
+> in GitLab Self-Managed instances.
 
 In this step,
 add another post-deployment migration that cleans up after the

@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Code Suggestions supports multiple editors and languages.
-title: Supported extensions and languages
+description: Code Suggestions (Classic) supports multiple editors and languages.
+title: Supported extensions and languages for Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -21,7 +21,7 @@ title: Supported extensions and languages
 
 {{< /history >}}
 
-Code Suggestions is available in the following editor extensions and
+Code Suggestions (Classic) is available in the following editor extensions and
 for the following languages.
 
 ## Supported editor extensions
@@ -80,12 +80,9 @@ Code Suggestions also works with other languages, but you must [manually add sup
 1. VS Code requires a third-party extension that provides Terraform support.
 1. Neovim requires a third-party extension that provides the `terraform` file type.
 
-{{< alert type="note" >}}
-
-Some languages are not supported in all JetBrains IDEs, or might require additional
-plugin support. Refer to the JetBrains documentation for specifics on your IDE.
-
-{{< /alert >}}
+> [!note]
+> Some languages are not supported in all JetBrains IDEs, or might require additional
+> plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 ## Support for Infrastructure-as-Code (IaC)
 

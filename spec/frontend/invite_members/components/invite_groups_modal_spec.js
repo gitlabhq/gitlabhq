@@ -1,6 +1,7 @@
 import { GlModal, GlSprintf, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
@@ -8,6 +9,7 @@ import ContentTransition from '~/invite_members/components/content_transition.vu
 import GroupSelect from '~/invite_members/components/group_select.vue';
 import InviteGroupNotification from '~/invite_members/components/invite_group_notification.vue';
 import { stubComponent } from 'helpers/stub_component';
+import eventHub from '~/invite_members/event_hub';
 import {
   displaySuccessfulInvitationAlert,
   reloadOnGroupInvitationSuccess,
@@ -26,6 +28,7 @@ jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
 describe('InviteGroupsModal', () => {
   let wrapper;
+  let trackingSpy;
   const mockToastShow = jest.fn();
 
   const createComponent = (props = {}) => {
@@ -75,6 +78,11 @@ describe('InviteGroupsModal', () => {
 
   const emitClickFromModal = (testId) => () =>
     wrapper.findByTestId(testId).vm.$emit('click', { preventDefault: jest.fn() });
+
+  const triggerOpenModal = async ({ source } = {}) => {
+    eventHub.$emit('open-group-modal', { source });
+    await nextTick();
+  };
 
   const clickInviteButton = emitClickFromModal('invite-modal-submit');
   const clickCancelButton = emitClickFromModal('invite-modal-cancel');
@@ -134,6 +142,27 @@ describe('InviteGroupsModal', () => {
 
         expect(findIntroText()).toBe("You're inviting a group to the test name group.");
       });
+    });
+  });
+
+  describe('tracking', () => {
+    it.each`
+      desc         | source                           | label
+      ${'unknown'} | ${{}}                            | ${'unknown'}
+      ${'known'}   | ${{ source: '_invite_source_' }} | ${'_invite_source_'}
+    `('tracks render action with $desc source', async ({ source, label }) => {
+      createComponent();
+
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      await triggerOpenModal(source);
+
+      expect(trackingSpy).toHaveBeenCalledWith('invite_group_modal', 'render', {
+        label,
+        category: 'invite_group_modal',
+      });
+
+      unmockTracking();
     });
   });
 

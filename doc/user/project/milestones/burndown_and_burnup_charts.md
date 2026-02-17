@@ -90,11 +90,8 @@ To view a group's burndown chart:
 
 A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
-{{< alert type="note" >}}
-
-You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
-
-{{< /alert >}}
+> [!note]
+> You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -171,12 +168,9 @@ When an issue is closed, the **Total** line remains the same and the **Completed
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.
 If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the

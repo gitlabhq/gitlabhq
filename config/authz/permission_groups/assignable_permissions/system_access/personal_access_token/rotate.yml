@@ -1,0 +1,7 @@
+---
+name: rotate_personal_access_token
+description: Grants the ability to rotate personal access tokens
+boundaries:
+  - user
+permissions:
+  - rotate_personal_access_token

@@ -4,7 +4,7 @@
 
 = render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: starred_explore_projects_path, variant: :confirm, category: :tertiary, button_options: { data: { event_tracking: 'click_explore_projects_on_your_work_projects' } }) do
+    = render Pajamas::ButtonComponent.new(href: explore_projects_path, variant: :confirm, category: :tertiary, button_options: { data: { event_tracking: 'click_explore_projects_on_your_work_projects' } }) do
       = _("Explore projects")
 
     - if current_user.can_create_project?

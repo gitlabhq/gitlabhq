@@ -31,9 +31,10 @@ The trial starts when you receive the confirmation email including the activatio
 
 Prerequisites:
 
-- You must have an active [GitLab Enterprise Edition (EE)](../administration/license.md).
-- You must have GitLab 18.0 or later.
-- Your instance must be set up to access [GitLab Duo Core](subscription-add-ons.md#gitlab-duo-self-hosted).
+- An active [GitLab Enterprise Edition (EE)](../administration/license.md).
+- GitLab 18.0 or later.
+- Access to [GitLab Duo Core](subscription-add-ons.md#gitlab-duo-self-hosted).
+- Administrator access.
 
 To start an Ultimate trial with GitLab Duo Core and get access to AI-native features:
 
@@ -105,15 +106,17 @@ Reach out to your Sales contact if you are interested in a trial.
 
 ## Start GitLab Duo Enterprise trial
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 Get a trial of GitLab Duo Enterprise to test the [GitLab Duo Enterprise features](../user/gitlab_duo/feature_summary.md)
 for a limited time.
 
-You can get a trial of GitLab Duo Enterprise if:
-
-- You have the Free tier on GitLab.com. In that case, you can try Ultimate tier with GitLab Duo Enterprise.
-- You have the Premium or Ultimate tier on GitLab.com, GitLab Self-Managed, or GitLab Dedicated.
-
-If you have the Free tier on GitLab Self-Managed, no trial is available.
+If you're on the Free tier, you cannot get a trial of GitLab Duo Enterprise.
+To try GitLab Duo Agent Platform features, you can start an [Ultimate trial](free_trials.md).
 
 ### On GitLab.com
 

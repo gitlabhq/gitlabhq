@@ -4,6 +4,7 @@ module Terraform
   class State < ApplicationRecord
     include UsageStatistics
     include AfterCommitQueue
+    include Gitlab::InternalEventsTracking
 
     HEX_REGEXP = %r{\A\h+\z}
     UUID_LENGTH = 32
@@ -50,6 +51,20 @@ module Terraform
         create_new_version!(data: data, version: version, build: build)
       else
         migrate_legacy_version!(data: data, version: version, build: build)
+      end
+
+      if reload_latest_version.encryption_enabled?
+        track_internal_event(
+          'terraform_state_stored_with_encryption',
+          project: project,
+          user: locked_by_user
+        )
+      else
+        track_internal_event(
+          'terraform_state_stored_without_encryption',
+          project: project,
+          user: locked_by_user
+        )
       end
     end
 

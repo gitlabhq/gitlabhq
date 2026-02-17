@@ -34,14 +34,6 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
     end
   end
 
-  context 'when the feature is not available' do
-    let(:feature_enabled) { false }
-
-    it 'shows the message about requirements' do
-      expect(page).to have_content("To upload designs, you'll need to enable LFS and have an admin enable hashed storage.")
-    end
-  end
-
   def logo_fixture
     Rails.root.join('spec', 'fixtures', 'dk.png')
   end

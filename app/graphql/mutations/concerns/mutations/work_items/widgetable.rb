@@ -7,7 +7,7 @@ module Mutations
 
       def extract_widget_params!(work_item_type, attributes, resource_parent)
         # Get the list of widgets for the work item's type to extract only the supported attributes
-        widget_keys = ::WorkItems::WidgetDefinition.available_widgets.map(&:api_symbol)
+        widget_keys = widget_definition_class.available_widgets.map(&:api_symbol)
         widget_params = attributes.extract!(*widget_keys)
 
         not_supported_keys = widget_params.keys - work_item_type.widget_classes(resource_parent).map(&:api_symbol)
@@ -20,6 +20,16 @@ module Mutations
         # https://gitlab.com/gitlab-org/gitlab/-/issues/519801
         widget_params.transform_values do |input|
           input.is_a?(Array) ? input.map(&:to_h) : input.to_h
+        end
+      end
+
+      private
+
+      def widget_definition_class
+        if Feature.enabled?(:work_item_system_defined_type, :instance)
+          ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+        else
+          ::WorkItems::WidgetDefinition
         end
       end
     end

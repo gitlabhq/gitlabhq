@@ -1317,18 +1317,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.self_not_aimed_for_deletion' do
-      let_it_be(:group_not_marked_for_deletion) { create(:group) }
-      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
-
-      subject(:relation) { described_class.self_not_aimed_for_deletion }
-
-      it 'only includes groups not marked for deletion', :aggregate_failures do
-        is_expected.to include(group_not_marked_for_deletion)
-        is_expected.not_to include(group_marked_for_deletion)
-      end
-    end
-
     describe '.self_and_ancestors_not_aimed_for_deletion' do
       let_it_be(:group_not_marked_for_deletion) { create(:group) }
       let_it_be(:group_not_marked_for_deletion_subgroup) { create(:group, parent: group_not_marked_for_deletion) }
@@ -1542,26 +1530,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe 'by_visibility_level' do
-      let_it_be(:group1) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-      let_it_be(:group2) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-      let_it_be(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-
-      context 'when visibility is present' do
-        it 'returns groups with the specified visibility level' do
-          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PUBLIC)).to contain_exactly(group, group1)
-          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PRIVATE)).to contain_exactly(private_group, group2)
-          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::INTERNAL)).to contain_exactly(internal_group, group3)
-        end
-      end
-
-      context 'when visibility is not present' do
-        it 'returns all groups' do
-          expect(described_class.by_visibility_level(nil)).to include(group1, group2, group3)
-        end
-      end
-    end
-
     describe 'excluding_groups' do
       let!(:another_group) { create(:group) }
 
@@ -1723,16 +1691,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it_behaves_like 'ancestor aware active scope'
     end
 
-    describe '.self_active' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:inactive_group) { create(:group, :archived) }
-
-      subject { described_class.self_active }
-
-      it { is_expected.to include(active_group) }
-      it { is_expected.not_to include(inactive_group) }
-    end
-
     describe '.self_and_ancestors_active' do
       subject { described_class.self_and_ancestors_active }
 
@@ -1752,16 +1710,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       subject { described_class.inactive }
 
       it_behaves_like 'ancestor aware inactive scope'
-    end
-
-    describe '.self_inactive' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:inactive_group) { create(:group, :archived) }
-
-      subject { described_class.self_inactive }
-
-      it { is_expected.to include(inactive_group) }
-      it { is_expected.not_to include(active_group) }
     end
 
     describe '.self_or_ancestors_inactive' do
@@ -2753,43 +2701,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
             include(member))
         end
       end
-    end
-  end
-
-  describe '#members_from_self_and_ancestors_with_effective_access_level' do
-    let!(:group_parent) { create(:group, :private) }
-    let!(:group) { create(:group, :private, parent: group_parent) }
-    let!(:group_child) { create(:group, :private, parent: group) }
-
-    let!(:user) { create(:user) }
-
-    let(:parent_group_access_level) { Gitlab::Access::REPORTER }
-    let(:group_access_level) { Gitlab::Access::DEVELOPER }
-    let(:child_group_access_level) { Gitlab::Access::MAINTAINER }
-
-    before do
-      create(:group_member, user: user, group: group_parent, access_level: parent_group_access_level)
-      create(:group_member, user: user, group: group, access_level: group_access_level)
-      create(:group_member, :minimal_access, user: create(:user), source: group)
-      create(:group_member, user: user, group: group_child, access_level: child_group_access_level)
-    end
-
-    it 'returns effective access level for user' do
-      expect(group_parent.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
-        contain_exactly(
-          hash_including('user_id' => user.id, 'access_level' => parent_group_access_level)
-        )
-      )
-      expect(group.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
-        contain_exactly(
-          hash_including('user_id' => user.id, 'access_level' => group_access_level)
-        )
-      )
-      expect(group_child.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
-        contain_exactly(
-          hash_including('user_id' => user.id, 'access_level' => child_group_access_level)
-        )
-      )
     end
   end
 

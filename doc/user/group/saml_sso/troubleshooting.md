@@ -230,20 +230,17 @@ openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 
 Replace `<certificate.crt>` with the name of the certificate file.
 
-{{< alert type="note" >}}
-
-In GitLab 17.11 and later, the fingerprint algorithm is
-[automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
-based on fingerprint length.
-
-In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
-To use a SHA256 fingerprint, you must specify the algorithm:
-
-```ruby
-idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
-```
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.11 and later, the fingerprint algorithm is
+> [automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
+> based on fingerprint length.
+>
+> In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
+> To use a SHA256 fingerprint, you must specify the algorithm:
+>
+> ```ruby
+> idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+> ```
 
 ## SSO Certificate updates
 
@@ -392,7 +389,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
 
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case-sensitive. For more information, see  [manage user SAML identity](_index.md#manage-user-saml-identity).
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case-sensitive. For more information, see [manage user SAML identity](_index.md#manage-user-saml-identity).
 - Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
 
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
@@ -533,6 +530,10 @@ Troubleshooting sections.
 You might get a 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
 
 This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
+
+Prerequisites:
+
+- Administrator access.
 
 To implement this workaround:
 

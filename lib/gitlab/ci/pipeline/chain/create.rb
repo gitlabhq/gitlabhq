@@ -15,15 +15,7 @@ module Gitlab
               ::Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(pipeline, statuses).run
 
               BulkInsertableAssociations.with_bulk_insert do
-                ::Ci::BulkInsertableTags.with_bulk_insert_tags do
-                  pipeline.transaction do
-                    pipeline.save!
-
-                    if Feature.disabled?(:ci_stop_populating_p_ci_build_tags, project)
-                      Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(taggable_statuses)
-                    end
-                  end
-                end
+                pipeline.save!
               end
             end
           rescue ActiveRecord::RecordInvalid => e
@@ -47,10 +39,6 @@ module Gitlab
               .flat_map(&:statuses)
           end
           strong_memoize_attr :statuses
-
-          def taggable_statuses
-            statuses.select { |status| status.respond_to?(:tag_list=) }
-          end
         end
       end
     end

@@ -13,19 +13,19 @@ export default {
       default: false,
     },
   },
-  computed: {
-    timelineClasses() {
-      if (!this.timelineLayout || this.isLastDiscussion) return '';
-      return 'gl-relative before:gl-content-[""] before:gl-bg-strong before:gl-absolute before:gl-w-[2px] before:gl-left-[31px] before:gl-top-[15px] before:gl-h-full';
-    },
-  },
 };
 </script>
 
 <template>
-  <li class="gl-list-none gl-p-3 gl-px-5" :class="timelineClasses">
+  <li class="gl-list-none">
     <div v-if="timelineLayout" class="gl-flex gl-gap-3">
-      <div class="gl-relative gl-z-2">
+      <div
+        class="gl-relative gl-z-1 gl-w-7 gl-flex-none"
+        :class="
+          isLastDiscussion &&
+          `before:gl-absolute before:gl-bottom-0 before:gl-left-[calc(50%-1px)] before:gl-top-[16px] before:gl-z-[-1] before:gl-w-[2px] before:gl-bg-default before:gl-content-['']`
+        "
+      >
         <slot name="avatar"></slot>
       </div>
       <div class="gl-min-w-0 gl-flex-1">

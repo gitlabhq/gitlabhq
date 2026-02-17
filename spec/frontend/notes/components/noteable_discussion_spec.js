@@ -239,7 +239,7 @@ describe('noteable_discussion component', () => {
 
       await nextTick();
 
-      wrapper.findComponent(DiscussionNotes).vm.$emit('startReplying');
+      wrapper.findComponent(DiscussionNotes).vm.$emit('start-replying');
 
       await nextTick();
 

@@ -552,6 +552,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     let(:has_length) { true }
     let(:maximum_size) { nil }
     let(:use_final_store_path) { false }
+    let(:upload_hash_functions) { nil }
     let(:final_store_path_root_hash) { nil }
     let(:final_store_path_config) { { root_hash: final_store_path_root_hash } }
 
@@ -559,20 +560,53 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
       uploader_class.workhorse_authorize(
         has_length: has_length,
         maximum_size: maximum_size,
+        upload_hash_functions: upload_hash_functions,
         use_final_store_path: use_final_store_path,
         final_store_path_config: final_store_path_config
       )
     end
 
-    context 'when FIPS is enabled', :fips_mode do
-      it 'response enables FIPS' do
-        expect(subject[:UploadHashFunctions]).to match_array(%w[sha1 sha256 sha512])
+    describe 'hash functions' do
+      context 'when FIPS is enabled', :fips_mode do
+        it 'response enables FIPS' do
+          expect(subject[:UploadHashFunctions]).to match_array(%w[sha1 sha256 sha512])
+        end
       end
-    end
 
-    context 'when FIPS is disabled' do
-      it 'response disables FIPS' do
-        expect(subject[:UploadHashFunctions]).to be_nil
+      context 'when FIPS is disabled' do
+        it 'response disables FIPS' do
+          expect(subject[:UploadHashFunctions]).to be_nil
+        end
+      end
+
+      context 'when custom hash functions are supplied' do
+        let(:upload_hash_functions) { %w[sha256] }
+
+        it 'returns only the requested functions' do
+          expect(subject[:UploadHashFunctions]).to eq(upload_hash_functions)
+        end
+
+        context 'when a supplied function is invalid' do
+          let(:upload_hash_functions) { %w[sha1 other] }
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(described_class::InvalidHashFunction, 'Unsupported hash functions: other')
+          end
+        end
+
+        context 'when FIPS is enabled', :fips_mode do
+          it 'returns only the requested functions' do
+            expect(subject[:UploadHashFunctions]).to match_array(upload_hash_functions)
+          end
+
+          context 'when a supplied function is invalid' do
+            let(:upload_hash_functions) { %w[md5 sha1] }
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::InvalidHashFunction, 'Unsupported hash functions: md5')
+            end
+          end
+        end
       end
     end
 
@@ -1168,10 +1202,10 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
             context 'when bucket prefix is configured' do
               let(:fog_config) do
-                Gitlab.config.uploads.object_store.tap do |config|
-                  config[:remote_directory] = 'main-bucket'
-                  config[:bucket_prefix] = 'my/uploads'
-                end
+                config = Gitlab.config.uploads.object_store.dup
+                config[:remote_directory] = 'main-bucket'
+                config[:bucket_prefix] = 'my/uploads'
+                config
               end
 
               let(:bucket) { 'main-bucket' }

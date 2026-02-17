@@ -25,6 +25,8 @@ class Projects::CompareController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:show, :create, :signatures]
 
+  helper_method :rapid_diffs_presenter
+
   def index
     compare_params
   end
@@ -33,12 +35,6 @@ class Projects::CompareController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         apply_diff_view_cookie!
-        @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(
-          compare,
-          diff_view,
-          diff_options,
-          compare_params
-        )
       end
 
       format.patch do
@@ -93,6 +89,17 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   private
+
+  def rapid_diffs_presenter
+    return if compare.nil?
+
+    @rapid_diffs_presenter ||= ::RapidDiffs::ComparePresenter.new(
+      compare,
+      diff_view: diff_view,
+      diff_options: diff_options,
+      request_params: compare_params
+    )
+  end
 
   def build_from_to_vars
     {
@@ -209,11 +216,16 @@ class Projects::CompareController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def compare_params
-    @compare_params ||= params.permit(:from, :to, :from_project_id, :straight, :to_project_id)
-  end
-
-  def diffs_resource(options = {})
-    compare&.diffs(diff_options.merge(options))
+    @compare_params ||= params.permit(
+      :from,
+      :to,
+      :from_project_id,
+      :straight,
+      :to_project_id,
+      :old_path,
+      :new_path,
+      :file_path
+    )
   end
 end
 

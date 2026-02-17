@@ -5,18 +5,18 @@ module RapidDiffs
     extend ActiveSupport::Concern
 
     def diff_files_metadata
-      return render_404 unless diffs_resource.present?
+      return render_404 if rapid_diffs_presenter.nil?
 
       render json: {
-        diff_files: DiffFileMetadataEntity.represent(diffs_resource.raw_diff_files)
+        diff_files: DiffFileMetadataEntity.represent(rapid_diffs_presenter.diffs_resource.raw_diff_files)
       }
     end
 
     def diffs_stats
-      return render_404 unless diffs_resource.present?
+      return render_404 if rapid_diffs_presenter.nil?
 
       render json: RapidDiffs::DiffsStatsEntity.represent(
-        diffs_resource,
+        rapid_diffs_presenter.diffs_resource,
         {
           email_path: email_format_path,
           diff_path: complete_diff_path
@@ -25,7 +25,7 @@ module RapidDiffs
     end
 
     def diff_file
-      return render_404 unless diffs_resource.present?
+      return render_404 if rapid_diffs_presenter.nil?
 
       old_path = diff_file_params[:old_path]
       new_path = diff_file_params[:new_path]
@@ -61,10 +61,6 @@ module RapidDiffs
 
     private
 
-    def diffs_resource(options = {})
-      raise NotImplementedError
-    end
-
     attr_reader :environment
 
     def diff_file_component(base_args)
@@ -74,7 +70,7 @@ module RapidDiffs
     def find_diff_file(extra_options, old_path, new_path)
       with_custom_diff_options do |options|
         options[:paths] = [old_path, new_path].compact
-        diffs_resource(**options.merge(extra_options)).diff_files.first
+        rapid_diffs_presenter.diff_files(**options.merge(extra_options)).first
       end
     end
 

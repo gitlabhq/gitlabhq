@@ -1,8 +1,7 @@
 - has_project_shortcut_buttons = !current_user || current_user.project_shortcut_buttons
-- show_auto_devops_callout = show_auto_devops_callout?(@project)
-- anchor_buttons = @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+- anchor_buttons = @project.statistics_anchors
 - statistics_empty_buttons = @project.empty_repo_statistics_buttons
-- statistics_buttons = @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
+- statistics_buttons = @project.statistics_buttons
 
 %aside.project-page-sidebar{ data: { testid: 'project-page-sidebar' } }
   .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-b-subtle{ class: '!gl-pt-2' }

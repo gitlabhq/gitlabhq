@@ -39,9 +39,6 @@
 
 = render_if_exists 'projects/commits/mirror_status'
 
-- if can_view_branch_rules?
-  = render 'branch_rules_info'
-
 .js-branch-list{ data: { diverging_counts_endpoint: diverging_commit_counts_namespace_project_branches_path(@project.namespace, @project, format: :json), default_branch: @project.default_branch } }
 
 - if @gitaly_unavailable

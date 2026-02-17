@@ -18,24 +18,18 @@ title: Debian API
 
 {{< /history >}}
 
+> [!warning]
+> This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
+> and [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html),
+> and is generally not meant for manual consumption. This API is under development and is not ready
+> for production use due to limited functionality.
+
 Use this API to interact with the [Debian package manager client](../../user/packages/debian_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
-and [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html),
-and is generally not meant for manual consumption. This API is under development and is not ready
-for production use due to limited functionality.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-These endpoints do not adhere to the standard API authentication methods.
-See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
-for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
+> [!note]
+> These endpoints do not adhere to the standard API authentication methods.
+> See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
+> for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Debian API
 
@@ -57,7 +51,7 @@ See [Authenticate to the Debian Package Repositories](../../user/packages/debian
 
 ## Upload a package file
 
-Upload a Debian package file:
+Uploads a Debian package file for a specified project.
 
 ```plaintext
 PUT projects/:id/packages/debian/:file_name
@@ -88,7 +82,7 @@ curl --request PUT \
 
 ## Download a package
 
-Download a package file.
+Downloads a specified package file for a project.
 
 ```plaintext
 GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name
@@ -149,7 +143,7 @@ The examples in this document all use the project-level prefix.
 
 ## Download a distribution Release file
 
-Download a Debian distribution file.
+Downloads a specified Debian distribution Release file.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/Release
@@ -176,7 +170,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a signed distribution Release file
 
-Download a signed Debian distribution file.
+Downloads a specified signed Debian distribution Release file.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/InRelease
@@ -203,7 +197,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a release file signature
 
-Download a Debian release file signature.
+Downloads a specified Debian release file signature.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/Release.gpg
@@ -230,7 +224,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a packages index
 
-Download a packages index.
+Downloads a specified packages index.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/binary-:architecture/Packages
@@ -259,7 +253,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a packages index by hash
 
-Download a packages index by hash.
+Downloads a specified packages index by hash.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256
@@ -289,7 +283,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a Debian Installer packages index
 
-Download a Debian Installer packages index.
+Downloads a specified Debian Installer packages index.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/debian-installer/binary-:architecture/Packages
@@ -318,7 +312,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a Debian Installer packages index by hash
 
-Download a Debian Installer packages index by hash.
+Downloads a specified Debian Installer packages index by hash.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256
@@ -347,7 +341,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a source packages index
 
-Download a source packages index.
+Downloads a specified source packages index.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/source/Sources
@@ -375,7 +369,7 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a source packages index by hash
 
-Download a source packages index by hash.
+Downloads a specified source packages index by hash.
 
 ```plaintext
 GET <route-prefix>/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256

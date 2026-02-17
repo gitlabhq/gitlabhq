@@ -114,7 +114,7 @@ module API
         detail 'This feature allows administrators to retrieve the support PIN for a specified user'
         success Entities::UserSupportPin
         is_array false
-        tags ['support_pins']
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -142,7 +142,7 @@ module API
         detail 'This feature allows administrators to revoke the support PIN for a specified user before its natural expiration'
         success code: 204
         is_array false
-        tags ['support_pins']
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -528,7 +528,7 @@ module API
 
       desc 'Get the project-level Deploy keys that a specified user can access to.' do
         success Entities::DeployKey
-        tags ['deploy_keys']
+        tags ['deploy_resources']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -554,7 +554,7 @@ module API
 
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
@@ -583,7 +583,7 @@ module API
 
       desc 'Get the SSH keys of a specified user.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -602,7 +602,7 @@ module API
 
       desc 'Get a SSH key of a specified user.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -623,7 +623,7 @@ module API
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -649,7 +649,7 @@ module API
       desc 'Add a GPG key to a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -675,7 +675,7 @@ module API
       desc 'Get the GPG keys of a specified user.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -696,7 +696,7 @@ module API
       desc 'Get a specific GPG key for a given user.' do
         detail 'This feature was added in GitLab 13.5'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -719,7 +719,7 @@ module API
 
       desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -744,7 +744,7 @@ module API
 
       desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -1103,7 +1103,7 @@ module API
           desc 'Retrieve impersonation tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             use :pagination
@@ -1116,7 +1116,7 @@ module API
           desc 'Create a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationTokenWithToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
@@ -1138,7 +1138,7 @@ module API
           desc 'Retrieve impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1149,7 +1149,7 @@ module API
 
           desc 'Revoke a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1175,7 +1175,7 @@ module API
           desc 'Create a personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 13.6'
             success Entities::PersonalAccessTokenWithToken
-            tags ['personal_access_tokens']
+            tags ['access_tokens']
           end
           params do
             use :create_personal_access_token_params
@@ -1247,7 +1247,7 @@ module API
 
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         use :pagination
@@ -1261,7 +1261,7 @@ module API
 
       desc 'Get a single key owned by currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1278,7 +1278,7 @@ module API
 
       desc 'Add a new SSH key to the currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key, type: String, desc: 'The new SSH key'
@@ -1300,7 +1300,7 @@ module API
 
       desc 'Delete an SSH key from the currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1321,7 +1321,7 @@ module API
       desc "Get the currently authenticated user's GPG keys" do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         use :pagination
@@ -1334,7 +1334,7 @@ module API
       desc 'Get a single GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1352,7 +1352,7 @@ module API
       desc 'Add a new GPG key to the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key, type: String, desc: 'The new GPG key'
@@ -1370,7 +1370,7 @@ module API
 
       desc 'Revoke a GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1388,7 +1388,7 @@ module API
 
       desc 'Delete a GPG key from the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1418,7 +1418,9 @@ module API
         present paginate(current_user.emails), with: Entities::Email
       end
 
-      desc "[DEPRECATED] Update a user's credit_card_validation" do
+      desc "Update a user's credit_card_validation" do
+        detail 'Deprecated in 17.7'
+        deprecated true
         success Entities::UserCreditCardValidations
         tags ['users']
       end
@@ -1458,7 +1460,7 @@ module API
       desc 'Create a new Support PIN for the authenticated user' do
         detail 'This feature creates a temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
-        tags ['support_pins']
+        tags ['users']
       end
       route_setting :authorization, permissions: :create_user_support_pin, boundary_type: :user
       post "support_pin", feature_category: :user_profile do
@@ -1476,7 +1478,7 @@ module API
       desc 'Get the current Support PIN for the authenticated user' do
         detail 'This feature retrieves the temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
-        tags ['support_pins']
+        tags ['users']
       end
       route_setting :authorization, permissions: :read_user_support_pin, boundary_type: :user
       get "support_pin", feature_category: :user_profile do
@@ -1619,7 +1621,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be nullified.'
-        tags ['user_statuses']
+        tags ['users']
       end
       params do
         use :set_user_status_params
@@ -1632,7 +1634,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be ignored.'
-        tags ['user_statuses']
+        tags ['users']
       end
       params do
         use :set_user_status_params
@@ -1650,7 +1652,7 @@ module API
 
       desc 'get the status of the current user' do
         success Entities::UserStatus
-        tags ['user_statuses']
+        tags ['users']
       end
       route_setting :authorization, permissions: :read_user_status, boundary_type: :user
       get 'status', feature_category: :user_profile do
@@ -1684,7 +1686,7 @@ module API
         desc 'Create a personal access token with limited scopes for the currently authenticated user' do
           detail 'This feature was introduced in GitLab 16.5'
           success Entities::PersonalAccessTokenWithToken
-          tags ['personal_access_tokens']
+          tags ['access_tokens']
         end
         params do
           use :create_personal_access_token_params

@@ -3,13 +3,11 @@ import PersistentUserCallout from './persistent_user_callout';
 const PERSISTENT_USER_CALLOUTS = [
   '.js-persistent-callout',
   // NOTE: unique callouts selectors are to be removed within https://gitlab.com/gitlab-org/gitlab/-/issues/527723
-  '.js-recovery-settings-callout',
   '.js-users-over-license-callout',
   '.js-admin-licensed-user-count-threshold',
   '.js-token-expiry-callout',
   '.js-openssl-callout',
   '.js-new-user-signups-cap-reached',
-  '.js-security-newsletter-callout',
   '.js-approaching-seat-count-threshold',
   '.js-storage-pre-enforcement-alert',
   '.js-user-over-limit-free-plan-alert',
@@ -29,7 +27,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-period-in-terraform-state-name-alert',
   '.js-new-mr-dashboard-banner',
   '.js-pipl-compliance-alert',
-  '.gcp-signup-offer',
 ];
 
 const initCallouts = () => {

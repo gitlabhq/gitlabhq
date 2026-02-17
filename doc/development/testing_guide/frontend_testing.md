@@ -405,12 +405,9 @@ it('does something', () => {
 
 ### Mocking the current location in Jest
 
-{{< alert type="note" >}}
-
-The value of `window.location.href` is reset before every test to avoid earlier
-tests affecting later ones.
-
-{{< /alert >}}
+> [!note]
+> The value of `window.location.href` is reset before every test to avoid earlier
+> tests affecting later ones.
 
 If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
@@ -909,13 +906,10 @@ The more challenging part are mocks, which can be used for functions or even dep
 Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
 unit testing by mocking out modules that cannot be easily consumed in our test environment.
 
-{{< alert type="warning" >}}
-
-Do not use manual mocks if a mock should not be consistently applied in every spec (that is, it's only needed by a few specs).
-Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
-(or a similar mocking function) in the relevant spec file.
-
-{{< /alert >}}
+> [!warning]
+> Do not use manual mocks if a mock should not be consistently applied in every spec (that is, it's only needed by a few specs).
+> Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
+> (or a similar mocking function) in the relevant spec file.
 
 #### Where should you put manual mocks?
 
@@ -1132,11 +1126,8 @@ it.each([
 );
 ```
 
-{{< alert type="note" >}}
-
-Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
-
-{{< /alert >}}
+> [!note]
+> Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
 
 For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string (`''`) and a non-empty string (`'search string'`) would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience.
 
@@ -1245,13 +1236,10 @@ import Subject from '~/feature/the_subject.vue';
 import _Thing from '~/feature/path/to/thing.vue';
 ```
 
-{{< alert type="note" >}}
-
-Do not disregard test timeouts. This could be a sign that there's
-actually a production problem. Use this opportunity to analyze the production webpack bundles and
-chunks and confirm that there is not a production issue with the asynchronous imports.
-
-{{< /alert >}}
+> [!note]
+> Do not disregard test timeouts. This could be a sign that there's
+> actually a production problem. Use this opportunity to analyze the production webpack bundles and
+> chunks and confirm that there is not a production issue with the asynchronous imports.
 
 ## Overview of Frontend Testing Levels
 
@@ -1915,12 +1903,9 @@ RSpec.describe 'Pipeline', :js do
 end
 ```
 
-{{< alert type="note" >}}
-
-`expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
-using the Chrome driver.
-
-{{< /alert >}}
+> [!note]
+> `expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
+> using the Chrome driver.
 
 Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
 **will not** fail if the message is observed, you can pass an `allow:` parameter to

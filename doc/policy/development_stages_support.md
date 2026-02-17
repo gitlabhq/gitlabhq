@@ -42,7 +42,7 @@ Experimental features:
 - On multi-tenant platforms, must maintain tenant isolation such that users who opt in do not create risk for other tenants.
 - May have security fixes released in canonical (in the open) depending on the current state of release maturity. Standard vulnerability remediation SLOs do not apply to experimental features.
 - Require VP approval for exceptions to move to Beta without meeting stated Beta requirements.
-- Have [no support available](https://about.gitlab.com/support/statement-of-support/#experiment-beta-features).
+- Have [no support available](https://support.gitlab.com/hc/en-us/articles/11625911285404-Statement-of-Support#experiment-&-beta-features).
   Issues regarding such features should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Might be unstable.
 - Could be removed at any time.

@@ -185,11 +185,8 @@ Best practice:
 - Provide a version column (monotonic, typically a `DateTime64`).
 - Optional deleted flag (`Bool` type) for soft deletes.
 
-{{< alert type="note" >}}
-
-If you omit the version parameter, the deduplicated row after a merge is arbitrary.
-
-{{< /alert >}}
+> [!note]
+> If you omit the version parameter, the deduplicated row after a merge is arbitrary.
 
 ```sql
 CREATE TABLE items
@@ -226,8 +223,5 @@ In the ClickHouse console or in the test cases you may use the `FINAL` modifier.
 SELECT * FROM items FINAL;
 ```
 
-{{< alert type="note" >}}
-
-Avoid FINAL in production queries. FINAL forces on-the-fly collapsing/merging and can be very expensive I/O-wise. Prefer the query-time dedup pattern mentioned above.
-
-{{< /alert >}}
+> [!note]
+> Avoid FINAL in production queries. FINAL forces on-the-fly collapsing/merging and can be very expensive I/O-wise. Prefer the query-time dedup pattern mentioned above.

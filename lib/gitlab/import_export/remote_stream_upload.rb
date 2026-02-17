@@ -20,18 +20,23 @@ module Gitlab
         receive_data(download_url) do |response, chunks|
           send_data(upload_url, response.content_length, chunks) do |response|
             if response.code != '200'
-              raise StreamError.new("Invalid response code while uploading file. Code: #{response.code}", response.body)
+              raise StreamError.new(
+                "Invalid response code while uploading file. Code: #{response.code}",
+                response.body,
+                response.code
+              )
             end
           end
         end
       end
 
       class StreamError < StandardError
-        attr_reader :response_body
+        attr_reader :response_body, :response_code
 
-        def initialize(message, response_body = '')
+        def initialize(message, response_body = '', response_code = nil)
           super(message)
           @response_body = response_body
+          @response_code = response_code
         end
       end
 
@@ -90,7 +95,8 @@ module Gitlab
             else
               raise StreamError.new(
                 "Invalid response code while downloading file. Code: #{response.code}",
-                response.body
+                response.body,
+                response.code
               )
             end
           end

@@ -1,0 +1,10 @@
+---
+name: pipeline_status_change_notifications
+description: Enable “notify only when pipeline status changes” behavior for pipeline notification integrations.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/18905
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213131
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584032
+milestone: '18.9'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

@@ -88,6 +88,10 @@
     "Submodule",
     "TreeEntry"
   ],
+  "EntryInterface": [
+    "ContainerUpstreamCacheEntry",
+    "MavenUpstreamCacheEntry"
+  ],
   "EventTargetType": [
     "Design",
     "Issue",
@@ -158,10 +162,6 @@
     "PendingGroupMember",
     "PendingProjectMember",
     "ProjectMember"
-  ],
-  "MemberRoleInterface": [
-    "MemberRole",
-    "StandardRole"
   ],
   "NamespaceMetadata": [
     "GroupNamespaceMetadata",

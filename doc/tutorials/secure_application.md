@@ -14,7 +14,7 @@ Start here to understand the security basics at GitLab.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [GitLab Security Essentials](https://university.gitlab.com/courses/security-essentials) | Learn about the essential security capabilities of GitLab in this self-paced course. | {{< icon name="star" >}}  |
+| [GitLab Security Essentials](https://university.gitlab.com/learning-paths/gitlab-security-essentials-v100) | Learn about the essential security capabilities of GitLab in this self-paced course. | {{< icon name="star" >}}  |
 | [Get started with GitLab application security](../user/application_security/get-started-security.md) | Follow recommended steps to set up security tools. | |
 
 ## Set up basic security detection

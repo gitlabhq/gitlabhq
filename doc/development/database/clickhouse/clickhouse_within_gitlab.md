@@ -7,11 +7,8 @@ title: ClickHouse within GitLab
 
 This document gives a high-level overview of how to develop features using ClickHouse in the GitLab Rails application.
 
-{{< alert type="note" >}}
-
-Most of the tooling and APIs are considered unstable.
-
-{{< /alert >}}
+> [!note]
+> Most of the tooling and APIs are considered unstable.
 
 ## GDK setup
 
@@ -180,11 +177,8 @@ select dictGetOrDefault('project_traversal_paths_dictionary', 'traversal_path', 
 - `3`: Project ID value
 - `0/`: Default value in case the record cannot be found in the dictionary
 
-{{< alert type="note" >}}
-
-Depending on the dictionary configuration, data loaded by the dictionary might be stale. When using dictionaries, always consider consistency requirements and ways to correct inconsistent data eventually.
-
-{{< /alert >}}
+> [!note]
+> Depending on the dictionary configuration, data loaded by the dictionary might be stale. When using dictionaries, always consider consistency requirements and ways to correct inconsistent data eventually.
 
 ## Post deployment migrations
 
@@ -201,6 +195,55 @@ for example, before deploying to production using `SKIP_POST_DEPLOYMENT_MIGRATIO
 export SKIP_POST_DEPLOYMENT_MIGRATIONS=true
 bundle exec rake gitlab:clickhouse:migrate
 ```
+
+## Column Compression Guidelines
+
+When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using **LZ4** on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
+
+### Recommended Codecs by Data Type
+
+#### **Primary Keys (or Sorted Columns)**
+
+- **Integers / Timestamps:** `CODEC(DoubleDelta, ZSTD)` - Optimized for monotonically increasing sequences.
+- **Strings:** `CODEC(ZSTD(3))` - Provides a higher compression ratio for high-entropy strings.
+
+#### **Standard Columns**
+
+- **Booleans:** `CODEC(ZSTD(1))`
+- **Incremental Timestamps** (`created_at`, `updated_at`): `CODEC(Delta, ZSTD(1))` - Delta encoding makes incremental values much smaller before ZSTD compresses them.
+- **UUIDs / Hashes (as Strings):** `CODEC(ZSTD(1))`
+- **Longer Text / JSON:** `CODEC(ZSTD(3))` - Higher levels (up to 22) are available, but `3` is the ideal setting for performance/compression ratio.
+
+### Implementation
+
+Codecs are defined directly in the `CREATE TABLE` statement for each column:
+
+```sql
+CREATE TABLE example_table (
+  id         UInt64 CODEC(DoubleDelta, ZSTD),
+  created_at DateTime64(3) CODEC(Delta, ZSTD(1)),
+  payload    String CODEC(ZSTD(3))
+) ENGINE = MergeTree()
+ORDER BY id;
+```
+
+### Measuring Efficiency
+
+If you are unsure which codec to use, experiment by creating a test table with production-like data and run the following query to determine the compression ratio:
+
+```sql
+SELECT
+  name AS column_name,
+  formatReadableSize(sum(data_compressed_bytes)) AS compressed,
+  formatReadableSize(sum(data_uncompressed_bytes)) AS uncompressed,
+  round(sum(data_uncompressed_bytes) / sum(data_compressed_bytes), 2) AS ratio
+FROM system.columns
+WHERE table = 'your_table_name'
+GROUP BY name
+ORDER BY ratio DESC;
+```
+
+**Note:** Don't over-optimize. While higher compression levels (like ZSTD 10+) save disk space, they increase CPU overhead during both writes and reads. Stick to the defaults unless the storage gains are significant.
 
 ## Writing database queries
 
@@ -318,11 +361,8 @@ CsvBuilder::Gzip.new(iterator, column_mapping).render do |tempfile|
 end
 ```
 
-{{< alert type="note" >}}
-
-It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
-
-{{< /alert >}}
+> [!note]
+> It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
 
 ## Iterating over tables
 
@@ -648,7 +688,7 @@ To resolve this, you should add a migration to add the column to ClickHouse too.
 
 ### Example
 
-1. Add a new column `new_int` of type `int4`  to a table that is being synchronised to ClickHouse, such as `milestones`.
+1. Add a new column `new_int` of type `int4` to a table that is being synchronised to ClickHouse, such as `milestones`.
 1. Note that CI will fail with the error:
 
    ```plaintext

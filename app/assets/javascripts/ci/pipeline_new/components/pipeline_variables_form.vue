@@ -6,13 +6,9 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { reportToSentry } from '~/ci/utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { createAlert } from '~/alert';
+import { CI_FORM_MAX_POLLING_TIME, CI_FORM_POLLING_INTERVAL } from '~/ci/constants';
 import filterVariables from '../utils/filter_variables';
-import {
-  CI_VARIABLE_TYPE_FILE,
-  CI_VARIABLE_TYPE_ENV_VAR,
-  CI_VARIABLES_POLLING_INTERVAL,
-  CI_VARIABLES_MAX_POLLING_TIME,
-} from '../constants';
+import { CI_VARIABLE_TYPE_FILE, CI_VARIABLE_TYPE_ENV_VAR } from '../constants';
 import ciConfigVariablesQuery from '../graphql/queries/ci_config_variables.graphql';
 import VariablesForm from '../../common/variables_form.vue';
 
@@ -180,7 +176,7 @@ export default {
     },
     startManualPolling() {
       const CI_VARIABLES_FINAL_ATTEMPT_THRESHOLD =
-        CI_VARIABLES_MAX_POLLING_TIME - CI_VARIABLES_POLLING_INTERVAL;
+        CI_FORM_MAX_POLLING_TIME - CI_FORM_POLLING_INTERVAL;
       this.pollingStartTime = Date.now();
 
       this.executeQuery(false);
@@ -194,12 +190,12 @@ export default {
         if (shouldStop) {
           this.clearTimeouts();
         }
-      }, CI_VARIABLES_POLLING_INTERVAL);
+      }, CI_FORM_POLLING_INTERVAL);
 
       this.maxPollTimeout = setTimeout(() => {
         this.ciConfigVariables = this.ciConfigVariables || [];
         this.stopPollingAndPopulateForm();
-      }, CI_VARIABLES_MAX_POLLING_TIME);
+      }, CI_FORM_MAX_POLLING_TIME);
     },
   },
 };

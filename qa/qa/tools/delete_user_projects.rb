@@ -102,13 +102,8 @@ module QA
 
       def fetch_qa_user_ids
         logger.info("Fetching QA user ids...")
-        user_ids = []
 
-        QA_USERNAMES.each do |qa_username|
-          user_ids << fetch_qa_user_id(qa_username)
-        end
-
-        user_ids.uniq.compact
+        QA_USERNAMES.map { |qa_username| fetch_qa_user_id(qa_username) }.uniq.compact
       end
 
       def fetch_qa_username(user_id)

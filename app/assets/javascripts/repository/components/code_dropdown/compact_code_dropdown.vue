@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlLink, GlIcon, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { getHTTPProtocol, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { GO_TO_PROJECT_WEBIDE, keysFor } from '~/behaviors/shortcuts/keybindings';
@@ -35,6 +35,8 @@ const IDE_TRACKING_EVENTS = {
 export default {
   name: 'CECompactCodeDropdown',
   components: {
+    GlLink,
+    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     CodeDropdownCloneItem,
@@ -97,6 +99,16 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showNoSshKeyMessage: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    userSettingsSshKeysPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -287,6 +299,20 @@ export default {
         test-id="copy-ssh-url-button"
         :tracking="trackingData.ssh"
       />
+      <li v-if="showNoSshKeyMessage" class="gl-mb-3 gl-flex gl-gap-3 gl-px-4">
+        <gl-icon name="warning" variant="warning" class="gl-mt-2 gl-shrink-0" />
+        <div class="gl-flex gl-flex-wrap gl-gap-1">
+          <p class="gl-m-0" data-testid="ssh-key-warning-text">
+            {{ s__('MissingSSHKeyWarningLink|Your account does not have an SSH key.') }}
+          </p>
+          <gl-link
+            v-if="userSettingsSshKeysPath"
+            :href="userSettingsSshKeysPath"
+            data-testid="ssh-key-warning-url"
+            >{{ s__('MissingSSHKeyWarningLink|Add SSH key') }}</gl-link
+          >
+        </div>
+      </li>
     </gl-disclosure-dropdown-group>
 
     <gl-disclosure-dropdown-group v-if="groups.httpUrl.show" :bordered="groups.httpUrl.bordered">

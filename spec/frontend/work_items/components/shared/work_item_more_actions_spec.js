@@ -24,6 +24,7 @@ describe('WorkItemMoreActions', () => {
     workItemType = 'Task',
     showViewRoadmapAction = true,
     showLabels = true,
+    workItemTypeConfiguration = { supportsRoadmapView: null },
   } = {}) => {
     wrapper = mountExtended(WorkItemMoreActions, {
       propsData: {
@@ -32,6 +33,9 @@ describe('WorkItemMoreActions', () => {
         workItemType,
         showLabels,
         showViewRoadmapAction,
+      },
+      provide: {
+        getWorkItemTypeConfiguration: () => workItemTypeConfiguration,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -69,6 +73,29 @@ describe('WorkItemMoreActions', () => {
     expect(link.attributes('href')).toBe(
       '/groups/project/group/-/roadmap?epic_iid=2&layout=MONTHS&timeframe_range_type=CURRENT_YEAR',
     );
+  });
+
+  describe('shows "View on a roadmap" link', () => {
+    it.each`
+      showViewRoadmapAction | supportsRoadmapView | workItemType | expected | description
+      ${true}               | ${true}             | ${'Task'}    | ${true}  | ${'when supportsRoadmapView is true'}
+      ${true}               | ${true}             | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is true'}
+      ${false}              | ${true}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is true'}
+      ${false}              | ${true}             | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is true'}
+      ${true}               | ${false}            | ${'Task'}    | ${false} | ${'when supportsRoadmapView is false'}
+      ${true}               | ${false}            | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is false'}
+      ${false}              | ${false}            | ${'Task'}    | ${false} | ${'when supportsRoadmapView is false'}
+      ${false}              | ${false}            | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is false'}
+      ${true}               | ${null}             | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is null and workItemType is "Epic" (fallback)'}
+      ${false}              | ${null}             | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is "Epic" (fallback)'}
+      ${true}               | ${null}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is not "Epic" (fallback)'}
+      ${false}              | ${null}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is not "Epic" (fallback)'}
+    `('$description', ({ showViewRoadmapAction, supportsRoadmapView, workItemType, expected }) => {
+      const workItemTypeConfiguration = { supportsRoadmapView };
+      createComponent({ showViewRoadmapAction, workItemType, workItemTypeConfiguration });
+
+      expect(findViewRoadmapLink().exists()).toBe(expected);
+    });
   });
 
   it('renders the show labels toggle', () => {

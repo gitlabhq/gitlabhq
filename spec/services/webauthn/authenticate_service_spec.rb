@@ -95,53 +95,54 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
       end
 
       context 'with passkeys' do
-        context 'when the :passkeys Feature Flag is enabled' do
-          let(:passkey_creation_result) do
-            client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
-              challenge: challenge,
-              extensions: { "credProps" => { "rk" => true } }
-            )
-          end
-
-          # Override the webauthn registration & authentication to work as a passkey
-          let!(:webauthn_registration) do
-            passkey_credential = WebAuthn::Credential.from_create(passkey_creation_result)
-            WebauthnRegistration.create!(
-              credential_xid: Base64.strict_encode64(passkey_credential.raw_id),
-              public_key: passkey_credential.public_key,
-              counter: 1,
-              name: 'My WebAuthn Authenticator (Passkey)',
-              user: user,
-              authentication_mode: :passwordless,
-              passkey_eligible: true
-            )
-          end
-
-          let(:webauthn_authenticate_result) do
-            client.get(
-              challenge: challenge,
-              sign_count: webauthn_registration.counter + 1,
-              allow_credentials: user.get_all_webauthn_credential_ids,
-              extensions: { "credProps" => { "rk" => true } }
-            )
-          end
-
-          it 'returns a passkey credential first, if available' do
-            authenticate_service
-
-            expect(stored_webauthn_credential.authentication_mode).to eq("passwordless")
-          end
+        let(:passkey_creation_result) do
+          client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
+            challenge: challenge,
+            extensions: { "credProps" => { "rk" => true } }
+          )
         end
 
-        context 'when the :passkeys Feature Flag is disabled' do
+        # Override the webauthn registration & authentication to work as a passkey
+        let!(:webauthn_registration) do
+          passkey_credential = WebAuthn::Credential.from_create(passkey_creation_result)
+          WebauthnRegistration.create!(
+            credential_xid: Base64.strict_encode64(passkey_credential.raw_id),
+            public_key: passkey_credential.public_key,
+            counter: 1,
+            name: 'My WebAuthn Authenticator (Passkey)',
+            user: user,
+            authentication_mode: :passwordless,
+            passkey_eligible: true
+          )
+        end
+
+        let(:webauthn_authenticate_result) do
+          client.get(
+            challenge: challenge,
+            sign_count: webauthn_registration.counter + 1,
+            allow_credentials: user.get_all_webauthn_credential_ids,
+            extensions: { "credProps" => { "rk" => true } }
+          )
+        end
+
+        it_behaves_like 'returns authentication success'
+
+        it 'updates the required webauthn_registration columns' do
+          authenticate_service
+
+          expect(stored_webauthn_credential.counter).to eq(webauthn_credential.sign_count)
+          expect(stored_webauthn_credential.last_used_at).to be_present
+        end
+
+        context 'when passkey authentication is disabled for user' do
           before do
-            stub_feature_flags(passkeys: false)
+            allow(user).to receive(:allow_passkey_authentication?).and_return(false)
           end
 
-          it 'omits passkey credentials' do
-            authenticate_service
+          it_behaves_like 'returns authentication failure'
 
-            expect(stored_webauthn_credential.authentication_mode).to eq("second_factor")
+          it 'returns generic error message' do
+            expect(authenticate_service.message).to eq(_('Failed to connect to your device. Try again.'))
           end
         end
       end

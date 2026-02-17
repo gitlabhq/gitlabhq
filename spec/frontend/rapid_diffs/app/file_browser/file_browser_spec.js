@@ -14,9 +14,10 @@ describe('FileBrowser', () => {
   let wrapper;
   let pinia;
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(FileBrowser, {
       pinia,
+      propsData: props,
     });
   };
 
@@ -67,5 +68,17 @@ describe('FileBrowser', () => {
     createComponent();
     await wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', path);
     expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(path);
+  });
+
+  describe('linkedFilePath prop', () => {
+    it('passes linkedFilePath to DiffsFileTree', () => {
+      createComponent({ linkedFilePath: 'path/to/file.txt' });
+      expect(wrapper.findComponent(DiffsFileTree).props('linkedFilePath')).toBe('path/to/file.txt');
+    });
+
+    it('passes null when linkedFilePath is not provided', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiffsFileTree).props('linkedFilePath')).toBeNull();
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { GlTabs, GlButton } from '@gitlab/ui';
+import { GlButton, GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -7,13 +7,18 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
 import {
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+  CONTEXT_TYPE,
+  FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
   MEMBERS_TAB_TYPES,
   TAB_QUERY_PARAM_VALUES,
-  ACTIVE_TAB_QUERY_PARAM_NAME,
-  FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
-  CONTEXT_TYPE,
 } from '~/members/constants';
 import { pagination } from '../mock_data';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+}));
 
 describe('MembersTabs', () => {
   Vue.use(Vuex);
@@ -206,6 +211,44 @@ describe('MembersTabs', () => {
       await createComponent({ provide: { canExportMembers: false } });
 
       expect(findExportButton().exists()).toBe(false);
+    });
+  });
+
+  it.each`
+    tab                 | testId                       | href
+    ${'Members'}        | ${'user-tab-title'}          | ${'https://localhost/'}
+    ${'Groups'}         | ${'group-tab-title'}         | ${'https://localhost/?tab=groups'}
+    ${'Invite'}         | ${'invite-tab-title'}        | ${'https://localhost/?tab=invited'}
+    ${'Access Request'} | ${'accessRequest-tab-title'} | ${'https://localhost/?tab=access_requests'}
+  `('sets correct link attributes for $tab tab', async ({ testId, href }) => {
+    await createComponent();
+
+    const tabTitleContainer = wrapper.findByTestId(testId).element.parentElement;
+
+    expect(tabTitleContainer.href).toBe(href);
+  });
+
+  describe.each`
+    tab                 | testId
+    ${'Members'}        | ${'user-tab-title'}
+    ${'Groups'}         | ${'group-tab-title'}
+    ${'Invite'}         | ${'invite-tab-title'}
+    ${'Access Request'} | ${'accessRequest-tab-title'}
+  `('when $tab tab is clicked', ({ testId }) => {
+    let mockEvent;
+
+    beforeEach(async () => {
+      setWindowLocation('https://localhost/?page=2');
+
+      mockEvent = { stopPropagation: jest.fn() };
+      await createComponent();
+
+      await wrapper.findByTestId(testId).trigger('click', mockEvent);
+    });
+
+    // This ensures we bypass the click listeners added by `GlTab` and that we trigger the redirect via the anchor tag directly.
+    it('stops event propagation', () => {
+      expect(mockEvent.stopPropagation).toHaveBeenCalled();
     });
   });
 });

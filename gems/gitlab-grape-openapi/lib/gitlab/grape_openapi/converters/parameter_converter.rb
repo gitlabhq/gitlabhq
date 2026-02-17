@@ -65,7 +65,9 @@ module Gitlab
         end
 
         def build_enum_schema(object_type)
-          { type: object_type, enum: options[:values] }
+          schema = { type: object_type }
+          schema[:enum] = options[:values] unless options[:values].is_a?(Proc)
+          schema
         end
 
         def build_array_schema
@@ -76,7 +78,15 @@ module Gitlab
         def build_basic_schema(object_type, object_format)
           schema = { type: object_type }
           schema[:format] = object_format if object_format
-          schema[:default] = options[:default] if options[:default]
+          if options[:default] && serializable?(options[:default])
+            schema[:default] = options[:default]
+          elsif options[:default] &&
+              defined?(ActiveSupport::TimeWithZone) &&
+              options[:default].is_a?(ActiveSupport::TimeWithZone)
+            serialized_default = time_serializer.serialize(options[:default], example: example)
+            schema[:default] = serialized_default if serialized_default
+          end
+
           add_regex_validations!(schema)
           schema
         end
@@ -106,8 +116,26 @@ module Gitlab
           method = route.instance_variable_get(:@options)[:method]
           return nil if method != 'GET' && method != 'DELETE' && in_value != 'path'
 
-          Gitlab::GrapeOpenapi::Models::Parameter.new(name, options: options, schema: schema, in_value: in_value,
-            example: example)
+          Gitlab::GrapeOpenapi::Models::Parameter.new(name, options: options, schema: schema, in_value: in_value)
+        end
+
+        private
+
+        def serializable?(value)
+          # Exclude lambdas/procs (they're evaluated at runtime, not suitable for static specs)
+          return false if value.is_a?(Proc)
+
+          # Exclude ActiveSupport::TimeWithZone objects (they serialize poorly to YAML)
+          return false if defined?(ActiveSupport::TimeWithZone) && value.is_a?(ActiveSupport::TimeWithZone)
+
+          # Exclude Time objects (they should be strings in OpenAPI)
+          return false if value.is_a?(Time)
+
+          true
+        end
+
+        def time_serializer
+          @time_serializer ||= Serializers::Time.new
         end
       end
     end

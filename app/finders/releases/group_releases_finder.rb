@@ -37,7 +37,7 @@ module Releases
         array_mapping_scope: ->(project_id_expression) {
           Release.where(Release.arel_table[:project_id].eq(project_id_expression))
         },
-        finder_query: ->(order_by, id_expression) { Release.where(Release.arel_table[:id].eq(id_expression)) }
+        finder_query: ->(_order_by, id_expression) { Release.where(Release.arel_table[:id].eq(id_expression)) }
       )
       .execute
     end

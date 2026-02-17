@@ -303,94 +303,101 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
     end
 
-    context 'when using cursor migration', :freeze_time do
-      let(:job_class) do
+    context 'when the job uses cursor strategy' do
+      let(:cursor_job_class) do
         Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
-          cursor :id, :created_at
-
           def self.name
-            'MyJobClass'
+            'MyCursorJobClass'
           end
+
+          cursor :id
         end
       end
 
-      context "when the migration doesn't exist already" do
-        let_it_be(:projects) { create_list(:project, 2) }
-        let(:version) { '20231204101122' }
-        let(:min_cursor) { [0, Time.current.to_s] }
-        let(:max_cursor) { [projects.last.id, projects.last.created_at.to_s] }
+      before do
+        stub_const('Gitlab::BackgroundMigration::MyCursorJobClass', cursor_job_class)
+        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigration) do |batched_migration|
+          allow(batched_migration).to receive(:job_class).and_return(cursor_job_class)
+        end
+      end
+
+      context 'when records exist in the database' do
+        let!(:event1) { create(:event) }
+        let!(:event2) { create(:event) }
+        let!(:event3) { create(:event) }
+
+        it 'creates the migration with min_cursor, max_cursor, and active status' do
+          migration.queue_batched_background_migration('MyCursorJobClass', :events, :id, job_interval: 5.minutes)
+
+          created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+          expect(created_migration.min_cursor).to match_array([event1.id])
+          expect(created_migration.max_cursor).to match_array([event3.id])
+          expect(created_migration).to be_active
+        end
+      end
+
+      context 'when the database is empty' do
+        it 'sets cursor to default values and creates migration with finished status' do
+          migration.queue_batched_background_migration('MyCursorJobClass', :projects, :id, job_interval: 5.minutes)
+
+          created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+          expect(created_migration.min_cursor).to eq([1])
+          expect(created_migration.max_cursor).to eq([1])
+          expect(created_migration).to be_finished
+        end
+      end
+
+      context 'with composite cursor columns' do
+        let(:composite_cursor_job_class) do
+          Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+            def self.name
+              'MyCompositeCursorJobClass'
+            end
+
+            cursor :deployment_id, :merge_request_id
+          end
+        end
 
         before do
-          allow(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
-          allow(migration).to receive(:version).and_return(version)
-        end
-
-        subject(:enqueue_batched_background_migration) do
-          migration.queue_batched_background_migration(
-            job_class.name,
-            :projects,
-            :id,
-            min_cursor: min_cursor,
-            max_cursor: max_cursor
-          )
-        end
-
-        it 'enqueues exactly one batched migration' do
-          expect { enqueue_batched_background_migration }
-            .to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
-        end
-
-        it 'creates the database record for the migration' do
-          batched_background_migration = enqueue_batched_background_migration
-
-          expect(batched_background_migration.reload).to have_attributes(
-            job_class_name: 'MyJobClass',
-            table_name: 'projects',
-            column_name: 'id',
-            interval: 120,
-            min_value: 1,
-            max_value: nil,
-            min_cursor: [0, Time.current.to_s],
-            max_cursor: [projects.last.id, projects.last.created_at.to_s],
-            batch_class_name: 'PrimaryKeyBatchingStrategy',
-            batch_size: 1000,
-            max_batch_size: nil,
-            sub_batch_size: 100,
-            job_arguments: %w[],
-            status_name: :active,
-            total_tuple_count: pgclass_info.cardinality_estimate,
-            gitlab_schema: 'gitlab_main',
-            queued_migration_version: version
-          )
-        end
-
-        context 'when cursors are not provided' do
-          let(:min_cursor) { nil }
-          let(:max_cursor) { nil }
-
-          it 'creates the database record for the migration' do
-            batched_background_migration = enqueue_batched_background_migration
-
-            expect(batched_background_migration.reload).to have_attributes(
-              job_class_name: 'MyJobClass',
-              table_name: 'projects',
-              column_name: 'id',
-              interval: 120,
-              min_value: 1,
-              max_value: nil,
-              min_cursor: [projects.first.id, be_a(String)],
-              max_cursor: [projects.last.id, be_a(String)],
-              batch_class_name: 'PrimaryKeyBatchingStrategy',
-              batch_size: 1000,
-              max_batch_size: nil,
-              sub_batch_size: 100,
-              job_arguments: %w[],
-              status_name: :active,
-              total_tuple_count: pgclass_info.cardinality_estimate,
-              gitlab_schema: 'gitlab_main',
-              queued_migration_version: version
-            )
+          stub_const('Gitlab::BackgroundMigration::MyCompositeCursorJobClass', composite_cursor_job_class)
+          allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigration) do |batched_migration|
+            allow(batched_migration).to receive(:job_class).and_return(composite_cursor_job_class)
           end
+
+          migration.connection.execute(<<~SQL)
+            CREATE TABLE IF NOT EXISTS _test_composite (
+              deployment_id bigint NOT NULL,
+              merge_request_id bigint NOT NULL,
+              PRIMARY KEY (deployment_id, merge_request_id)
+            )
+          SQL
+
+          migration.connection.execute(<<~SQL)
+            INSERT INTO _test_composite (deployment_id, merge_request_id)
+            VALUES (1, 100), (2, 200), (3, 300)
+          SQL
+        end
+
+        after do
+          migration.connection.execute('DROP TABLE IF EXISTS _test_composite')
+        end
+
+        it 'creates the migration with composite min_cursor and max_cursor' do
+          expect do
+            migration.queue_batched_background_migration(
+              'MyCompositeCursorJobClass',
+              :_test_composite,
+              :deployment_id,
+              job_interval: 5.minutes
+            )
+          end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+          created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+          expect(created_migration.min_cursor).to match_array([1, 100])
+          expect(created_migration.max_cursor).to match_array([3, 300])
         end
       end
     end

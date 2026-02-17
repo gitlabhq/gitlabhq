@@ -60,13 +60,10 @@ The calculation takes into account the production `environment tier` or the envi
 
 You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#configuration).
 
-{{< alert type="note" >}}
-
-Deployment frequency is calculated as the **average (mean)**, unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
-This difference is because deployment frequency was added to GitLab prior to adopting the DORA framework, and the calculation of this metric remained unchanged when it was incorporated into other reports.
-[Issue 499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591) proposes offering the option to customize the calculation method for each metric, choosing between mean and median.
-
-{{< /alert >}}
+> [!note]
+> Deployment frequency is calculated as the **average (mean)**, unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
+> This difference is because deployment frequency was added to GitLab prior to adopting the DORA framework, and the calculation of this metric remained unchanged when it was incorporated into other reports.
+> [Issue 499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591) proposes offering the option to customize the calculation method for each metric, choosing between mean and median.
 
 ### How to improve deployment frequency
 
@@ -186,12 +183,9 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 This feature is an [experiment](../../policy/development_stages_support.md).
 To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).

@@ -27,6 +27,7 @@ module API
       noteables_str = noteable_type.noteables_str
       feature_category = noteable_type.feature_category
       noteable_class = noteable_type.noteable_class
+      boundary_type = parent_type.to_sym
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
@@ -49,11 +50,20 @@ module API
 
         policy = Helpers::NotesHelpers.job_token_policy_for(noteable_type, 'GET')
 
+        authorization_settings = {
+          permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'GET'),
+          boundary_type: boundary_type
+        }
+
         if policy
           route_setting :authentication, job_token_allowed: true
-          route_setting :authorization, job_token_policies: policy,
+          authorization_settings.merge!(
+            job_token_policies: policy,
             allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
+          )
         end
+
+        route_setting :authorization, authorization_settings
 
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
@@ -87,11 +97,20 @@ module API
         end
         policy = Helpers::NotesHelpers.job_token_policy_for(noteable_type, 'GET')
 
+        authorization_settings = {
+          permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'GET'),
+          boundary_type: boundary_type
+        }
+
         if policy
           route_setting :authentication, job_token_allowed: true
-          route_setting :authorization, job_token_policies: policy,
+          authorization_settings.merge!(
+            job_token_policies: policy,
             allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
+          )
         end
+
+        route_setting :authorization, authorization_settings
 
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
@@ -110,6 +129,11 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
           optional :merge_request_diff_head_sha, type: String, desc: 'The SHA of the head commit'
         end
+
+        route_setting :authorization,
+          permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'POST'),
+          boundary_type: boundary_type
+
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
@@ -147,6 +171,11 @@ module API
           optional :body, type: String, allow_blank: false, desc: 'The content of a note'
           optional :confidential, type: Boolean, desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
+
+        route_setting :authorization,
+          permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'PUT'),
+          boundary_type: boundary_type
+
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
@@ -161,6 +190,11 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
+
+        route_setting :authorization,
+          permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'DELETE'),
+          boundary_type: boundary_type
+
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 

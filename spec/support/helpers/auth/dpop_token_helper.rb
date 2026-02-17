@@ -63,7 +63,11 @@ module Auth
         "\ny1Y0tD9WVuVwFMEfkENQzOEJxVHwQpsxBRQ5snustS/HmrF5SIZyeg==" \
         "\n-----END RSA PRIVATE KEY-----"
 
-      key = user.keys.create!(title: "Sample key #{user.id}", key: ssh_public_key)
+      key = user.keys.create!(
+        title: "Sample key #{user.id}",
+        key: ssh_public_key,
+        organization_id: user.organization_id
+      )
       fingerprint ||= create_fingerprint(key.key)
       openssl_private_key = OpenSSL::PKey::RSA.new(ssh_private_key)
 

@@ -106,6 +106,13 @@ export default {
         };
       },
       update(data) {
+        if (
+          data?.note?.noteableType !== this.noteableData.noteableType ||
+          data?.note?.noteableId !== this.noteableData.id
+        ) {
+          return null;
+        }
+
         if (!data?.note?.discussion) return null;
         return {
           id: `${getIdFromGraphQLId(data.note.discussion.id)}`,
@@ -327,7 +334,7 @@ export default {
     async startReplying(discussionId) {
       this.convertToDiscussion(discussionId);
       await this.$nextTick();
-      eventHub.$emit('startReplying', discussionId);
+      eventHub.$emit('start-replying', discussionId);
     },
     setAiLoading(loading) {
       this.aiLoading = loading;
@@ -407,7 +414,7 @@ export default {
                 :key="discussion.id"
                 :note="discussion.notes[0]"
                 :show-reply-button="canReply"
-                @startReplying="startReplying(discussion.id)"
+                @start-replying="startReplying(discussion.id)"
               />
             </template>
             <noteable-discussion

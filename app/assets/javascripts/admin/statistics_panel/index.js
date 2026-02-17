@@ -11,6 +11,7 @@ export default function initStatisticsPanel(el) {
 
   return new Vue({
     el,
+    name: 'StatisticsPanelAppRoot',
     store,
     components: {
       StatisticsPanelApp,

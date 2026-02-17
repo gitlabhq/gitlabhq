@@ -244,7 +244,7 @@ module ApplicationHelper
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url(path: '/get-help/')
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || 'https://support.gitlab.com'
   end
 
   def instance_review_permitted?
@@ -325,18 +325,6 @@ module ApplicationHelper
     class_names
   end
 
-  def disable_fixed_body_scroll
-    content_for :disable_fixed_body_scroll, true
-  end
-
-  def body_scroll_classes
-    return '' if content_for(:disable_fixed_body_scroll).present?
-    return '' if project_studio_enabled?
-
-    # Custom class is used instead of Tailwind so people can discover this, do not replace this with Tailwind analog
-    'body-fixed-scrollbar'
-  end
-
   def system_message_class
     class_names = []
 
@@ -402,11 +390,9 @@ module ApplicationHelper
 
     url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
 
-    if url && Feature.enabled?(:verify_mastodon_user, user)
-      external_redirect_path(url: "https://#{url[2]}/@#{url[1]}", rel: 'me')
-    else
-      external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
-    end
+    return '' unless url
+
+    external_redirect_path(url: "https://#{url[2]}/@#{url[1]}", rel: 'me')
   end
 
   def github_url(user)
@@ -416,8 +402,6 @@ module ApplicationHelper
   end
 
   def collapsed_super_sidebar?
-    return false if @force_desktop_expanded_sidebar
-
     cookies["super_sidebar_collapsed"] == "true"
   end
 

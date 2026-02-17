@@ -150,7 +150,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
     end
 
     it 'shows a pending message if the username availability is being fetched',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31484' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24868' do
       fill_in 'new_user_username', with: 'new-user'
 
       expect(find('.username > .validation-pending')).not_to have_css '.hide'
@@ -189,29 +189,25 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
       end
 
       context 'when email confirmation setting is not `soft`' do
-        before do
-          # Feature specs for when sign_in_form_vue is enabled will be added in
-          # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
-          stub_feature_flags(sign_in_form_vue: false)
-        end
+        with_and_without_sign_in_form_vue do
+          it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
+            perform_enqueued_jobs do
+              visit new_user_registration_path
 
-        it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
-          perform_enqueued_jobs do
-            visit new_user_registration_path
+              expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+              expect(page).to have_current_path users_almost_there_path, ignore_query: true
+              expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+            end
 
-            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
-            expect(page).to have_current_path users_almost_there_path, ignore_query: true
-            expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+            mail = find_email_for(new_user.email)
+            expect(mail.subject).to eq('Confirmation instructions')
+
+            body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+            confirmation_link = body.css('#cta a').attribute('href').value
+
+            expect { visit confirmation_link }.to change { User.find_by_email(new_user.email).confirmed_at }
+            expect(find_field('Username or primary email').value).to eq(new_user.email)
           end
-
-          mail = find_email_for(new_user.email)
-          expect(mail.subject).to eq('Confirmation instructions')
-
-          body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
-          confirmation_link = body.css('#cta a').attribute('href').value
-
-          expect { visit confirmation_link }.to change { User.find_by_email(new_user.email).confirmed_at }
-          expect(find_field('Username or primary email').value).to eq(new_user.email)
         end
       end
 

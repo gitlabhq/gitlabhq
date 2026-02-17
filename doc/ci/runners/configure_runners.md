@@ -52,7 +52,7 @@ Prerequisites:
 
 To set the maximum job timeout:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
@@ -66,7 +66,7 @@ Prerequisites:
 
 To set the maximum job timeout:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -193,17 +193,14 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 ## Reset the runner registration token for a project (deprecated)
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -211,7 +208,7 @@ That new runner may then be used to obtain the values of secret variables or to 
 
 To reset the registration token:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of **New project runner**, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -311,7 +308,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
@@ -323,7 +320,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
@@ -363,7 +360,7 @@ Prerequisites:
 
 To control the jobs that a group runner can run:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
@@ -379,7 +376,7 @@ Prerequisites:
 
 To control the jobs that a project runner can run:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -549,7 +546,7 @@ However, `fetch` does require access to the previous worktree. This works
 well when using the `shell` or `docker` executor because these
 try to preserve worktrees and try to re-use them by default.
 
-This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html).
+This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine/).
 
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations usually done by GitLab. GitLab Runner pre-clone scripts are also skipped,
@@ -744,14 +741,11 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
      GIT_SUBMODULE_PATHS: ":(exclude)submoduleA :(exclude)submoduleB"
   ```
 
-{{< alert type="warning" >}}
-
-Git ignores nested paths. To ignore a nested submodule, exclude
-the parent submodule and then manually clone it in the job's scripts. For example,
- `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
-to wrap the string in single quotes so the YAML can be parsed successfully.
-
-{{< /alert >}}
+> [!warning]
+> Git ignores nested paths. To ignore a nested submodule, exclude
+> the parent submodule and then manually clone it in the job's scripts. For example,
+> `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
+> to wrap the string in single quotes so the YAML can be parsed successfully.
 
 ### Git submodule update flags
 
@@ -792,18 +786,15 @@ The previous configuration results in `git submodule update` being called this w
 git submodule update --init --depth 20 --recursive --remote --jobs 4
 ```
 
-{{< alert type="warning" >}}
-
-You should be aware of the implications for the security, stability, and
-reproducibility of your builds when using the `--remote` flag. In most cases,
-it is better to explicitly track submodule commits as designed, and update them
-using an auto-remediation/dependency bot.
-
-The `--remote` flag is not required to check out submodules at their committed
-revisions. Use this flag only when you want to automatically update submodules
-to their latest remote versions.
-
-{{< /alert >}}
+> [!warning]
+> You should be aware of the implications for the security, stability, and
+> reproducibility of your builds when using the `--remote` flag. In most cases,
+> it is better to explicitly track submodule commits as designed, and update them
+> using an auto-remediation/dependency bot.
+> 
+> The `--remote` flag is not required to check out submodules at their committed
+> revisions. Use this flag only when you want to automatically update submodules
+> to their latest remote versions.
 
 The behavior of `--remote` depends on your Git version.
 If the branch specified in your superproject's `.gitmodules` file is different from the
@@ -916,11 +907,11 @@ test:
 ```
 
 The `GIT_CLONE_PATH` must always be inside `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
-is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
 setting.
 
 This can only be used when `custom_build_dir` is enabled in the
-[runner's configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
+[runner's configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnerscustom_build_dir-section).
 
 #### Handling concurrency
 
@@ -1003,7 +994,7 @@ the following stages:
 | Variable                        | Description |
 |---------------------------------|-------------|
 | `ARTIFACT_DOWNLOAD_ATTEMPTS`    | Number of attempts to download artifacts running a job |
-| `EXECUTOR_JOB_SECTION_ATTEMPTS` | The number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
+| `EXECUTOR_JOB_SECTION_ATTEMPTS` | The number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker/) only). |
 | `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job |
 | `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job |
 
@@ -1058,8 +1049,8 @@ variables:
 | Variable                     | Description |
 |------------------------------|-------------|
 | `TRANSFER_METER_FREQUENCY`   | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
-| `ARTIFACT_COMPRESSION_LEVEL` | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
-| `CACHE_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `ARTIFACT_COMPRESSION_LEVEL` | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) must also be enabled. |
+| `CACHE_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`      | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
 ## Artifact provenance metadata
@@ -1217,7 +1208,7 @@ used, this location is also used as scratch space when archiving.
 
 {{< /history >}}
 
-To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
+To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.
 
 | Variable                        | Description |

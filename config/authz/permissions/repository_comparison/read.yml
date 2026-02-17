@@ -1,0 +1,5 @@
+---
+name: read_repository_comparison
+description: Grants the ability to read repository comparisons
+boundaries:
+  - project

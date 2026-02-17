@@ -123,6 +123,15 @@ module Gitlab
             before_transition any => :active do |migration|
               migration.started_at = Time.current
             end
+
+            after_transition any => any do |worker, transition|
+              ::Gitlab::Database::BackgroundOperation::Observability::EventLogger.log(
+                event: :worker_transition,
+                record: worker,
+                previous_state: transition.from_name,
+                new_state: transition.to_name
+              )
+            end
           end
 
           def job_class
@@ -190,7 +199,18 @@ module Gitlab
             new_batch_size = optimizer.optimized_batch_size
             return false if new_batch_size == batch_size
 
+            ::Gitlab::Database::BackgroundOperation::Observability::EventLogger.log(
+              event: :worker_optimization,
+              record: self,
+              old_batch_size: batch_size,
+              new_batch_size: new_batch_size
+            )
+
             update!(batch_size: new_batch_size)
+          end
+
+          def migrated_tuple_count
+            jobs.with_status(:succeeded).sum(:batch_size)
           end
 
           private
@@ -212,7 +232,7 @@ module Gitlab
           end
 
           def optimizer
-            Gitlab::Database::Batch::EfficiencyCalculator.new(record: self).optimizer
+            Gitlab::Database::Batch::EfficiencyCalculator.new(worker: self).optimizer
           end
           strong_memoize_attr :optimizer
         end

@@ -596,6 +596,35 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
       expect(wrapper.findComponent(ReportListItem).exists()).toBe(true);
     });
+
+    it('passes path as route name when path is provided', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          summary: { title: 'Hello world' },
+          path: 'security-reports',
+        },
+        provide: { reportsTabSidebar: true },
+      });
+
+      const reportListItem = wrapper.findComponent(ReportListItem);
+      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe(
+        'security-reports',
+      );
+    });
+
+    it('falls back to report route when path is not provided', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          summary: { title: 'Hello world' },
+        },
+        provide: { reportsTabSidebar: true },
+      });
+
+      const reportListItem = wrapper.findComponent(ReportListItem);
+      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe('report');
+    });
   });
 
   describe('loading states', () => {

@@ -39,8 +39,8 @@ class User < ApplicationRecord
   include Users::EmailOtpEnrollment
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS
-  cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS, feature_flag: :cells_claims_users
+  cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES, feature_flag: :cells_claims_users
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :id
 
@@ -929,6 +929,35 @@ class User < ApplicationRecord
       end
     end
 
+    # override from Devise
+    # https://github.com/heartcombo/devise/blob/e9c534d363cc9d552662049b38582eead87bedd6/lib/devise/models/confirmable.rb#L329C1-L354C12
+    # modified to use Current.organization in primary query
+    # rubocop:disable Gitlab/AvoidCurrentOrganization -- this method is only called by Devise::ConfirmationsController
+    def confirm_by_token(confirmation_token)
+      if confirmation_token.blank?
+        confirmable = new
+        confirmable.errors.add(:confirmation_token, :blank)
+        return confirmable
+      end
+
+      confirmable = find_first_by_auth_conditions(
+        organization_id: Current.organization.id,
+        confirmation_token: confirmation_token
+      )
+
+      unless confirmable
+        confirmation_digest = Devise.token_generator.digest(self, :confirmation_token, confirmation_token)
+        confirmable = find_or_initialize_with_errors(
+          [:organization_id, :confirmation_token],
+          { organization_id: Current.organization.id, confirmation_token: confirmation_digest }
+        )
+      end
+
+      confirmable.confirm if confirmable.persisted?
+      confirmable
+    end
+    # rubocop:enable Gitlab/AvoidCurrentOrganization
+
     def sort_by_attribute(method)
       order_method = method || 'id_desc'
 
@@ -1389,6 +1418,9 @@ class User < ApplicationRecord
       otp_grace_period_started_at: nil,
       otp_secret_expires_at: nil
     )
+    # Use update_column to bypass validations and callbacks from devise-two-factor gem
+    # that could interfere with the otp_secret cleanup process
+    update_column(:otp_secret, nil)
   end
 
   def disable_second_factor_webauthn!
@@ -1418,8 +1450,32 @@ class User < ApplicationRecord
     second_factor_webauthn_registrations.any?
   end
 
+  def allow_passkey_authentication?
+    return false if Feature.disabled?(:passkeys, self)
+    return false if disable_password_authentication_for_sso_users?
+
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web?
+  end
+
   def passkeys_enabled?
     passkeys.any?
+  end
+
+  def passkey_via_2fa_enabled?
+    allow_passkey_authentication? && two_factor_enabled? && passkeys_enabled?
+  end
+
+  # This method allows either passkeys or second_factor_webauthn_registrations
+  # to be used as a 2FA method without breaking existing 2FA implementations.
+  #
+  # Once passkeys enable two-factor authentication for the user
+  # `passkey_via_2fa_enabled?` method will become `allow_passkey_authentication? && passkeys_enabled?`
+  #  and
+  # `two_factor_webauthn_enabled?` method will become `second_factor_webauthn_registrations.any? || passkey_via_2fa_enabled?`
+  #  and
+  #  this method will be removed in favor of `two_factor_webauthn_enabled?` method.
+  def can_use_existing_webauthn_authenticator_for_2fa?
+    two_factor_webauthn_enabled? || passkey_via_2fa_enabled?
   end
 
   def needs_new_otp_secret?
@@ -1901,6 +1957,14 @@ class User < ApplicationRecord
 
   def has_multiple_organizations?
     organization_users.many?
+  end
+
+  def can_leave_project?(member_or_project)
+    return can?(:destroy_project_member, member_or_project) if member_or_project.is_a?(ProjectMember)
+
+    return can?(:destroy_project_member, member_or_project.member(self)) if member_or_project.is_a?(Project)
+
+    false
   end
 
   def full_website_url
@@ -3165,8 +3229,29 @@ class User < ApplicationRecord
     query.exists?
   end
 
-  def unique_attribute
-    :username
+  def unique_attributes
+    [:username, :email]
+  end
+
+  ##
+  # Decrypt and return the `encrypted_otp_secret` attribute which was used in
+  # prior versions of devise-two-factor
+  # @return [String] The decrypted OTP secret
+  def legacy_otp_secret
+    return unless self[:encrypted_otp_secret]
+    return unless self.class.otp_secret_encryption_key
+
+    hmac_iterations = 2000 # a default set by the Encryptor gem
+    key = self.class.otp_secret_encryption_key
+    salt = Base64.decode64(encrypted_otp_secret_salt)
+    iv = Base64.decode64(encrypted_otp_secret_iv)
+    cipher_text = Base64.decode64(encrypted_otp_secret)
+    cipher = OpenSSL::Cipher.new('aes-256-cbc')
+
+    cipher.decrypt
+    cipher.key = OpenSSL::PKCS5.pbkdf2_hmac_sha1(key, salt, hmac_iterations, cipher.key_len)
+    cipher.iv = iv
+    cipher.update(cipher_text) + cipher.final
   end
 end
 

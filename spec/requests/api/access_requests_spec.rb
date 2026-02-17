@@ -126,6 +126,12 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
           # Member attributes
           expect(json_response['requested_at']).to be_present
         end
+
+        it_behaves_like 'authorizing granular token permissions', :create_access_request do
+          let(:user) { stranger }
+          let(:boundary_object) { :user }
+          let(:request) { post api("/#{source_type.pluralize}/#{source.id}/access_requests", personal_access_token: pat) }
+        end
       end
     end
   end
@@ -214,6 +220,12 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.requesters.count }.by(-1)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :delete_access_request do
+          let(:user) { access_requester }
+          let(:boundary_object) { :user }
+          let(:request) { delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", personal_access_token: pat) }
         end
       end
 

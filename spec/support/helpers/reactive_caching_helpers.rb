@@ -47,9 +47,15 @@ module ReactiveCachingHelpers
     Rails.cache.write(alive_reactive_cache_key(subject, *qualifiers), true)
   end
 
-  def expect_reactive_cache_update_queued(subject, *args, worker_klass: ReactiveCachingWorker)
+  def expect_reactive_cache_update_queued(subject, *args, worker_klass: ReactiveCaching::LowUrgencyWorker)
     expect(worker_klass)
       .to receive(:perform_in)
       .with(subject.class.reactive_cache_refresh_interval, subject.class.name, subject.id, *args)
+  end
+
+  def expect_reactive_cache_calculation_queued(subject, *args, worker_klass: ReactiveCachingWorker)
+    expect(worker_klass)
+      .to receive(:perform_async)
+      .with(subject.class.name, subject.id, *args)
   end
 end

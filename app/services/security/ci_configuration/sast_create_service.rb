@@ -32,7 +32,7 @@ module Security
       end
 
       def description
-        _('Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings.')
+        _('Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables) to customize SAST settings.')
       end
 
       def name

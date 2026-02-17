@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_packages_maven_upstream_rules
+classes:
+- VirtualRegistries::Packages::Maven::Upstream::Rule
+feature_categories:
+- virtual_registry
+description: Filtration rules for Maven Virtual Registry upstreams. Allows defining allow/deny patterns for Maven coordinates.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218789
+milestone: '18.9'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

@@ -43,6 +43,7 @@ export class ToolbarExtension {
 
     return new Vue({
       el,
+      name: 'SourceEditorToolbarRoot',
       apolloProvider,
       render(createElement) {
         return createElement(SourceEditorToolbar);

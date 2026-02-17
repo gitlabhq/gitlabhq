@@ -5,11 +5,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Import/Export development documentation
 ---
 
-{{< alert type="note" >}}
-
-To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
-
-{{< /alert >}}
+> [!note]
+> To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
 
 General development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
 
@@ -359,8 +356,5 @@ tree
     └── 4352.json
 ```
 
-{{< alert type="warning" >}}
-
-When updating these fixtures, ensure you update both `json` files and `tree` folder, as the tests apply to both.
-
-{{< /alert >}}
+> [!warning]
+> When updating these fixtures, ensure you update both `json` files and `tree` folder, as the tests apply to both.

@@ -26,10 +26,6 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :issues_dashboard_path, :issues
 
-  it_behaves_like 'page with product usage data collection banner' do
-    let(:page_path) { issues_dashboard_path(assignee_username: user.username) }
-  end
-
   context 'for accessibility testing' do
     before do
       visit_dashboard_issues
@@ -76,6 +72,22 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
       expect(page).not_to have_content(assigned_issue.title)
       expect(page).not_to have_content(authored_issue.title)
       expect(page).not_to have_content(other_issue.title)
+    end
+
+    context 'when clicking on an issue' do
+      it 'navigates to the project issue page' do
+        expect(page).not_to have_content("Labels")
+
+        expect(page).to have_content("Your work")
+        expect(page).to have_content(assigned_issue.title)
+
+        click_link assigned_issue.title
+
+        expect(page).to have_content("Labels")
+
+        expect(page).not_to have_content("Your work")
+        expect(page).to have_content(assigned_issue.title)
+      end
     end
 
     describe 'RSS link' do

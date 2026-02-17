@@ -19,7 +19,7 @@ RSpec.describe Discussion, feature_category: :team_planning do
     it 'batches requests' do
       expect do
         [described_class.lazy_find(note1.id),
-         described_class.lazy_find(note2.id)].map(&:__sync)
+          described_class.lazy_find(note2.id)].map(&:__sync)
       end.not_to exceed_query_limit(1)
     end
   end

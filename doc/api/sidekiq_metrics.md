@@ -16,10 +16,9 @@ title: Sidekiq Metrics API
 This API endpoint allows you to retrieve some information about the current state
 of Sidekiq, its jobs, queues, and processes.
 
-## Get the current Queue Metrics
+## List all job queue metrics
 
-List information about all the registered queues, their backlog and their
-latency.
+Lists details about all Sidekiq job queues, including backlog size and latency.
 
 ```plaintext
 GET /sidekiq/queue_metrics
@@ -44,9 +43,9 @@ Example response:
 }
 ```
 
-## Get the current Process Metrics
+## List all Sidekiq processes
 
-List information about all the Sidekiq workers registered to process your queues.
+Lists details about all registered Sidekiq worker processes, including hostname, process ID, queues, and concurrency settings.
 
 ```plaintext
 GET /sidekiq/process_metrics
@@ -88,9 +87,9 @@ Example response:
 }
 ```
 
-## Get the current Job Statistics
+## Retrieve job completion metrics
 
-List information about the jobs that Sidekiq has performed.
+Retrieves statistics on the completion status of all Sidekiq jobs.
 
 ```plaintext
 GET /sidekiq/job_stats
@@ -115,9 +114,9 @@ Example response:
 }
 ```
 
-## Get a compound response of all the previously mentioned metrics
+## List all Sidekiq metrics
 
-List all the currently available information about Sidekiq.
+Lists all Sidekiq metrics in a single response, including queue, process, and job completion metrics.
 
 ```plaintext
 GET /sidekiq/compound_metrics

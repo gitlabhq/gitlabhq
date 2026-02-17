@@ -3,6 +3,7 @@
 #import "ee_else_ce/graphql_shared/fragments/user_disabled_for_duo_usage.fragment.graphql"
 #import "ee_else_ce/graphql_shared/fragments/user_autocomplete_status.fragment.graphql"
 
+# @feature_category: user_profile
 query workspaceAutocompleteUsersSearch(
   $search: String!
   $fullPath: ID!

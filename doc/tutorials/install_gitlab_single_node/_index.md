@@ -27,7 +27,7 @@ To install a single node GitLab instance and configure it to be secure:
 
 ## Before you begin
 
-- A domain name, and a correct [setup of DNS](https://docs.gitlab.com/omnibus/settings/dns.html).
+- A domain name, and a correct [setup of DNS](https://docs.gitlab.com/omnibus/settings/dns/).
 - A Debian-based server with the following minimum specs:
   - 8 vCPU
   - 7.2 GB memory
@@ -160,12 +160,9 @@ they add an extra layer of security.
 1. Open a new file with your editor under `/etc/sysctl.d`, for example
    `/etc/sysctl.d/99-gitlab-hardening.conf`, and add the following.
 
-   {{< alert type="note" >}}
-
-   The naming and source directory decide the order of processing, which is
-   important because the last parameter processed might override earlier ones.
-
-   {{< /alert >}}
+   > [!note]
+   > The naming and source directory decide the order of processing, which is
+   > important because the last parameter processed might override earlier ones.
 
    ```plaintext
    ##
@@ -249,7 +246,7 @@ Now that your server is set up, install GitLab:
 1. Add the GitLab package repository and install the package:
 
    ```shell
-   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | sudo bash
+   curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | sudo bash
    ```
 
    To see the contents of the script, visit <https://packages.gitlab.com/gitlab/gitlab-ee/install>.
@@ -297,7 +294,7 @@ you of GitLab activity.
 
 #### Configure SMTP
 
-In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
+In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp/)
 server and use the [Mailgun](https://www.mailgun.com/) SMTP provider.
 
 First, start by creating an encrypted file that will contain the login
@@ -364,7 +361,7 @@ You should now be able to send emails. To test that the configuration worked:
    ```
 
 If you're unable to send emails, see the
-[SMTP troubleshooting section](https://docs.gitlab.com/omnibus/settings/smtp.html#troubleshooting).
+[SMTP troubleshooting section](https://docs.gitlab.com/omnibus/settings/smtp/#troubleshooting).
 
 #### Require email verification for locked accounts
 

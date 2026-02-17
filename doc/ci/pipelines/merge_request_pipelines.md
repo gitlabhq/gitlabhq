@@ -35,7 +35,7 @@ use [merged results pipelines](merged_results_pipelines.md).
 To use merge request pipelines:
 
 - Your project's `.gitlab-ci.yml` file must include job rules or workflow rules that match `CI_PIPELINE_SOURCE == "merge_request_event"`.
-- You must have at least the Developer role for the source project to run a merge request pipeline.
+- You must have the Developer, Maintainer, or Owner role for the source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 
 ## Configure merge request pipelines
@@ -127,15 +127,12 @@ Run pipelines in fork project MRs to ensure that the post-merge pipeline passes 
 the parent project. Additionally, if you do not trust the fork project's runner,
 running the pipeline in the parent project uses the parent project's trusted runners.
 
-{{< alert type="warning" >}}
-
-Fork merge requests can contain malicious code that tries to steal secrets in the parent project
-when the pipeline runs, even before merge. As a reviewer, carefully check the changes
-in the merge request before triggering the pipeline. Unless you trigger the pipeline
-through the API or the [`/rebase` quick action](../../user/project/quick_actions.md#rebase),
-GitLab shows a warning that you must accept before the pipeline runs. Otherwise, **no warning displays**.
-
-{{< /alert >}}
+> [!warning]
+> Fork merge requests can contain malicious code that tries to steal secrets in the parent project
+> when the pipeline runs, even before merge. As a reviewer, carefully check the changes
+> in the merge request before triggering the pipeline. Unless you trigger the pipeline
+> through the API or the [`/rebase` quick action](../../user/project/quick_actions.md#rebase),
+> GitLab shows a warning that you must accept before the pipeline runs. Otherwise, **no warning displays**.
 
 Prerequisites:
 
@@ -158,13 +155,10 @@ To prevent users from running new pipelines for fork projects in the parent proj
 use [the projects API](../../api/projects.md#edit-a-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`
 setting.
 
-{{< alert type="warning" >}}
-
-Pipelines created before the setting was disabled are not affected and continue to run.
-If you rerun a job in an older pipeline, the job uses the same context as when the
-pipeline was originally created.
-
-{{< /alert >}}
+> [!warning]
+> Pipelines created before the setting was disabled are not affected and continue to run.
+> If you rerun a job in an older pipeline, the job uses the same context as when the
+> pipeline was originally created.
 
 ## Available predefined variables
 
@@ -201,7 +195,7 @@ Prerequisites:
 
 To control access to protected variables and runners:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Under **Access protected resources in merge request pipelines**, select or clear

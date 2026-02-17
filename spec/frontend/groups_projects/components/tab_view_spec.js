@@ -2,13 +2,13 @@ import Vue, { markRaw } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
 import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/inactive_projects.query.graphql.json';
 import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/personal_projects.query.graphql.json';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
-import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import TabView from '~/groups_projects/components/tab_view.vue';
@@ -16,7 +16,6 @@ import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/for
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -35,7 +34,7 @@ import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/co
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { resolvers } from '~/groups/your_work/graphql/resolvers';
+import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
@@ -244,11 +243,6 @@ describe('TabView', () => {
     });
 
     describe('when GraphQL query is cached and search is cleared', () => {
-      // We need to globally render components to avoid circular references
-      // https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-      Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
-      Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
-
       beforeEach(async () => {
         mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsWithChildrenResponse);
         createComponent({

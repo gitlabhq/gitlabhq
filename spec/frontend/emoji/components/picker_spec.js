@@ -12,7 +12,13 @@ describe('Emoji Picker component', () => {
     stubs = {},
   ) => {
     wrapper = shallowMount(EmojiPicker, {
-      stubs: { GlDisclosureDropdown, ...stubs },
+      stubs: {
+        GlDisclosureDropdown,
+        EmojiList: {
+          template: '<div><slot :filtered-categories="{}"></slot></div>',
+        },
+        ...stubs,
+      },
       provide: {
         newCustomEmojiPath,
       },
@@ -46,45 +52,55 @@ describe('Emoji Picker component', () => {
     expect(findReactionToggle().props('category')).toBe('tertiary');
   });
 
-  describe('visibility handling', () => {
-    it('does not render search box or category buttons when dropdown is hidden', () => {
+  describe('when dropdown is hidden', () => {
+    beforeEach(() => {
       createComponent();
-      expect(findSearchBox().exists()).toBe(false);
-      expect(findCategoryButtons().exists()).toBe(false);
     });
 
-    it('renders search box and category buttons when dropdown is shown', async () => {
-      createComponent();
-      await showDropdown();
-
-      expect(findSearchBox().exists()).toBe(true);
-      expect(findCategoryButtons().exists()).toBe(true);
-    });
-
-    it('hides search box and category buttons when dropdown is hidden', async () => {
-      createComponent();
-      await showDropdown();
-      await findDropdown().vm.$emit('hidden');
-      await nextTick();
-
+    it('does not render search box or category buttons', () => {
       expect(findSearchBox().exists()).toBe(false);
       expect(findCategoryButtons().exists()).toBe(false);
     });
   });
 
-  describe('create new emoji link', () => {
-    const mockCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
-
-    it('shown when newCustomEmojiPath is provided', async () => {
-      createComponent({ newCustomEmojiPath: mockCustomEmojiPath });
-
+  describe('when dropdown is shown', () => {
+    beforeEach(async () => {
+      createComponent();
       await showDropdown();
-
-      expect(findCreateNewEmojiLink().exists()).toBe(true);
-      expect(findCreateNewEmojiLink().attributes('href')).toBe(mockCustomEmojiPath);
     });
 
-    it('shown when customEmojiPath prop is set', async () => {
+    it('renders search box and category buttons', () => {
+      expect(findSearchBox().exists()).toBe(true);
+      expect(findCategoryButtons().exists()).toBe(true);
+    });
+
+    describe('and then hidden', () => {
+      beforeEach(async () => {
+        await findDropdown().vm.$emit('hidden');
+        await nextTick();
+      });
+
+      it('hides search box and category buttons', () => {
+        expect(findSearchBox().exists()).toBe(false);
+        expect(findCategoryButtons().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('create new emoji link', () => {
+    const mockCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
+    describe('when newCustomEmojiPath is provided', () => {
+      it('shows the emoji with custom link', async () => {
+        createComponent({ newCustomEmojiPath: mockCustomEmojiPath });
+
+        await showDropdown();
+
+        expect(findCreateNewEmojiLink().exists()).toBe(true);
+        expect(findCreateNewEmojiLink().attributes('href')).toBe(mockCustomEmojiPath);
+      });
+    });
+
+    it('when customEmojiPath prop is present', async () => {
       createComponent({ customEmojiPath: mockCustomEmojiPath });
 
       await showDropdown();

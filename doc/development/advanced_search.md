@@ -17,7 +17,7 @@ These recordings and presentations provide in-depth knowledge about the Advanced
 |    Date     | Topic                                                                                                     |    Presenter     | Resources                                                                                                                                                                                                                                                                                                                                                                   | GitLab Version |
 |:-----------:|-----------------------------------------------------------------------------------------------------------|:----------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------:|
 |  July 2024  | Advanced search basics, integration, indexing, and search                                                 |    Terri Chu     | <i class="fa-youtube-play" aria-hidden="true"></i>[Recording on YouTube](https://youtu.be/5OXK1isDaks) (GitLab team members only)<br>[Google slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only)                                                                          |  GitLab 17.0   |
-|  June 2021  | GitLabs data migration process for Advanced search                                                       |   Dmitry Gruzd   | [Blog post](https://about.gitlab.com/blog/2021/06/01/advanced-search-data-migrations/)                                                                                                                                                                                                                                                                                      |     GitLab 13.12      |
+|  June 2021  | GitLabs data migration process for Advanced search                                                       |   Dmitry Gruzd   | [Blog post](https://about.gitlab.com/blog/advanced-search-data-migrations/)                                                                                                                                                                                                                                                                                      |     GitLab 13.12      |
 | August 2020 | [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices) |    Mark Chao     | [Recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg)<br>[Google slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/)                                                                                                                                                                                                                           |  GitLab 13.3   |
 |  June 2019  | GitLab [Elasticsearch integration](../integration/advanced_search/elasticsearch.md)                       | Mario de la Ossa | <i class="fa-youtube-play" aria-hidden="true"></i>[Recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA)<br>[Google slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit)<br>[PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf) |  GitLab 12.0   |
 
@@ -205,7 +205,6 @@ Advanced search selectively indexes data. Each data type follows a specific inde
 |---------------------|------------------------------------------------------------------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Database records    | Record changes through ActiveRecord callbacks and `Gitlab::EventStore` | Redis ZSET         | [`ElasticIndexInitialBulkCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic_index_initial_bulk_cron_worker.rb), [`ElasticIndexBulkCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic_index_bulk_cron_worker.rb) |
 | Git repository data | Branch push service and default branch change worker                   | Sidekiq            | [`Search::Elastic::CommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/search/elastic/commit_indexer_worker.rb), [`ElasticWikiIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic_wiki_indexer_worker.rb)     |
-| Embeddings          | Record changes through ActiveRecord callbacks and `Gitlab::EventStore` | Redis ZSET         | [`ElasticEmbeddingBulkCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/search/elastic_index_embedding_bulk_cron_worker.rb)                                                                                                                                                                  |
 
 ### Indexing Components
 
@@ -383,7 +382,7 @@ All new indexes must have:
   - For project data - `visibility_level`
   - For group data - `namespace_visibility_level`
   - Any required access level fields. These correspond to project feature access levels such as `issues_access_level` or `repository_access_level`
-- A `schema_version` integer field in a `YYWW` (year/week) format. This field is used for data migrations and its value corresponds to the week when the MR is merged.
+- A `schema_version` integer field in a `YYVV` (year/version) format. YY is the two-digit year, VV is a rolling counter (01-99) within that year. The schema version must be defined in a constant (`SCHEMA_VERSION`) in the reference index class (`Search::Elastic::References::<IndexedData>` or `Elastic::Latest::<IndexedData>InstanceProxy`). This field is used to track which version of the document structure is indexed and enables data migrations. It must be incremented when the index mapping changes and may be incremented when field content changes.
 
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
@@ -413,11 +412,8 @@ All new indexes must have:
 Data types for primary and foreign keys must match the column type in the database. For example, the database column
 type `integer` maps to `integer` and `bigint` maps to `long` in the mapping.
 
-{{< alert type="warning" >}}
-
-[Nested fields](https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#_limits_on_nested_mappings_and_objects) introduce significant overhead. A flattened multi-value approach is recommended instead.
-
-{{< /alert >}}
+> [!warning]
+> [Nested fields](https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#_limits_on_nested_mappings_and_objects) introduce significant overhead. A flattened multi-value approach is recommended instead.
 
 | PostgreSQL type         | Elasticsearch mapping                                                                                                                                                                                                                                                                  |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -444,7 +440,7 @@ The file must inherit from `Search::Elastic::Reference` and define the following
 ```ruby
 include Search::Elastic::Concerns::DatabaseReference # if there is a corresponding database record for every document
 
-SCHEMA_VERSION = 24_46 # integer in YYWW format
+SCHEMA_VERSION = 24_46 # integer in YYVV format
 
 override :serialize
 def self.serialize(record)
@@ -595,11 +591,8 @@ New scopes must be added to the following constants:
 - `ALLOWED_SCOPES` in `Gitlab::Search::AbuseDetection`
 - `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
 
-{{< alert type="note" >}}
-
-Global search can be disabled for a scope. You can do the following changes for disabling global search:
-
-{{< /alert >}}
+> [!note]
+> Global search can be disabled for a scope. You can do the following changes for disabling global search:
 
 1. Add an application setting named `global_search_SCOPE_enabled` that defaults to `true` under the `search` jsonb accessor in [`app/models/application_setting.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/d52af9fafd5016ea25a665a9d5cb797b37a39b10/app/models/application_setting.rb#L738).
 1. Add an entry in JSON schema validator file [`application_setting_search.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/d52af9fafd5016ea25a665a9d5cb797b37a39b10/app/validators/json_schemas/application_setting_search.json)
@@ -663,7 +656,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 1. Add the field to the index mapping to add it newly created indices and create a migration to add the field to existing indices in the same MR to avoid mapping schema drift. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
 1. Populate the new field in the document JSON. The code must check the migration is complete using
    `::Elastic::DataMigrationService.migration_has_finished?`
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to backfill the field in the index. If it's a not-nullable field, use [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper), or [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) if it's a nullable field.
 
 ##### If the new field is an associated record
@@ -687,7 +680,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing mapping of an existing field
 
 1. Update the field type in the index mapping to change it for newly created indices
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to reindex all documents
    using [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
    Use the [`Search::Elastic::MigrationReindexTaskHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindextaskhelper)
@@ -695,7 +688,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing field content
 
 1. Update the field content in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to update documents. Use the [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion)
 
 #### Cleaning up documents from an index
@@ -703,7 +696,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 This may be used if documents are split from one index into separate indices or to remove data left in the index due to
 bugs.
 
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to index all records. Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper)
 1. Create a migration to remove all documents with the previous `SCHEMA_VERSION`. Use the [`MigrationDeleteBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdeletebasedonschemaversion)
 
@@ -718,7 +711,7 @@ Milestone `M`:
 
 1. Remove the field from the index mapping to remove it from newly created indices
 1. Stop populating the field in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Remove any [filters which use the field](#available-filters) from the [query builder](#creating-a-query)
 1. Update the `scope_options` method to remove the field for the scope you are updating. The method is defined in
    `Gitlab::Elastic::SearchResults` with overrides in `Gitlab::Elastic::GroupSearchResults` and
@@ -754,11 +747,8 @@ for each scope. See [roles and permissions documentation](../user/permissions.md
 The query builder framework is used to build Elasticsearch queries. We also support a legacy query framework implemented
 in the `Elastic::Latest::ApplicationClassProxy` class and classes that inherit it.
 
-{{< alert type="note" >}}
-
-New document types must use the query builder framework.
-
-{{< /alert >}}
+> [!note]
+> New document types must use the query builder framework.
 
 ### Creating a query
 
@@ -1010,83 +1000,6 @@ Uses `simple_query_string` Elasticsearch API. Can be customized with the followi
       "filter": [],
       "minimum_should_match": null
     }
-  }
-}
-```
-
-#### `by_knn`
-
-Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
-
-Performs a hybrid search using embeddings. Uses `full_text_search` unless embeddings are supported.
-
-{{< alert type="warning" >}}
-
-Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this query must be used with the `by_knn` filter.
-
-{{< /alert >}}
-
-The example below is for Elasticsearch.
-
-```json
-{
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "bool": {
-            "must": [],
-            "must_not": [],
-            "should": [
-              {
-                "multi_match": {
-                  "_name": "work_item:multi_match:and:search_terms",
-                  "fields": [
-                    "iid^50",
-                    "title^2",
-                    "description"
-                  ],
-                  "query": "test",
-                  "operator": "and",
-                  "lenient": true
-                }
-              },
-              {
-                "multi_match": {
-                  "_name": "work_item:multi_match_phrase:search_terms",
-                  "type": "phrase",
-                  "fields": [
-                    "iid^50",
-                    "title^2",
-                    "description"
-                  ],
-                  "query": "test",
-                  "lenient": true
-                }
-              }
-            ],
-            "filter": [],
-            "minimum_should_match": 1
-          }
-        }
-      ],
-      "must_not": [],
-      "should": [],
-      "filter": [],
-      "minimum_should_match": null
-    }
-  },
-  "knn": {
-    "field": "embedding_0",
-    "query_vector": [
-      0.030752448365092278,
-      -0.05360432341694832
-    ],
-    "boost": 5,
-    "k": 25,
-    "num_candidates": 100,
-    "similarity": 0.6,
-    "filter": []
   }
 }
 ```
@@ -1594,17 +1507,10 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
 filter on `namespace_visibility_level` based on permissions user has for each group.
 
-{{< alert type="note" >}}
-
 This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
-
-{{< /alert >}}
+> [!note]
+> Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 ##### global
 
@@ -1774,11 +1680,8 @@ Filtering is applied for:
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 
-{{< alert type="note" >}}
-
-Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
-
-{{< /alert >}}
+> [!note]
+> Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 ##### global
 
@@ -2217,17 +2120,6 @@ Requires `search_level` field and at least one of `use_group_authorization` or `
   }
 ]
 ```
-
-#### `by_knn`
-
-Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
-
-{{< alert type="warning" >}}
-
-Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this filter must be used with the
-`by_knn` query.
-
-{{< /alert >}}
 
 #### `by_noteable_type`
 
@@ -2715,11 +2607,8 @@ in the EE specs:
 
 ## Zero-downtime reindexing with multiple indices
 
-{{< alert type="note" >}}
-
-This is not applicable yet as multiple indices functionality is not fully implemented.
-
-{{< /alert >}}
+> [!note]
+> This is not applicable yet as multiple indices functionality is not fully implemented.
 
 Currently, GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 

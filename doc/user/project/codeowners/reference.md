@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn about file path patterns, owners, comments, sections, and how rules are evaluated.
 title: Syntax of `CODEOWNERS` file
 ---
 
@@ -17,16 +18,13 @@ Each line in the file represents a rule, and specifies a file path pattern and o
 The key elements are:
 
 - File paths: Specific files, directories, or wildcards.
-- Code Owners: Use `@mentions` for users, groups, or roles.
+- Code Owners: Use mentions for users, groups, or roles.
 - Comments: Lines starting with `#` are ignored. Inline comments are unsupported.
   Any Code Owners listed in a comment are parsed.
 - Sections: Optional groupings of rules, defined using `[Section name]`.
 
-{{< alert type="note" >}}
-
-If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
-
-{{< /alert >}}
+> [!note]
+> If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
 
 Here are some examples:
 
@@ -225,7 +223,7 @@ for the project. The following rules apply:
 - Project and group visibility settings do not affect eligibility.
 - Users [banned from a group](../../group/moderate_users.md) cannot be Code Owners.
 - Eligible users include those with:
-  - Direct membership in the project with at least the Developer role.
+  - Direct membership in the project with the Developer, Maintainer, or Owner role.
   - Membership in the project's group (direct or inherited).
   - Membership in any of the project's group's ancestors.
   - Direct or inherited membership in a group that has been invited to the project.
@@ -242,9 +240,9 @@ the following rules apply:
 - Eligible groups include:
   - The project's group.
   - The project's group's ancestors.
-  - Groups invited directly to the project with at least the Developer role.
+  - Groups invited directly to the project with the Developer, Maintainer, or Owner role.
   - Groups shared with the project's group or its ancestors.
-    The shared group must have at least the Developer role in the parent group.
+    The shared group must have the Developer, Maintainer, or Owner role in the parent group.
     For more information, see [groups shared with parent groups](advanced.md#groups-shared-with-parent-groups).
 
 ### Role eligibility
@@ -337,11 +335,8 @@ In this example:
 
   ![Merge request maintainers.](img/merge_request_maintainers_v17_9.png)
 
-{{< alert type="note" >}}
-
-When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
-
-{{< /alert >}}
+> [!note]
+> When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 
 If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 
@@ -374,13 +369,10 @@ README.md @username
 internal/README.md
 ```
 
-{{< alert type="note" >}}
-
-When using globstar paths, be cautious of unintended matches.
-For example, `README.md` without a leading `/` matches any `README.md`
-file in any directory or subdirectory of the repository.
-
-{{< /alert >}}
+> [!note]
+> When using globstar paths, be cautious of unintended matches.
+> For example, `README.md` without a leading `/` matches any `README.md`
+> file in any directory or subdirectory of the repository.
 
 ### Directory paths
 

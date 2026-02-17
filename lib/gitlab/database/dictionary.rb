@@ -40,7 +40,8 @@ module Gitlab
               bounds_clause: pi_entry['bounds_clause'],
               required_constraint: pi_entry['required_constraint'],
               parent_table: entry.table_name,
-              parent_schema: pi_entry['parent_schema']
+              parent_schema: pi_entry['parent_schema'],
+              lock_tables: pi_entry['lock_tables']
             }
           end
         end
@@ -157,6 +158,10 @@ module Gitlab
 
         def partition_detach_info
           data['partition_detach_info']
+        end
+
+        def organization_transfer_support
+          data['organization_transfer_support']
         end
 
         def validate!

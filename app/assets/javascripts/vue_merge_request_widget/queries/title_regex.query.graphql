@@ -1,0 +1,8 @@
+# @feature_category: code_review_workflow
+query titleRegex($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequestTitleRegex
+    mergeRequestTitleRegexDescription
+  }
+}

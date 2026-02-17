@@ -54,11 +54,11 @@ Create a `Ai::ActiveContext::Connection` record in the database with the followi
 - `adapter_class`: One of
   - `ActiveContext::Databases::Elasticsearch::Adapter`
   - `ActiveContext::Databases::Opensearch::Adapter`
-  - `ActiveContext::Databases::Postgres::Adapter`
+  - `ActiveContext::Databases::Postgresql::Adapter`
 - `options`: Connection options
   - For Elasticsearch: `url`, `client_request_timeout`, `retry_on_failure`, `log`, `debug`
   - For OpenSearch: `url`, `aws`, `aws_region`, `aws_access_key`, `aws_secret_access_key`, `client_request_timeout`, `retry_on_failure`, `log`, `debug`
-  - For Postgres: `port`, `host`, `username`, `password`
+  - For PostgreSQL: `host`, `port`, `user`, `password`, `database`
 
 ### Use Elasticsearch settings from Advanced Search
 
@@ -77,6 +77,22 @@ Ai::ActiveContext::Connection.create!(
   name: "opensearch",
   adapter_class: "ActiveContext::Databases::Opensearch::Adapter",
   options: { use_advanced_search_config: true }
+)
+```
+
+### Use PostgreSQL
+
+```ruby
+Ai::ActiveContext::Connection.create!(
+  name: "postgresql",
+  adapter_class: "ActiveContext::Databases::Postgresql::Adapter",
+  options: {
+    host: "localhost",
+    port: 5432,
+    user: "postgres",
+    password: "password",
+    database: "postgres"
+  }
 )
 ```
 

@@ -21,13 +21,10 @@ that they can be served as efficiently as possible. Housekeeping tasks include:
 - Maintaining data structures that improve performance.
 - Updating object pools to improve object deduplication across forks.
 
-{{< alert type="warning" >}}
-
-Do not manually execute Git commands to perform housekeeping in Git
-repositories that are controlled by GitLab. Doing so may lead to corrupt
-repositories and data loss.
-
-{{< /alert >}}
+> [!warning]
+> Do not manually execute Git commands to perform housekeeping in Git
+> repositories that are controlled by GitLab. Doing so may lead to corrupt
+> repositories and data loss.
 
 ## Housekeeping strategy
 
@@ -121,7 +118,7 @@ housekeeping tasks. The manual trigger can be useful when either:
 
 To trigger housekeeping tasks manually:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
@@ -139,27 +136,24 @@ manual pruning as well. Triggering housekeeping prunes unreachable objects with 
 period of two weeks. When you manually trigger the pruning of unreachable objects, the
 grace period is reduced to 30 minutes.
 
-{{< alert type="warning" >}}
-
-Pruning unreachable objects does not guarantee the removal of leaked secrets and other sensitive information. For information on how to remove secrets that
-were committed but not pushed, see the [remove a secret from your commits tutorial](../user/application_security/secret_detection/remove_secrets_tutorial.md).
-Additionally, you can [remove blobs individually](../user/project/repository/repository_size.md#remove-blobs). Refer to that documentation for possible
-consequences of performing that operation.
-
-If a concurrent process (like `git push`) has created an object but hasn't created
-a reference to the object yet, your repository can become corrupted if a reference
-to the object is added after the object is deleted. The grace period exists to
-reduce the likelihood of such race conditions.
-For example, if pushing many large objects frequently over a sometimes very slow connection,
-then the risk that comes with pruning unreachable objects is much higher than in a corporate
-environment where the project can be accessed only from inside the company with a performant
-connection. Consider the project usage profile when using this option and select a quiet period.
-
-{{< /alert >}}
+> [!warning]
+> Pruning unreachable objects does not guarantee the removal of leaked secrets and other sensitive information. For information on how to remove secrets that
+> were committed but not pushed, see the [remove a secret from your commits tutorial](../user/application_security/secret_detection/remove_secrets_tutorial.md).
+> Additionally, you can [remove blobs individually](../user/project/repository/repository_size.md#remove-blobs). Refer to that documentation for possible
+> consequences of performing that operation.
+>
+> If a concurrent process (like `git push`) has created an object but hasn't created
+> a reference to the object yet, your repository can become corrupted if a reference
+> to the object is added after the object is deleted. The grace period exists to
+> reduce the likelihood of such race conditions.
+> For example, if pushing many large objects frequently over a sometimes very slow connection,
+> then the risk that comes with pruning unreachable objects is much higher than in a corporate
+> environment where the project can be accessed only from inside the company with a performant
+> connection. Consider the project usage profile when using this option and select a quiet period.
 
 To trigger a manual prune of unreachable objects:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.

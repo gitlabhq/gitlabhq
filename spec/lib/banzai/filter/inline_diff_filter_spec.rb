@@ -25,7 +25,7 @@ RSpec.describe Banzai::Filter::InlineDiffFilter, feature_category: :source_code_
     expect(filter(doc).to_html).to eq('START <span class="idiff left right addition">something added</span> END')
   end
 
-  it 'adds inline span tags for additions  when using curley braces' do
+  it 'adds inline span tags for additions when using curley braces' do
     doc = "START {+something added+} END"
     expect(filter(doc).to_html).to eq('START <span class="idiff left right addition">something added</span> END')
   end

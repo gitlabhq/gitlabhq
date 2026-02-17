@@ -1,0 +1,185 @@
+---
+stage: AI-powered
+group: AI Coding
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Code Suggestions supports multiple editors and languages.
+title: Supported extensions and languages
+---
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Code Suggestions is available in the following editor extensions and
+for the following languages.
+
+## Supported editor extensions
+
+To use Code Suggestions, use one of these editor extensions:
+
+| IDE                                                             | Extension |
+|-----------------------------------------------------------------|-----------|
+| Visual Studio Code (VS Code)                                    | [GitLab Workflow for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
+| [GitLab Web IDE (VS Code in the Cloud)](../../../user/project/web_ide/_index.md) | No configuration required. |
+| Microsoft Visual Studio (2022 for Windows)                      | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
+| JetBrains IDEs                                                  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
+| Neovim                                                          | [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) |
+| Eclipse                                                          | [GitLab for Eclipse](../../../editor_extensions/eclipse/setup.md) |
+
+A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, Eclipse, and Neovim. The Language Server supports faster iteration across more platforms. You can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
+
+You can express interest in other IDE extension support [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
+
+## Supported languages by IDE
+
+The following table provides more information on the languages Code Suggestions supports by default, and the IDEs.
+
+Code Suggestions also works with other languages, but you must [manually add support](#add-support-for-more-languages).
+
+| Language                            | Web IDE     | VS Code                  | JetBrains IDEs | Visual Studio 2022 for Windows | Neovim                   | Eclipse |
+|-------------------------------------|-------------|--------------------------|----------------|--------------------------------|--------------------------|---------|
+| C                                   | {{< yes >}} | {{< yes >}}              | {{< no >}}     | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| C++                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| C#                                  | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| CSS                                 | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| Go                                  | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Google SQL                          | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< no >}} |
+| HAML                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| HTML                                | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| Java                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| JavaScript                          | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Kotlin                              | {{< no >}}  | {{< yes >}} <sup>1</sup> | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Markdown                            | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| PHP                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Python                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Ruby                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Rust                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Scala                               | {{< no >}}  | {{< yes >}} <sup>2</sup> | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Shell scripts (`bash` only)         | {{< yes >}} | {{< no >}}               | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Svelte                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Swift                               | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| TypeScript (`.ts` and `.tsx` files) | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Terraform                           | {{< no >}}  | {{< yes >}} <sup>3</sup> | {{< yes >}}    | {{< no >}}                     | {{< yes >}} <sup>4</sup> | {{< yes >}} |
+| Vue                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+
+**Footnotes**:
+
+1. VS Code requires a third-party extension that provides Kotlin support.
+1. VS Code requires a third-party extension that provides Scala support.
+1. VS Code requires a third-party extension that provides Terraform support.
+1. Neovim requires a third-party extension that provides the `terraform` file type.
+
+> [!note]
+> Some languages are not supported in all JetBrains IDEs, or might require additional
+> plugin support. Refer to the JetBrains documentation for specifics on your IDE.
+
+## Support for Infrastructure-as-Code (IaC)
+
+Code Suggestions works with infrastructure-as-code interfaces, including:
+
+- Kubernetes Resource Model (KRM)
+- Google Cloud CLI
+- Terraform
+
+## Manage languages for Code Suggestions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#4210-2024-07-16) in GitLab Workflow for VS Code 4.21.0
+
+{{< /history >}}
+
+You can customize your coding experience in VS Code by enabling or disabling Code Suggestions for specific supported languages.
+You can do this by editing your `settings.json` file directly, or from the VS Code user interface:
+
+1. In VS Code, open the extension settings for **GitLab Workflow**:
+   1. On the top bar, go to **Code** > **Settings** > **Extensions**.
+   1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
+   1. Select **Extension Settings**.
+1. In your **User** settings, find the section titled **AI Assisted Code Suggestions: Enabled Supported Languages**.
+1. To enable Code Suggestions for a language, select its checkbox.
+1. To disable Code Suggestions for a language, clear its checkbox.
+1. Your changes are automatically saved, and take effect immediately.
+
+When you disable Code Suggestions for a language, the GitLab Duo icon changes to show that suggestions are disabled
+for this language. On hover, it shows **Code Suggestions are disabled for this language**.
+
+## Add support for more languages
+
+If your desired language doesn't have Code Suggestions available by default,
+you can add support for your language locally.
+However, Code Suggestions might not function as expected.
+
+{{< tabs >}}
+
+{{< tab title="Visual Studio Code" >}}
+
+Prerequisites:
+
+- You have installed and enabled the
+  [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
+- You have completed the [VS Code extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
+  instructions, and authorized the extension to access your GitLab account.
+
+To do this:
+
+1. Find your desired language in the list of
+   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
+   You need the **Identifier** for your languages in a later step.
+1. In VS Code, open the extension settings for **GitLab Workflow**:
+   1. On the top bar, go to **Code** > **Settings** > **Extensions**.
+   1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
+   1. Select **Extension Settings**.
+   1. In your **User** settings, find
+      **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
+1. In **Item**, add the identifier for each language you want to support. Identifiers should be
+   lowercase, like `html` or `powershell`. Don't add leading periods from file suffixes to each identifier.
+1. Select **OK**.
+
+{{< /tab >}}
+
+{{< tab title="JetBrains IDEs" >}}
+
+Prerequisites:
+
+- You have installed and enabled the
+  [GitLab plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/_index.md).
+- You have completed the [Jetbrains extension setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup)
+  instructions, and authorized the extension to access your GitLab account.
+
+To do this:
+
+1. Find your desired language in the list of
+   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
+   You need the identifier for your languages in a later step.
+1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
+1. Under **Code Suggestions Enabled Languages** > **Additional languages**, add the identifier for each language
+   you want to support. Identifiers should be in lowercase, like `html`. Separate multiple identifiers with commas,
+   like `html,powershell,latex`, and don't add leading periods to each identifier.
+1. Select **OK**.
+
+{{< /tab >}}
+
+{{< tab title="Eclipse" >}}
+
+Prerequisites:
+
+- You have installed and enabled the [GitLab for Eclipse plugin](../../../editor_extensions/eclipse/_index.md).
+- You have completed the [Eclipse setup](../../../editor_extensions/eclipse/setup.md)
+  instructions, and authorized the extension to access your GitLab account.
+
+To do this:
+
+1. In your Eclipse bottom menu, select the GitLab icon.
+1. Select **Show Settings**.
+1. Scroll down to the **Code Suggestions Enabled Languages** section.
+1. In **Additional Languages**, add a comma-separated list of language identifiers. Don't
+   add leading periods to the identifiers. For example, use `html`, `md`, and `powershell`.
+
+{{< /tab >}}
+
+{{< /tabs >}}

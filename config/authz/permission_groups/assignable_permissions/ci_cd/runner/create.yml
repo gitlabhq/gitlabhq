@@ -2,6 +2,6 @@
 name: create_runner
 description: Grants the ability to create runners
 boundaries:
-  - project
+  - user
 permissions:
   - create_runner

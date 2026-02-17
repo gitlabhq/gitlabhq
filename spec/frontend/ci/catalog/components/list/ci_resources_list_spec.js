@@ -3,6 +3,7 @@ import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
+import CiAnalyticsList from '~/ci/catalog/components/list/ci_analytics_list.vue';
 import { catalogResponseBody, catalogSinglePageResponse } from '../../mock';
 
 describe('CiResourcesList', () => {
@@ -15,6 +16,7 @@ describe('CiResourcesList', () => {
       currentPage: 1,
       resources: nodes,
       pageInfo,
+      currentTab: 'all',
     };
 
     wrapper = shallowMountExtended(CiResourcesList, {
@@ -28,6 +30,8 @@ describe('CiResourcesList', () => {
     });
   };
 
+  const findResourcesListContainer = () => wrapper.findByTestId('catalog-list-container');
+  const findResourcesAnalytics = () => wrapper.findComponent(CiAnalyticsList);
   const findResourcesListItems = () => wrapper.findAllComponents(CiResourcesListItem);
   const findPrevBtn = () => wrapper.findByTestId('prevButton');
   const findNextBtn = () => wrapper.findByTestId('nextButton');
@@ -107,12 +111,27 @@ describe('CiResourcesList', () => {
 
     it.each`
       btnText       | elFinder       | eventName
-      ${'previous'} | ${findPrevBtn} | ${'onPrevPage'}
-      ${'next'}     | ${findNextBtn} | ${'onNextPage'}
+      ${'previous'} | ${findPrevBtn} | ${'on-prev-page'}
+      ${'next'}     | ${findNextBtn} | ${'on-next-page'}
     `('emits $eventName when clicking on the $btnText button', async ({ elFinder, eventName }) => {
       await elFinder().vm.$emit('click');
 
       expect(wrapper.emitted(eventName)).toHaveLength(1);
+    });
+  });
+
+  describe('on analytics tab', () => {
+    beforeEach(() => {
+      createComponent({ props: { currentTab: 'analytics' } });
+    });
+
+    it("doesn't render resources list", () => {
+      expect(findResourcesListContainer().exists()).toBe(false);
+    });
+
+    it('renders resources analytics component with correct props', () => {
+      const resources = catalogResponseBody.data.ciCatalogResources.nodes;
+      expect(findResourcesAnalytics().props()).toEqual({ resources });
     });
   });
 });

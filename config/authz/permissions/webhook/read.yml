@@ -1,0 +1,7 @@
+---
+name: read_webhook
+description: Grants the ability to read webhooks
+boundaries:
+  - group
+  - project
+  - instance

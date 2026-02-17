@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIntersectionObserver, GlIcon } from '@gitlab/ui';
-import Draggable from 'vuedraggable';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __, s__ } from '~/locale';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
@@ -807,13 +807,14 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardLimitExceeded,
+        'gl-rounded-bl-lg gl-rounded-br-lg gl-bg-red-50': boardLimitExceeded,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
         'list-empty': !listItemsCount,
         'list-collapsed': list.collapsed,
       }"
       :draggable="canMoveIssue ? '.board-card' : false"
+      item-key="id"
       class="board-list gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-2"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
@@ -874,19 +875,21 @@ export default {
         />
       </board-card>
       <!-- for supporting previous structure with intersection observer -->
-      <li
-        v-if="showCount"
-        class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
-        data-issue-id="-1"
-      >
-        <gl-loading-icon
-          v-if="isLoadingMore"
-          size="sm"
-          :label="$options.i18n.loadingMoreBoardItems"
-        />
-        <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
-        <span v-else>{{ paginatedIssueText }}</span>
-      </li>
+      <template #footer>
+        <li
+          v-if="showCount"
+          class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
+          data-issue-id="-1"
+        >
+          <gl-loading-icon
+            v-if="isLoadingMore"
+            size="sm"
+            :label="$options.i18n.loadingMoreBoardItems"
+          />
+          <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
+          <span v-else>{{ paginatedIssueText }}</span>
+        </li>
+      </template>
     </component>
   </div>
 </template>

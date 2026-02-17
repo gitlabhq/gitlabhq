@@ -1,5 +1,5 @@
 <!--
-  See the general Documentation guidelines https://docs.gitlab.com/ee/development/documentation/
+  See the general Documentation guidelines https://docs.gitlab.com/development/documentation/
   Use this description template for changing documentation location. For new documentation or
   updates to existing documentation, use the Documentation.md template.
 -->

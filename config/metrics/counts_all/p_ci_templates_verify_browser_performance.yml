@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_verify_browser_performance
 description: Count of distinct projects that included the Verify/Browser-Performance.gitlab-ci.yml template in a pipeline
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: '14.3'

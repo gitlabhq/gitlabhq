@@ -367,7 +367,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, developers: user) }
     let_it_be(:boundary) { Authz::Boundary.for(project) }
-    let_it_be(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :create_issue) }
+    let_it_be(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :write_work_item) }
 
     let(:methods) { PolicyActor.instance_methods }
 
@@ -637,6 +637,29 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'scopes' do
+    describe '.inactive', :freeze_time do
+      let_it_be(:token_expired_today) { create(:personal_access_token, expires_at: Date.current) }
+      let_it_be(:token_expired_yesterday) { create(:personal_access_token, expires_at: Date.yesterday) }
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked) }
+      let_it_be(:active_token) { create(:personal_access_token) }
+
+      it 'includes token that expired today' do
+        expect(described_class.inactive).to include(token_expired_today)
+      end
+
+      it 'includes token that expired yesterday' do
+        expect(described_class.inactive).to include(token_expired_yesterday)
+      end
+
+      it 'includes token that is revoked' do
+        expect(described_class.inactive).to include(revoked_token)
+      end
+
+      it 'does not include token that is active' do
+        expect(described_class.inactive).not_to include(active_token)
+      end
+    end
+
     describe '.active' do
       let_it_be(:revoked_token) { create(:personal_access_token, :revoked) }
       let_it_be(:not_revoked_false_token) { create(:personal_access_token, revoked: false) }

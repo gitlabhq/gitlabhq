@@ -310,6 +310,26 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
           expect(inputs.errors).to contain_exactly('`boolean_input` input: default value is not a boolean')
         end
       end
+
+      context 'when using rules with false default' do
+        let(:specs) do
+          {
+            boolean_input: {
+              type: 'boolean',
+              rules: [
+                { default: false }
+              ]
+            }
+          }
+        end
+
+        let(:args) { {} }
+
+        it 'is valid' do
+          expect(inputs).to be_valid
+          expect(inputs.to_hash).to eq(boolean_input: false)
+        end
+      end
     end
 
     context 'when given an unknown type' do

@@ -11,6 +11,86 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     it { is_expected.to allow_value(true, false).for(:only_protected_branches) }
     it { is_expected.not_to allow_value(nil).for(:only_protected_branches) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe '#validate_mirror_count' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      before do
+        stub_const('RemoteMirror::MAX_MIRRORS_PER_PROJECT', 3)
+      end
+
+      context 'when enabling a disabled mirror would exceed the limit' do
+        before do
+          3.times { |i| project.remote_mirrors.create!(url: "http://enabled#{i}.com", enabled: true) }
+        end
+
+        it 'prevents enabling the mirror' do
+          disabled_mirror = project.remote_mirrors.create!(url: "http://disabled.com", enabled: false)
+          disabled_mirror.enabled = true
+          expect(disabled_mirror).not_to be_valid
+          expect(disabled_mirror.errors[:base]).to include("Maximum number of push mirrors (#{RemoteMirror::MAX_MIRRORS_PER_PROJECT}) exceeded for this project.")
+        end
+      end
+
+      context 'when under the limit' do
+        before do
+          2.times { |i| project.remote_mirrors.create!(url: "http://test#{i}.com", enabled: true) }
+        end
+
+        it 'allows creating a new mirror' do
+          mirror = project.remote_mirrors.new(url: 'http://new.com', enabled: true)
+
+          expect(mirror).to be_valid
+        end
+      end
+
+      context 'when at the limit' do
+        before do
+          3.times { |i| project.remote_mirrors.create!(url: "http://test#{i}.com", enabled: true) }
+        end
+
+        it 'prevents creating a new mirror' do
+          mirror = project.remote_mirrors.new(url: 'http://new.com', enabled: true)
+
+          expect(mirror).not_to be_valid
+          expect(mirror.errors[:base]).to include("Maximum number of push mirrors (#{RemoteMirror::MAX_MIRRORS_PER_PROJECT}) exceeded for this project.")
+        end
+      end
+
+      context 'when at limit but some mirrors are disabled' do
+        before do
+          2.times { |i| project.remote_mirrors.create!(url: "http://enabled#{i}.com", enabled: true) }
+          2.times { |i| project.remote_mirrors.create!(url: "http://disabled#{i}.com", enabled: false) }
+        end
+
+        it 'allows creating a new mirror' do
+          mirror = project.remote_mirrors.new(url: 'http://new.com', enabled: true)
+
+          expect(mirror).to be_valid
+        end
+      end
+    end
+
+    describe '#enabling_mirror?' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      it 'returns true when enabling a disabled mirror' do
+        mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: false)
+        mirror.enabled = true
+        expect(mirror.send(:enabling_mirror?)).to be true
+      end
+
+      it 'returns false when disabling an enabled mirror' do
+        mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: true)
+        mirror.enabled = false
+        expect(mirror.send(:enabling_mirror?)).to be false
+      end
+
+      it 'returns false when enabled is not changed' do
+        mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: true)
+        expect(mirror.send(:enabling_mirror?)).to be false
+      end
+    end
   end
 
   describe 'URL validation' do

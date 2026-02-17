@@ -15,6 +15,10 @@ module API
       strong_memoize_attr :group_or_namespace
     end
 
+    def self.authorization_boundary_options
+      { boundary_type: :group, boundary: -> { group_or_namespace } }
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end

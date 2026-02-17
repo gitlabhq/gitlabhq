@@ -20,13 +20,14 @@ module API
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Get a list of #{human_eventable_str} resource state events" do
           success Entities::ResourceStateEvent
-          tags ['resource_state_events']
+          tags ['resource_events']
         end
         params do
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"
           use :pagination
         end
 
+        route_setting :authorization, permissions: :"read_#{eventable_type.to_s.underscore}_state_event", boundary_type: parent_type.to_sym
         get ":id/#{eventables_str}/:eventable_id/resource_state_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
@@ -37,12 +38,13 @@ module API
 
         desc "Get a single #{human_eventable_str} resource state event" do
           success Entities::ResourceStateEvent
-          tags ['resource_state_events']
+          tags ['resource_events']
         end
         params do
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"
           requires :event_id, type: Integer, desc: 'The ID of a resource state event'
         end
+        route_setting :authorization, permissions: :"read_#{eventable_type.to_s.underscore}_state_event", boundary_type: parent_type.to_sym
         get ":id/#{eventables_str}/:eventable_id/resource_state_events/:event_id", feature_category: feature_category do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 

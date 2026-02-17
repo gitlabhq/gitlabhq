@@ -40,7 +40,7 @@ class AbuseReport < ApplicationRecord
   validates :user_id,
     uniqueness: {
       scope: [:reporter_id, :category],
-      message: ->(object, data) do
+      message: ->(_object, _data) do
         _('You have already reported this user')
       end
     }, on: :create
@@ -102,6 +102,7 @@ class AbuseReport < ApplicationRecord
   CONTROLLER_TO_REPORT_TYPE = {
     'users' => :profile,
     'projects/issues' => :issue,
+    'projects/work_items' => :issue,
     'projects/merge_requests' => :merge_request
   }.freeze
 
@@ -143,7 +144,9 @@ class AbuseReport < ApplicationRecord
   def reported_content
     case report_type
     when :issue
-      reported_project.issues.iid_in(route_hash[:id]).pick(:description_html)
+      # WorkItems URLs identifiers are iid instead of id.
+      issue_id = route_hash[:id] || route_hash[:iid]
+      reported_project.issues.iid_in(issue_id).pick(:description_html)
     when :merge_request
       reported_project.merge_requests.iid_in(route_hash[:id]).pick(:description_html)
     when :comment

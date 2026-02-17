@@ -194,11 +194,8 @@ glClient.refreshLinkClickTracking();
 
 ### `trackError`
 
-{{< alert type="note" >}}
-
-`trackError` is supported on the Browser SDK, but the resulting events are not used or available.
-
-{{< /alert >}}
+> [!note]
+> `trackError` is supported on the Browser SDK, but the resulting events are not used or available.
 
 Used to capture errors. This works only when the `errorTracking` plugin is enabled. The [plugin](#plugins) is enabled by default.
 

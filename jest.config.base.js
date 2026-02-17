@@ -3,12 +3,14 @@ const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
 if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
   throw new Error(
     `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
   );
 }
 const USE_VUE_3 = EXPLICIT_VUE_VERSION === '3';
+const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
 
 const { TEST_HOST } = require('./spec/frontend/__helpers__/test_constants');
 
@@ -25,17 +27,25 @@ module.exports = (path, options = {}) => {
   } = options;
 
   const reporters = ['default'];
-  const VUE_JEST_TRANSFORMER = USE_VUE_3 ? '@vue/vue3-jest' : '@vue/vue2-jest';
+  const VUE_JEST_TRANSFORMER = USE_VUE3_COMPILER ? '@vue/vue3-jest' : '@vue/vue2-jest';
   const setupFilesAfterEnv = [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'];
   const vueModuleNameMappers = {
     // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
     '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
     '@gitlab/ui$': '@gitlab/ui/src',
+    '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
   };
   const globals = {};
 
   const customElements = ['fe-island-duo-next'];
   const isCE = (tag) => customElements.includes(tag);
+
+  if (!USE_VUE_3) {
+    Object.assign(vueModuleNameMappers, {
+      '^portal-vue-vue3-impl$':
+        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
+    });
+  }
 
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
@@ -47,20 +57,26 @@ module.exports = (path, options = {}) => {
       '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
       '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
       '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
+      '^vendor/vue-virtual-scroller$':
+        '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+      '^portal-vue-vue3-impl$':
+        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     });
-    Object.assign(globals, {
-      'vue-jest': {
-        experimentalCSSCompile: false,
-        compiler: require.resolve('./config/vue3migration/compiler'),
-        compilerOptions: {
-          whitespace: 'preserve',
-          compatConfig: {
-            MODE: 2,
+    if (USE_VUE3_COMPILER) {
+      Object.assign(globals, {
+        'vue-jest': {
+          experimentalCSSCompile: false,
+          compiler: require.resolve('./config/vue3migration/vue3_template_compiler'),
+          compilerOptions: {
+            whitespace: 'preserve',
+            compatConfig: {
+              MODE: 2,
+            },
+            isCustomElement: isCE,
           },
-          isCustomElement: isCE,
         },
-      },
-    });
+      });
+    }
   }
 
   // To have consistent date time parsing both in local and CI environments we set
@@ -180,31 +196,6 @@ module.exports = (path, options = {}) => {
     return '<rootDir>/coverage-frontend/';
   };
 
-  const gfmParserDependencies = [
-    'rehype-.*',
-    'remark-.*',
-    'hast*',
-    'unist.*',
-    'markdown-table',
-    'mdast-util-.*',
-    'micromark.*',
-    'vfile.*',
-    'bail',
-    'trough',
-    'unified',
-    'is-plain-obj',
-    'decode-named-character-reference',
-    'character-entities*',
-    'property-information',
-    'space-separated-tokens',
-    'comma-separated-tokens',
-    'web-namespaces',
-    'zwitch',
-    'html-void-elements',
-    'ccount',
-    'escape-string-regexp',
-  ];
-
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
     '@gitlab/ui',
@@ -214,6 +205,7 @@ module.exports = (path, options = {}) => {
     '@gitlab/web-ide',
     '@gitlab/query-language',
     'bootstrap-vue',
+    'portal-vue',
     'gridstack',
     'three',
     'monaco-editor',
@@ -230,7 +222,13 @@ module.exports = (path, options = {}) => {
     'vscode-languageserver-types',
     'yaml',
     'dexie',
-    ...gfmParserDependencies,
+    'markdown-table',
+    'mdast-util-.*',
+    'micromark.*',
+    'is-plain-obj',
+    'decode-named-character-reference',
+    'character-entities*',
+    'escape-string-regexp',
   ];
 
   return {
@@ -256,7 +254,10 @@ module.exports = (path, options = {}) => {
     setupFilesAfterEnv,
     restoreMocks: true,
     // actual test timeouts
-    testTimeout: process.env.CI ? 10000 : 5000,
+    // Increased from 10000 to 15000 for CI to accommodate gVisor's syscall overhead
+    // gVisor's system call interception adds ~10-20% latency which can cause
+    // timing-sensitive tests to exceed the 10s timeout on edge cases
+    testTimeout: process.env.CI ? 15000 : 5000,
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',

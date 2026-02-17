@@ -130,7 +130,9 @@ module ObjectStorage
     end
 
     def google_gocloud_url
-      "gs://#{bucket_name}"
+      url = "gs://#{bucket_name}"
+      url += "?universe_domain=#{config.universe_domain}" if config.universe_domain.present?
+      url
     end
 
     def use_workhorse_s3_client?

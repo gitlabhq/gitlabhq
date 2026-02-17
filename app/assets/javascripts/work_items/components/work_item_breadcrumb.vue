@@ -39,6 +39,10 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
     },
     listName() {
+      if (this.isServiceDeskList) {
+        return __('Service Desk');
+      }
+
       if (this.isWorkItemPlanningViewEnabled) {
         return s__('WorkItem|Work items');
       }
@@ -47,23 +51,19 @@ export default {
         return __('Epics');
       }
 
-      if (this.isServiceDeskList) {
-        return __('Service Desk');
-      }
-
       return __('Issues');
     },
     breadcrumbType() {
+      if (this.isServiceDeskList) {
+        return 'service_desk';
+      }
+
       if (this.isWorkItemPlanningViewEnabled) {
         return 'work_items';
       }
 
       if (this.isEpicsList) {
         return 'epics';
-      }
-
-      if (this.isServiceDeskList) {
-        return 'service_desk';
       }
 
       return 'issues';

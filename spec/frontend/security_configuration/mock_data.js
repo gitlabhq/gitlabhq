@@ -90,30 +90,6 @@ export const getSecurityTrainingProvidersData = (providerOverrides = {}) => {
   };
 };
 
-export const dismissUserCalloutResponse = {
-  data: {
-    userCalloutCreate: {
-      errors: [],
-      userCallout: {
-        dismissedAt: '2022-02-02T04:36:57Z',
-        featureName: 'SECURITY_TRAINING_FEATURE_PROMOTION',
-      },
-    },
-  },
-};
-
-export const dismissUserCalloutErrorResponse = {
-  data: {
-    userCalloutCreate: {
-      errors: ['Something went wrong'],
-      userCallout: {
-        dismissedAt: '',
-        featureName: 'SECURITY_TRAINING_FEATURE_PROMOTION',
-      },
-    },
-  },
-};
-
 export const updateSecurityTrainingProvidersResponse = {
   data: {
     securityTrainingUpdate: {
@@ -185,6 +161,9 @@ export const provideMock = {
   licenseConfigurationSource: 'SBOM',
   canReadAttributes: false,
   canManageAttributes: false,
+  canApplyProfiles: true,
+  securityScanProfilesLicensed: true,
+  maxTrackedRefs: 2,
 };
 
 export const createTrackedRef = (overrides = {}) => ({

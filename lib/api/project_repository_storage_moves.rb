@@ -76,6 +76,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project
       get ':id/repository_storage_moves' do
         storage_moves = user_project.repository_storage_moves.with_projects.order_created_at_desc
 
@@ -89,6 +90,7 @@ module API
       params do
         requires :repository_storage_move_id, type: Integer, desc: 'The ID of a project repository storage move'
       end
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project
       get ':id/repository_storage_moves/:repository_storage_move_id' do
         storage_move = user_project.repository_storage_moves.find(params[:repository_storage_move_id])
 
@@ -102,6 +104,7 @@ module API
       params do
         optional :destination_storage_name, type: String, desc: 'The destination storage shard'
       end
+      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :project
       post ':id/repository_storage_moves' do
         storage_move = user_project.repository_storage_moves.build(
           declared_params.compact.merge(source_storage_name: user_project.repository_storage)

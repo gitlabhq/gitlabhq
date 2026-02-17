@@ -1,7 +1,6 @@
 import { debounce } from 'lodash';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
-import Tracking from '~/tracking';
 import { sidebarState } from './constants';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
@@ -22,7 +21,7 @@ export const isDesktopBreakpoint = () => GlBreakpointInstance.windowWidth() >= b
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
-export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
+export const toggleSuperSidebarCollapsed = (collapsed) => {
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
   sidebarState.isPeek = false;
@@ -32,12 +31,6 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   sidebarState.wasHoverPeek = false;
   sidebarState.isCollapsed = collapsed;
   sidebarState.isMobile = !isDesktopBreakpoint();
-
-  if (!gon?.features?.projectStudioEnabled && saveCookie && isDesktopBreakpoint()) {
-    setCookie(SIDEBAR_COLLAPSED_COOKIE, collapsed, {
-      expires: SIDEBAR_COLLAPSED_COOKIE_EXPIRATION,
-    });
-  }
 };
 
 export const toggleSuperSidebarIconOnly = (iconOnly = !sidebarState.isIconOnly) => {
@@ -48,26 +41,20 @@ export const toggleSuperSidebarIconOnly = (iconOnly = !sidebarState.isIconOnly) 
   });
 };
 
-export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = false) => {
+export const initSuperSidebarCollapsedState = () => {
   let collapsed = true;
   if (isDesktopBreakpoint()) {
-    if (gon?.features?.projectStudioEnabled) {
-      // In the "Project Studio" layout, the left sidebar can never be fully collapsed on desktop.
-      collapsed = false;
-    } else {
-      collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
-    }
+    // The left sidebar can never be fully collapsed on desktop.
+    collapsed = false;
   }
 
-  toggleSuperSidebarCollapsed(collapsed, false);
+  toggleSuperSidebarCollapsed(collapsed);
 
-  // In "Project Studio", this cookie means "collapsed to icon-only"
-  if (gon?.features?.projectStudioEnabled) {
-    toggleSuperSidebarIconOnly(getCollapsedCookie());
-  }
+  // This cookie means "collapsed to icon-only"
+  toggleSuperSidebarIconOnly(getCollapsedCookie());
 };
 
-export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = false) => {
+export const bindSuperSidebarCollapsedEvents = () => {
   let previousWindowWidth = window.innerWidth;
 
   // We defer the removal of the class to prevent some CSS transitions from kicking in right when
@@ -83,15 +70,7 @@ export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = fa
     const widthChanged = previousWindowWidth !== newWindowWidth;
 
     if (widthChanged) {
-      const collapsedBeforeResize = sidebarState.isCollapsed;
-      initSuperSidebarCollapsedState(forceDesktopExpandedSidebar);
-      const collapsedAfterResize = sidebarState.isCollapsed;
-      if (!collapsedBeforeResize && collapsedAfterResize) {
-        Tracking.event(undefined, 'nav_hide', {
-          label: 'browser_resize',
-          property: 'nav_sidebar',
-        });
-      }
+      initSuperSidebarCollapsedState();
     }
     previousWindowWidth = newWindowWidth;
   }, 100);

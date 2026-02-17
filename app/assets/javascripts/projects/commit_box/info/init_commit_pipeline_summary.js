@@ -21,6 +21,7 @@ export default (selector = '#js-commit-box-pipeline-summary') => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'PipelineSummaryRoot',
     apolloProvider,
     render(createElement) {
       return createElement(PipelineSummary, {

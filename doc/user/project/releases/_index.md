@@ -26,11 +26,8 @@ Your users benefit from:
 - Ability to download specific versions with their corresponding assets
 - Simple way to track your project's evolution over time
 
-{{< alert type="warning" >}}
-
-Deleting a Git tag associated with a release also deletes the release.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a Git tag associated with a release also deletes the release.
 
 When you create a release, or after, you can:
 
@@ -94,11 +91,11 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 GitLab provides an RSS feed of a project's releases, in Atom format. To view the feed:
 
 1. For projects you are a member of:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Deploy** > **Releases**.
 1. For all projects:
    1. Go to the **Project overview** page.
-   1. On the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
+   1. In the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
 1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}).
 
 ## Create a release
@@ -113,7 +110,7 @@ You can create a release:
 
 Prerequisites:
 
-- You must have at least the Developer role for a project. For more information, read
+- You must have the Developer, Maintainer, or Owner role for a project. For more information, read
   [Release permissions](#release-permissions).
 
 To create a release in the Releases page:
@@ -234,7 +231,7 @@ You can create a release ahead of time by using the [Releases API](../../../api/
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
 release tag. When the `released_at` date and time has passed, the badge is automatically removed.
 
-![An upcoming release](img/upcoming_release_v12_7.png)
+![An upcoming release](img/upcoming_release_v18_8.png)
 
 ## Historical releases
 
@@ -257,7 +254,7 @@ To edit the details of a release after it's created, you can use the
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 In the UI:
 
@@ -280,7 +277,7 @@ Deleting a Git tag associated with a release also deletes the release.
 
 Prerequisites:
 
-- You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
+- You must have the Developer, Maintainer, or Owner role. Read more about [Release permissions](#release-permissions).
 
 To delete a release, use either the
 [Delete a release API](../../../api/releases/_index.md#delete-a-release) or the UI.
@@ -322,13 +319,10 @@ Here is an example of milestones with no releases, one release, and two releases
 
 ![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
 
-{{< alert type="note" >}}
-
-A subgroup's project releases cannot be associated with a parent group's milestone. To learn
-more, read issue #328054,
-[Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
-
-{{< /alert >}}
+> [!note]
+> A subgroup's project releases cannot be associated with a parent group's milestone. To learn
+> more, read issue #328054,
+> [Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
 
 ## Get notified when a release is created
 
@@ -340,7 +334,7 @@ To subscribe to notifications for releases:
 1. Select **Notification setting** (the bell icon).
 1. In the list, select **Custom**.
 1. Select the **New release** checkbox.
-1. Close the dialog box to save.
+1. Close the dialog to save.
 
 ## Prevent unintentional releases by setting a deploy freeze
 
@@ -406,7 +400,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ### View a release and download assets
 
-- Users with at least the Reporter role
+- Users with the Reporter, Developer, Maintainer, or Owner role
   have read and download access to the project releases.
 - Users with the Guest role
   have read and download access to the project releases.
@@ -433,13 +427,13 @@ To make releases available publicly, set the following [project settings](../set
 
 ### Create, update, and delete a release and its assets
 
-- Users with at least the Developer role
+- Users with the Developer, Maintainer, or Owner role
   have write access to the project releases and assets.
 - If a release is associated with a [protected tag](../protected_tags.md),
   the user must be [allowed to create the protected tag](../protected_tags.md#configure-protected-tags) too.
 
 As an example of release permission control, you can allow only
-users with at least the Maintainer role
+users with the Maintainer or Owner role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 

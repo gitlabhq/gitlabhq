@@ -442,7 +442,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       include_examples 'N+1 query check'
     end
 
-    context 'when requesting `timelogs`', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448337' do
+    context 'when requesting `timelogs`',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17054' do
       let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
 
       before do
@@ -600,7 +601,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   context 'when fetching escalation status' do
     let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue_a) }
-    let_it_be(:incident_type) { WorkItems::Type.default_by_type(:incident) }
+    let_it_be(:incident_type) { build(:work_item_system_defined_type, :incident) }
 
     let(:fields) do
       <<~QUERY

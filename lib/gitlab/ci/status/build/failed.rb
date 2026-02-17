@@ -16,6 +16,7 @@ module Gitlab
             runner_unsupported: 'unsupported runner',
             stale_schedule: 'stale schedule',
             job_execution_timeout: 'job execution timeout',
+            job_execution_server_timeout: 'job execution timeout',
             archived_failure: 'archived failure',
             unmet_prerequisites: 'unmet prerequisites',
             scheduler_failure: 'scheduler failure',
@@ -45,7 +46,8 @@ module Gitlab
             duo_workflow_not_allowed: 'Duo Workflow cannot run on this runner',
             failed_outdated_deployment_job: 'failed outdated deployment job',
             reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
-            job_router_failure: 'The Job Router failed to run this job.'
+            job_router_failure: 'The Job Router failed to run this job.',
+            job_token_expired: 'job token has expired'
           }.freeze
           # rubocop: enable Layout/LineLength
 

@@ -44,6 +44,7 @@ html:not(.page-with-panels) .file-tree-browser  {
   &.file-tree-browser-peek {
     @apply gl-shadow;
     @apply gl-rounded-base;
+    @apply gl-rounded-l-none;
     bottom: 0;
   }
 }
@@ -200,13 +201,13 @@ html:not(.page-with-panels) .file-tree-browser  {
             &:first-child {
               box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-left-radius: $gl-border-radius-base-inner;
+              border-bottom-left-radius: $gl-border-radius-lg-inner;
             }
 
             &:last-child {
               box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-right-radius: $gl-border-radius-base-inner;
+              border-bottom-right-radius: $gl-border-radius-lg-inner;
             }
           }
         }

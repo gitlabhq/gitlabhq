@@ -21,17 +21,6 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
     end
   end
 
-  context 'when the archive_group feature flag is disabled' do
-    before do
-      stub_feature_flags(archive_group: false)
-    end
-
-    it 'returns an error response' do
-      expect(service_response).to be_error
-      expect(service_response.message).to eq("You don't have permissions to archive this group!")
-    end
-  end
-
   context 'when the group is already archived' do
     before do
       group.namespace_settings.update!(archived: true)
@@ -140,26 +129,6 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
           .to receive(:perform_async).with(group.id, user.id)
 
         service_response
-      end
-
-      context 'when `cascade_unarchive_group` flag is disabled' do
-        before do
-          stub_feature_flags(cascade_unarchive_group: false)
-        end
-
-        it 'archives the group' do
-          service_response
-
-          expect(group.namespace_settings.reload.archived).to be(true)
-        end
-
-        it 'does not modify descendant and projects archived state' do
-          expect { service_response }
-            .to not_change { subgroup.namespace_settings.reload.archived }
-              .and not_change { sub_subgroup.namespace_settings.reload.archived }
-                .and not_change { archived_project.reload.archived }
-                  .and not_change { archived_subgroup_project.reload.archived }
-        end
       end
     end
 

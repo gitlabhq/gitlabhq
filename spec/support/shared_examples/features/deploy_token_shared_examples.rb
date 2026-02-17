@@ -33,7 +33,7 @@ RSpec.shared_examples 'a deploy token in settings' do
 
     within('#new-deploy-token-alert') do
       expect(find("input[name='deploy-token-user']").value).to eq("deployer")
-      expect(find("input[name='deploy-token'][readonly='readonly']")).to be_visible
+      expect(find("input[name='deploy-token']")).to be_readonly
     end
 
     expect(find("input#deploy_token_name").value).to be_empty

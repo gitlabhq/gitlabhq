@@ -84,14 +84,11 @@ With BYOK, you can encrypt your GitLab Dedicated data at rest using your own AWS
 you retain control over your own AWS KMS encryption keys. You manage access policies through your AWS
 account.
 
-{{< alert type="note" >}}
-
-BYOK must be enabled during instance onboarding. Once enabled, it cannot be disabled.
-
-If you did not enable BYOK during onboarding, your data is still encrypted at rest with AWS-managed
-keys, but you cannot use your own keys.
-
-{{< /alert >}}
+> [!note]
+> BYOK must be enabled during instance onboarding. Once enabled, it cannot be disabled.
+> 
+> If you did not enable BYOK during onboarding, your data is still encrypted at rest with AWS-managed
+> keys, but you cannot use your own keys.
 
 Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material
 (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin)
@@ -129,8 +126,11 @@ To create AWS KMS keys for BYOK:
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.
 1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
-1. Review the KMS key policy. It should look similar to the example below, populated with your
-   account IDs and usernames.
+1. Verify the KMS key policy matches the following example. Replace placeholder values 
+   with your account IDs and usernames. Additional restrictions beyond this policy are not supported.
+
+   > [!note]
+   > Remove any additional conditions or restrictions, including those that AWS might auto-generate like `kms:GrantIsForAWSResource`.
 
 ```json
 {
@@ -256,12 +256,9 @@ services.
 | Amazon RDS (PostgreSQL) | Uses SSL/TLS (minimum TLS 1.2) to encrypt database connections. |
 | AWS KMS | Uses TLS to encrypt API requests. |
 
-{{< alert type="note" >}}
-
-Encryption for data in transit is performed with TLS using keys generated and managed by GitLab
-Dedicated components, and is not covered by BYOK.
-
-{{< /alert >}}
+> [!note]
+> Encryption for data in transit is performed with TLS using keys generated and managed by GitLab
+> Dedicated components, and is not covered by BYOK.
 
 ### Custom TLS certificates
 

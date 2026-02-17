@@ -24,6 +24,7 @@ export default (selector = '#js-project-delete-button') => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'DeleteButtonRoot',
     render(createElement) {
       return createElement(DeleteButton, {
         props: {

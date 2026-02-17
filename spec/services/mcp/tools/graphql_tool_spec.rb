@@ -155,6 +155,18 @@ RSpec.describe Mcp::Tools::GraphqlTool, feature_category: :mcp_server do
     end
   end
 
+  describe '#icons' do
+    it 'returns icons array with dark and light themes' do
+      icons = tool.icons
+
+      expect(icons).to be_an(Array)
+      expect(icons.length).to eq(2)
+      expect(icons.first).to include(:mimeType, :src, :theme)
+      expect(icons.first[:theme]).to eq('dark')
+      expect(icons.last[:theme]).to eq('light')
+    end
+  end
+
   describe '#execute' do
     let(:graphql_result) do
       {

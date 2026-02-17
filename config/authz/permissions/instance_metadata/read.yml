@@ -1,0 +1,5 @@
+---
+name: read_instance_metadata
+description: Grants the ability to read instance metadata
+boundaries:
+  - instance

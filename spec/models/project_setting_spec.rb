@@ -242,6 +242,23 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
   it_behaves_like 'projects squash option'
 
+  describe '#automatic_rebase_enabled' do
+    it 'defaults to false' do
+      project_setting = build(:project_setting)
+      expect(project_setting.automatic_rebase_enabled).to be(false)
+    end
+
+    it 'can be set to true' do
+      project_setting = build(:project_setting, automatic_rebase_enabled: true)
+      expect(project_setting.automatic_rebase_enabled).to be(true)
+    end
+
+    it 'can be set to false' do
+      project_setting = build(:project_setting, automatic_rebase_enabled: false)
+      expect(project_setting.automatic_rebase_enabled).to be(false)
+    end
+  end
+
   def valid_target_platform_combinations
     target_platforms = described_class::ALLOWED_TARGET_PLATFORMS
 

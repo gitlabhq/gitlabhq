@@ -32,12 +32,9 @@ To set up a basic workspace configuration:
 
 If your workspace configuration is not working, see [Troubleshooting workspaces](workspaces_troubleshooting.md).
 
-{{< alert type="note" >}}
-
-If a setting has an invalid value, it's not possible to update any setting until you fix that value.
-Updating any of these settings, except `enabled`, does not affect existing workspaces.
-
-{{< /alert >}}
+> [!note]
+> If a setting has an invalid value, it's not possible to update any setting until you fix that value.
+> Updating any of these settings, except `enabled`, does not affect existing workspaces.
 
 ## Configuration reference
 
@@ -79,17 +76,14 @@ remote_development:
   enabled: true
 ```
 
-{{< alert type="note" >}}
-
-If `enabled` is set to `false` for an agent that has active or stopped workspaces,
-those workspaces become orphaned and unusable.
-
-Before you disable remote development on an agent:
-
-- Ensure all associated workspaces are no longer needed.
-- Manually delete any running workspaces to remove them from the Kubernetes cluster.
-
-{{< /alert >}}
+> [!note]
+> If `enabled` is set to `false` for an agent that has active or stopped workspaces,
+> those workspaces become orphaned and unusable.
+> 
+> Before you disable remote development on an agent:
+> 
+> - Ensure all associated workspaces are no longer needed.
+> - Manually delete any running workspaces to remove them from the Kubernetes cluster.
 
 ### `dns_zone`
 
@@ -244,13 +238,10 @@ For more information about possible CPU and memory values, see:
 
 Workspaces fail when they exceed the values you set for `requests` and `limits`.
 
-{{< alert type="note" >}}
-
-If [`shared_namespace`](#shared_namespace) is set, `max_resources_per_workspace` must be an
-empty hash. Users can create a Kubernetes [Resource quota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
-in the `shared_namespace` to achieve the same result as specifying this value here.
-
-{{< /alert >}}
+> [!note]
+> If [`shared_namespace`](#shared_namespace) is set, `max_resources_per_workspace` must be an
+> empty hash. Users can create a Kubernetes [Resource quota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+> in the `shared_namespace` to achieve the same result as specifying this value here.
 
 Example configuration:
 

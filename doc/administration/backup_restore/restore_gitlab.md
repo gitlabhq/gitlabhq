@@ -34,8 +34,23 @@ test the complete restore process before using it in production.
 You need to have a working GitLab installation before you can perform a
 restore. This is because the system user performing the restore actions (`git`)
 is usually not allowed to create or delete the SQL database needed to import
-data into (`gitlabhq_production`). All existing data is either erased
-(SQL) or moved to a separate directory (such as repositories and uploads).
+data into (`gitlabhq_production`).
+
+### The destination GitLab instance must not have existing data
+
+The restore process handles existing data differently depending on the data type:
+
+- PostgreSQL data is automatically erased during the restore process.
+- Git repositories: If repositories with the same name already exist, the restore fails
+  with a "repository already exists" error. For more information, see
+  [issue 118459](https://gitlab.com/gitlab-org/gitlab/-/issues/118459).
+- File system data is attempted to be moved to a separate directory before restoration.
+- Object storage data is not automatically cleared. You must manually clear object storage
+  buckets before restoring to avoid retaining orphaned data.
+
+For a reliable restore process, for example when automating production-to-staging
+restores, use a fresh GitLab installation at the same version as the backup.
+
 Restoring SQL data skips views owned by PostgreSQL extensions.
 
 ### The destination GitLab instance must have the exact same version
@@ -56,6 +71,16 @@ variables used for two-factor authentication. Without the keys, multiple issues
 occur, including loss of access by users with two-factor authentication
 enabled, and GitLab Runners cannot sign in.
 
+> [!warning]
+> **WebAuthn devices are disabled when restoring to a different FQDN:**
+> WebAuthn registrations (such as YubiKeys) are cryptographically bound to the origin
+> (domain/hostname) where they were created. If you restore a backup to a GitLab instance
+> with a different FQDN than the original instance, all WebAuthn devices will be disabled.
+> Users will need to re-register their WebAuthn devices after the restore is complete.
+> 
+> For more information about WebAuthn and hostname requirements, see
+> [Two-factor authentication](../../user/profile/account/two_factor_authentication.md#information-for-gitlab-administrators).
+
 Based on your installation method, restore the following:
 
 {{< tabs >}}
@@ -70,9 +95,9 @@ Based on your installation method, restore the following:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-[Restore the secrets](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-the-secrets).
+[Restore the secrets](https://docs.gitlab.com/charts/backup-restore/restore/#restoring-the-secrets).
 
-[GitLab Helm chart secrets can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html), if required.
+[GitLab Helm chart secrets can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package/), if required.
 
 {{< /tab >}}
 
@@ -178,12 +203,9 @@ GitLab version mismatch:
 
 Install the correct GitLab version, and then try again.
 
-{{< alert type="warning" >}}
-
-The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
-your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
-
-{{< /alert >}}
+> [!warning]
+> The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
+> your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Run reconfigure on the PostgreSQL node:
 
@@ -216,7 +238,7 @@ sudo gitlab-rake gitlab:uploads:check
 
 After the restore is completed, it's recommended to generate database statistics to improve the database performance and avoid inconsistencies in the UI:
 
-1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database).
+1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database).
 1. Run the following:
 
    ```sql
@@ -248,7 +270,7 @@ the backup location (default location is `/var/opt/gitlab/backups`).
 ### Restore for Helm chart installations
 
 The GitLab Helm chart uses the process documented in
-[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-a-gitlab-installation)
+[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore/#restoring-a-gitlab-installation)
 
 ### Restore for Docker image installations
 
@@ -450,14 +472,11 @@ To exclude specific tasks:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
-that can cause data loss. The problem affects repositories that have been forked and use GitLab
-[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss,
-only restore backups by using GitLab 17.2 or later.
-
-{{< /alert >}}
+> [!warning]
+> GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+> that can cause data loss. The problem affects repositories that have been forked and use GitLab
+> [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss,
+> only restore backups by using GitLab 17.2 or later.
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be restored separately
@@ -486,14 +505,11 @@ For example:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
-that can cause data loss. The problem affects repositories that have been forked and use GitLab
-[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, only restore backups by using GitLab
-17.2 or later.
-
-{{< /alert >}}
+> [!warning]
+> GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+> that can cause data loss. The problem affects repositories that have been forked and use GitLab
+> [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, only restore backups by using GitLab
+> 17.2 or later.
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you
@@ -501,13 +517,10 @@ specify a group path, all repositories in all projects in the group and
 descendant groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
-{{< alert type="note" >}}
-
-The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
-They do not apply to project or group database entries. If you created a repositories backup
-with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
-
-{{< /alert >}}
+> [!note]
+> The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
+> They do not apply to project or group database entries. If you created a repositories backup
+> with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
 
 For example, to restore all repositories for all projects in Group A (`group-a`), the repository for
 Project C in Group B (`group-b/project-c`), and skip the Project D in Group A (`group-a/project-d`):
@@ -585,7 +598,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=11493107454_2018_04
 kubectl exec <Toolbox pod name> -it -- backup-utility --restore -t <backup_ID> --repositories-server-side
 ```
 
-When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup),
 add the `--repositories-server-side` flag to the extra arguments.
 
 {{< /tab >}}

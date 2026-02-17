@@ -37,9 +37,8 @@ FactoryBot.define do
       after(:build) do |artifact, _evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/pipeline_artifacts/code_coverage.json'), 'application/json')
+        artifact.size = artifact.file.size
       end
-
-      size { file.size }
     end
 
     trait :with_coverage_multibyte_characters do
@@ -73,9 +72,23 @@ FactoryBot.define do
       after(:build) do |artifact, _evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/pipeline_artifacts/code_quality_mr_diff.json'), 'application/json')
+        artifact.size = artifact.file.size
       end
+    end
 
-      size { file.size }
+    trait :with_pipeline_variables do
+      file_type { :pipeline_variables }
+
+      after(:build) do |artifact, _evaluator|
+        file_content = [{ key: 'TEST_VAR', value: 'test_value', variable_type: 'env_var', raw: false }].to_json
+
+        artifact.file = CarrierWaveStringFile.new_file(
+          file_content: file_content,
+          filename: 'pipeline_variables.json',
+          content_type: 'application/json'
+        )
+        artifact.size = file_content.bytesize
+      end
     end
   end
 end

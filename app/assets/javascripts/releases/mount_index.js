@@ -27,6 +27,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ReleaseIndexAppRoot',
     apolloProvider,
     provide: { ...el.dataset },
     render: (h) => h(ReleaseIndexApp),

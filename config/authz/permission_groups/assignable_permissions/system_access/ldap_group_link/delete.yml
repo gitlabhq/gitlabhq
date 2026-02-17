@@ -1,0 +1,7 @@
+---
+name: delete_ldap_group_link
+description: Grants the ability to remove LDAP group links
+boundaries:
+  - group
+permissions:
+  - delete_ldap_group_link

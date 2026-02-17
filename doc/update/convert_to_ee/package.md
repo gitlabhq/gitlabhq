@@ -18,13 +18,10 @@ To convert the instance, you install the EE Linux package on top of the CE insta
 You don't need the same version of CE to EE. For example, CE 18.0 to EE 18.1 should work. However, upgrading the same
 version (for example, CE 18.1 to EE 18.1) is **recommended**.
 
-{{< alert type="warning" >}}
-
-After you convert from EE from CE, don't revert back to CE if you plan to go to EE again. Reverting back to CE can cause
-[database issues](package_troubleshooting.md#500-error-when-accessing-project-repository-settings) that may require
-Support intervention.
-
-{{< /alert >}}
+> [!warning]
+> After you convert from EE from CE, don't revert back to CE if you plan to go to EE again. Reverting back to CE can cause
+> [database issues](package_troubleshooting.md#500-error-when-accessing-project-repository-settings) that may require
+> Support intervention.
 
 ## Convert from CE to EE
 

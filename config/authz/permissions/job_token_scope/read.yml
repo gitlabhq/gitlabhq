@@ -1,0 +1,5 @@
+---
+name: read_job_token_scope
+description: Grants the ability to read CI/CD job token scope settings
+boundaries:
+  - project

@@ -39,6 +39,7 @@ export default function initInviteMembersModal(primaryActionEventName) {
 
   return new Vue({
     el,
+    name: 'CommitFormModalRoot',
     store,
     provide: {
       prependedText: PREPENDED_MODAL_TEXT,

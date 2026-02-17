@@ -320,14 +320,15 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
           commit = imported_mr.merge_request_diff.merge_request_diff_commits.first
 
-          expect(commit.commit_author_id).not_to be_nil
-          expect(commit.committer_id).not_to be_nil
+          expect(commit.commit_author).not_to be_nil
+          expect(commit.committer).not_to be_nil
         end
 
         it 'assigns the correct commit users to diff commits' do
           pipeline.run
 
-          commit = MergeRequestDiffCommit.find_by(sha: 'COMMIT1')
+          commit = MergeRequestDiffCommit.find_by(
+            merge_request_commits_metadata_id: MergeRequest::CommitsMetadata.find_by(sha: 'COMMIT1'))
 
           expect(commit.commit_author.name).to eq('Commit Author')
           expect(commit.commit_author.email).to eq('gitlab@example.com')

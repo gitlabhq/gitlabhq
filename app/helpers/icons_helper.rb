@@ -128,9 +128,7 @@ module IconsHelper
 
   def audit_icon(name, css_class: nil)
     case name
-    when "standard"
-      name = "key"
-    when "two-factor"
+    when "standard", "two-factor"
       name = "key"
     when "google_oauth2"
       name = "google"
@@ -235,14 +233,13 @@ module IconsHelper
   end
 
   def parse_sprite_definition(sprite_definition)
-    Gitlab::Json.parse(
+    Gitlab::Json.safe_parse(
       Rails.application
            .assets_manifest
            .find_sources(sprite_definition)
            .first
            .to_s
-           .force_encoding('UTF-8')
-    )
+           .force_encoding('UTF-8'))
   end
 
   def memoized_icon(key)

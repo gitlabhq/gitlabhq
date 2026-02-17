@@ -269,7 +269,7 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
         .to eq reference
     end
 
-    it 'commit ref tag is valid' do
+    it 'commit ref tag is valid', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6683' do
       doc = reference_filter("See #{reference}")
       commit_ref_tag = doc.css('a').first.css('span.gfm.gfm-commit')
 
@@ -359,19 +359,6 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
 
         expect(commit).not_to be_nil
         expect(commit.sha).to eq(commit_sha)
-      end
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_commits_dedup: false)
-      end
-
-      it 'does not preload commits metadata' do
-        expect(filter).not_to receive(:preloaded_all_commits)
-        expect(merge_request).to receive(:all_commits).and_call_original
-
-        filter.send(:find_commit_by_sha, merge_request, commit_sha)
       end
     end
   end

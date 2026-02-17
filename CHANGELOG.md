@@ -547,6 +547,65 @@ entry.
 - [Fix 20 rubocop violations for Layout/ArrayAlignment](https://gitlab.com/gitlab-org/gitlab/-/commit/d7277a5392e541ddbfd436e762c6abd6411d2d77) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200147))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ac7c5c8ba97b3dd4fe6cda9c3deea0be0dfeea5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214950))
 
+## 18.7.4 (2026-02-09)
+
+### Fixed (2 changes)
+
+- [Add preflight checks to resume_indexing rake task](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df390f044e2619f9eba4420d654c6a3bd36ed632) **GitLab Enterprise Edition**
+- [Fix: DAP enablement setting availability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/693f4bfdfb36aaab4cdaae39eb3740f0e2469c70) **GitLab Enterprise Edition**
+
+### Security (13 changes)
+
+- [587546 DoS Customizable Dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3ca763b0fc02682fa3beac91d64ffef8a65b8fa6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5728))
+- [Fix SSRF in virtual_registries without restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f0ba369c7402511d47998a729f184a8967c410c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5627))
+- [Filter groups by accessible to user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1ebfae918c4bad66a9c914ad0b3c372e6dec6334) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5715))
+- [Don't quadratically re-process children in TaskListFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/442038caafbec4fd223c8b75b08f6d15a0ca1ad9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5725))
+- [Add authorization for pipeline schedule inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c11e41055ac205b4ffb124e118b1f91b2e324187) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5691))
+- [Don't copy the whole path per component removed in RepositoryLinkFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/07dc90352d244c1d805c99ed59b350b4602ee650) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5721))
+- [Fix DoS vulnerability via malformed JSON escape sequences](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44f4068add220c598b3cbb4550c9f0742c46dcf4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5709))
+- [Pass full context to query service in /api/glql; deny sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1781ef0ad13d401b7e2c60dd3b2c7ac8b42680f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5705))
+- [Don't render label link tooltip names as HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6550aaf9a7baa6523ff9c4de84d48132dff2feb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5701))
+- [Fix test case title html injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/357cc869771c8eeb83abd963c3e478b2b20a0635) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5684))
+- [HTML injection in vulnerability reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44c9aaf4210e7e0bde1a61347295ff2833935489) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5667))
+- [Disable GraphQL Introspection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/deda2995429f0f8afa0dad52a4edc318a867ed77) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5634))
+- [Enforce git import url validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5b159786be855f6d9ca56f9c02c4235c9eea560) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5672))
+
+## 18.7.3 (2026-02-04)
+
+### Fixed (5 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/895b313ed9c2eb0a200590082876b0f37974d919) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221763))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/bc5a9b0a43682ac093d94a33a8dcfd1cabc8d5d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Only check optional ActionCable Redis instance if necessary](https://gitlab.com/gitlab-org/gitlab/-/commit/2afd50a3035a22f5e50d67ec4f8fdafd7df7858f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220694))
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/d30364b35d16613f952d15f5935fd83aba67627f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219985)) **GitLab Enterprise Edition**
+- [Fix enforced_scans sync with inject_policy](https://gitlab.com/gitlab-org/gitlab/-/commit/163983623ec1c43aa775fec814fe695b46c15eeb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219610)) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Zoekt searchable should check for online nodes](https://gitlab.com/gitlab-org/gitlab/-/commit/9e83698effa0818f6cf4166f53d20c6bead18c36) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220966)) **GitLab Enterprise Edition**
+- [Remove duo_workflow_in_ci Feature Flag](https://gitlab.com/gitlab-org/gitlab/-/commit/743fe8f2d13d574e1feca5d9957117b464f35b6e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219831)) **GitLab Enterprise Edition**
+
+## 18.7.2 (2026-01-20)
+
+### Fixed (8 changes)
+
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8e5a7028c64d134fcca7b2a6ba89cbff0320bf64)
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3469cf61ffc33a5186c5c0dc108d90b521737c61)
+- [Allow user namespaces to be indexed in Zoekt for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d1ce678b06a2d599481a90084e9fa31088eee8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218904)) **GitLab Enterprise Edition**
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e96f86cc5bcdbe0a22468dfc07ef39ef8a903fc2)
+- [Fix migration health check endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/35813c8895bc080d7d72d7c69716a374c084da6f)
+- [Recreate p_sent_notifications.reply_key index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02c0a479af12c482f0237c967981614d800a0ac7)
+- [Fix git push error for remote flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0be85e3a2c0fdcc4113185be9a32f6ef52f8460b) **GitLab Enterprise Edition**
+- [Fix container_repositories index repair to handle 1-to-1 relationship](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9aa8d96cd9245a97828d65162251ce194958b7da)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0504a0a8a3e437a535d2664e2f5819a7bf9a9c3d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5615))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef78fca8bb6823bedd59cd8d2ebc7158335dfb3f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5661))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7005dd1d9df8f429e4c633048ce6d53f0aec8e2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5611))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f74981ae0e3abd03584ed4a2acf3dcb25461a694) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5623))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0e071e78f995a6aa0253c69ee9f224fdc0c3ddc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5643))
+
 ## 18.7.1 (2026-01-07)
 
 ### Fixed (1 change)
@@ -1280,6 +1339,57 @@ entry.
 - [Change the urgency of Ci::CreateDownstreamPipelineWorker](https://gitlab.com/gitlab-org/gitlab/-/commit/3c9c6c78e20c58b0543652be65eb3d9c675f7c4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212782))
 - [Remove destroy_fork_network_on_archive feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/9ce139e5d9330c2bf3da3dcb2275df64ac672602) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212714))
 - [Loose Foreign Keys Cleanup Workers should use sticky connections](https://gitlab.com/gitlab-org/gitlab/-/commit/99ae4f5fca9bbcd8e156002c3dca8c6e259cd7e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212600))
+
+## 18.6.6 (2026-02-09)
+
+### Fixed (1 change)
+
+- [Add preflight checks to resume_indexing rake task](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1bd343ec2e8cd5add61639d7ed814f45af0b7e1c) **GitLab Enterprise Edition**
+
+### Security (14 changes)
+
+- [587546 DoS Customizable Dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52eab6dc3f9cc03b40a3e782b75166ec2a6abc87) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5729))
+- [Fix SSRF in virtual_registries without restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/646f839bd30081a7fd5bac164ee43dfcabf972c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5628))
+- [Filter groups by accessible to user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/19ab1d761584c8c55acb8df886d1a7966f2397bb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5716))
+- [Secure Web IDE workbench URLs with session-based secret](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf8c570f8594540252652769b8239f3ac212283c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5682))
+- [Don't quadratically re-process children in TaskListFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/328ca8aeaaef5223bf40f969cae73f943f4c413c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5724))
+- [Add authorization for pipeline schedule inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e8d96b640567828f535fbf12a824c6d8c19ff566) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5692))
+- [Don't copy the whole path per component removed in RepositoryLinkFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/90d61bcbab6afb20b1d169d3383e3bac9e938dce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5720))
+- [Fix DoS vulnerability via malformed JSON escape sequences](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b4ec2ad98f1302cecc28b2b02d7f0ff4efc5ffa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5710))
+- [Pass full context to query service in /api/glql; deny sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8b41df9ab30249d3fae04fcfc1c3ac20e3dbcb2b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5704))
+- [Don't render label link tooltip names as HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7a933b5c8f55ec69cb7794013b592dbb4e3978b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5700))
+- [Fix test case title html injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f87270f125d6ffc4468ae88fdab5d6f5d1c49f06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5685))
+- [HTML injection in vulnerability reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e7d09be7146f2766b5bb8f38fcc78c88f6a6b0b4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5668))
+- [Disable GraphQL Introspection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7274cb7edc5566e5a46b3dce771168472b6dc407) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5638))
+- [Enforce git import url validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b87264c399f9f58f4fc0cd988d821c28dac405fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5674))
+
+## 18.6.5 (2026-02-04)
+
+### Fixed (4 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/4ad77a0ee07741aec7356f4ba47d7152d5dc5bc5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221764))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/fc38ffe0dc8d64821fa8a136fb5b7ff100925bc7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/af165a4c8db2b4f2e765bdc7d0710782419de5e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219978)) **GitLab Enterprise Edition**
+- [Fix MergeRequestDiff.verifiables scope](https://gitlab.com/gitlab-org/gitlab/-/commit/fd4e0fd5ed7bd6422f34bb18be3c7b66a748093a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219691)) **GitLab Enterprise Edition**
+
+## 18.6.4 (2026-01-20)
+
+### Fixed (6 changes)
+
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c1063719f74226c2dc20557d6f94af462f887b9)
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf0adfcad4d9dcdac7a0c7c2dac4afaffab8ab9f)
+- [Allow user namespaces to be indexed in Zoekt for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/88620e5775fc678fcaffb7bd62b2ad8199cd0e3b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218907)) **GitLab Enterprise Edition**
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9adc444888b9086176a38e2fa60445efa6033810)
+- [Fix git push error for remote flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/62721d5ccfc9ff207fd92c5b5c6d5ece1f0b0a9d) **GitLab Enterprise Edition**
+- [Fix container_repositories index repair to handle 1-to-1 relationship](https://gitlab.com/gitlab-org/security/gitlab/-/commit/696fe2cd2aee758f489a7f660e706e163e7fb948)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/275f77cf73d1bac7ddfd7e8e3d6e7fccf0987a00) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5610))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbc91bf7e7a09f21e568702f2dab4da512ec50b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5660))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6c5588edda66d6a9a43435cda0d77c21e102a14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5612))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5eaaedff99e39f8ea44279e9a24acb08fc6e3ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5624))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a92850035467b57e2b499415f0feaa097ae4620c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5644))
 
 ## 18.6.3 (2026-01-07)
 
@@ -5718,7 +5828,7 @@ entry.
 - [Remove store_arkose_session feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/87270f6fb2b1cb00167f2967ef5731387c0aec9f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196772))
 - [Remove explore_pipeline_status feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/05628250ee8c0395f5365e6b292ad69d0bf22669) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196165))
 - [Add node_modules to default dependency scanning excluded paths](https://gitlab.com/gitlab-org/gitlab/-/commit/5d5f3620c9353673b108257fee606197f24b8ed4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195988)) **GitLab Enterprise Edition**
-- [Api#buidlUrl skipped if input is an absolute URL](https://gitlab.com/gitlab-org/gitlab/-/commit/56305277fdc7a90a527fa79d26ea31c11df909e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196109))
+- [Api#buildUrl skipped if input is an absolute URL](https://gitlab.com/gitlab-org/gitlab/-/commit/56305277fdc7a90a527fa79d26ea31c11df909e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196109))
 - [Cleanup use_approval_policy_rules_for_approval_rules feature](https://gitlab.com/gitlab-org/gitlab/-/commit/9835720270ec3814d226ced0539a958025b0ea38) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191927)) **GitLab Enterprise Edition**
 - [Add PG index to support code suggestions filtering](https://gitlab.com/gitlab-org/gitlab/-/commit/e7c65dde45b8a80d2fc84d8401088a107f7eefa6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194935))
 - [Finalize BBM MigrateScimIdentities](https://gitlab.com/gitlab-org/gitlab/-/commit/1a269e6a40de976fe10815ae72c475571b44a669) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193954))

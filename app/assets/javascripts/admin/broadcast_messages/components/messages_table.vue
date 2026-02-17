@@ -83,7 +83,7 @@ export default {
     },
     {
       key: 'buttons',
-      label: '',
+      label: __('Actions'),
       tdClass: `${DEFAULT_TD_CLASSES} gl-whitespace-nowrap`,
     },
   ],

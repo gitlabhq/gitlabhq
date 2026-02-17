@@ -26,7 +26,7 @@ Prerequisites:
 
 ## Create an application
 
-Creates an application by posting a JSON payload.
+Creates an application.
 
 Returns `200` if the request succeeds.
 
@@ -67,7 +67,7 @@ Example response:
 
 ## List all applications
 
-Lists all registered applications.
+Lists all applications.
 
 ```plaintext
 GET /applications
@@ -100,7 +100,7 @@ Example response:
 
 ## Delete an application
 
-Deletes a registered application.
+Deletes a specified application.
 
 Returns `204` if the request succeeds.
 
@@ -130,7 +130,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Renews an application secret. Returns `200` if the request succeeds.
+Renews the secret for a specified application. Returns `200` if the request succeeds.
 
 ```plaintext
 POST /applications/:id/renew-secret

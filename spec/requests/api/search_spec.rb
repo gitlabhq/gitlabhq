@@ -169,7 +169,9 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     describe 'include_archived filter' do
-      let_it_be(:archived_project) { create(:project, :public, :archived, name: 'archived project', group: group) }
+      let_it_be(:archived_project) do
+        create(:project, :public, :archived, name: 'archived project', group: group)
+      end
 
       it 'excludes archived projects by default' do
         get api(endpoint, user), params: { scope: 'projects', search: 'project' }
@@ -185,20 +187,6 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         expect(response).to have_gitlab_http_status(:success)
         project_ids = json_response.pluck('id')
         expect(project_ids).to include(archived_project.id)
-      end
-
-      context 'when search_api_fork_archived_filters feature flag is disabled' do
-        before do
-          stub_feature_flags(search_api_fork_archived_filters: false)
-        end
-
-        it 'ignores include_archived parameter' do
-          get api(endpoint, user), params: { scope: 'projects', search: 'project', include_archived: true }
-
-          expect(response).to have_gitlab_http_status(:success)
-          project_ids = json_response.pluck('id')
-          expect(project_ids).not_to include(archived_project.id)
-        end
       end
     end
 
@@ -539,19 +527,12 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
       end
-    end
 
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_instance
-
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let(:current_user) { user }
-
-      def request
-        get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
-      end
-
-      def request_with_second_scope
-        get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
+      it_behaves_like 'authorizing granular token permissions', :use_global_search do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'john doe' }
+        end
       end
     end
 
@@ -569,12 +550,24 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_instance
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+      let(:current_user) { user }
+
+      def request
+        get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+      end
+
+      def request_with_second_scope
+        get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
+      end
+    end
   end
 
   describe "GET /groups/:id/search" do
     let(:endpoint) { "/groups/#{group.id}/-/search" }
-
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -767,12 +760,23 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
     end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
+
+    it_behaves_like 'authorizing granular token permissions', :use_global_search do
+      let(:boundary_object) { group }
+      let(:request) do
+        get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'awesome' }
+      end
+
+      before_all do
+        group.add_developer(user)
+      end
+    end
   end
 
   describe "GET /projects/:id/search" do
     let(:endpoint) { "/projects/#{project.id}/search" }
-
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -1172,6 +1176,19 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+      end
+    end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
+
+    it_behaves_like 'authorizing granular token permissions', :use_global_search do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(endpoint, personal_access_token: pat), params: { scope: 'issues', search: 'awesome' }
+      end
+
+      before_all do
+        project.add_developer(user)
       end
     end
   end

@@ -5,6 +5,14 @@ import renderMermaid, {
   MAX_MERMAID_BLOCK_LIMIT,
   LAZY_ALERT_SHOWN_CLASS,
 } from '~/behaviors/markdown/render_sandboxed_mermaid';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+
+jest.mock('~/panel_breakpoint_instance', () => ({
+  PanelBreakpointInstance: {
+    addResizeListener: jest.fn(),
+    removeResizeListener: jest.fn(),
+  },
+}));
 
 describe('Mermaid diagrams renderer', () => {
   // Finders
@@ -13,28 +21,35 @@ describe('Mermaid diagrams renderer', () => {
     createWrapper(document.querySelector('[data-testid="alert-warning"]'));
 
   // Helpers
-  const renderDiagrams = () => {
-    renderMermaid([...document.querySelectorAll('.js-render-mermaid')]);
+  const renderDiagrams = (selector = '.js-render-mermaid') => {
+    renderMermaid([...document.querySelectorAll(selector)]);
     jest.runAllTimers();
   };
 
   beforeEach(() => {
     document.body.dataset.page = '';
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     resetHTMLFixture();
   });
 
-  it('renders a mermaid diagram', () => {
-    setHTMLFixture('<pre><code class="js-render-mermaid"></code></pre>');
+  describe('rendering mermaid diagrams', () => {
+    it.each`
+      description                          | fixture                                                                                                                             | selector
+      ${'with js-render-mermaid class'}    | ${'<div class="gl-relative markdown-code-block js-markdown-code"><pre><code class="js-render-mermaid">graph LR</code></pre></div>'} | ${'.js-render-mermaid'}
+      ${'with language class on code tag'} | ${'<div class="js-markdown-code"><pre><code class="language-mermaid">graph LR</code></pre></div>'}                                  | ${'code.language-mermaid'}
+    `('renders a mermaid diagram $description', ({ fixture, selector }) => {
+      setHTMLFixture(fixture);
 
-    expect(findMermaidIframes()).toHaveLength(0);
+      expect(findMermaidIframes()).toHaveLength(0);
 
-    renderDiagrams();
+      renderDiagrams(selector);
 
-    expect(document.querySelector('pre').classList).toContain('gl-sr-only');
-    expect(findMermaidIframes()).toHaveLength(1);
+      expect(document.querySelector('pre').classList).toContain('gl-sr-only');
+      expect(findMermaidIframes()).toHaveLength(1);
+    });
   });
 
   describe('within a details element', () => {
@@ -121,6 +136,47 @@ describe('Mermaid diagrams renderer', () => {
         MAX_MERMAID_BLOCK_LIMIT + 1,
       );
       expect(findMermaidIframes()).toHaveLength(MAX_MERMAID_BLOCK_LIMIT);
+    });
+  });
+
+  describe('does not render mermaid diagrams without a parent element', () => {
+    it('does not render when code element has no pre parent', () => {
+      const orphanedCode = document.createElement('code');
+      orphanedCode.classList.add('language-mermaid');
+      orphanedCode.textContent = 'graph LR';
+
+      renderMermaid([orphanedCode]);
+      jest.runAllTimers();
+
+      expect(findMermaidIframes()).toHaveLength(0);
+    });
+  });
+
+  describe('resize handling', () => {
+    it('adds a resize listener when rendering a diagram', () => {
+      setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');
+
+      renderDiagrams();
+
+      expect(PanelBreakpointInstance.addResizeListener).toHaveBeenCalled();
+    });
+
+    it('removes resize listener when wrapper is removed from DOM', () => {
+      setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');
+
+      renderDiagrams();
+
+      const resizeHandler = PanelBreakpointInstance.addResizeListener.mock.calls[0][0];
+
+      // Remove wrapper from DOM
+      const wrapper = document.querySelector('iframe').parentNode;
+      wrapper.remove();
+
+      // Trigger resize handler
+      resizeHandler();
+      jest.runAllTimers();
+
+      expect(PanelBreakpointInstance.removeResizeListener).toHaveBeenCalledWith(resizeHandler);
     });
   });
 });

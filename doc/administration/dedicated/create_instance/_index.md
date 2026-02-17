@@ -44,7 +44,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    | Field | Predetermined by | Description |
    | :---- | :---- | :---- |
-   | **Reference architecture** | Account team (from contract) | The infrastructure sizing tier for your instance, based on expected load and usage patterns. Named by maximum recommended user count (e.g., "Up to 3,000 users"). See [Expected load (RPS or user count)](../../reference_architectures/_index.md#expected-load-rps-or-user-count) for more information |
+   | **Reference architecture** | Account team (from contract) | The infrastructure sizing tier for your instance, based on expected load and usage patterns. Named by maximum recommended user count (e.g., "Up to 3,000 users"). See [Expected load](../../reference_architectures/_index.md#expected-load) for more information |
    | **Total purchased storage** | Account team (from contract) | The total purchased storage space (repository and object storage) purchased with your contract. |
    | **Repository storage** | Initial capacity planning discussions ([Evaluate](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/evaluate) tool) | The total storage space available for all repositories in your instance (for example, 16 GiB). Can be increased but not decreased after provisioning. |
 
@@ -61,7 +61,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    | **Secondary region** | Infrastructure/DR requirements | AWS region for Geo-based disaster recovery. Some regions have limited support. Can't be changed after creation. If you are using a Geo migration method, this field is not required. |
    | **Backup region** | Compliance/redundancy requirements | AWS region for backup replication. Can be the same as primary/secondary or different for increased redundancy. Can't be changed after creation because backup vaults and replication are configured during provisioning. |
    | **Maintenance window** | Operational preferences | Weekly 4-hour window for updates and [maintenance](../maintenance.md). Options align with time zones (APAC, EU, US). See the [Dedicated Info Portal](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/dedicated-info-portal/) for more information.|
-   
+
    For more information, see [data residency and high availability](data_residency_high_availability.md).
 
 1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you don't add keys, GitLab generates encryption keys for your instance.
@@ -79,16 +79,13 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Tenant summary** page, review the tenant configuration details.
 
-   {{< alert type="note" >}}
-
-   Review these settings carefully. You can't change them later:
-
-   - Security keys and AWS KMS keys (BYOK) configuration
-   - AWS regions (primary, secondary, backup)
-   - Total repository capacity (you can increase storage but cannot reduce it)
-   - Tenant name and URL (unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains))
-
-   {{< /alert >}}
+   > [!note]
+   > Review these settings carefully. You can't change them later:
+   >
+   > - Security keys and AWS KMS keys (BYOK) configuration
+   > - AWS regions (primary, secondary, backup)
+   > - Total repository capacity (you can increase storage but cannot reduce it)
+   > - Tenant name and URL (unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains))
 
    After you confirm that the information you've provided in the previous steps is accurate, select **Create tenant**.
 
@@ -102,11 +99,8 @@ To access and configure your GitLab Dedicated instance:
 1. In the **Access your GitLab Dedicated instance** banner, select **View credentials**.
 1. Copy the tenant URL and temporary root credentials for your instance.
 
-   {{< alert type="note" >}}
-
-   For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
-
-   {{< /alert >}}
+   > [!note]
+   > For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
 
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
 1. [Change your temporary root password](../../../user/profile/user_passwords.md#change-your-password) to a new secure password.
@@ -123,13 +117,10 @@ Also plan ahead if you need the following GitLab Dedicated features:
 
 To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../configure_instance/_index.md).
 
-{{< alert type="note" >}}
-
-New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
-
-For instances created in GitLab 18.0 and later, [GitLab Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) features are turned on by default for all users.
-
-If your organization requires data to remain within your specified regions or has restrictions on AI feature usage,
-you can [turn off GitLab Duo Core](../../../user/gitlab_duo/turn_on_off.md#for-an-instance).
-
-{{< /alert >}}
+> [!note]
+> New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
+> 
+> For instances created in GitLab 18.0 and later, [GitLab Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) features are turned on by default for all users.
+> 
+> If your organization requires data to remain within your specified regions or has restrictions on AI feature usage,
+> you can [turn off GitLab Duo Core](../../../user/gitlab_duo/turn_on_off.md#for-an-instance).

@@ -173,4 +173,40 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build, feature_category: :continuous
       end
     end
   end
+
+  context 'when pipeline is triggered via trigger token' do
+    let_it_be(:trigger) { create(:ci_trigger, project: project, owner: user) }
+
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: :trigger,
+        origin_ref: 'master',
+        checkout_sha: project.commit.id,
+        trigger: trigger,
+        project: project,
+        current_user: user)
+    end
+
+    before do
+      step.perform!
+    end
+
+    it 'sets the trigger on the pipeline' do
+      expect(pipeline.trigger).to eq(trigger)
+    end
+
+    it 'correctly indicates that this is a triggered pipeline' do
+      expect(pipeline).to be_trigger
+    end
+  end
+
+  context 'when pipeline is not triggered via trigger token' do
+    before do
+      step.perform!
+    end
+
+    it 'does not set a trigger on the pipeline' do
+      expect(pipeline.trigger).to be_nil
+    end
+  end
 end

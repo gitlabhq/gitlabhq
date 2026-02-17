@@ -86,7 +86,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+      click_button('Open sidebar')
 
       click_link("Home")
 
@@ -99,8 +99,6 @@ RSpec.shared_examples 'User creates wiki page' do
       click_link("Create this page…")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
-
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       click_link("Home")
 
@@ -116,7 +114,7 @@ RSpec.shared_examples 'User creates wiki page' do
     end
 
     it "creates ASCII wiki with LaTeX blocks", :js, quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584363',
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24078',
       type: :flaky
     } do
       stub_application_setting(plantuml_url: "http://localhost", plantuml_enabled: true)
@@ -261,7 +259,7 @@ RSpec.shared_examples 'User creates wiki page' do
         wiki.repository.update_file(
           user, '.gitlab/redirects.yml',
           "foo: bar\nbaz: doe",
-          message: 'Add redirect', branch_name: 'master'
+          message: 'Add redirect', branch_name: wiki.default_branch
         )
 
         find_by_testid('wiki-more-dropdown').click
@@ -275,7 +273,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
         expect(page).to have_content('foo')
 
-        expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nbaz: doe\n")
+        expect(wiki.repository.blob_at(wiki.default_branch, '.gitlab/redirects.yml').data).to eq("---\nbaz: doe\n")
       end
 
       context 'when a server side validation error is returned' do

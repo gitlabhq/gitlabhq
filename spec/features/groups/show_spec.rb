@@ -33,32 +33,6 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         sign_in(user)
       end
 
-      it 'shows the invite banner and persists dismissal', :js do
-        visit path
-
-        expect(page).to have_content('Collaborate with your team')
-
-        within_testid('invite-members-banner') do
-          click_button('Invite your colleagues')
-        end
-
-        page.within(invite_modal_selector) do
-          expect(page).to have_content("You're inviting members to the #{group.name} group")
-
-          click_button('Cancel')
-        end
-
-        within_testid('invite-members-banner') do
-          find_by_testid('close-icon').click
-        end
-
-        expect(page).not_to have_content('Collaborate with your team')
-
-        visit path
-
-        expect(page).not_to have_content('Collaborate with your team')
-      end
-
       context 'when group has a project with emoji in description', :js do
         let!(:project) { create(:project, description: ':smile:', namespace: group) }
 

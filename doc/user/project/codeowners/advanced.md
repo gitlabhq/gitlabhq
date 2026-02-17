@@ -123,13 +123,10 @@ Append the section name with a number `n` in brackets, for example, `[2]` or `[3
 This requires `n` approvals from the Code Owners in this section.
 Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the default. Invalid values for `n` are treated as `1`.
 
-{{< alert type="warning" >}}
-
-[Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
-to the behavior of this setting. Do not intentionally set invalid values. They may
-become valid in the future and cause unexpected behavior.
-
-{{< /alert >}}
+> [!warning]
+> [Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
+> to the behavior of this setting. Do not intentionally set invalid values. They may
+> become valid in the future and cause unexpected behavior.
 
 To require multiple approvals from Code Owners:
 
@@ -197,7 +194,7 @@ become eligible as Code Owners for all projects in the parent group's hierarchy.
 Prerequisites:
 
 - You must have the Owner role for the group you are inviting the other group to.
-- When inviting the group, you must assign at least the Developer role.
+- When inviting the group, you must assign the Developer, Maintainer, or Owner role.
 
 For example, in this hierarchy:
 
@@ -299,12 +296,9 @@ If an entry includes no owners, or zero [accessible owners](#inaccessible-or-inc
 exist, the entry is invalid. Because this rule can never be satisfied, GitLab
 auto-approves it in merge requests.
 
-{{< alert type="note" >}}
-
-When a protected branch has `Require code owner approval` enabled, rules with
-zero owners are still honored.
-
-{{< /alert >}}
+> [!note]
+> When a protected branch has `Require code owner approval` enabled, rules with
+> zero owners are still honored.
 
 ### Minimum approvals
 

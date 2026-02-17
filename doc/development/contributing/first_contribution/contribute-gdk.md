@@ -11,12 +11,9 @@ In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change `Syntax highlighting theme` to `Code syntax highlighting theme`:
 
-{{< alert type="warning" >}}
-
-This tutorial is designed to be a general introduction to contributing to the GitLab project
-and is not an example of a change that should be submitted for review.
-
-{{< /alert >}}
+> [!warning]
+> This tutorial is designed to be a general introduction to contributing to the GitLab project
+> and is not an example of a change that should be submitted for review.
 
 Use your local IDE to make changes to the code in the GDK directory.
 
@@ -26,12 +23,12 @@ Use your local IDE to make changes to the code in the GDK directory.
    git checkout -b ui-updates
    ```
 
-1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting theme`.
+1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting`.
    The results show one `.haml` file and several `.po` files.
 
 1. Open the `app/views/profiles/preferences/show.html.haml` file.
-1. Update the string from `Syntax highlighting theme` to
-   `Code syntax highlighting theme`.
+1. Update the string from `Syntax highlighting` to
+   `Code syntax highlighting`.
 1. Save the file.
 1. You can check that you were successful:
 
@@ -105,7 +102,7 @@ When you add or update a feature, you must update the documentation as well.
    documentation site. In this case, the setting is described on this documentation page:
 
    ```plaintext
-   https://docs.gitlab.com/ee/user/profile/preferences.html
+   https://docs.gitlab.com/user/profile/preferences/
    ```
 
 1. The URL shows you the location of the file in the `/doc` directory.

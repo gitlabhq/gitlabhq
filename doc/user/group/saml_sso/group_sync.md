@@ -354,11 +354,8 @@ To configure Self-Managed:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
-
-{{< /alert >}}
+> [!note]
+> Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
@@ -441,6 +438,10 @@ To configure Azure AD for a GitLab.com group:
 
 {{< tab title="GitLab Self-Managed" >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To configure for GitLab Self-Managed:
 
 1. Configure [SAML SSO for the instance](../../../integration/saml.md).
@@ -485,7 +486,8 @@ When global group memberships lock is enabled:
 
 Prerequisites:
 
-- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md) must be configured.
+- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md) configured.
+- Administrator access.
 
 To lock memberships to SAML Group Links synchronization:
 

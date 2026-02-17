@@ -12,6 +12,7 @@ const mountRemoveBlobs = () => {
 
   return new Vue({
     el: removeBlobsEl,
+    name: 'RemoveBlobsRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
@@ -30,6 +31,7 @@ const mountRedactText = () => {
 
   return new Vue({
     el: redactTextEl,
+    name: 'RedactTextRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),

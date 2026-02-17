@@ -145,10 +145,10 @@ describe('OtherUpdates', () => {
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('emits bottomReached event when infinite scroll reaches bottom', () => {
+    it('emits bottom-reached event when infinite scroll reaches bottom', () => {
       findInfiniteScroll().vm.$emit('bottomReached');
 
-      expect(wrapper.emitted('bottomReached')).toHaveLength(1);
+      expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
     });
 
     it('renders infinite scroll with correct props', () => {
@@ -163,10 +163,10 @@ describe('OtherUpdates', () => {
       });
     });
 
-    describe('bottomReached with pagination', () => {
+    describe('bottom-reached with pagination', () => {
       const emitBottomReached = () => findInfiniteScroll().vm.$emit('bottomReached');
 
-      it('emits bottomReached when nextPage exists', () => {
+      it('emits bottom-reached when nextPage exists', () => {
         createWrapper({
           features: mockFeatures,
           pageInfo: { nextPage: 840 },
@@ -174,11 +174,11 @@ describe('OtherUpdates', () => {
 
         emitBottomReached();
 
-        expect(wrapper.emitted('bottomReached')).toHaveLength(1);
-        expect(wrapper.emitted('bottomReached')[0]).toEqual([]);
+        expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
+        expect(wrapper.emitted('bottom-reached')[0]).toEqual([]);
       });
 
-      it('emits bottomReached when nextPage does not exist', () => {
+      it('emits bottom-reached when nextPage does not exist', () => {
         createWrapper({
           features: mockFeatures,
           pageInfo: { nextPage: null },
@@ -186,7 +186,7 @@ describe('OtherUpdates', () => {
 
         emitBottomReached();
 
-        expect(wrapper.emitted('bottomReached')).toHaveLength(1);
+        expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
       });
     });
   });

@@ -1,11 +1,10 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import { GlButton, GlMultiStepFormTemplate } from '@gitlab/ui';
 
 export default {
   components: {
     GlButton,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   props: {
     option: {
@@ -18,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <multi-step-form-template :title="option.title" :current-step="2" :steps-total="3">
+  <gl-multi-step-form-template :title="option.title" :current-step="2" :steps-total="3">
     <template #next>
       <gl-button
         category="primary"
@@ -39,5 +38,5 @@ export default {
         {{ __('Go back') }}
       </gl-button>
     </template>
-  </multi-step-form-template>
+  </gl-multi-step-form-template>
 </template>

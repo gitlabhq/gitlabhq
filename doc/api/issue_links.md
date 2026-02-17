@@ -21,11 +21,9 @@ title: Issue links API
 
 Use this API to manage [issue links](../user/project/issues/related_issues.md).
 
-## List issue relations
+## List all issue links
 
-Get a list of a given issue's [linked issues](../user/project/issues/related_issues.md),
-sorted by the relationship creation datetime (ascending).
-Issues are filtered according to the user authorizations.
+Lists all [linked issues](../user/project/issues/related_issues.md) for a specified issue, sorted by the relationship creation datetime (ascending). Issues are filtered according to the user authorizations.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links
@@ -76,7 +74,7 @@ Parameters:
 ]
 ```
 
-## Get an issue link
+## Retrieve an issue link
 
 {{< history >}}
 
@@ -85,7 +83,7 @@ Parameters:
 
 {{< /history >}}
 
-Gets details about an issue link.
+Retrieves details about a specified issue link.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links/:issue_link_id
@@ -193,8 +191,7 @@ Example response:
 
 {{< /history >}}
 
-Creates a two-way relation between two issues. The user must be allowed to
-update both issues to succeed.
+Creates a two-way relationship between two issues. The user must be allowed to update both issues to succeed.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/links
@@ -291,7 +288,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes an issue link, thus removes the two-way relationship.
+Deletes a specified issue link, removing the two-way relationship.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id

@@ -8,7 +8,12 @@ RSpec.describe 'issues canonical link', feature_category: :team_planning do
   let_it_be(:original_project) { create(:project, :public) }
   let_it_be(:original_issue)   { create(:issue, project: original_project) }
   let_it_be(:canonical_issue)  { create(:issue) }
-  let_it_be(:canonical_url)    { issue_url(canonical_issue, Gitlab::Application.routes.default_url_options) }
+  let(:canonical_url) { issue_url(canonical_issue, Gitlab::Application.routes.default_url_options) }
+
+  before do
+    stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_legacy_url: true)
+  end
 
   it "doesn't show the canonical URL" do
     visit(issue_path(original_issue))

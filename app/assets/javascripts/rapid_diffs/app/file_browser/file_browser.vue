@@ -16,6 +16,11 @@ export default {
       required: false,
       default: true,
     },
+    linkedFilePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -47,6 +52,7 @@ export default {
     :total-files-count="totalFilesCount"
     :group-blobs-list-items="groupBlobsListItems"
     :current-diff-file-id="currentFileHash"
+    :linked-file-path="linkedFilePath"
     @clickFile="clickFile"
     @toggleFolder="toggleFolder"
   />

@@ -28,7 +28,7 @@ module EventForward
         tracker.emit_event_payload(event)
 
         if Rails.env.development? && event['cx']
-          context = Gitlab::Json.parse(Base64.decode64(event['cx']))
+          context = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
           Gitlab::Tracking::Destinations::SnowplowContextValidator.new.validate!(context['data'])
         end
       end

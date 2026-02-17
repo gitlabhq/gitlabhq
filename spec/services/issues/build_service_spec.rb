@@ -169,10 +169,10 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
 
     describe 'setting issue type' do
       context 'with a corresponding WorkItems::Type' do
-        let_it_be(:type_task) { WorkItems::Type.default_by_type(:task) }
+        let_it_be(:type_task) { build(:work_item_system_defined_type, :task) }
         let_it_be(:type_task_id) { type_task.id }
-        let_it_be(:type_issue_id) { WorkItems::Type.default_issue_type.id }
-        let_it_be(:type_incident_id) { WorkItems::Type.default_by_type(:incident).id }
+        let_it_be(:type_issue_id) { build(:work_item_system_defined_type, :issue).id }
+        let_it_be(:type_incident_id) { build(:work_item_system_defined_type, :incident).id }
         let(:combined_params) { { work_item_type: type_task, issue_type: 'issue' } }
         let(:work_item_params) { { work_item_type_id: type_task_id } }
 

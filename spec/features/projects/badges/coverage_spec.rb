@@ -192,7 +192,7 @@ RSpec.describe 'test coverage badge', feature_category: :code_testing do
   def show_test_coverage_badge(job: nil, min_good: nil, min_acceptable: nil, min_medium: nil)
     visit coverage_project_badges_path(
       project,
-      ref: :master,
+      ref: project.default_branch_or_main,
       job: job,
       min_good: min_good,
       min_acceptable: min_acceptable,

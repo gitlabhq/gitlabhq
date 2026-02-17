@@ -189,7 +189,7 @@ That's why you'll create the iteration cadence in the group you've created.
 
 Prerequisites:
 
-- You must have at least the Reporter role for a group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for a group.
 
 To create an iteration cadence:
 

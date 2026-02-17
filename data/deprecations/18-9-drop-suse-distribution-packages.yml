@@ -1,0 +1,29 @@
+- title: "Linux package support for SUSE distributions"
+  announcement_milestone: "18.9"
+  removal_milestone: "19.0"
+  breaking_change: true
+  reporter: denisra
+  stage: gitlab-delivery
+  issue_url: https://gitlab.com/gitlab-com/Product/-/work_items/14411
+  check_impact:
+  impact: low
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=major_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=major&pipeline_impact=none&compliance_impact=none&availability_impact=major&authorization_impact=none&API_impact=none
+  impact_offering: self-managed
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |
+    We are ending support for SUSE distributions in GitLab 19.0. This affects:
+
+    - openSUSE Leap 15.6
+    - SUSE Linux Enterprise Server 12.5
+    - SUSE Linux Enterprise Server 15.6
+
+    openSUSE Leap 15.6 is approaching end-of-life. While SUSE Linux Enterprise Server remains supported by SUSE via
+    long-term service, adoption among GitLab customers is too low to make continued support commercially viable.
+
+    Customers on SUSE distributions that use the Linux package will not be able to upgrade GitLab past version `18.11.x`.
+
+    For customers on one of these distributions, we recommend migrating to a
+    [Docker deployment of GitLab](https://docs.gitlab.com/install/docker/installation/) on your existing distribution.
+    This avoids having to migrate to a different Linux distribution to continue to receive GitLab upgrades.

@@ -178,14 +178,10 @@ requirements:
   credentials, tokens, and keys may assist with satisfying
   requirements such as reviewing passwords or rotating credentials.
 
-- [Set customer password length limits](password_length_limits.md).
+- [Modify password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements).
   FedRAMP defers to NIST 800-63B in IA-5 for establishing password
   length requirements. GitLab supports 8-128 character passwords, with
-  8 characters set as the default. GitLab provides [instructions for updating the minimum password length](password_length_limits.md#modify-minimum-password-length)
-  with the GitLab UI, which organizations interested
-  in enforcing longer passwords can use. Additionally, GitLab Self-Managed customers
-  may [configure complexity requirements](../administration/settings/sign_up_restrictions.md#password-complexity-requirements)
-  through the **Admin** area UI.
+  8 characters set as the default.
 
 - [Default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration) -
   FedRAMP establishes that users that have been inactive for a set
@@ -662,7 +658,7 @@ GitLab supports the [sending of email notifications](../administration/email_fro
 to users from the GitLab application instance. DHS BOD 18-01 guidance
 indicates that Domain-based Message Authentication, Reporting &
 Conformance (DMARC) must be configured for outgoing messages as spam
-protection. GitLab provides [configuration guidance for SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
+protection. GitLab provides [configuration guidance for SMTP](https://docs.gitlab.com/omnibus/settings/smtp/)
 across a wide range of email providers, which may be used to help meet
 this requirement.
 
@@ -722,7 +718,7 @@ for GitLab Self-Managed customers that covers topics such as:
 
 - [Operating System Recommendations](hardening_operating_system_recommendations.md)
 
-GitLab CIS Benchmark Guide - GitLab has published a [CIS Benchmark](https://about.gitlab.com/blog/2024/04/17/gitlab-introduces-new-cis-benchmark-for-improved-security/)
+GitLab CIS Benchmark Guide - GitLab has published a [CIS Benchmark](https://about.gitlab.com/blog/gitlab-introduces-new-cis-benchmark-for-improved-security/)
 to guide hardening decisions in the application. This may be used in
 concert with this guide to harden the environment in accordance with NIST 800-53
 controls. Not all suggestions in the CIS Benchmark directly align with

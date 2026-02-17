@@ -21,8 +21,8 @@ type LimitedReaderAt struct {
 
 // ReadAt reads bytes from a specified offset
 func (r *LimitedReaderAt) ReadAt(p []byte, off int64) (int, error) {
-	if max := r.limit - r.read; int64(len(p)) > max {
-		p = p[0:max]
+	if maxBytes := r.limit - r.read; int64(len(p)) > maxBytes {
+		p = p[0:maxBytes]
 	}
 
 	n, err := r.parent.ReadAt(p, off)

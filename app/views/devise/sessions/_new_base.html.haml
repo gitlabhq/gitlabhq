@@ -12,9 +12,9 @@
       -# The below form allows us to generate input names with Rails
       -# and pass them to the frontend so they never get out of sync
       = form_for(:user, url: user_session_path) do |f|
-        = f.hidden_field :login, value: @invite_email, data: { js_name: 'login' }
+        = f.hidden_field :login, value: @invite_email || @username_or_email, data: { js_name: 'login' }
         = f.hidden_field :password, data: { js_name: 'password' }
-        = f.hidden_field :remember_me, data: { js_name: 'rememberMe' }
+        = f.hidden_field :remember_me, value: @remember_me, data: { js_name: 'rememberMe' }
   - else
     = gitlab_ui_form_for(:user, url: session_path(:user), html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
       .form-group

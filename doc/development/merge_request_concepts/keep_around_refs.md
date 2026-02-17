@@ -28,13 +28,10 @@ Keeping the orphaned commits using keep-around refs comes with its own set of ch
 - We could be keeping more commits than necessary because the ancestors of already preserved commits
   don't have to be kept around, but it's hard to verify that and clean up efficiently
 
-{{< alert type="warning" >}}
-
-Due to the downsides mentioned above, we should not be adding more places where we create keep-around
-refs. Instead consider alternative options such as scoped refs
-(like `refs/merge-requests/<merge-request-iid>/head`) or avoid creating these refs altogether if at all possible.
-
-{{< /alert >}}
+> [!warning]
+> Due to the downsides mentioned above, we should not be adding more places where we create keep-around
+> refs. Instead consider alternative options such as scoped refs
+> (like `refs/merge-requests/<merge-request-iid>/head`) or avoid creating these refs altogether if at all possible.
 
 ## Usage
 
@@ -44,7 +41,7 @@ Following is a typical way to create a keep-around ref for the given commit SHA.
 project.repository.keep_around(sha, source: self.class.name)
 ```
 
-This command creates a ref called `refs/keep-around/<SHA>` where <SHA> is the commit SHA that is being
+This command creates a ref called `refs/keep-around/<SHA>` where `<SHA>` is the commit SHA that is being
 kept around. This prevents the commit SHA and all parent commits from being garbage collected as
 we now have a ref that points to the commit directly. `source` is used as a way for us to attribute
 the keep-around ref creations to specific classes.

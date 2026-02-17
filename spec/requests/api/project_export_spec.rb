@@ -134,6 +134,11 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         it_behaves_like 'get project export status ok'
+
+        it_behaves_like 'authorizing granular token permissions', :read_project_export do
+          let(:boundary_object) { project }
+          let(:request) { get api(path, personal_access_token: pat) }
+        end
       end
 
       context 'when user is a developer' do
@@ -288,6 +293,11 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         it_behaves_like 'get project download by strategy'
+
+        it_behaves_like 'authorizing granular token permissions', :download_project_export do
+          let(:boundary_object) { project_finished }
+          let(:request) { get api(download_path_finished, personal_access_token: pat) }
+        end
       end
 
       context 'when user is a developer' do
@@ -489,6 +499,11 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         it_behaves_like 'post project export start'
+
+        it_behaves_like 'authorizing granular token permissions', :create_project_export do
+          let(:boundary_object) { project }
+          let(:request) { post api(path, personal_access_token: pat) }
+        end
       end
 
       context 'when user is a developer' do
@@ -605,12 +620,26 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             expect(response).to have_gitlab_http_status(:accepted)
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :create_project_relation_export do
+          let(:boundary_object) { project }
+          let(:request) { post api(path, personal_access_token: pat) }
+        end
       end
 
       describe 'GET /projects/:id/export_relations/download' do
         context 'when export request is not batched' do
           let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
           let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
+
+          it_behaves_like 'authorizing granular token permissions', :download_project_relation_export do
+            before do
+              upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+            end
+
+            let(:boundary_object) { project }
+            let(:request) { get api(download_path, personal_access_token: pat) }
+          end
 
           context 'when export file exists' do
             it 'downloads exported project relation archive' do
@@ -836,6 +865,11 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             expect(json_response.pluck('relation')).not_to include('self')
             expect(json_response.pluck('status')).not_to include(-2)
           end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_project_relation_export do
+          let(:boundary_object) { project }
+          let(:request) { get api(status_path, personal_access_token: pat) }
         end
       end
 

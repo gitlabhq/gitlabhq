@@ -84,14 +84,11 @@ operations per second.
 
 ### Simple benchmarking
 
-{{< alert type="note" >}}
-
-This test is naive but can be used if `fio` is not
-available on the system. It's possible to receive good results on this
-test but still have poor performance due to read speed and various other
-factors.
-
-{{< /alert >}}
+> [!note]
+> This test is naive but can be used if `fio` is not
+> available on the system. It's possible to receive good results on this
+> test but still have poor performance due to read speed and various other
+> factors.
 
 The following one-line commands provide a quick benchmark for file system write and read
 performance. This writes 1,000 small files to the directory in which it is

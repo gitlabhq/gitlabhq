@@ -18,13 +18,10 @@ Some tests are designed to be run against specific environments, or in specific 
 | `pipeline`   | Match a pipeline                 | `Array` or `Static` |
 | `job`        | Match a job                      | `Array` or `Static` |
 
-{{< alert type="warning" >}}
-
-You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
-These options are mutually exclusive. If you want to specify production, you
-can control the `tld` and `domain` independently.
-
-{{< /alert >}}
+> [!warning]
+> You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
+> These options are mutually exclusive. If you want to specify production, you
+> can control the `tld` and `domain` independently.
 
 ## Examples
 
@@ -132,4 +129,4 @@ test only when it runs against a specific environment. The syntax is exactly the
 hash is nested in the [`quarantine: { ... }`](https://handbook.gitlab.com/handbook/engineering/testing/pipeline-triage/#quarantining-tests) hash.
 For example, `quarantine: { only: { subdomain: :staging } }` only quarantines the test when run against `staging`.
 
-The quarantine feature can be explicitly disabled with the `DISABLE_QUARANTINE` environment variable. This can be useful when running tests locally.
+The quarantine feature can be explicitly disabled with the `GLCI_DISABLE_QUARANTINE` environment variable. This can be useful when running tests locally.

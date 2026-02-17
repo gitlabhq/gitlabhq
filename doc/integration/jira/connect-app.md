@@ -92,7 +92,7 @@ The following instructions cover both old and new app management interfaces.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the GitLab group.
+- You must have the Maintainer or Owner role for the GitLab group.
 - You must meet certain [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
@@ -124,19 +124,13 @@ To configure the GitLab for Jira Cloud app:
    1. Enter your **GitLab instance URL**, then select **Save**.
 1. Select **Sign in to GitLab**.
 
-   {{< alert type="note" >}}
-
-   [Enterprise users](../../user/enterprise_user/_index.md) with [disabled password authentication for their group](../../user/group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users)
-   must first sign in to GitLab with their group's single sign-on URL.
-
-   {{< /alert >}}
-   {{< alert type="note" >}}
+   > [!note]
+   > [Enterprise users](../../user/enterprise_user/_index.md) with [disabled password authentication for their group](../../user/group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users)
+   > must first sign in to GitLab with their group's single sign-on URL.
 
    GitLab requires you to sign in to link groups, but does not tie the configuration to a
    specific user. The GitLab instance receives a token from Jira that is used to update information in Jira.
    For more information, see [GitLab access to Jira](#gitlab-access-to-jira).
-
-   {{< /alert >}}
 
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.
@@ -224,7 +218,7 @@ This token authenticates the service account token used to manage GitLab deploym
 To create the service account token:
 
 1. [Create a service account user](../../api/service_accounts.md#create-an-instance-service-account).
-1. [Add the service account to a group or project](../../api/group_members.md#add-a-member-to-a-group)
+1. [Add the service account to a group or project](../../api/group_members.md#add-a-group-member)
    by using your personal access token.
 1. [Add the service account to protected environments](../../ci/environments/protected_environments.md#protecting-environments).
 1. [Generate a service account token](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account)

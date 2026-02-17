@@ -1,0 +1,4 @@
+name: purge_maven_virtual_registry_upstream_cache
+description: Grants the ability to purge cache of Maven virtual registry upstreams
+boundaries:
+  - group

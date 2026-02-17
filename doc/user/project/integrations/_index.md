@@ -13,11 +13,8 @@ description: "User documentation for project and group integrations. Includes a 
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
-
-{{< /alert >}}
+> [!note]
+> This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
 
 You can integrate with external applications to add functionality to GitLab.
 
@@ -45,11 +42,8 @@ To manage the group default settings for a project integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-This may affect all or most of the subgroups and projects belonging to the group. Review the details below.
-
-{{< /alert >}}
+> [!warning]
+> This may affect all or most of the subgroups and projects belonging to the group. Review the details below.
 
 If this is the first time you are setting up group settings for an integration:
 
@@ -93,7 +87,7 @@ Resetting a group default setting removes integrations that use default settings
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To use instance or group default settings for a project integration:
 
@@ -109,7 +103,7 @@ To use instance or group default settings for a project integration:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project integration.
+- You must have the Maintainer or Owner role for the project integration.
 - You must have the Owner role for the group integration.
 
 To use custom settings for a project or group integration:

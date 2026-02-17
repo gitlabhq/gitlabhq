@@ -57,7 +57,7 @@ import {
   STATUS_OPEN,
   STATUS_CLOSED,
   STATUS_ALL,
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
 } from '../constants';
 import { convertToUrlParams } from '../utils';
 import {
@@ -357,7 +357,7 @@ export default {
           variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) =>
-          data[WORKSPACE_PROJECT]?.[`${WORKSPACE_PROJECT}Members`].nodes.map(
+          data[NAMESPACE_PROJECT]?.[`${NAMESPACE_PROJECT}Members`].nodes.map(
             (member) => member.user,
           ),
         );
@@ -368,7 +368,7 @@ export default {
           query: searchProjectMilestonesQuery,
           variables: { fullPath: this.fullPath, search },
         })
-        .then(({ data }) => data[WORKSPACE_PROJECT]?.milestones.nodes);
+        .then(({ data }) => data[NAMESPACE_PROJECT]?.milestones.nodes);
     },
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
@@ -383,7 +383,7 @@ export default {
           variables: { fullPath: this.fullPath, search },
           fetchPolicy,
         })
-        .then(({ data }) => data[WORKSPACE_PROJECT]?.labels.nodes)
+        .then(({ data }) => data[NAMESPACE_PROJECT]?.labels.nodes)
         .then((labels) =>
           // TODO remove once we can search by title-only on the backend
           // https://gitlab.com/gitlab-org/gitlab/-/issues/346353

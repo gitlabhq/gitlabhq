@@ -161,7 +161,9 @@ RSpec.configure do |config|
   config.include SelectionHelper, :js
   config.include InspectRequests, :js
   config.include LiveDebugger, :js
+  config.include Database::BatchedBackgroundMigrationHelpers, :migration
   config.include MigrationsHelpers, :migration
+  config.include MigrationsHelpers, :background_operation
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include Rails.application.routes.url_helpers, type: :component
@@ -188,6 +190,7 @@ RSpec.configure do |config|
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
   config.include WorkItems::DataSync::AssociationsHelpers
+  config.include WorkItems::WidgetHelpers
   config.include StateMachinesRspec::Matchers
   config.include Ci::JobHelpers
 
@@ -230,7 +233,6 @@ RSpec.configure do |config|
     # Enable all features by default for testing
     # Reset any changes in after hook.
     stub_all_feature_flags
-    stub_feature_flags(main_branch_over_master: false)
 
     TestEnv.seed_db
   end
@@ -295,12 +297,6 @@ RSpec.configure do |config|
       # cause spec failures.
       stub_feature_flags(gitlab_error_tracking: false)
 
-      # Disable `main_branch_over_master` as we migrate
-      # from `master` to `main` accross our codebase.
-      # It's done in order to preserve the concistency in tests
-      # As we're ready to change `master` usages to `main`, let's enable it
-      stub_feature_flags(main_branch_over_master: false)
-
       # Disable issue respositioning to avoid heavy load on database when importing big projects.
       # This is only turned on when app is handling heavy project imports.
       # Can be removed when we find a better way to deal with the problem.
@@ -316,9 +312,6 @@ RSpec.configure do |config|
 
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
-
-      # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
-      stub_feature_flags(allow_self_hosted_features_for_com: false)
 
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
@@ -373,7 +366,24 @@ RSpec.configure do |config|
       # This feature has global impact and most tests aren't ready for it yet
       stub_feature_flags(cells_unique_claims: false)
 
+      # This feature flag will be removed in %19.0
       stub_feature_flags(work_item_legacy_url: false)
+
+      # Feature specs for when two_step_sign_in is enabled will be added in
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
+      stub_feature_flags(two_step_sign_in: false)
+
+      # Disable work_item_features_field while we work on it. Enabled in 18.10.
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
+      stub_feature_flags(work_item_features_field: false)
+
+      # When `dap_onboarding_empty_states` is enabled, the Duo Chat panel is expanded for free users.
+      # This might cause elements to be laid out differently in the main panel due to container
+      # queries, which in turn can cause some specs to fail.
+      # Due to time constraints, we'll need to address those in follow-ups.
+      stub_feature_flags(dap_onboarding_empty_states: false)
+      # This feature is wip and should not be enabled in tests by default
+      stub_feature_flags(iam_svc_login: false)
     else
       unstub_all_feature_flags
     end

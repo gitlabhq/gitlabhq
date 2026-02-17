@@ -19,21 +19,24 @@ query getBlameData(
             groups {
               lineno
               span
+              previousPath
               commit {
                 id
                 authorName
                 titleHtml
+                title
                 message
                 authoredDate
                 authorGravatar
                 webPath
+                parentSha
                 author {
                   ...Author
                 }
                 sha
+                shortId
               }
               commitData {
-                projectBlameLink
                 ageMapClass
               }
             }

@@ -6,7 +6,7 @@ import {
 import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issuable_label_selector.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_PROJECT } from '~/issues/constants';
 
 const allowLabelRemove = true;
 const attrWorkspacePath = '/workspace-path';
@@ -16,9 +16,9 @@ const labelsFilterBasePath = '/labels-filter-base-path';
 const initialLabels = [];
 const issuableType = 'issue';
 const issuableSupportsLockOnMerge = false;
-const labelType = WORKSPACE_PROJECT;
+const labelType = NAMESPACE_PROJECT;
 const variant = VARIANT_EMBEDDED;
-const workspaceType = WORKSPACE_PROJECT;
+const workspaceType = NAMESPACE_PROJECT;
 
 describe('IssuableLabelSelector', () => {
   let wrapper;

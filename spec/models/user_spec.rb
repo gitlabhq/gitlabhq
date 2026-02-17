@@ -3264,6 +3264,87 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#allow_passkey_authentication?' do
+    subject(:allow_passkey_authentication?) { user.allow_passkey_authentication? }
+
+    let_it_be(:user) { create(:user) }
+
+    it { is_expected.to be_truthy }
+
+    context 'when :passkeys feature flag is disabled' do
+      before do
+        stub_feature_flags(passkeys: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    it_behaves_like 'OmniAuth user password authentication'
+
+    context 'when the password authentication for web interface is disabled' do
+      before do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#passkey_via_2fa_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:allow_passkey_authentication?, :two_factor_enabled?, :passkeys_enabled?, :expected) do
+      false | false | false | false
+      false | false | true  | false
+      false | true  | false | false
+      false | true  | true  | false
+      true  | false | false | false
+      true  | false | true  | false
+      true  | true  | false | false
+      true  | true  | true  | true
+    end
+
+    with_them do
+      let(:user) do
+        two_factor_enabled? ? create(:user, :two_factor_via_otp) : create(:user)
+      end
+
+      before do
+        allow(user).to receive(:allow_passkey_authentication?).and_return(allow_passkey_authentication?)
+        create(:webauthn_registration, :passkey, user: user) if passkeys_enabled?
+      end
+
+      it 'returns the expected value' do
+        expect(user.passkey_via_2fa_enabled?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#can_use_existing_webauthn_authenticator_for_2fa?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:two_factor_webauthn_enabled?, :passkey_via_2fa_enabled?, :expected) do
+      false | false | false
+      false | true  | true
+      true  | false | true
+      true  | true  | true
+    end
+
+    with_them do
+      let(:user) do
+        two_factor_webauthn_enabled? ? create(:user, :two_factor_via_webauthn) : create(:user)
+      end
+
+      before do
+        allow(user).to receive(:passkey_via_2fa_enabled?).and_return(passkey_via_2fa_enabled?)
+      end
+
+      it 'returns the expected value' do
+        expect(user.can_use_existing_webauthn_authenticator_for_2fa?).to eq(expected)
+      end
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
@@ -3357,6 +3438,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
       expect(user).to be_two_factor_enabled
       expect(user.encrypted_otp_secret).not_to be_nil
+      expect(user.otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
       expect(user.otp_grace_period_started_at).not_to be_nil
       expect(user.email_otp_required_after).to be_nil
@@ -3367,6 +3449,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.encrypted_otp_secret).to be_nil
       expect(user.encrypted_otp_secret_iv).to be_nil
       expect(user.encrypted_otp_secret_salt).to be_nil
+      expect(user.read_attribute(:otp_secret)).to be_nil
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
       expect(user.otp_secret_expires_at).to be_nil
@@ -4108,6 +4191,61 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         key = create(:personal_key)
 
         expect(key.user.require_ssh_key?).to eq(false)
+      end
+    end
+  end
+
+  describe '.confirm_by_token' do
+    let!(:user) do
+      create(:user, :unconfirmed).tap do |user|
+        user.send_confirmation_instructions
+      end
+    end
+
+    let(:confirmation_token) { user.confirmation_token }
+
+    subject(:confirm_by_token) { described_class.confirm_by_token(confirmation_token) }
+
+    it 'finds user by organization and confirmation token' do
+      expect { confirm_by_token }.to change { user.reload.confirmed? }.from(false).to(true)
+
+      expect(confirm_by_token).to be_a(described_class)
+    end
+
+    context 'with blank confirmation_token' do
+      let(:confirmation_token) { '' }
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include("can't be blank")
+      end
+    end
+
+    context 'with invalid confirmation token' do
+      let(:confirmation_token) { Devise.friendly_token(10) }
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include('is invalid')
+      end
+    end
+
+    context 'with incorrect organization' do
+      let(:another_organization) { create(:organization) }
+
+      before do
+        stub_current_organization(another_organization)
+      end
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include('is invalid')
       end
     end
   end
@@ -5953,7 +6091,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
       # We sanity check that we don't get:
       #   ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  each UNION query must have the same number of columns
-      it 'will not raise errors' do
+      it 'does not raise errors' do
         expect { subject.count }.not_to raise_error
       end
     end
@@ -8348,7 +8486,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         let(:group) { create(:group) }
 
         context 'when group has no ancestors' do
-          it 'will be a default Global notification setting' do
+          it 'is a default Global notification setting' do
             expect(subject.notification_email).to eq(nil)
             expect(subject.level).to eq('global')
           end
@@ -9946,6 +10084,50 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#can_leave_project?' do
+    let_it_be(:user) { create :user, :with_namespace }
+    let_it_be(:user_namespace_project) { create(:project, namespace: user.namespace) }
+    let_it_be(:user_member_project) { create(:project, :in_group, developers: [user]) }
+
+    subject(:can_leave_project) { user.can_leave_project?(member_or_project) }
+
+    context 'when passing a Project' do
+      context "when the project is in the user's namespace" do
+        let(:member_or_project) { user_namespace_project }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the user is a member of the project' do
+        let(:member_or_project) { user_member_project }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when passing a ProjectMember' do
+      context "when member is for a user namespace project" do
+        let(:member_or_project) { user_namespace_project.member(user) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when member is for a group namespace project' do
+        let(:member_or_project) { user_member_project.member(user) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when passing a type other than Project or ProjectMember' do
+      let_it_be(:group) { create(:group) }
+
+      let(:member_or_project) { group }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   context 'normalized email reuse check' do
     let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
     let(:new_user) { build(:user, email: tumbled_email) }
@@ -10288,6 +10470,41 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         expect(unlock_access_by_token).to be_a(described_class)
         expect(unlock_access_by_token.errors[:organization_id]).not_to be_empty
+      end
+    end
+  end
+
+  describe '#legacy_otp_secret' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:legacy_otp_secret) { user.send(:legacy_otp_secret) }
+
+    context 'when encrypted_otp_secret is nil' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when otp_secret_encryption_key is nil' do
+      before do
+        user.update!(encrypted_otp_secret: 'dummy')
+        allow(described_class).to receive(:otp_secret_encryption_key).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when user has two factor auth enabled' do
+      let_it_be(:user) { create(:user, :two_factor) }
+      let(:otp_secret) { 'my-otp-secret' }
+
+      before do
+        encrypted_secret = user.attr_encrypted_encrypt(:otp_secret, otp_secret)
+        user.update!(encrypted_otp_secret: encrypted_secret)
+      end
+
+      it { is_expected.to eq(otp_secret) }
+
+      it 'resolves the legacy otp secret' do
+        expect(user.reload.otp_secret).to eq(otp_secret)
       end
     end
   end

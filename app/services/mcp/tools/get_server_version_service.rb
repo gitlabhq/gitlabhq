@@ -12,6 +12,9 @@ module Mcp
           type: 'object',
           properties: {},
           required: []
+        },
+        annotations: {
+          readOnlyHint: true
         }
       }
 

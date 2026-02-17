@@ -18,6 +18,10 @@ storage such as a content delivery network (CDN).
 
 ## Configure external storage
 
+Prerequisites:
+
+- Administrator access.
+
 To configure external storage for static objects:
 
 1. In the upper-right corner, select **Admin**.

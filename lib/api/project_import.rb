@@ -60,6 +60,7 @@ module API
         detail 'This feature was introduced in GitLab 12.9'
         tags ['project_import']
       end
+      route_setting :authorization, permissions: :authorize_project_import, boundary_type: :instance
       post 'import/authorize' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -109,6 +110,13 @@ module API
         tags ['project_import']
         consumes ['multipart/form-data']
       end
+      route_setting :authorization, permissions: :create_project_import,
+        boundaries: [
+          { boundary_type: :group, boundary_param: :namespace_id },
+          { boundary_type: :group, boundary_param: :namespace_path },
+          { boundary_type: :group, boundary_param: :namespace },
+          { boundary_type: :user }
+        ]
       post 'import' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -154,6 +162,7 @@ module API
         ]
         tags ['project_import']
       end
+      route_setting :authorization, permissions: :read_project_import, boundary_type: :project
       get ':id/import' do
         present user_project, with: Entities::ProjectImportStatus, current_user: current_user
       end
@@ -184,6 +193,13 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :create_project_import,
+        boundaries: [
+          { boundary_type: :group, boundary_param: :namespace_id },
+          { boundary_type: :group, boundary_param: :namespace_path },
+          { boundary_type: :group, boundary_param: :namespace },
+          { boundary_type: :user }
+        ]
       post 'remote-import' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -213,6 +229,7 @@ module API
         detail 'This feature was introduced in GitLab 16.11'
         tags ['project_import']
       end
+      route_setting :authorization, permissions: :authorize_project_relation_import, boundary_type: :instance
       post 'import-relation/authorize' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -260,6 +277,8 @@ module API
         tags ['project_import']
         consumes ['multipart/form-data']
       end
+      route_setting :authorization, permissions: :create_project_relation_import,
+        boundary_type: :project, boundary_param: :path
       post 'import-relation' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -302,6 +321,7 @@ module API
         ]
         tags ['project_import']
       end
+      route_setting :authorization, permissions: :read_project_relation_import, boundary_type: :project
       get ':id/relation-imports' do
         forbidden!('Project') unless user_project && can?(current_user, :admin_project, user_project)
 
@@ -339,6 +359,13 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :create_project_import,
+        boundaries: [
+          { boundary_type: :group, boundary_param: :namespace_id },
+          { boundary_type: :group, boundary_param: :namespace_path },
+          { boundary_type: :group, boundary_param: :namespace },
+          { boundary_type: :user }
+        ]
       post 'remote-import-s3' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 

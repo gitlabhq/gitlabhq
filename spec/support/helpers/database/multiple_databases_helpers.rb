@@ -138,26 +138,6 @@ module Database
     ensure
       ActiveRecord::Base.configurations = current_configurations
     end
-
-    def with_added_ci_connection
-      if Gitlab::Database.has_config?(:ci)
-        # No need to add a ci: connection if we already have one
-        yield
-      else
-        with_reestablished_active_record_base(reconnect: true) do
-          reconfigure_db_connection(
-            name: :ci,
-            model: Ci::ApplicationRecord,
-            config_model: ActiveRecord::Base
-          )
-
-          yield
-
-          # Cleanup connection_specification_name for Ci::ApplicationRecord
-          Ci::ApplicationRecord.remove_connection
-        end
-      end
-    end
   end
 
   module ActiveRecordBaseEstablishConnection

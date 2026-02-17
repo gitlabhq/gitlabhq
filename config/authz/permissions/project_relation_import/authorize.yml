@@ -1,0 +1,5 @@
+---
+name: authorize_project_relation_import
+description: Grants the ability to authorize project relation import uploads
+boundaries:
+  - instance

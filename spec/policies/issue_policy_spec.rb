@@ -229,7 +229,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk disabled'
     it_behaves_like 'support bot with service desk enabled'
-    it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :issue
 
     context 'with confidential issues' do
       let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
@@ -551,7 +550,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
     it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk enabled'
-    it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :issue
 
     context 'when issues are private' do
       before_all do
@@ -728,8 +726,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
     context 'when accounting for notes widget' do
       context 'and notes widget is disabled for issue' do
-        before_all do
-          WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
+        before do
+          stub_work_item_widget(issue, notes: false)
         end
 
         it 'does not allow accessing notes' do

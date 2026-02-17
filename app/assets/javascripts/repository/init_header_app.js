@@ -61,6 +61,8 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       kerberosUrl,
       downloadLinks,
       downloadArtifacts,
+      showNoSshKeyMessage,
+      userSettingsSshKeysPath,
       projectShortPath,
       isBinary,
       newWorkspacePath,
@@ -90,6 +92,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
     // eslint-disable-next-line no-new
     new Vue({
       el: headerEl,
+      name: 'RepositoryHeaderAreaRoot',
       provide: {
         canCollaborate: parseBoolean(breadcrumbsCanCollaborate),
         canEditTree: parseBoolean(breadcrumbsCanEditTree),
@@ -130,6 +133,8 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         newWorkspacePath,
         downloadLinks: downloadLinks ? JSON.parse(downloadLinks) : null,
         downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
+        showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
+        userSettingsSshKeysPath,
         isBlobView,
         isBinary: parseBoolean(isBinary),
         rootRef,

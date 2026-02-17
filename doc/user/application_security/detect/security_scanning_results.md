@@ -24,6 +24,9 @@ View and act on the results of pipeline security scanning in GitLab. Select secu
 a pipeline and output security reports. The contents of these reports are processed and presented in
 GitLab.
 
+Security scanning must be configured for your project to generate results.
+For information about configuring security scanners, see [Security configuration](security_configuration.md).
+
 Key terminology for understanding security scan results:
 
 Finding
@@ -37,34 +40,23 @@ Vulnerability
 : - Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
     even if the vulnerability is no longer detected in the default branch.
 
-The presentation of security scanning results differs depending on the
-[pipeline type](../../../ci/pipelines/pipeline_types.md) - branch pipeline or merge request
-pipeline.
-
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
-
-| Vulnerability information                          | Branch pipeline         | Merge request pipeline |
-|----------------------------------------------------|-------------------------|------------------------|
-| Security reports                                   | {{< yes >}}             | {{< yes >}}            |
-| Pipeline security report<br />(Ultimate only)      | {{< yes >}}             | {{< yes >}}            |
-| Merge request security widget<br />(Ultimate only) | {{< no >}}              | {{< yes >}}            |
-| Vulnerability report                               | {{< yes >}}<sup>1</sup> | {{< no >}}             |
-
-**Footnotes**:
-
-1. Vulnerability report is only available for the default branch.
 
 ## Security report artifacts
 
 Security scanners run in branch pipelines and, if enabled, merge request pipelines. Each security
 scanner outputs a security report artifact containing details of all findings or vulnerabilities detected by
-the specific security scanner. You can download these for analysis outside GitLab.
+the specific security scanner.
+
+Security reports from [child pipelines](../../../ci/pipelines/downstream_pipelines.md#view-child-pipeline-reports-in-merge-requests)
+are included in pipeline security reports and merge request widgets.
 
 In a development (non-default) branch, findings include any vulnerabilities present in the target
 branch when the development branch was created.
 
-Expired findings are not shown in the pipeline's **Security** tab. To reproduce them, re-run the
-pipeline.
+Findings expire either when the related CI/CD job artifact expires, or 90 days after the
+pipeline is created, even if the related job artifacts are locked.
+Expired findings are not shown in the pipeline's **Security** tab. To reproduce them, re-run the pipeline.
 
 ### Download a security report
 
@@ -76,6 +68,10 @@ pipeline.
 
 You can download a security report, for example to analyze outside GitLab or for archival
 purposes. A security report is a JSON file.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
 
 To download a security report:
 
@@ -98,14 +94,8 @@ The selected security report is downloaded to your device.
 {{< /details >}}
 
 The pipeline security report contains details of all findings or vulnerabilities detected in the
-branch. For a pipeline run against the default branch all vulnerabilities in the pipeline security
+branch. For a pipeline run against the default branch, all vulnerabilities in the pipeline security
 report are also in the vulnerability report.
-
-For each finding or vulnerability you can:
-
-- View further details by selecting its description.
-- Change its status or severity.
-- Create a GitLab issue to track any action taken to resolve or mitigate it.
 
 ![List of findings in the branch](img/pipeline_security_report_v18_1.png)
 
@@ -113,6 +103,10 @@ For each finding or vulnerability you can:
 
 View the pipeline security report to see details of all findings or vulnerabilities detected in the
 branch.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
 
 To view a pipeline security report:
 
@@ -122,6 +116,26 @@ To view a pipeline security report:
 
 To see details of a finding or vulnerability, select its description.
 
+### Create an issue
+
+Create an issue to track, document, and manage the remediation work for a finding or vulnerability.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To create an issue:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Build** > **Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a finding's description.
+1. Select **Create issue**.
+
+An issue is created in the project, with the description copied from the finding or vulnerability's
+description.
+
 ### Change status or severity
 
 You can change the status, severity, or both of a finding or vulnerability in the pipeline's
@@ -130,8 +144,7 @@ branch.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or the `admin_vulnerability` custom
-  permission.
+- The Maintainer role for the project or the `admin_vulnerability` custom permission.
 
 To change the status and severity of findings or vulnerabilities:
 
@@ -150,19 +163,32 @@ To change the status and severity of findings or vulnerabilities:
      1. In the **Select action** dropdown list, select either **Change status** or
         **Change severity**.
 
-### Create an issue
+### Download a security report
 
-Create an issue to track, document, and manage the remediation work for a finding or vulnerability.
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+You can download a security report, for example to analyze outside GitLab or for archival
+purposes. A security report is a JSON file.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To download a security report:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
-1. Select a finding's description.
-1. Select **Create issue**.
+1. Select **Download results**, then the desired security report.
 
-An issue is created in the project, with the description copied from the finding or vulnerability's
-description.
+The selected security report is downloaded to your device.
+
+![List of security reports](img/security_report_v18_1.png)
 
 ## Merge request security widget
 
@@ -173,8 +199,8 @@ description.
 {{< /details >}}
 
 The merge request displays a security widget that provides a summary of the difference the changes
-would make to findings. It takes some time after the CI/CD pipeline has run to process the security
-reports, so there may be a delay until the security widget is shown.
+would make to the findings. It takes some time after the CI/CD pipeline has run to process the security
+reports, so there might be a delay until the security widget is shown.
 
 For example, consider two pipelines with these scan results:
 
@@ -193,6 +219,10 @@ ensure that security scanning is enabled for the default branch.
 ### View security widget
 
 View the merge request security widget to see the difference in findings the changes would make.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
 
 To view the security widget:
 

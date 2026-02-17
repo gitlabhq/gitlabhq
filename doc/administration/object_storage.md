@@ -57,11 +57,8 @@ Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
 
-{{< alert type="note" >}}
-
-For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
-
-{{< /alert >}}
+> [!note]
+> For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals/#consolidated-object-storage).
 
 Configuring the object storage using the consolidated form has a number of advantages:
 
@@ -159,18 +156,15 @@ gitlab_rails['artifacts_enabled'] = false
 
 With the storage-specific form, every object defines its own object
 storage connection and configuration. You should [use the consolidated form](#transition-to-consolidated-form) instead,
-except for the storage types not supported by the consolidated form. When working with the GitLab Helm charts, refer to how the charts handle [consolidated form for object storage](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
+except for the storage types not supported by the consolidated form. When working with the GitLab Helm charts, refer to how the charts handle [consolidated form for object storage](https://docs.gitlab.com/charts/charts/globals/#consolidated-object-storage).
 
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.
 
-{{< alert type="note" >}}
-
-For the storage-specific form,
-[direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
-because it does not require a shared folder.
-
-{{< /alert >}}
+> [!note]
+> For the storage-specific form,
+> [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
+> because it does not require a shared folder.
 
 For storage types not
 supported by the consolidated form, refer to the following guides:
@@ -180,7 +174,7 @@ supported by the consolidated form, refer to the following guides:
 | [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | {{< icon name="dotted-circle" >}} No |
 | [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | {{< icon name="dotted-circle" >}} No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| {{< icon name="dotted-circle" >}} No |
-| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | {{< icon name="dotted-circle" >}} No |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching) (optional for improved performance) | {{< icon name="dotted-circle" >}} No |
 | [Secure Files](cicd/secure_files.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
 | [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | {{< icon name="check-circle" >}} Yes |
 | [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | {{< icon name="check-circle" >}} Yes |
@@ -228,7 +222,7 @@ Prerequisites:
 
 - GitLab must be able to connect to the
   [instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html).
-- If GitLab is [configured to use an internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP
+- If GitLab is [configured to use an internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables/), the endpoint IP
   address must be added to the `no_proxy` list.
 - For IMDS v2 access, ensure the [hop limit](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) is sufficient. If GitLab
   is running in a container, you may need to raise the limit from 1 to 2.
@@ -315,6 +309,12 @@ STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
 
 ### Google Cloud Storage (GCS)
 
+{{< history >}}
+
+- `universe_domain` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221401) in GitLab 18.9.
+
+{{< /history >}}
+
 Here are the valid connection parameters for GCS:
 
 | Setting                      | Description       | Example |
@@ -324,6 +324,7 @@ Here are the valid connection parameters for GCS:
 | `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
 | `google_json_key_string`     | JSON key string.  | `{ "type": "service_account", "project_id": "example-project-382839", ... }` |
 | `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication#adc) to locate service account credentials. | |
+| `universe_domain`            | Universe domain to use for Google Cloud requests. Use this to connect to [Google Cloud Dedicated](https://cloud.google.com/sovereign-cloud) or other non-default universe domains. | `googleapis.com` |
 
 GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
 It uses the first of these settings that has a value.
@@ -348,11 +349,8 @@ If you use ADC, be sure that:
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
   ```
 
-{{< alert type="note" >}}
-
-To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-
-{{< /alert >}}
+> [!note]
+> To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 {{< tabs >}}
 
@@ -379,6 +377,17 @@ To use bucket encryption with [customer-managed encryption keys](https://cloud.g
    }
    ```
 
+   To use a non-default universe domain (for example, [Google Cloud Dedicated](https://cloud.google.com/sovereign-cloud)):
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+    'provider' => 'Google',
+    'google_project' => '<GOOGLE PROJECT>',
+    'google_application_default' => true,
+    'universe_domain' => '<UNIVERSE DOMAIN>'
+   }
+   ```
+
 1. Save the file and reconfigure GitLab:
 
    ```shell
@@ -390,7 +399,7 @@ To use bucket encryption with [customer-managed encryption keys](https://cloud.g
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: Google
@@ -404,6 +413,15 @@ To use bucket encryption with [customer-managed encryption keys](https://cloud.g
    provider: Google
    google_project: <GOOGLE PROJECT>
    google_application_default: true
+   ```
+
+   To use a non-default universe domain (for example, [Google Cloud Dedicated](https://cloud.google.com/sovereign-cloud)):
+
+   ```yaml
+   provider: Google
+   google_project: <GOOGLE PROJECT>
+   google_application_default: true
+   universe_domain: <UNIVERSE DOMAIN>
    ```
 
 1. Create the Kubernetes Secret:
@@ -497,6 +515,17 @@ To use bucket encryption with [customer-managed encryption keys](https://cloud.g
    }
    ```
 
+   To use a non-default universe domain (for example, [Google Cloud Dedicated](https://cloud.google.com/sovereign-cloud)):
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<GOOGLE PROJECT>',
+     'google_application_default' => true,
+     'universe_domain' => '<UNIVERSE DOMAIN>'
+   }
+   ```
+
 1. Save the file and restart GitLab:
 
    ```shell
@@ -574,7 +603,7 @@ The following are the valid connection parameters for Azure. For more informatio
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: AzureRM
@@ -781,12 +810,9 @@ assigned to it.
 
 ### Storj Gateway (SJ)
 
-{{< alert type="note" >}}
-
-The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
-While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
-
-{{< /alert >}}
+> [!note]
+> The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
+> While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
 
 The [Storj Network](https://www.storj.io/) provides an S3-compatible API gateway. Use the following configuration example:
 
@@ -808,11 +834,8 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 
 ### Hitachi Vantara HCP
 
-{{< alert type="note" >}}
-
-Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
-
-{{< /alert >}}
+> [!note]
+> Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
 
 [HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
@@ -910,7 +933,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: AWS
@@ -1214,7 +1237,7 @@ or add fault tolerance and redundancy, you may be
 looking at removing dependencies on block or network file systems.
 See the following additional guides:
 
-1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#move-the-home-directory-for-a-user) is on local disk.
+1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration/#move-the-home-directory-for-a-user) is on local disk.
 1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
    to eliminate the need for a shared `authorized_keys` file.
 1. [Prevent local disk usage for job logs](cicd/job_logs.md#prevent-local-disk-usage).
@@ -1551,11 +1574,8 @@ On the primary site:
 
 #### Clean up inconsistencies
 
-{{< alert type="warning" >}}
-
-Ensure you have a recent and working backup at hand before issuing any deletion commands.
-
-{{< /alert >}}
+> [!warning]
+> Ensure you have a recent and working backup at hand before issuing any deletion commands.
 
 Based on the previous scenario, multiple **uploads** are causing
 inconsistencies which are used as an example below.

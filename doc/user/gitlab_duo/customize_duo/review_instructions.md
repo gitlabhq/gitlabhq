@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Customize instructions for AI to use in merge request reviews.
 title: Customize review instructions for GitLab Duo
@@ -9,7 +9,7 @@ title: Customize review instructions for GitLab Duo
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -25,13 +25,13 @@ title: Customize review instructions for GitLab Duo
 Create custom merge request review instructions to ensure that GitLab Duo applies consistent and
 specific code review standards to your project.
 
-Both GitLab Duo Code Review (Classic) and Code Review Flow support custom review instructions.
-
 For example, you can enforce Ruby style conventions only on Ruby files, and Go style
 conventions on Go files.
 
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
+
+GitLab Duo Code Review (Classic) supports custom review instructions.
 
 ## Configure custom review instructions
 
@@ -39,17 +39,6 @@ To configure custom merge request review instructions:
 
 1. In the root of your repository, create a `.gitlab/duo` directory if one doesn't already exist.
 1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
-1. Optional. Ask [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
-   to analyze the codebase and documentation, and generate custom review instructions.
-
-   Example prompt:
-
-   ```plaintext
-   I need to create custom rules for GitLab Duo Code Review. When you look at the source code,
-   which languages are missing and need to be added to the mr-review-instructions.yaml
-   file?
-   ```
-
 1. Add your custom instructions using the following format:
 
    ```yaml
@@ -63,7 +52,7 @@ To configure custom merge request review instructions:
          <your_custom_review_instructions>
    ```
 
-   Use glob patterns in the `fileFilters` section to target specific files for
+   The `fileFilters` section is mandatory. Use glob patterns in this section to target specific files for
    the custom review rules.
 
    For example:
@@ -108,6 +97,12 @@ To configure custom merge request review instructions:
          1. Test both happy paths and edge cases
          2. Include error scenarios
          3. Use shared examples to reduce duplication
+
+     - name: All Files
+       fileFilters:
+         - "**/*"   # All files in the repository
+       instructions: |
+         1. Explain the "why" behind each suggestion
    ```
 
    For glob syntax examples, see the
@@ -136,6 +131,9 @@ To configure custom merge request review instructions:
      The `instruction_name` value corresponds to the `name` property from your
      `.gitlab/duo/mr-review-instructions.yaml` file. Standard GitLab Duo comments
      do not use this format.
+     <br><br>
+     If GitLab Duo does not find any issues, it leaves a review summary comment. Custom
+     instructions do not apply to this summary comment.
 1. Optional:
    - Review the feedback and refine your instructions as needed.
    - Test the patterns to ensure they match the intended files.
@@ -704,3 +702,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
+- [GitLab Duo Code Review (Classic)](../../gitlab_duo/code_review_classic.md)

@@ -1,6 +1,8 @@
 import { GlCollapsibleListbox, GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { createMockSubscription } from 'mock-apollo-client';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import { TEST_HOST } from 'spec/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -16,6 +18,7 @@ import PipelinesFilteredSearch from '~/ci/pipelines_page/components/pipelines_fi
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
+import getSinglePipelineQuery from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
@@ -38,9 +41,9 @@ import {
   mockRunnerCacheClearPayload,
   mockRunnerCacheClearPayloadWithError,
   mockPipelinesFilteredSearch,
-  mockPipelineUpdateResponse,
-  mockPipelineUpdateResponseEmpty,
   mockPipelineWithDownstream,
+  mockBatchResponse,
+  mockSinglePipelineResponse,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -54,14 +57,17 @@ Vue.use(VueApollo);
 describe('Pipelines app', () => {
   let wrapper;
   let trackingSpy;
+  let apolloProvider;
+  let mockSubscription;
+  let subscriptionHandler;
 
   const countHandler = jest.fn().mockResolvedValue(mockPipelinesCount);
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
   const downstreamHandler = jest.fn().mockResolvedValue(mockPipelineWithDownstream);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
-  const subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineUpdateResponse);
-  const subscriptionHandlerEmpty = jest.fn().mockResolvedValue(mockPipelineUpdateResponseEmpty);
+  const singlePipelineHandler = jest.fn().mockResolvedValue(mockSinglePipelineResponse);
+
   const clearCacheMutationSuccessHandler = jest.fn().mockResolvedValue(mockRunnerCacheClearPayload);
   const clearCacheMutationFailedHandler = jest
     .fn()
@@ -86,7 +92,6 @@ describe('Pipelines app', () => {
     requestHandlers = [
       [getPipelinesQuery, successHandler],
       [getAllPipelinesCountQuery, countHandler],
-      [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
     ],
   ) => {
     return createMockApollo(requestHandlers);
@@ -97,6 +102,18 @@ describe('Pipelines app', () => {
   };
 
   const createComponent = ({ props = {}, requestHandlers, provide = {} } = {}) => {
+    apolloProvider = createMockApolloProvider(requestHandlers);
+
+    subscriptionHandler = jest.fn(() => {
+      mockSubscription = createMockSubscription();
+      return mockSubscription;
+    });
+
+    apolloProvider.defaultClient.setRequestHandler(
+      ciPipelineStatusesUpdatedSubscription,
+      subscriptionHandler,
+    );
+
     wrapper = shallowMountExtended(Pipelines, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -113,7 +130,7 @@ describe('Pipelines app', () => {
         PipelinesTable,
       },
       propsData: { ...defaultProps, ...props },
-      apolloProvider: createMockApolloProvider(requestHandlers),
+      apolloProvider,
     });
   };
 
@@ -127,6 +144,7 @@ describe('Pipelines app', () => {
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findExternalConfigEmptyState = () => wrapper.findComponent(ExternalConfigEmptyState);
+  const findEmptyStateTab = () => wrapper.findByTestId('empty-state-tab');
 
   const triggerNextPage = async () => {
     findPagination().vm.$emit('next');
@@ -163,10 +181,7 @@ describe('Pipelines app', () => {
   describe('empty state', () => {
     it('shows error empty state when there is an error', async () => {
       createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, failedHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ],
+        requestHandlers: [[getPipelinesQuery, failedHandler]],
       });
 
       await waitForPromises();
@@ -184,10 +199,7 @@ describe('Pipelines app', () => {
       });
 
       createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, dynamicHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ],
+        requestHandlers: [[getPipelinesQuery, dynamicHandler]],
       });
 
       await waitForPromises();
@@ -207,12 +219,9 @@ describe('Pipelines app', () => {
       expect(findEmptyState().props('title')).toBe('There are currently no finished pipelines.');
     });
 
-    it('shows no ci empty state when there are no pipelines', async () => {
+    it('shows no ci empty state when there are no pipelines and hasGitlabCi is false', async () => {
       createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, emptyHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ],
+        requestHandlers: [[getPipelinesQuery, emptyHandler]],
       });
 
       await waitForPromises();
@@ -222,6 +231,24 @@ describe('Pipelines app', () => {
       expect(findFilteredSearch().exists()).toBe(false);
       expect(findTabs().exists()).toBe(false);
       expect(findNavControls().exists()).toBe(false);
+    });
+
+    it('shows tab empty state when there are no pipelines and hasGitlabCi is true', async () => {
+      createComponent({
+        requestHandlers: [[getPipelinesQuery, emptyHandler]],
+        provide: {
+          hasGitlabCi: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findEmptyStateTab().exists()).toBe(true);
+      expect(findTabs().exists()).toBe(true);
+      expect(findNavControls().exists()).toBe(true);
+      expect(findTable().exists()).toBe(false);
+      expect(findFilteredSearch().exists()).toBe(true);
+      expect(findNoCiEmptyState().exists()).toBe(false);
     });
 
     it('does not render external config empty state', async () => {
@@ -271,10 +298,7 @@ describe('Pipelines app', () => {
 
     it('shows query error alert', async () => {
       createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, failedHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ],
+        requestHandlers: [[getPipelinesQuery, failedHandler]],
       });
 
       await waitForPromises();
@@ -289,7 +313,6 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, downstreamHandler],
           [getAllPipelinesCountQuery, countHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
         ],
       });
 
@@ -369,7 +392,6 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, successHandler],
           [clearRunnerCacheMutation, clearCacheMutationSuccessHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
         ],
       });
 
@@ -396,7 +418,6 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, successHandler],
           [clearRunnerCacheMutation, clearCacheMutationFailedHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
         ],
       });
 
@@ -531,7 +552,6 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, successHandler],
           [setSortPreferenceMutation, setSortPreferenceMutationSuccessHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
         ],
       });
 
@@ -551,7 +571,6 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, successHandler],
           [setSortPreferenceMutation, setSortPreferenceMutationFailedHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
         ],
       });
 
@@ -614,7 +633,6 @@ describe('Pipelines app', () => {
             [getPipelinesQuery, successHandler],
             [retryPipelineMutation, pipelineRetryMutationHandler],
             [cancelPipelineMutation, pipelineCancelMutationHandler],
-            [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
           ],
         });
 
@@ -647,7 +665,6 @@ describe('Pipelines app', () => {
             [getPipelinesQuery, successHandler],
             [getAllPipelinesCountQuery, countHandler],
             [retryPipelineMutation, pipelineRetryFailedMutationHandler],
-            [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
           ],
         });
 
@@ -668,32 +685,29 @@ describe('Pipelines app', () => {
   });
 
   describe('subscription', () => {
+    const successDynamicHandler = jest.fn((variables) => {
+      // Batch query (has ids parameter)
+      if (variables.ids) {
+        return Promise.resolve(mockBatchResponse);
+      }
+      // Regular query (pagination parameters)
+      return Promise.resolve(mockPipelinesData);
+    });
+
+    const failedDynamicHandler = jest.fn((variables) => {
+      // Make batch queries fail, regular queries succeed
+      if (variables.ids) {
+        return Promise.reject(new Error('Batch query failed'));
+      }
+      return Promise.resolve(mockPipelinesData);
+    });
+
     it('calls subscription with correct variables', async () => {
-      createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, successHandler],
-          [getAllPipelinesCountQuery, countHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
-        ],
-      });
+      createComponent();
 
       await waitForPromises();
 
       expect(subscriptionHandler).toHaveBeenCalledWith({ projectId: 'gid://gitlab/Project/19' });
-    });
-
-    it('passes updated pipeline from subscription to table', async () => {
-      createComponent({
-        requestHandlers: [
-          [getPipelinesQuery, successHandler],
-          [getAllPipelinesCountQuery, countHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
-        ],
-      });
-
-      await waitForPromises();
-
-      expect(findTable().props('pipelines')[0].detailedStatus.icon).toBe('status_running');
     });
 
     it('skips subscription where there are no pipelines', async () => {
@@ -701,13 +715,150 @@ describe('Pipelines app', () => {
         requestHandlers: [
           [getPipelinesQuery, emptyHandler],
           [getAllPipelinesCountQuery, countHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
         ],
       });
 
       await waitForPromises();
 
       expect(subscriptionHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls debounced batch query when subscription fires for visible pipelines', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/701',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(successDynamicHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: 'gitlab-org/gitlab',
+          ids: ['gid://gitlab/Ci::Pipeline/701'],
+          first: 1,
+        }),
+      );
+    });
+
+    it('ignores updates for pipelines not in the current view', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/1',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(successDynamicHandler).not.toHaveBeenCalled();
+      expect(singlePipelineHandler).not.toHaveBeenCalled();
+    });
+
+    it('fetches newly created pipelines when on the first page', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [getSinglePipelineQuery, singlePipelineHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/20000',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(singlePipelineHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        id: 'gid://gitlab/Ci::Pipeline/20000',
+      });
+    });
+
+    it('shows error alert when batch query fails', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, failedDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/701',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while updating pipeline information',
+      });
+    });
+
+    it('does not make API calls when tab is hidden', async () => {
+      jest.spyOn(Visibility, 'hidden').mockReturnValue(true);
+
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [getSinglePipelineQuery, singlePipelineHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: { id: 'gid://gitlab/Ci::Pipeline/67' },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(successDynamicHandler).not.toHaveBeenCalled();
+      expect(singlePipelineHandler).not.toHaveBeenCalled();
     });
   });
 });

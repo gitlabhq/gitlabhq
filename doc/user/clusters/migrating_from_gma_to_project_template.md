@@ -110,11 +110,8 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
        `applications/cert-manager-legacy/helmfile.yaml`
        in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
 
-       {{< alert type="warning" >}}
-
-       Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
-
-       {{< /alert >}}
+       > [!warning]
+       > Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
 
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any

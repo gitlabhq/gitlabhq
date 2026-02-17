@@ -1,0 +1,5 @@
+---
+name: read_repository_blob
+description: Grants the ability to read repository blobs
+boundaries:
+  - project

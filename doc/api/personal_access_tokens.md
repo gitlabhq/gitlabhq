@@ -22,8 +22,8 @@ Use this API to interact with [personal access tokens](../user/profile/personal_
 
 {{< /history >}}
 
-Lists all personal access tokens accessible by the authenticating user. For administrators, returns
-a list of all personal access tokens in the instance. For non-administrators, returns a list of all
+Lists all personal access tokens accessible by the authenticated user. For administrators, returns
+all personal access tokens in the instance. For non-administrators, returns all
 of their personal access tokens.
 
 ```plaintext
@@ -89,7 +89,7 @@ Other possible response:
 
 - `401: Unauthorized` if a non-administrator uses the `user_id` attribute to filter for other users.
 
-## Get details on a personal access token
+## Retrieve a personal access token
 
 {{< history >}}
 
@@ -98,8 +98,8 @@ Other possible response:
 
 {{< /history >}}
 
-Gets details on a specified personal access token. Administrators can get details on any token.
-Non-administrators can only get details on their own tokens.
+Retrieves details for a specified personal access token. Administrators can retrieve details on any token.
+Non-administrators can only retrieve details on their own tokens.
 
 ```plaintext
 GET /personal_access_tokens/:id

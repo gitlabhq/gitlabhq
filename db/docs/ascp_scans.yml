@@ -1,0 +1,16 @@
+---
+table_name: ascp_scans
+classes:
+  - Security::Ascp::Scan
+feature_categories:
+  - static_application_security_testing
+description: >
+  Tracks ASCP security scans (full and incremental) with sequential ordering
+  per project. Contains git reference information (commit SHA) and links
+  incremental scans to their base scan. Other ASCP tables reference this
+  table via scan_id FKs for version filtering.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218934
+milestone: '18.9'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

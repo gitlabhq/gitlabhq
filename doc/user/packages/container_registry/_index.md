@@ -18,13 +18,10 @@ You can use the integrated container registry to store container images for each
 An administrator must enable the container registry for your GitLab instance. For more information,
 see [GitLab container registry administration](../../../administration/packages/container_registry.md).
 
-{{< alert type="note" >}}
-
-If you pull container images from Docker Hub, you can use the
-[GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
-rate limits and speed up your pipelines.
-
-{{< /alert >}}
+> [!note]
+> If you pull container images from Docker Hub, you can use the
+> [GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
+> rate limits and speed up your pipelines.
 
 ## View the container registry
 
@@ -70,13 +67,10 @@ To download and run a container image hosted in the container registry:
    docker run [options] registry.example.com/group/project/image [arguments]
    ```
 
-{{< alert type="note" >}}
-
-You must authenticate with the container registry to download
-container images from a private repository.
-For more information, see [authenticate with the container registry](authenticate_with_container_registry.md).
-
-{{< /alert >}}
+> [!note]
+> You must authenticate with the container registry to download
+> container images from a private repository.
+> For more information, see [authenticate with the container registry](authenticate_with_container_registry.md).
 
 ## Naming convention for your container images
 
@@ -232,9 +226,6 @@ For example:
 COSIGN_EXPERIMENTAL=1 cosign sign --registry-referrers-mode oci-1-1 <container image>
 ```
 
-{{< alert type="note" >}}
-
-While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
-implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).
-
-{{< /alert >}}
+> [!note]
+> While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
+> implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).

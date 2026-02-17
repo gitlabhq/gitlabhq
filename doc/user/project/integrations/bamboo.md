@@ -86,7 +86,7 @@ For example:
    # Script to update CI status on GitLab.
    # Add this script as final inline script task in a Bamboo job.
    #
-   # General documentation: https://docs.gitlab.com/ee/user/project/integrations/bamboo.html
+   # General documentation: https://docs.gitlab.com/user/project/integrations/bamboo/
    # Fix inspired from https://gitlab.com/gitlab-org/gitlab/-/issues/34744
 
    # Stop at first error

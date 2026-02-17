@@ -198,11 +198,8 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.
 
-{{< alert type="note" >}}
-
-API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/ci/runner.rb)
-
-{{< /alert >}}
+> [!note]
+> API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/ci/runner.rb)
 
 After the server receives the request it selects a `pending` job based on the [`Ci::RegisterJobService` algorithm](#ciregisterjobservice), then assigns and sends the job to the runner.
 
@@ -238,12 +235,9 @@ where the runner is registered to:
 
 This list of jobs is then filtered further by matching tags between job and runner tags.
 
-{{< alert type="note" >}}
-
-If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
-The runner may have more tags than defined for the job, but not vice-versa.
-
-{{< /alert >}}
+> [!note]
+> If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
+> The runner may have more tags than defined for the job, but not vice-versa.
 
 Finally if the runner can only pick jobs that are tagged, all untagged jobs are filtered out.
 
@@ -323,7 +317,7 @@ installation can configure which data stores are used. On non-GitLab.com instanc
    - Creates single consolidated archive file as a `JobArtifact` of `type: :trace`
    - Deletes individual chunks from object storage
    - Deletes `Ci::BuildTraceChunk` records from PostgreSQL
-      - `Ci::Build::Trace` changes from the `live` to `archived` state
+     - `Ci::Build::Trace` changes from the `live` to `archived` state
    - Returns 200 OK to runner
    - `build.trace_chunks` will be an empty array
 
@@ -389,4 +383,4 @@ See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the fu
 
 ## Compute Minutes and Quota
 
-See [compute minutes development doucmentation](compute_minutes.md)
+See [compute minutes development documentation](compute_minutes.md)

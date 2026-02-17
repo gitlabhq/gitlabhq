@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :code_review_workflow do
@@ -94,6 +95,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(json_response['file_identifier_hash']).to be_present
       expect(json_response['line_code']).to match(/\w+_\d+_\d+/)
       expect(json_response['note_html']).to eq('<p dir="auto">This is a unpublished comment</p>')
+    end
+
+    it 'creates draft note with code suggestion' do
+      diff_refs = project.commit(sample_commit.id).try(:diff_refs)
+
+      position = Gitlab::Diff::Position.new(
+        old_path: "files/ruby/popen.rb",
+        new_path: "files/ruby/popen.rb",
+        old_line: nil,
+        new_line: 14,
+        diff_refs: diff_refs
+      )
+
+      create_draft_note(draft_overrides: { position: position.to_json, note: "```suggestion:-0+0\nchanged line\n```" })
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['suggestions']).to be_present
+      expect(json_response['note_html']).to include('js-render-suggestion')
     end
 
     it 'creates a draft note with quick actions' do

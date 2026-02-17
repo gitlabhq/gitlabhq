@@ -20,21 +20,15 @@ description: "Import repositories from GitHub or Bitbucket Server with the REST 
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to [import repositories from external sources](../user/import/_index.md).
 
-{{< alert type="note" >}}
-
-User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-
-{{< /alert >}}
+> [!note]
+> User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
+> When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
 
 ## Import repository from GitHub
 
@@ -48,13 +42,13 @@ When you import to a personal namespace, all contributions are assigned to the p
 
 {{< /history >}}
 
-Import your projects from GitHub to GitLab using the API.
+Imports a repository from GitHub to GitLab.
 
 Prerequisites:
 
 - [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
 - The namespace set in `target_namespace` must exist.
-- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for.
+- The namespace can be your user namespace or an existing group that you have the Maintainer or Owner role for.
 
 ```plaintext
 POST /import/github
@@ -128,7 +122,7 @@ token:
 
 ### Cancel GitHub project import
 
-Cancel an in-progress GitHub project import using the API.
+Cancels an in-progress GitHub project import.
 
 ```plaintext
 POST /import/github/cancel
@@ -171,8 +165,8 @@ Returns the following status codes:
 
 ### Import GitHub gists into GitLab snippets
 
-You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
-GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
+Imports personal GitHub gists into GitLab snippets.
+You can import gists with up to 10 files. GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
 
 If any gists couldn't be imported, an email is sent with a list of gists that were not imported.
 
@@ -203,7 +197,7 @@ Returns the following status codes:
 
 ## Import repository from Bitbucket Server
 
-Import your projects from Bitbucket Server to GitLab using the API.
+Imports a repository from Bitbucket Server to GitLab.
 
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
 You must specify a `target_namespace` if you want to import the repository to a GitLab group.
@@ -248,15 +242,19 @@ curl --request POST \
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215036) in GitLab 17.0.
+- Support for Bitbucket Cloud API tokens [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/575583) in GitLab 18.9.
 
 {{< /history >}}
 
-Import your projects from Bitbucket Cloud to GitLab using by the API.
+Imports a repository from Bitbucket Cloud to GitLab.
 
 Prerequisites:
 
 - The [prerequisites for Bitbucket Cloud importer](../user/import/bitbucket_cloud.md).
-- A [Bitbucket Cloud app password](../user/import/bitbucket_cloud.md#generate-a-bitbucket-cloud-app-password).
+- One of the following:
+  - A [Bitbucket Cloud app password](../user/import/bitbucket_cloud.md#generate-a-bitbucket-cloud-app-password). Bitbucket Cloud app passwords
+    [are deprecated](https://www.atlassian.com/blog/bitbucket/bitbucket-cloud-transitions-to-api-tokens-enhancing-security-with-app-password-deprecation).
+  - A [Bitbucket Cloud API token](#bitbucket-cloud-api-token-scopes) with the required scopes.
 
 ```plaintext
 POST /import/bitbucket
@@ -264,11 +262,15 @@ POST /import/bitbucket
 
 | Attribute                | Type   | Required | Description |
 |:-------------------------|:-------|:---------|:------------|
-| `bitbucket_username`     | string | Yes      | Bitbucket Cloud username. |
-| `bitbucket_app_password` | string | Yes      | Bitbucket Cloud app password. |
+| `bitbucket_api_token`    | string | No       | Bitbucket Cloud API token. Required when using API token authentication. |
+| `bitbucket_email`        | string | No       | Bitbucket Cloud email. Required when using API token authentication. |
+| `bitbucket_username`     | string | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961). Bitbucket Cloud username. Required when using app password authentication. |
+| `bitbucket_app_password` | string | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961). Bitbucket Cloud app password. Required when using app password authentication. |
 | `repo_path`              | string | Yes      | Path to repository. |
 | `target_namespace`       | string | Yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
 | `new_name`               | string | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
+
+Example using API token:
 
 ```shell
 curl --request POST \
@@ -276,13 +278,22 @@ curl --request POST \
   --header "content-type: application/json" \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --data '{
-    "bitbucket_username": "bitbucket_username",
-    "bitbucket_app_password": "bitbucket_app_password",
+    "bitbucket_email": "email@example.com",
+    "bitbucket_api_token": "your_bitbucket_api_token",
     "repo_path": "username/my_project",
     "target_namespace": "my_group/my_subgroup",
     "new_name": "new_project_name"
 }'
 ```
+
+### Bitbucket Cloud API token scopes
+
+If you're using a Bitbucket Cloud API token for authentication, the token must have the following scopes:
+
+- `read:repository:bitbucket`
+- `read:pullrequest:bitbucket`
+- `read:issue:bitbucket`
+- `read:wiki:bitbucket`
 
 ## Related topics
 

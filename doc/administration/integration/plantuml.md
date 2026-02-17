@@ -109,6 +109,11 @@ reuse diagrams. For example:
   ----
   ```
 
+> [!note]
+> The `::include` directive resolves only after the file is committed to the repository.
+> The Markdown editor preview does not render included files. To verify the diagram
+> renders correctly, commit the file and view it in the repository file browser.
+
 ## Configure your PlantUML server
 
 Before you can enable PlantUML in GitLab, set up your own PlantUML
@@ -275,13 +280,10 @@ PlantUML integration is ready and listening for requests on port `8005`:
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
-{{< alert type="note" >}}
-
-The default URL is different when using this approach. The Docker-based image
-makes the service available at the root URL, with no relative path. Adjust
-the configuration below accordingly.
-
-{{< /alert >}}
+> [!note]
+> The default URL is different when using this approach. The Docker-based image
+> makes the service available at the root URL, with no relative path. Adjust
+> the configuration below accordingly.
 
 Next, you can:
 

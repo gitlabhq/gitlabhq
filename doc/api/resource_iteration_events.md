@@ -96,9 +96,9 @@ Example response:
 ]
 ```
 
-### Get single issue iteration event
+### Retrieve an issue iteration event
 
-Returns a single iteration event for a specific project issue.
+Retrieves a single iteration event for a specified project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_iteration_events/:resource_iteration_event_id

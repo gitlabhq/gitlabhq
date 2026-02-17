@@ -196,7 +196,7 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
 
     it 'orders attachments ending in `.patch` by name' do
       expected_filenames = ["0001-A-commit-from-a-patch.patch",
-                            "0002-This-does-not-apply-to-the-feature-branch.patch"]
+        "0002-This-does-not-apply-to-the-feature-branch.patch"]
 
       attachments = handler.__send__(:patch_attachments).map(&:filename)
 

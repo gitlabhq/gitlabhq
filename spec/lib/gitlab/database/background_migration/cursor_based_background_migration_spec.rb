@@ -66,6 +66,30 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
 
     let(:runner) { Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: connection) }
 
+    it 'uses the correct batching query' do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        queries << event.payload[:sql]
+      end
+
+      strategy_instance.next_batch(
+        table_name,
+        :id_a,
+        batch_min_value: [0, 0],
+        batch_size: 10,
+        job_arguments: [],
+        job_class: background_migration_job_class
+      )
+
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+
+      # Verify that the query selects only the cursor columns so batching can be an index only scan
+      expect(queries).to include(
+        a_string_matching(/SELECT "_test_cursor_batching"."id_a", "_test_cursor_batching"."id_b" FROM/i)
+      )
+    end
+
     it 'migrates correctly', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9459' do
       runner.run_entire_migration(migration)
       expect(model.where(backfilled: 1).count).to eq(model.count)

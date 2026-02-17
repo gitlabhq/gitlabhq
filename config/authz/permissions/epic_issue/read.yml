@@ -1,0 +1,5 @@
+---
+name: read_epic_issue
+description: Grants the ability to read issues assigned to an epic
+boundaries:
+  - group

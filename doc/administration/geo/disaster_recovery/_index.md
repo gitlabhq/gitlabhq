@@ -16,12 +16,9 @@ description: Recover from a disaster, using a Geo instance.
 Geo replicates your database, your Git repositories, and other assets.
 Some [known issues](../_index.md#known-issues) exist.
 
-{{< alert type="warning" >}}
-
-Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-causes downtime.
-
-{{< /alert >}}
+> [!warning]
+> Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
+> causes downtime.
 
 ## Promoting a **secondary** Geo site in single-secondary configurations
 
@@ -40,13 +37,10 @@ order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the **primary** site
 
-{{< alert type="warning" >}}
-
-If the **primary** site goes offline, there may be data saved on the **primary** site
-that have not been replicated to the **secondary** site. This data should be treated
-as lost if you proceed.
-
-{{< /alert >}}
+> [!warning]
+> If the **primary** site goes offline, there may be data saved on the **primary** site
+> that have not been replicated to the **secondary** site. This data should be treated
+> as lost if you proceed.
 
 If an outage on the **primary** site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
@@ -82,11 +76,8 @@ must disable the **primary** site.
   If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
   you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
-  {{< alert type="note" >}}
-
-The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
-
-  {{< /alert >}}
+  > [!note]
+  > The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
 
 ### Step 3. Promoting a **secondary** site
 
@@ -283,12 +274,9 @@ changing Git remotes and API URLs.
    external_url 'https://<new_external_url>'
    ```
 
-   {{< alert type="note" >}}
-
-   Changing `external_url` does not prevent access through the old secondary URL, as
-   long as the secondary DNS records are still intact.
-
-   {{< /alert >}}
+   > [!note]
+   > Changing `external_url` does not prevent access through the old secondary URL, as
+   > long as the secondary DNS records are still intact.
 
 1. Update the **secondary**'s SSL certificate:
 
@@ -438,13 +426,10 @@ The following sections assume you are using the `gitlab` namespace. If you used 
 
 ### Step 1. Permanently disable the **primary** cluster
 
-{{< alert type="warning" >}}
-
-If the **primary** site goes offline, there may be data saved on the **primary** site
-that has not been replicated to the **secondary** site. This data should be treated
-as lost if you proceed.
-
-{{< /alert >}}
+> [!warning]
+> If the **primary** site goes offline, there may be data saved on the **primary** site
+> that has not been replicated to the **secondary** site. This data should be treated
+> as lost if you proceed.
 
 If an outage on the **primary** site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
@@ -472,13 +457,10 @@ must disable the **primary** site:
 
 ### Step 2. Promote all **secondary** site nodes external to the cluster
 
-{{< alert type="warning" >}}
-
-If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
-a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused is lost.
-
-{{< /alert >}}
+> [!warning]
+> If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
+> a point-in-time recovery to the last known state.
+> Data that was created on the primary while the secondary was paused is lost.
 
 1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
    package, SSH into the node and run one of the following commands:

@@ -99,11 +99,8 @@ To find a domain expert:
 
 ### Reviewer roulette
 
-{{< alert type="note" >}}
-
-[Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
-
-{{< /alert >}}
+> [!note]
+> [Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
@@ -190,18 +187,18 @@ by a reviewer before passing it to a maintainer as described in the
    backend review.
 
    For Haml template changes specifically:
-    - **Request backend review** when changes include Ruby logic, method calls,
-      variable assignments, conditionals, loops, data preparation, security checks,
-      or any server-side processing in the template.
-    - **Request frontend review** when changes affect DOM structure, CSS classes,
-      HTML attributes, accessibility features, user interactions, and responsive design,
-      or visual presentation.
-    - **Request both reviews** for complex changes that involve both Ruby logic and significant UI modifications, or when
-      backend and frontend are intertwined (such as when backend serves data that is consumed by Vue or JavaScript), to
-      ensure both the backend functionality and frontend user experience are properly evaluated.
-      - **Example:** A Haml template that calls Ruby methods to prepare data attributes for
-        a Vue.js component (for example, `project_id: @project&.to_global_id`) would benefit from a backend review for Ruby logic
-        correctness and frontend review for the component integration.
+   - **Request backend review** when changes include Ruby logic, method calls,
+     variable assignments, conditionals, loops, data preparation, security checks,
+     or any server-side processing in the template.
+   - **Request frontend review** when changes affect DOM structure, CSS classes,
+     HTML attributes, accessibility features, user interactions, and responsive design,
+     or visual presentation.
+   - **Request both reviews** for complex changes that involve both Ruby logic and significant UI modifications, or when
+     backend and frontend are intertwined (such as when backend serves data that is consumed by Vue or JavaScript), to
+     ensure both the backend functionality and frontend user experience are properly evaluated.
+     - **Example:** A Haml template that calls Ruby methods to prepare data attributes for
+       a Vue.js component (for example, `project_id: @project&.to_global_id`) would benefit from a backend review for Ruby logic
+       correctness and frontend review for the component integration.
 1. We encourage you to seek guidance from a database maintainer if your merge
    request is potentially introducing expensive queries. It is most efficient to comment
    on the line of code in question with the SQL queries so they can give their advice.
@@ -668,10 +665,12 @@ experience, refactors the existing code). Then:
   them. ("What do you think about using a custom validator here?")
 - Seek to understand the author's perspective.
 - Check out the branch, and test the changes locally. You can decide how much manual testing you want to perform.
+
   - If the merge request requires significant GDK modifications (such as adding new services, modifying environment variables, or complex configuration changes), consider these approaches:
     - **Skip local testing** and perform a thorough code review instead, then request a domain expert from the author's team to do local verification.
     - **Request additional verification** such as screenshots, videos, or detailed testing steps from the author.
     - **Identify the minimal change** needed to trigger the code path (for example, setting a condition to `true` in the code) rather than full environment setup.
+
   Your testing might result in opportunities to add automated tests.
 - If you don't understand a piece of code, _say so_. There's a good chance
   someone else would be confused by it as well.
@@ -692,11 +691,8 @@ experience, refactors the existing code). Then:
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.
 
-{{< alert type="warning" >}}
-
-**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
-
-{{< /alert >}}
+> [!warning]
+> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
 ### Merging a merge request
 
@@ -744,11 +740,8 @@ when rebasing from the UI or with the [`/rebase` quick action](../user/project/q
 
 When ready to merge:
 
-{{< alert type="warning" >}}
-
-**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
-
-{{< /alert >}}
+> [!warning]
+> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
 - Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md)
   feature when the merge request has a lot of commits.
@@ -781,12 +774,9 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 ### Community contributions
 
-{{< alert type="warning" >}}
-
-**Review all changes thoroughly for malicious code before starting a
-[merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
-
-{{< /alert >}}
+> [!warning]
+> **Review all changes thoroughly for malicious code before starting a
+> [merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
 
 When reviewing merge requests added by wider community contributors:
 
@@ -841,12 +831,9 @@ When reviewing merge requests from forked repositories, you have several methods
   gdk switch <MR_ID>
   ```
 
-  {{< alert type="note" >}}
-
-  This command also runs `gdk update`, which updates your development environment.
-  The process can take several minutes to complete.
-
-  {{< /alert >}}
+  > [!note]
+  > This command also runs `gdk update`, which updates your development environment.
+  > The process can take several minutes to complete.
 
   For more information, see the
   [GDK `switch.rb` file](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/lib/gdk/command/switch.rb).

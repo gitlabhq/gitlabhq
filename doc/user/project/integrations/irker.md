@@ -38,14 +38,11 @@ You need to set up an irker daemon. To do so:
 If the irker server runs on the same machine, you are done. If not, you
 need to follow the first steps of the next section.
 
-{{< alert type="warning" >}}
-
-irker does **not** have built-in authentication, which makes it vulnerable to spamming IRC channels if
-it is hosted outside of a firewall. To prevent abuse, make sure you run the daemon on a secured
-network. For more details, read
-[Security analysis of irker](http://www.catb.org/~esr/irker/security.html).
-
-{{< /alert >}}
+> [!warning]
+> irker does **not** have built-in authentication, which makes it vulnerable to spamming IRC channels if
+> it is hosted outside of a firewall. To prevent abuse, make sure you run the daemon on a secured
+> network. For more details, read
+> [Security analysis of irker](http://www.catb.org/~esr/irker/security.html).
 
 ## Complete these steps in GitLab
 

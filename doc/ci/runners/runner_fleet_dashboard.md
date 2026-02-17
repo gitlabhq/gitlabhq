@@ -26,7 +26,7 @@ The runner fleet dashboard shows:
 - Compute minutes used by instance runners
 - Job queue times
 
-![Runner fleet dashboard](img/runner_fleet_dashboard_v17_1.png)
+![Runner fleet dashboard displaying status, usage, and performance metrics.](img/runner_fleet_dashboard_v17_1.png)
 
 ## Dashboard metrics
 
@@ -39,15 +39,12 @@ The runner fleet dashboard shows:
 
 The following metrics are available in the runner fleet dashboard:
 
-{{< alert type="note" >}}
-
-To view **Runner usage** and **Wait time to pick a job** metrics, you must configure the [ClickHouse integration](../../integration/clickhouse.md).
-
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [setting up runner fleet dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
-<!-- Video published on 2023-12-19 -->
-
-{{< /alert >}}
+> [!note]
+> To view **Runner usage** and **Wait time to pick a job** metrics, you must configure the [ClickHouse integration](../../integration/clickhouse.md).
+>
+> <i class="fa-youtube-play" aria-hidden="true"></i>
+> For an overview, see [setting up runner fleet dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
+> <!-- Video published on 2023-12-19 -->
 
 | Metric                        | Description |
 |-------------------------------|-------------|
@@ -59,8 +56,8 @@ For an overview, see [setting up runner fleet dashboard with ClickHouse](https:/
 
 **Footnotes**:
 
-  1. This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
+1. This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
+   For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
 ## View the runner fleet dashboard
 

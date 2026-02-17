@@ -35,6 +35,7 @@ swap:
   distro: "distribution"
   docs: "documentation"
   (?<!GitLab )(?<!Cisco )(?<!Fix (pipeline )?with )(?<!Generate MR with )Duo: "GitLab Duo"
+  DAP: "GitLab Duo Agent Platform"
   e-mail: "email"
   emojis: "emoji"
   ex: "for example"

@@ -29,6 +29,7 @@ module QA
         Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::WorkItem::Index.perform do |index|
+          index.dismiss_onboarding_modal_if_present
           expect(index).to have_issue(created_issue)
         end
       end
@@ -49,6 +50,8 @@ module QA
         Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::WorkItem::Index.perform do |index|
+          index.dismiss_onboarding_modal_if_present
+
           expect(index).not_to have_issue(issue)
 
           index.click_closed_issues_tab

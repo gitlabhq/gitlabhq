@@ -13,11 +13,8 @@ Follow the [metrics instrumentation](metrics_instrumentation.md) guide.
 
 ## Change an existing metric
 
-{{< alert type="warning" >}}
-
-We want to **PREVENT** changes to the calculation logic or important attributes on any metric as this invalidates comparisons of the same metric across different versions of GitLab.
-
-{{< /alert >}}
+> [!warning]
+> We want to **PREVENT** changes to the calculation logic or important attributes on any metric as this invalidates comparisons of the same metric across different versions of GitLab.
 
 If you change a metric, you have to consider that not all instances of GitLab are running on the newest version. Old instances will still report the old version of the metric.
 Additionally, a metric's reported numbers are primarily interesting compared to previously reported numbers.

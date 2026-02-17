@@ -16,9 +16,9 @@ Use this API to manage [project snippets](../user/snippets.md). Related APIs exi
 [personal snippets](snippets.md) and
 [moving snippets between storages](snippet_repository_storage_moves.md).
 
-## List snippets
+## List all snippets for a project
 
-Get a list of project snippets.
+Lists all snippets for a specified project.
 
 ```plaintext
 GET /projects/:id/snippets
@@ -109,9 +109,9 @@ Example response:
 ]
 ```
 
-## Get single snippet
+## Retrieve a snippet
 
-Get a single project snippet.
+Retrieves a specified project snippet.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id
@@ -180,9 +180,9 @@ Example response:
 }
 ```
 
-## Create new snippet
+## Create a snippet
 
-Creates a new project snippet. The user must have permission to create new snippets.
+Creates a project snippet. The user must have permission to create snippets.
 
 ```plaintext
 POST /projects/:id/snippets
@@ -261,9 +261,9 @@ Example response:
 }
 ```
 
-## Update snippet
+## Update a snippet
 
-Updates an existing project snippet. The user must have permission to change an existing snippet.
+Updates a specified project snippet. The user must have permission to change existing snippets.
 
 Updates to snippets with multiple files must use the `files` attribute.
 
@@ -347,9 +347,9 @@ Example response:
 }
 ```
 
-## Delete snippet
+## Delete a snippet
 
-Deletes an existing project snippet. This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
+Deletes a specified project snippet. This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
 ```plaintext
 DELETE /projects/:id/snippets/:snippet_id
@@ -370,9 +370,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2"
 ```
 
-## Snippet content
+## Retrieve snippet content
 
-Returns the raw project snippet as plain text.
+Retrieves the raw project snippet as plain text.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/raw
@@ -392,9 +392,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/raw"
 ```
 
-## Snippet repository file content
+## Retrieve snippet repository file content
 
-Returns the raw file content as plain text.
+Retrieves the raw file content as plain text.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw
@@ -416,9 +416,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/raw"
 ```
 
-## Get user agent details
+## Retrieve user agent details
 
-Available only for users with administrator access.
+Retrieves user agent details for a specified snippet. Available only for users with administrator access.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/user_agent_detail

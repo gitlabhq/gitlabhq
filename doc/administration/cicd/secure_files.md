@@ -152,11 +152,8 @@ See [the available connection settings for different providers](../object_storag
    }
    ```
 
-  {{< alert type="note" >}}
-
-  If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
-
-  {{< /alert >}}
+   > [!note]
+   > If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
 
    ```ruby
    gitlab_rails['ci_secure_files_object_store_connection'] = {
@@ -217,12 +214,9 @@ See [the available connection settings for different providers](../object_storag
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-It's not possible to migrate Secure Files from object storage back to local storage,
-so proceed with caution.
-
-{{< /alert >}}
+> [!warning]
+> It's not possible to migrate Secure Files from object storage back to local storage,
+> so proceed with caution.
 
 To migrate Secure Files to object storage, follow the instructions below.
 

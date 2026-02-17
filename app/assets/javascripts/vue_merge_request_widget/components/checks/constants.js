@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const COMPONENTS = {
   conflict: () => import('./conflicts.vue'),
@@ -43,7 +43,7 @@ export const FAILURE_REASONS = {
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
   merge_time: __('Cannot merge until this date and time.'),
-  title_regex: __('Merge request title must match expected format.'),
+  title_regex: s__('mrWidget|Title must match required pattern'),
 };
 
 export const ICON_NAMES = Object.freeze({

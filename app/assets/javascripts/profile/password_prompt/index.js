@@ -29,6 +29,7 @@ export default () => {
   if (passwordPromptModalEl && field) {
     return new Vue({
       el: passwordPromptModalEl,
+      name: 'PasswordPromptModalRoot',
       data() {
         return {
           initialEmail: '',

@@ -91,6 +91,14 @@ RSpec.describe ActiveContext::Concerns::Collection do
       expect(collection_class.current_search_embedding_version).to eq({})
     end
 
+    context 'when collection_record does not exist' do
+      let(:collection_record) { nil }
+
+      it 'is empty hash' do
+        expect(collection_class.current_search_embedding_version).to eq({})
+      end
+    end
+
     context 'when a MODELS constant is defined on the class' do
       let(:models_hash) { { 1 => model_1 } }
       let(:model_1) { { foo: 'bar' } }
@@ -122,6 +130,14 @@ RSpec.describe ActiveContext::Concerns::Collection do
 
     it 'returns an empty array when no MODELS constant is defined' do
       expect(collection_class.current_indexing_embedding_versions).to eq([])
+    end
+
+    context 'when collection_record does not exist' do
+      let(:collection_record) { nil }
+
+      it 'returns an empty array' do
+        expect(collection_class.current_indexing_embedding_versions).to eq([])
+      end
     end
 
     context 'when a MODELS constant is defined on the class' do
@@ -222,6 +238,93 @@ RSpec.describe ActiveContext::Concerns::Collection do
     end
   end
 
+  describe 'all embedding models' do
+    where(:embedding_model_key) do
+      [:current_indexing_embedding_model, :next_indexing_embedding_model, :search_embedding_model]
+    end
+
+    with_them do
+      subject(:embedding_model) { collection_class.public_send(embedding_model_key) }
+
+      context 'when collection_record is nil' do
+        let(:collection_record) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context "when collection record's model metadata is nil" do
+        let(:collection_record) do
+          double("Collection", id: 123, embedding_model_key => nil)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context "when the collection record's model metadata is set" do
+        before do
+          allow(model_selector_class).to receive(:for).and_call_original
+        end
+
+        let(:model_selector_class) { collection_class.embedding_model_selector }
+        let(:model_metadata) { { model: 'some-model', field: 'some-field' } }
+        let(:collection_record) do
+          double(
+            "Collection",
+            id: 123,
+            embedding_model_key => { model: 'some-model', field: 'some-field' }
+          )
+        end
+
+        it "builds an embedding_model object through the embedding_model_selector" do
+          expect(model_selector_class).to receive(:for).with(model_metadata)
+
+          embedding_model
+        end
+      end
+    end
+  end
+
+  describe 'indexing embedding models' do
+    let(:current_indexing_embedding_model) do
+      ::ActiveContext::EmbeddingModel.new(
+        model_name: 'some-model-01',
+        field: 'current_model_field',
+        llm_class: Test::MockLlmClass,
+        llm_params: {}
+      )
+    end
+
+    let(:next_indexing_embedding_model) do
+      ::ActiveContext::EmbeddingModel.new(
+        model_name: 'some-model-02',
+        field: 'next_model_field',
+        llm_class: Test::MockLlmClass,
+        llm_params: {}
+      )
+    end
+
+    before do
+      allow(collection_class).to receive_messages(
+        current_indexing_embedding_model: current_indexing_embedding_model,
+        next_indexing_embedding_model: next_indexing_embedding_model
+      )
+    end
+
+    describe '.indexing_embedding_models' do
+      it 'returns the current and next indexing embedding models' do
+        expect(collection_class.indexing_embedding_models).to eq(
+          [current_indexing_embedding_model, next_indexing_embedding_model]
+        )
+      end
+    end
+
+    describe '.indexing_embedding_fields' do
+      it 'returns the current and next indexing fields' do
+        expect(collection_class.indexing_embedding_fields).to eq(%w[current_model_field next_model_field])
+      end
+    end
+  end
+
   describe '#references' do
     let(:collection_instance) { collection_class.new(mock_object) }
 
@@ -299,6 +402,10 @@ RSpec.describe ActiveContext::Concerns::Collection do
 
     it 'requires ids_to_objects to be implemented' do
       expect { base_collection_class.ids_to_objects(nil) }.to raise_error(NotImplementedError)
+    end
+
+    it 'requires embedding_model_selector to be implemented' do
+      expect { base_collection_class.embedding_model_selector }.to raise_error(NotImplementedError)
     end
   end
 end

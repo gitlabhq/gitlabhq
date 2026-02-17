@@ -17,16 +17,17 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList, :or
     let(:remote_directory) { 'artifacts' }
     let(:bucket_prefix) { nil }
 
+    let(:config) do
+      config = Gitlab.config.artifacts.object_store.dup
+      config[:remote_directory] = remote_directory
+      config[:bucket_prefix] = bucket_prefix
+      config
+    end
+
     subject(:run) { generator.run! }
 
     before do
       stub_const('Gitlab::Cleanup::OrphanJobArtifactFinalObjects::Paginators::BasePaginator::BATCH_SIZE', 2)
-
-      Gitlab.config.artifacts.object_store.tap do |config|
-        config[:remote_directory] = remote_directory
-        config[:bucket_prefix] = bucket_prefix
-      end
-
       allow(Gitlab::AppLogger).to receive(:info)
     end
 
@@ -37,7 +38,7 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList, :or
     shared_examples_for 'handling supported provider' do
       let(:fog_connection) do
         stub_object_storage_uploader(
-          config: Gitlab.config.artifacts.object_store,
+          config: config,
           uploader: JobArtifactUploader,
           direct_upload: true
         )

@@ -17,7 +17,7 @@ If you're a Free user of GitLab Self-Managed, consider using a cloud-hosted solu
 This document doesn't cover self-compiled installations.
 
 If a setup with replication and failover isn't what you were looking for, see
-the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
+the [database configuration document](https://docs.gitlab.com/omnibus/settings/database/)
 for the Linux packages.
 
 It's recommended to read this document fully before attempting to configure PostgreSQL with
@@ -559,13 +559,10 @@ Ensure that all migrations ran:
 gitlab-rake gitlab:db:configure
 ```
 
-{{< alert type="note" >}}
-
-If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to PostgreSQL it may be that your PgBouncer node's IP address is missing from
-PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
-
-{{< /alert >}}
+> [!note]
+> If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to PostgreSQL it may be that your PgBouncer node's IP address is missing from
+> PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
+> [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
 
 ### Backups
 
@@ -897,14 +894,11 @@ Stopping or restarting the Patroni service on the leader node triggers an automa
 
 ### Manual failover procedure for Patroni
 
-{{< alert type="warning" >}}
-
-In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
-Patroni nodes. PgBouncer services
-[must be restarted manually](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
-for a successful switchover.
-
-{{< /alert >}}
+> [!warning]
+> In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
+> Patroni nodes. PgBouncer services
+> [must be restarted manually](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+> for a successful switchover.
 
 While Patroni supports automatic failover, you also have the ability to perform
 a manual one, where you have two slightly different options:
@@ -999,11 +993,8 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    gitlab-ctl patroni members
    ```
 
-   {{< alert type="note" >}}
-
-   On a Geo secondary site, the Patroni leader node is called `standby leader`.
-
-   {{< /alert >}}
+   > [!note]
+   > On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
 1. Stop Patroni only on replicas.
 
@@ -1024,13 +1015,10 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    sudo gitlab-ctl pg-upgrade
    ```
 
-   {{< alert type="note" >}}
-
-   `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
-   does not work or you believe it did not detect the role correctly, you can use the `--leader` or
-   `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
-
-   {{< /alert >}}
+   > [!note]
+   > `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
+   > does not work or you believe it did not detect the role correctly, you can use the `--leader` or
+   > `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
 
 1. Check the status of the leader and cluster. You can proceed only if you have a healthy leader:
 
@@ -1066,13 +1054,10 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 If issues are encountered upgrading the replicas,
 [there is a troubleshooting section](replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
 
-{{< alert type="note" >}}
-
-Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
-`gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
-then reverting the leader, and finally reverting the replicas.
-
-{{< /alert >}}
+> [!note]
+> Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
+> `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
+> then reverting the leader, and finally reverting the replicas.
 
 ### Near-zero-downtime upgrade of PostgreSQL in a Patroni cluster
 

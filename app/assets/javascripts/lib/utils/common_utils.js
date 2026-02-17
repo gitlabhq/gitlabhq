@@ -139,7 +139,6 @@ export const contentTop = () => {
 
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
-    () => getOuterHeight('.header-logged-out'),
     () => getOuterHeight('.top-bar-fixed'),
     ({ desktop }) => {
       const mrStickyHeader = document.querySelector('.js-merge-request-sticky-header-wrapper');
@@ -728,15 +727,6 @@ export const isDefaultCiConfig = (path) => {
 export const hasCiConfigExtension = (path) => {
   return CI_CONFIG_PATH_EXTENSION.test(path);
 };
-
-/**
- * Checks if an element with position:sticky is stuck
- *
- * @param el
- * @returns {boolean}
- */
-export const isElementStuck = (el) =>
-  el.getBoundingClientRect().top <= parseInt(getComputedStyle(el).top, 10);
 
 /**
  * Force fluid layout for a single component. Useful when using VueRouter to avoid

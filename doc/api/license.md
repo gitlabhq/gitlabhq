@@ -19,7 +19,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Retrieve information about the current license
+## Retrieve license information
+
+Retrieves information about the current license.
 
 ```plaintext
 GET /license
@@ -50,7 +52,9 @@ GET /license
 }
 ```
 
-## Retrieve information about all licenses
+## List all licenses
+
+Lists information about all licenses.
 
 ```plaintext
 GET /licenses
@@ -113,7 +117,9 @@ Returns:
 - `200 OK` with response containing the licenses in JSON format. This is an empty JSON array if there are no licenses.
 - `403 Forbidden` if the current user in not permitted to read the licenses.
 
-## Retrieve information about a single license
+## Retrieve a license
+
+Retrieves information about a specified license.
 
 ```plaintext
 GET /license/:id
@@ -165,7 +171,9 @@ Example response:
 }
 ```
 
-## Add a new license
+## Create a license
+
+Creates a new license.
 
 ```plaintext
 POST /license
@@ -215,6 +223,8 @@ Returns:
 
 ## Delete a license
 
+Deletes a specified license.
+
 ```plaintext
 DELETE /license/:id
 ```
@@ -236,6 +246,8 @@ Returns:
 - `404 Not Found` if the license to delete could not be found.
 
 ## Trigger recalculation of billable users
+
+Triggers recalculation of billable users for a specified license.
 
 ```plaintext
 PUT /license/:id/refresh_billable_users
@@ -269,9 +281,9 @@ Returns:
 |:-----------------------------|:--------------|:------------------------------------------|
 | `success`                    | boolean       | Whether the request succeeded or not.     |
 
-## Retrieve usage information about the current license
+## Retrieve license usage information
 
-Gets usage information about the current license and exports it in CSV format.
+Retrieves usage information about the current license and exports it in CSV format.
 
 ```plaintext
 GET /license/usage_export.csv

@@ -92,6 +92,9 @@ describe('WorkItemLinkChild', () => {
         showClosed,
         ...props,
       },
+      provide: {
+        getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ widgetDefinitions: [] }),
+      },
       stubs: {
         WorkItemChildrenWrapper,
       },

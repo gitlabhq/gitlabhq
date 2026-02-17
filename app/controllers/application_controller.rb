@@ -94,7 +94,7 @@ class ApplicationController < BaseActionController
     render_404
   end
 
-  rescue_from Gitlab::Access::AccessDeniedError do |exception|
+  rescue_from Gitlab::Access::AccessDeniedError do |_exception|
     render_403
   end
 
@@ -114,7 +114,7 @@ class ApplicationController < BaseActionController
     render plain: e.message, status: :forbidden
   end
 
-  rescue_from Gitlab::Auth::TooManyIps do |e|
+  rescue_from Gitlab::Auth::TooManyIps do |_e|
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 

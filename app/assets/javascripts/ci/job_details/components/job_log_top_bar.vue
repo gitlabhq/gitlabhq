@@ -77,6 +77,13 @@ export default {
       default: null,
     },
   },
+  emits: [
+    'scroll-job-log-top',
+    'scroll-job-log-bottom',
+    'search-results',
+    'enter-fullscreen',
+    'exit-fullscreen',
+  ],
   data() {
     return {
       searchTerm: '',
@@ -118,7 +125,7 @@ export default {
   },
   methods: {
     handleClearSearch() {
-      this.$emit('searchResults', []);
+      this.$emit('search-results', []);
       this.searchResults = [];
     },
     async scrollToSearchResult(direction) {
@@ -165,18 +172,18 @@ export default {
       }
     },
     handleScrollToTop() {
-      this.$emit('scrollJobLogTop');
+      this.$emit('scroll-job-log-top');
       this.failureIndex = 0;
     },
     handleScrollToBottom() {
-      this.$emit('scrollJobLogBottom');
+      this.$emit('scroll-job-log-bottom');
       this.failureIndex = 0;
     },
     handleFullscreenMode() {
-      this.$emit('enterFullscreen');
+      this.$emit('enter-fullscreen');
     },
     handleExitFullscreenMode() {
-      this.$emit('exitFullscreen');
+      this.$emit('exit-fullscreen');
     },
     async searchJobLog() {
       this.searchResults = [];
@@ -194,7 +201,7 @@ export default {
       });
 
       if (this.searchResults.length > 0) {
-        this.$emit('searchResults', this.searchResults);
+        this.$emit('search-results', this.searchResults);
 
         const { lineNumber } = this.searchResults[0];
         const targetLogLine = document.querySelector(`.js-log-line #L${lineNumber}`);
@@ -227,6 +234,7 @@ export default {
       }
     },
   },
+  jobLogTestId: { 'data-testid': 'job-log-search-box' },
 };
 </script>
 
@@ -270,7 +278,7 @@ export default {
         v-model="searchTerm"
         class="gl-w-30 gl-grow gl-flex-nowrap"
         :placeholder="$options.i18n.searchPlaceholder"
-        data-testid="job-log-search-box"
+        :wrapper-attributes="$options.jobLogTestId"
         @clear="handleClearSearch"
         @submit="searchJobLog"
       />

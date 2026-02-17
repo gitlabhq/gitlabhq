@@ -25,6 +25,8 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       erasedAt
       finished_at
       id
+      inputsSpec
+      inputs
       kind
       manual_job
       manual_variables

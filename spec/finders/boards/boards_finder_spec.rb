@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::BoardsFinder do
+RSpec.describe Boards::BoardsFinder, feature_category: :portfolio_management do
   describe '#execute' do
     context 'when board parent is a project' do
       let(:parent) { create(:project) }

@@ -1,0 +1,5 @@
+---
+name: read_epic_board
+description: Grants the ability to read epic boards
+boundaries:
+  - group

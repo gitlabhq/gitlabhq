@@ -77,16 +77,13 @@ You can change the maximum push size for your instance:
 
 For GitLab.com push size limits, see [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
-{{< alert type="note" >}}
-
-When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
-through the web UI, the maximum attachment size is the limiting factor. This happens
-because the web server
-must receive the file before GitLab can generate the commit.
-Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
-This setting does not apply when pushing Git LFS objects.
-
-{{< /alert >}}
+> [!note]
+> When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
+> through the web UI, the maximum attachment size is the limiting factor. This happens
+> because the web server
+> must receive the file before GitLab can generate the commit.
+> Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
+> This setting does not apply when pushing Git LFS objects.
 
 ## Repository size limit
 
@@ -173,19 +170,13 @@ You can change how long users can remain signed in without activity.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Fill in the **Session duration (minutes)** field.
-   {{< alert type="warning" >}}
-
-   Setting **Session duration (minutes)** to `0` breaks your GitLab instance.
-   For more information, see [issue 19469](https://gitlab.com/gitlab-org/gitlab/-/issues/19469).
-
-   {{< /alert >}}
+   > [!warning]
+   > Setting **Session duration (minutes)** to `0` breaks your GitLab instance.
+   > For more information, see [issue 19469](https://gitlab.com/gitlab-org/gitlab/-/issues/19469).
 1. Select **Save changes**.
 1. Restart GitLab to apply the changes.
-   {{< alert type="note" >}}
-
-   For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
-
-   {{< /alert >}}
+   > [!note]
+   > For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
 
 If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 
@@ -249,12 +240,9 @@ number of minutes of inactivity set when you [customize your session duration](#
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history. This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history. This feature is not ready for production use.
 
 GitLab administrators can choose to customize the session duration (in minutes) for Git operations
 when 2FA is enabled. The default is 15 and this can be set to a value between 1 and 10080.
@@ -352,15 +340,12 @@ The default prefix for personal access tokens is `glpat-` but administrators can
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
 [group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
 
-{{< alert type="warning" >}}
-
-By default, client-side secret detection, secret push protection, and pipeline secret detection do
-not detect tokens that have a custom prefix. This might result in an increase in false negatives.
-However, you can
-[customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
-to detect these tokens.
-
-{{< /alert >}}
+> [!warning]
+> By default, client-side secret detection, secret push protection, and pipeline secret detection do
+> not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+> However, you can
+> [customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+> to detect these tokens.
 
 ### Set a prefix
 
@@ -383,13 +368,10 @@ You can also configure the prefix by using the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can set a custom prefix that is prepended to all tokens generated on your instance. Benefits of
 using a custom prefix include:
@@ -398,15 +380,12 @@ using a custom prefix include:
 - Leaked tokens are more easily identifiable during security scans.
 - Reduces the risk of token confusion between different instances.
 
-{{< alert type="warning" >}}
-
-By default, client-side secret detection, secret push protection, and pipeline secret detection do
-not detect tokens that have a custom prefix. This might result in an increase in false negatives.
-However, you can
-[customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
-to detect these tokens.
-
-{{< /alert >}}
+> [!warning]
+> By default, client-side secret detection, secret push protection, and pipeline secret detection do
+> not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+> However, you can
+> [customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+> to detect these tokens.
 
 Custom token prefixes apply only to the following tokens:
 
@@ -450,13 +429,10 @@ To set a custom token prefix:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-The feature flag is not available on GitLab Dedicated.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
+> The feature flag is not available on GitLab Dedicated.
 
 Users can optionally specify a maximum lifetime in days for
 access tokens, this includes [personal](../../user/profile/personal_access_tokens.md),
@@ -507,20 +483,6 @@ After a lifetime for access tokens is set, GitLab:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-The feature flag is not available on GitLab Dedicated.
-
-{{< /alert >}}
-
 Users can optionally specify a lifetime for
 [SSH keys](../../user/ssh.md).
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
@@ -551,11 +513,8 @@ After a lifetime for SSH keys is set, GitLab:
 - Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
   greater than the maximum immediately become invalid.
 
-{{< alert type="note" >}}
-
-When a user's SSH key becomes invalid they can delete and re-add the same key again.
-
-{{< /alert >}}
+> [!note]
+> When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
 ## User OAuth applications setting
 
@@ -649,13 +608,10 @@ When selected, GitLab administrators can still update usernames in the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](../feature_flags/_index.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
-this feature is not available. This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
+> can [enable the feature flag](../feature_flags/_index.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
+> this feature is not available. This feature is not ready for production use.
 
 By default, users can create organizations. GitLab administrators can prevent users from creating organizations.
 
@@ -676,12 +632,9 @@ By default, new users can create top-level groups. GitLab administrators can pre
 1. Expand **Account and limit**.
 1. Clear the **Allow new users to create top-level groups** checkbox.
 
-{{< alert type="note" >}}
-
-This setting applies only to users added after you turn off the setting. Existing users
-can still create top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This setting applies only to users added after you turn off the setting. Existing users
+> can still create top-level groups.
 
 ## Prevent non-members from creating projects and groups
 
@@ -747,11 +700,8 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Select the **Make new users' profiles private by default** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If [**Allow users to make their profiles private**](#prevent-users-from-making-their-profiles-private) is disabled, this setting is also disabled.
-
-{{< /alert >}}
+> [!note]
+> If [**Allow users to make their profiles private**](#prevent-users-from-making-their-profiles-private) is disabled, this setting is also disabled.
 
 ## Prevent users from deleting their accounts
 

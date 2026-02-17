@@ -34,7 +34,7 @@ Prerequisites:
 To view the blame for a file:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
 1. Either:
    - To change the view of the current file, in the file header, select **Blame**.
@@ -55,7 +55,7 @@ changes to light gray.
 To see earlier revisions of a specific line:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
 1. In the upper-right corner, select **Blame**, and go to the line you want to see.
 1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})
@@ -90,7 +90,7 @@ showing the previous meaningful changes instead.
 
 ## Related topics
 
-- [Git file blame REST API](../../../../api/repository_files.md#get-file-blame-from-repository)
+- [Git file blame REST API](../../../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)
 - [Common Git commands](../../../../topics/git/commands.md)
 - [File management with Git](../../../../topics/git/file_management.md)
 - [File tree browser](file_tree_browser.md)

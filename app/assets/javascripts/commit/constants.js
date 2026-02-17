@@ -80,9 +80,9 @@ export const statusConfig = {
   [verificationStatuses.SAME_USER_DIFFERENT_EMAIL]: {
     variant: 'neutral',
     label: __('Unverified'),
-    title: __('GPG key mismatch'),
+    title: __('Signature key mismatch'),
     description: __(
-      'This commit was signed with a verified signature, but the committer email is not associated with the GPG Key.',
+      'This commit was signed with a verified signature, but the committer email is not verified.',
     ),
   },
   [verificationStatuses.MULTIPLE_SIGNATURES]: {

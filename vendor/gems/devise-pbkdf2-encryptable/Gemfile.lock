@@ -3,7 +3,7 @@ PATH
   specs:
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
-      devise-two-factor (~> 4.1.1)
+      devise-two-factor (~> 5.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -35,8 +35,6 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
-    attr_encrypted (4.0.0)
-      encryptor (~> 3.0.0)
     base64 (0.1.1)
     bcrypt (3.1.19)
     bigdecimal (3.1.4)
@@ -50,16 +48,14 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (4.1.1)
+    devise-two-factor (5.1.0)
       activesupport (~> 7.0)
-      attr_encrypted (>= 1.3, < 5, != 2)
       devise (~> 4.0)
       railties (~> 7.0)
       rotp (~> 6.0)
     diff-lcs (1.5.0)
     drb (2.1.1)
       ruby2_keywords
-    encryptor (3.0.0)
     erubi (1.12.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
@@ -148,7 +144,6 @@ CHECKSUMS
   actionview (7.1.1) sha256=36c737f2ab6f1b90633964ee2928a93d7d2911e83a885a881e564da1860b8509
   activemodel (7.1.1) sha256=1f2fd3c2136b111fe523cf80ee5c141990290e8aedacb866b6fd68c8dfd7a69a
   activesupport (7.1.1) sha256=8770bca4af1cbd6e9ffb944b41056321499ff82e8e7c2ed34e48eff4a5ee58a2
-  attr_encrypted (4.0.0) sha256=ccbe4abd2b6973929f119af3b50a3fa10dba51bd69a7b4076a57a59d57359d0c
   base64 (0.1.1) sha256=0c75d351a429b5176a476cd8a3740cff3277d2bac26a50b5c7456c266e9acd33
   bcrypt (3.1.19) sha256=e94fe5cac1c9da5ddced396fb565789f9cdcc477ecbfdf539e3a7acdaa669991
   bigdecimal (3.1.4) sha256=de0c967bb24afe45e0e3d2d65e376614a430c3bc70563ac21cb3518f7409c61f
@@ -158,10 +153,9 @@ CHECKSUMS
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   devise (4.9.3) sha256=480638d6c51b97f56da6e28d4f3e2a1b8e606681b316aa594b87c6ab94923488
   devise-pbkdf2-encryptable (0.0.0)
-  devise-two-factor (4.1.1) sha256=c95f5b07533e62217aaed3c386874d94e2d472fb5f2b6598afe8600fc17a8b95
+  devise-two-factor (5.1.0) sha256=eae7a78d562e7ff623932d6c0b7f1bdbd4809c63e916875da3db7abaadf41ae1
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
   drb (2.1.1) sha256=6b8f481d9a9a7528c41d4f66484a4a73d2204f095da8ab141b5ea0aa22162c41
-  encryptor (3.0.0) sha256=abf23f94ab4d864b8cea85b43f3432044a60001982cda7c33c1cd90da8db1969
   erubi (1.12.0) sha256=27bedb74dfb1e04ff60674975e182d8ca787f2224f2e8143268c7696f42e4723
   i18n (1.14.1) sha256=9d03698903547c060928e70a9bc8b6b87fda674453cda918fc7ab80235ae4a61
   io-console (0.6.0) sha256=ce9d9a3455be48c56cac65b8ef7ec59b07526343905f9fda138791005b563336

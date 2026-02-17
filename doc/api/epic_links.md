@@ -12,15 +12,12 @@ title: Epic Links API (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+> and is planned for removal in v5 of the API.
+> From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
+> Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
+> This change is a breaking change.
 
 Manages parent-child [epic relationships](../user/group/epics/manage_epics.md#multi-level-child-epics).
 
@@ -32,9 +29,9 @@ group results in a `404` status code.
 Multi-level Epics are available only in [GitLab Ultimate](https://about.gitlab.com/pricing/).
 If the Multi-level Epics feature is not available, a `403` status code is returned.
 
-## List epics related to a given epic
+## List all child epics of an epic
 
-Gets all child epics of an epic.
+List all child epics of an epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/epics
@@ -145,7 +142,7 @@ Example response:
 
 ## Create and assign a child epic
 
-Creates a new epic and associates it with provided parent epic. The response is LinkedEpic object.
+Create a new epic and associate it with provided parent epic. The response is a `LinkedEpic` object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/epics
@@ -240,7 +237,7 @@ Example response:
 
 ## Unassign a child epic
 
-Unassigns a child epic from a parent epic.
+Unassign a child epic from a parent epic.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id

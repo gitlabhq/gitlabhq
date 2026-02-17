@@ -177,13 +177,13 @@ describe('Downstream Pipeline Dropdown', () => {
   });
 
   describe('emitters', () => {
-    it('emits jobActionExecuted when a job action is triggered', async () => {
+    it('emits job-action-executed when a job action is triggered', async () => {
       await createComponent({ mockResponse: true });
       await clickStageDropdown();
       await waitForPromises();
 
-      findJobDropdownItems().at(0).vm.$emit('jobActionExecuted');
-      expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
+      findJobDropdownItems().at(0).vm.$emit('job-action-executed');
+      expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
     });
   });
 

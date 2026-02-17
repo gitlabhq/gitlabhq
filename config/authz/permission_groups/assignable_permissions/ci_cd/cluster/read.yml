@@ -1,0 +1,9 @@
+---
+name: read_cluster
+description: Grants the ability to read clusters
+boundaries:
+  - group
+  - project
+  - instance
+permissions:
+  - read_cluster

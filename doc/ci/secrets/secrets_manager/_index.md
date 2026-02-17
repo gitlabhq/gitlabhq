@@ -22,12 +22,10 @@ ignore_in_report: true
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
-notice. This feature is not ready for public testing or production use.
-
-{{< /alert >}}
+> [!warning]
+> This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
+> notice. Secrets stored in experiment or beta versions will not be kept when the Secrets Manager is released as generally available.
+> This feature is not ready for public testing or production use.
 
 Secrets represent sensitive information your CI/CD jobs need to function. Secrets could be access tokens,
 database credentials, private keys, or similar.
@@ -46,7 +44,7 @@ Prerequisites:
 
 To enable or disable GitLab Secrets Manager for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Secrets manager** toggle and wait for the secrets manager to be provisioned.
@@ -62,7 +60,7 @@ Secrets defined for a project can only be accessed by pipelines from the same pr
 You can add secrets to the secrets manager so that it can be used for secure CI/CD pipelines
 and workflows.
 
-1. On the top bar, select **Search or go to** and find your project
+1. In the top bar, select **Search or go to** and find your project
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.
@@ -111,7 +109,7 @@ Prerequisites:
 
 To update the secrets permissions for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Secrets manager**, in the **Secrets manager user permissions** section, you can manage the user permissions:

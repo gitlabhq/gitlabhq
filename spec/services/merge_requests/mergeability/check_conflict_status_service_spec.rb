@@ -42,27 +42,9 @@ RSpec.describe MergeRequests::Mergeability::CheckConflictStatusService, feature_
         merge_request.source_branch_sha = '1'
       end
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(validate_diff_sha_mr_head_sha: true)
-        end
-
-        it 'returns checking' do
-          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
-          expect(result.payload[:identifier]).to eq(:conflict)
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(validate_diff_sha_mr_head_sha: false)
-        end
-
-        it 'proceeds with normal merge status check' do
-          # When the flag is disabled, it should follow the normal flow
-          # which depends on the merge_request.can_be_merged? status
-          expect(result.payload[:identifier]).to eq(:conflict)
-        end
+      it 'returns checking' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+        expect(result.payload[:identifier]).to eq(:conflict)
       end
     end
   end

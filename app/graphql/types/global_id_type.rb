@@ -77,7 +77,7 @@ module Types
           self
         end
 
-        define_singleton_method(:coerce_result) do |gid, ctx|
+        define_singleton_method(:coerce_result) do |gid, _ctx|
           global_id = ::Gitlab::GlobalId.as_global_id(gid, model_name: model_name)
 
           next global_id.to_s if suitable?(global_id)

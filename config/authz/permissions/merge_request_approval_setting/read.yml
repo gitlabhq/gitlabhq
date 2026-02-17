@@ -4,4 +4,3 @@ description: Grants the ability to read merge request approval settings
 boundaries:
   - group
   - project
-

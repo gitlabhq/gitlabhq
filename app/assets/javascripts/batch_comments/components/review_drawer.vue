@@ -27,12 +27,18 @@ import { CLEAR_AUTOSAVE_ENTRY_EVENT, CONTENT_EDITOR_PASTE } from '~/vue_shared/c
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { updateText } from '~/lib/utils/text_markdown';
 import { useNotes } from '~/notes/store/legacy_notes';
+import diffsEventHub from '~/diffs/event_hub';
+import { EVT_REVIEW_DRAWER_APPROVED } from '../../diffs/constants';
 import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 const REVIEW_STATES = {
   REVIEWED: 'reviewed',
   REQUESTED_CHANGES: 'requested_changes',
   APPROVED: 'approved',
+};
+
+const NOTIFY_EVENTS = {
+  [REVIEW_STATES.APPROVED]: EVT_REVIEW_DRAWER_APPROVED,
 };
 
 export default {
@@ -153,10 +159,6 @@ export default {
       return draft.position?.head_sha === this.getNoteableData.diff_head_sha;
     },
     async onClickDraft(draft) {
-      if (this.viewDiffsFileByFile) {
-        await this.goToFile({ path: draft.file_path });
-      }
-
       if (draft.position && !this.isOnLatestDiff(draft)) {
         const url = new URL(
           setUrlParams({ commit_id: draft.position.head_sha }, { url: this.diffsPath }),
@@ -164,6 +166,9 @@ export default {
         url.hash = `draft_${draft.id}`;
         visitUrl(url.toString());
       } else {
+        if (this.viewDiffsFileByFile) {
+          await this.goToFile({ path: draft.file_path });
+        }
         await this.scrollToDraft(draft);
       }
     },
@@ -223,6 +228,13 @@ export default {
           this.clearDrafts();
           this.setDrawerOpened(false);
           this.isSubmitting = false;
+        }
+
+        if (NOTIFY_EVENTS[reviewerState]) {
+          diffsEventHub.$emit(NOTIFY_EVENTS[reviewerState], {
+            summary: Boolean(note),
+            comments: this.draftsCount,
+          });
         }
       } catch (e) {
         if (e.data?.message) {

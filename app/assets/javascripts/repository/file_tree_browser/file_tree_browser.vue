@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       treeWidth: TREE_WIDTH,
+      isAnimating: false,
     };
   },
   computed: {
@@ -58,6 +59,12 @@ export default {
   created() {
     this.restoreTreeWidthUserPreference();
   },
+  mounted() {
+    document.addEventListener('keydown', this.handleEscapeKey);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleEscapeKey);
+  },
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, ['resetFileTreeBrowserAllStates']),
     restoreTreeWidthUserPreference() {
@@ -75,6 +82,11 @@ export default {
     onOverlayClick() {
       this.resetFileTreeBrowserAllStates();
     },
+    handleEscapeKey(event) {
+      if (event.key === 'Escape' && this.fileTreeBrowserIsPeekOn) {
+        this.resetFileTreeBrowserAllStates();
+      }
+    },
   },
   fileTreeBrowserStorageKey: FILE_TREE_BROWSER_STORAGE_KEY,
   minTreeWidth: MIN_TREE_WIDTH,
@@ -91,12 +103,16 @@ export default {
       data-testid="overlay"
       @click="onOverlayClick"
     ></div>
-    <transition name="file-tree-browser-slide">
+    <transition
+      name="file-tree-browser-slide"
+      @before-leave="isAnimating = true"
+      @after-leave="isAnimating = false"
+    >
       <file-browser-height
         v-show="fileTreeBrowserIsVisible"
         :enable-sticky-height="!isCompact"
         :style="{ '--tree-width': `${treeWidth}px` }"
-        class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
+        class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4 @md/panel:gl-pl-0"
         :class="visibilityClasses"
       >
         <panel-resizer
@@ -108,7 +124,12 @@ export default {
           @update:size="onSizeUpdate"
           @resize-end="saveTreeWidthPreference"
         />
-        <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
+        <tree-list
+          :project-path="projectPath"
+          :current-ref="currentRef"
+          :ref-type="refType"
+          :is-animating="isAnimating"
+        />
         <gl-button
           target="_blank"
           icon="comment-dots"

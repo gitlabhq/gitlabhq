@@ -13,12 +13,9 @@ title: Install the Linux package on AlmaLinux and RHEL-compatible distributions
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-See [supported platforms](_index.md#supported-platforms) for the full list of
-supported distributions and architectures.
-
-{{< /alert >}}
+> [!note]
+> See [supported platforms](_index.md#supported-platforms) for the full list of
+> supported distributions and architectures.
 
 ## Prerequisites
 
@@ -44,6 +41,12 @@ supported distributions and architectures.
   which requires inbound HTTP access and a valid hostname. You can also use
   [your own certificate](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually),
   or just use `http://` (without the `s`) for an unencrypted URL.
+- Linux packages and other related metadata files are stored and served from
+  Google Cloud Storage. If using a firewall, you will need to allow access to
+  the following URL prefixes:
+      - `https://packages.gitlab.com/*`
+      - `https://storage.googleapis.com/packages-ops/*`
+      - `https://storage.googleapis.com/packages-static-files-ops/*`
 
 ## Enable SSH and open firewall ports
 
@@ -83,7 +86,7 @@ To install GitLab, first add the GitLab package repository.
    {{< tab title="Enterprise Edition" >}}
 
    ```shell
-   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
+   curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
    ```
 
    {{< /tab >}}
@@ -91,7 +94,7 @@ To install GitLab, first add the GitLab package repository.
    {{< tab title="Community Edition" >}}
 
    ```shell
-   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh" | sudo bash
+   curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh" | sudo bash
    ```
 
    {{< /tab >}}
@@ -102,13 +105,10 @@ To install GitLab, first add the GitLab package repository.
 
 Install GitLab using your system's package manager.
 
-{{< alert type="note" >}}
-
-Setting the `EXTERNAL_URL` is optional but recommended.
-If you don't set it during the installation, you can
-[set it afterwards](https://docs.gitlab.com/omnibus/settings/configuration/#configure-the-external-url-for-gitlab).
-
-{{< /alert >}}
+> [!note]
+> Setting the `EXTERNAL_URL` is optional but recommended.
+> If you don't set it during the installation, you can
+> [set it afterwards](https://docs.gitlab.com/omnibus/settings/configuration/#configure-the-external-url-for-gitlab).
 
 {{< tabs >}}
 
@@ -159,18 +159,14 @@ installations, use the password from `/etc/gitlab/initial_root_password` or
 | `GITLAB_ROOT_EMAIL` | Custom email for the root administrator account | Optional | `GITLAB_ROOT_EMAIL="admin@example.com"` |
 | `GITLAB_ROOT_PASSWORD` | Custom password (8 characters minimum) for the root administrator account | Optional | `GITLAB_ROOT_PASSWORD="strongpassword"` |
 
-{{< alert type="note" >}}
-If GitLab can't detect a valid hostname during installation, reconfigure won't run automatically. In this case, pass any needed environment variables to your first `gitlab-ctl reconfigure` command.
-{{< /alert >}}
+If GitLab can't detect a valid hostname during installation, reconfigure won't run automatically.
+In this case, pass any needed environment variables to your first `gitlab-ctl reconfigure` command.
 
-{{< alert type="warning" >}}
-
-While you can also set the initial password in `/etc/gitlab/gitlab.rb` by setting
-`gitlab_rails['initial_root_password']`, it is not recommended.
-It's a security risk as the password is in clear text. If you have this configured,
-make sure to remove it after installation.
-
-{{< /alert >}}
+> [!warning]
+> While you can also set the initial password in `/etc/gitlab/gitlab.rb` by setting
+> `gitlab_rails['initial_root_password']`, it is not recommended.
+> It's a security risk as the password is in clear text. If you have this configured,
+> make sure to remove it after installation.
 
 Choose your GitLab edition and customize with the environment variables above:
 

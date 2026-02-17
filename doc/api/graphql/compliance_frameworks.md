@@ -122,6 +122,26 @@ query {
 
 If the resulting list is empty, then no compliance frameworks exist for that group.
 
+## List compliance frameworks assigned to a Project
+
+```graphql
+query {
+ project(fullPath: "my-project"){
+  id
+  name
+  complianceFrameworks{
+    nodes{
+      id
+      name
+      }
+    }
+  }
+}
+
+```
+
+Replace `"my-project"` with your project's full path.
+
 ## Update a compliance framework
 
 Update an existing compliance framework for a top-level group.

@@ -12,13 +12,10 @@ title: Geo Nodes API (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
-and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
+> and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
+> This change is a breaking change.
 
 Use this API to manage [Geo nodes](../administration/geo/_index.md).
 
@@ -26,9 +23,9 @@ Prerequisites:
 
 - You must be an administrator.
 
-## Create a new Geo node
+## Create a Geo node
 
-Creates a new Geo node.
+Creates a Geo node.
 
 ```plaintext
 POST /geo_nodes
@@ -90,7 +87,9 @@ Example response:
 }
 ```
 
-## Retrieve configuration about all Geo nodes
+## List all Geo nodes
+
+Lists all Geo nodes.
 
 ```plaintext
 GET /geo_nodes
@@ -159,11 +158,9 @@ Example response:
 ]
 ```
 
-## Retrieve configuration about a specific Geo node
+## Retrieve a Geo node
 
-```plaintext
-GET /geo_nodes/:id
-```
+Retrieves a specified Geo node.
 
 ```shell
 curl \
@@ -200,9 +197,9 @@ Example response:
 }
 ```
 
-## Edit a Geo node
+## Update a Geo node
 
-Updates settings of an existing Geo node.
+Updates a specified Geo node.
 
 ```plaintext
 PUT /geo_nodes/:id
@@ -258,7 +255,7 @@ Example response:
 
 ## Delete a Geo node
 
-Removes the Geo node.
+Deletes a Geo node.
 
 ```plaintext
 DELETE /geo_nodes/:id
@@ -303,7 +300,9 @@ Example response:
 }
 ```
 
-## Retrieve status about all Geo nodes
+## List all Geo node statuses
+
+Lists all Geo node statuses.
 
 ```plaintext
 GET /geo_nodes/status
@@ -762,11 +761,9 @@ Example response:
 ]
 ```
 
-## Retrieve status about a specific Geo node
+## Retrieve a Geo node status
 
-```plaintext
-GET /geo_nodes/:id/status
-```
+Retrieves a specified Geo node status.
 
 ```shell
 curl \

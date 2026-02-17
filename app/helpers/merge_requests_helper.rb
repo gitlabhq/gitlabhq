@@ -28,12 +28,8 @@ module MergeRequestsHelper
               _("Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}")
             end
 
-      msg % {
-        source_project_path: merge_request.source_project_path,
-        source_branch: merge_request.source_branch,
-        target_project_path: merge_request.target_project.full_path,
-        target_branch: merge_request.target_branch
-      }
+      format(msg, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch,
+        target_project_path: merge_request.target_project.full_path, target_branch: merge_request.target_branch)
     else
       msg = if with_arrow
               _("Branches: %{source_branch} → %{target_branch}")
@@ -41,10 +37,7 @@ module MergeRequestsHelper
               _("Branches: %{source_branch} to %{target_branch}")
             end
 
-      msg % {
-        source_branch: merge_request.source_branch,
-        target_branch: merge_request.target_branch
-      }
+      format(msg, source_branch: merge_request.source_branch, target_branch: merge_request.target_branch)
     end
   end
 
@@ -85,8 +78,8 @@ module MergeRequestsHelper
       merge_request.closed_or_merged_without_fork?
   end
 
-  def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
-    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, start_sha: start_sha)
+  def merge_request_version_path(project, merge_request, merge_request_diff, path_extra_options = {})
+    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, **path_extra_options)
   end
 
   def merge_params(merge_request)
@@ -156,11 +149,11 @@ module MergeRequestsHelper
 
     if include_value
       sanitized_list = sanitize_name(reviewers.map(&:name).to_sentence)
-      ns_(
+      format(ns_(
         'NotificationEmail|Reviewer: %{users}',
         'NotificationEmail|Reviewers: %{users}',
         reviewers.count
-      ) % { users: sanitized_list }
+      ), users: sanitized_list)
     else
       ns_('NotificationEmail|Reviewer', 'NotificationEmail|Reviewers', reviewers.count)
     end
@@ -314,7 +307,7 @@ module MergeRequestsHelper
           'show',
           _('Overview'),
           project_merge_request_path(project, merge_request),
-          merge_request.related_notes.user.count
+          merge_request.notes.user.count
         ],
         ['commits', _('Commits'), commits_project_merge_request_path(project, merge_request), @commits_count],
         ['diffs', _('Changes'), diffs_project_merge_request_path(project, merge_request), @diffs_count]
@@ -334,12 +327,6 @@ module MergeRequestsHelper
     end
 
     data
-  end
-
-  def show_mr_dashboard_banner?
-    request.query_string.present? &&
-      current_page?(merge_requests_search_dashboard_path) &&
-      show_new_mr_dashboard_banner?
   end
 
   def merge_request_squash_option?(merge_request)
@@ -367,20 +354,21 @@ module MergeRequestsHelper
                 end
 
     branch = if merge_request.for_fork?
-               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % {
+               safe_format(
+                 _('%{fork_icon} %{source_project_path}:%{source_branch}'),
                  fork_icon: fork_icon.html_safe,
                  source_project_path: merge_request.source_project_path,
                  source_branch: merge_request.source_branch
-               }
+               )
              else
                merge_request.source_branch
              end
 
     branch_title = if merge_request.for_fork?
-                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % {
+                     safe_format(
+                       _('%{source_project_path}:%{source_branch}'),
                        source_project_path: merge_request.source_project_path,
-                       source_branch: merge_request.source_branch
-                     }
+                       source_branch: merge_request.source_branch)
                    else
                      merge_request.source_branch
                    end
@@ -416,14 +404,14 @@ module MergeRequestsHelper
       title: copy_button_title,
       aria_keyshortcuts: copy_action_shortcut,
       aria_label: copy_action_description,
-      class: '!gl-hidden @md/panel:!gl-inline-block gl-mx-1 js-source-branch-copy'
+      class: 'gl-inline-block gl-mx-1 js-source-branch-copy'
     )
 
     target_copy_button = clipboard_button(
       text: merge_request.target_branch,
       title: copy_action_description,
       aria_label: copy_action_description,
-      class: '!gl-hidden @md/panel:!gl-inline-block gl-mx-1'
+      class: 'gl-inline-block gl-mx-1'
     )
 
     target_branch = link_to merge_request.target_branch,
@@ -519,7 +507,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _('Your review requests that have been merged.'),
+                helpContent: _('Your review requests merged in the last 2 weeks.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -530,7 +518,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Assigned'),
-                helpContent: _('Your merge requests that have been merged.'),
+                helpContent: _('Your merge requests merged in the last 2 weeks.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   state: 'merged',
@@ -651,7 +639,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _('Your review requests that have been merged.'),
+                helpContent: _('Your review requests merged in the last 2 weeks.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -662,7 +650,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Your merge requests'),
-                helpContent: _('Your merge requests that have been merged.'),
+                helpContent: _('Your merge requests merged in the last 2 weeks.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   state: 'merged',

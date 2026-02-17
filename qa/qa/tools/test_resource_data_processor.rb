@@ -62,7 +62,13 @@ module QA
 
         data = resources.deep_dup
         # merge existing json if present
-        JSON.parse(File.read(file)).deep_merge!(data) { |_, val, other_val| val + other_val } if file.exist?
+        if file.exist?
+          begin
+            JSON.parse(File.read(file)).deep_merge!(data) { |_, val, other_val| val + other_val }
+          rescue JSON::ParserError => e
+            raise JSON::ParserError, "Failed to parse JSON from #{file}: #{e.message}"
+          end
+        end
 
         File.write(file, JSON.pretty_generate(data))
       end

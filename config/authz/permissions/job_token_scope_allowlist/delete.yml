@@ -1,0 +1,5 @@
+---
+name: delete_job_token_scope_allowlist
+description: Grants the ability to remove projects or groups from job token scope allowlist
+boundaries:
+  - project

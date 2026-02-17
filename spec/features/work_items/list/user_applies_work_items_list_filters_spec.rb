@@ -49,6 +49,11 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
   let_it_be(:award_emoji) { create(:award_emoji, :upvote, user: user1, awardable: issue) }
 
+  before_all do
+    create(:callout, user: user1, feature_name: :work_items_onboarding_modal)
+    create(:callout, user: user2, feature_name: :work_items_onboarding_modal)
+  end
+
   context 'for signed in user' do
     before do
       sign_in(user1)

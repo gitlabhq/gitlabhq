@@ -22,7 +22,7 @@ Use this API to interact with personal access tokens and impersonation tokens. F
 
 {{< /history >}}
 
-Creates a personal access token for a given user.
+Creates a personal access token for a specified user.
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -134,7 +134,7 @@ Example response:
 
 ## List all impersonation tokens for a user
 
-Lists all impersonation tokens for a given user.
+Lists all impersonation tokens for a specified user.
 
 Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
@@ -198,9 +198,9 @@ Example response:
 ]
 ```
 
-## Get an impersonation token for a user
+## Retrieve an impersonation token for a user
 
-Gets an impersonation token for a given user.
+Retrieves an impersonation token for a specified user.
 
 Prerequisites:
 
@@ -246,7 +246,7 @@ Example response:
 
 ## Create an impersonation token
 
-Creates an impersonation token for a given user. These tokens are used to act on behalf of a user and can perform API calls as well as Git read and write actions. These tokens are not visible to the associated user on their profile settings page.
+Creates an impersonation token for a specified user. These tokens are used to act on behalf of a user and can perform API calls as well as Git read and write actions. These tokens are not visible to the associated user on their profile settings page.
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -300,7 +300,7 @@ Example response:
 
 ## Revoke an impersonation token
 
-Revokes an impersonation token for a given user.
+Revokes an impersonation token for a specified user.
 
 Prerequisites:
 

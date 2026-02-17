@@ -43,11 +43,6 @@ module WorkItems
       ticket: { name: TYPE_NAMES[:ticket], icon_name: 'work-item-ticket', enum_value: 8, id: 9 }
     }.freeze
 
-    # A list of types user can change between - both original and new
-    # type must be included in this list. This is needed for legacy issues
-    # where it's possible to switch between issue and incident.
-    CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
-
     EE_BASE_TYPES = %w[epic key_result objective requirement].freeze
 
     ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
@@ -236,6 +231,10 @@ module WorkItems
     # Temporary method for adding configuration thought the API
     def only_for_group?
       nil
+    end
+
+    def enabled?
+      true
     end
 
     private

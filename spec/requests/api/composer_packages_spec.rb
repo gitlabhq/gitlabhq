@@ -26,6 +26,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
     subject { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_composer_package do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
+
     context 'with valid project' do
       let_it_be(:package) { create(:composer_package_sti, :with_metadatum, project: project) }
 
@@ -161,6 +170,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
     subject { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_composer_package do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
+
     context 'with valid project' do
       context 'with basic auth' do
         where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
@@ -249,6 +267,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
     context 'with valid project' do
       let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
+
+      it_behaves_like 'authorizing granular token permissions', :read_composer_package do
+        before_all do
+          group.add_developer(user)
+        end
+
+        let(:boundary_object) { group }
+        let(:request) { get api(url, personal_access_token: pat) }
+      end
 
       context 'with basic auth' do
         where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
@@ -345,6 +372,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     context 'with valid project' do
       let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
 
+      it_behaves_like 'authorizing granular token permissions', :read_composer_package do
+        before_all do
+          group.add_developer(user)
+        end
+
+        let(:boundary_object) { group }
+        let(:request) { get api(url, personal_access_token: pat) }
+      end
+
       context 'with basic auth' do
         where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
           'PUBLIC'  | :developer | :user | true  | 'Composer package api request' | :success
@@ -426,6 +462,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     end
 
     subject(:request) { post api(url), headers: headers, params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :publish_composer_package do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { post api(url, personal_access_token: pat), params: { tag: 'v1.2.99' } }
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_packages do
       before_all do
@@ -613,6 +658,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
       context 'with a match package name and sha' do
         let(:branch) { project.repository.find_branch('master') }
         let(:sha) { branch.target }
+
+        it_behaves_like 'authorizing granular token permissions', :read_composer_package do
+          before_all do
+            project.add_developer(user)
+          end
+
+          let(:boundary_object) { project }
+          let(:request) { get api(url, personal_access_token: pat), params: params }
+        end
 
         it_behaves_like 'enforcing job token policies', :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry do

@@ -22,7 +22,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
     context 'when GitLab.com' do
       before do
-        allow(::Gitlab).to receive(:com?) { true }
+        allow(::Gitlab).to receive(:com?).and_return(true)
       end
 
       it 'returns 404' do
@@ -34,7 +34,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
     context 'when not GitLab.com' do
       before do
-        allow(::Gitlab).to receive(:com?) { false }
+        allow(::Gitlab).to receive(:com?).and_return(false)
       end
 
       it 'renders correct template' do

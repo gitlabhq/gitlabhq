@@ -252,6 +252,9 @@ export default {
 
       return { report: this.path };
     },
+    routeName() {
+      return this.path || 'report';
+    },
   },
   watch: {
     hasError: {
@@ -377,7 +380,7 @@ export default {
 <template>
   <report-list-item
     v-if="reportsTabSidebar"
-    to="report"
+    :to="routeName"
     :params="routeParams"
     :status-icon="summaryStatusIcon"
     :is-loading="shouldShowLoadingIcon"

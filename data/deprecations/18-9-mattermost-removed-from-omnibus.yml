@@ -1,0 +1,31 @@
+- title: "Mattermost bundled with Linux package"
+  # The milestones for the deprecation announcement, and the removal.
+  announcement_milestone: "18.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # window:  # Does not impact .com so no rollout window.
+  reporter: mbruemmer  # The GitLab username of the person reporting the change
+  stage: gitlab-delivery  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-com/Product/-/work_items/14319
+  check_impact:  # Impacted instances should be easy to assess from descritpion - Link to a resource, like a tool, issue, docs section, or KB article, that has *concrete steps* for customers to assess the impact of this change.
+  impact: low # Can be one of: [critical, high, medium, low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=major_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=none&pipeline_impact=none&compliance_impact=none&availability_impact=minor&authorization_impact=none&API_impact=none
+  impact_offering: self-managed # The offering this impacts. Can be one or a combination of: [GitLab.com, Dedicated, self-managed]
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 19.0, we plan to remove bundled Mattermost from the Linux package.
+
+    Mattermost was first bundled with GitLab in 2015 as an open source team messaging solution, with GitLab SSO included
+    to support the integration. Since then, Mattermost has significantly matured its own packaging and deployment
+    options, and adoption of the bundled Mattermost among GitLab customers has remained relatively low.
+
+    With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.cloudron.io/topic/14298/upcoming-removal-of-gitlab-sso-in-mattermost-v11-suggestion-for-cloudron).
+    Given this change, the maturity of Mattermost standalone deployment options, and the low adoption in our customer
+    base, we are removing Mattermost from the Linux package.
+
+    If you currently use Mattermost bundled with GitLab, refer to
+    [Migrating from GitLab Omnibus to Mattermost Standalone](https://docs.mattermost.com/administration-guide/onboard/migrate-gitlab-omnibus.html)
+    in the Mattermost documentation for migration instructions and available Mattermost editions.

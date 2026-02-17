@@ -78,13 +78,24 @@ module Gitlab
         return false unless signature
         return false unless signature.namespace == GIT_NAMESPACE
 
-        signature.verify(@signed_text)
+        # For security key signatures, allow no-touch-required
+        if security_key_signature?
+          signature.verify(@signed_text, user_presence_required: false)
+        else
+          signature.verify(@signed_text)
+        end
+      end
+
+      def security_key_signature?
+        public_key = signature.public_key
+        public_key.is_a?(SSHData::PublicKey::SKECDSA) ||
+          public_key.is_a?(SSHData::PublicKey::SKED25519)
       end
 
       def calculate_verification_status
         return :unknown_key unless signed_by_key
         return :other_user unless committer?
-        return :unverified unless signed_by_user_email_verified?
+        return :same_user_different_email unless signed_by_user_email_verified?
 
         :verified
       end

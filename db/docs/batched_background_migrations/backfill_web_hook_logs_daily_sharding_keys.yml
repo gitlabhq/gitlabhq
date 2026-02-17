@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillWebHookLogsDailyShardingKeys
+description: Backfill web_hook_logs_daily sharding key
+feature_category: webhooks
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215236
+milestone: '18.9'
+queued_migration_version: 20260115175438

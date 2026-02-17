@@ -33,7 +33,8 @@ If you are a GitLab.com user, see [configuring SCIM for GitLab.com groups](../..
 
 Prerequisites:
 
-- Configure [SAML single sign-on](../../integration/saml.md).
+- [SAML single sign-on](../../integration/saml.md) configured.
+- Administrator access.
 
 To configure GitLab SCIM:
 
@@ -51,11 +52,8 @@ You can configure the following as an identity provider:
 - [Okta](#configure-okta).
 - [Microsoft Entra ID (formerly Azure Active Directory)](#configure-microsoft-entra-id-formerly-azure-active-directory)
 
-{{< alert type="note" >}}
-
-Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
-
-{{< /alert >}}
+> [!note]
+> Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Okta
 
@@ -110,12 +108,9 @@ The SAML application created during [single sign-on](../../integration/saml.md) 
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
 
-{{< alert type="note" >}}
-
-You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
-and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
-
-{{< /alert >}}
+> [!note]
+> You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
+> and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
 
 To configure Microsoft Entra ID, you configure:
 
@@ -150,11 +145,8 @@ Under the **Mappings** section, first provision the groups:
    SCIM group provisioning is not supported in GitLab. Leaving group provisioning enabled does not break the SCIM user provisioning, but it causes errors in the
    Entra ID SCIM provisioning log that might be confusing and misleading.
 
-   {{< alert type="note" >}}
-
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section might display **Enabled: Yes**. This behavior is a display bug that you can safely ignore.
-
-   {{< /alert >}}
+   > [!note]
+   > Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section might display **Enabled: Yes**. This behavior is a display bug that you can safely ignore.
 
 1. Select **Save**.
 
@@ -182,12 +174,9 @@ Next, provision the users:
 
 ##### Configure attribute mappings
 
-{{< alert type="note" >}}
-
-While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
-your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
+> your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
 While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
 attribute mappings. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
@@ -238,12 +227,9 @@ Under the **Settings** section:
 
 After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
-{{< alert type="warning" >}}
-
-Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
-provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
+> provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
 
 ## Remove access
 
@@ -299,12 +285,9 @@ This means SCIM membership updates from your identity provider do not affect use
 
 Support for improvements is proposed in [issue 582729](https://gitlab.com/gitlab-org/gitlab/-/issues/582729).
 
-{{< alert type="note" >}}
-
-To ensure all group links are associated with the SCIM group from the start,
-you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
-
-{{< /alert >}}
+> [!note]
+> To ensure all group links are associated with the SCIM group from the start,
+> you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
 
 If you need to add group links after the initial provisioning, you can re-provision the SCIM group in your identity provider by deleting the SCIM group provisioning (not the IdP group itself), then recreating it.
 This action re-associates all current SAML group links with the SCIM group.
@@ -324,11 +307,8 @@ For detailed instructions on configuring group synchronization in your identity 
       - However, if your SAML group links use an object ID for the name,
       you must update the source attribute to `objectId`.
 
-{{< alert type="warning" >}}
-
-When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
-
-{{< /alert >}}
+> [!warning]
+> When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
 
 The standard GitLab SCIM application in the Okta application catalog does not support group synchronization.
 Alternatively, you can create a custom SCIM integration for group synchronization with Okta.

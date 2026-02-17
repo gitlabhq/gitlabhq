@@ -82,6 +82,11 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
     end
   end
 
+  describe 'namespace_traversal_ids filtering optimization' do
+    it_behaves_like 'issues or work items finder with namespace_traversal_ids filtering',
+      :issue, include_subgroups_param: :include_subgroups
+  end
+
   context 'when filtering by a date' do
     let_it_be(:item_due_2_weeks_ago) { create(:issue, project: project1, due_date: 2.weeks.ago) }
     let_it_be(:item_due_yesterday) { create(:issue, project: project1, due_date: 1.day.ago) }

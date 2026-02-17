@@ -26,12 +26,9 @@ The GitLab Pages daemon runs as a separate process and can be configured either 
 as GitLab or on its own dedicated infrastructure.
 For user documentation, see [GitLab Pages](../../user/project/pages/_index.md).
 
-{{< alert type="note" >}}
-
-This guide is for Linux package installations. If you have a self-compiled GitLab installation, see
-[GitLab Pages administration for self-compiled installations](source.md).
-
-{{< /alert >}}
+> [!note]
+> This guide is for Linux package installations. If you have a self-compiled GitLab installation, see
+> [GitLab Pages administration for self-compiled installations](source.md).
 
 ## The GitLab Pages daemon
 
@@ -281,19 +278,18 @@ To configure GitLab Pages to use single-domain sites:
 
 The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 
-{{< alert type="warning" >}}
-
-GitLab Pages supports only one URL scheme at a time:
-wildcard domains or single-domain sites.
-If you enable `namespace_in_path`, existing GitLab Pages websites
-are accessible only on single-domain.
-
-{{< /alert >}}
+> [!warning]
+> GitLab Pages supports only one URL scheme at a time:
+> wildcard domains or single-domain sites.
+> If you enable `namespace_in_path`, existing GitLab Pages websites
+> are accessible only on single-domain.
 
 ### Wildcard domains with TLS support
 
 NGINX proxies all requests to the daemon. Pages daemon doesn't listen to the
 public internet.
+
+Only one wildcard can be assigned to an instance.
 
 Prerequisites:
 
@@ -326,15 +322,10 @@ Prerequisites:
 The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
 
 > [!warning]
-> Only one wildcard can be assigned to an instance.
-
-{{< alert type="warning" >}}
-
-GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
-Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
-then run `gitlab-ctl reconfigure`. For more information, read
-[GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
-{{< /alert >}}
+> GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+> Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+> then run `gitlab-ctl reconfigure`. For more information, read
+> [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 ### Single-domain sites with TLS support
 
@@ -382,28 +373,22 @@ Prerequisites:
    [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    to use the HTTPS protocol.
 
-   {{< alert type="warning" >}}
-
-   GitLab Pages does not update the OAuth application, and
-   the default `auth_redirect_uri` is updated to `https://example.io/projects/auth`.
-   Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
-   then run `gitlab-ctl reconfigure`. For more information, see
-   [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
-
-   {{< /alert >}}
+   > [!note]
+   > GitLab Pages does not update the OAuth application, and
+   > the default `auth_redirect_uri` is updated to `https://example.io/projects/auth`.
+   > Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+   > then run `gitlab-ctl reconfigure`. For more information, see
+   > [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
 
-{{< alert type="warning" >}}
-
-GitLab Pages supports only one URL scheme at a time:
-wildcard domains or single-domain sites.
-If you enable `namespace_in_path`, existing GitLab Pages websites
-are accessible only as single-domain sites.
-
-{{< /alert >}}
+> [!warning]
+> GitLab Pages supports only one URL scheme at a time:
+> wildcard domains or single-domain sites.
+> If you enable `namespace_in_path`, existing GitLab Pages websites
+> are accessible only as single-domain sites.
 
 ### Wildcard domains with TLS-terminating Load Balancer
 
@@ -615,14 +600,11 @@ GitLab supports [custom domain verification](../../user/project/pages/custom_dom
 When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
-{{< alert type="warning" >}}
-
-Disabling domain verification is unsafe and can lead to various vulnerabilities.
-If you do disable it, either ensure that the Pages root domain itself does not point to the
-secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
-domain as a custom domain to their project.
-
-{{< /alert >}}
+> [!warning]
+> Disabling domain verification is unsafe and can lead to various vulnerabilities.
+> If you do disable it, either ensure that the Pages root domain itself does not point to the
+> secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
+> domain as a custom domain to their project.
 
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
@@ -675,12 +657,9 @@ Pages access control is disabled by default. To enable it:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
-{{< alert type="note" >}}
-
-For this setting to be effective with multi-node setups, it has to be applied to
-all the App nodes and Sidekiq nodes.
-
-{{< /alert >}}
+> [!note]
+> For this setting to be effective with multi-node setups, it has to be applied to
+> all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
@@ -852,12 +831,9 @@ To configure the certificates in your GitLab Pages server:
 
 ### ZIP serving and cache configuration
 
-{{< alert type="warning" >}}
-
-These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
-change these settings only if absolutely necessary. Use extreme caution.
-
-{{< /alert >}}
+> [!warning]
+> These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
+> change these settings only if absolutely necessary. Use extreme caution.
 
 GitLab Pages can serve content from ZIP archives through object storage.
 It uses an in-memory cache to increase the performance when serving content from a ZIP
@@ -1029,7 +1005,7 @@ Prerequisites:
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
@@ -1050,7 +1026,7 @@ Prerequisites:
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
@@ -1108,23 +1084,17 @@ your main application server.
 
 To configure GitLab Pages on a separate server:
 
-{{< alert type="warning" >}}
-
-The following procedure includes steps to back up and edit the
-`gitlab-secrets.json` file. This file contains secrets that control
-database encryption. Proceed with caution.
-
-{{< /alert >}}
+> [!warning]
+> The following procedure includes steps to back up and edit the
+> `gitlab-secrets.json` file. This file contains secrets that control
+> database encryption. Proceed with caution.
 
 1. Optional. To enable access control, add the following to `/etc/gitlab/gitlab.rb` and [reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
-   {{< alert type="warning" >}}
-
-   If you plan to use GitLab Pages with access control, you must enable it on the first GitLab server before copying `gitlab-secrets.json`.
-   Enabling access control generates a new OAuth application, and information about it propagates to `gitlab-secrets.json`. If it's not done
-   in the correct order, you may face issues with access control.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you plan to use GitLab Pages with access control, you must enable it on the first GitLab server before copying `gitlab-secrets.json`.
+   > Enabling access control generates a new OAuth application, and information about it propagates to `gitlab-secrets.json`. If it's not done
+   > in the correct order, you may face issues with access control.
 
    ```ruby
    gitlab_pages['access_control'] = true
@@ -1244,14 +1214,11 @@ However, the recommended values are set for you and should only be modified if n
 Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
-{{< alert type="note" >}}
-
-Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
-A duration string is a possibly signed sequence of decimal numbers,
-each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
-Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
-
-{{< /alert >}}
+> [!note]
+> Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
+> A duration string is a possibly signed sequence of decimal numbers,
+> each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
+> Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
 
 Examples:
 
@@ -1284,12 +1251,9 @@ The following [object storage](../object_storage.md) settings are:
 | `remote_directory` | The name of the bucket where Pages site content is stored. | |
 | `connection` | Various connection options described below. | |
 
-{{< alert type="note" >}}
-
-If you want to stop using and disconnect the NFS server, you need to
-[explicitly disable local storage](#disable-pages-local-storage).
-
-{{< /alert >}}
+> [!note]
+> If you want to stop using and disconnect the NFS server, you need to
+> [explicitly disable local storage](#disable-pages-local-storage).
 
 ### S3-compatible connection settings
 
@@ -1311,7 +1275,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
 You can track progress and verify that all Pages deployments migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.

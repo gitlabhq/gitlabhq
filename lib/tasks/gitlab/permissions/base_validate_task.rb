@@ -98,6 +98,23 @@ module Tasks
         def schema_validator
           @schema_validator ||= JSONSchemer.schema(json_schema_file)
         end
+
+        def find_empty_directories(glob_pattern)
+          Dir.glob(glob_pattern).select do |dir|
+            yml_files = Dir.glob("#{dir}*.yml").map { |f| File.basename(f) }
+            permission_files = yml_files.reject { |f| f == '_metadata.yml' }
+
+            permission_files.empty? && yml_files.include?('_metadata.yml')
+          end
+        end
+
+        def find_empty_parent_directories(glob_pattern)
+          Dir.glob(glob_pattern).select do |dir|
+            subdirs = Dir.glob("#{dir}*/").select { |d| File.directory?(d) }
+
+            subdirs.empty? && File.exist?("#{dir}_metadata.yml")
+          end
+        end
       end
     end
   end

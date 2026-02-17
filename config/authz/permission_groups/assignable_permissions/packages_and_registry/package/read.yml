@@ -1,0 +1,33 @@
+---
+name: read_package
+description: Grants the ability to read packages
+permissions:
+  - authenticate_conan_package
+  - download_debian_distribution_packages_index
+  - download_debian_distribution_release
+  - download_debian_package
+  - download_generic_package
+  - download_go_module
+  - download_helm_chart
+  - download_maven_package_file
+  - download_npm_package
+  - download_nuget_package
+  - download_pypi_package
+  - download_ruby_gem
+  - download_terraform_module
+  - read_composer_package
+  - read_conan_package
+  - read_go_module
+  - read_npm_package
+  - read_npm_package_tag
+  - read_nuget_package
+  - read_package
+  - read_pypi_package
+  - read_ruby_gem
+  - read_terraform_module
+  - search_conan_package
+  - search_nuget_package
+boundaries:
+  - instance
+  - group
+  - project

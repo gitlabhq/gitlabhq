@@ -10,7 +10,7 @@ module Integrations
       end
 
       def installation_alias
-        SlackIntegration::INSTANCE_ALIAS
+        SlackIntegration.organization_alias(params[:organization_id])
       end
 
       def fallback_alias; end

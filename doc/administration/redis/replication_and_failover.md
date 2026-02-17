@@ -197,13 +197,10 @@ It is assumed that you have installed GitLab and all its components from scratch
 If you already have Redis installed and running, read how to
 [switch from a single-machine installation](#switching-from-an-existing-single-machine-installation).
 
-{{< alert type="note" >}}
-
-Redis nodes (both primary and replica) need the same password defined in
-`redis['password']`. At any time during a failover the Sentinels can
-reconfigure a node and change its status from primary to replica and vice versa.
-
-{{< /alert >}}
+> [!note]
+> Redis nodes (both primary and replica) need the same password defined in
+> `redis['password']`. At any time during a failover the Sentinels can
+> reconfigure a node and change its status from primary to replica and vice versa.
 
 ### Requirements
 
@@ -283,13 +280,10 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-{{< alert type="note" >}}
-
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
-
-{{< /alert >}}
+> [!note]
+> You can specify multiple roles like sentinel and Redis as:
+> `roles ['redis_sentinel_role', 'redis_master_role']`.
+> Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 
 ### Step 2. Configuring the replica Redis instances
 
@@ -344,13 +338,10 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 
-{{< alert type="note" >}}
-
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
-
-{{< /alert >}}
+> [!note]
+> You can specify multiple roles like sentinel and Redis as:
+> `roles ['redis_sentinel_role', 'redis_master_role']`.
+> Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
 a failover, as the nodes are managed by the Sentinels, and even after a
@@ -485,12 +476,9 @@ the correct credentials for the Sentinel nodes.
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
 it needs to access at least one of the listed.
 
-{{< alert type="note" >}}
-
-The following steps should be performed in the GitLab application server
-which ideally should not have Redis or Sentinels on it for a HA setup.
-
-{{< /alert >}}
+> [!note]
+> The following steps should be performed in the GitLab application server
+> which ideally should not have Redis or Sentinels on it for a HA setup.
 
 1. SSH into the server where the GitLab application is installed.
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:
@@ -746,13 +734,10 @@ To make this work with Sentinel:
    sudo gitlab-ctl reconfigure
    ```
 
-{{< alert type="note" >}}
-
-For each persistence class, GitLab defaults to using the
-configuration specified in `gitlab_rails['redis_sentinels']` unless
-overridden by the previously described settings.
-
-{{< /alert >}}
+> [!note]
+> For each persistence class, GitLab defaults to using the
+> configuration specified in `gitlab_rails['redis_sentinels']` unless
+> overridden by the previously described settings.
 
 ### Control running services
 
@@ -851,6 +836,73 @@ To prevent the `replicaof` line from rendering in the Redis configuration file:
    ```
 
 This setting can be used to prevent replication of a Redis node independently of other Redis settings.
+
+## Use Valkey instead of Redis
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9113) in GitLab 18.9 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+You can use [Valkey](https://valkey.io/) as a drop-in replacement for Redis in replication
+and failover setups. Valkey uses the same roles and configuration options as Redis.
+
+Using Valkey instead of Redis is a [beta](../../policy/development_stages_support.md#beta) feature.
+
+### Configure Valkey primary and replica nodes
+
+On each node (primary and replicas), add the following to `/etc/gitlab/gitlab.rb` to switch from Redis to Valkey:
+
+```ruby
+# Use the same Redis roles
+roles ['redis_master_role']  # or 'redis_replica_role' for replicas
+
+# Switch to Valkey
+redis['backend'] = 'valkey'
+
+# Use the same configuration options as for Redis
+redis['bind'] = '10.0.0.1'
+redis['port'] = 6379
+redis['password'] = 'redis-password-goes-here'
+
+gitlab_rails['auto_migrate'] = false
+```
+
+### Configure Sentinel for Valkey
+
+On each Sentinel node, add the following to `/etc/gitlab/gitlab.rb`:
+
+```ruby
+roles ['redis_sentinel_role']
+
+# Switch redis backend to Valkey
+# Then Sentinel will use the same backend
+redis['backend'] = 'valkey'
+
+# Sentinel configuration (same as for Redis)
+redis['master_name'] = 'gitlab-redis'
+redis['master_password'] = 'redis-password-goes-here'
+redis['master_ip'] = '10.0.0.1'
+redis['port'] = 6379
+
+sentinel['bind'] = '10.0.0.1'
+sentinel['quorum'] = 2
+```
+
+All other Sentinel configuration options remain the same as documented in
+[Configuring the Redis Sentinel instances](#step-3-configuring-the-redis-sentinel-instances).
+
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
 
 ## Troubleshooting
 

@@ -245,6 +245,7 @@ describe('DiffsFileTree', () => {
       linkedFilePath,
     });
     await nextTick();
+    await nextTick();
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
     expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
@@ -281,6 +282,7 @@ describe('DiffsFileTree', () => {
 
     it('passes enableStickyHeight as false to FileBrowserHeight', async () => {
       createComponent();
+      await nextTick();
       await nextTick();
       expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(false);
     });

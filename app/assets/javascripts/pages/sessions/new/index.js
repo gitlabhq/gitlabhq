@@ -19,10 +19,14 @@ new UsernameValidator(); // eslint-disable-line no-new
 new LengthValidator(); // eslint-disable-line no-new
 new NoEmojiValidator(); // eslint-disable-line no-new
 
-appendUrlFragment();
+// This is implemented directly in app/assets/javascripts/authentication/sign_in/components/sign_in_form.vue
+if (!gon.features.signInFormVue) {
+  appendUrlFragment();
+  toggleRememberMePasskey();
+}
+
 appendRedirectQuery();
 toggleRememberMeQuery();
-toggleRememberMePasskey();
 initVueAlerts();
 initLanguageSwitcher();
 initEmailVerification();

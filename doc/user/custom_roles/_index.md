@@ -188,7 +188,7 @@ or [instance](../profile/account/create_accounts.md).
 Prerequisites:
 
 - For groups, you must have the Owner role for the group.
-- For projects, you must have at least the Maintainer role for the project.
+- For projects, you must have the Maintainer or Owner role for the project.
 
 To assign a custom member role to an existing user:
 
@@ -291,7 +291,8 @@ For more information on the administration of LDAP and group sync, see [LDAP syn
 
 Prerequisites:
 
-- You must have integrated an LDAP server with your instance.
+- An LDAP server integrated with your instance.
+- Administrator access.
 
 To link a custom admin role with an LDAP CN:
 
@@ -310,7 +311,8 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 
 Prerequisites:
 
-- You must have integrated an LDAP server with your instance.
+- An LDAP server integrated with your instance.
+- Administrator access.
 
 To link a custom admin role with an LDAP filter:
 

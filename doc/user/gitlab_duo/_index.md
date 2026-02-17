@@ -14,7 +14,8 @@ Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat
 
 {{< walkthrough data="duo-walkthrough" >}}
 
-- [View list of all GitLab Duo features](feature_summary.md)
+- [GitLab Duo Agent Platform](../duo_agent_platform/_index.md)
+- [GitLab Duo (Classic)](feature_summary.md)
 - [Configure GitLab Duo](../../administration/gitlab_duo/configure/_index.md)
 - [Use your own models with GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
 

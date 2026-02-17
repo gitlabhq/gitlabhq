@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_composition do
+  include Ci::PipelineVariableHelpers
+
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
 
@@ -1717,16 +1719,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   describe 'applying pipeline variables' do
     subject { seed_build }
 
-    let(:pipeline_variables) { [] }
+    let(:pipeline_variables_attributes) { [] }
     let(:pipeline) do
-      build(:ci_empty_pipeline, project: project, sha: head_sha, variables: pipeline_variables)
+      build(:ci_empty_pipeline, project: project, sha: head_sha)
+    end
+
+    before do
+      build_or_replace_pipeline_variables(pipeline, pipeline_variables_attributes)
     end
 
     context 'containing variable references' do
-      let(:pipeline_variables) do
+      let(:pipeline_variables_attributes) do
         [
-          build(:ci_pipeline_variable, key: 'A', value: '$B'),
-          build(:ci_pipeline_variable, key: 'B', value: '$C')
+          { key: 'A', value: '$B' },
+          { key: 'B', value: '$C' }
         ]
       end
 
@@ -1736,11 +1742,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     end
 
     context 'containing cyclic reference' do
-      let(:pipeline_variables) do
+      let(:pipeline_variables_attributes) do
         [
-          build(:ci_pipeline_variable, key: 'A', value: '$B'),
-          build(:ci_pipeline_variable, key: 'B', value: '$C'),
-          build(:ci_pipeline_variable, key: 'C', value: '$A')
+          { key: 'A', value: '$B' },
+          { key: 'B', value: '$C' },
+          { key: 'C', value: '$A' }
         ]
       end
 

@@ -100,7 +100,8 @@ module Gitlab
           strong_memoize(:diff_stats) do
             next unless fetch_diff_stats?
 
-            @repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+            stats = diffable.diff_stats if diffable.respond_to?(:diff_stats)
+            stats || @repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
           end
         end
 

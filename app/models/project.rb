@@ -51,7 +51,7 @@ class Project < ApplicationRecord
   include Namespaces::AdjournedDeletable
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS, feature_flag: :cells_claims_projects
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :id
 
@@ -682,6 +682,20 @@ class Project < ApplicationRecord
   validate :path_availability, if: :path_changed?
 
   # Scopes
+  scope :deletion_in_progress, -> {
+    joins(:project_namespace).where(namespaces: { state: Namespaces::Stateful::STATES[:deletion_in_progress] })
+  }
+
+  scope :not_deletion_in_progress, -> {
+    deletion_in_progress_state = Namespaces::Stateful::STATES[:deletion_in_progress]
+    where(
+      Namespace.select(1)
+        .where(Namespace.arel_table[:id].eq(arel_table[:project_namespace_id]))
+        .where(state: deletion_in_progress_state)
+        .arel.exists.not
+    )
+  }
+
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
   scope :not_hidden, -> { where(hidden: false) }
@@ -690,8 +704,6 @@ class Project < ApplicationRecord
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
 
   scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
-  scope :self_aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
-
   scope :self_or_ancestors_aimed_for_deletion, -> do
     left_joins(:group)
       .where.not(marked_for_deletion_at: nil)
@@ -700,8 +712,6 @@ class Project < ApplicationRecord
   end
 
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-  scope :self_not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-
   scope :self_and_ancestors_not_aimed_for_deletion, -> do
     left_joins(:group)
       .where(marked_for_deletion_at: nil)
@@ -763,6 +773,7 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
+  scope :projects_order_namespace_id_asc, -> { reorder(self.arel_table['namespace_id'].asc) }
   scope :sorted_by_storage_size_asc, -> { order_by_storage_size(:asc) }
   scope :sorted_by_storage_size_desc, -> { order_by_storage_size(:desc) }
   scope :order_by_storage_size, ->(direction) do
@@ -868,7 +879,6 @@ class Project < ApplicationRecord
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
   scope :archived, -> { self_or_ancestors_archived }
-  scope :self_archived, -> { where(archived: true) }
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
@@ -876,17 +886,13 @@ class Project < ApplicationRecord
   end
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
-  scope :self_non_archived, -> { where(archived: false) }
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)
       .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
   end
 
-  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
-
-  scope :self_inactive, -> { self_archived.or(self_aimed_for_deletion) }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
@@ -1392,6 +1398,17 @@ class Project < ApplicationRecord
         .pluck(:id, 'namespaces.traversal_ids')
         .group_by(&:last)
         .transform_values { |projects| projects.map(&:first) }
+    end
+
+    def root_ids_for(project_ids)
+      namespace_ids = id_in(project_ids)
+        .limit(Project::MAX_PLUCK)
+        .distinct
+        .pluck(:namespace_id)
+
+      return [] if namespace_ids.empty?
+
+      Namespace.root_ids_for(namespace_ids)
     end
   end
 
@@ -2293,6 +2310,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def execute_flow_triggers(_, _)
+    # noop in CE
+  end
+
   def has_active_hooks?(hooks_scope = :push_hooks)
     @has_active_hooks ||= {} # rubocop: disable Gitlab/PredicateMemoization
 
@@ -2514,14 +2535,6 @@ class Project < ApplicationRecord
 
     @latest_successful_pipeline_for_default_branch =
       ci_pipelines.latest_successful_for_ref(default_branch)
-  end
-
-  def latest_successful_pipeline_for(ref = nil)
-    if ref && ref != default_branch
-      ci_pipelines.latest_successful_for_ref(ref)
-    else
-      latest_successful_pipeline_for_default_branch
-    end
   end
 
   def feature_available?(feature, user = nil)
@@ -3342,10 +3355,6 @@ class Project < ApplicationRecord
     JiraConnectSubscription.for_project(self).exists?
   end
 
-  def limited_protected_branches(limit)
-    protected_branches.limit(limit)
-  end
-
   def group_protected_branches
     return root_namespace.protected_branches if root_namespace.is_a?(Group)
 
@@ -3354,10 +3363,6 @@ class Project < ApplicationRecord
 
   def deploy_token_create_url(opts = {})
     Gitlab::Routing.url_helpers.create_deploy_token_project_settings_repository_path(self, opts)
-  end
-
-  def deploy_token_revoke_url_for(token)
-    Gitlab::Routing.url_helpers.revoke_project_deploy_token_path(self, token)
   end
 
   def default_branch_protected?
@@ -4129,8 +4134,8 @@ class Project < ApplicationRecord
     import_url.present? && import_url_changed?
   end
 
-  def unique_attribute
-    :path
+  def unique_attributes
+    [:path]
   end
 end
 

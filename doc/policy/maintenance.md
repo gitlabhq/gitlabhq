@@ -55,15 +55,12 @@ The following GitLab release versions are currently maintained:
 
 <!-- END -->
 
-{{< alert type="note" >}}
-
-For GitLab team members looking for maintained versions for the upcoming patch release, refer to the [`Release Versions` panel](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
-under the `Patch Release Information` section in the internal `delivery: Release Information` Grafana dashboard.
-When the active monthly release date is prior to the active patch release date, the versions are different from the maintained versions list above.
-
-Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions.
-
-{{< /alert >}}
+> [!note]
+> For GitLab team members looking for maintained versions for the upcoming patch release, refer to the [`Release Versions` panel](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
+> under the `Patch Release Information` section in the internal `delivery: Release Information` Grafana dashboard.
+> When the active monthly release date is prior to the active patch release date, the versions are different from the maintained versions list above.
+> 
+> Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions.
 
 ## Upgrade recommendations
 
@@ -85,7 +82,7 @@ Version-specific change documentation for Linux packages is available for:
 
 Instructions are available for downloading the Linux package locally and [manually installing](../update/package/_index.md#upgrade-with-a-downloaded-package) it.
 
-A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 ## Upgrading major versions
 

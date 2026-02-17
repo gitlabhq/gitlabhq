@@ -38,8 +38,8 @@ RSpec.describe Import::Clients::ObjectStorage, feature_category: :importers do
         client.test_connection!
       end
 
-      context 'when provider is MinIO' do
-        let(:provider) { :minio }
+      context 'when provider is S3 compatible' do
+        let(:provider) { :s3_compatible }
 
         it 'sets AWS the fog provider option' do
           expect(Fog::Storage).to receive(:new).with(hash_including(provider: 'AWS'))

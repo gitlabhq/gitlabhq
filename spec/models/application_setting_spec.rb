@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
+RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -24,12 +24,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         admin_mode: false,
         ai_action_api_rate_limit: 160,
         akismet_enabled: false,
-        allow_immediate_namespaces_deletion: true,
         allow_account_deletion: true,
         allow_bypass_placeholder_confirmation: false,
         allow_contribution_mapping_to_admins: false,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
+        allow_s3_compatible_storage_for_offline_transfer: false,
         allow_possible_spam: false,
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
@@ -1201,63 +1201,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    describe '#allow_immediate_namespaces_deletion_for_user?' do
-      let(:user) { build_stubbed(:user) }
-      let(:admin) { build_stubbed(:admin) }
-
-      before do
-        stub_application_setting(admin_mode: false)
-      end
-
-      context 'with allow_immediate_namespaces_deletion disabled in database' do
-        before do
-          setting.update!(allow_immediate_namespaces_deletion: false)
-        end
-
-        it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(false) }
-
-        context 'when user is an admin' do
-          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
-        end
-
-        context 'when the :allow_immediate_namespaces_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(allow_immediate_namespaces_deletion: false)
-          end
-
-          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
-
-          context 'when user is an admin' do
-            it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
-          end
-        end
-      end
-
-      context 'with allow_immediate_namespaces_deletion enabled in database' do
-        before do
-          setting.update!(allow_immediate_namespaces_deletion: true)
-        end
-
-        it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
-
-        context 'when user is an admin' do
-          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
-        end
-
-        context 'when the :allow_immediate_namespaces_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(allow_immediate_namespaces_deletion: false)
-          end
-
-          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
-
-          context 'when user is an admin' do
-            it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
-          end
-        end
-      end
-    end
-
     describe 'setting validated as `addressable_url` configured with external URI' do
       before do
         # Use any property that has the `addressable_url` validation.
@@ -1934,26 +1877,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it 'does not allow authn_data_retention_cleanup_enabled with integer' do
         is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: 1 })
           .for(:resource_access_tokens_settings)
-      end
-    end
-
-    describe 'for allow_immediate_namespaces_deletion' do
-      context 'when on Dedicated' do
-        before do
-          stub_application_setting(gitlab_dedicated_instance: true)
-        end
-
-        it { is_expected.to allow_value(false).for(:allow_immediate_namespaces_deletion) }
-        it { is_expected.not_to allow_value(true).for(:allow_immediate_namespaces_deletion) }
-      end
-
-      context 'when not on Dedicated' do
-        before do
-          stub_application_setting(gitlab_dedicated_instance: false)
-        end
-
-        it { is_expected.to allow_value(false).for(:allow_immediate_namespaces_deletion) }
-        it { is_expected.to allow_value(true).for(:allow_immediate_namespaces_deletion) }
       end
     end
   end

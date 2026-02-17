@@ -23,7 +23,9 @@ module RendersNotes
     return unless project
 
     user_ids = notes.map(&:author_id)
-    access = project.team.max_member_access_for_user_ids(user_ids).select { |k, v| v == Gitlab::Access::NO_ACCESS }.keys
+    access = project.team.max_member_access_for_user_ids(user_ids).select do |_k, v|
+      v == Gitlab::Access::NO_ACCESS
+    end.keys
     project.team.contribution_check_for_user_ids(access)
   end
 

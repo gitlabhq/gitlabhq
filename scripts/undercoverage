@@ -17,6 +17,42 @@ module Undercover
       repo.lookup(compare_base.to_s)
     end
   end
+
+  class Result
+    # Undercover does not show branch undercoverage when there no `DA` line
+    # coverage in the lcov file.
+    # https://github.com/grodowski/undercover/issues/167#issuecomment-3737218228
+    #
+    # Patch it to show branch coverage even when it's `hits: n/a`.
+    # rubocop:disable Metrics/AbcSize -- Based on upstream code, with minimal modifications
+    # rubocop:disable Style/NumericPredicate -- Based on upstream code, with minimal modifications
+    def pretty_print
+      pad = node.last_line.to_s.length
+      pretty_print_lines.map do |covered, (num, line)|
+        formatted_line = "#{num.to_s.rjust(pad)}: #{line}"
+        if line.strip.empty?
+          Rainbow(formatted_line).darkgray.dark
+        elsif skipped?(file_path, num)
+          Rainbow(formatted_line).darkgray.dark +
+            Rainbow(' skipped with :nocov:').italic.darkgray.dark
+        elsif covered.nil?
+          Rainbow(formatted_line).darkgray.dark +
+            Rainbow(' hits: n/a').italic.darkgray.dark +
+            count_covered_branches(num)
+        elsif covered.positive?
+          Rainbow(formatted_line).green +
+            Rainbow(" hits: #{covered}").italic.darkgray.dark +
+            count_covered_branches(num)
+        elsif covered.zero?
+          Rainbow(formatted_line).red +
+            Rainbow(" hits: #{covered}").italic.darkgray.dark +
+            count_covered_branches(num)
+        end
+      end.join("\n")
+    end
+    # rubocop:enable Style/NumericPredicate
+    # rubocop:enable Metrics/AbcSize
+  end
 end
 
 compare_base = ARGV[0]

@@ -1,0 +1,7 @@
+---
+name: update_job
+description: Grants the ability to update jobs
+permissions:
+  - cancel_job
+boundaries:
+  - project

@@ -16,13 +16,10 @@ description: Geographically distribute GitLab.
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
 
-{{< alert type="warning" >}}
-
-Geo undergoes significant changes from release to release. Upgrades are
-supported and [documented](#upgrading-geo), but you should ensure that you're
-using the right version of the documentation for your installation.
-
-{{< /alert >}}
+> [!warning]
+> Geo undergoes significant changes from release to release. Upgrades are
+> supported and [documented](#upgrading-geo), but you should ensure that you're
+> using the right version of the documentation for your installation.
 
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
 
@@ -225,36 +222,27 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
-{{< alert type="warning" >}}
+> [!warning]
+> For PostgreSQL replication between Geo sites, you must use private network connections, such as internal VPC peering.
+> Never expose PostgreSQL ports to the internet. Exposing PostgreSQL ports to the internet can result in unauthorized access with full write permissions to your GitLab database, potentially compromising your entire GitLab instance and all associated data.
 
-For PostgreSQL replication between Geo sites, you must use private network connections, such as internal VPC peering.
-Never expose PostgreSQL ports to the internet. Exposing PostgreSQL ports to the internet can result in unauthorized access with full write permissions to your GitLab database, potentially compromising your entire GitLab instance and all associated data.
+Additionally:
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-[Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
-When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
-If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
-{{< /alert >}}
+- [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
+  When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
+- When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
+  If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
+- If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
 
 #### Internal URL
 
 HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
 Geo site. If this is not explicitly defined in the primary Geo site settings in the **Admin** area, the
 public URL of the primary site is used.
+
+Prerequisites:
+
+- Administrator access.
 
 To update the internal URL of the primary Geo site:
 
@@ -289,6 +277,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 > [!warning]
 > These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
+- Git over SSH through a secondary Geo site does not work reliably. For more information, see [issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109), [issue #417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186), [issue #454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707), and [issue 585913](https://gitlab.com/gitlab-org/gitlab/-/issues/585913).
 - Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
@@ -301,9 +290,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 - [Disaster recovery](disaster_recovery/_index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary.
   For more information, see [issue 339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262).
-- Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [Issue 413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
 - Backups [cannot be run on Geo secondary sites](replication/troubleshooting/postgresql_replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
-- Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).
 - The Geo secondary site does not accelerate (serve) the clone request for the first stage of the pipeline in most cases. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In general, it does serve the clone request for subsequent stages. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) discusses the reasons for this and proposes an enhancement to increase the chance that Runner clone requests are served from the secondary site.
 - When a single Git repository receives pushes at a high-enough rate, the secondary site's local copy can be perpetually out-of-date. This causes all Git fetches of that repository to be forwarded to the primary site. For more information, see [issue 455870](https://gitlab.com/gitlab-org/gitlab/-/issues/455870).
 - [Proxying](secondary_proxy/_index.md) is implemented only in the GitLab application in the Puma service or Web service, so other services do not benefit from this behavior. You should use a [separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) to ensure requests are always sent to the primary. These services include:
@@ -312,7 +299,6 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 - With a [unified URL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
-- Some customers have reported that `git fetch` over SSH when the secondary site is out of date hangs and/or times out and fails. `git clone` requests over SSH are not impacted. For more information, see [issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707). A fix available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 - Do not use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab) with [GitLab Geo](../../administration/geo/_index.md) because they will break the proxy between sites. For more information, see [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
 
 ### Replicated data types

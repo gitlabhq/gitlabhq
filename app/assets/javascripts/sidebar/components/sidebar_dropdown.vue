@@ -12,8 +12,8 @@ import {
   TYPE_EPIC,
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
-  WORKSPACE_GROUP,
-  WORKSPACE_PROJECT,
+  NAMESPACE_GROUP,
+  NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { __ } from '~/locale';
 import {
@@ -83,9 +83,9 @@ export default {
     workspaceType: {
       type: String,
       required: false,
-      default: WORKSPACE_PROJECT,
+      default: NAMESPACE_PROJECT,
       validator(value) {
-        return [WORKSPACE_GROUP, WORKSPACE_PROJECT].includes(value);
+        return [NAMESPACE_GROUP, NAMESPACE_PROJECT].includes(value);
       },
     },
     showWorkItemEpics: {
@@ -143,8 +143,7 @@ export default {
 
         return variables;
       },
-      update: (data) =>
-        (data?.workspace?.attributes?.nodes || data?.namespace?.attributes?.nodes) ?? [],
+      update: (data) => data?.namespace?.attributes?.nodes ?? [],
       error(error) {
         createAlert({ message: this.i18n.listFetchError, captureError: true, error });
       },

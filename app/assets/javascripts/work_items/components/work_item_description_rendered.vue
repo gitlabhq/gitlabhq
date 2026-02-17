@@ -11,6 +11,8 @@ import { InternalEvents } from '~/tracking';
 import {
   convertDescriptionWithNewSort,
   deleteTaskListItem,
+  disableTaskListItem,
+  enableTaskListItem,
   extractTaskTitleAndDescription,
   insertNextToTaskListItemText,
 } from '~/issues/show/utils';
@@ -135,6 +137,8 @@ export default {
   async mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+    eventHub.$on('disable-task-list-item', this.disableTaskListItem);
+    eventHub.$on('enable-task-list-item', this.enableTaskListItem);
     window.addEventListener('hashchange', (e) => this.truncateOrScrollToAnchor(e));
 
     await this.$nextTick();
@@ -143,6 +147,8 @@ export default {
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
+    eventHub.$off('disable-task-list-item', this.disableTaskListItem);
+    eventHub.$off('enable-task-list-item', this.enableTaskListItem);
     window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
     this.removeAllPointerEventListeners();
 
@@ -242,20 +248,22 @@ export default {
     },
     renderTaskListItemActions() {
       const taskListItems = this.$el.querySelectorAll?.(
-        '.task-list-item:not(.inapplicable, table .task-list-item)',
+        '.task-list-item:not(table .task-list-item)',
       );
 
       taskListItems?.forEach((listItem) => {
-        const dropdown = this.createTaskListItemActions();
+        const enabled = Boolean(listItem.querySelector('.task-list-item-checkbox:enabled'));
+        const dropdown = this.createTaskListItemActions(enabled);
         insertNextToTaskListItemText(dropdown, listItem);
         this.addPointerEventListeners(listItem, '.task-list-item-actions');
         this.hasTaskListItemActions = true;
       });
     },
-    createTaskListItemActions() {
+    createTaskListItemActions(enabled) {
       const app = new Vue({
         el: document.createElement('div'),
-        provide: { id: this.workItemId, issuableType: this.workItemType },
+        name: 'TaskListItemActionsRoot',
+        provide: { id: this.workItemId, issuableType: this.workItemType, enabled },
         render: (createElement) => createElement(TaskListItemActions),
       });
       return app.$el;
@@ -322,6 +330,20 @@ export default {
       const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
       this.$emit('descriptionUpdated', newDescription);
     },
+    disableTaskListItem({ id, sourcepos }) {
+      if (this.workItemId !== id) {
+        return;
+      }
+      const { newDescription } = disableTaskListItem(this.descriptionText, sourcepos);
+      this.$emit('descriptionUpdated', newDescription);
+    },
+    enableTaskListItem({ id, sourcepos }) {
+      if (this.workItemId !== id) {
+        return;
+      }
+      const { newDescription } = enableTaskListItem(this.descriptionText, sourcepos);
+      this.$emit('descriptionUpdated', newDescription);
+    },
     handleWorkItemCreated() {
       this.$emit('descriptionUpdated', this.newDescription);
     },
@@ -331,17 +353,14 @@ export default {
       if (isCheckbox(target)) {
         target.disabled = true;
 
-        const { sourcepos } = target.parentElement.dataset;
-
-        if (!sourcepos) return;
-
-        const newDescriptionText = toggleCheckbox({
+        const replacement = toggleCheckbox({
           rawMarkdown: this.descriptionText,
-          sourcepos,
           checkboxChecked: target.checked,
+          target,
         });
+        if (!replacement) return;
 
-        this.$emit('descriptionUpdated', newDescriptionText);
+        this.$emit('descriptionUpdated', replacement.newMarkdown);
       }
     },
     truncateLongDescription() {

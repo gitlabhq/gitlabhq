@@ -1,0 +1,5 @@
+---
+name: read_merge_request_state_event
+description: Grants the ability to read Merge request state events.
+boundaries:
+  - project

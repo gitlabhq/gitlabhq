@@ -16,4 +16,26 @@ RSpec.describe Integrations::JiraTrackerData, feature_category: :integrations do
 
     it { is_expected.to contain_exactly(:api_url, :password, :url, :username) }
   end
+
+  describe 'validations' do
+    it { is_expected.to validate_length_of(:url).is_at_most(2048) }
+    it { is_expected.to validate_length_of(:api_url).is_at_most(2048) }
+    it { is_expected.to validate_length_of(:username).is_at_most(2048) }
+    it { is_expected.to validate_length_of(:password).is_at_most(2048) }
+
+    it 'does not invalidate existing records' do
+      jira_tracker_data = create(:jira_tracker_data)
+
+      jira_tracker_data.assign_attributes(
+        url: 'A' * 3000,
+        api_url: 'B' * 3000,
+        username: 'C' * 3000,
+        password: 'D' * 3000
+      )
+
+      jira_tracker_data.save!(validate: false)
+
+      expect(jira_tracker_data.reload).to be_valid
+    end
+  end
 end

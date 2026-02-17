@@ -75,6 +75,7 @@ module Ci
     def filter_builds(builds)
       builds = filter_by_with_artifacts(builds)
       builds = filter_by_runner_types(builds)
+      builds = filter_by_pipeline_iid(builds)
       filter_by_scope(builds)
     end
 
@@ -126,6 +127,12 @@ module Ci
       else
         raise ArgumentError, "finder does not support #{type} type"
       end
+    end
+
+    def filter_by_pipeline_iid(builds)
+      return builds.with_pipeline_iid(@project.id, params[:pipeline_iid]) if params[:pipeline_iid]
+
+      builds
     end
   end
 end

@@ -2,6 +2,7 @@
 stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Analyze a group's development velocity and view charts for merge request analytics.
 title: Productivity analytics
 ---
 
@@ -39,7 +40,7 @@ Productivity analytics display the following charts:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Productivity analytics**.

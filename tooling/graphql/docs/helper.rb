@@ -56,7 +56,7 @@ module Tooling
           <<-MD.strip_heredoc
             ---
             stage: Developer Experience
-            group: API
+            group: API Platform
             info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
             title: GraphQL API resources
             ---

@@ -22,7 +22,7 @@ Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-an
 
 {{< /history >}}
 
-Get the list of all instance-level variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
+Lists all instance-level variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
 parameters to control the pagination of results.
 
 ```plaintext
@@ -58,7 +58,7 @@ curl \
 ]
 ```
 
-## Show instance variable details
+## Retrieve instance variable details
 
 {{< history >}}
 
@@ -66,7 +66,7 @@ curl \
 
 {{< /history >}}
 
-Get the details of a specific instance-level variable.
+Retrieves details of a specific instance-level variable.
 
 ```plaintext
 GET /admin/ci/variables/:key
@@ -102,7 +102,7 @@ curl \
 
 {{< /history >}}
 
-Create a new instance-level variable.
+Creates a new instance-level variable.
 
 The [maximum number of instance-level variables](../administration/instance_limits.md#cicd-variable-limits) can be changed.
 
@@ -148,7 +148,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Update an instance-level variable.
+Updates an instance-level variable.
 
 ```plaintext
 PUT /admin/ci/variables/:key
@@ -183,9 +183,9 @@ curl --request PUT \
 }
 ```
 
-## Remove instance variable
+## Delete instance variable
 
-Remove an instance-level variable.
+Deletes an instance-level variable.
 
 ```plaintext
 DELETE /admin/ci/variables/:key

@@ -12,12 +12,9 @@ title: Geo glossary
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-We are updating the Geo documentation, user interface and commands to reflect these changes. Not all pages comply with
-these definitions yet.
-
-{{< /alert >}}
+> [!note]
+> We are updating the Geo documentation, user interface and commands to reflect these changes. Not all pages comply with
+> these definitions yet.
 
 These are the defined terms to describe all aspects of Geo. Using a set of clearly
 defined terms helps us to communicate efficiently and avoids confusion. The language

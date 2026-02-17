@@ -19,6 +19,8 @@ class NamespaceSetting < ApplicationRecord
   ignore_column :duo_agent_platform_request_count, remove_with: '18.9', remove_after: '2026-01-16'
   ignore_columns :early_access_program_participant, :early_access_program_joined_by_id,
     remove_with: '18.10', remove_after: '2026-03-13'
+  ignore_column :duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
+  ignore_column :lock_duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
 
   cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 

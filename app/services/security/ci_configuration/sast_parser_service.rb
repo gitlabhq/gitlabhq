@@ -14,7 +14,7 @@ module Security
       end
 
       def configuration
-        result = Gitlab::Json.parse(File.read(Rails.root.join(SAST_UI_SCHEMA_PATH))).with_indifferent_access
+        result = Gitlab::Json.safe_parse(File.read(Rails.root.join(SAST_UI_SCHEMA_PATH))).with_indifferent_access
         populate_default_value_for(result, :global)
         populate_default_value_for(result, :pipeline)
         fill_current_value_with_default_for(result, :global)

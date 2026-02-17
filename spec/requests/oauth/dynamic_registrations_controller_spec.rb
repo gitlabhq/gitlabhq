@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_access do
+RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization, feature_category: :system_access do
   let(:oauth_registration_path) { Gitlab::Routing.url_helpers.oauth_register_path }
 
   let(:valid_request_body) do
@@ -53,6 +53,12 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
 
         it 'creates a new OAuth application' do
           expect { create_registration }.to change { Authn::OauthApplication.count }.by(1)
+        end
+
+        it 'sets organization_id on the newly-created OAuth application' do
+          create_registration
+
+          expect(Authn::OauthApplication.last.organization_id).to eq(current_organization.id)
         end
 
         it_behaves_like 'creates application successfully'
@@ -431,7 +437,7 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
           let(:request_body) { valid_request_body.merge(client_name: 'Duplicate App') }
 
           before do
-            create(:application, name: 'Duplicate App')
+            create(:application, name: 'Duplicate App', organization: current_organization)
           end
 
           it 'creates application successfully' do

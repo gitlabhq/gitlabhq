@@ -17,14 +17,15 @@ import { s__, __ } from '~/locale';
 import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import { TYPENAME_CI_PIPELINE, TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
-import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
-import { updatePipelineNodes } from '~/ci/pipelines_page/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
+import { PIPELINE_ALIVE_STATUSES } from '~/ci/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
+import { updatePipelineNodes } from '../utils';
 
 export default {
   name: 'PipelinesTableWrapper',
@@ -38,7 +39,6 @@ export default {
     GlSprintf,
     PipelinesTable,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
     errorStateSvgPath: {
@@ -77,6 +77,7 @@ export default {
         after: '',
         before: '',
       },
+      pipelineSubscriptionHandles: new Map(), // Stores unsubscribe handles by pipeline GraphQL ID
     };
   },
   apollo: {
@@ -103,6 +104,8 @@ export default {
           data?.project?.mergeRequest?.pipelines?.nodes?.map((pipeline) => ({
             ...pipeline,
             id: getIdFromGraphQLId(pipeline.id),
+            // Keep the GraphQL ID for subscriptions
+            graphqlId: pipeline.id,
           })) || []
         );
       },
@@ -112,59 +115,15 @@ export default {
         if (pipelines) {
           this.pageInfo = pipelines.pageInfo;
           this.updateBadgeCount(pipelines.count);
+          this.subscribeToAlivePipelines();
         }
       },
       error() {
         this.hasError = true;
       },
-      subscribeToMore: {
-        document: ciPipelineStatusesUpdatedSubscription,
-        variables() {
-          return {
-            projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
-          };
-        },
-        skip() {
-          return !this.isPipelineStatusSubscriptionEnabled || !this.projectId || !this.hasPipelines;
-        },
-        updateQuery(
-          previousData,
-          {
-            subscriptionData: {
-              data: { ciPipelineStatusesUpdated },
-            },
-          },
-        ) {
-          const previousPipelines = previousData?.project?.mergeRequest?.pipelines?.nodes || [];
-
-          if (previousPipelines.length && ciPipelineStatusesUpdated) {
-            const updatedPipeline = ciPipelineStatusesUpdated;
-
-            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
-
-            return {
-              ...previousData,
-              project: {
-                ...previousData.project,
-                mergeRequest: {
-                  ...previousData.project.mergeRequest,
-                  pipelines: {
-                    ...previousData.project.mergeRequest.pipelines,
-                    nodes: updatedNodes,
-                  },
-                },
-              },
-            };
-          }
-          return previousData;
-        },
-      },
     },
   },
   computed: {
-    isPipelineStatusSubscriptionEnabled() {
-      return this.glFeatures.ciPipelineStatusesUpdatedSubscription;
-    },
     hasPipelines() {
       return this.pipelines.length > 0;
     },
@@ -226,8 +185,79 @@ export default {
         (this.pageInfo?.hasNextPage || this.pageInfo?.hasPreviousPage)
       );
     },
+    alivePipelines() {
+      return this.pipelines.filter((pipeline) => {
+        return PIPELINE_ALIVE_STATUSES.includes(pipeline.detailedStatus?.name);
+      });
+    },
   },
   methods: {
+    /**
+     * Subscribe to status updates for all alive pipelines on the current page.
+     */
+    subscribeToAlivePipelines() {
+      this.alivePipelines.forEach((pipeline) => {
+        const pipelineGid = pipeline.graphqlId;
+
+        if (this.pipelineSubscriptionHandles.has(pipelineGid)) {
+          return;
+        }
+
+        const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
+          document: mrPipelineStatusesUpdatedSubscription,
+          variables: {
+            pipelineId: pipelineGid,
+          },
+          updateQuery: (previousData, { subscriptionData }) => {
+            const updatedPipeline = subscriptionData?.data?.ciPipelineStatusUpdated;
+            if (!updatedPipeline) {
+              return previousData;
+            }
+
+            const previousPipelines = previousData?.project?.mergeRequest?.pipelines?.nodes || [];
+
+            if (!previousPipelines.length) {
+              return previousData;
+            }
+
+            if (!PIPELINE_ALIVE_STATUSES.includes(updatedPipeline.detailedStatus?.name)) {
+              this.unsubscribeFromPipeline(updatedPipeline.id);
+            }
+
+            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
+
+            return {
+              ...previousData,
+              project: {
+                ...previousData.project,
+                mergeRequest: {
+                  ...previousData.project.mergeRequest,
+                  pipelines: {
+                    ...previousData.project.mergeRequest.pipelines,
+                    nodes: updatedNodes,
+                  },
+                },
+              },
+            };
+          },
+          onError: (error) => {
+            this.pipelineSubscriptionHandles.delete(pipelineGid);
+            Sentry.captureException(error, {
+              tags: { component: this.$options.name },
+            });
+          },
+        });
+
+        this.pipelineSubscriptionHandles.set(pipelineGid, unsubscribe);
+      });
+    },
+    unsubscribeFromPipeline(pipelineGid) {
+      const unsubscribe = this.pipelineSubscriptionHandles.get(pipelineGid);
+      if (unsubscribe) {
+        unsubscribe();
+        this.pipelineSubscriptionHandles.delete(pipelineGid);
+      }
+    },
     cancelPipeline(pipeline) {
       this.executePipelineAction({
         pipeline,
@@ -250,6 +280,9 @@ export default {
           mutation,
           variables: {
             id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id),
+          },
+          context: {
+            featureCategory: 'continuous_integration',
           },
         });
         const [errorMessage] = data[mutationType]?.errors ?? [];
@@ -274,7 +307,14 @@ export default {
         after: '',
         before: '',
       };
+      this.clearAllSubscriptions();
       this.$apollo.queries.pipelines.refetch();
+    },
+    clearAllSubscriptions() {
+      this.pipelineSubscriptionHandles.forEach((unsubscribe) => {
+        unsubscribe();
+      });
+      this.pipelineSubscriptionHandles.clear();
     },
     /**
      * When the user clicks on the "Run pipeline" button
@@ -334,6 +374,7 @@ export default {
       }
     },
     nextPage() {
+      this.clearAllSubscriptions();
       this.pagination = {
         after: this.pageInfo?.endCursor || '',
         before: '',
@@ -343,6 +384,7 @@ export default {
     },
 
     prevPage() {
+      this.clearAllSubscriptions();
       this.pagination = {
         after: '',
         before: this.pageInfo?.startCursor || '',
@@ -454,7 +496,7 @@ export default {
     <div v-else-if="shouldRenderTable">
       <div
         v-if="canRenderPipelineButton"
-        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @lg/panel:gl-hidden"
+        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @md/panel:gl-hidden"
       >
         <gl-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"

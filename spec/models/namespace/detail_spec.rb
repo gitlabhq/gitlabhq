@@ -39,9 +39,7 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) do
-        namespace = create(:namespace)
-        namespace.namespace_details.creator = parent
-        namespace.namespace_details.save!
+        namespace = create(:namespace, creator: parent)
         namespace.namespace_details
       end
     end
@@ -54,16 +52,5 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
     subject { namespace_details.description_html }
 
     it { is_expected.to eq_no_sourcepos(expected_description) }
-  end
-
-  describe '#add_creator' do
-    let(:namespace) { create(:namespace) }
-    let_it_be(:user) { create(:user) }
-
-    it 'adds the creator' do
-      namespace.namespace_details.add_creator(user)
-
-      expect(namespace.namespace_details.creator).to eq(user)
-    end
   end
 end

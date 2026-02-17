@@ -62,7 +62,7 @@ def perform(project_id, iid = nil)
     scope.update_all(updated_at: Time.current)
 
     if runtime_limiter.over_time?
-      MyJob.perform_in(2.minutes, project_id, iid)
+      MyJob.perform_in(2.minutes, project_id, max_iid)
 
       break
     end
@@ -92,7 +92,7 @@ def perform(project_id, iid = nil)
     updates += scope.update_all(updated_at: Time.current)
 
     if runtime_limiter.over_time? || updates >= max_updates
-      MyJob.perform_in(2.minutes, project_id, iid)
+      MyJob.perform_in(2.minutes, project_id, max_iid)
       status = :limit_reached
 
       break
@@ -234,11 +234,8 @@ def perform
 end
 ```
 
-{{< alert type="note" >}}
-
-To avoid parallel processing of records, you might need to wrap the execution with a distributed Redis lock.
-
-{{< /alert >}}
+> [!note]
+> To avoid parallel processing of records, you might need to wrap the execution with a distributed Redis lock.
 
 Example Redis lock usage:
 
@@ -263,16 +260,11 @@ Sidekiq jobs can consume substantial database resources. If your job only batche
 
 ## Batching strategies
 
-{{< alert type="note" >}}
-
 To keep the examples easy to follow, we omit the code for limiting the runtime.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Some examples include an optional variable assignment to the `cursor` variable. This is optional step which can be used when implementing the "continue later" mechanism.
-{{< /alert >}}
+> [!note]
+> Some examples include an optional variable assignment to the `cursor` variable.
+> This is optional step which can be used when implementing the "continue later" mechanism.
 
 ### Loop-based batching
 
@@ -562,14 +554,15 @@ Using the `NamespaceEachBatch` class allows us to batch a specific branch of the
 # current_id: id of the namespace record where we iterate from
 # depth: depth of the tree where the iteration was stopped previously. Initially, it should be the same as the current_id
 cursor = { current_id: 9970, depth: [9970] } # This can be any namespace id
-iterator = Gitlab::Database::NamespaceEachBatch.new(namespace_class: Namespace, cursor: cursor)
+
+# Instantiate the object to iterate over project namespaces only.
+iterator = Gitlab::Database::NamespaceEachBatch.new(namespace_class: Namespaces::ProjectNamespace, cursor: cursor)
 
 # Requires a composite index on (parent_id, id) columns
 iterator.each_batch(of: 100) do |ids, new_cursor|
-  namespace_ids = Namespaces::ProjectNamespace.where(id: ids)
   cursor = new_cursor # For the next job, contains the new current_id and depth values
 
-  project_ids = Project.where(project_namespace_id: namespace_ids)
+  project_ids = Project.where(project_namespace_id: ids)
   project_ids.each do |project_id|
     Issue.where(project_id: project_id).each_batch(column: :iid) do |issues|
       # do something with the issues

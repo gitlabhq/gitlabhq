@@ -1,0 +1,5 @@
+---
+name: read_bulk_import
+description: Grants the ability to read GitLab Migration (bulk import) details
+boundaries:
+  - instance

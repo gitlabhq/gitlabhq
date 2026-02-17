@@ -60,3 +60,18 @@
     border: 1px solid var(--gl-status-neutral-icon-color);
   }
 }
+
+.icon-selection-set {
+  label {
+    box-sizing: border-box;
+    border: 1px solid transparent;
+
+    &:not(.selected-icon):hover {
+      border: 1px solid var(--gl-control-border-color-hover);
+    }
+
+    &:not(.selected-icon):focus {
+      border: 1px solid var(--gl-control-border-color-focus);
+    }
+  }
+}

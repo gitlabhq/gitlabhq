@@ -21,6 +21,7 @@ export default function initCommitOptionsDropdown() {
 
   return new Vue({
     el,
+    name: 'CommitOptionsDropdownRoot',
     provide: { newProjectTagPath, emailPatchesPath, plainDiffPath },
     render: (createElement) =>
       createElement(CommitOptionsDropdown, {

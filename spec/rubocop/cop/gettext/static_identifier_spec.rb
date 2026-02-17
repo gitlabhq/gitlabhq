@@ -14,6 +14,7 @@ RSpec.describe RuboCop::Cop::Gettext::StaticIdentifier, feature_category: :inter
 
         _('Hello %{name}') % { name: name }
         format(_('Hello %{name}') % { name: name })
+        format(_('Hello %{name}'), name: name)
 
         _('Hello' \
           'Multiline')
@@ -50,7 +51,7 @@ RSpec.describe RuboCop::Cop::Gettext::StaticIdentifier, feature_category: :inter
         N_('Hello')
         N_('Hello #{name}')
         N_('Hello %{name}') % { name: name }
-        format(_('Hello %{name}') % { name: name })
+        format(N_('Hello %{name}') % { name: name })
 
         N_('Hello' \
            'Multiline')

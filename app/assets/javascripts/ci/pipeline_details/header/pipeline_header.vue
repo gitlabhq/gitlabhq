@@ -327,10 +327,6 @@ export default {
         },
       ];
     },
-    ciShowPipelineNameInsteadOfCommitTitle() {
-      // ci_show_pipeline_name_instead_of_commit_title feature flag
-      return this.glFeatures?.ciShowPipelineNameInsteadOfCommitTitle;
-    },
   },
   beforeDestroy() {
     resetFavicon();
@@ -430,16 +426,9 @@ export default {
 
     <page-heading v-else inline-actions class="gl-mb-0">
       <template #heading>
-        <span
-          v-if="pipelineId && ciShowPipelineNameInsteadOfCommitTitle"
-          data-testid="pipeline-id"
-          >{{ pipelineId }}</span
-        >
-        <span v-if="pipelineName" data-testid="pipeline-title">
+        <span v-if="pipelineId" data-testid="pipeline-id">{{ pipelineId }}</span>
+        <span v-if="pipelineName" data-testid="pipeline-name">
           {{ pipelineName }}
-        </span>
-        <span v-else-if="!ciShowPipelineNameInsteadOfCommitTitle" data-testid="pipeline-title">
-          {{ commitTitle }}
         </span>
       </template>
 
@@ -486,11 +475,7 @@ export default {
             data-testid="commit-copy-sha"
             size="small"
           />
-          <span
-            v-if="ciShowPipelineNameInsteadOfCommitTitle && commitTitle"
-            data-testid="commit-title"
-            >{{ commitTitle }}</span
-          >
+          <span v-if="commitTitle" data-testid="commit-title">{{ commitTitle }}</span>
         </div>
 
         <div

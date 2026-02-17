@@ -25,9 +25,12 @@ const findTimeagoTooltips = () => wrapper.findAllComponents(TimeagoTooltip);
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
 
-const createComponent = async ({ commitMock = {}, prevBlameLink, span = 3 } = {}) => {
+const createComponent = async ({ commitMock = {}, span = 3 } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
-    propsData: { commit: { ...commit, ...commitMock }, prevBlameLink, span },
+    propsData: {
+      commit: { ...commit, ...commitMock },
+      span,
+    },
     stubs: { GlSprintf },
   });
 
@@ -99,22 +102,6 @@ describe('Repository last commit component', () => {
       expect(findCommitRowDescription().classes('!gl-block')).toBe(true);
       expect(findTextExpander().classes('open')).toBe(true);
       expect(findTextExpander().props('selected')).toBe(true);
-    });
-  });
-
-  describe('previous blame link', () => {
-    const prevBlameLink = '<a>Previous blame link</a>';
-
-    it('renders a previous blame link when it is present', () => {
-      createComponent({ prevBlameLink });
-
-      expect(wrapper.html()).toContain(prevBlameLink);
-    });
-
-    it('does not render a previous blame link when it is not present', () => {
-      createComponent({ prevBlameLink: null });
-
-      expect(wrapper.html()).not.toContain(prevBlameLink);
     });
   });
 

@@ -249,6 +249,74 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
       end
 
+      context 'when ci_optimize_component_fetching feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_optimize_component_fetching: false)
+        end
+
+        context 'when fetching the latest release' do
+          let(:version) { '~latest' }
+          let!(:resource) { create(:ci_catalog_resource, project: project) }
+
+          let!(:catalog_version) do
+            sha = project.repository.commit.id
+            release = create(:release, project: project, tag: '1.0.0', sha: sha, author: user)
+            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.0.0')
+          end
+
+          it 'returns the component content using legacy_find_version_sha', :aggregate_failures do
+            result = path.fetch_content!(current_user: user)
+
+            expect(result.content).to eq('image: alpine_1')
+            expect(path.sha).to eq(catalog_version.sha)
+          end
+        end
+
+        context 'when using shorthand semver' do
+          let(:version) { '1' }
+          let!(:resource) { create(:ci_catalog_resource, project: project) }
+
+          let!(:catalog_version) do
+            sha = project.repository.commit.id
+            release = create(:release, project: project, tag: '1.2.0', sha: sha, author: user)
+            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.2.0')
+          end
+
+          it 'returns the component content using legacy_sha_by_shorthand_semver', :aggregate_failures do
+            result = path.fetch_content!(current_user: user)
+
+            expect(result.content).to eq('image: alpine_1')
+            expect(path.sha).to eq(catalog_version.sha)
+          end
+        end
+
+        context 'when using a released tag' do
+          let(:version) { '2.0.0' }
+
+          let!(:release) do
+            create(:release, project: project, tag: '2.0.0', author: user, sha: project.repository.commit.id)
+          end
+
+          it 'returns the component content using sha_by_released_tag', :aggregate_failures do
+            result = path.fetch_content!(current_user: user)
+
+            expect(result.content).to eq('image: alpine_1')
+            expect(path.sha).to eq(release.sha)
+          end
+        end
+
+        context 'when using a branch ref' do
+          let(:version) { 'master' }
+
+          it 'returns the component content using sha_by_ref', :aggregate_failures do
+            result = path.fetch_content!(current_user: user)
+
+            expect(result.content).to eq('image: alpine_1')
+            expect(path.sha).to eq(project.commit('master').id)
+          end
+        end
+      end
+
       context 'when current GitLab instance is installed on a relative URL' do
         let(:address) { "acme.com/gitlab/#{project_path}/secret-detection@#{version}" }
         let(:server_fqdn) { 'acme.com/gitlab' }

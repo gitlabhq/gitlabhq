@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::File, feature_category: :shared do
+RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -51,6 +51,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     ).execute
 
     project.commit(branch_name).diffs.diff_files.first
+  end
+
+  describe 'linked attribute' do
+    it 'defaults to false' do
+      expect(diff_file.linked).to be(false)
+    end
+
+    it 'can be set to true' do
+      diff_file.linked = true
+      expect(diff_file.linked).to be(true)
+    end
+
+    it 'can be set to false' do
+      diff_file.linked = false
+      expect(diff_file.linked).to be(false)
+    end
   end
 
   describe 'delegated methods' do
@@ -161,6 +177,16 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
       context 'when not modified' do
         it 'is nil' do
           expect(diff_file).to receive(:modified_file?).and_return(false)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
+      context 'when notebook parsing fails' do
+        it 'returns nil' do
+          rendered_diff_file = instance_double(Gitlab::Diff::Rendered::Notebook::DiffFile)
+          allow(Gitlab::Diff::Rendered::Notebook::DiffFile).to receive(:new).and_return(rendered_diff_file)
+          allow(rendered_diff_file).to receive(:rendered).and_return(nil)
 
           expect(diff_file.rendered).to be_nil
         end
@@ -323,6 +349,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
 
       expect(old_data).to include('raise "System commands must be given as an array of strings"')
       expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
+    end
+
+    context 'when max_blob_size is nil' do
+      let(:max_blob_size) { nil }
+
+      it 'uses highlight limit' do
+        items = [
+          [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
+        ]
+
+        expect(project.repository)
+          .to receive(:blobs_at).with(items, blob_size_limit: Gitlab::Highlight.file_size_limit).and_call_original
+
+        diff_file.old_blob
+        diff_file.new_blob
+      end
     end
   end
 
@@ -1201,6 +1243,17 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
       allow(diff_file).to receive(:added_lines).and_return(2)
       allow(diff_file).to receive(:removed_lines).and_return(2)
       expect(whitespace_only?).to eq(true)
+    end
+
+    context 'when file is binary' do
+      before do
+        allow(diff_file).to receive(:text?).and_return(false)
+      end
+
+      it 'returns false without triggering syntax highlighting' do
+        expect(diff_file).not_to receive(:diff_lines_for_serializer)
+        expect(whitespace_only?).to be false
+      end
     end
   end
 

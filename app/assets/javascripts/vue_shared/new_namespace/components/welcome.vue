@@ -1,9 +1,16 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import TopLevelGroupLimitAlert from 'ee_component/groups/components/top_level_group_limit_alert.vue';
 import Tracking from '~/tracking';
 
 export default {
+  components: {
+    TopLevelGroupLimitAlert,
+  },
   mixins: [Tracking.mixin()],
+  inject: {
+    enforceTopLevelGroupLimit: { default: false },
+  },
   props: {
     title: {
       type: String,
@@ -14,6 +21,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    showTopLevelGroupLimitAlert() {
+      return this.enforceTopLevelGroupLimit;
+    },
+  },
 };
 </script>
 <template>
@@ -21,6 +33,7 @@ export default {
     <h2 class="gl-my-7 gl-text-center gl-text-size-h1">
       {{ title }}
     </h2>
+    <top-level-group-limit-alert v-if="showTopLevelGroupLimitAlert" class="gl-mb-7" />
     <div>
       <div
         v-for="panel in panels"

@@ -2,7 +2,11 @@
 - @no_container = true
 - add_to_breadcrumbs _('Commits'), project_commits_path(@project)
 - breadcrumb_title @commit.short_id
-- container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
+-# Header and diffs respect user layout preference, but side-by-side view always renders full-width for diffs
+- fixed_layout = !fluid_layout
+- header_container_class =  fixed_layout  ? 'container-limited' : ''
+- diff_container_class = fixed_layout && diff_view == :inline ? 'container-limited' : ''
+- fixed_layout_class = fixed_layout ? 'js-fixed-layout' : ''
 - page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
 - page_description  @commit.description
 - add_page_specific_style 'page_bundles/pipelines'
@@ -10,7 +14,13 @@
 - add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/commit_rapid_diffs'
 
-.container-fluid{ class: [container_class] }
+.container-fluid{ class: [header_container_class] }
   = render "commit_box"
-  = render "ci_menu"
-  = render ::RapidDiffs::CommitAppComponent.new(@rapid_diffs_presenter)
+  = render "ci_menu", hide_empty: true
+
+.container-fluid{ class: [diff_container_class, fixed_layout_class] }
+  = render ::RapidDiffs::CommitAppComponent.new(rapid_diffs_presenter)
+
+  - if can_collaborate_with_project?(@project)
+    = render "projects/commit/change", type: 'revert', commit: @commit
+    = render "projects/commit/change", type: 'cherry-pick', commit: @commit

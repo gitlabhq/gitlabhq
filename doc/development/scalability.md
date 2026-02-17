@@ -127,7 +127,7 @@ some actions that aren't traditionally available in standard load balancers. For
 example, the application considers a replica only if its replication lag is low
 (for example, WAL data behind by less than 100 MB).
 
-More [details are in a blog post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
+More [details are in a blog post](https://about.gitlab.com/blog/scaling-the-gitlab-database/).
 
 ### PgBouncer
 

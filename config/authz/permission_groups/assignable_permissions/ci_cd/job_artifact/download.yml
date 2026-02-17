@@ -1,7 +1,0 @@
----
-name: download_job_artifact
-description: Grants the ability to download job artifacts
-boundaries:
-  - project
-permissions:
-  - download_job_artifact

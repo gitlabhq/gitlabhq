@@ -30,7 +30,7 @@ module Gitlab
             cursor_columns = job_class.cursor_columns
 
             Gitlab::Pagination::Keyset::Iterator.new(
-              scope: model_class.order(cursor_columns),
+              scope: model_class.select(cursor_columns).order(cursor_columns),
               cursor: cursor_columns.zip(batch_min_value).to_h
             ).each_batch(of: batch_size, load_batch: false) do |batch|
               break unless batch.first && batch.last # skip if the batch is empty for some reason

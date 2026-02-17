@@ -92,7 +92,7 @@ If there is not a more natural way to mark where the data is stored, using a
 - It applies to all application instances (Sidekiq, API, web, etc.) at
   the same time.
 - It supports incremental rollout - ideally by actor (project, group,
-  user, etc.) - so that we can monitor for errors and roll back easily.
+  user, etc.) - so that we can monitor for errors and roll back.
 
 ## Step 3: Migrate the data
 
@@ -197,12 +197,9 @@ Write commands are defined in the [`Gitlab::Redis::MultiStore::WRITE_COMMANDS` c
 
 ##### `pipelined` commands
 
-{{< alert type="note" >}}
-
-The Ruby block passed to these commands will be executed twice, once per each store.
-Thus, excluding the Redis operations performed, the block should be idempotent.
-
-{{< /alert >}}
+> [!note]
+> The Ruby block passed to these commands will be executed twice, once per each store.
+> Thus, excluding the Redis operations performed, the block should be idempotent.
 
 - `pipelined`
 - `multi`
@@ -211,17 +208,12 @@ When a command outside of the supported list is used, `method_missing` will pass
 This ensures that anything unexpected behaves like it would before. In development or test environment, an error would be raised for early
 detection.
 
-{{< alert type="note" >}}
-
 By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
 a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Variable assignments within `pipelined` and `multi` blocks are not advised as the block should be idempotent. Refer to the [corrective fix MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137734) removing non-idempotent blocks which previously led to incorrect application behavior during a migration.
-{{< /alert >}}
+> [!note]
+> Variable assignments within `pipelined` and `multi` blocks are not advised as the block should be idempotent.
+> Refer to the [corrective fix MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137734) removing non-idempotent blocks which previously led to incorrect application behavior during a migration.
 
 ##### Errors
 

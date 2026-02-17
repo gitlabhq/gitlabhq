@@ -19,12 +19,9 @@ You can also manage your storage usage by improving [pipeline efficiency](../ci/
 
 For more help with API automation, you can also use the [GitLab community forum and Discord](https://about.gitlab.com/community/).
 
-{{< alert type="warning" >}}
-
-The script examples in this page are for demonstration purposes only and should not
-be used in production. You can use the examples to design and test your own scripts for storage automation.
-
-{{< /alert >}}
+> [!warning]
+> The script examples in this page are for demonstration purposes only and should not
+> be used in production. You can use the examples to design and test your own scripts for storage automation.
 
 ## API requirements
 
@@ -95,15 +92,12 @@ The storage management and cleanup automation methods described in this page use
 - The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-api-python/) project.
 
 For more information about use cases for the `python-gitlab` library,
-see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
+see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
 
 For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
-{{< alert type="note" >}}
-
-Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/_index.md) to write code more efficiently.
-
-{{< /alert >}}
+> [!note]
+> Use [GitLab Duo Code Suggestions](duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](project/repository/code_suggestions/_index.md) to write code more efficiently.
 
 ## Storage analysis
 
@@ -351,15 +345,12 @@ The script outputs the project job artifacts in a JSON formatted list:
 Job artifacts consume most of the pipeline storage, and job logs can also generate several hundreds of kilobytes.
 You should delete the unnecessary job artifacts first and then clean up job logs after analysis.
 
-{{< alert type="warning" >}}
-
-Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
-
-{{< /alert >}}
+> [!warning]
+> Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
 
 ### List job artifacts
 
-To analyze pipeline storage, you can use the [Job API endpoint](../api/jobs.md#list-project-jobs) to retrieve a list of
+To analyze pipeline storage, you can use the [Job API endpoint](../api/jobs.md#list-all-jobs-for-a-project) to retrieve a list of
 job artifacts. The endpoint returns the job artifacts `file_type` key in the `artifacts` attribute.
 The `file_type` key indicates the artifact type:
 
@@ -611,12 +602,9 @@ To delete pipelines based on a specific date, specify the `created_at` key.
 You can use the date to calculate the difference between the current date and
 when the pipeline was created. If the age is larger than the threshold, the pipeline is deleted.
 
-{{< alert type="note" >}}
-
-The `created_at` key must be converted from a timestamp to Unix epoch time,
-for example with `date -d '2023-08-08T18:59:47.581Z' +%s`.
-
-{{< /alert >}}
+> [!note]
+> The `created_at` key must be converted from a timestamp to Unix epoch time,
+> for example with `date -d '2023-08-08T18:59:47.581Z' +%s`.
 
 Example with GitLab CLI:
 
@@ -652,7 +640,7 @@ The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located
 #!/bin/bash
 
 # Required programs:
-# - GitLab CLI (glab): https://docs.gitlab.com/ee/editor_extensions/gitlab_cli/
+# - GitLab CLI (glab): https://docs.gitlab.com/cli/
 # - jq: https://jqlang.github.io/jq/
 
 # Required variables:
@@ -913,7 +901,7 @@ export GL_PROJECT_ID=48349263
 glab api --method GET projects/$GL_PROJECT_ID/search --field "scope=blobs" --field "search=expire_in filename:*.yml"
 ```
 
-For more information about the inventory approach, see [How GitLab can help mitigate deletion of open source container images on Docker Hub](https://about.gitlab.com/blog/2023/03/16/how-gitlab-can-help-mitigate-deletion-open-source-images-docker-hub/).
+For more information about the inventory approach, see [How GitLab can help mitigate deletion of open source container images on Docker Hub](https://about.gitlab.com/blog/how-gitlab-can-help-mitigate-deletion-open-source-images-docker-hub/).
 
 ### Set default expiry for job artifacts
 
@@ -988,13 +976,10 @@ you can configure:
 - The number of image tags to keep matching the tag name (`keep_n`)
 - The number of days before an image tag can be deleted (`older_than`)
 
-{{< alert type="warning" >}}
-
-On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
-If your container registry has a large number of tags to delete, only some of them are deleted. You might need
-to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
-
-{{< /alert >}}
+> [!warning]
+> On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
+> If your container registry has a large number of tags to delete, only some of them are deleted. You might need
+> to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.
 

@@ -25,7 +25,7 @@ in Markdown text in epics or wiki pages.
 
 Get all uploads of the group sorted by `created_at` in descending order.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 GET /groups/:id/uploads
@@ -75,7 +75,7 @@ Example response:
 
 {{< /history >}}
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 GET /groups/:id/uploads/:upload_id
@@ -105,7 +105,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the upl
 
 {{< /history >}}
 
-You must have at least the Guest role to use this endpoint.
+You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /groups/:id/uploads/:secret/:filename
@@ -136,7 +136,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the upl
 
 {{< /history >}}
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /groups/:id/uploads/:upload_id
@@ -167,7 +167,7 @@ If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code
 
 {{< /history >}}
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /groups/:id/uploads/:secret/:filename

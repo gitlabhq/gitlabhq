@@ -194,12 +194,9 @@ To work around that, we have a special workflow rule, that overrides the
     GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
 ```
 
-{{< alert type="note" >}}
-
-We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because group-level
-variables have higher precedence over `.gitlab-ci.yml` variables.
-
-{{< /alert >}}
+> [!note]
+> We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because group-level
+> variables have higher precedence over `.gitlab-ci.yml` variables.
 
 ## External CI/CD secrets
 

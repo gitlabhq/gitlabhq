@@ -33,7 +33,6 @@ const itCorrectlyFormatsProject = (formattedProject, mockProject) => {
     },
     availableActions: ['edit', 'delete'],
     customProperty: mockProject.nameWithNamespace,
-    isPersonal: false,
     relativeWebUrl: `/gitlab/${mockProject.fullPath}`,
   });
 };

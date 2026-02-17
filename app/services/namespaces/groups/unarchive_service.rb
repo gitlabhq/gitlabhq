@@ -23,13 +23,9 @@ module Namespaces
         return AncestorArchivedError if group.ancestors_archived?
         return AlreadyUnarchivedError unless group.archived
 
-        if unarchive_descendants?
-          group.transaction do
-            group.unarchive_descendants!
-            group.unarchive_all_projects!
-            unarchive_group
-          end
-        else
+        group.transaction do
+          group.unarchive_descendants!
+          group.unarchive_all_projects!
           unarchive_group
         end
 
@@ -55,10 +51,6 @@ module Namespaces
 
       def error_response(message)
         ServiceResponse.error(message: message)
-      end
-
-      def unarchive_descendants?
-        Feature.enabled?(:cascade_unarchive_group, group, type: :gitlab_com_derisk)
       end
     end
   end

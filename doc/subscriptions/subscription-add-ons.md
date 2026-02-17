@@ -47,12 +47,12 @@ To view which roles can access GitLab Duo Core, see [GitLab Duo group permission
 
 ### GitLab Duo Self-Hosted
 
-If you are a customer with an offline license, GitLab Duo Core is not available on
-GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
+If you have an offline license, GitLab Duo Core is not available on
+GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI Gateway.
 
-If you are a customer with an online license, you can use GitLab Duo Core in combination with
-GitLab Duo Self-Hosted, but to enable GitLab Duo Core you must select the GitLab AI vendor model
-for GitLab Duo Chat and Code Suggestions for the entire instance.
+If you have an online license, you can use GitLab Duo Core in combination with
+GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab AI vendor model
+for GitLab Duo Chat (Classic) and Code Suggestions for the instance.
 
 ### GitLab Duo Core limits
 
@@ -63,11 +63,6 @@ GitLab will provide 30 days prior notice before enforcement of these limits take
 At that time, organization administrators will have tools to monitor and manage consumption and will be able
 to purchase additional capacity.
 
-| Feature          | Requests per user per month |
-|------------------|-----------------------------|
-| Code Suggestions | 2,000                       |
-| GitLab Duo Chat  | 100                         |
-
 Limits do not apply to GitLab Duo Pro or Enterprise.
 
 ## GitLab Duo Pro and Enterprise
@@ -75,6 +70,31 @@ Limits do not apply to GitLab Duo Pro or Enterprise.
 GitLab Duo Pro and Enterprise require you to purchase seats and assign them to team members.
 The seat-based model gives you control over feature access and cost management
 based on your specific team needs.
+
+## GitLab Duo Agent Platform Self-Hosted
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 18.8
+
+{{< /history >}}
+
+> [!note]
+> GitLab Duo Agent Platform Self-Hosted is available only to customers with an offline license.
+
+GitLab Duo Agent Platform Self-Hosted provides access to the GitLab Duo Agent Platform for
+customers who use their own models on their self-deployed AI Gateway.
+
+Customers with this add-on are billed based on seat usage instead of [usage-based billing](gitlab_credits.md).
+
+To purchase GitLab Duo Agent Platform Self-Hosted, contact the
+[GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
 
 ## Purchase GitLab Duo
 
@@ -108,7 +128,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. Select **Purchase seats**.
@@ -151,7 +171,7 @@ Prerequisites:
 
 To use GitLab Duo features in any project or group, you must assign the user to a seat in at least one top-level group.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
@@ -192,7 +212,7 @@ GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments
 
 ### For GitLab.com
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
@@ -265,7 +285,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.

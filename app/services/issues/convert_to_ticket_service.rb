@@ -64,9 +64,6 @@ module Issues
     end
 
     def ticket?
-      return target.from_service_desk? unless Feature.enabled?(:service_desk_ticket, container)
-
-      # Ensure we also convert Service Desk issues to ticket work items
       target.from_service_desk? && target.work_item_type.base_type == 'ticket'
     end
 
@@ -84,11 +81,11 @@ module Issues
     end
 
     def work_item_type
-      return WorkItems::Type.default_issue_type unless Feature.enabled?(:service_desk_ticket, container)
+      provider = ::WorkItems::TypesFramework::Provider.new(container)
 
       # Replace with configuration check
       # See https://gitlab.com/groups/gitlab-org/-/work_items/19879
-      WorkItems::Type.default_by_type(:ticket)
+      provider.find_by_base_type(:ticket)
     end
 
     def error(message)

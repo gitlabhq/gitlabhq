@@ -38,7 +38,7 @@ query workItem($workItemId: WorkItemID!) {
 
 ### GraphQL queries and mutations
 
-GraphQL queries and mutations are work item agnostic. Work item queries and mutations
+GraphQL queries and mutations are work item-independent. Work item queries and mutations
 should happen at the widget level, so widgets are standalone reusable components.
 The work item query and mutation should support any work item type and be dynamic.
 They should allow you to query and mutate any work item attribute by specifying a widget identifier.
@@ -48,7 +48,7 @@ display and update the description of any work item:
 
 ```plaintext
 query workItem($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
@@ -103,7 +103,6 @@ Currently, we have a lot editable widgets which you can find in the [folder](htt
 - [Work item assignees widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_assignees.vue)
 - [Work item labels widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_labels.vue)
 - [Work item description widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_description.vue)
-...
 
 We also have a [reusable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
 
@@ -156,12 +155,9 @@ Now you can update tests for existing files and write tests for the new files:
 1. `spec/frontend/work_items/graphql/resolvers_spec.js` or `ee/spec/frontend/work_items/graphql/resolvers_spec.js`.
 1. `spec/features/work_items/detail/work_item_detail_spec.rb` or `ee/spec/features/work_items/detail/work_item_detail_spec.rb`.
 
-{{< alert type="note" >}}
-
-You may find some feature specs failing because of excessive SQL queries.
-To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
-
-{{< /alert >}}
+> [!note]
+> You may find some feature specs failing because of excessive SQL queries.
+> To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
 
 ## Steps to implement a new work item widget on frontend in the create view
 
@@ -248,13 +244,13 @@ this.$apollo.mutate({
   const { parent } = input;
 
   if (parent) {
-      const parentWidget = findWidget(WIDGET_TYPE_PARENT, draftData?.workspace?.workItem);
+      const parentWidget = findWidget(WIDGET_TYPE_PARENT, draftData?.namespace?.workItem);
       parentWidget.parent = parent;
 
-      const parentWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
+      const parentWidgetIndex = draftData.namespace.workItem.widgets.findIndex(
         (widget) => widget.type === WIDGET_TYPE_PARENT,
       );
-      draftData.workspace.workItem.widgets[parentWidgetIndex] = parentWidget;
+      draftData.namespace.workItem.widgets[parentWidgetIndex] = parentWidget;
   }
 
 ```

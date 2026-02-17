@@ -160,39 +160,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     end
   end
 
-  describe '.show_security_newsletter_user_callout?', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
-    subject { helper.show_security_newsletter_user_callout? }
-
-    context 'when `current_user` is not an admin' do
-      before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { false }
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when user has dismissed callout' do
-      before do
-        allow(helper).to receive(:current_user).and_return(admin)
-        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { true }
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when `current_user` is an admin and user has not dismissed callout' do
-      before do
-        allow(helper).to receive(:current_user).and_return(admin)
-        allow(helper).to receive(:user_dismissed?).with(described_class::SECURITY_NEWSLETTER_CALLOUT) { false }
-      end
-
-      it { is_expected.to be true }
-    end
-  end
-
   describe '.show_branch_rules_tip?' do
     subject { helper.show_branch_rules_tip? }
 
@@ -279,67 +246,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       let(:dismissed) { true }
 
       it { is_expected.to be false }
-    end
-  end
-
-  describe '.show_new_mr_dashboard_banner?' do
-    subject { helper.show_new_mr_dashboard_banner? }
-
-    before do
-      allow(helper).to receive(:user_dismissed?).with(described_class::NEW_MR_DASHBOARD_BANNER) { dismissed }
-    end
-
-    context 'when user has not dismissed' do
-      let(:dismissed) { false }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      let(:dismissed) { true }
-
-      it { is_expected.to be false }
-    end
-  end
-
-  describe '.render_product_usage_data_collection_changes', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
-    subject(:render_callout) { helper.render_product_usage_data_collection_changes(current_user) }
-
-    context 'when current_user is nil' do
-      let(:current_user) { nil }
-
-      it 'does not render the callout' do
-        expect(helper).not_to receive(:render)
-        render_callout
-      end
-    end
-
-    context 'when current_user is not an admin' do
-      let(:current_user) { user }
-
-      before do
-        allow(user).to receive(:can_admin_all_resources?).and_return(false)
-      end
-
-      it 'does not render the callout' do
-        expect(helper).not_to receive(:render)
-        render_callout
-      end
-    end
-
-    context 'when current_user is admin' do
-      let(:current_user) { admin }
-
-      before do
-        allow(admin).to receive(:can_admin_all_resources?).and_return(true)
-      end
-
-      it 'renders the callout' do
-        expect(helper).to receive(:render).with('shared/product_usage_data_collection_changes_callout')
-        render_callout
-      end
     end
   end
 

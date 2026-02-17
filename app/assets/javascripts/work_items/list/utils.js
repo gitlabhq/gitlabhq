@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { camelCase } from 'lodash';
 import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -16,6 +17,7 @@ import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_RELEASE,
@@ -26,6 +28,7 @@ import {
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_PARENT,
+  TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -84,7 +87,15 @@ import {
   MERGED_AT_DESC,
   START_DATE_ASC,
   START_DATE_DESC,
+  savedViewFilters,
+  NEW_SAVED_VIEWS_GID,
 } from '~/work_items/list/constants';
+import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
+import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 
 /**
  * Get the types of work items that should be displayed on issues lists.
@@ -300,10 +311,20 @@ const tokenTypes = Object.keys(filtersMap);
 const getUrlParams = (tokenType) =>
   Object.values(filtersMap[tokenType][URL_PARAM]).flatMap((filterObj) => Object.values(filterObj));
 
+const getApiParams = (tokenType) =>
+  Object.values(filtersMap[tokenType][API_PARAM]).flatMap((filterObj) => filterObj);
+
 const urlParamKeys = tokenTypes.flatMap(getUrlParams);
+const apiParamKeys = tokenTypes.flatMap(getApiParams);
 
 const getTokenTypeFromUrlParamKey = (urlParamKey) =>
   tokenTypes.find((tokenType) => getUrlParams(tokenType).includes(urlParamKey));
+
+const getTokenTypeFromApiParamKey = (apiParamKey) => {
+  return tokenTypes.find((tokenType) => {
+    return getApiParams(tokenType).includes(apiParamKey);
+  });
+};
 
 const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
   Object.entries(filtersMap[tokenType][URL_PARAM]).find(([, filterObj]) =>
@@ -355,6 +376,107 @@ export const getFilterTokens = (locationSearch, options = {}) => {
     if (hasTypeToken) return convertMultipleIsTypeTokensToOr(tokens);
   }
 
+  return tokens;
+};
+
+const trueYesFalseNo = (value) => {
+  if (value) {
+    return 'yes';
+  }
+  return 'no';
+};
+
+const convertToTokenValue = (token, baseValue) => {
+  switch (token) {
+    case TOKEN_TYPE_CONFIDENTIAL:
+      return trueYesFalseNo(baseValue);
+    case TOKEN_TYPE_SUBSCRIBED:
+    case TOKEN_TYPE_TYPE:
+      return baseValue.toUpperCase();
+    case TOKEN_TYPE_HEALTH:
+      return camelCase(baseValue);
+    case TOKEN_TYPE_STATUS:
+      return baseValue.name;
+    default:
+      return baseValue;
+  }
+};
+
+/**
+ * Takes a saved view filters field and converts it
+ * into a list of 'token' objects.
+ */
+export const getSavedViewFilterTokens = (filterObject, options = {}) => {
+  const tokens = Object.entries(filterObject)
+    .filter(
+      ([key]) =>
+        (apiParamKeys.includes(key) || ['not', 'or'].includes(key)) &&
+        (options.includeStateToken || key !== TOKEN_TYPE_STATE),
+    )
+    .reduce((acc, [key, value]) => {
+      if (key === 'in') {
+        return acc;
+      }
+      if (key === 'not') {
+        /**
+         * 'not' filters are a sub-object of the main filters
+         * object, so they need to be mapped separately.
+         */
+        Object.entries(value).forEach(([apiParamKey, data]) => {
+          const type = getTokenTypeFromApiParamKey(apiParamKey);
+          if (type) {
+            acc.push({ type, data, operator: OPERATOR_NOT });
+          }
+        });
+        return acc;
+      }
+      if (key === 'or') {
+        /**
+         * 'or' filters are a sub-object of the main filters
+         * object, so they need to be mapped separately.
+         */
+        Object.entries(value).forEach(([apiParamKey, data]) => {
+          const type = getTokenTypeFromApiParamKey(apiParamKey);
+          if (type) {
+            acc.push({ type, data, operator: OPERATOR_OR });
+          }
+        });
+        return acc;
+      }
+      const { operator, type } = savedViewFilters[key];
+      if (operator === OPERATOR_IS && Array.isArray(value)) {
+        acc.push(...value.map((v) => ({ type, data: v, operator })));
+      } else {
+        acc.push({ type, data: value, operator });
+      }
+      return acc;
+    }, [])
+    .map(({ type, data, operator }) => {
+      if (Array.isArray(data)) {
+        /**
+         * heath status returns an array for a single value with
+         * the 'not' operator.
+         */
+        if (operator === OPERATOR_NOT && type === TOKEN_TYPE_HEALTH) {
+          return {
+            type,
+            value: { data: convertToTokenValue(type, data[0]), operator },
+          };
+        }
+        return {
+          type,
+          value: { data: data.map((datum) => convertToTokenValue(type, datum)), operator },
+        };
+      }
+      return {
+        type,
+        value: { data: convertToTokenValue(type, data), operator },
+      };
+    });
+  if (options.convertTypeTokens) {
+    const hasTypeToken = tokens.some((token) => token.type === TOKEN_TYPE_TYPE);
+    if (hasTypeToken) return convertMultipleIsTypeTokensToOr(tokens);
+  }
   return tokens;
 };
 
@@ -410,6 +532,14 @@ export const isIterationCadenceIdParam = (type, data) => {
 
 export const isParentIdParam = (type) => {
   return type === TOKEN_TYPE_PARENT;
+};
+
+export const isSubscribedParam = (type) => {
+  return type === TOKEN_TYPE_SUBSCRIBED;
+};
+
+export const isHealthStatusParam = (type) => {
+  return type === TOKEN_TYPE_HEALTH;
 };
 
 const getFilterType = ({ type, value: { data, operator } }) => {
@@ -532,6 +662,10 @@ export const convertToApiParams = (filterTokens) => {
           includeDescendantWorkItems: true,
         });
       }
+    } else if (isSubscribedParam(token.type)) {
+      obj.set(apiField, data.toUpperCase());
+    } else if (isHealthStatusParam(token.type)) {
+      obj.set(apiField, ['NONE', 'ANY'].includes(data) ? data : camelCase(data));
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }
@@ -659,3 +793,374 @@ export function updateUpvotesCount({ list, workItem, namespace = BoardType.proje
     activeItem.downvotes = downvotesCount;
   });
 }
+
+// Manually update the saved views Apollo cache since its
+// fields differ from the mutation, causing automatic cache updates to fail.
+const updateSavedViewsQueryCache = ({
+  cache,
+  responseData,
+  mutationKey,
+  namespacePath,
+  action = 'create', // 'create', 'update', or 'remove'
+  subscribedOnly,
+}) => {
+  const variables = {
+    fullPath: namespacePath,
+    subscribedOnly,
+    ...(subscribedOnly && { sort: 'RELATIVE_POSITION' }),
+  };
+
+  const query = {
+    query: getSubscribedSavedViewsQuery,
+    variables,
+  };
+
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    const { savedView } = responseData[mutationKey];
+    const { nodes: savedViews } = draftState.namespace.savedViews;
+
+    if (action === 'remove') {
+      const index = savedViews.findIndex(({ id }) => id === savedView.id);
+      if (index !== -1) {
+        savedViews.splice(index, 1);
+      }
+    } else if (action === 'update') {
+      const index = savedViews.findIndex(({ id }) => id === savedView.id);
+      if (index !== -1) {
+        savedViews[index] = savedView;
+      }
+    } else if (action === 'create') {
+      savedViews.push(savedView);
+    }
+  });
+
+  cache.writeQuery({ ...query, data: newData });
+};
+
+const updateNamespaceSavedViewQueryCache = ({ cache, savedView, fullPath, id = '' }) => {
+  const query = {
+    query: namespaceSavedViewQuery,
+    variables: {
+      fullPath,
+      id,
+    },
+  };
+
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    const existingSavedView = draftState.namespace?.savedViews?.nodes;
+
+    existingSavedView[0] = savedView;
+  });
+
+  cache.writeQuery({ ...query, data: newData });
+};
+
+const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath, isEdit }) => {
+  const action = isEdit ? 'update' : 'create';
+
+  updateSavedViewsQueryCache({
+    cache,
+    responseData,
+    mutationKey,
+    namespacePath,
+    action,
+    subscribedOnly: true,
+  });
+  updateSavedViewsQueryCache({
+    cache,
+    responseData,
+    mutationKey,
+    namespacePath,
+    action,
+    subscribedOnly: false,
+  });
+};
+
+export const handleEnforceSubscriptionLimit = async ({
+  subscribedSavedViewLimit,
+  apolloClient,
+  namespacePath,
+  creating,
+}) => {
+  const { data } = await apolloClient.query({
+    query: getSubscribedSavedViewsQuery,
+    variables: {
+      fullPath: namespacePath,
+      subscribedOnly: true,
+      sort: 'RELATIVE_POSITION',
+    },
+    fetchPolicy: 'cache-only',
+  });
+
+  if (!data) return;
+
+  const subscribedViews = data.namespace.savedViews.nodes;
+
+  const needToUnsub = creating
+    ? subscribedViews.length > subscribedSavedViewLimit
+    : subscribedViews.length >= subscribedSavedViewLimit;
+  // Check if we're over the limit
+  if (needToUnsub) {
+    const viewToUnsubscribe =
+      subscribedViews[creating ? subscribedViews.length - 2 : subscribedViews.length - 1];
+
+    await apolloClient.mutate({
+      mutation: workItemSavedViewUnsubscribe,
+      variables: {
+        input: {
+          id: viewToUnsubscribe.id,
+        },
+      },
+      optimisticResponse: {
+        workItemSavedViewUnsubscribe: {
+          __typename: 'WorkItemSavedViewUnsubscribePayload',
+          savedView: {
+            __typename: 'WorkItemSavedViewType',
+            id: viewToUnsubscribe.id,
+          },
+        },
+      },
+      update: (cache) => {
+        updateSavedViewsQueryCache({
+          cache,
+          responseData: {
+            workItemSavedViewUnsubscribe: {
+              savedView: viewToUnsubscribe,
+            },
+          },
+          mutationKey: 'workItemSavedViewUnsubscribe',
+          namespacePath,
+          action: 'remove',
+          subscribedOnly: true,
+        });
+      },
+    });
+  }
+};
+
+// Centralized logic for creating and updating saved views
+// Reused across All items > Save view, Save changes, and Create/Edit saved view
+// TODO: Break this into smaller functions (create, updateMeta, updateConfig) with clearer responsibilities
+export const saveSavedView = async ({
+  isEdit = false,
+  isForm = false,
+  id = '',
+  namespacePath = '',
+  name = '',
+  description = '',
+  isPrivate = true,
+  filters = {},
+  sort = null,
+  displaySettings = {},
+  userPermissions,
+  subscribed,
+  mutationKey,
+  apolloClient,
+  enforceSubscriptionLimit = true,
+  subscribedSavedViewLimit,
+}) => {
+  const mutation = isEdit ? updateSavedViewMutation : createSavedViewMutation;
+
+  const commonInput =
+    isEdit && isForm
+      ? {
+          name,
+          description,
+          private: isPrivate,
+        }
+      : {
+          name,
+          description,
+          private: isPrivate,
+          filters,
+          displaySettings,
+          sort,
+        };
+
+  const inputVariables = isEdit
+    ? { id, ...commonInput }
+    : {
+        namespacePath,
+        ...commonInput,
+      };
+
+  const commonSavedViewResponse = {
+    name,
+    description,
+    isPrivate,
+    filters,
+    displaySettings,
+    sort,
+  };
+
+  const optimisticResponse = {
+    [mutationKey]: {
+      errors: [],
+      savedView: isEdit
+        ? {
+            id,
+            ...commonSavedViewResponse,
+            userPermissions,
+            subscribed,
+          }
+        : {
+            id: NEW_SAVED_VIEWS_GID,
+            ...commonSavedViewResponse,
+            subscribed: true,
+            userPermissions: { updateSavedView: true, deleteSavedView: true },
+          },
+    },
+  };
+
+  const result = await apolloClient.mutate({
+    mutation,
+    variables: { input: inputVariables },
+    optimisticResponse,
+    update: (cache, { data: responseData }) => {
+      if (!responseData) return;
+
+      if (!isEdit) {
+        updateSavedViewsCache({
+          cache,
+          responseData,
+          mutationKey,
+          namespacePath,
+          isEdit,
+        });
+      } else {
+        updateNamespaceSavedViewQueryCache({
+          cache,
+          savedView: responseData[mutationKey].savedView,
+          fullPath: namespacePath,
+          id,
+        });
+      }
+    },
+  });
+
+  if (!isEdit && enforceSubscriptionLimit && result.data?.[mutationKey]?.savedView) {
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit,
+      apolloClient,
+      namespacePath,
+      creating: true,
+    });
+  }
+
+  return result;
+};
+
+// Centralized logic for subscribing to a saved view
+export const updateCacheAfterSubscribe = (cache, view, fullPath) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (!subscribedOnly) {
+        const subscribedView = savedViews.find((v) => v.id === view.id);
+        if (subscribedView) subscribedView.subscribed = true;
+      } else {
+        savedViews.push(view);
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
+export const subscribeToSavedView = async ({ view, cache, fullPath }) => {
+  const result = await cache.mutate({
+    mutation: subscribeToSavedViewMutation,
+    variables: {
+      input: { id: view.id },
+    },
+
+    optimisticResponse: {
+      workItemSavedViewSubscribe: {
+        __typename: 'WorkItemSavedViewSubscribePayload',
+        errors: [],
+        savedView: {
+          __typename: 'WorkItemSavedViewType',
+          id: view.id,
+        },
+      },
+    },
+    update: (localCache) => updateCacheAfterSubscribe(localCache, view, fullPath),
+  });
+
+  return result;
+};
+
+export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
+        const index = savedViews.findIndex((v) => v.id === view.id);
+        if (index !== -1) {
+          savedViews.splice(index, 1);
+        }
+      } else if (!subscribedOnly && action === 'unsubscribe') {
+        const unsubscribedView = savedViews.find((v) => v.id === view.id);
+        if (unsubscribedView) unsubscribedView.subscribed = false;
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
+export const subscribeWithLimitEnforce = async ({
+  view,
+  apolloClient,
+  namespacePath,
+  subscribedSavedViewLimit,
+}) => {
+  await handleEnforceSubscriptionLimit({ apolloClient, namespacePath, subscribedSavedViewLimit });
+  return subscribeToSavedView({
+    view,
+    cache: apolloClient,
+    fullPath: namespacePath,
+  });
+};

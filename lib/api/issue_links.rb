@@ -6,8 +6,7 @@ module API
 
     before { authenticate! }
 
-    ISSUE_LINKS_TAGS = %w[issue_links].freeze
-
+    ISSUE_LINKS_TAGS = %w[issues].freeze
     feature_category :team_planning
     urgency :low
 
@@ -28,6 +27,7 @@ module API
         ]
         tags ISSUE_LINKS_TAGS
       end
+      route_setting :authorization, permissions: :read_issue_link, boundary_type: :project
       get ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
         related_issues = source_issue.related_issues(current_user) do |issues|
@@ -59,6 +59,7 @@ module API
           desc: 'The type of the relation (“relates_to”, “blocks”, “is_blocked_by”),'\
            'defaults to “relates_to”)'
       end
+      route_setting :authorization, permissions: :create_issue_link, boundary_type: :project
       post ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
         target_issue = find_project_issue(declared_params[:target_issue_iid],
@@ -88,6 +89,7 @@ module API
       params do
         requires :issue_link_id, types: [String, Integer], desc: 'ID of an issue relationship'
       end
+      route_setting :authorization, permissions: :read_issue_link, boundary_type: :project
       get ':id/issues/:issue_iid/links/:issue_link_id' do
         issue = find_project_issue(params[:issue_iid])
         issue_link = IssueLink.for_source_or_target(issue).find(declared_params[:issue_link_id])
@@ -109,6 +111,7 @@ module API
       params do
         requires :issue_link_id, types: [String, Integer], desc: 'The ID of an issue relationship'
       end
+      route_setting :authorization, permissions: :delete_issue_link, boundary_type: :project
       delete ':id/issues/:issue_iid/links/:issue_link_id' do
         issue = find_project_issue(params[:issue_iid])
         issue_link = IssueLink

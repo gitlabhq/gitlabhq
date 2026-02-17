@@ -100,6 +100,8 @@ OpenSSH configured to use AuthorizedKeysCommand ... yes
 GitLab configured to disable writing to authorized_keys file ... yes
 GitLab configured to store new projects in hashed storage? ... yes
 All projects are in hashed storage? ... yes
+Container Registry replication enabled ... yes
+Container Registry Geo events ... last event at 2024-01-15 10:30:00 UTC
 
 Checking Geo ... Finished
 ```
@@ -354,6 +356,11 @@ sudo gitlab-rake gitlab:geo:check
   - If you are running the secondary site's tracking database in an external database, then follow [Geo with external PostgreSQL instances](../../setup/external_database.md#configure-the-tracking-database)
   - If the Geo check task was run on a node which is not running a service which runs the GitLab Rails app (Puma, Sidekiq, or Geo Log Cursor), then this error can be ignored. The node does not need Rails to be configured.
 
+##### Message: Container Registry Geo events ... none found
+
+If `Container Registry Geo events ... none found` is displayed and you expect Container Registry
+replication events to be present, verify the registry notification configuration on the **primary** site is as per the [Container Registry replication configuration guide](../container_registry.md#configure-primary-site).
+
 ##### Message: Machine clock is synchronized ... Exception
 
 The Rake task attempts to verify that the server clock is synchronized with NTP. Synchronized clocks
@@ -595,7 +602,7 @@ periodically using a registry worker, so give it some time to fix it itself.
 
 ### Failed checksums on primary site
 
-Failed checksums identified by the Geo Primary Verification information screen can be caused by missing files or mismatched checksums. You can find error messages like `"Repository cannot be checksummed because it does not exist"` or `"File is not checksummable"` in the `gitlab-rails/geo.log` file.
+Failed checksums identified by the Geo Primary Verification information screen can be caused by missing files or mismatched checksums. You can find error messages like `"Repository cannot be checksummed because it does not exist"` or `"File is not checksummable - file does not exist at: <path>"` in the `gitlab-rails/geo.log` file. The error message includes the file path to help identify the missing file.
 
 For additional information about failed items, run the [integrity check Rake tasks](../../../raketasks/check.md#uploaded-files-integrity):
 

@@ -40,7 +40,6 @@ module ApplicationSettingImplementation
         after_sign_up_text: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
-        allow_immediate_namespaces_deletion: true,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
         allow_possible_spam: false,
@@ -129,6 +128,7 @@ module ApplicationSettingImplementation
         inactive_resource_access_tokens_delete_after_days: 30,
         include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_level_ai_beta_features_enabled: false,
+        duo_workflows_default_image_registry: nil,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,
@@ -707,13 +707,6 @@ module ApplicationSettingImplementation
     Hash[storages_map]
   end
 
-  def allow_immediate_namespaces_deletion_for_user?(user)
-    # Keep the previous behavior when the feature flag is disabled
-    return true unless Feature.enabled?(:allow_immediate_namespaces_deletion, user)
-
-    allow_immediate_namespaces_deletion? || user&.can_admin_all_resources?
-  end
-
   private
 
   def set_max_key_restriction!(key_type)
@@ -792,18 +785,18 @@ module ApplicationSettingImplementation
 
   def check_repository_storages_weighted
     invalid = repository_storages_weighted.keys - Gitlab.config.repositories.storages.keys
-    errors.add(:repository_storages_weighted, _("can't include: %{invalid_storages}") % { invalid_storages: invalid.join(", ") }) unless
+    errors.add(:repository_storages_weighted, format(_("can't include: %{invalid_storages}"), invalid_storages: invalid.join(", "))) unless
       invalid.empty?
 
     repository_storages_weighted.each do |key, val|
       next unless val.present?
 
       unless val.is_a?(Integer)
-        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key })
+        errors.add(:repository_storages_weighted, format(_("value for '%{storage}' must be an integer"), storage: key))
       end
 
       unless val.between?(0, 100)
-        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key })
+        errors.add(:repository_storages_weighted, format(_("value for '%{storage}' must be between 0 and 100"), storage: key))
       end
     end
   end
@@ -811,7 +804,7 @@ module ApplicationSettingImplementation
   def check_valid_runner_registrars
     return if valid_runner_registrar_combinations.include?(valid_runner_registrars)
 
-    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars })
+    errors.add(:valid_runner_registrars, format(_("%{value} is not included in the list"), value: valid_runner_registrars))
   end
 
   def valid_runner_registrar_combinations

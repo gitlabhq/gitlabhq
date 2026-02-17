@@ -1,4 +1,5 @@
 import { COLLAPSE_FILE, EXPAND_FILE, MOUNTED } from '~/rapid_diffs/adapter_events';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 
 function getDetails(root) {
   return root.querySelector('[data-file-body]');
@@ -17,6 +18,12 @@ function collapse(root = this.diffElement) {
   // eslint-disable-next-line no-param-reassign
   root.dataset.collapsed = true;
   getDetails(root).removeAttribute('open');
+}
+
+function collapseByUser(root = this.diffElement) {
+  collapse(root);
+  root.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+  scrollPastCoveringElements(root);
 }
 
 function expand(root = this.diffElement) {
@@ -39,7 +46,7 @@ export const toggleFileAdapter = {
       if (collapsed) {
         expand.call(this);
       } else {
-        collapse.call(this);
+        collapseByUser.call(this);
       }
       const oppositeButton = getOppositeToggleButton(button);
       oppositeButton.focus();

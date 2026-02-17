@@ -358,7 +358,7 @@ however, be aware that you might experience other issues unrelated to runners, i
 If a runner is repeatedly unable to connect to a GitLab instance, it stops trying to connect for a
 period of time. By default, this period is 1 hour. To avoid this, shut down the runners until
 the GitLab instance is reachable. See
-[the `check_interval` documentation](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works),
+[the `check_interval` documentation](https://docs.gitlab.com/runner/configuration/advanced-configuration/#how-check_interval-works),
 and the configuration options `unhealthy_requests_limit` and `unhealthy_interval`.
 
 - If you use our **Location aware URL**: After the old primary is removed from the DNS configuration,
@@ -394,12 +394,12 @@ on the primary site to give the secondary site time to catch up:
    final replication process now.
 1. On the primary site:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all queues, except
       those with `geo` in the name, to drop to 0.
       These queues contain work submitted by your users. Failing over
       before the queues empty causes the work to be lost.
-   1. On the left sidebar, select **Geo** > **Sites**. Wait for the
+   1. In the left sidebar, select **Geo** > **Sites**. Wait for the
       following conditions to be true of the secondary site you are failing over to:
 
       - All replication meters reach 100% replicated, and 0% failures.
@@ -409,7 +409,7 @@ on the primary site to give the secondary site time to catch up:
 
 1. On the secondary site:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all the `geo`
       queues to drop to 0 queued and 0 running jobs.
    1. [Run an integrity check](../../raketasks/check.md) to verify the integrity
@@ -426,18 +426,14 @@ follow the steps correctly, the old primary Geo site is disabled, and user traff
 newly-promoted site instead.
 
 When the promotion completes, the maintenance window is over, and your new primary site now
-begins to diverge from the old one. If problems occur at this point, [failing back](bring_primary_back.md)
-back to the old primary site is possible, but likely to result
-in the loss of any data uploaded to the new primary in the meantime.
-
-Re-enable all non-Geo periodic background jobs that were [disabled earlier](#prevent-updates-to-the-primary-site) on the new primary site:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Monitoring** > **Background jobs**.
-1. On the Sidekiq dashboard, select **Cron**.
-1. Select **Enable All** to re-enable all periodic background jobs.
+begins to diverge from the old one.
 
 Don't forget to remove the broadcast message after the failover is complete.
 
-Finally, bring the
-[old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
+If everything is working as expected, you can
+[bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
+
+### Fall back to the old primary
+
+If there are problems with the newly-promoted primary site, [failing back to the old one](bring_primary_back.md) is possible,
+however, all changes made on the new primary site are lost.

@@ -40,7 +40,7 @@ module Gitlab
 
         # HTTParty provides rsp.parsed_response, but it only kicks in for the
         # application/json content type in the response, which we can't rely on
-        body = Gitlab::Json.parse(rsp.body)
+        body = Gitlab::Json.safe_parse(rsp.body)
         transfer = body.fetch('transfer', 'basic')
 
         raise UnsupportedTransferError, transfer.inspect unless transfer == 'basic'

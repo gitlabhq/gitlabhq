@@ -184,9 +184,8 @@ To commit and force push your changes:
 1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
 1. Select **Commit and Force push**.
 
-{{< alert type="warning" >}}
-This action overwrites the remote history of the current branch. Use with caution.
-{{< /alert >}}
+> [!warning]
+> This action overwrites the remote history of the current branch. Use with caution.
 
 ### Amend commit and force push
 
@@ -310,13 +309,10 @@ To view any notification you might have missed:
 The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
 Web IDE. By default, the GitLab Web IDE connects to the [Open VSX Registry](https://open-vsx.org/).
 
-{{< alert type="note" >}}
-
-To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
-This security requirement ensures that third-party extensions run in isolation and cannot access your account.
-This applies to both GitLab.com and GitLab Self-Managed.
-
-{{< /alert >}}
+> [!note]
+> To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
+> This security requirement ensures that third-party extensions run in isolation and cannot access your account.
+> This applies to both GitLab.com and GitLab Self-Managed.
 
 Prerequisites:
 
@@ -400,6 +396,10 @@ The URL you're using to access the Web IDE and the configured OAuth callback URL
 ```
 
 To resolve this issue, you must update the OAuth callback URL to match the URL used to access the GitLab instance.
+
+Prerequisites:
+
+- Administrator access.
 
 To update the OAuth callback URL:
 

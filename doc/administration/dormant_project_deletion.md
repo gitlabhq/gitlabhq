@@ -35,6 +35,10 @@ For the default setting on GitLab.com, see [GitLab.com settings](../user/gitlab_
 
 ## Configure dormant project deletion
 
+Prerequisites:
+
+- Administrator access.
+
 To configure deletion of dormant projects:
 
 1. In the upper-right corner, select **Admin**.

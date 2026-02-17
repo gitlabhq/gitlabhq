@@ -99,6 +99,7 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
+| Apply security scan profiles | Apply security scan profiles. | [`apply_security_scan_profiles`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215433) | Group,<br> Project | GitLab [18.9](https://gitlab.com/groups/gitlab-org/-/epics/19802) |
 | Read security scan profiles | Read security scan profiles. | [`read_security_scan_profiles`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213203) | Group,<br> Project | GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/19802) |
 
 ## Security policy management

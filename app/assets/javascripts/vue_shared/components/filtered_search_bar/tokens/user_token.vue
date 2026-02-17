@@ -4,7 +4,7 @@ import { compact } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import { OPTIONS_NONE_ANY } from '../constants';
 
@@ -48,7 +48,7 @@ export default {
       return this.config.preloadedUsers || [];
     },
     namespace() {
-      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+      return this.config.isProject ? NAMESPACE_PROJECT : NAMESPACE_GROUP;
     },
     fetchUsersQuery() {
       return this.config.fetchUsers ? this.config.fetchUsers : this.fetchUsersBySearchTerm;
@@ -63,6 +63,9 @@ export default {
     },
     getUsername(user) {
       return user.username;
+    },
+    getValueField(user) {
+      return user[this.config.valueField] ?? user.username;
     },
     displayNameFor(username) {
       return this.getActiveUser(this.allUsers, username)?.name || username;
@@ -148,7 +151,7 @@ export default {
       <gl-filtered-search-suggestion
         v-for="user in suggestions"
         :key="getUsername(user)"
-        :value="getUsername(user)"
+        :value="getValueField(user)"
       >
         <div
           class="gl-flex gl-items-center"

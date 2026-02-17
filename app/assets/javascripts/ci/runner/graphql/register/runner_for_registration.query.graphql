@@ -1,3 +1,4 @@
+# @feature_category: runner_core
 query getRunnerForRegistration($id: CiRunnerID!) {
   runner(id: $id) {
     id

@@ -3,7 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate from GitHub
-description: "Import projects from GitHub to GitLab."
+description: "Migrate from GitHub to GitLab."
 ---
 
 {{< details >}}
@@ -57,7 +57,7 @@ by default on GitLab.com.
 To use the GitHub importer, you must have:
 
 - Access to the source GitHub project
-- At least the Maintainer role for the destination GitLab group (introduced in GitLab 16.0)
+- The Maintainer or Owner role for the destination GitLab group (introduced in GitLab 16.0)
 
 Also, the organization the GitHub repository belongs to must not impose restrictions of a
 [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
@@ -278,20 +278,17 @@ of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab De
 In GitLab 18.7 and earlier, you can disable the `github_user_mapping` feature flag to use the alternative user
 contribution mapping method for imports.
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
-for:
-
-- Migrations to GitLab.com.
-- Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
-
-Problems that are found in this mapping method are unlikely to be fixed. Use the
-[post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
-
-For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
+> for:
+>
+> - Migrations to GitLab.com.
+> - Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
+>
+> Problems that are found in this mapping method are unlikely to be fixed. Use the
+> [post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+>
+> For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
 
 Requirements:
 
@@ -330,11 +327,8 @@ Additionally, you can configure GitLab to send pipeline status updates back to G
 If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/_index.md), then both
 features are automatically configured.
 
-{{< alert type="note" >}}
-
-Mirroring does not sync any new or updated pull requests from your GitHub project.
-
-{{< /alert >}}
+> [!note]
+> Mirroring does not sync any new or updated pull requests from your GitHub project.
 
 ## Improve the speed of imports on GitLab Self-Managed instances
 
@@ -384,11 +378,8 @@ The following items of a project are imported:
 
 - All fork branches of the project related to open pull requests
 
-  {{< alert type="note" >}}
-
-  Fork branches are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
-
-  {{< /alert >}}
+  > [!note]
+  > Fork branches are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
 
 - All project branches
 - Attachments for:
@@ -462,7 +453,7 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/about-custom-repository-roles).
 These roles aren't supported and cause partially completed imports.
 
-To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
+To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 
@@ -530,12 +521,9 @@ git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" 
 
 The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
 
-{{< alert type="warning" >}}
-
-For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
-configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
-
-{{< /alert >}}
+> [!warning]
+> For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
+> configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
 
 ```plaintext
 # Required modules

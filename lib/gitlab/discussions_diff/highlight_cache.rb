@@ -54,7 +54,7 @@ module Gitlab
           content.map! do |lines|
             next unless lines
 
-            Gitlab::Json.parse(gzip_decompress(lines.force_encoding(Encoding::UTF_8))).map! do |line|
+            Gitlab::Json.safe_parse(gzip_decompress(lines.force_encoding(Encoding::UTF_8))).map! do |line|
               Gitlab::Diff::Line.safe_init_from_hash(line)
             end
           end

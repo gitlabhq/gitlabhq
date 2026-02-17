@@ -1853,19 +1853,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       it 'does not send an email when the access level has not changed' do
         expect { member.touch }.not_to have_enqueued_mail(Members::AccessGrantedMailer, :email)
       end
-
-      context 'when new access changes DEVELOPER or greater to less than DEVELOPER' do
-        before do
-          member.update_attribute(:access_level, Member::DEVELOPER)
-        end
-
-        it 'checks for member owned pipeline_schedules' do
-          expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
-            .with(member.user.id, member.source)
-
-          member.update_attribute(:access_level, Member::REPORTER)
-        end
-      end
     end
   end
 
@@ -2027,22 +2014,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         })
 
       member.update!(access_level: Gitlab::Access::GUEST)
-    end
-  end
-
-  context 'when after destroy notify_unavailable_owned_pipeline_schedules' do
-    let_it_be(:project) { create(:project) }
-    let(:member) { create(:project_member, source: project) }
-
-    before do
-      member.update_attribute(:access_level, Member::DEVELOPER)
-    end
-
-    it 'checks for member owned pipeline_schedules' do
-      expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
-        .with(member.user.id, member.source)
-
-      member.destroy!
     end
   end
 

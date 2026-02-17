@@ -50,14 +50,16 @@ export default {
         :class="headingClasses"
         data-testid="settings-section-heading"
       >
-        <slot v-if="$scopedSlots.heading" name="heading"></slot>
-        <template v-else>{{ heading }}</template>
+        <slot name="heading">
+          {{ heading }}
+        </slot>
       </h2>
     </div>
     <div v-if="hasDescription" class="settings-sticky-header-description gl-mb-6">
       <p class="gl-mb-0 gl-text-subtle" data-testid="settings-section-description">
-        <slot v-if="$scopedSlots.description" name="description"></slot>
-        <template v-else>{{ description }}</template>
+        <slot name="description">
+          {{ description }}
+        </slot>
       </p>
     </div>
     <div class="gl-mt-3">

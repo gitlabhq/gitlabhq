@@ -9,8 +9,6 @@ module Groups
     urgency :low
 
     def root
-      # To be used in ee/app/controllers/ee/groups/usage_quotas_controller.rb
-      @seat_count_data = seat_count_data
       render :root
     end
 
@@ -19,9 +17,6 @@ module Groups
     def verify_usage_quotas_enabled!
       render_404 unless group.usage_quotas_enabled?
     end
-
-    # To be overridden in ee/app/controllers/ee/groups/usage_quotas_controller.rb
-    def seat_count_data; end
   end
 end
 

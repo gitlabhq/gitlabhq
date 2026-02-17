@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe GitlabSettings::Settings, :aggregate_failures, feature_category: :shared do
+RSpec.describe GitlabSettings::Settings, :aggregate_failures, feature_category: :settings do
   let(:config) do
     {
       section1: {

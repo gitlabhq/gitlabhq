@@ -229,8 +229,8 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
               namespace.schedule_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_scheduled)
               expect(namespace.state_metadata.dig('preserved_states', 'schedule_deletion')).to eq(initial_state.to_s)
-              expect(namespace.namespace_details.deletion_scheduled_by_user_id).to eq(user.id)
-              expect(namespace.namespace_details.deletion_scheduled_at).to eq(Time.current)
+              expect(namespace.namespace_details.reload.deletion_scheduled_by_user_id).to eq(user.id)
+              expect(namespace.namespace_details.reload.deletion_scheduled_at).to eq(Time.current)
 
               namespace.start_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_in_progress)
@@ -239,8 +239,8 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
               namespace.cancel_deletion(transition_user: user)
               expect(namespace.state_name).to eq(initial_state)
               expect(namespace.state_metadata.dig('preserved_states', 'schedule_deletion')).to be_nil
-              expect(namespace.namespace_details.deletion_scheduled_by_user_id).to be_nil
-              expect(namespace.namespace_details.deletion_scheduled_at).to be_nil
+              expect(namespace.namespace_details.reload.deletion_scheduled_by_user_id).to be_nil
+              expect(namespace.namespace_details.reload.deletion_scheduled_at).to be_nil
             end
           end
         end

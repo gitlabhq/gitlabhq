@@ -28,29 +28,31 @@ module Deployments
     end
 
     def update_environment(deployment)
-      ApplicationRecord.transaction do
-        # Renew attributes at update
-        renew_external_url
-        renew_auto_stop_in
-        renew_deployment_tier
-        renew_cluster_agent
-        renew_kubernetes_namespace
-        renew_flux_resource_path
-        environment.fire_state_event(action)
+      # Renew attributes at update
+      renew_external_url
+      renew_auto_stop_in
+      renew_deployment_tier
+      renew_cluster_agent
+      renew_kubernetes_namespace
+      renew_flux_resource_path
 
-        if environment.save
-          deployment.update_merge_request_metrics! unless environment.stopped?
-        else
-          # If there is a validation error on environment update, such as
-          # the external URL is malformed, the error message is recorded for debugging purpose.
-          # We should surface the error message to users for letting them to take an action.
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/21182.
-          Gitlab::ErrorTracking.track_exception(
-            EnvironmentUpdateFailure.new,
-            project_id: deployment.project_id,
-            environment_id: environment.id,
-            reason: environment.errors.full_messages.to_sentence)
-        end
+      environment_saved = ApplicationRecord.transaction do
+        environment.fire_state_event(action)
+        environment.save
+      end
+
+      if environment_saved
+        deployment.update_merge_request_metrics! unless environment.stopped?
+      else
+        # If there is a validation error on environment update, such as
+        # the external URL is malformed, the error message is recorded for debugging purpose.
+        # We should surface the error message to users for letting them to take an action.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/21182.
+        Gitlab::ErrorTracking.track_exception(
+          EnvironmentUpdateFailure.new,
+          project_id: deployment.project_id,
+          environment_id: environment.id,
+          reason: environment.errors.full_messages.to_sentence)
       end
     end
 

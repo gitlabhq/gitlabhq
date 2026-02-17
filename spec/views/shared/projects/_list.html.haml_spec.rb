@@ -22,7 +22,7 @@ RSpec.describe 'shared/projects/_list' do
       end
     end
 
-    it "will not show elements a user shouldn't be able to see" do
+    it "does not show elements a user shouldn't be able to see" do
       allow(view).to receive(:can_show_last_commit_in_list?).and_return(false)
       allow(view).to receive(:able_to_see_merge_requests?).and_return(false)
       allow(view).to receive(:able_to_see_issues?).and_return(false)

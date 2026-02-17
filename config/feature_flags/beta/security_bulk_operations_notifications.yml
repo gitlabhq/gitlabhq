@@ -1,0 +1,10 @@
+---
+name: security_bulk_operations_notifications
+description: Enable email notifications for bulk security operations failures
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577580
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219509
+rollout_issue_url:
+milestone: '18.9'
+group: group::security platform management
+type: beta
+default_enabled: true

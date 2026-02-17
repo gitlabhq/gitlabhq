@@ -34,6 +34,7 @@ export const initMrMoreDropdown = () => {
 
   return new Vue({
     el,
+    name: 'MrMoreDropdownRoot',
     provide: {
       reportAbusePath: el.dataset.reportAbusePath,
     },

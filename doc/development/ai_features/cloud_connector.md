@@ -25,8 +25,8 @@ for a list of terms used throughout the document.
 
 ## "Cloud Connected" backends
 
-The **AI gateway** is the primary backend service connected with the CloudConnector.
-In the context of AI feature development, we expect that the new or existing feature will be served from the **AI gateway**.
+The **AI Gateway** is the primary backend service connected with the CloudConnector.
+In the context of AI feature development, we expect that the new or existing feature will be served from the **AI Gateway**.
 
 ## Tutorial: Connect a new feature using Cloud Connector
 
@@ -58,11 +58,11 @@ To register a new feature:
 As an example, the feature is delivered as new Unit Primitive called `new_feature`.
 
 Call to `Gitlab::AiGateway.headers(user: user, unit_primitive_name: :new_feature, ai_feature_name: ai_feature_name_from_catalog)`
-will give you a set of headers you need to attach to every request to **AI gateway**.
+will give you a set of headers you need to attach to every request to **AI Gateway**.
 Refer to [AiFeaturesCatalogue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/utils/ai_features_catalogue.rb) to
 pick the appropriate value of `ai_feature_name_from_catalog`.
 
-The headers set has everything needed to authenticate your AI request with the **AI gateway**.
+The headers set has everything needed to authenticate your AI request with the **AI Gateway**.
 In particular, it includes access token in the `Authorization` field:
 
 - On GitLab.com, it will self-issue a token with scopes that depend on the provided resource:
@@ -70,14 +70,14 @@ In particular, it includes access token in the `Authorization` field:
   - For a namespace: scopes will be based on purchased add-ons for this namespace
 - On GitLab Self-Managed, it will always include `::CloudConnector::ServiceAccessToken` **JWT** token stored in the database.
 
-The **backend service** (**AI gateway**) must validate this token and any scopes it carries when receiving the request.
+The **backend service** (**AI Gateway**) must validate this token and any scopes it carries when receiving the request.
 
 You can merge any additional custom headers into the result of `Gitlab::AiGateway.headers`.
 
 #### Permission checks
 
-Permission checks in GitLab Rails are not mandatory but serve as an early gate to improve user experience by rejecting requests before they reach the **AI gateway**.
-**AI gateway** will enforce all necessary authorization regardless of these frontend checks.
+Permission checks in GitLab Rails are not mandatory but serve as an early gate to improve user experience by rejecting requests before they reach the **AI Gateway**.
+**AI Gateway** will enforce all necessary authorization regardless of these frontend checks.
 
 These optional checks can be useful for:
 
@@ -131,13 +131,13 @@ Gitlab::HTTP.post(
 
 ### Implement authorization checks in backend service
 
-GitLab Rails calls the **backend service** (**AI gateway**) to deliver functionality that would otherwise be unavailable to GitLab Self-Managed and
+GitLab Rails calls the **backend service** (**AI Gateway**) to deliver functionality that would otherwise be unavailable to GitLab Self-Managed and
 Dedicated instances. For GitLab Rails to be able to call this, there has to be an endpoint exposed.
 The backend service must verify each JWT sent by GitLab Rails in the Authorization header.
 
-For more information and examples on the **AI gateway** authorization process, check the [Authorization in AI gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
+For more information and examples on the **AI Gateway** authorization process, check the [Authorization in AI Gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the **AI gateway** as the backend service
-can be found in [install AI gateway](_index.md#install-ai-gateway).
+Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment) 
+to run E2E integration tests with **AI Gateway** as the backend service.

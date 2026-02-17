@@ -1,0 +1,5 @@
+---
+name: read_contributing_user
+description: Grants the ability to read project users
+boundaries:
+  - project

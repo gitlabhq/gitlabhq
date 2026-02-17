@@ -12,6 +12,7 @@ RSpec.describe Ci::TimedOutBuilds::DropTimedOutWorker, feature_category: :contin
 
     it "schedules DropRunningWorker asynchronously" do
       expect(Ci::TimedOutBuilds::DropRunningWorker).to receive(:perform_async).exactly(:once)
+      expect(Ci::TimedOutBuilds::DropCancelingWorker).to receive(:perform_async).exactly(:once)
 
       perform
     end

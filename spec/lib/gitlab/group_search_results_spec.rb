@@ -147,4 +147,28 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
       expect(results.issuable_params[:include_subgroups]).to eq(true)
     end
   end
+
+  describe '#work_items', unless: Gitlab.ee? do
+    it 'returns issues when searching for work items' do
+      issue = create(:issue, project: project, title: 'test issue')
+      project.add_developer(user)
+
+      results_query = described_class.new(user, 'test', limit_projects, group: group)
+      work_items_results = results_query.work_items
+
+      expect(work_items_results).to include(issue)
+    end
+
+    it 'passes finder params to underlying issues search' do
+      closed_issue = create(:issue, :closed, project: project, title: 'test closed')
+      opened_issue = create(:issue, :opened, project: project, title: 'test opened')
+      project.add_developer(user)
+
+      results_query = described_class.new(user, 'test', limit_projects, group: group)
+      work_items_results = results_query.work_items(state: 'closed')
+
+      expect(work_items_results).to include(closed_issue)
+      expect(work_items_results).not_to include(opened_issue)
+    end
+  end
 end

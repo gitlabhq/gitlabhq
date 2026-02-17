@@ -7,10 +7,6 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     Class.new(ApplicationController) do
       include RapidDiffs::StreamingResource
 
-      def call_resource
-        resource
-      end
-
       def call_options
         streaming_diff_options
       end
@@ -23,12 +19,8 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
           offset_index: 0
         }
       end
-    end
-  end
 
-  describe '#resource' do
-    it 'raises NotImplementedError' do
-      expect { controller.new.call_resource }.to raise_error(NotImplementedError)
+      attr_accessor :rapid_diffs_presenter
     end
   end
 
@@ -193,10 +185,9 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
   end
 
-  describe '#diffs' do
+  describe '#diffs_stream' do
     let(:controller_instance) { controller.new }
-    let(:mock_resource) { instance_double(::Commit) }
-    let(:mock_diffs) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
+    let(:mock_presenter) { instance_double(RapidDiffs::BasePresenter) }
     let(:diff_files) { [build(:diff_file)] }
     let(:stream) { instance_double(ActionDispatch::Response::Buffer, write: nil, close: nil, closed?: false) }
     let(:response) { instance_double(ActionDispatch::Response, stream: stream) }
@@ -205,16 +196,15 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     let(:diff_html) { '<diff-file></diff-file>' }
 
     before do
+      controller_instance.rapid_diffs_presenter = mock_presenter
       allow(controller_instance).to receive_messages(
-        resource: mock_resource,
         response: response,
         rapid_diffs_enabled?: true,
         view_context: nil,
         stream_headers: nil,
         params: ActionController::Parameters.new)
       allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return('inline')
-      allow(mock_resource).to receive(:diffs_for_streaming).and_return(mock_diffs)
-      allow(mock_resource).to receive(:first_diffs_slice).with(1, any_args).and_return(diff_files)
+      allow(mock_presenter).to receive(:diff_files_for_streaming).and_return(diff_files)
       allow(RapidDiffs::DiffFileComponent).to receive_message_chain(:with_collection, :render_in)
                                                 .and_return(diff_html)
       allow(RapidDiffs::DiffFileComponent).to receive_message_chain(:new, :call)
@@ -224,10 +214,10 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
 
     it 'renders diffs' do
-      controller_instance.send(:diffs)
+      controller_instance.send(:diffs_stream)
       expect(response.stream).to have_received(:write).with(diff_html)
       # ensure we're not doing double work when checking for empty state
-      expect(mock_resource).to have_received(:diffs_for_streaming).once
+      expect(mock_presenter).to have_received(:diff_files_for_streaming).once
     end
 
     context 'with non-sequential collapsed diffs' do
@@ -240,10 +230,10 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders diffs' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(diff_html).exactly(diff_files.count).times
         # ensure we're not doing double work when checking for empty state
-        expect(mock_resource).to have_received(:diffs_for_streaming).once
+        expect(mock_presenter).to have_received(:diff_files_for_streaming).once
       end
     end
 
@@ -257,7 +247,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders empty state' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(empty_state_html)
       end
     end
@@ -268,8 +258,35 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders diffs' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(diff_html)
+      end
+    end
+
+    context 'when skip parameters are provided' do
+      let(:skipped_file) do
+        build(:diff_file).tap do |file|
+          allow(file).to receive_messages(old_path: 'skip.txt', new_path: 'skip.txt')
+        end
+      end
+
+      let(:other_file) do
+        build(:diff_file).tap do |file|
+          allow(file).to receive_messages(old_path: 'other.txt', new_path: 'other.txt')
+        end
+      end
+
+      let(:diff_files) { [skipped_file, other_file] }
+
+      before do
+        allow(controller_instance).to receive(:params).and_return(
+          ActionController::Parameters.new(skip_old_path: 'skip.txt', skip_new_path: 'skip.txt', offset: '1')
+        )
+      end
+
+      it 'skips the file matching skip parameters' do
+        controller_instance.send(:diffs_stream)
+        expect(response.stream).to have_received(:write).with(diff_html).once
       end
     end
 
@@ -282,7 +299,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'does not raise an IOError when closing the stream' do
-        expect { controller_instance.send(:diffs) }.not_to raise_error
+        expect { controller_instance.send(:diffs_stream) }.not_to raise_error
         expect(stream).not_to have_received(:close)
       end
     end
@@ -301,8 +318,48 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
         end
 
         it 'silently handles the disconnection' do
-          expect { controller_instance.send(:diffs) }.not_to raise_error
+          expect { controller_instance.send(:diffs_stream) }.not_to raise_error
           expect(Gitlab::AppLogger).not_to receive(:error)
+        end
+      end
+    end
+
+    context 'with diff_blobs flag enabled' do
+      let(:user) { create(:user) }
+
+      before do
+        stub_feature_flags(rapid_diffs_debug: true)
+        allow(controller_instance).to receive_messages(
+          current_user: user,
+          params: ActionController::Parameters.new(diff_blobs: 'true')
+        )
+      end
+
+      context 'when diff files are present' do
+        before do
+          allow(mock_presenter).to receive(:diff_files_for_streaming_by_changed_paths).and_yield(diff_files)
+        end
+
+        it 'streams diff files using diff_blobs path' do
+          controller_instance.send(:diffs_stream)
+
+          expect(mock_presenter).to have_received(:diff_files_for_streaming_by_changed_paths)
+          expect(response.stream).to have_received(:write).with(diff_html)
+        end
+      end
+
+      context 'when no diff files are present' do
+        let(:diff_files) { [] }
+
+        before do
+          allow(controller_instance).to receive(:render).with(anything, layout: false), &:call
+          allow(RapidDiffs::EmptyStateComponent).to receive_message_chain(:new, :call).and_return(empty_state_html)
+        end
+
+        it 'renders empty state using diff_blobs path' do
+          controller_instance.send(:diffs_stream)
+
+          expect(response.stream).to have_received(:write).with(empty_state_html)
         end
       end
     end

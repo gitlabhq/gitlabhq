@@ -6,8 +6,7 @@ module API
 
     helpers ::API::Helpers::NotesHelpers
 
-    resource_milestone_events_tags = %w[resource_milestone_events]
-
+    resource_milestone_events_tags = %w[resource_events]
     before { authenticate! }
 
     {
@@ -15,7 +14,8 @@ module API
       MergeRequest => :code_review_workflow
     }.each do |eventable_type, feature_category|
       parent_type = eventable_type.parent_class.to_s.underscore
-      eventables_str = eventable_type.to_s.underscore.pluralize
+      eventable_str = eventable_type.to_s.underscore
+      eventables_str = eventable_str.pluralize
 
       params do
         requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{parent_type}"
@@ -31,6 +31,7 @@ module API
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
           use :pagination
         end
+        route_setting :authorization, permissions: "read_#{eventable_str}_milestone_event", boundary_type: :project
         get ":id/#{eventables_str}/:eventable_id/resource_milestone_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
@@ -51,6 +52,7 @@ module API
           requires :event_id, type: String, desc: 'The ID of a resource milestone event'
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
         end
+        route_setting :authorization, permissions: "read_#{eventable_str}_milestone_event", boundary_type: :project
         get ":id/#{eventables_str}/:eventable_id/resource_milestone_events/:event_id", feature_category: feature_category do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 

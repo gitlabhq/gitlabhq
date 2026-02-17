@@ -6,7 +6,7 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 export default {
   components: {
@@ -97,7 +97,11 @@ export default {
         <div class="gl-flex gl-flex-col gl-gap-3 gl-px-4 gl-py-3">
           <gl-button
             v-if="allowSignUp"
-            :href="sidebarData.new_user_registration_path"
+            :href="
+              isSaas && sidebarData.trial_registration_path
+                ? sidebarData.trial_registration_path
+                : sidebarData.new_user_registration_path
+            "
             variant="confirm"
             class="topbar-signup-button gl-basis-1/2"
             data-testid="topbar-signup-button"

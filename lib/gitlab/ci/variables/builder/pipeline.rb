@@ -23,6 +23,7 @@ module Gitlab
               variables.concat(predefined_commit_variables) if pipeline.sha.present?
               variables.concat(predefined_commit_tag_variables) if pipeline.tag?
               variables.concat(predefined_merge_request_variables) if pipeline.merge_request?
+              variables.concat(predefined_upstream_variables) if pipeline.source_pipeline&.source_bridge.present?
 
               if pipeline.open_merge_requests_refs.any?
                 variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: pipeline.open_merge_requests_refs.join(','))
@@ -111,6 +112,15 @@ module Gitlab
             end
           end
           strong_memoize_attr :predefined_merge_request_variables
+
+          def predefined_upstream_variables
+            Gitlab::Ci::Variables::Collection.new.tap do |variables|
+              variables.append(key: 'CI_UPSTREAM_PIPELINE_ID', value: pipeline.source_pipeline.source_pipeline_id.to_s)
+              variables.append(key: 'CI_UPSTREAM_PROJECT_ID', value: pipeline.source_pipeline.source_project_id.to_s)
+              variables.append(key: 'CI_UPSTREAM_JOB_ID', value: pipeline.source_pipeline.source_job_id.to_s)
+            end
+          end
+          strong_memoize_attr :predefined_upstream_variables
 
           def merge_request_diff
             pipeline.merge_request_diff

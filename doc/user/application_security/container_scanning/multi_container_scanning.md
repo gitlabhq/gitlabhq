@@ -113,16 +113,21 @@ scanTargets:
 
 ### Configuration options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `scanTargets` | Array | Yes | List of container images to scan |
-| `scanTargets[].name` | String | Yes | Image name (with optional registry) |
-| `scanTargets[].tag` | String | No | Image tag (default: `latest`) |
-| `scanTargets[].registry` | String | No | Registry override |
-| `includeLicenses` | Boolean | No | Include license information in reports |
-| `auths` | Object | No | Registry authentication credentials |
-| `allowInsecure` | Boolean | No | Allow insecure HTTPS connections |
-| `additionalCaCertificateBundle` | String | No | Additional CA certificates in PEM format |
+> [!note]
+> You cannot specify runner tags for child jobs in multi-container scanning but
+> [issue 363687](https://gitlab.com/gitlab-org/gitlab/-/work_items/363687) proposes to change this
+> behavior.
+
+| Option                          | Type    | Required | Description                              |
+|---------------------------------|---------|----------|------------------------------------------|
+| `scanTargets`                   | Array   | Yes      | List of container images to scan         |
+| `scanTargets[].name`            | String  | Yes      | Image name (with optional registry)      |
+| `scanTargets[].tag`             | String  | No       | Image tag (default: `latest`)            |
+| `scanTargets[].registry`        | String  | No       | Registry override                        |
+| `includeLicenses`               | Boolean | No       | Include license information in reports   |
+| `auths`                         | Object  | No       | Registry authentication credentials      |
+| `allowInsecure`                 | Boolean | No       | Allow insecure HTTPS connections         |
+| `additionalCaCertificateBundle` | String  | No       | Additional CA certificates in PEM format |
 
 ## Common scenarios
 
@@ -172,11 +177,11 @@ scanTargets:
 
 You can customize multi-container scanning behavior by using CI/CD variables.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `CONTAINER_SCANNING_DISABLED` | - | Set to `true` or `1` to disable scanning |
-| `AST_ENABLE_MR_PIPELINES` | `true` | Enable scanning in merge request pipelines |
-| `CS_SCANNER_IMAGE` | `registry.gitlab.com/.../multiple-container-scanner:0` | Scanner image to use |
+| Variable                      | Default                                                | Description                                |
+|-------------------------------|--------------------------------------------------------|--------------------------------------------|
+| `CONTAINER_SCANNING_DISABLED` | -                                                      | Set to `true` or `1` to disable scanning   |
+| `AST_ENABLE_MR_PIPELINES`     | `true`                                                 | Enable scanning in merge request pipelines |
+| `CS_SCANNER_IMAGE`            | `registry.gitlab.com/.../multiple-container-scanner:0` | Scanner image to use                       |
 
 ### Disable multi-container scanning
 
@@ -263,3 +268,11 @@ Cause: Missing `strategy: mirror` in trigger configuration.
 
 Solution: This is configured by default in the template. If you've customized
 the template, ensure the trigger job includes `strategy: mirror`.
+
+### Child pipeline runs on unexpected runner
+
+You might find that child pipeline jobs run on a runner that you did not expect.
+
+This issue occurs because child pipeline jobs do not inherit the parent job's runner tags.
+[Issue 363687](https://gitlab.com/gitlab-org/gitlab/-/work_items/363687) proposes to change this
+behavior.

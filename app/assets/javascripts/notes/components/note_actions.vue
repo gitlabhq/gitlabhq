@@ -357,7 +357,7 @@ export default {
       v-if="showReply"
       ref="replyButton"
       class="js-reply-button"
-      @startReplying="$emit('startReplying')"
+      @start-replying="$emit('start-replying')"
     />
     <gl-button
       v-if="canEdit"

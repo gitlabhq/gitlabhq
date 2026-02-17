@@ -297,13 +297,13 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
       let(:queues_included_pre_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_excluded_pre_migrate) { ['default'] }
       let(:queues_excluded_post_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_included_post_migrate) { ['default'] }
@@ -329,13 +329,13 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
       let(:queues_included_pre_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_excluded_pre_migrate) { %w[new_email new_authorized] }
       let(:queues_excluded_post_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_included_post_migrate) { %w[new_email new_authorized] }
@@ -363,13 +363,13 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
       let(:queues_included_pre_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_excluded_pre_migrate) { ['default'] }
       let(:queues_excluded_post_migrate) do
         ['email_receiver',
-         'authorized_project_update:authorized_project_update_project_recalculate']
+          'authorized_project_update:authorized_project_update_project_recalculate']
       end
 
       let(:queues_included_post_migrate) { ['default'] }
@@ -418,7 +418,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
         let(:queues_included_pre_migrate) do
           ['email_receiver',
-           'authorized_project_update:authorized_project_update_project_recalculate']
+            'authorized_project_update:authorized_project_update_project_recalculate']
         end
 
         let(:queues_excluded_pre_migrate) { ['default'] }
@@ -448,7 +448,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
         let(:queues_included_pre_migrate) do
           ['email_receiver',
-           'authorized_project_update:authorized_project_update_project_recalculate']
+            'authorized_project_update:authorized_project_update_project_recalculate']
         end
 
         let(:queues_excluded_pre_migrate) { ['default'] }

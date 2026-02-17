@@ -1,3 +1,4 @@
+# @feature_category: continuous_integration
 fragment LinkedPipelineData on Pipeline {
   id
   iid

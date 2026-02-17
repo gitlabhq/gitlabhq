@@ -34,7 +34,7 @@ module API
           { code: 404, message: 'Group Not Found' }
         ]
         is_array true
-        tags %w[group_packages]
+        tags %w[packages]
       end
       params do
         use :pagination
@@ -66,6 +66,7 @@ module API
           values: Packages::Package.statuses.keys,
           desc: 'Return packages with specified status'
       end
+      route_setting :authorization, permissions: :read_package, boundary_type: :group
       get ':id/packages' do
         packages = ::Packages::PackagesFinder.new(
           projects,

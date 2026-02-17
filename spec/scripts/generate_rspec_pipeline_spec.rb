@@ -50,6 +50,12 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
         parallel: <%= rspec_files_per_test_level[:system][:parallelization] %>
       <% end %>
       <% end %>
+      <% if test_suite_prefix == 'ee/' && rspec_files_per_test_level[:unit][:files].size > 0 %>
+      rspec-unit system:
+      <% if rspec_files_per_test_level[:unit][:parallelization] > 1 %>
+        parallel: <%= rspec_files_per_test_level[:unit][:parallelization] %>
+      <% end %>
+      <% end %>
       <% if test_suite_prefix == 'ee/' && rspec_files_per_test_level[:system][:files].size > 0 %>
       rspec-ee system:
       <% if rspec_files_per_test_level[:system][:parallelization] > 1 %>
@@ -206,6 +212,8 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
     end
 
     context 'when test_suite_prefix is given' do
+      let(:rspec_files_content) { "ee/spec/models/a_spec.rb spec/features/a_spec.rb" }
+
       subject do
         described_class.new(
           rspec_files_path: rspec_files.path,
@@ -219,7 +227,7 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
         subject.generate!
 
         expect(File.read("#{pipeline_template.path}.yml"))
-          .to eq("rspec-ee system:")
+          .to eq("rspec-unit system:")
       end
     end
 
@@ -346,6 +354,75 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
 
       it 'generates the pipeline config using the no-op template' do
         expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when only system tests are detected' do
+      let(:rspec_files_content) { "spec/features/a_spec.rb spec/features/b_spec.rb" }
+
+      subject do
+        described_class.new(
+          rspec_files_path: rspec_files.path,
+          pipeline_template_path: pipeline_template.path
+        )
+      end
+
+      context 'when on tier-2 pipeline' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2')
+        end
+
+        it 'generates the pipeline config using the no-op template' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to include("no-op:")
+        end
+      end
+
+      context 'when on tier-1 pipeline' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-1')
+        end
+
+        it 'generates the pipeline config with system tests' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec system:")
+        end
+      end
+
+      context 'when on tier-2 pipeline with spec-only label' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2,pipeline:spec-only')
+        end
+
+        it 'generates the pipeline config with system tests' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec system:")
+        end
+      end
+    end
+
+    context 'when system tests and other tests are detected on tier-2 pipeline' do
+      let(:rspec_files_content) { "spec/features/a_spec.rb spec/models/a_spec.rb" }
+
+      subject do
+        described_class.new(
+          rspec_files_path: rspec_files.path,
+          pipeline_template_path: pipeline_template.path
+        )
+      end
+
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2')
+      end
+
+      it 'generates the pipeline config' do
+        subject.generate!
+
+        expect(File.read("#{pipeline_template.path}.yml")).to include("rspec unit:")
+        expect(File.read("#{pipeline_template.path}.yml")).to include("rspec system:")
       end
     end
   end

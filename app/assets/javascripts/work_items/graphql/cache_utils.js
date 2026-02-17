@@ -206,15 +206,9 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   });
 };
 
-export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
-  const hierarchyWidget = findHierarchyWidget(workItem);
-  if (!hierarchyWidget) return;
-
+export const addHierarchyChildren = ({ cache, id, newChildren }) => {
   const cacheId = cache.identify({ __typename: 'WorkItem', id });
   if (!cacheId) return;
-
-  const newChildren =
-    hierarchyWidget.children?.nodes?.filter((child) => childrenIds.includes(child.id)) || [];
 
   cache.modify({
     id: cacheId,
@@ -225,18 +219,18 @@ export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
 
           const existingChildren = widget.children || {};
           const existingNodes = existingChildren.nodes || [];
-
           const existingIds = existingNodes.map((n) => n.id);
 
-          // Avoid duplicates
+          // Filter duplicates
           const uniqueNewChildren = newChildren.filter((child) => !existingIds.includes(child.id));
 
           // Separate open/closed
           const openChildren = uniqueNewChildren.filter((child) => child.state !== STATE_CLOSED);
           const closedChildren = uniqueNewChildren.filter((child) => child.state === STATE_CLOSED);
 
-          // Open first, then existing, then closed
+          // Merge order: open first → existing → closed
           const mergedNodes = [...openChildren, ...existingNodes, ...closedChildren];
+
           return {
             ...widget,
             children: {
@@ -727,6 +721,7 @@ export const setNewWorkItemCache = ({
           id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
+          externalAuthor: null,
           hidden: false,
           imported: false,
           title: isValidWorkItemTitle ? workItemTitle : draftTitle,

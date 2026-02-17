@@ -183,6 +183,27 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           )
         end
       end
+
+      context 'with Proc enum values' do
+        let(:param_options) { { type: 'String', desc: 'Dynamic values', required: true, values: -> { %w[a b c] } } }
+
+        it 'generates schema without enum when values is a Proc' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'Dynamic values'
+          )
+        end
+      end
+
+      context 'with lambda enum values' do
+        let(:param_options) { { type: 'Integer', required: true, values: -> { [1, 2, 3] } } }
+
+        it 'generates schema without enum when values is a lambda' do
+          expect(method_call).to eq(
+            type: 'integer'
+          )
+        end
+      end
     end
 
     describe 'when type is Array with nested params' do
@@ -590,6 +611,27 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             description: 'Username',
             example: 'john_doe',
             pattern: '^[a-z_]+$'
+          )
+        end
+      end
+
+      context 'with Proc default value' do
+        let(:param_options) { { type: 'String', desc: 'Dynamic default', required: false, default: -> { 'computed' } } }
+
+        it 'generates schema without default when default is a Proc' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'Dynamic default'
+          )
+        end
+      end
+
+      context 'with lambda default value' do
+        let(:param_options) { { type: 'Integer', required: false, default: -> { Time.current.to_i } } }
+
+        it 'generates schema without default when default is a lambda' do
+          expect(method_call).to eq(
+            type: 'integer'
           )
         end
       end

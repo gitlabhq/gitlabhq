@@ -10,6 +10,7 @@ milestone: "<6.0"
 gitlab_schema: gitlab_main_user
 sharding_key:
   organization_id: organizations
+organization_transfer_support: supported
 schema_inconsistencies:
 - type: missing_indexes
   object_name: index_users_on_id_and_last_activity_on_for_active_human_service

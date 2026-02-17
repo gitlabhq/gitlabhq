@@ -38,12 +38,27 @@ module Gitlab
       end
 
       def batch_write_cached_signatures(signed_tags, timeout: GitalyClient.fast_timeout)
-        signed_tags.each { |st| st.signature_data(timeout: timeout) }
-        new_cached_signatures = signed_tags.filter_map(&:build_cached_signature)
+        # caching only supported for repositories of projects
+        tags = signed_tags.select { |st| st.repository.container.is_a?(Project) }
+        tags.each { |st| st.signature_data(timeout: timeout) }
+        new_cached_signatures = tags.filter_map(&:build_cached_signature)
         new_cached_signatures.group_by(&:class).flat_map do |klass, tag_signatures|
           klass.bulk_insert!(tag_signatures)
         end
         new_cached_signatures
+      rescue GRPC::DeadlineExceeded
+        cache_signatures_async(tags) if timeout < ::Repositories::CacheTagSignaturesWorker::READ_TIMEOUT
+
+        []
+      end
+
+      private
+
+      def cache_signatures_async(signed_tags)
+        signed_tags.group_by { |st| st.repository.container }.each do |project, sts|
+          params = { class_to_context: sts.group_by(&:class).transform_values { |tags| tags.map(&:context) } }
+          ::Repositories::CacheTagSignaturesWorker.perform_async(project.id, params)
+        end
       end
     end
 
@@ -68,6 +83,9 @@ module Gitlab
     def signature; end
 
     def lazy_cached_signature(timeout: GitalyClient.fast_timeout)
+      # caching only supported for repositories of projects
+      return unless @repository.container.is_a?(Project)
+
       BatchLoader.for(self).batch(key: @repository.container.id) do |signed_tags, loader, args|
         tags_by_id = signed_tags.group_by(&:object_name)
         cache_hits = Set.new
@@ -84,7 +102,8 @@ module Gitlab
         new_cached_signatures = Gitlab::SignedTag.batch_write_cached_signatures(cache_misses,
           timeout: timeout)
         new_cached_signatures.each do |tag_signature|
-          loader.call(tags_by_id[tag_signature.object_name].first, tag_signature)
+          signed_tag = tags_by_id[tag_signature.object_name].first
+          loader.call(signed_tag, tag_signature)
         end
       end
     end

@@ -3,7 +3,7 @@
 # @param path [String] the path to file to upload. E.g. File.join('spec', 'fixtures', 'sanitized.svg')
 # @param uploader [CarrierWave::Uploader::Base] uploader to handle the upload.
 RSpec.shared_examples 'denied carrierwave upload' do
-  it 'will deny upload' do
+  it 'denies upload' do
     fixture_file = fixture_file_upload(path)
     expect { uploader.cache!(fixture_file) }.to raise_exception(CarrierWave::IntegrityError)
   end
@@ -18,11 +18,11 @@ RSpec.shared_examples 'accepted carrierwave upload' do
     uploader.remove!
   end
 
-  it 'will accept upload' do
+  it 'accepts upload' do
     expect { uploader.cache!(fixture_file) }.not_to raise_exception
   end
 
-  it 'will cache uploaded file' do
+  it 'caches uploaded file' do
     expect { uploader.cache!(fixture_file) }.to change { uploader.file }.from(nil).to(kind_of(CarrierWave::SanitizedFile))
   end
 end
@@ -33,7 +33,7 @@ end
 RSpec.shared_examples 'upload with content type' do |content_type|
   let(:fixture_file) { fixture_file_upload(path, content_type) }
 
-  it 'will not change upload file content type' do
+  it 'does not change upload file content type' do
     uploader.cache!(fixture_file)
     expect(uploader.file.content_type).to eq(content_type)
   end

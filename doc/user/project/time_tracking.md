@@ -260,7 +260,7 @@ To delete all the time spent at once, use the [`/remove_time_spent` quick action
 
 To view a time tracking report of time spent on an item:
 
-- On the right sidebar, next to **Spent**, select the time.
+- In the right sidebar, next to **Spent**, select the time.
 
 ![Time tracking report](img/time_tracking_report_v18_3.png)
 
@@ -281,13 +281,10 @@ The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`.
+> On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 View a report of time spent in issues, tasks, and merge requests across all of GitLab.
 

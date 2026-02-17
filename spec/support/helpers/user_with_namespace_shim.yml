@@ -274,7 +274,6 @@
 - spec/controllers/dashboard/snippets_controller_spec.rb
 - spec/controllers/dashboard/todos_controller_spec.rb
 - spec/controllers/explore/snippets_controller_spec.rb
-- spec/controllers/groups/shared_projects_controller_spec.rb
 - spec/controllers/import/bitbucket_controller_spec.rb
 - spec/controllers/import/bitbucket_server_controller_spec.rb
 - spec/controllers/import/gitea_controller_spec.rb

@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ClickHouse
-        class Quantile < Column
+        class Quantile < MetricDefinition
           include ParameterizedDefinition
 
           self.supported_parameters = %i[quantile]

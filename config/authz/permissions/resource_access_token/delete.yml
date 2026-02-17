@@ -1,0 +1,6 @@
+---
+name: delete_resource_access_token
+description: Grants the ability to delete resource access tokens
+boundaries:
+  - project
+  - group

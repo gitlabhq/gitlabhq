@@ -1,0 +1,7 @@
+---
+name: update_cluster
+description: Grants the ability to update clusters
+boundaries:
+  - group
+  - project
+  - instance

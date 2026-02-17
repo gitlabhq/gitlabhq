@@ -116,11 +116,21 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   describe 'GET /api/v4/projects/:id/packages/conan/v2/users/authenticate' do
     let(:url) { "/projects/#{project.id}/packages/conan/v2/users/authenticate" }
 
+    it_behaves_like 'authorizing granular token permissions', :authenticate_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'conan authenticate endpoint'
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
     let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
+
+    it_behaves_like 'authorizing granular token permissions', :authenticate_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it_behaves_like 'conan check_credentials endpoint'
   end
@@ -130,6 +140,13 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:params) { { q: package.conan_recipe } }
 
     subject { get api(url), params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :search_conan_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(url), params: { q: package.conan_recipe }, headers: basic_auth_header(user.username, pat.token)
+      end
+    end
 
     it_behaves_like 'conan search endpoint'
     it_behaves_like 'conan FIPS mode'
@@ -150,6 +167,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files" }
     let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'get file list',
       { 'files' => { 'conanfile.py' => {}, 'conanmanifest.txt' => {} } },
       not_found_err: '404 Recipe files Not Found'
@@ -164,6 +186,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files/#{file_name}" }
 
     subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it_behaves_like 'packages feature check'
     it_behaves_like 'recipe file download endpoint'
@@ -214,6 +241,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'packages feature check'
     it_behaves_like 'package file download endpoint'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
@@ -260,6 +292,20 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
+      it_behaves_like 'authorizing granular token permissions', :upload_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          workhorse_finalize(
+            api(url),
+            method: :put,
+            file_key: :file,
+            params: { file: temp_file(file_name) },
+            headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)),
+            send_rewritten_field: true
+          )
+        end
+      end
+
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse recipe file upload endpoint', revision: true
     end
@@ -271,6 +317,13 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       subject(:request) do
         put api(url),
           headers: headers_with_token
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
+        end
       end
 
       it_behaves_like 'packages feature check'
@@ -288,6 +341,20 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
+      it_behaves_like 'authorizing granular token permissions', :upload_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          workhorse_finalize(
+            api(url),
+            method: :put,
+            file_key: :file,
+            params: { file: temp_file(file_name) },
+            headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)),
+            send_rewritten_field: true
+          )
+        end
+      end
+
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse package file upload endpoint', revision: true
     end
@@ -303,6 +370,13 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
+      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
+        end
+      end
+
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
@@ -314,6 +388,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url_suffix) { "#{recipe_path}/latest" }
 
     subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     context 'with multiple recipe revisions' do
       before do
@@ -362,6 +441,15 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}" }
 
     subject(:request) { delete api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_conan_package do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { delete api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it_behaves_like 'packages feature check'
     it_behaves_like 'conan FIPS mode'
@@ -416,6 +504,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it 'returns the reference and a list of revisions in descending order' do
       request
 
@@ -454,6 +547,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions" }
 
     subject(:api_request) { get api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it 'returns the reference and a list of revisions in descending order' do
       api_request
@@ -520,6 +618,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     context 'with multiple recipe revisions' do
       before do
         create(:conan_package_revision, :processing, package: package)
@@ -582,6 +685,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         "#{package_revision}/files"
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'get file list',
       { 'files' => { 'conan_package.tgz' => {}, 'conaninfo.txt' => {}, 'conanmanifest.txt' => {} } },
       not_found_err: '404 Package files Not Found'
@@ -607,6 +715,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_conan_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'GET package references metadata endpoint', with_recipe_revision: true
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
@@ -627,6 +740,15 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     end
 
     subject(:request) { delete api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_conan_package do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { delete api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it_behaves_like 'packages feature check'
     it_behaves_like 'conan FIPS mode'

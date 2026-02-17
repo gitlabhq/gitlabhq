@@ -66,9 +66,6 @@ module DesignManagement
       return if design_unchanged?(design, content)
 
       action = new_file?(design) ? :create : :update
-      on_success do
-        track_usage_metrics(action)
-      end
 
       DesignManagement::DesignAction.new(design, action, content)
     end
@@ -149,18 +146,6 @@ module DesignManagement
             event: event
           ).execute
         end
-      end
-    end
-
-    def track_usage_metrics(action)
-      if action == :update
-        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
-          .track_issue_designs_modified_action(author: current_user, project: project)
-        track_internal_event('update_design_management_design', user: current_user, project: project)
-      else
-        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
-          .track_issue_designs_added_action(author: current_user, project: project)
-        track_internal_event('create_design_management_design', user: current_user, project: project)
       end
     end
   end

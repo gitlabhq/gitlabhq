@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class Input < Lexeme::Value
-            PATTERN = /\$\[\[\s*inputs\.(?<name>\w+)\s*\]\]/
+            PATTERN = /\$\[\[\s*inputs\.(?<name>[\w-]+)\s*\]\]/
 
             def self.build(string)
               new(string.match(PATTERN)[:name])

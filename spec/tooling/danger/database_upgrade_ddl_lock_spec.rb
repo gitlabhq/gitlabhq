@@ -15,6 +15,54 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
     subject(:check_ddl_lock_contention) { database_upgrade_ddl_lock.check_ddl_lock_contention }
 
     let(:file_exists) { false }
+    # Past lock (already completed)
+    let(:past_lock) do
+      {
+        'start_date' => "2023-11-14T09:00:00Z",
+        'end_date' => "2023-11-15T09:00:00Z",
+        'details' => "Contention due to Postgres 15 upgrade",
+        'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
+        'warning_days' => 7,
+        'merge_buffer' => 2
+      }
+    end
+
+    # Future lock (not yet in warning period)
+    let(:future_lock) do
+      {
+        'start_date' => "2025-12-03T09:00:00Z",
+        'end_date' => "2025-12-05T09:00:00Z",
+        'details' => "Contention due to Postgres 17 upgrade",
+        'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+        'warning_days' => 7,
+        'merge_buffer' => 2
+      }
+    end
+
+    # Active lock (currently in lock period)
+    let(:active_lock) do
+      {
+        'start_date' => "2025-11-03T09:00:00Z",
+        'end_date' => "2025-11-05T09:00:00Z",
+        'details' => "Contention due to Postgres 17 upgrade",
+        'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+        'warning_days' => 7,
+        'merge_buffer' => 2
+      }
+    end
+
+    # Warning period lock (in warning period, lock starts soon)
+    let(:warning_lock) do
+      {
+        'start_date' => "2025-11-14T09:00:00Z",
+        'end_date' => "2025-11-15T09:00:00Z",
+        'details' => "Contention due to Postgres 17 upgrade",
+        'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+        'warning_days' => 13,
+        'merge_buffer' => 2
+      }
+    end
+
     let(:ci) { false }
     let(:config) { {} }
     let(:modified_files) { [] }
@@ -43,9 +91,7 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
     end
 
     context "when config has an empty array" do
-      let(:config) do
-        { 'locks' => [] }
-      end
+      let(:config) { { 'locks' => [] } }
 
       it_behaves_like 'skipping warning and fail'
     end
@@ -71,59 +117,14 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
 
     context 'when config is valid and out of locking and warning period' do
       let(:file_exists) { true }
-      let(:config) do
-        {
-          'locks' => [
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-12-01T09:00:00Z",
-              'end_date' => "2024-12-03T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 7
-            }
-          ]
-        }
-      end
+      let(:config) { { 'locks' => [past_lock, future_lock] } }
 
       it_behaves_like 'skipping warning and fail'
     end
 
     context 'when config is valid and is within warning period with no schema changes' do
       let(:file_exists) { true }
-      let(:config) do
-        {
-          'locks' => [
-            {
-              'start_date' => "2023-11-12T09:00:00Z",
-              'end_date' => "2023-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 15 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-11-12T09:00:00Z",
-              'end_date' => "2025-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 13
-            }
-          ]
-        }
-      end
+      let(:config) { { 'locks' => [past_lock, warning_lock] } }
 
       it_behaves_like 'skipping warning and fail'
     end
@@ -131,33 +132,7 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
     context 'when config is valid and is within lock period with no schema changes' do
       let(:file_exists) { true }
       let(:ci) { true }
-      let(:config) do
-        {
-          'locks' => [
-            {
-              'start_date' => "2023-11-12T09:00:00Z",
-              'end_date' => "2023-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 15 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-11-01T09:00:00Z",
-              'end_date' => "2025-11-03T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 7
-            }
-          ]
-        }
-      end
+      let(:config) { { 'locks' => [past_lock, active_lock] } }
 
       it_behaves_like 'skipping warning and fail'
     end
@@ -165,44 +140,19 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
     context 'when config is valid and is within warning period' do
       let(:file_exists) { true }
       let(:modified_files) { ['db/structure.sql'] }
-      let(:config) do
-        {
-          'locks' => [
-            {
-              'start_date' => "2023-11-12T09:00:00Z",
-              'end_date' => "2023-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 15 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-11-12T09:00:00Z",
-              'end_date' => "2025-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 13
-            }
-          ]
-        }
-      end
+      let(:config) { { 'locks' => [past_lock, warning_lock] } }
 
       it 'warns about upcoming ddl lock' do
         expect(database_upgrade_ddl_lock).to receive(:warn).with(
           <<~MSG
             A database upgrade lock will be active in 11 day(s). Starting at 2025-11-12 09:00:00 UTC, merging
-            migrations that changes the schema (DDL) will be disabled while a major database upgrade is performed.
-            Plan accordingly or consider merging your changes before the lock begins.
+            migrations that changes the schema (DDL) will be disabled. The maintenance window is scheduled for 2025-11-14 09:00:00 UTC,
+            but merges are blocked 2 day(s) earlier to allow time for deployment ahead of the upgrade.
 
             See change request: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3
 
-            Starts at: 2025-11-12 09:00:00 UTC
+            Maintenance starts at: 2025-11-14 09:00:00 UTC
+            Merge lock starts at: 2025-11-12 09:00:00 UTC
             Locked until: 2025-11-15 09:00:00 UTC
             Details: Contention due to Postgres 17 upgrade
             Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
@@ -221,33 +171,18 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
     context 'when config is valid and lock starts in a hour' do
       let(:file_exists) { true }
       let(:modified_files) { ['db/structure.sql'] }
-      let(:config) do
+      let(:imminent_lock) do
         {
-          'locks' => [
-            {
-              'start_date' => "2023-11-12T09:00:00Z",
-              'end_date' => "2023-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 15 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-11-01T10:00:00Z",
-              'end_date' => "2025-11-03T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 13
-            }
-          ]
+          'start_date' => "2025-11-03T12:00:00Z",
+          'end_date' => "2025-11-05T09:00:00Z",
+          'details' => "Contention due to Postgres 17 upgrade",
+          'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+          'warning_days' => 13,
+          'merge_buffer' => 2
         }
       end
+
+      let(:config) { { 'locks' => [past_lock, imminent_lock] } }
 
       it 'warns about upcoming ddl lock' do
         expect(database_upgrade_ddl_lock).to receive(:warn)
@@ -264,33 +199,7 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
       let(:file_exists) { true }
       let(:ci) { true }
       let(:modified_files) { ['db/structure.sql'] }
-      let(:config) do
-        {
-          'locks' => [
-            {
-              'start_date' => "2023-11-12T09:00:00Z",
-              'end_date' => "2023-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 15 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2024-11-12T09:00:00Z",
-              'end_date' => "2024-11-15T09:00:00Z",
-              'details' => "Contention due to Postgres 16 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2",
-              'warning_days' => 7
-            },
-            {
-              'start_date' => "2025-11-01T09:00:00Z",
-              'end_date' => "2025-11-03T09:00:00Z",
-              'details' => "Contention due to Postgres 17 upgrade",
-              'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
-              'warning_days' => 7
-            }
-          ]
-        }
-      end
+      let(:config) { { 'locks' => [past_lock, active_lock] } }
 
       it 'does not warn' do
         expect(database_upgrade_ddl_lock).not_to receive(:warn)
@@ -306,12 +215,86 @@ RSpec.describe Tooling::Danger::DatabaseUpgradeDdlLock, feature_category: :datab
 
               See change request: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3
 
-              Started at: 2025-11-01 09:00:00 UTC
-              Locked until: 2025-11-03 09:00:00 UTC
+              Maintenance starts at: 2025-11-03 09:00:00 UTC
+              Merge lock started at: 2025-11-01 09:00:00 UTC
+              Locked until: 2025-11-05 09:00:00 UTC
               Details: Contention due to Postgres 17 upgrade
               Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
             MSG
           )
+        )
+
+        check_ddl_lock_contention
+      end
+    end
+
+    context 'when config uses custom merge_buffer value' do
+      let(:file_exists) { true }
+      let(:modified_files) { ['db/structure.sql'] }
+      let(:custom_buffer_lock) do
+        {
+          'start_date' => "2025-11-13T09:00:00Z",
+          'end_date' => "2025-11-15T09:00:00Z",
+          'details' => "Contention due to Postgres 17 upgrade",
+          'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+          'warning_days' => 10,
+          'merge_buffer' => 5
+        }
+      end
+
+      let(:config) { { 'locks' => [custom_buffer_lock] } }
+
+      it 'warns with correct merge buffer days' do
+        expect(database_upgrade_ddl_lock).to receive(:warn).with(
+          <<~MSG
+            A database upgrade lock will be active in 7 day(s). Starting at 2025-11-08 09:00:00 UTC, merging
+            migrations that changes the schema (DDL) will be disabled. The maintenance window is scheduled for 2025-11-13 09:00:00 UTC,
+            but merges are blocked 5 day(s) earlier to allow time for deployment ahead of the upgrade.
+
+            See change request: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3
+
+            Maintenance starts at: 2025-11-13 09:00:00 UTC
+            Merge lock starts at: 2025-11-08 09:00:00 UTC
+            Locked until: 2025-11-15 09:00:00 UTC
+            Details: Contention due to Postgres 17 upgrade
+            Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
+          MSG
+        )
+
+        check_ddl_lock_contention
+      end
+    end
+
+    context 'when config omits merge_buffer (uses default)' do
+      let(:file_exists) { true }
+      let(:modified_files) { ['db/structure.sql'] }
+      let(:default_buffer_lock) do
+        {
+          'start_date' => "2025-11-14T09:00:00Z",
+          'end_date' => "2025-11-15T09:00:00Z",
+          'details' => "Contention due to Postgres 17 upgrade",
+          'upgrade_issue_url' => "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3",
+          'warning_days' => 13
+        }
+      end
+
+      let(:config) { { 'locks' => [default_buffer_lock] } }
+
+      it 'uses default merge buffer of 2 days' do
+        expect(database_upgrade_ddl_lock).to receive(:warn).with(
+          <<~MSG
+            A database upgrade lock will be active in 11 day(s). Starting at 2025-11-12 09:00:00 UTC, merging
+            migrations that changes the schema (DDL) will be disabled. The maintenance window is scheduled for 2025-11-14 09:00:00 UTC,
+            but merges are blocked 2 day(s) earlier to allow time for deployment ahead of the upgrade.
+
+            See change request: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3
+
+            Maintenance starts at: 2025-11-14 09:00:00 UTC
+            Merge lock starts at: 2025-11-12 09:00:00 UTC
+            Locked until: 2025-11-15 09:00:00 UTC
+            Details: Contention due to Postgres 17 upgrade
+            Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
+          MSG
         )
 
         check_ddl_lock_contention

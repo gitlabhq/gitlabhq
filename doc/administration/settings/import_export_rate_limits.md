@@ -13,7 +13,16 @@ description: "Configure rate limit settings for your GitLab instance when import
 
 {{< /details >}}
 
-You can configure the rate limits for imports and exports of projects and groups:
+You can configure the rate limits for file imports and exports of projects and groups. For information on the default
+rate limits, see [import and export rate limits](../instance_limits.md#import-and-export).
+
+When a user exceeds a rate limit, it is logged in `auth.log`.
+
+## Change an import or export rate limit
+
+Prerequisites:
+
+- Administrator access.
 
 To change a rate limit:
 
@@ -22,14 +31,3 @@ To change a rate limit:
 1. Expand **Import and export rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user, not per IP address.
    Set to `0` to disable a rate limit.
-
-| Limit                   | Default |
-|-------------------------|---------|
-| Project Import          | 6       |
-| Project Export          | 6       |
-| Project Export Download | 1       |
-| Group Import            | 6       |
-| Group Export            | 6       |
-| Group Export Download   | 1       |
-
-When a user exceeds a rate limit, it is logged in `auth.log`.

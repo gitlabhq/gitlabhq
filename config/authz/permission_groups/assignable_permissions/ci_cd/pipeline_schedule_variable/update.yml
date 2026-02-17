@@ -1,7 +1,0 @@
----
-name: update_pipeline_schedule_variable
-description: Grants the ability to update pipeline schedule variables
-permissions:
-  - update_pipeline_schedule_variable
-boundaries:
-  - project

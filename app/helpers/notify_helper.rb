@@ -14,7 +14,7 @@ module NotifyHelper
 
     # For now we are limiting the scope of the change only for epic work items,
     # we can remove this check to support all work item types.
-    type.epic? ? type.base_type : 'issue'
+    type && type.base_type.to_s == "epic" ? type.base_type : 'issue'
   end
 
   def merge_request_hash_param(merge_request, reviewer)

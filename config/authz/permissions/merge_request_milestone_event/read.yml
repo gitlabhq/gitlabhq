@@ -1,0 +1,5 @@
+---
+name: read_merge_request_milestone_event
+description: Grants the ability to read Merge request milestone events.
+boundaries:
+  - project

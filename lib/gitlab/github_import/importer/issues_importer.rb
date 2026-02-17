@@ -9,7 +9,7 @@ module Gitlab
         def initialize(project, client, parallel: true)
           super
 
-          @work_item_type_id = ::WorkItems::Type.default_issue_type.id
+          @work_item_type_id = ::WorkItems::TypesFramework::Provider.new(project).default_issue_type.id
         end
 
         def importer_class

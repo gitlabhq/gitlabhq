@@ -6,7 +6,6 @@ import Tracking from '~/tracking';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
-import FeaturedCarousel from './featured_carousel.vue';
 import OtherUpdates from './other_updates.vue';
 
 const trackingMixin = Tracking.mixin();
@@ -14,7 +13,6 @@ const trackingMixin = Tracking.mixin();
 export default {
   components: {
     GlDrawer,
-    FeaturedCarousel,
     OtherUpdates,
   },
   directives: {
@@ -137,8 +135,6 @@ export default {
       </template>
 
       <div>
-        <featured-carousel class="featured-carousel" />
-
         <other-updates
           :features="features"
           :read-articles="readArticles"
@@ -147,7 +143,7 @@ export default {
           :fetching="fetching"
           :drawer-body-height="drawerBodyHeight"
           class="other-updates gl-pt-3"
-          @bottomReached="bottomReached"
+          @bottom-reached="bottomReached"
         />
       </div>
     </gl-drawer>

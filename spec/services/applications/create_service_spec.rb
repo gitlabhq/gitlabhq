@@ -10,7 +10,7 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
   subject(:service) { described_class.new(user, test_request, params) }
 
   context 'when scopes are present' do
-    let(:params) { attributes_for(:application, scopes: ['read_user']) }
+    let(:params) { attributes_for(:application, scopes: ['read_user'], organization_id: user.organization.id) }
 
     it { expect { subject.execute }.to change { Authn::OauthApplication.count }.by(1) }
 
@@ -20,7 +20,7 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
   end
 
   context 'when scopes are missing' do
-    let(:params) { attributes_for(:application) }
+    let(:params) { attributes_for(:application, organization_id: user.organization.id) }
 
     it { expect { subject.execute }.not_to change { Authn::OauthApplication.count } }
 

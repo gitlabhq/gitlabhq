@@ -125,12 +125,9 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   runit-systemd
 ```
 
-{{< alert type="note" >}}
-
-GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
-you might have to install 1.1 manually.
-
-{{< /alert >}}
+> [!note]
+> GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
+> you might have to install 1.1 manually.
 
 ### Git
 
@@ -291,12 +288,9 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 7. Database
 
-{{< alert type="note" >}}
-
-Only PostgreSQL is supported.
-In GitLab 18.0 and later, we [require PostgreSQL 16+](../requirements.md#postgresql).
-
-{{< /alert >}}
+> [!note]
+> Only PostgreSQL is supported.
+> In GitLab 18.0 and later, we [require PostgreSQL 16+](../requirements.md#postgresql).
 
 1. Install the database packages.
 
@@ -605,12 +599,9 @@ If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional ste
 
 ### Configure GitLab DB Settings
 
-{{< alert type="note" >}}
-
-From [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/387898), `database.yml` with only a section: `main:` is deprecated.
-In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
-
-{{< /alert >}}
+> [!note]
+> From [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/387898), `database.yml` with only a section: `main:` is deprecated.
+> In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
 
 ```shell
 sudo -u git cp config/database.yml.postgresql config/database.yml

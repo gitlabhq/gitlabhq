@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Documentation for integrating code quality scanning tools and linters into CI/CD pipelines
 title: Code Quality
 ---
 
@@ -66,12 +67,9 @@ Now, after the pipeline runs, the quality tool's results are [processed and disp
 
 ### Use the built-in Code Quality CI/CD template (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
-[Integrate the results from a supported tool directly](#import-code-quality-results-from-a-cicd-job) instead.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
+> [Integrate the results from a supported tool directly](#import-code-quality-results-from-a-cicd-job) instead.
 
 Code Quality also includes a built-in CI/CD template, `Code-Quality.gitlab-ci.yaml`.
 This template runs a scan based on the open source CodeClimate scanning engine.

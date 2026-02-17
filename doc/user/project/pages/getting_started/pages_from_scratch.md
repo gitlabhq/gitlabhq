@@ -22,12 +22,9 @@ This example uses Jekyll, but other SSGs follow similar steps.
 You do not need to be familiar with Jekyll or SSGs
 to complete this tutorial.
 
-{{< alert type="note" >}}
-
-To create a Pages site with plain HTML, see the [create a GitLab Pages website from a CI/CD template](pages_ci_cd_template.md)
-tutorial. For a list of available templates, see [project templates](pages_new_project_template.md#project-templates).
-
-{{< /alert >}}
+> [!note]
+> To create a Pages site with plain HTML, see the [create a GitLab Pages website from a CI/CD template](pages_ci_cd_template.md)
+> tutorial. For a list of available templates, see [project templates](pages_new_project_template.md#project-templates).
 
 To create a GitLab Pages website:
 
@@ -442,7 +439,7 @@ The example in this page uses [user-defined job names](../_index.md#user-defined
 
 ## Related topics
 
-- [Deploy your web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2020/12/10/basics-of-gitlab-ci-updated/)
-- [Pull specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-- [Use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
+- [Deploy your web app to staging and production](https://about.gitlab.com/blog/ci-deployment-and-environments/)
+- [Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/basics-of-gitlab-ci-updated/)
+- [Pull specific directories from different projects](https://about.gitlab.com/blog/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+- [Use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/publish-code-coverage-report-with-gitlab-pages/)

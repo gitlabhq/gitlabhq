@@ -69,7 +69,7 @@ global:
         key:
 ```
 
-For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals.html#configure-appconfig-settings).
+For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals/#configure-appconfig-settings).
 
 {{< /tab >}}
 
@@ -240,7 +240,7 @@ to remote storage. The processing is done in a background worker and requires no
   ```
 
 You can optionally track progress and verify that all Dependency Proxy blobs and manifests migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole` for Linux package installations running version 14.1 and earlier.
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations running version 14.2 and later.

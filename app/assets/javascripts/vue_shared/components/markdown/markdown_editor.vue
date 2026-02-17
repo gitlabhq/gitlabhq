@@ -433,11 +433,17 @@ export default {
       :supports-table-of-contents="supportsTableOfContents"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
+      :immersive="immersive"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >
-      <template #header-buttons><slot name="header-buttons"></slot></template>
+      <template #header><slot name="header"></slot></template>
+      <template #header-buttons>
+        <div>
+          <slot name="header-buttons"></slot>
+        </div>
+      </template>
       <template #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
         <component
@@ -450,7 +456,13 @@ export default {
             ref="textarea"
             :value="markdown"
             class="note-textarea js-gfm-input markdown-area"
-            :class="[{ 'gl-relative gl-z-3': canUseComposer }, formFieldProps.class || '']"
+            :class="[
+              {
+                'gl-relative gl-z-3': canUseComposer,
+                'focus:gl-outline-none': immersive,
+              },
+              formFieldProps.class || '',
+            ]"
             dir="auto"
             :data-can-suggest="codeSuggestionsConfig.canSuggest"
             :data-noteable-type="noteableType"

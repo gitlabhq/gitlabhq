@@ -1,0 +1,7 @@
+---
+name: create_container_repository_protection_rule
+description: Grants the ability to create container repository protection rules
+boundaries:
+  - project
+permissions:
+ - create_container_repository_protection_rule

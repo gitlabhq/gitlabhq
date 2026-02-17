@@ -3,11 +3,14 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { stubComponent } from 'helpers/stub_component';
+import { useFakeDate } from 'helpers/fake_date';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
 jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}fake-id`);
 
 describe('GroupsProjectsDeleteModal', () => {
+  useFakeDate(2025, 9, 29);
+
   let wrapper;
 
   const defaultPropsData = {
@@ -39,53 +42,57 @@ describe('GroupsProjectsDeleteModal', () => {
 
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
-  const findRestoreMessage = () => wrapper.findByTestId('restore-message');
+  const findModalBodyMessage = () => wrapper.findByTestId('modal-body-message');
 
-  describe.each(Object.values(RESOURCE_TYPES))('when resourceType is %s', (resourceType) => {
-    beforeEach(() => {
-      createComponent({ resourceType });
-    });
+  describe.each`
+    resourceType              | expectedDeleteDelayedMessage                                                                                                                                                                   | expectedDeletePermanentlyMessage
+    ${RESOURCE_TYPES.PROJECT} | ${`This action will place this project, including all its resources, in a pending deletion state for 30 days, and delete it permanently on ${defaultPropsData.permanentDeletionDate}.`}        | ${`This project is scheduled for deletion on ${defaultPropsData.permanentDeletionDate}. This action will permanently delete this project, including all its resources, immediately. This action cannot be undone.`}
+    ${RESOURCE_TYPES.GROUP}   | ${`This action will place this group, including its subgroups and projects, in a pending deletion state for 30 days, and delete it permanently on ${defaultPropsData.permanentDeletionDate}.`} | ${`This group is scheduled for deletion on ${defaultPropsData.permanentDeletionDate}. This action will permanently delete this group, including its subgroups and projects, immediately. This action cannot be undone.`}
+  `(
+    'when resourceType is $resourceType',
+    ({ resourceType, expectedDeleteDelayedMessage, expectedDeletePermanentlyMessage }) => {
+      it('renders modal with correct props', () => {
+        createComponent({ resourceType });
 
-    it('renders modal with correct props', () => {
-      expect(findGlModal().props()).toMatchObject({
-        visible: defaultPropsData.visible,
-        modalId: `delete-modal-fake-id`,
-        actionPrimary: {
-          text: `Yes, delete ${resourceType}`,
-          attributes: {
-            variant: 'danger',
-            disabled: true,
-            'data-testid': 'confirm-delete-button',
+        expect(findGlModal().props()).toMatchObject({
+          visible: defaultPropsData.visible,
+          modalId: `delete-modal-fake-id`,
+          actionPrimary: {
+            text: `Yes, delete ${resourceType}`,
+            attributes: {
+              variant: 'danger',
+              disabled: true,
+              'data-testid': 'confirm-delete-button',
+            },
           },
-        },
-        actionCancel: {
-          text: `Cancel, keep ${resourceType}`,
-        },
-      });
-    });
-
-    describe('when markedForDeletion prop is false', () => {
-      it('renders restore message', () => {
-        expect(findRestoreMessage().text()).toContain(
-          `This ${resourceType} can be restored until ${defaultPropsData.permanentDeletionDate}.`,
-        );
+          actionCancel: {
+            text: `Cancel, keep ${resourceType}`,
+          },
+        });
       });
 
-      it('renders restore-help-page-link slot', () => {
-        expect(wrapper.findByTestId('restore-help-page-link').text()).toBe('Learn more');
-      });
-    });
-  });
+      describe('when markedForDeletion prop is false', () => {
+        beforeEach(() => {
+          createComponent({ resourceType });
+        });
 
-  describe('when markedForDeletion prop is true', () => {
-    it('does not render restore message', () => {
-      createComponent({
-        markedForDeletion: true,
+        it('renders message', () => {
+          expect(findModalBodyMessage().text()).toContain(expectedDeleteDelayedMessage);
+        });
       });
 
-      expect(findRestoreMessage().exists()).toBe(false);
-    });
-  });
+      describe('when markedForDeletion prop is true', () => {
+        it('renders message', () => {
+          createComponent({
+            resourceType,
+            markedForDeletion: true,
+          });
+
+          expect(findModalBodyMessage().text()).toContain(expectedDeletePermanentlyMessage);
+        });
+      });
+    },
+  );
 
   it('renders alert slot', () => {
     createComponent();

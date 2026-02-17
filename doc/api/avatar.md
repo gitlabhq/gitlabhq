@@ -14,9 +14,9 @@ title: Avatar API
 
 Use this API to interact with user avatars.
 
-## Get details on an account avatar
+## Retrieve user account avatar
 
-Gets the URL of an account [avatar](../user/profile/_index.md#access-your-user-settings) associated with a given public email address. This endpoint does not require authentication.
+Retrieves the URL of a user account [avatar](../user/profile/_index.md#access-your-user-settings) associated with a specified public email address. This endpoint does not require authentication.
 
 - If successful, returns the URL of the avatar.
 - If no account is associated with the given email address, returns results from external avatar services.

@@ -23,6 +23,7 @@ export const initAdminRegisterRunner = (selector = '#js-admin-register-runner') 
 
   return new Vue({
     el,
+    name: 'AdminRegisterRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(AdminRegisterRunnerApp, {

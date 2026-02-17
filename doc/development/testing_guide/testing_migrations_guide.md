@@ -266,22 +266,6 @@ RSpec.describe MigrateIncidentIssuesToIncidentType do
 end
 ```
 
-## Testing a non-`ActiveRecord::Migration` class
-
-To test a non-`ActiveRecord::Migration` test (a background migration),
-you must manually provide a required schema version. Add a
-`schema` tag to a context that you want to switch the database schema within.
-
-If not set, `schema` defaults to `:latest`.
-
-Example:
-
-```ruby
-describe SomeClass, schema: 20170608152748 do
-  # ...
-end
-```
-
 ### Example background migration test
 
 This spec tests the

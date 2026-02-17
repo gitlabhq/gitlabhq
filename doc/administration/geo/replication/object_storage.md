@@ -46,10 +46,9 @@ To have:
 
 Geo verifies files stored in object storage to ensure data integrity between primary and secondary sites.
 
-{{< alert type="warning" >}}
-Disabling object storage verification is not recommended.
-When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
-{{< /alert >}}
+> [!warning]
+> Disabling object storage verification is not recommended.
+> When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
 
 When the `geo_object_storage_verification` feature flag is disabled:
 
@@ -99,13 +98,10 @@ If the **Allow this secondary site to replicate content on Object Storage** sett
 is disabled, and if you have migrated all your files from local storage to object storage,
 then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to synchronize**.
 
-{{< alert type="warning" >}}
-
-To avoid data loss, you should only enable the **Allow this secondary site to replicate content on
-Object Storage** setting if you are using separate object stores for the Primary and Secondary
-sites.
-
-{{< /alert >}}
+> [!warning]
+> To avoid data loss, you should only enable the **Allow this secondary site to replicate content on
+> Object Storage** setting if you are using separate object stores for the Primary and Secondary
+> sites.
 
 GitLab does not support the case where both:
 

@@ -6,7 +6,6 @@ import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/settings/project/constants';
-import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import PackageRegistrySection from '~/packages_and_registries/settings/project/components/package_registry_section.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 
@@ -14,7 +13,6 @@ export default {
   components: {
     ContainerRegistrySection,
     GlAlert,
-    MetadataDatabaseBanner,
     PackageRegistrySection,
   },
   inject: [
@@ -64,7 +62,6 @@ export default {
     >
       {{ $options.i18n.UPDATE_SETTINGS_SUCCESS_MESSAGE }}
     </gl-alert>
-    <metadata-database-banner v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-my-5" />
     <package-registry-section v-if="showPackageRegistrySettings" />
     <container-registry-section
       v-if="showContainerRegistrySettings"

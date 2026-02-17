@@ -28,7 +28,13 @@ three stages of verification to register an account:
 - **Medium-risk users** - Phone number verification.
 - **High-risk users** - Credit card verification.
 
-Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md) are exempt from identity verification.
+By default, users provisioned with SAML or SCIM must complete email verification. You
+can [bypass email verification](../user/group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains)
+by adding a custom domain. GitLab automatically confirms user accounts when their email
+domain matches.
+
+If you encounter identity verification errors when running CI/CD pipelines,
+see [debugging pipeline errors](../ci/debugging.md#error-identity-verification-is-required-in-order-to-run-ci-jobs).
 
 ## Email verification
 
@@ -95,9 +101,8 @@ or create a [support ticket](https://about.gitlab.com/support/).
 
 ## Credit card verification
 
-In addition to email and phone number verification, you might have to provide a valid credit card number.
+In addition to an email address and phone number, you might also need to provide a valid credit card number to verify your account.
 
-To verify your account, you might need to provide a valid credit card number in addition to your
-email address and phone number. GitLab does not store your card details directly or make any charges.
+GitLab does not store your card details directly or make any charges. This process is not connected to any billing information for your groups.
 
 You cannot verify an account with a credit card number associated with a banned user.

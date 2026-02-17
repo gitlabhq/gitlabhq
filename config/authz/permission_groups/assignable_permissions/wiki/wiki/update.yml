@@ -6,3 +6,4 @@ boundaries:
   - project
 permissions:
   - update_wiki
+  - upload_wiki_attachment

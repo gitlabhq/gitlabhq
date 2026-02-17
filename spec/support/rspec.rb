@@ -12,6 +12,7 @@ require_relative 'helpers/fast_rails_root'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
+require 'gitlab_quality/test_tooling'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
@@ -82,6 +83,13 @@ RSpec.configure do |config|
       warn "Missing metadata feature_category: #{location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
     end
   end
+
+  # If no formatter is specified at the command line, config.formatters will be empty.
+  # In this case, we need to explicitly add the default, as adding any other formatter
+  # will cause it not to be added by RSpec itself.
+  config.add_formatter config.default_formatter if config.formatters.empty?
+
+  config.add_formatter GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
 
   Gitlab::Rspec::Configurations::TestMetrics.configure!('backend-rspec-tests') do |exporter_config|
     exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }

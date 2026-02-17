@@ -56,14 +56,55 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
     end
   end
 
-  shared_examples 'assigns variables_attributes' do
+  shared_examples 'assigns pipeline variables' do
     specify do
       step.perform!
 
       expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
         .to eq variables_attributes.map(&:with_indifferent_access)
     end
+
+    it 'builds a pipeline_variables artifact' do
+      step.perform!
+
+      expect(pipeline.pipeline_artifacts_pipeline_variables).to be_present
+      expect(pipeline.pipeline_artifacts_pipeline_variables.file_type).to eq('pipeline_variables')
+    end
+
+    it 'calls PipelineVariablesArtifactBuilder' do
+      expect(Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder)
+        .to receive(:new).with(pipeline, variables_attributes).and_call_original
+
+      step.perform!
+    end
+
+    context 'when FF `ci_write_pipeline_variables_artifact` is disabled' do
+      before do
+        stub_feature_flags(ci_write_pipeline_variables_artifact: false)
+      end
+
+      it 'assigns variables to the pipeline' do
+        step.perform!
+
+        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+          .to eq variables_attributes.map(&:with_indifferent_access)
+      end
+
+      it 'does not call PipelineVariablesArtifactBuilder' do
+        expect(Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder).not_to receive(:new)
+
+        step.perform!
+      end
+
+      it 'does not build a pipeline_variables artifact' do
+        step.perform!
+
+        expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
+      end
+    end
   end
+
+  it_behaves_like 'assigns pipeline variables'
 
   context 'when a bridge is passed in to the pipeline creation' do
     let(:bridge) { create(:ci_bridge) }
@@ -90,13 +131,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
     end
 
     it_behaves_like 'does not break the chain'
-  end
-
-  it 'sets pipeline variables' do
-    step.perform!
-
-    expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-      .to eq variables_attributes.map(&:with_indifferent_access)
   end
 
   context 'when project setting restrict_user_defined_variables is enabled' do
@@ -131,7 +165,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
         it_behaves_like 'does not break the chain'
 
-        it_behaves_like 'assigns variables_attributes'
+        it_behaves_like 'assigns pipeline variables'
       end
 
       context 'when source is :trigger with variables other then TRIGGER_PAYLOAD' do
@@ -174,7 +208,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
     it_behaves_like 'does not break the chain'
 
-    it_behaves_like 'assigns variables_attributes'
+    it_behaves_like 'assigns pipeline variables'
 
     context "when source is :trigger and user has permissions to set pipeline variables" do
       let(:source) { :trigger }
@@ -202,6 +236,35 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
       expect(pipeline.errors.full_messages).to eq(['Duplicate variable name: first'])
       expect(pipeline.variables).to be_empty
+    end
+  end
+
+  context 'when variables_attributes is empty' do
+    let(:variables_attributes) { [] }
+
+    it 'does not assign pipeline variables' do
+      step.perform!
+
+      expect(pipeline.variables).to be_empty
+    end
+
+    it 'does not build a pipeline_variables artifact' do
+      step.perform!
+
+      expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
+    end
+  end
+
+  context 'when PipelineVariablesArtifactBuilder raises ActiveModel::ValidationError' do
+    let(:variables_attributes) { [{ key: 'invalid-key!', value: 'some-value' }] }
+
+    it_behaves_like 'breaks the chain'
+
+    it 'returns an error' do
+      step.perform!
+
+      expect(pipeline.errors.full_messages)
+        .to contain_exactly(a_string_including('Failed to build pipeline variables'))
     end
   end
 end

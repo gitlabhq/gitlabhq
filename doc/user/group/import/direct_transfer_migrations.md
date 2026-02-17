@@ -30,7 +30,7 @@ If there are any problems, you can:
 
 {{< history >}}
 
-- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.6 and later.
+- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -74,7 +74,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
     - The Owner role on the source group to migrate from.
     - A role in the destination namespace that allows you to [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that namespace.
   - Administrators of both instances without the required roles, you can instead start the import by using
-    [the API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
+    [the API](../../../api/bulk_imports.md#start-a-group-or-project-migration).
 - To import project snippets, ensure snippets are
   [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:
@@ -123,11 +123,8 @@ has an existing membership in the destination namespace with a [higher role](../
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
 
-{{< alert type="note" >}}
-
-There is a [known issue](_index.md#known-issues) affecting the mapping of shared memberships.
-
-{{< /alert >}}
+> [!note]
+> There is a [known issue](_index.md#known-issues) affecting the mapping of shared memberships.
 
 ### Configure users on destination instance
 
@@ -155,7 +152,7 @@ On the destination GitLab instance, create the group you want to import to and c
 1. Create either:
    - A new group. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
-     - Select **New subgroup**.
+     - Select **Create subgroup**.
      - In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.

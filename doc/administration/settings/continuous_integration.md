@@ -15,6 +15,10 @@ title: CI/CD settings
 
 Configure CI/CD settings for your GitLab instance in the Admin area.
 
+Prerequisites:
+
+- You must have administrator access.
+
 The following settings are available:
 
 - Variables: Configure CI/CD variables available to all projects in your instance.
@@ -65,12 +69,12 @@ This text appears in all projects' runner settings.
 
 To add instance runner details:
 
-1. Enter text in the **Instance runner details** field. You can use Markdown formatting.
+1. Enter text in the **Instance runner details** text box. You can use Markdown formatting.
 1. Select **Save changes**.
 
 To view the rendered details:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -106,11 +110,8 @@ Each artifact file in a job has a default maximum size of 100 MB.
 Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
 When different limits apply, the smaller value is used.
 
-{{< alert type="note" >}}
-
-This setting applies to the size of the final archive file, not individual files in a job.
-
-{{< /alert >}}
+> [!note]
+> This setting applies to the size of the final archive file, not individual files in a job.
 
 You can configure artifact size limits for:
 
@@ -122,12 +123,12 @@ For GitLab.com limits, see [Artifacts maximum size](../../user/gitlab_com/_index
 
 To change the maximum artifact size for an instance:
 
-1. Enter a value in the **Maximum artifacts size (MB)** field.
+1. Enter a value in the **Maximum artifacts size (MB)** text box.
 1. Select **Save changes**.
 
 To change the maximum artifact size for a group or project:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Change the value of **Maximum artifacts size** (in MB).
@@ -147,7 +148,7 @@ see the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md
 
 To set the default expiration time for job artifacts:
 
-1. Enter a value in the **Default artifacts expiration** field.
+1. Enter a value in the **Default artifacts expiration** text box.
 1. Select **Save changes**.
 
 #### Keep artifacts from latest successful pipelines
@@ -163,12 +164,9 @@ If turned off for an instance, it cannot be turned on for individual projects.
 When this feature is turned off, existing preserved artifacts don't immediately expire.
 A new successful pipeline must run on a branch before its artifacts can expire.
 
-{{< alert type="note" >}}
-
-All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
-which can delay the effect of settings changes.
-
-{{< /alert >}}
+> [!note]
+> All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
+> which can delay the effect of settings changes.
 
 To keep artifacts from the latest successful pipelines:
 
@@ -206,7 +204,7 @@ For GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#ci
 
 To set up job archiving:
 
-1. Enter a value in the **Archive pipelines** field.
+1. Enter a value in the **Archive pipelines** text box.
 1. Select **Save changes**.
 
 #### Allow pipeline variables by default
@@ -223,12 +221,9 @@ When disabled, the [default role to use pipeline variables](../../user/group/acc
 setting is set to **No one allowed** for new groups, which cascades to new projects in the new groups.
 When enabled, the setting defaults to **Developer** instead.
 
-{{< alert type="warning" >}}
-
-To keep the most secure defaults for new groups and projects, the recommendation is
-to set this setting to disabled.
-
-{{< /alert >}}
+> [!warning]
+> To keep the most secure defaults for new groups and projects, the recommendation is
+> to set this setting to disabled.
 
 To allow pipeline variables by default in all new projects in new groups:
 
@@ -263,7 +258,7 @@ When a pipeline exceeds this limit, it fails with an error.
 
 To set the maximum number of included files per pipeline:
 
-1. Enter a value in the **Maximum includes** field.
+1. Enter a value in the **Maximum includes** text box.
 1. Select **Save changes**.
 
 #### Limit downstream pipeline trigger rate
@@ -308,7 +303,7 @@ Existing projects continue to use their current CI/CD configuration file path.
 
 To set a custom default CI/CD configuration file path:
 
-1. Enter a value in the **Default CI/CD configuration file** field.
+1. Enter a value in the **Default CI/CD configuration file** text box.
 1. Select **Save changes**.
 
 Individual projects can override this instance default by
@@ -493,18 +488,15 @@ By default, GitLab fetches runner version data. To stop fetching this data:
 
 Control who can register runners and whether to allow registration tokens.
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-
-For more information, see
-[Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> 
+> For more information, see
+> [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
 By default, runner registration tokens and both project and group member registration are allowed.
 To restrict runner registration:
@@ -515,13 +507,10 @@ To restrict runner registration:
    - **Members of the group can create runners**
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When you disable runner registration for project members, the registration
-token automatically rotates. The previous token becomes invalid and you must
-use the new registration token for the project.
-
-{{< /alert >}}
+> [!note]
+> When you disable runner registration for project members, the registration
+> token automatically rotates. The previous token becomes invalid and you must
+> use the new registration token for the project.
 
 ### Restrict runner registration for a specific group
 
@@ -676,13 +665,10 @@ Projects not in the allowlist receive a `not authorized to publish` error when a
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
-and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
-Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
+> and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
+> Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../ci/examples/_index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
@@ -691,14 +677,11 @@ use a template from:
 - The default CI/CD templates.
 - A custom template stored in an [instance template repository](instance_template_repository.md).
 
-  {{< alert type="note" >}}
-
-  When you use a configuration defined in an instance template repository,
-  nested [`include:`](../../ci/yaml/_index.md#include) keywords
-  (including `include:file`, `include:local`, `include:remote`, and `include:template`)
-  [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
-
-  {{< /alert >}}
+  > [!note]
+  > When you use a configuration defined in an instance template repository,
+  > nested [`include:`](../../ci/yaml/_index.md#include) keywords
+  > (including `include:file`, `include:local`, `include:remote`, and `include:template`)
+  > [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
@@ -708,7 +691,7 @@ in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown list.

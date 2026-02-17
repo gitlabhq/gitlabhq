@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Plantuml, feature_category: :shared do
+RSpec.describe Gitlab::Plantuml, feature_category: :wiki do
   describe ".configure" do
     subject { described_class.configure }
 

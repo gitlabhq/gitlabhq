@@ -12,8 +12,9 @@ title: Sidekiq queues administration API
 
 {{< /details >}}
 
-Delete jobs from a Sidekiq queue that match the given
-metadata.
+## Delete jobs from a Sidekiq queue
+
+Deletes jobs from a Sidekiq queue that match the given metadata.
 
 The response has three fields:
 

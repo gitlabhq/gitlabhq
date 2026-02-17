@@ -26,18 +26,24 @@ For information about activity retention limits, see:
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
 - [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
 
-{{< alert type="note" >}}
+This API has limitations related to epics, merge requests, and bulk push events:
 
-This API has limitations related to epics and merge requests:
-
-- Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
-- Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).
-
-{{< /alert >}}
+- Some epic features like child items, linked items, start dates, due dates,
+  and health statuses are not returned by the API.
+- Some merge request notes may instead use the `DiscussionNote` type.
+  This target type is
+  [not supported by the API](discussions.md#understand-note-types-in-the-api).
+- Bulk push events created when a push exceeds the
+  [Push event activities limit](../administration/settings/push_event_activities_limit.md)
+  are returned with limited details: `commit_count: 0`, `ref_count` showing
+  the number of refs pushed, and `null` values for individual commit attributes
+  (`commit_from`, `commit_to`, `ref`, `commit_title`).
 
 ## List all events
 
-Lists all events for the currently authenticated user. Does not return events associated with epics.
+Lists all events for the currently authenticated user.
+Does not return events associated with epics or merge requests. Returns bulk push events with
+limited commit details.
 
 Prerequisites:
 
@@ -121,7 +127,9 @@ Example response:
 
 ## Get contribution events for a user
 
-Gets the contribution events for a specified user. Does not return events associated with epics.
+Gets the contribution events for a specified user.
+Does not return events associated with epics or merge requests. Returns bulk push events with
+limited commit details.
 
 Prerequisites:
 
@@ -275,6 +283,10 @@ Example response:
 ## List all visible events for a project
 
 Lists all visible events for a specified project.
+Returns bulk push events created when a push exceeds the
+[Push event activities limit](../administration/settings/push_event_activities_limit.md) with
+limited commit details: `commit_count: 0`, `ref_count` showing the number of refs pushed, and
+`null` values for individual commit attributes.
 
 ```plaintext
 GET /projects/:project_id/events

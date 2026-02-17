@@ -189,6 +189,36 @@ export const deleteTaskListItem = (description, sourcepos) => {
   };
 };
 
+export const disableTaskListItem = (description, sourcepos) => {
+  const descriptionLines = description.split(NEWLINE);
+  const startIndex = getSourceposRows(sourcepos)[0];
+
+  if (descriptionLines[startIndex].includes('[ ]')) {
+    descriptionLines[startIndex] = descriptionLines[startIndex].replace('[ ]', '[~]');
+  } else if (descriptionLines[startIndex].includes('[x]')) {
+    descriptionLines[startIndex] = descriptionLines[startIndex].replace('[x]', '[~]');
+  } else if (descriptionLines[startIndex].includes('[X]')) {
+    descriptionLines[startIndex] = descriptionLines[startIndex].replace('[X]', '[~]');
+  }
+
+  return {
+    newDescription: descriptionLines.join(NEWLINE),
+  };
+};
+
+export const enableTaskListItem = (description, sourcepos) => {
+  const descriptionLines = description.split(NEWLINE);
+  const startIndex = getSourceposRows(sourcepos)[0];
+
+  if (descriptionLines[startIndex].includes('[~]')) {
+    descriptionLines[startIndex] = descriptionLines[startIndex].replace('[~]', '[ ]');
+  }
+
+  return {
+    newDescription: descriptionLines.join(NEWLINE),
+  };
+};
+
 /**
  * Given a title and description for a task:
  *

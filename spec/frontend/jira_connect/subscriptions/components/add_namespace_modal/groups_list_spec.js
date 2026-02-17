@@ -1,4 +1,10 @@
-import { GlAlert, GlLoadingIcon, GlSearchBoxByType, GlPagination } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+  GlPagination,
+  GlFormCheckbox,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -64,6 +70,7 @@ describe('GroupsList', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findGroupsList = () => wrapper.findByTestId('groups-list');
   const findPagination = () => wrapper.findComponent(GlPagination);
+  const findTopLevelOnlyCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   describe('when groups are loading', () => {
     it('renders loading icon', async () => {
@@ -165,6 +172,7 @@ describe('GroupsList', () => {
               page: 1,
               perPage: DEFAULT_GROUPS_PER_PAGE,
               search: mockSearchTeam,
+              top_level_only: false,
             },
             mockAccessToken,
           );
@@ -244,6 +252,7 @@ describe('GroupsList', () => {
                   page: 1,
                   perPage: DEFAULT_GROUPS_PER_PAGE,
                   search: expectedSearchValue,
+                  top_level_only: false,
                 },
                 mockAccessToken,
               );
@@ -284,6 +293,7 @@ describe('GroupsList', () => {
             page: 2,
             perPage: DEFAULT_GROUPS_PER_PAGE,
             search: '',
+            top_level_only: false,
           },
           mockAccessToken,
         );
@@ -306,6 +316,7 @@ describe('GroupsList', () => {
               page: expectedPage,
               perPage: DEFAULT_GROUPS_PER_PAGE,
               search: expectedSearchTerm,
+              top_level_only: false,
             },
             mockAccessToken,
           );
@@ -338,9 +349,81 @@ describe('GroupsList', () => {
           page: 1,
           perPage: DEFAULT_GROUPS_PER_PAGE,
           search: '',
+          top_level_only: false,
         },
         mockAccessToken,
       );
+    });
+  });
+  describe('top-level only checkbox', () => {
+    const totalItems = DEFAULT_GROUPS_PER_PAGE + 1;
+    const mockGroups = createMockGroups(totalItems);
+    beforeEach(() => {
+      fetchGroups.mockResolvedValue({
+        headers: { 'X-PAGE': 1, 'X-TOTAL': totalItems },
+        data: mockGroups,
+      });
+      createComponent();
+    });
+
+    it('renders the checkbox', () => {
+      expect(findTopLevelOnlyCheckbox().exists()).toBe(true);
+      expect(findTopLevelOnlyCheckbox().text()).toBe('Show only top-level groups');
+    });
+
+    it('checkbox is unchecked by default', () => {
+      expect(findTopLevelOnlyCheckbox().props('checked')).toBe(false);
+    });
+
+    describe('when checkbox is checked', () => {
+      beforeEach(() => {
+        findTopLevelOnlyCheckbox().vm.$emit('input', true);
+        findTopLevelOnlyCheckbox().vm.$emit('change', true);
+      });
+
+      it('calls `fetchGroups` with top_level_only parameter', () => {
+        expect(fetchGroups).toHaveBeenCalledWith(
+          mockGroupsPath,
+          {
+            minAccessLevel: 40,
+            page: 1,
+            perPage: DEFAULT_GROUPS_PER_PAGE,
+            search: '',
+            top_level_only: true,
+          },
+          mockAccessToken,
+        );
+      });
+    });
+
+    describe('when on page 2 and checkbox is toggled', () => {
+      beforeEach(() => {
+        findPagination().vm.$emit('input', 2);
+
+        fetchGroups.mockClear();
+        fetchGroups.mockResolvedValue({
+          headers: { 'X-PAGE': 1, 'X-TOTAL': 1 },
+          data: [mockGroup1],
+        });
+
+        findTopLevelOnlyCheckbox().vm.$emit('input', true);
+        findTopLevelOnlyCheckbox().vm.$emit('change', true);
+      });
+
+      it('resets page to 1 when toggled', () => {
+        expect(fetchGroups).toHaveBeenCalledWith(
+          mockGroupsPath,
+          {
+            minAccessLevel: 40,
+            page: 1,
+            perPage: DEFAULT_GROUPS_PER_PAGE,
+            search: '',
+            top_level_only: true,
+          },
+          mockAccessToken,
+        );
+        expect(findPagination().exists()).toBe(false);
+      });
     });
   });
 
@@ -391,6 +474,7 @@ describe('GroupsList', () => {
             page: 2,
             perPage: DEFAULT_GROUPS_PER_PAGE,
             search: '',
+            top_level_only: false,
           },
           mockAccessToken,
         );

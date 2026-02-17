@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     isStatisticsEmpty() {
-      return this.project?.statistics == null;
+      return !this.project?.statistics;
     },
     totalUsage() {
       if (!this.isStatisticsEmpty) {
@@ -88,10 +88,6 @@ export default {
     },
 
     sections() {
-      if (!this.project?.statistics) {
-        return null;
-      }
-
       const {
         buildArtifactsSize,
         lfsObjectsSize,
@@ -103,7 +99,7 @@ export default {
       } = this.project.statistics;
 
       if (storageSize === 0) {
-        return null;
+        return [];
       }
 
       return [

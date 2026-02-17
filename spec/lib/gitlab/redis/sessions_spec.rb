@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Redis::Sessions, feature_category: :shared do
+RSpec.describe Gitlab::Redis::Sessions, feature_category: :redis do
   include_examples "redis_new_instance_shared_examples", 'sessions', Gitlab::Redis::SharedState
 
   describe '#store' do

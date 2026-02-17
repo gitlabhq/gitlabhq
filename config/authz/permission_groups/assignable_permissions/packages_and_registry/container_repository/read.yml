@@ -1,0 +1,9 @@
+---
+name: read_container_repository
+description: Grants the ability to read container repositories
+boundaries:
+  - project
+  - group
+permissions:
+  - read_container_repository
+  - read_container_repository_tag

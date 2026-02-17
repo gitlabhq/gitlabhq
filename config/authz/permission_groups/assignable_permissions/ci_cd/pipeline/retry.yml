@@ -1,7 +1,0 @@
----
-name: retry_pipeline
-description: Grants the ability to retry pipelines
-permissions:
-  - retry_pipeline
-boundaries:
-  - project

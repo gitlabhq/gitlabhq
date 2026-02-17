@@ -23,9 +23,13 @@ Configure editor extensions settings for your GitLab instance.
 
 {{< /history >}}
 
-You can configure GitLab Workflow extension for VS Code to connect and authenticate with GitLab using an OAuth application ID.
+You can configure editor extensions to connect and authenticate with GitLab
+using an OAuth application ID. The configuration steps differ depending on
+your IDE.
 
-To create an OAuth application:
+### VS Code
+
+To create an OAuth application for VS Code:
 
 1. Create an [instance-wide application](../../integration/oauth_provider.md#create-an-instance-wide-application).
 1. In **Redirect URI**, enter `vscode://gitlab.gitlab-workflow/authentication`.
@@ -35,6 +39,17 @@ To create an OAuth application:
 1. Select **Submit**.
 1. Copy the **Application ID**. Use this for the `gitlab.authentication.oauthClientIds` setting in your VS Code configuration.
 
+### JetBrains IDEs
+
+To create an OAuth application for JetBrains IDEs:
+
+1. Create an [instance-wide application](../../integration/oauth_provider.md#create-an-instance-wide-application).
+1. In **Redirect URI**, enter `http://127.0.0.1/api/oauth/gitlab/authorization`.
+1. Select the `api` scope.
+1. Select **Submit**.
+1. Copy the **Application ID**. Use this when configuring the GitLab Duo plugin
+   in your JetBrains IDE.
+
 ## Require a minimum language server version
 
 {{< history >}}
@@ -43,13 +58,10 @@ To create an OAuth application:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `enforce_language_server_version`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-On GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `enforce_language_server_version`.
+> On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+> On GitLab Dedicated, this feature is available.
 
 By default, any GitLab Language Server version can connect to your GitLab instance when
 personal access tokens are enabled. To block requests from clients on older versions,
@@ -71,7 +83,7 @@ Prerequisites:
 To enforce a minimum GitLab Language Server version:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Check **Language Server restrictions enabled**.
 1. Under **Minimum GitLab Language Server client version**, enter a valid GitLab Language Server version.
@@ -79,15 +91,12 @@ To enforce a minimum GitLab Language Server version:
 To allow any GitLab Language Server clients:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Uncheck **Language Server restrictions enabled**.
 1. Under **Minimum GitLab Language Server client version**, enter a valid GitLab Language Server version.
 
-{{< alert type="note" >}}
-
-Allowing all requests is not recommended. It can cause incompatibility if your
-GitLab version is ahead of your extension version. You should update your extensions
-to receive the latest feature improvements, bug fixes, and security fixes.
-
-{{< /alert >}}
+> [!note]
+> Allowing all requests is not recommended. It can cause incompatibility if your
+> GitLab version is ahead of your extension version. You should update your extensions
+> to receive the latest feature improvements, bug fixes, and security fixes.

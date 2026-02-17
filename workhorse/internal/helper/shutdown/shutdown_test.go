@@ -23,14 +23,14 @@ func (m *mockCloser) Shutdown(ctx context.Context) error {
 }
 
 func TestShutdownAll_EmptyClosers(t *testing.T) {
-	err := ShutdownAll(context.Background())
+	err := All(context.Background())
 	require.NoError(t, err)
 }
 
 func TestShutdownAll_SingleCloser(t *testing.T) {
 	closer := &mockCloser{}
 
-	err := ShutdownAll(context.Background(), closer)
+	err := All(context.Background(), closer)
 	require.NoError(t, err)
 	require.Equal(t, 1, closer.callCount)
 }
@@ -39,7 +39,7 @@ func TestShutdownAll_MultipleClosers(t *testing.T) {
 	closer1 := &mockCloser{}
 	closer2 := &mockCloser{}
 
-	err := ShutdownAll(context.Background(), closer1, closer2)
+	err := All(context.Background(), closer1, closer2)
 	require.NoError(t, err)
 	require.Equal(t, 1, closer1.callCount)
 	require.Equal(t, 1, closer2.callCount)
@@ -60,7 +60,7 @@ func TestShutdownAll_WithErrors(t *testing.T) {
 		},
 	}
 
-	err := ShutdownAll(context.Background(), closer1, closer2)
+	err := All(context.Background(), closer1, closer2)
 	require.Error(t, err)
 	require.ErrorIs(t, err, expectedErr1)
 	require.ErrorIs(t, err, expectedErr2)
@@ -77,7 +77,7 @@ func TestShutdownAll_ContextTimeout(t *testing.T) {
 		},
 	}
 
-	err := ShutdownAll(ctx, closer)
+	err := All(ctx, closer)
 	require.Error(t, err)
 	require.ErrorIs(t, err, context.DeadlineExceeded)
 }
@@ -101,7 +101,7 @@ func TestShutdownAll_MixedSuccessAndFailure(t *testing.T) {
 		},
 	}
 
-	err := ShutdownAll(context.Background(), closer1, closer2, closer3)
+	err := All(context.Background(), closer1, closer2, closer3)
 	require.Error(t, err)
 	require.ErrorIs(t, err, expectedErr)
 }

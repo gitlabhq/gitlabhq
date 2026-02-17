@@ -19,14 +19,11 @@ title: Geo proxying for secondary sites
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
-Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
+> Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
 
 Secondary sites behave as full read-write GitLab instances. They transparently proxy all operations to the primary site, with [some notable exceptions](#features-accelerated-by-secondary-geo-sites).
 
@@ -281,9 +278,8 @@ When proxying is disabled, users who access only the secondary site cannot prope
 
 As a workaround, you must access the primary site at least once to properly accept terms and conditions. After accepted on the primary, this information is replicated to secondary sites through normal Geo synchronization.
 
-{{< alert type="note" >}}
-This limitation affects organizations that require documented acceptance of terms and conditions for compliance or legal purposes. Ensure users have access to the primary site for the initial terms acceptance.
-{{< /alert >}}
+> [!note]
+> This limitation affects organizations that require documented acceptance of terms and conditions for compliance or legal purposes. Ensure users have access to the primary site for the initial terms acceptance.
 
 ### Disable proxy on all secondary sites
 

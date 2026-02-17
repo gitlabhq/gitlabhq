@@ -12,6 +12,7 @@ import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initTimeline } from '~/rapid_diffs/app/init_timeline';
+import TaskList from '~/task_list';
 
 jest.mock('~/alert');
 jest.mock('~/lib/graphql');
@@ -22,6 +23,7 @@ jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
 jest.mock('~/rapid_diffs/app/init_timeline');
+jest.mock('~/task_list');
 
 describe('Commit Rapid Diffs app', () => {
   let axiosMock;
@@ -37,12 +39,12 @@ describe('Commit Rapid Diffs app', () => {
     lazy: false,
   };
 
-  const createApp = (data = {}) => {
+  const createApp = (data = {}, options = {}) => {
     setHTMLFixture(
       `
       <main>
-        <div class="container-fluid">
-          <div
+        <div class="container-fluid ${options.fixedLayout ? 'js-fixed-layout container-limited' : ''}" data-diffs-container>
+        <div
             data-rapid-diffs
             data-app-data='${JSON.stringify({ ...appData, ...data })}'
           >
@@ -57,7 +59,7 @@ describe('Commit Rapid Diffs app', () => {
             <div data-stream-remaining-diffs></div>
             <div data-commit-timeline></div>
           </div>
-        </div>
+       </div>
       </main>
       `,
     );
@@ -100,16 +102,35 @@ describe('Commit Rapid Diffs app', () => {
     });
   });
 
-  it('switches container layout', async () => {
-    const discussions = [{}];
-    axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
-    createApp();
-    await app.init();
-    useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
-    useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
-    expect(document.querySelector('.container-fluid').classList.contains('container-limited')).toBe(
-      true,
-    );
+  describe('container layout switching', () => {
+    beforeEach(() => {
+      const discussions = [{}];
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
+    });
+
+    it('switches container layout when switching view types with fixed layout', async () => {
+      // eslint-disable-next-line vue/one-component-per-file
+      createApp({}, { fixedLayout: true });
+      await app.init();
+      const diffsContainer = document.querySelector('[data-diffs-container]');
+      expect(diffsContainer.classList.contains('container-limited')).toBe(true);
+      useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(true);
+    });
+
+    it('does not switch container layout when js-fixed-layout is not present', async () => {
+      // eslint-disable-next-line vue/one-component-per-file
+      createApp({}, { fixedLayout: false });
+      await app.init();
+      const diffsContainer = document.querySelector('[data-diffs-container]');
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+    });
   });
 
   it('initializes timeline', async () => {
@@ -121,5 +142,57 @@ describe('Commit Rapid Diffs app', () => {
         discussionsEndpoint: appData.discussionsEndpoint,
       }),
     );
+  });
+
+  describe('TaskList integration', () => {
+    it('initializes TaskList with correct configuration', async () => {
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+      createApp();
+      await app.init();
+
+      expect(TaskList).toHaveBeenCalledWith({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '[data-rapid-diffs]',
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      });
+    });
+
+    it('updates note text on TaskList success', async () => {
+      const noteId = 'note-123';
+      const discussions = [
+        {
+          id: 'discussion-1',
+          notes: [{ id: noteId, note: 'Original note text' }],
+        },
+      ];
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
+      createApp();
+      await app.init();
+
+      const taskListConfig = TaskList.mock.calls[0][0];
+      const updatedNote = 'Updated note text';
+
+      taskListConfig.onSuccess({ id: noteId, note: updatedNote });
+
+      expect(useDiffDiscussions().updateNoteTextById).toHaveBeenCalledWith(noteId, updatedNote);
+    });
+
+    it('shows alert on TaskList error', async () => {
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+      createApp();
+      await app.init();
+
+      const taskListConfig = TaskList.mock.calls[0][0];
+      const error = new Error('TaskList failed');
+
+      taskListConfig.onError(error);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while editing your comment. Please try again.',
+        error,
+      });
+    });
   });
 });

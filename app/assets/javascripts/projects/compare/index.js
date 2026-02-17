@@ -21,6 +21,7 @@ export default function init() {
 
   return new Vue({
     el,
+    name: 'CompareAppRoot',
     components: {
       CompareApp,
     },

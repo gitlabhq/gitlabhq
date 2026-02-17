@@ -116,7 +116,7 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
     end
   end
 
-  context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
+  context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9307' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }
 
@@ -169,6 +169,25 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
 
         expect(rendered).to include('_paq.push(["disableCookies"])')
       end
+    end
+  end
+
+  context 'for viewport meta tag' do
+    it 'includes viewport meta tag with device-width and initial-scale' do
+      allow(view).to receive_message_chain(:browser, :device, :iphone?).and_return(false)
+
+      render
+
+      expect(rendered).to include('name="viewport"')
+      expect(rendered).to include('content="width=device-width, initial-scale=1"')
+    end
+
+    it 'includes maximum-scale=1 on iPhone to prevent auto-zoom on input focus' do
+      allow(view).to receive_message_chain(:browser, :device, :iphone?).and_return(true)
+
+      render
+
+      expect(rendered).to include('content="width=device-width, initial-scale=1, maximum-scale=1"')
     end
   end
 

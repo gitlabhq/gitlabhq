@@ -20,7 +20,7 @@ Unless otherwise noted, all of this content applies to both GitLab.com and GitLa
 
 ## Rust SCM
 
-- [GitLab Duo Code Suggestions](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) `[GitLab Built]`
+- [GitLab Duo Code Suggestions](../../../user/duo_agent_platform/code_suggestions/supported_extensions.md#supported-languages-by-ide) and [Code Suggestions (Classic)](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) `[GitLab Built]`
 
 ## Rust CI
 
@@ -37,6 +37,6 @@ Unless otherwise noted, all of this content applies to both GitLab.com and GitLa
 ## Rust Security and SBOM
 
 - [Testing Code Coverage](../../../ci/testing/code_coverage/_index.md#coverage-regex-patterns) `[GitLab Built]`
-- [GitLab SAST Scanning](../../../user/application_security/sast/_index.md#supported-languages-and-frameworks)  `[GitLab Built]`- requires custom ruleset be created.
-- [Rust License Scanning (Currently in Prerelease)](https://gitlab.com/groups/gitlab-org/-/epics/13093)  `[GitLab Built]`
+- [GitLab SAST Scanning](../../../user/application_security/sast/_index.md#supported-languages-and-frameworks) `[GitLab Built]`- requires custom ruleset be created.
+- [Rust License Scanning (Currently in Prerelease)](https://gitlab.com/groups/gitlab-org/-/epics/13093) `[GitLab Built]`
 - [CodeSecure CodeSonar Embedded C Deep SAST Scanner as a GitLab CI/CD Component](https://gitlab.com/explore/catalog/codesonar/components/codesonar-ci) `[Rust Partner Built]` `[CI Solution]` - supports deep Abstract Execution analysis by watching compiles. Supports GitLabs SAST JSON which enables the findings throughout GitLab Ultimate security features. Features MISRA support and direct support for many Embedded Systems compilers.

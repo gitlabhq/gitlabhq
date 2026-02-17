@@ -14,7 +14,7 @@ describe('ReviewerTitle component', () => {
 
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
     const apolloProvider = createMockApollo([
-      [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { workspace: null } })],
+      [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { namespace: null } })],
       [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
     ]);
 

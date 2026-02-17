@@ -17,6 +17,41 @@ RSpec.describe Projects::TagsController, feature_category: :source_code_manageme
       expect(assigns(:tags).map(&:name)).to include('v1.1.0', 'v1.0.0')
     end
 
+    context 'when batch loading signatures' do
+      let(:per_page_limit) { 2 }
+      let(:tags) do
+        Array.new(5) do |i|
+          instance_double(
+            Gitlab::Git::Tag,
+            name: "tag#{i}",
+            target: "sha#{i}",
+            dereferenced_target: nil
+          )
+        end
+      end
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(per_page_limit)
+
+        allow_next_instance_of(TagsFinder) do |finder|
+          allow(finder).to receive(:execute).and_return(tags)
+        end
+
+        allow(TagsFinder).to receive(:batch_load_tag_signature_data)
+      end
+
+      it 'only batch loads signatures for tags on the current page' do
+        get :index, params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project
+        }
+
+        expect(TagsFinder).to have_received(:batch_load_tag_signature_data) do |paginated_tags|
+          expect(paginated_tags.map(&:name)).to eq(tags.first(per_page_limit).map(&:name))
+        end
+      end
+    end
+
     context 'default sort for tags' do
       it 'sorts tags by recently updated' do
         subject

@@ -23,7 +23,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "List a project's visible events" do
         success Entities::Event
-        tags ['project_events']
+        tags ['events']
       end
       params do
         use :pagination

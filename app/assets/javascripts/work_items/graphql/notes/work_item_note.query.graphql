@@ -3,6 +3,8 @@
 query workItemNote($id: NoteID!) {
   note(id: $id) {
     id
+    noteableType
+    noteableId
     discussion {
       id
       notes {

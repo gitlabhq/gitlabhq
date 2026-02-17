@@ -78,14 +78,14 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
         { access: 'selected_memberships', namespace_id: ref(:project_namespace_id), permissions: ['read_job'] }]
     # multiple granularScopes input
     [
-      { access: 'INSTANCE', permissions: ['retry_job'] },
-      { access: 'USER', permissions: ['play_job'] },
+      { access: 'INSTANCE', permissions: ['run_job'] },
+      { access: 'USER', permissions: ['run_job'] },
       { access: 'SELECTED_MEMBERSHIPS', permissions: ['read_job'],
         resource_ids: [ref(:group_global_id), ref(:project_global_id)] }
     ] |
       [
-        { access: 'instance', namespace_id: nil, permissions: ['retry_job'] },
-        { access: 'user', namespace_id: nil, permissions: ['play_job'] },
+        { access: 'instance', namespace_id: nil, permissions: ['run_job'] },
+        { access: 'user', namespace_id: nil, permissions: ['run_job'] },
         { access: 'selected_memberships', namespace_id: ref(:group_id), permissions: ['read_job'] },
         { access: 'selected_memberships', namespace_id: ref(:project_namespace_id), permissions: ['read_job'] }
       ]
@@ -102,13 +102,52 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
          'resource_ids' => [non_existing_resource_id] }]
     end
 
-    it 'returns a resource not available error' do
+    it 'does not create a personal access token' do
       expect { mutation_request }.not_to change { current_user.personal_access_tokens.count }
+    end
+  end
 
-      expect_graphql_errors_to_include(
-        "The resource that you are attempting to access does not exist " \
-          "or you don't have permission to perform this action"
-      )
+  # ensures projects and groups are batch loaded when building granular scopes
+  # that get passed to ::Authn::PersonalAccessTokens::CreateGranularService
+  describe 'resources batch loading', :request_store, :use_sql_query_cache do
+    context 'with multiple projects' do
+      let_it_be(:another_project) { create(:project, developers: [current_user]) }
+
+      let(:granular_scope_input) do
+        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
+           'resource_ids' => [project_global_id, another_project.to_global_id.to_s] }]
+      end
+
+      it 'batch loads the projects' do
+        query_recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          mutation_request
+        end
+
+        project_queries = query_recorder.occurrences.filter do |q|
+          q.match(Regexp.new('SELECT.*FROM \"projects"'))
+        end
+        expect(project_queries.count).to eq(1)
+      end
+    end
+
+    context 'with multiple groups' do
+      let_it_be(:another_group) { create(:group, developers: [current_user]) }
+
+      let(:granular_scope_input) do
+        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
+           'resource_ids' => [group_global_id, another_group.to_global_id.to_s] }]
+      end
+
+      it 'batch loads the groups' do
+        query_recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          mutation_request
+        end
+
+        group_queries = query_recorder.occurrences.filter do |q|
+          q.match(Regexp.new('SELECT.*FROM \"namespaces".*WHERE.*type\" = \'Group'))
+        end
+        expect(group_queries.count).to eq(1)
+      end
     end
   end
 

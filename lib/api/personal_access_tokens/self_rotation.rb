@@ -24,7 +24,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 405, message: 'Method not allowed' }
           ]
-          tags %w[personal_access_tokens]
+          tags %w[access_tokens]
         end
         params do
           optional :expires_at,

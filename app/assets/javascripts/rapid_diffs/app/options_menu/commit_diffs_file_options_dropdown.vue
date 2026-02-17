@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
@@ -14,6 +14,10 @@ export default {
       type: Array,
       required: true,
     },
+    fileId: {
+      type: String,
+      required: true,
+    },
     oldPath: {
       type: String,
       required: true,
@@ -24,7 +28,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(useDiffDiscussions, ['findDiscussionsForFile']),
+    ...mapState(useDiffDiscussions, ['findDiscussionsForFile']),
     fileDiscussions() {
       return this.findDiscussionsForFile({
         oldPath: this.oldPath,
@@ -75,5 +79,11 @@ export default {
 </script>
 
 <template>
-  <diff-file-options-dropdown ref="diff-file-options-dropdown" :items="groups" />
+  <diff-file-options-dropdown
+    ref="diff-file-options-dropdown"
+    :items="groups"
+    :file-id="fileId"
+    :old-path="oldPath"
+    :new-path="newPath"
+  />
 </template>

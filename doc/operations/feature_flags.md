@@ -44,7 +44,7 @@ with GitLab, so it's up to developers to use a compatible client library and
 
 To create and enable a feature flag:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Select **New feature flag**.
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
@@ -134,12 +134,9 @@ but not anonymous users.
 [Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
 behavior. You should use percent rollout because it's more flexible than percent of users
 
-{{< alert type="warning" >}}
-
-If the percent of users strategy is selected, then the Unleash client **must** be given a user
-ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
-
-{{< /alert >}}
+> [!warning]
+> If the percent of users strategy is selected, then the Unleash client **must** be given a user
+> ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
 ### User IDs
 
@@ -150,12 +147,9 @@ Enter user IDs as a comma-separated list of values (for example,
 `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on).
 User IDs are identifiers for your application users. They do not need to be GitLab users.
 
-{{< alert type="warning" >}}
-
-The Unleash client **must** be given a user ID for the feature to be enabled for
-target users. See the [Ruby example](#ruby-application-example) below.
-
-{{< /alert >}}
+> [!warning]
+> The Unleash client **must** be given a user ID for the feature to be enabled for
+> target users. See the [Ruby example](#ruby-application-example) below.
 
 ### User List
 
@@ -173,7 +167,7 @@ For example:
 
 To create a user list:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Select **View user lists**
 1. Select **New user list**.
@@ -187,7 +181,7 @@ When viewing a list, you can rename it by selecting **Edit** ({{< icon name="pen
 
 To add users to a user list:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Select **Edit** ({{< icon name="pencil" >}}) next to the list you want to add users to.
 1. Select **Add Users**.
@@ -199,7 +193,7 @@ To add users to a user list:
 
 To remove users from a user list:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Select **Edit** ({{< icon name="pencil" >}}) next to the list you want to change.
 1. Select **Remove** ({{< icon name="remove" >}}) next to the ID you want to remove.
@@ -217,7 +211,7 @@ To remove the feature flag from the code during cleanup, find any project refere
 
 To search for code references of a feature flag:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Edit the feature flag you want to remove.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}).
@@ -227,7 +221,7 @@ To search for code references of a feature flag:
 
 To disable a feature flag for a specific environment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. For the feature flag you want to disable, select **Edit** ({{< icon name="pencil" >}}).
 1. To disable the flag:
@@ -238,7 +232,7 @@ To disable a feature flag for a specific environment:
 
 To disable a feature flag for all environments:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. For the feature flag you want to disable, slide the Status toggle to **Disabled**.
 
@@ -253,7 +247,7 @@ Then prepare your application with a client library.
 
 To get the access credentials that your application needs to communicate with GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Feature flags**.
 1. Select **Configure** to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.

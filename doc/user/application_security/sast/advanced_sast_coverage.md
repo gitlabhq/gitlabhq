@@ -189,8 +189,5 @@ GitLab Advanced SAST finds the following types of weaknesses in each programming
 | [CWE-1341](https://cwe.mitre.org/data/definitions/1341.html) | Multiple Releases of Same Resource or Handle                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | [CWE-1419](https://cwe.mitre.org/data/definitions/1419.html) | Incorrect Initialization of Resource                                                                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 
-{{< alert type="note" >}}
-
-Did this page answer the question you had? If not, comment on [epic 15343](https://gitlab.com/groups/gitlab-org/-/epics/15343) to share your use case.
-
-{{< /alert >}}
+> [!note]
+> Did this page answer the question you had? If not, comment on [epic 15343](https://gitlab.com/groups/gitlab-org/-/epics/15343) to share your use case.

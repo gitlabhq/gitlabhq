@@ -1,0 +1,19 @@
+---
+description: GCP offer banner is dismissed
+category: gcp_signup_offer_dismiss
+action: dismiss
+extra_properties:
+identifiers:
+product_group: environments
+milestone: '16.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119940
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: 'gcp_signup_offer_banner'
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221007
+milestone_removed: '18.9'

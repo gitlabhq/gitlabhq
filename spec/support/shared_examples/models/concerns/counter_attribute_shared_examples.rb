@@ -85,7 +85,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
                 incremented_by = 4
                 db_state = model.read_attribute(attribute)
 
-                model.send("increment_#{attribute}".to_sym, incremented_by)
+                model.send(:"increment_#{attribute}", incremented_by)
 
                 expect(model.send(attribute)).to eq(db_state + incremented_by)
               end

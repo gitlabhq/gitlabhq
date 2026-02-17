@@ -1,21 +1,15 @@
-import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
 import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
-import {
-  protectionPropsMock,
-  protectionEmptyStatePropsMock,
-  statusChecksRulesMock,
-  deployKeysMock,
-} from './mock_data';
+import { protectionPropsMock, protectionEmptyStatePropsMock, deployKeysMock } from './mock_data';
 
 describe('Branch rule protection', () => {
   let wrapper;
 
-  const createComponent = (glFeatures = { editBranchRules: true }, props = protectionPropsMock) => {
+  const createComponent = (props = protectionPropsMock) => {
     wrapper = shallowMountExtended(Protection, {
       propsData: {
         header: 'Allowed to merge',
@@ -30,7 +24,6 @@ describe('Branch rule protection', () => {
           template: '<div>Stubbed GroupInheritancePopover</div>',
         },
       },
-      provide: { glFeatures },
     });
   };
 
@@ -49,7 +42,6 @@ describe('Branch rule protection', () => {
           template: '<div>Stubbed GroupInheritancePopover</div>',
         },
       },
-      provide: { glFeatures: { editBranchRules: true } },
     });
   };
 
@@ -59,7 +51,6 @@ describe('Branch rule protection', () => {
   const findDisabledByPolicyPopover = () => wrapper.findComponent(DisabledByPolicyPopover);
   const findGroupInheritancePopover = () => wrapper.findComponent(GroupInheritancePopover);
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
-  const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
   const findEmptyState = () => wrapper.findByTestId('protection-empty-state');
   const findEditButton = () => wrapper.findByTestId('edit-rule-button');
@@ -73,13 +64,13 @@ describe('Branch rule protection', () => {
   });
 
   it('renders empty state for Status Checks when there is none', () => {
-    createComponent({ editBranchRules: true }, { ...protectionEmptyStatePropsMock });
+    createComponent({ ...protectionEmptyStatePropsMock });
 
     expect(findEmptyState().text()).toBe('No status checks');
   });
 
   it('renders a help text when provided', () => {
-    createComponent({ editBranchRules: true }, { helpText: 'Help text' });
+    createComponent({ helpText: 'Help text' });
 
     expect(findCrudComponent().text()).toContain('Help text');
   });
@@ -102,10 +93,7 @@ describe('Branch rule protection', () => {
   });
 
   it('renders a protection row for deploy keys', () => {
-    createComponent(
-      { editBranchRules: false },
-      { ...protectionPropsMock, deployKeys: deployKeysMock },
-    );
+    createComponent({ ...protectionPropsMock, deployKeys: deployKeysMock });
     expect(findProtectionRows().at(2).props()).toMatchObject({
       showDivider: true,
       deployKeys: deployKeysMock,
@@ -115,31 +103,28 @@ describe('Branch rule protection', () => {
 
   describe('When `isEditAvailable` prop is set to true', () => {
     it('renders `Edit` button', () => {
-      createComponent({ editBranchRules: true }, { isEditAvailable: true });
+      createComponent({ isEditAvailable: true });
       expect(findEditButton().exists()).toBe(true);
     });
 
     it('does not render group inheritance popover', () => {
-      createComponent({ editBranchRules: true }, { isEditAvailable: true });
+      createComponent({ isEditAvailable: true });
       expect(findEditButton().props('disabled')).toBe(false);
       expect(findGroupInheritancePopover().exists()).toBe(false);
     });
 
     describe('when `isGroupLevel` is true', () => {
       it('renders group inheritance popover and disabled `Edit` button, when protection is on', () => {
-        createComponent({ editBranchRules: true }, { isGroupLevel: true, isEditAvailable: true });
+        createComponent({ isGroupLevel: true, isEditAvailable: true });
 
         expect(findEditButton().props('disabled')).toBe(true);
         expect(findGroupInheritancePopover().exists()).toBe(true);
       });
     });
 
-    describe('when protected by security policies', () => {
+    describe('when protected by enforced security policies', () => {
       beforeEach(() => {
-        createComponent(
-          { editBranchRules: true },
-          { isEditAvailable: true, isProtectedByPolicy: true },
-        );
+        createComponent({ isEditAvailable: true, isProtectedByPolicy: true });
       });
 
       it('renders disabled by policy popover and disabled `Edit` button, when protection is on', () => {
@@ -147,56 +132,27 @@ describe('Branch rule protection', () => {
         expect(findDisabledByPolicyPopover().exists()).toBe(true);
       });
     });
-  });
 
-  describe('When `edit_branch_rules` FF is disabled', () => {
-    it('does not render `Edit` button', () => {
-      createComponent({ editBranchRules: false });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    describe('when headerLinkHref and headerLinkTitle are set', () => {
+    describe('when protected by warn mode security policies', () => {
       beforeEach(() => {
-        createComponent({ editBranchRules: false });
+        createComponent({ isEditAvailable: true, isProtectedByWarnPolicy: true });
       });
 
-      it('renders link to manage branch protections', () => {
-        expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
-        expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
-      });
-    });
-
-    describe('when headerLinkHref and headerLinkTitle are not set', () => {
-      beforeEach(() => {
-        createComponent(
-          { editBranchRules: false },
-          { headerLinkHref: null, headerLinkTitle: null },
-        );
+      it('renders disabled by policy popover with warn mode', () => {
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
+        expect(findDisabledByPolicyPopover().props('isProtectedByPolicy')).toBe(false);
       });
 
-      it('does not render link to manage branch protections', () => {
-        expect(findLink().exists()).toBe(false);
+      it('does not disable the `Edit` button', () => {
+        expect(findEditButton().props('disabled')).toBe(false);
       });
-    });
-
-    it('renders a protection row for status checks', () => {
-      createComponent({ editBranchRules: false }, { statusChecks: statusChecksRulesMock });
-      const statusCheck = statusChecksRulesMock[0];
-      expect(findProtectionRows().at(0).props()).toMatchObject({
-        title: statusCheck.name,
-        showDivider: false,
-        statusCheckUrl: statusCheck.externalUrl,
-      });
-
-      expect(findProtectionRows().at(1).props('showDivider')).toBe(true);
     });
   });
 
   describe('description slot', () => {
     it('renders help text when no description slot is provided', () => {
       const helpText = 'This is help text';
-      createComponent({ editBranchRules: true }, { helpText });
+      createComponent({ helpText });
 
       expect(findCrudComponent().text()).toContain(helpText);
     });

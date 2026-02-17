@@ -1,7 +1,0 @@
----
-name: erase_job
-description: Grants the ability to erase jobs
-permissions:
-  - erase_job
-boundaries:
-  - project

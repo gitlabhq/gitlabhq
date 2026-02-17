@@ -353,4 +353,83 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
       expect(decoded_token.job).to eq(job)
     end
   end
+
+  describe '.decode with verify_expiration: false' do
+    subject(:decoded_token) { described_class.decode(encoded_token, verify_expiration: false) }
+
+    context 'with a valid token' do
+      let(:encoded_token) { described_class.encode(job) }
+
+      it 'successfully decodes the token' do
+        expect(decoded_token).to be_present
+        expect(decoded_token.job).to eq(job)
+      end
+    end
+
+    context 'with an expired token' do
+      let!(:encoded_token) { described_class.encode(job) }
+
+      it 'still decodes the token' do
+        travel_to(3.hours.from_now) do
+          expect(decoded_token).to be_present
+          expect(decoded_token.job).to eq(job)
+          expect(decoded_token.expired?).to be true
+        end
+      end
+    end
+
+    context 'when signing key is not available' do
+      let(:encoded_token) { described_class.encode(job) }
+
+      before do
+        allow(Gitlab::CurrentSettings)
+          .to receive(:ci_job_token_signing_key)
+          .and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect { decoded_token }.to raise_error(RuntimeError, 'CI job token signing key is not set')
+      end
+    end
+
+    context 'when signing key results in errors' do
+      let(:encoded_token) { described_class.encode(job) }
+
+      before do
+        allow(described_class).to receive(:key).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when token is unknown' do
+      let(:encoded_token) { 'unknown-token' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#expired?' do
+    context 'when token has not expired' do
+      let(:encoded_token) { described_class.encode(job) }
+
+      it 'returns false' do
+        decoded_token = described_class.decode(encoded_token, verify_expiration: false)
+
+        expect(decoded_token.expired?).to be false
+      end
+    end
+
+    context 'when token has expired' do
+      let!(:encoded_token) { described_class.encode(job) }
+
+      it 'returns true' do
+        travel_to(3.hours.from_now) do
+          decoded_token = described_class.decode(encoded_token, verify_expiration: false)
+
+          expect(decoded_token.expired?).to be true
+        end
+      end
+    end
+  end
 end

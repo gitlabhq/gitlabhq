@@ -387,19 +387,13 @@ Instead, you can use `stub_method` to stub the method:
   end
 ```
 
-{{< alert type="note" >}}
-
-`stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
-
-{{< /alert >}}
+> [!note]
+> `stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
 
 `stub_method` does not support method existence and method arity checks.
 
-{{< alert type="warning" >}}
-
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
-
-{{< /alert >}}
+> [!warning]
+> `stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Stubbing member access level
 
@@ -418,12 +412,9 @@ it 'allows admin_project ability' do
 end
 ```
 
-{{< alert type="note" >}}
-
-Refrain from using this stub helper if the test code relies on persisting
-`project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
-
-{{< /alert >}}
+> [!note]
+> Refrain from using this stub helper if the test code relies on persisting
+> `project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
 
 #### Additional profiling metrics
 
@@ -580,12 +571,9 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 ### System / Feature tests
 
-{{< alert type="note" >}}
-
-Before writing a new system test,
-[consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
-
-{{< /alert >}}
+> [!note]
+> Before writing a new system test,
+> [consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -888,13 +876,10 @@ you can follow.
 
 Use `rubocop_spec_helper` for RuboCop related specs.
 
-{{< alert type="warning" >}}
-
-To verify that code and its specs are well-isolated from Rails, run the spec
-individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
-`spec_helper` automatically.
-
-{{< /alert >}}
+> [!warning]
+> To verify that code and its specs are well-isolated from Rails, run the spec
+> individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
+> `spec_helper` automatically.
 
 #### Maintaining fast_spec_helper specs
 
@@ -930,12 +915,9 @@ so we need to set some guidelines for their use going forward:
 
 ### Common test setup
 
-{{< alert type="note" >}}
-
-`let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
-For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
-
-{{< /alert >}}
+> [!note]
+> `let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
+> For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
 
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
@@ -1364,13 +1346,10 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-{{< alert type="note" >}}
-
-Indexing for advanced search uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
-Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
-You do not need to add `:clean_gitlab_redis_shared_state` manually.
-
-{{< /alert >}}
+> [!note]
+> Indexing for advanced search uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
+> Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
+> You do not need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 
@@ -1406,13 +1385,10 @@ This section describes how to test with events that have yet to convert to
 
 ##### Backend
 
-{{< alert type="warning" >}}
-
-Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
-Because Snowplow is **by default disabled in tests and development**, it can be hard to
-**catch exceptions** when mocking `Gitlab::Tracking`.
-
-{{< /alert >}}
+> [!warning]
+> Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
+> Because Snowplow is **by default disabled in tests and development**, it can be hard to
+> **catch exceptions** when mocking `Gitlab::Tracking`.
 
 To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.
@@ -1564,13 +1540,10 @@ That indicates that you need to include the line `using RSpec::Parameterized::Ta
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-{{< alert type="warning" >}}
-
-Only use simple values as input in the `where` block. Using procs, stateful
-objects, FactoryBot-created objects, and similar items can lead to
-[unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
-
-{{< /alert >}}
+> [!warning]
+> Only use simple values as input in the `where` block. Using procs, stateful
+> objects, FactoryBot-created objects, and similar items can lead to
+> [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
 
 <!-- vale gitlab_base.Spelling = YES -->
 

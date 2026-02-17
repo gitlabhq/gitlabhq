@@ -1,0 +1,29 @@
+# @feature_category: portfolio_management
+
+query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    currentSavedViews: savedViews(subscribedOnly: true) {
+      nodes {
+        id
+      }
+    }
+    subscribedSavedViewLimit
+    savedViews(id: $id) {
+      nodes {
+        id
+        name
+        description
+        displaySettings
+        filters
+        sort
+        subscribed
+        isPrivate: private
+        userPermissions {
+          updateSavedView
+          deleteSavedView
+        }
+      }
+    }
+  }
+}

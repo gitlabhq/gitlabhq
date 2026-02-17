@@ -74,6 +74,42 @@ RSpec.describe '1_settings', feature_category: :settings do
         expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
       end
     end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED is set to false' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = nil
+        load_settings
+      end
+
+      it 'disables product usage data' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
+      end
+    end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED is set to true' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'true')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = nil
+        load_settings
+      end
+
+      it 'enables product usage data' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(true)
+      end
+    end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED overrides configured value' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = true
+        load_settings
+      end
+
+      it 'uses the environment variable value' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
+      end
+    end
   end
 
   describe 'cell configuration' do
@@ -255,6 +291,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_background_migration_worker_ci_database
         batched_background_migration_worker_sec_database
         batched_git_ref_updates_cleanup_scheduler_worker
+        bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         ci_archive_traces_cron_worker
         ci_catalog_resources_aggregate_last30_day_usage_worker
@@ -266,6 +303,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         ci_pipelines_expire_artifacts_worker
         ci_runners_stale_machines_cleanup_worker
         ci_runner_versions_reconciliation_worker
+        ci_schedule_bulk_delete_job_artifact_cron_worker
         ci_schedule_delete_objects_worker
         ci_schedule_old_pipelines_removal_cron_worker
         ci_schedule_unlock_pipelines_in_queue_worker
@@ -298,6 +336,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         loose_foreign_keys_cleanup_worker
         loose_foreign_keys_merge_request_diff_commit_cleanup_worker
         lost_transaction_recovery_worker
+        topology_service_stale_requests_cleanup_worker
         manage_evidence_worker
         member_invitation_reminder_emails_worker
         members_expiring_worker

@@ -255,7 +255,7 @@ export default {
       :custom-emoji-path="customEmojiPath"
       @click="setAwardEmoji"
     />
-    <reply-button v-if="showReply" ref="replyButton" @startReplying="$emit('startReplying')" />
+    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('start-replying')" />
     <gl-button
       v-if="showEdit"
       v-gl-tooltip
@@ -266,7 +266,7 @@ export default {
       icon="pencil"
       :title="$options.i18n.editButtonText"
       :aria-label="$options.i18n.editButtonText"
-      @click="$emit('startEditing')"
+      @click="$emit('start-editing')"
     />
     <gl-disclosure-dropdown
       ref="dropdown"
@@ -282,7 +282,7 @@ export default {
       <gl-disclosure-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"
-        @action="emitEvent('notifyCopyDone')"
+        @action="emitEvent('notify-copy-done')"
       >
         <template #list-item>
           {{ $options.i18n.copyLinkText }}
@@ -291,7 +291,7 @@ export default {
       <gl-disclosure-dropdown-item
         v-if="showAssignUnassign"
         data-testid="assign-note-action"
-        @action="emitEvent('assignUser')"
+        @action="emitEvent('assign-user')"
       >
         <template #list-item>
           {{ assignUserActionText }}
@@ -301,7 +301,7 @@ export default {
         <gl-disclosure-dropdown-item
           v-if="canReportAbuse"
           data-testid="abuse-note-action"
-          @action="emitEvent('reportAbuse')"
+          @action="emitEvent('report-abuse')"
         >
           <template #list-item>
             {{ $options.i18n.reportAbuseText }}
@@ -311,7 +311,7 @@ export default {
           v-if="showEdit"
           data-testid="delete-note-action"
           variant="danger"
-          @action="emitEvent('deleteNote')"
+          @action="emitEvent('delete-note')"
         >
           <template #list-item>
             {{ $options.i18n.deleteNoteText }}

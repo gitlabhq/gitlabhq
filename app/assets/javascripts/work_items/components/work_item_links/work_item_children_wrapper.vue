@@ -16,6 +16,7 @@ import {
   optimisticUserPermissions,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WIDGET_TYPE_HIERARCHY,
 } from 'ee_else_ce/work_items/constants';
 import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
@@ -30,6 +31,7 @@ export default {
   components: {
     WorkItemLinkChild,
   },
+  inject: ['getWorkItemTypeConfiguration'],
   props: {
     fullPath: {
       type: String,
@@ -167,6 +169,20 @@ export default {
     this.handleDocumentKeyup = this.handleKeyUp.bind(this);
   },
   methods: {
+    shouldAutoExpandOnDrag(workItemTypeName = '') {
+      const workItemTypeConfig = this.getWorkItemTypeConfiguration(workItemTypeName);
+
+      const hierarchyWidget = workItemTypeConfig?.widgetDefinitions.find(
+        ({ type }) => type === WIDGET_TYPE_HIERARCHY,
+      );
+
+      // the work item config is not available right now and hence need fallback implementation
+
+      return (
+        hierarchyWidget?.autoExpandTreeOnMove ||
+        [WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE].includes(workItemTypeName)
+      );
+    },
     async removeChild(child) {
       try {
         const { data } = await this.$apollo.mutate({
@@ -503,10 +519,8 @@ export default {
       this.currentClientX = clientX;
       this.currentClientY = clientY;
 
-      // Check if current item is an Epic
-      if (
-        [WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE].includes(item?.workItemType.name)
-      ) {
+      // Check if current item supports moving
+      if (this.shouldAutoExpandOnDrag(item?.workItemType.name)) {
         const { top, left } = originalEvent.target.getBoundingClientRect();
 
         // Check if user has paused cursor on top of current item's boundary

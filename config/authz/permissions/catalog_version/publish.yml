@@ -1,0 +1,5 @@
+---
+name: publish_catalog_version
+description: Grants the ability to publish a CI catalog version
+boundaries:
+  - project

@@ -632,7 +632,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe 'PUT /projects/:id/repository/branches/:branch/protect' do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/protect" }
 
-    it_behaves_like 'authorizing granular token permissions', :protect_branch do
+    it_behaves_like 'authorizing granular token permissions', :create_protected_branch do
       let(:boundary_object) { project }
       let(:request) do
         put api(route, personal_access_token: pat)
@@ -806,7 +806,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe 'PUT /projects/:id/repository/branches/:branch/unprotect' do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/unprotect" }
 
-    it_behaves_like 'authorizing granular token permissions', :protect_branch do
+    it_behaves_like 'authorizing granular token permissions', :delete_protected_branch do
       let(:boundary_object) { project }
       let(:request) do
         put api(route, personal_access_token: pat)

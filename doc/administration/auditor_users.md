@@ -18,7 +18,7 @@ Auditor users have read-only access to all groups, projects, and other resources
 Auditor users:
 
 - Have read-only access to all groups and projects.
-  - Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/542815), users must have at least the Reporter role to perform read-only tasks.
+  - Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/542815), users must have the Reporter, Developer, Maintainer, or Owner role to perform read-only tasks.
 - Can have additional [permissions](../user/permissions.md) to groups and projects based on their assigned role.
 - Can create groups, projects, or snippets in their personal namespace.
 - Cannot view the Admin area or perform any administration actions.
@@ -34,13 +34,14 @@ Auditor users are sometimes used in situations where:
   manually adding the user to every project, you can create an auditor user that can access
   every project automatically.
 
-{{< alert type="note" >}}
-
-An auditor user counts as a billable user and consumes a license seat.
-
-{{< /alert >}}
+> [!note]
+> An auditor user counts as a billable user and consumes a license seat.
 
 ## Create an auditor user
+
+Prerequisites:
+
+- Administrator access.
 
 To create a new auditor user:
 

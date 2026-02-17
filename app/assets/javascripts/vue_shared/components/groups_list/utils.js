@@ -26,19 +26,13 @@ export const availableGraphQLGroupActions = ({
 
   // Rules
   const canEdit = userPermissions.viewEditPage;
-  const canArchive =
-    userPermissions.archiveGroup && !archived && !markedForDeletion && gon.features?.archiveGroup;
+  const canArchive = userPermissions.archiveGroup && !archived && !markedForDeletion;
   const canUnarchive = userPermissions.archiveGroup && isSelfArchived;
   const canRestore = userPermissions.removeGroup && isSelfDeletionScheduled;
   const { canLeave } = userPermissions;
   // Groups that are not marked for deletion can be deleted (delayed)
   const canDelete = userPermissions.removeGroup && !markedForDeletion;
-  // Groups with self deletion scheduled can be deleted immediately if the
-  // allow_immediate_namespaces_deletion application setting is enabled
-  const canDeleteImmediately =
-    userPermissions.removeGroup &&
-    isSelfDeletionScheduled &&
-    gon?.allow_immediate_namespaces_deletion;
+  const canDeleteImmediately = userPermissions.removeGroup && isSelfDeletionScheduled;
 
   // Actions mapped to rules
   const actions = {
@@ -63,8 +57,8 @@ export const renderDeleteSuccessToast = (item) => {
   // If the project/group is already marked for deletion
   if (item.markedForDeletion) {
     toast(
-      sprintf(__("Group '%{group_name}' is being deleted."), {
-        group_name: item.fullName,
+      sprintf(__('%{group_name} is being deleted.'), {
+        group_name: item.name,
       }),
     );
 
@@ -72,9 +66,8 @@ export const renderDeleteSuccessToast = (item) => {
   }
 
   toast(
-    sprintf(__("Group '%{group_name}' will be deleted on %{date}."), {
-      group_name: item.fullName,
-      date: item.permanentDeletionDate,
+    sprintf(__('%{group_name} moved to pending deletion.'), {
+      group_name: item.name,
     }),
   );
 };

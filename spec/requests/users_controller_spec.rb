@@ -901,7 +901,7 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
 
     context 'when the user does not exist' do
-      it 'will not show a signup page if registration is disabled' do
+      it 'does not show a signup page if registration is disabled' do
         stub_application_setting(signup_enabled: false)
         get user_exists_url 'foo'
 

@@ -437,12 +437,32 @@ describe('SuperTopbar', () => {
             { isSaas: true },
           );
           expect(findSignupButton().text()).toBe('Get free trial');
+          expect(findSignupButton().attributes('href')).toBe(
+            mockSidebarData.trial_registration_path,
+          );
 
           createComponent(
             {
               sidebarData: {
                 ...mockSidebarData,
                 is_logged_in: 'false',
+              },
+            },
+            { isSaas: true },
+          );
+          expect(findSignupButton().text()).toBe('Get free trial');
+          expect(findSignupButton().attributes('href')).toBe(
+            mockSidebarData.trial_registration_path,
+          );
+        });
+
+        it('falls back to registration path when trial_registration_path is not available in SaaS mode', () => {
+          const { trial_registration_path, ...sidebarDataWithoutTrial } = mockSidebarData;
+          createComponent(
+            {
+              sidebarData: {
+                ...sidebarDataWithoutTrial,
+                is_logged_in: false,
               },
             },
             { isSaas: true },

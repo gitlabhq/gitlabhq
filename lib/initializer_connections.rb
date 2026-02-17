@@ -34,13 +34,11 @@ module InitializerConnections
     return yield if Gitlab::Utils.to_boolean(ENV['SKIP_DEBUG_INITIALIZE_CONNECTIONS'], default: Rails.env.production?)
 
     callback = ->(_name, _started, _finished, _unique_id, payload) do
-      # rubocop:disable Gitlab/RailsLogger -- development/test only
-      Rails.logger.debug("InitializerConnections Query: #{payload[:sql]}")
+      logger.debug("InitializerConnections Query: #{payload[:sql]}")
 
       Gitlab::BacktraceCleaner.clean_backtrace(caller).each do |line|
-        Rails.logger.debug("InitializerConnections Backtrace: #{line}")
+        logger.debug("InitializerConnections Backtrace: #{line}")
       end
-      # rubocop:enable Gitlab/RailsLogger
     end
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -52,5 +50,9 @@ module InitializerConnections
     message = "Database connection should not be called during initializers. Read more at https://docs.gitlab.com/ee/development/rails_initializers.html#database-connections-in-initializers"
 
     raise message
+  end
+
+  def self.logger
+    @logger ||= ActiveRecord::Base.logger || Rails.logger
   end
 end

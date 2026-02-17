@@ -7,18 +7,22 @@ describe('SidebarResizer component', () => {
   useLocalStorageSpy();
 
   let wrapper;
+  let sidebarContainer;
   let sidebar;
 
   const createComponent = () => {
     document.body.innerHTML = `
-      <div class="sidebar-container"></div>
+      <div class="sidebar-container">
+        <div class="wiki-sidebar"></div>
+      </div>
     `;
 
-    sidebar = document.querySelector('.sidebar-container');
+    sidebarContainer = document.querySelector('.sidebar-container');
+    sidebar = document.querySelector('.wiki-sidebar');
 
     wrapper = mount(SidebarResizer, {
       attachTo: document.body,
-      sidebar,
+      sidebar: sidebarContainer,
     });
   };
 
@@ -37,17 +41,17 @@ describe('SidebarResizer component', () => {
   it('removes gl-hidden class from sidebar on mount', () => {
     createComponent();
 
-    expect(sidebar.classList.contains('gl-hidden')).toBe(false);
+    expect(sidebarContainer.classList.contains('gl-hidden')).toBe(false);
   });
 
   it('updates sidebar width when PanelResizer emits update:size', async () => {
     createComponent();
 
-    const initialWidth = sidebar.style.width;
+    const initialWidth = sidebarContainer.style.width;
     await wrapper.findComponent(PanelResizer).vm.$emit('update:size', 350);
 
-    expect(sidebar.style.width).toBe('350px');
-    expect(sidebar.style.width).not.toBe(initialWidth);
+    expect(sidebarContainer.style.width).toBe('350px');
+    expect(sidebarContainer.style.width).not.toBe(initialWidth);
   });
 
   it('removes transition styles when PanelResizer emits resize-start', async () => {
@@ -55,7 +59,7 @@ describe('SidebarResizer component', () => {
 
     await wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
 
-    expect(sidebar.style.transition).toBe('0s');
+    expect(sidebar.classList).not.toContain('transition-enabled');
   });
 
   it('restores transition styles when PanelResizer emits resize-end', async () => {
@@ -63,7 +67,7 @@ describe('SidebarResizer component', () => {
 
     await wrapper.findComponent(PanelResizer).vm.$emit('resize-end');
 
-    expect(sidebar.style.transition).toBe('');
+    expect(sidebar.classList).toContain('transition-enabled');
   });
 
   it('persists resize across multiple component renders', async () => {
@@ -71,13 +75,13 @@ describe('SidebarResizer component', () => {
 
     await wrapper.findComponent(PanelResizer).vm.$emit('update:size', 400);
 
-    expect(sidebar.style.width).toBe('400px');
+    expect(sidebarContainer.style.width).toBe('400px');
 
     // Simulate component re-render or page refresh
     wrapper.destroy();
     createComponent();
 
     // Check if the width is still persisted
-    expect(sidebar.style.width).toBe('400px');
+    expect(sidebarContainer.style.width).toBe('400px');
   });
 });

@@ -28,12 +28,10 @@ When configured, this extension brings the GitLab features you use every day dir
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
-- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md) and
-  [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): Interact with an AI assistant
-  directly in VS Code.
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md):
-  Suggest completions to your current line of code, or write natural-language code comments to get
-  more substantive suggestions.
+- [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) including GitLab Duo
+  Chat (Agentic), the Software Development Flow, and GitLab Duo Code Suggestions.
+- [GitLab Duo (Classic)](../../user/gitlab_duo/feature_summary.md) including GitLab
+  Duo Chat (Classic) and GitLab Duo Code Suggestions (Classic).
 
 When you view a GitLab project in VS Code, the extension shows you information about your current branch:
 
@@ -48,13 +46,15 @@ After you install and set up the extension, you can access the following feature
 
 - GitLab Workflow: On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
 - GitLab Duo Chat (Agentic): On the left sidebar, select **GitLab Duo Agent Platform**
-  ({{< icon name="duo-agentic-chat" >}}).
+  ({{< icon name="duo-agentic-chat" >}}), and then select the chat tab.
+- Software Development Flow: On the left sidebar, select **GitLab Duo Agent Platform**
+  ({{< icon name="duo-agentic-chat" >}}), and then select the flows tab.
+- GitLab Duo Code Suggestions and GitLab Duo Code Suggestions (Classic): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
+  The icon will change based on the feature status.
 - GitLab Duo Chat (Classic): On the left sidebar, select **GitLab Duo Chat**
   ({{< icon name="duo-chat" >}}).
-- GitLab Duo Code Suggestions: In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
-  The icon will change based on the [feature status](../../user/project/repository/code_suggestions/set_up.md#verify-that-code-suggestions-is-on).
 
-If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-do-not-appear) for guidance.
+If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-are-unavailable) for guidance.
 
 ## Switch GitLab accounts in VS Code
 
@@ -455,5 +455,4 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)
 - [Download the GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - Extension [source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)
-- [GitLab Duo documentation](../../user/project/repository/code_suggestions/_index.md)
 - [GitLab Language Server documentation](../language_server/_index.md)

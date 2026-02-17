@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 API/DescriptionTags:
   Exclude:
-    - 'ee/lib/api/admin/search/zoekt.rb'
     - 'ee/lib/api/ai/duo_workflows/code_review.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
@@ -11,7 +10,6 @@ API/DescriptionTags:
     - 'ee/lib/api/group_repository_storage_moves.rb'
     - 'ee/lib/api/internal/ai/x_ray/scan.rb'
     - 'ee/lib/api/internal/search/zoekt.rb'
-    - 'ee/lib/api/security/vulnerability_scanning/sbom_scans.rb'
     - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/add_on_purchases.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/members.rb'
@@ -19,7 +17,6 @@ API/DescriptionTags:
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces/provision.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/subscriptions.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/users.rb'
-    - 'lib/api/files.rb'
     - 'lib/api/group_placeholder_reassignments.rb'
     - 'lib/api/internal/auto_flow.rb'
     - 'lib/api/internal/coverage.rb'
@@ -27,8 +24,4 @@ API/DescriptionTags:
     - 'lib/api/internal/lfs.rb'
     - 'lib/api/internal/pages.rb'
     - 'lib/api/project_repository_storage_moves.rb'
-    - 'lib/api/project_snapshots.rb'
-    - 'lib/api/project_templates.rb'
     - 'lib/api/snippet_repository_storage_moves.rb'
-    - 'lib/api/submodules.rb'
-    - 'lib/api/web_commits.rb'

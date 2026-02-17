@@ -107,7 +107,7 @@ Learn how to create and manage relationships between your work items with these 
 
 Prerequisites:
 
-- You must have at least the Guest role for the projects or groups of both items.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the projects or groups of both items.
 
 The general process for adding linked items is similar across all work item types:
 
@@ -138,7 +138,7 @@ For detailed information specific to each work item type, see the relevant docum
 
 Prerequisites:
 
-- You must have at least the Guest role for the projects or groups of both items.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the projects or groups of both items.
 
 To remove a linked item:
 

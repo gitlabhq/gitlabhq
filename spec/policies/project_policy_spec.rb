@@ -2959,9 +2959,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         it "enforces the expected permissions" do
           if result
-            is_expected.to be_allowed("#{user_role}_access".to_sym)
+            is_expected.to be_allowed(:"#{user_role}_access")
           else
-            is_expected.to be_disallowed("#{user_role}_access".to_sym)
+            is_expected.to be_disallowed(:"#{user_role}_access")
           end
         end
       end
@@ -3041,12 +3041,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         def update_access_level(project, feature, state)
           # builds require repository access level to the same level:
-          project.project_feature.update!('repository_access_level': state) if feature == :builds
+          project.project_feature.update!(repository_access_level: state) if feature == :builds
 
           # environments require repository and builds to be set to the same state if enabled:
           if feature == :environments
-            project.project_feature.update!('repository_access_level': state)
-            project.project_feature.update!('builds_access_level': state)
+            project.project_feature.update!(repository_access_level: state)
+            project.project_feature.update!(builds_access_level: state)
           end
 
           project.project_feature.update!("#{feature}_access_level": state)
@@ -3425,98 +3425,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_disallowed(:read_runners_registration_token) }
           it { is_expected.to be_disallowed(:update_runners_registration_token) }
         end
-      end
-    end
-  end
-
-  describe 'register_project_runners' do
-    # Override project with a version with namespace_settings
-    let(:project) { project_with_runner_registration_token }
-    let(:allow_runner_registration_token) { true }
-
-    before do
-      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
-    end
-
-    context 'admin' do
-      let(:current_user) { admin }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:register_project_runners) }
-
-        context 'with project runner registration disabled' do
-          before do
-            stub_application_setting(valid_runner_registrars: ['group'])
-          end
-
-          it { is_expected.to be_allowed(:register_project_runners) }
-
-          context 'with registration tokens disabled' do
-            let(:allow_runner_registration_token) { false }
-
-            it { is_expected.to be_disallowed(:register_project_runners) }
-          end
-        end
-
-        context 'with specific project runner registration disabled' do
-          before do
-            project.update!(runner_registration_enabled: false)
-          end
-
-          it { is_expected.to be_allowed(:register_project_runners) }
-        end
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:register_project_runners) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:register_project_runners) }
-
-      context 'with registration tokens disabled' do
-        let(:allow_runner_registration_token) { false }
-
-        it { is_expected.to be_disallowed(:register_project_runners) }
-      end
-
-      context 'with project runner registration disabled' do
-        before do
-          stub_application_setting(valid_runner_registrars: ['group'])
-        end
-
-        it { is_expected.to be_disallowed(:register_project_runners) }
-      end
-
-      context 'with specific project runner registration disabled' do
-        before do
-          project.update!(runner_registration_enabled: false)
-        end
-
-        it { is_expected.to be_disallowed(:register_project_runners) }
-      end
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:register_project_runners) }
-
-      context 'with registration tokens disabled' do
-        let(:allow_runner_registration_token) { false }
-
-        it { is_expected.to be_disallowed(:register_project_runners) }
-      end
-    end
-
-    %w[anonymous non_member guest planner reporter developer].each do |role|
-      context "with #{role}" do
-        let(:current_user) { send(role) }
-
-        it { is_expected.to be_disallowed(:register_project_runners) }
       end
     end
   end
@@ -4353,6 +4261,46 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           expect_disallowed :set_new_issue_metadata, :set_new_work_item_metadata
         end
       end
+    end
+  end
+
+  describe ':delete_custom_attribute' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:delete_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:delete_custom_attribute) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      let(:current_user) { guest }
+
+      it { is_expected.not_to be_allowed(:delete_custom_attribute) }
+    end
+  end
+
+  describe ':update_custom_attribute' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:update_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:update_custom_attribute) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      let(:current_user) { guest }
+
+      it { is_expected.not_to be_allowed(:update_custom_attribute) }
     end
   end
 

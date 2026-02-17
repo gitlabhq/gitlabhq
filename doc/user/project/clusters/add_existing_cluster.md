@@ -18,13 +18,10 @@ title: Connect existing clusters through cluster certificates (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md)
-instead.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md)
+> instead.
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
 or instance and benefit from the integration with GitLab.
@@ -49,13 +46,10 @@ To host them on premises and with other providers,
 use either the EKS or GKE method to guide you through and enter your cluster's
 settings manually.
 
-{{< alert type="warning" >}}
-
-GitLab doesn't support `arm64` clusters. See the issue
-[Helm Tiller fails to install on `arm64` cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
-for details.
-
-{{< /alert >}}
+> [!warning]
+> GitLab doesn't support `arm64` clusters. See the issue
+> [Helm Tiller fails to install on `arm64` cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
+> for details.
 
 ### EKS clusters
 
@@ -168,12 +162,9 @@ To add a Kubernetes cluster to your project, group, or instance:
          kubectl apply -f gitlab-admin-service-account.yaml --username=admin --password=<password>
          ```
 
-         {{< alert type="note" >}}
-
-         Basic Authentication can be turned on and the password credentials
-         can be obtained using the Google Cloud Console.
-
-         {{< /alert >}}
+         > [!note]
+         > Basic Authentication can be turned on and the password credentials
+         > can be obtained using the Google Cloud Console.
 
          Output:
 
@@ -233,14 +224,11 @@ integration to work properly.
 
 ![GitLab Kubernetes cluster integration settings for enabling RBAC.](img/rbac_v13_1.png)
 
-{{< alert type="warning" >}}
-
-Disabling RBAC means that any application running in the cluster,
-or user who can authenticate to the cluster, has full API access. This is a
-[security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
-and may not be desirable.
-
-{{< /alert >}}
+> [!warning]
+> Disabling RBAC means that any application running in the cluster,
+> or user who can authenticate to the cluster, has full API access. This is a
+> [security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
+> and may not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 

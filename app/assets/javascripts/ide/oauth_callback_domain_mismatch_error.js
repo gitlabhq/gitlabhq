@@ -43,6 +43,7 @@ export class OAuthCallbackDomainMismatchErrorApp {
 
     return new Vue({
       el,
+      name: 'OAuthDomainMismatchErrorRoot',
       render(createElement) {
         return createElement(OAuthDomainMismatchError, {
           props: {

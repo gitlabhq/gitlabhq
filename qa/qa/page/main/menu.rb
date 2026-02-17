@@ -14,7 +14,7 @@ module QA
           element 'super-sidebar', required: true
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+        view 'app/assets/javascripts/super_sidebar/components/super_topbar.vue' do
           element 'canary-badge-link'
         end
 
@@ -34,7 +34,7 @@ module QA
           element 'user-profile-link'
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+        view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'stop-impersonation-btn'
         end
 

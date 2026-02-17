@@ -17,11 +17,12 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :verify_commit, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_commit_vars, only: [:diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_environment,
-    only: [:show, :rapid_diffs, :diff_for_path, :diff_files, :pipelines, :merge_requests]
-  before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
-  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions, :create_discussions]
+    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_commit_box_vars, only: [:show, :pipelines]
+  before_action :define_note_vars, only: [:diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
@@ -29,15 +30,24 @@ class Projects::CommitController < Projects::ApplicationController
   COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
-  urgency :low, [:pipelines, :merge_requests, :show, :rapid_diffs]
+  urgency :low, [:pipelines, :merge_requests, :show]
+
+  helper_method :rapid_diffs_presenter
 
   def show
     apply_diff_view_cookie!
 
     respond_to do |format|
       format.html do
-        @ref = commit_params_safe[:id]
-        render locals: { pagination_params: pagination_params }
+        if rapid_diffs_enabled? && !rapid_diffs_force_disabled?
+          @js_action_name = 'rapid_diffs'
+          render action: :rapid_diffs
+        else
+          define_commit_vars
+          define_note_vars
+          @ref = commit_params_safe[:id]
+          render locals: { pagination_params: pagination_params }
+        end
       end
       format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)
@@ -49,7 +59,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def discussions
-    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+    return render_404 unless rapid_diffs_enabled?
 
     all_discussions = (@grouped_diff_discussions.values.flatten + @discussions)
 
@@ -170,26 +180,28 @@ class Projects::CommitController < Projects::ApplicationController
     )
   end
 
-  def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
-
-    @files_changed_count = @commit.stats.files
-    @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
-      @commit,
-      diff_view,
-      commit_diff_options,
-      nil,
-      current_user,
-      define_environment
-    )
-
-    show
-  end
-
   private
 
+  def rapid_diffs_presenter
+    return if @commit.nil?
+
+    @rapid_diffs_presenter ||= RapidDiffs::CommitPresenter.new(
+      @commit,
+      diff_view: diff_view,
+      diff_options: commit_diff_options,
+      request_params: params,
+      current_user: current_user,
+      environment: define_environment
+    )
+  end
+
   def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :beta)
+  end
+
+  def rapid_diffs_force_disabled?
+    ::Feature.enabled?(:rapid_diffs_debug, current_user, type: :ops) &&
+      params.permit(:rapid_diffs_disabled)[:rapid_diffs_disabled] == 'true'
   end
 
   def noteable
@@ -215,7 +227,7 @@ class Projects::CommitController < Projects::ApplicationController
     params.require(:note).permit(
       :type,
       :note,
-      position: [:old_path, :new_path, :old_line, :new_line]
+      position: [:old_path, :new_path, :old_line, :new_line, :position_type, :x, :y, :width, :height]
     ).tap do |create_params|
       enrich_note_params(create_params, params[:in_reply_to_discussion_id])
     end
@@ -228,8 +240,11 @@ class Projects::CommitController < Projects::ApplicationController
       create_params[:position][:old_line] = create_params[:position][:old_line]&.to_i.presence
       create_params[:position][:new_line] = create_params[:position][:new_line]&.to_i.presence
       create_params[:type] = 'DiffNote' if create_params[:type].blank?
+      create_params[:position][:position_type] = 'text' unless create_params[:position][:position_type].present?
       create_params[:position] = enrich_position_data(create_params[:position])
     end
+
+    create_params[:type] = 'DiscussionNote' if create_params[:type].blank?
 
     create_params.merge!(noteable_params)
   end
@@ -240,8 +255,7 @@ class Projects::CommitController < Projects::ApplicationController
     position.reverse_merge!(
       'base_sha' => noteable.diff_refs.base_sha,
       'start_sha' => noteable.diff_refs.start_sha,
-      'head_sha' => noteable.diff_refs.head_sha,
-      'position_type' => 'text'
+      'head_sha' => noteable.diff_refs.head_sha
     )
 
     position
@@ -287,9 +301,11 @@ class Projects::CommitController < Projects::ApplicationController
     end
   end
 
-  def define_commit_vars
-    return git_not_found! unless commit
+  def verify_commit
+    git_not_found! unless commit
+  end
 
+  def define_commit_vars
     @diffs = commit.diffs(commit_diff_options)
   end
 
@@ -317,7 +333,7 @@ class Projects::CommitController < Projects::ApplicationController
 
         merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
         merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
-        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
+        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |_line_code, left, right|
           left + right
         end
       end
@@ -353,23 +369,10 @@ class Projects::CommitController < Projects::ApplicationController
       .find_by_id(commit_params_safe[:target_project_id])
   end
 
-  def append_info_to_payload(payload)
-    super
-
-    return unless action_name == 'show' && @diffs.present?
-
-    payload[:metadata] ||= {}
-    payload[:metadata]['meta.diffs_files_count'] = @diffs.size
-  end
-
   def rate_limit_for_expanded_diff_files
     return unless diffs_expanded?
 
     check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
-  end
-
-  def diffs_resource(options = {})
-    commit&.diffs(commit_diff_options.merge(options))
   end
 
   def complete_diff_path

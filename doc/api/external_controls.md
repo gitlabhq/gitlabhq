@@ -44,7 +44,11 @@ HTTP Headers:
 
 To compute the HMAC-SHA256 signature:
 
-1. Concatenate these values in order: timestamp + nonce + path + request body.
+1. Concatenate these values in the following order:
+   - `X-Gitlab-Timestamp`
+   - `X-Gitlab-Nonce`
+   - The entire path of the request
+   - The value of the `status` attribute, formatted as `status=<status>`
 1. Compute the HMAC-SHA256 of the concatenated string using your secret key.
 
 Supported attributes:

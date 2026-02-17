@@ -10,7 +10,7 @@ class RawUsageData < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :payload, presence: true
-  validates :recorded_at, presence: true, uniqueness: true
+  validates :recorded_at, presence: true, uniqueness: { scope: :organization_id }
 
   scope :for_current_reporting_cycle, -> do
     where('created_at >= ?', REPORTING_CADENCE.ago.beginning_of_day)

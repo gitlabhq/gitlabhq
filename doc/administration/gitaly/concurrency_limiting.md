@@ -12,15 +12,12 @@ To avoid overwhelming the servers running Gitaly, you can limit concurrency of:
 
 These limits can be fixed, or set as adaptive.
 
-{{< alert type="warning" >}}
-
-Enabling limits on your environment should be done with caution and only
-in select circumstances, such as to protect against unexpected traffic.
-When reached, limits do result in disconnects that negatively impact users.
-For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
-
-{{< /alert >}}
+> [!warning]
+> Enabling limits on your environment should be done with caution and only
+> in select circumstances, such as to protect against unexpected traffic.
+> When reached, limits do result in disconnects that negatively impact users.
+> For consistent and stable performance, you should first explore other options such as
+> adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 ## Limit RPC concurrency
 
@@ -89,12 +86,10 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-This feature is available for testing, but not ready for production use.
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 By default, RPC concurrency limits apply to all requests regardless of
 authentication status. However, you can configure separate, more restrictive
@@ -213,13 +208,10 @@ observe problems with clients that have slow internet connections.
 You can limit these processes from overwhelming your Gitaly server by setting pack-objects concurrency limits in the Gitaly configuration file. This setting limits the
 number of in-flight pack-object processes per remote IP address.
 
-{{< alert type="warning" >}}
-
-Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
-disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
-[reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
-
-{{< /alert >}}
+> [!warning]
+> Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
+> disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
+> [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 Example configuration:
 

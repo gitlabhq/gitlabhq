@@ -1,3 +1,4 @@
+# @feature_category: pipeline_composition
 query getPipelineIid($fullPath: ID!, $sha: String!) {
   project(fullPath: $fullPath) {
     id

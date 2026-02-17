@@ -4,7 +4,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { TYPENAME_CRM_ORGANIZATION } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import searchCrmOrganizationsQuery from '../queries/search_crm_organizations.query.graphql';
@@ -41,7 +41,7 @@ export default {
       return this.config.defaultOrganizations;
     },
     namespace() {
-      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+      return this.config.isProject ? NAMESPACE_PROJECT : NAMESPACE_GROUP;
     },
   },
   methods: {

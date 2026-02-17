@@ -17,6 +17,10 @@ description: Configure Geo sites.
 You can configure various settings for GitLab Geo sites. For more information, see
 [Geo documentation](geo/_index.md).
 
+Prerequisites:
+
+- Administrator access.
+
 On either the primary or secondary site:
 
 1. In the upper-right corner, select **Admin**.
@@ -81,7 +85,7 @@ You can set up a different URL for synchronization between the primary and secon
 
 The **primary** site's Internal URL is used by **secondary** sites to contact
 it. For example, to sync repositories. The name Internal URL distinguishes it from
-[External URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab),
+[External URL](https://docs.gitlab.com/omnibus/settings/configuration/#configuring-the-external-url-for-gitlab),
 which is used by users. Internal URL does not need to be a private address.
 
 The Internal URL of a **secondary** site is used by the **primary** site to
@@ -99,11 +103,8 @@ The internal URL defaults to external URL. To change it:
 When enabled, the **Admin** area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
-{{< alert type="warning" >}}
-
-We recommend using an HTTPS connection while configuring the Geo sites. To avoid
-breaking communication between **primary** and **secondary** sites when using
-HTTPS, customize your Internal URL to point to a load balancer with TLS
-terminated at the load balancer.
-
-{{< /alert >}}
+> [!warning]
+> We recommend using an HTTPS connection while configuring the Geo sites. To avoid
+> breaking communication between **primary** and **secondary** sites when using
+> HTTPS, customize your Internal URL to point to a load balancer with TLS
+> terminated at the load balancer.

@@ -5,7 +5,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import Blame from '../source_viewer/components/blame_info.vue';
-import { calculateBlameOffset, shouldRender, toggleBlameClasses } from '../source_viewer/utils';
+import { calculateBlameOffset, shouldRender, toggleBlameLineBorders } from '../source_viewer/utils';
 import blameDataQuery from '../source_viewer/queries/blame_data.query.graphql';
 import ViewerMixin from './mixins';
 import { HIGHLIGHT_CLASS_NAME, MAX_BLAME_LINES } from './constants';
@@ -97,7 +97,7 @@ export default {
     },
     showBlame: {
       handler(isVisible) {
-        toggleBlameClasses(this.blameData, isVisible);
+        toggleBlameLineBorders(this.blameData, isVisible);
         this.requestBlameInfo(this.fromLine, this.toLine);
       },
       immediate: true,
@@ -105,7 +105,7 @@ export default {
     blameData: {
       handler(blameData) {
         if (!this.showBlame) return;
-        toggleBlameClasses(blameData, true);
+        toggleBlameLineBorders(blameData, true);
       },
       immediate: true,
     },
@@ -163,6 +163,8 @@ export default {
           error.graphQLErrors?.[0]?.message || this.$options.i18n.blameErrorMessage;
         createAlert({
           message: errorMessage,
+          parent: this.$refs.fileContent?.parentElement,
+          dismissible: false,
           captureError: true,
           error,
         });
@@ -173,8 +175,16 @@ export default {
 </script>
 <template>
   <div>
-    <div class="file-content code code-syntax-highlight-theme js-syntax-highlight gl-flex">
-      <blame v-if="showBlame && blameInfoForRange.length" :blame-info="blameInfoForRange" />
+    <div class="flash-container gl-mb-3"></div>
+    <div
+      ref="fileContent"
+      class="file-content code code-syntax-highlight-theme js-syntax-highlight gl-flex"
+    >
+      <blame
+        v-if="showBlame && blameInfoForRange.length"
+        :blame-info="blameInfoForRange"
+        :project-path="projectPath"
+      />
       <div class="line-numbers !gl-px-0">
         <div v-for="line in lineNumbers" :key="line" class="diff-line-num line-links gl-flex">
           <a

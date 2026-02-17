@@ -26,7 +26,7 @@ You can also check the version automatically by using the `sudo gitlab-rake gitl
 ## Error: `Faraday::TimeoutError (execution expired)`
 
 When you use a proxy, set a custom `gitlab_rails['env']` environment variable
-named [`no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+named [`no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables/)
 with the IP address of your Elasticsearch host.
 
 ## Single-node Elasticsearch cluster status never goes from yellow to green

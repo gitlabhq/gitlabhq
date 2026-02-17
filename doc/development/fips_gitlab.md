@@ -121,19 +121,16 @@ listed here that also do not work properly in FIPS mode:
 - GitLab and FIPS do not support [DSA certificate files](../security/ssh_keys_restrictions.md#default-settings).
   If you encounter DSA certificate errors in logs, configure the [`sshHostKeys.types`](https://docs.gitlab.com/charts/charts/gitlab/webservice/#installation-command-line-options) setting to exclude DSA:
 
-     ```yaml
-     gitlab:
-       webservice:
-         sshHostKeys:
-           types: [rsa,ecdsa,ed25519]
-     ```
+  ```yaml
+  gitlab:
+    webservice:
+      sshHostKeys:
+        types: [rsa,ecdsa,ed25519]
+  ```
 
-  {{< alert type="note" >}}
-
-  ED25519 keys might not be fully supported by all FIPS systems.
-  For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
-
-  {{< /alert >}}
+  > [!note]
+  > ED25519 keys might not be fully supported by all FIPS systems.
+  > For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
 
 Additionally, these package repositories are disabled in FIPS mode:
 
@@ -577,7 +574,7 @@ the `webservice` container has the following tags:
 
 #### Base images for FIPS Builds
 
-- Current: [UBI 9.6 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
+- Current: [UBI 9.7 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
 
 ### Testing merge requests with a FIPS pipeline
 

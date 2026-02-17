@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use the GitLab REST API for programmatic interaction with GitLab. Includes requests, rate limits, pagination, encoding, versioning, and response handling."
 title: REST API
@@ -445,13 +445,10 @@ when available.
 The type of filter depends on the
 `order_by` option used, and you can have more than one additional filter.
 
-{{< alert type="warning" >}}
-
-The `Links` header was removed to be aligned with the
-[W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
-header should be used instead.
-
-{{< /alert >}}
+> [!warning]
+> The `Links` header was removed to be aligned with the
+> [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
+> header should be used instead.
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
@@ -468,17 +465,17 @@ options:
 
 | Resource                                                                       | Options                                                                                                                                                                               | Availability |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| [Group audit events](../audit_events.md#retrieve-all-group-audit-events)       | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
+| [Group audit events](../audit_events.md#list-all-group-audit-events)       | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
 | [Groups](../groups.md#list-groups)                                             | `order_by=name`, `sort=asc` only                                                                                                                                                      | Unauthenticated users only. |
-| [Instance audit events](../audit_events.md#retrieve-all-instance-audit-events) | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
+| [Instance audit events](../audit_events.md#list-all-instance-audit-events) | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
 | [Package pipelines](../packages.md#list-package-pipelines)                     | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
-| [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
-| [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
+| [Project jobs](../jobs.md#list-all-jobs-for-a-project)                         | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
+| [Project audit events](../audit_events.md#list-all-project-audit-events)   | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
 | [Projects](../projects.md)                                                     | `order_by=id` only                                                                                                                                                                    | Authenticated and unauthenticated users. |
 | [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at`, or `order_by=updated_at`.                                                                                 | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
 | [Registry Repository Tags](../container_registry.md)                           | `order_by=name`, `sort=asc`, or `sort=desc` only.                                                                                                                                     | Authenticated users only. |
-| [List repository tree](../repositories.md#list-repository-tree)                | N/A                                                                                                                                                                                   | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897) in GitLab 17.1. |
-| [Project issues](../issues.md#list-project-issues)                             | `order_by=created_at`, `order_by=updated_at`, `order_by=title`, `order_by=id`, `order_by=weight`, `order_by=due_date`, `order_by=relative_position`, `sort=asc`, or `sort=desc` only. | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199887/) in GitLab 18.3. |
+| [List repository tree](../repositories.md#list-all-repository-trees-in-a-project)                | N/A                                                                                                                                                                                   | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897) in GitLab 17.1. |
+| [Project issues](../issues.md#list-all-project-issues)                             | `order_by=created_at`, `order_by=updated_at`, `order_by=title`, `order_by=id`, `order_by=weight`, `order_by=due_date`, `order_by=relative_position`, `sort=asc`, or `sort=desc` only. | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199887/) in GitLab 18.3. |
 
 ### Pagination response headers
 

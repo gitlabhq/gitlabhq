@@ -13,6 +13,7 @@ module BulkImports
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
     worker_resource_boundary :memory
+    tags :import_shared_storage
 
     sidekiq_retries_exhausted do |job, exception|
       perform_failure(job, exception)
@@ -27,7 +28,10 @@ module BulkImports
     end
 
     def self.perform_failure(job, exception)
-      batch = BulkImports::ExportBatch.find(job['args'][1])
+      batch = BulkImports::ExportBatch.find_by_id(job['args'][1])
+
+      return unless batch
+
       portable = batch.export.portable
 
       Gitlab::ErrorTracking.track_exception(exception, portable_id: portable.id, portable_type: portable.class.name)
@@ -37,8 +41,9 @@ module BulkImports
 
     def perform(user_id, batch_id)
       @user = User.find(user_id)
-      @batch = BulkImports::ExportBatch.find(batch_id)
+      @batch = BulkImports::ExportBatch.find_by_id(batch_id)
 
+      return unless @batch
       return re_enqueue_job(@user, @batch) if !@batch.started? && max_exports_already_running?
 
       log_extra_metadata_on_done(:relation, @batch.export.relation)

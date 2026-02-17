@@ -6,13 +6,14 @@ import {
   GlFormGroup,
   GlCollapsibleListbox,
   GlFormCheckbox,
+  GlForm,
+  GlModal,
 } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import * as urlUtils from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { mockTracking } from 'helpers/tracking_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiForm from '~/wikis/components/wiki_form.vue';
 import WikiTemplate from '~/wikis/components/wiki_template.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -74,6 +75,16 @@ describe('WikiForm', () => {
     path: '/project/path/-/wikis/home',
   };
 
+  const pageInfoEditSidebar = {
+    ...pageInfoNew,
+    persisted: true,
+    slug: '_sidebar',
+    title: '_sidebar',
+    content: '  My page content  ',
+    format: 'markdown',
+    path: '/project/path/-/wikis/_sidebar/edit',
+  };
+
   const pageInfoWithFrontmatter = () => ({
     frontMatter: { foo: 'bar', title: 'real page title' },
     persisted: true,
@@ -90,48 +101,48 @@ describe('WikiForm', () => {
     Org: 'org',
   };
   function createWrapper({
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
     persisted = false,
     pageInfo,
     provide = {},
     templates = [],
   } = {}) {
-    wrapper = extendedWrapper(
-      mountFn(WikiForm, {
-        provide: {
-          isEditingPath: true,
-          templates,
-          formatOptions,
-          pageInfo: {
-            ...(persisted ? pageInfoPersisted : pageInfoNew),
-            ...pageInfo,
-          },
-          wikiUrl: '',
-          templatesUrl: '',
-          pageHeading: '',
-          csrfToken: '',
-          pagePersisted: false,
-          drawioUrl: null,
-          glFeatures: { wikiImmersiveEditor: false },
-          ...provide,
+    wrapper = mountFn(WikiForm, {
+      provide: {
+        isEditingPath: true,
+        templates,
+        formatOptions,
+        pageInfo: {
+          ...(persisted ? pageInfoPersisted : pageInfoNew),
+          ...pageInfo,
         },
-        stubs: {
-          GlAlert,
-          GlButton,
-          GlFormInput,
-          GlFormGroup,
-        },
-        mocks: {
-          $apollo: {
-            queries: {
-              currentUser: {
-                loading: false,
-              },
+        wikiUrl: '',
+        templatesUrl: '',
+        pageHeading: '',
+        csrfToken: '',
+        pagePersisted: false,
+        drawioUrl: null,
+        glFeatures: { wikiImmersiveEditor: false },
+        ...provide,
+      },
+      stubs: {
+        GlAlert,
+        GlButton,
+        GlFormInput,
+        GlFormGroup,
+        GlForm,
+        GlModal,
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
             },
           },
         },
-      }),
-    );
+      },
+    });
   }
 
   beforeEach(() => {
@@ -169,7 +180,7 @@ describe('WikiForm', () => {
   it('empties the title field if random_title=true is set in the URL', () => {
     mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/new?random_title=true');
 
-    createWrapper({ persisted: true, mountFn: mount });
+    createWrapper({ persisted: true, mountFn: mountExtended });
 
     expect(findTitle().element.value).toBe('');
 
@@ -182,7 +193,7 @@ describe('WikiForm', () => {
     ${' '}  | ${'whitespace only'}
     ${null} | ${'null'}
   `('shows an error on attempted submit if the title is $display', async ({ title }) => {
-    createWrapper({ persisted: true, mountFn: mount });
+    createWrapper({ persisted: true, mountFn: mountExtended });
 
     expect(findTitle().props('state')).toBe(null);
 
@@ -207,7 +218,7 @@ describe('WikiForm', () => {
     });
 
     it('makes sure commit message includes "Create template" for a new page', async () => {
-      createWrapper({ persisted: false, mountFn: mount });
+      createWrapper({ persisted: false, mountFn: mountExtended });
 
       await findTitle().setValue('my page');
 
@@ -215,7 +226,7 @@ describe('WikiForm', () => {
     });
 
     it('makes sure commit message includes "Update template" for an existing page', async () => {
-      createWrapper({ persisted: true, mountFn: mount });
+      createWrapper({ persisted: true, mountFn: mountExtended });
 
       await findTitle().setValue('my page');
 
@@ -262,13 +273,13 @@ describe('WikiForm', () => {
     ];
 
     it('shows the dropdown when page is not a template', () => {
-      createWrapper({ templates, mountFn: mount });
+      createWrapper({ templates, mountFn: mountExtended });
 
       expect(findTemplatesDropdown().exists()).toBe(true);
     });
 
     it('shows templates dropdown even if no templates to show', () => {
-      createWrapper({ mountFn: mount });
+      createWrapper({ mountFn: mountExtended });
 
       expect(findTemplatesDropdown().exists()).toBe(true);
     });
@@ -280,7 +291,7 @@ describe('WikiForm', () => {
       ${'asciidoc'} | ${['Asciidoc template']}
       ${'org'}      | ${['Org template']}
     `('shows appropriate templates for format $format', async ({ format, visibleTemplates }) => {
-      createWrapper({ templates, mountFn: mount });
+      createWrapper({ templates, mountFn: mountExtended });
 
       await setFormat(format);
 
@@ -302,7 +313,7 @@ describe('WikiForm', () => {
   `(
     'updates the commit message to $message when title is $title and persisted=$persisted',
     async ({ title, message, persisted }) => {
-      createWrapper({ persisted, mountFn: mount });
+      createWrapper({ persisted, mountFn: mountExtended });
 
       await findTitle().setValue(title);
 
@@ -311,7 +322,7 @@ describe('WikiForm', () => {
   );
 
   it('sets the commit message to "Update My page" when the page first loads when persisted', async () => {
-    createWrapper({ persisted: true, mountFn: mount });
+    createWrapper({ persisted: true, mountFn: mountExtended });
 
     await nextTick();
 
@@ -331,7 +342,7 @@ describe('WikiForm', () => {
     ${'asciidoc'} | ${false} | ${'hides'}
     ${'org'}      | ${false} | ${'hides'}
   `('$action preview in the markdown field when format is $format', async ({ format, enabled }) => {
-    createWrapper({ mountFn: mount });
+    createWrapper({ mountFn: mountExtended });
 
     await setFormat(format);
 
@@ -345,7 +356,7 @@ describe('WikiForm', () => {
     ${'asciidoc'} | ${'link:page-slug[Link title]'}
     ${'org'}      | ${'[[page-slug]]'}
   `('updates the link help message when format=$value is selected', async ({ value, text }) => {
-    createWrapper({ mountFn: mount });
+    createWrapper({ mountFn: mountExtended });
 
     await setFormat(value);
 
@@ -353,14 +364,14 @@ describe('WikiForm', () => {
   });
 
   it('shows correct link for wiki specific markdown docs', () => {
-    createWrapper({ mountFn: mount });
+    createWrapper({ mountFn: mountExtended });
 
     expect(findMarkdownHelpLink().attributes().href).toBe('/help/user/project/wiki/markdown#links');
   });
 
   describe('when wiki content is updated', () => {
     beforeEach(async () => {
-      createWrapper({ mountFn: mount, persisted: true });
+      createWrapper({ mountFn: mountExtended, persisted: true });
 
       await findMarkdownEditor().vm.$emit('input', ' Lorem ipsum dolar sit! ');
     });
@@ -428,7 +439,7 @@ describe('WikiForm', () => {
     ${'asciidoc'} | ${false} | ${'disables'}
     ${'org'}      | ${false} | ${'disables'}
   `('$action content editor when format is $format', async ({ format, enabled }) => {
-    createWrapper({ mountFn: mount });
+    createWrapper({ mountFn: mountExtended });
 
     setFormat(format);
 
@@ -439,7 +450,7 @@ describe('WikiForm', () => {
 
   describe('when markdown editor activates the content editor', () => {
     beforeEach(async () => {
-      createWrapper({ mountFn: mount, persisted: true });
+      createWrapper({ mountFn: mountExtended, persisted: true });
 
       await findMarkdownEditor().vm.$emit('contentEditor');
     });
@@ -488,7 +499,7 @@ describe('WikiForm', () => {
   describe('path field', () => {
     beforeEach(() => {
       createWrapper({
-        mountFn: mount,
+        mountFn: mountExtended,
         pageInfo: pageInfoWithFrontmatter(),
       });
     });
@@ -566,7 +577,7 @@ describe('WikiForm', () => {
     describe('when creating a new page with placeholder in title', () => {
       beforeEach(() => {
         createWrapper({
-          mountFn: mount,
+          mountFn: mountExtended,
           pageInfo: pageInfoWithNewPageTitle,
         });
       });
@@ -632,7 +643,7 @@ describe('WikiForm', () => {
 
       beforeEach(() => {
         createWrapper({
-          mountFn: mount,
+          mountFn: mountExtended,
           pageInfo: pageInfoWithoutPlaceholder,
         });
       });
@@ -650,7 +661,7 @@ describe('WikiForm', () => {
     describe('when editing an existing page', () => {
       beforeEach(() => {
         createWrapper({
-          mountFn: mount,
+          mountFn: mountExtended,
           persisted: true,
         });
       });
@@ -669,7 +680,7 @@ describe('WikiForm', () => {
   describe('immersive mode', () => {
     beforeEach(() => {
       createWrapper({
-        mountFn: shallowMount,
+        mountFn: shallowMountExtended,
         provide: {
           glFeatures: { wikiImmersiveEditor: true },
         },
@@ -682,6 +693,86 @@ describe('WikiForm', () => {
 
     it('passes the form actions to the markdown editor #header slot', () => {
       expect(findMarkdownEditor().find('[data-testid="wiki-form-actions"]').exists()).toBe(true);
+    });
+
+    describe('adding a commit message', () => {
+      beforeEach(async () => {
+        // Enable commit message input
+        wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('input', 'CUSTOM');
+
+        await nextTick();
+      });
+
+      it('shows the input field', () => {
+        expect(wrapper.findByTestId('wiki-message-textbox').isVisible()).toBe(true);
+      });
+
+      it('includes the commit message in the form', async () => {
+        wrapper.findComponentByTestId('wiki-message-textbox').vm.$emit('input', 'Foobar');
+        await nextTick();
+        expect(wrapper.find('input[name="wiki[message]"]').attributes('value')).toBe('Foobar');
+      });
+    });
+
+    describe('saving through the commit message modal', () => {
+      let submitSpy;
+
+      beforeEach(async () => {
+        submitSpy = jest.spyOn(findForm().element, 'submit');
+
+        // eslint-disable-next-line no-restricted-syntax -- workaround until https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217991 is merged
+        wrapper.setData({ pageTitle: 'Foo' });
+        wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('input', 'CUSTOM');
+
+        await nextTick();
+
+        wrapper.findComponentByTestId('wiki-message-textbox').vm.$emit('input', 'Foobar');
+
+        await nextTick();
+      });
+
+      it('saves the form when selecting the primary action on the commit message modal', async () => {
+        wrapper.findComponentByTestId('commit-message-modal').vm.$emit('primary');
+        await nextTick();
+
+        expect(submitSpy).toHaveBeenCalled();
+      });
+
+      it.each(['secondary', 'cancel'])(
+        'does not save the form when the commit message modal emits "%s"',
+        async (event) => {
+          wrapper.findComponentByTestId('commit-message-modal').vm.$emit(event);
+          await nextTick();
+
+          expect(submitSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    describe('edit sidebar', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: shallowMountExtended,
+          pageInfo: pageInfoEditSidebar,
+          provide: {
+            wikiUrl: '_sidebar',
+            isEditingPath: true,
+            glFeatures: { wikiImmersiveEditor: true },
+          },
+        });
+      });
+
+      it('shows an edit sidebar header', () => {
+        expect(wrapper.text()).toContain('Edit Sidebar');
+      });
+
+      it('hides the title input', () => {
+        expect(wrapper.findByTestId('wiki-title-textbox').exists()).toBe(false);
+      });
+
+      it('hides the path input', () => {
+        expect(wrapper.findByTestId('wiki-path-textbox').exists()).toBe(false);
+      });
     });
   });
 });

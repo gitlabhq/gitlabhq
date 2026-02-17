@@ -1,0 +1,10 @@
+---
+name: show_child_security_reports_in_mr_widget
+description: Allow MR Widget to show security scans from child pipelines
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/18377
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201187
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/586210
+milestone: '18.9'
+group: group::pipeline execution
+type: beta
+default_enabled: true

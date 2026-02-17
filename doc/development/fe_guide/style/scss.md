@@ -27,16 +27,13 @@ that use non-design-system values should be avoided. Use classes with conforming
 
 Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/).
 
-{{< alert type="note" >}}
-
-While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
-to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/css.md#utilities)
-utility classes, note both the classes for margin and padding differ. The size scale used at
-GitLab differs from the scale used in the Bootstrap library. For a Bootstrap padding or margin
-utility, you may need to double the size of the applied utility to achieve the same visual
-result (such as `ml-1` becoming `gl-ml-2`).
-
-{{< /alert >}}
+> [!note]
+> While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+> to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/css.md#utilities)
+> utility classes, note both the classes for margin and padding differ. The size scale used at
+> GitLab differs from the scale used in the Bootstrap library. For a Bootstrap padding or margin
+> utility, you may need to double the size of the applied utility to achieve the same visual
+> result (such as `ml-1` becoming `gl-ml-2`).
 
 ### Tailwind CSS
 
@@ -110,11 +107,8 @@ Tailwind CSS autocomplete lists all available classes in your code editor.
 
 ##### VS Code
 
-{{< alert type="note" >}}
-
-If you are having trouble with slow autocomplete you may need to [increase the amount of memory the TS server is allowed to use](../type_hinting.md#vs-code-settings).
-
-{{< /alert >}}
+> [!note]
+> If you are having trouble with slow autocomplete you may need to [increase the amount of memory the TS server is allowed to use](../type_hinting.md#vs-code-settings).
 
 Install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 extension. For HAML and custom `*-class` prop support these are the recommended settings:
@@ -362,7 +356,7 @@ be moved to an explicit `class` attribute manually after running the script:
 # This breaks the HAML syntax:
 %p.@md/panel:gl-mt-2
 
-# To fix it, move the util to an explicit `class` attibute:
+# To fix it, move the util to an explicit `class` attribute:
 %p{ class: "@md/panel:gl-mt-2" }
 ```
 
@@ -410,18 +404,15 @@ the following script in the browser's console to copy the list of files to the c
 })();
 ```
 
-{{< alert type="note" >}}
-
-Keep in mind that, while the script can help speed up migrations, it also cannot migrate
-everything for you. In particular, you should pay attention to the following:
-
-- If you are using UI elements from NPM dependencies, those would need to be migrated or overidden manually.
-- The code you are migrating might contain some JavaScript that reacts to the window being
-  resized. This kind of script would need to be migrated manually in a way that's "container-aware".
-- If your SCSS implements media queries with custom breakpoints, the script might not be able to
-  rewrite those, so you'd need to migrate them manually.
-
-{{< /alert >}}
+> [!note]
+> Keep in mind that, while the script can help speed up migrations, it also cannot migrate
+> everything for you. In particular, you should pay attention to the following:
+>
+> - If you are using UI elements from NPM dependencies, those would need to be migrated or overridden manually.
+> - The code you are migrating might contain some JavaScript that reacts to the window being
+>   resized. This kind of script would need to be migrated manually in a way that's "container-aware".
+> - If your SCSS implements media queries with custom breakpoints, the script might not be able to
+>   rewrite those, so you'd need to migrate them manually.
 
 ## Naming
 

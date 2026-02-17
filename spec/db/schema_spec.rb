@@ -37,6 +37,11 @@ RSpec.describe 'Database schema',
       ai_events_counts: %w[user_id namespace_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
+      ascp_component_dependencies: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
+      ascp_components: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
+      ascp_scans: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
+      ascp_security_contexts: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
+      ascp_security_guidelines: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
       approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
@@ -139,7 +144,6 @@ RSpec.describe 'Database schema',
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
-      oauth_access_token_archived_records: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
       oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
@@ -254,6 +258,7 @@ RSpec.describe 'Database schema',
       zoekt_indices: %w[namespace_id], # needed for cells sharding key
       zoekt_tasks: %w[partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
+      project_secrets_manager_maintenance_tasks: %w[user_id], # small table, for better performance we don't need fk here
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
@@ -265,6 +270,7 @@ RSpec.describe 'Database schema',
       security_finding_token_statuses: %w[security_finding_id project_id],
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
       virtual_registries_packages_maven_cache_entries: %w[group_id], # We can't use a foreign key due to object storage references
+      virtual_registries_packages_maven_local_upstreams: %w[local_group_id local_project_id], # local upstreams need asynchronous deletion
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
@@ -272,6 +278,7 @@ RSpec.describe 'Database schema',
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
       work_item_related_link_restrictions: %w[source_type_id target_type_id],
       sbom_vulnerability_scans: %w[project_id build_id], # referenced records are in different DB and no LFK as the table contains references to object storage
+      sbom_vulnerability_scan_results: %w[project_id], # referenced records are in different DB and no LFK as the table contains references to object storage
       security_trainings: %w[training_provider_id provider_id], # training_provider_id is a fixed items model reference.
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
@@ -289,7 +296,7 @@ RSpec.describe 'Database schema',
       group_type_ci_runners: 16,
       instance_type_ci_runners: 16,
       issues: 35,
-      members: 21, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/work_items/520189
+      members: 19,
       merge_requests: 29,
       namespaces: 27,
       notes: 16,

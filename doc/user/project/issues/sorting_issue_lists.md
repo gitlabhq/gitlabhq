@@ -27,10 +27,10 @@ The available sorting options can change based on the context of the list.
 When you sort by **Blocking**, the issue list changes to sort descending by the
 number of issues each issue is [blocking](related_issues.md#blocking-issues).
 
-## Sorting by created date
+## Sorting by created, updated or closed date
 
-When you sort by **Created date**, the issue list changes to sort descending by the issue
-creation date. Issues created most recently are first.
+When you sort by **Created**, **Updated** or **Closed date**, the issue list changes to
+sort descending by the respective date and timestamp. Issues created, updated or closed most recently are first.
 
 ## Sorting by due date
 
@@ -48,11 +48,6 @@ and labels with a lower priority are ignored.
 For more information, see [issue 14523](https://gitlab.com/gitlab-org/gitlab/-/issues/14523).
 
 To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
-
-## Sorting by updated date
-
-When you sort by **Updated date**, the issue list changes to sort by the time of a last
-update. Issues changed the most recently are shown first.
 
 ## Manual sorting
 

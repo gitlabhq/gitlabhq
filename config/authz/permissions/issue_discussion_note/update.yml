@@ -1,0 +1,5 @@
+---
+name: update_issue_discussion_note
+description: Grants the ability to edit notes in issue discussions
+boundaries:
+  - project

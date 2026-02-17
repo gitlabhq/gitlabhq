@@ -14,12 +14,9 @@ title: CI/CD job token scope API
 
 Use this API to interact with [CI/CD job token](../ci/jobs/ci_job_token.md) scopes.
 
-{{< alert type="note" >}}
-
-All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/authentication.md).
-The authenticated user must have at least the Maintainer role for the project.
-
-{{< /alert >}}
+> [!note]
+> All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/authentication.md).
+> The authenticated user must have the Maintainer or Owner role for the project.
 
 ## Get a project's CI/CD job token access settings
 
@@ -45,7 +42,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
 ```
 
 Example response:
@@ -115,7 +114,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
 ```
 
 Example response:
@@ -249,7 +250,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
 ```
 
 Example response:

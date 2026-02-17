@@ -45,9 +45,15 @@
   - 1
 - - ai_active_context_code_repository_index
   - 1
-- - ai_active_context_code_saas_initial_indexing_event
+- - ai_active_context_connection_cleanup
+  - 1
+- - ai_active_context_disable
+  - 1
+- - ai_catalog_delete_service_account_members_from_hierarchy
   - 1
 - - ai_catalog_flows_cascade_sync_foundational_flows
+  - 1
+- - ai_catalog_flows_sync_project_foundational_flows
   - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
@@ -219,6 +225,8 @@
   - 2
 - - chat_notification
   - 2
+- - ci_bulk_delete_expired_job_artifacts
+  - 1
 - - ci_cancel_pipeline
   - 1
 - - ci_cancel_redundant_pipelines
@@ -240,6 +248,8 @@
 - - ci_low_urgency_cancel_redundant_pipelines
   - 1
 - - ci_parse_secure_file_metadata
+  - 1
+- - ci_pipeline_schedules_deactivate_schedules
   - 1
 - - ci_runners_export_usage_csv
   - 1
@@ -685,6 +695,8 @@
   - 1
 - - merge_requests_refresh_approval
   - 1
+- - merge_requests_refresh_notify_about_push
+  - 1
 - - merge_requests_refresh_pipeline
   - 1
 - - merge_requests_refresh_web_hooks
@@ -859,6 +871,8 @@
   - 1
 - - reactive_caching
   - 1
+- - reactive_caching_low_urgency
+  - 1
 - - rebase
   - 2
 - - redis_migration
@@ -869,6 +883,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_cache_tag_signatures
+  - 1
 - - repositories_post_receive
   - 5
 - - repositories_rewrite_history
@@ -892,6 +908,8 @@
 - - sbom_create_occurrences_vulnerabilities
   - 1
 - - sbom_graphs
+  - 1
+- - sbom_process_group_archived_events
   - 1
 - - sbom_process_transfer_events
   - 1
@@ -1001,6 +1019,8 @@
   - 1
 - - security_analyzers_status_update_archived_analyzer_status
   - 1
+- - security_attributes_background_operation_bulk_update
+  - 1
 - - security_attributes_bulk_update
   - 1
 - - security_attributes_bulk_update_scheduler
@@ -1061,8 +1081,6 @@
   - 1
 - - security_policies_skip_pipelines_audit
   - 1
-- - security_process_scan_result_policy
-  - 1
 - - security_project_tracked_contexts_update_default_context
   - 1
 - - security_recreate_orchestration_configuration
@@ -1078,6 +1096,8 @@
 - - security_scan_profiles_clean_old_namespace_connections
   - 1
 - - security_scan_profiles_delete_scan_profiles
+  - 1
+- - security_scan_profiles_detach
   - 1
 - - security_scan_profiles_process_group_transfer_events
   - 1
@@ -1248,6 +1268,8 @@
 - - vulnerabilities_trigger_false_positive_detection_workflow
   - 1
 - - vulnerabilities_trigger_resolution_workflow
+  - 1
+- - vulnerabilities_trigger_secret_detection_false_positive_detection_workflow
   - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
   - 1

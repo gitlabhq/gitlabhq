@@ -93,7 +93,7 @@ export default {
     @primary="$emit('confirm')"
     @cancel="$emit('cancel')"
   >
-    <p>
+    <p class="gl-wrap-anywhere">
       <gl-sprintf v-if="itemToBeDeleted" :message="packageDescription">
         <template v-if="showRequestForwardingContent" #docLink="{ content }">
           <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{ content }}</gl-link>

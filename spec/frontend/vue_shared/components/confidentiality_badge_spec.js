@@ -1,11 +1,11 @@
 import { GlBadge, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { TYPE_ISSUE, TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_EPIC, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 const createComponent = ({
-  workspaceType = WORKSPACE_PROJECT,
+  workspaceType = NAMESPACE_PROJECT,
   issuableType = TYPE_ISSUE,
   hideTextInSmallScreens = false,
 } = {}) =>
@@ -30,8 +30,8 @@ describe('ConfidentialityBadge', () => {
 
   it.each`
     workspaceType        | issuableType  | expectedTooltip
-    ${WORKSPACE_PROJECT} | ${TYPE_ISSUE} | ${'Only project members with at least the Planner role, the author, and assignees can view or be notified about this issue.'}
-    ${WORKSPACE_GROUP}   | ${TYPE_EPIC}  | ${'Only group members with at least the Planner role can view or be notified about this epic.'}
+    ${NAMESPACE_PROJECT} | ${TYPE_ISSUE} | ${'Only project members with at least the Planner role, the author, and assignees can view or be notified about this issue.'}
+    ${NAMESPACE_GROUP}   | ${TYPE_EPIC}  | ${'Only group members with at least the Planner role can view or be notified about this epic.'}
   `(
     'should render gl-badge with correct tooltip when workspaceType is $workspaceType and issuableType is $issuableType',
     ({ workspaceType, issuableType, expectedTooltip }) => {

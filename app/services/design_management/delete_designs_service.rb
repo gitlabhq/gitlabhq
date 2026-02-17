@@ -26,10 +26,6 @@ module DesignManagement
         ).execute
       end
 
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_removed_action(
-        author: current_user,
-        project: project
-      )
       TodosDestroyer::DestroyedDesignsWorker.perform_async(designs.map(&:id))
 
       success(version: version)

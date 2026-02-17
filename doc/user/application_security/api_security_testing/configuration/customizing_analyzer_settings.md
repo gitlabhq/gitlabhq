@@ -398,12 +398,9 @@ to execute. The provided command creates the overrides JSON file as defined prev
 
 You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for your overrides command. In this case, you should set the `APISEC_PRE_SCRIPT` to the file path of a script which provides those prerequisites. The script provided by `APISEC_PRE_SCRIPT` is executed once before the analyzer starts.
 
-{{< alert type="note" >}}
-
-When performing actions that require elevated permissions, make use of the `sudo` command.
-For example, `sudo apk add nodejs`.
-
-{{< /alert >}}
+> [!note]
+> When performing actions that require elevated permissions, make use of the `sudo` command.
+> For example, `sudo apk add nodejs`.
 
 See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management) page for information about installing Alpine Linux packages.
 
@@ -608,7 +605,7 @@ The order in which the different headers are provided into the variable `APISEC_
 The `APISEC_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `APISEC_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `APISEC_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable), which has character set restrictions.
 
 > [!warning]
-> Base64 is used to support the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
+> Base64 is used to support the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be decoded.
 
 ### Example: Adding a list of headers on each request using plain text
 

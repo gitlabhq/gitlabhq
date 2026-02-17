@@ -13,7 +13,7 @@ module Users
       title: 'Alert title (optional)',
       body: 'Alert message goes here.',
       variant: :info,
-      feature_id: :invite_members_banner
+      feature_id: :preview_user_over_limit_free_plan_alert
     )
       render(Users::GroupDismissibleAlertComponent.new(
         title: title,
@@ -32,7 +32,7 @@ module Users
         title: 'Wrapped alert',
         variant: :info,
         dismiss_options: {
-          feature_id: :invite_members_banner,
+          feature_id: :preview_user_over_limit_free_plan_alert,
           group: FactoryBot.build_stubbed(:group),
           user: FactoryBot.build_stubbed(:user)
         },

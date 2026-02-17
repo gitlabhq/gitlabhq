@@ -115,7 +115,8 @@ module Repositories
         authentication_abilities: authentication_abilities,
         repository_path: repository_path,
         redirected_path: redirected_path,
-        auth_result_type: auth_result_type)
+        auth_result_type: auth_result_type,
+        personal_access_token: personal_access_token)
     end
 
     def access_actor

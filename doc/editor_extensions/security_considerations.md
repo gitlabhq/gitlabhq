@@ -24,7 +24,7 @@ Agents can perform file operations (read, write, edit, search, and list) on:
 - Files not excluded by `.gitignore` rules.
 - Valid or resolvable symlinks that point to files inside the Git repository.
 
-#### Shell operations on files 
+#### Shell operations on files
 
 Shell commands executed by agents can access all files, including those outside of Git repositories and those that match `.gitignore` patterns.
 
@@ -63,7 +63,7 @@ When agents request your approval to execute actions, carefully review each tool
 Verify that:
 
 - Commands and file operations match your intended task.
-- File paths are within expected directories, including symlink target files. 
+- File paths are within expected directories, including symlink target files.
 - Command arguments do not include unexpected flags or parameters.
 - Sensitive file access and network requests are necessary for the task.
 

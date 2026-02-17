@@ -1,0 +1,5 @@
+---
+name: delete_epic
+description: Grants the ability to delete epics
+boundaries:
+  - group

@@ -121,32 +121,56 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/metadata/*package_name/index' do
+    let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: package_name, project: project) }
     let(:url) { "/projects/#{target.id}/packages/nuget/metadata/#{package_name}/index.json" }
 
     it_behaves_like 'handling nuget metadata requests with package name'
 
-    it_behaves_like 'accept get request on private project with access to package registry for everyone' do
-      let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: package_name, project: project) }
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it_behaves_like 'authorizing granular token permissions', :read_nuget_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/metadata/*package_name/*package_version' do
+    let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
     let(:url) { "/projects/#{target.id}/packages/nuget/metadata/#{package_name}/#{package.version}.json" }
 
     it_behaves_like 'handling nuget metadata requests with package name and package version'
 
-    it_behaves_like 'accept get request on private project with access to package registry for everyone' do
-      let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it_behaves_like 'authorizing granular token permissions', :read_nuget_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/query' do
+    let_it_be(:query_parameters) { { q: 'query', take: 5, skip: 0, prerelease: true } }
     let(:url) { "/projects/#{target.id}/packages/nuget/query?#{query_parameters.to_query}" }
 
     it_behaves_like 'handling nuget search requests'
 
-    it_behaves_like 'accept get request on private project with access to package registry for everyone' do
-      let_it_be(:query_parameters) { { q: 'query', take: 5, skip: 0, prerelease: true } }
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it_behaves_like 'authorizing granular token permissions', :search_nuget_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
@@ -202,6 +226,16 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     it_behaves_like 'rejects nuget access with invalid target id'
 
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it_behaves_like 'authorizing granular token permissions', :read_nuget_package do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_header(user.username, pat.token) }
+      let(:request) { subject }
+
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename' do
@@ -270,6 +304,16 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     it_behaves_like 'rejects nuget access with unknown target id'
 
     it_behaves_like 'rejects nuget access with invalid target id'
+
+    it_behaves_like 'authorizing granular token permissions', :download_nuget_package do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_header(user.username, pat.token) }
+      let(:request) { subject }
+
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/v2/FindPackagesById()' do
@@ -310,26 +354,90 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/authorize' do
-    it_behaves_like 'nuget authorize upload endpoint' do
-      let(:url) { "/projects/#{target.id}/packages/nuget/authorize" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/authorize" }
+
+    it_behaves_like 'nuget authorize upload endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:boundary_object) { project }
+      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget' do
-    it_behaves_like 'nuget upload endpoint' do
-      let(:url) { "/projects/#{target.id}/packages/nuget" }
+    let(:url) { "/projects/#{target.id}/packages/nuget" }
+
+    it_behaves_like 'nuget upload endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :upload_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:file_name) { 'package.nupkg' }
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :put,
+          file_key: :package,
+          params: { package: fixture_file_upload("spec/fixtures/packages/nuget/#{file_name}") },
+          headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)),
+          send_rewritten_field: true
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage/authorize' do
-    it_behaves_like 'nuget authorize upload endpoint' do
-      let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage/authorize" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage/authorize" }
+
+    it_behaves_like 'nuget authorize upload endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:boundary_object) { project }
+      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage' do
-    it_behaves_like 'nuget upload endpoint', symbol_package: true do
-      let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage" }
+
+    it_behaves_like 'nuget upload endpoint', symbol_package: true
+
+    it_behaves_like 'authorizing granular token permissions', :upload_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:file_name) { 'package.snupkg' }
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :put,
+          file_key: :package,
+          params: { package: fixture_file_upload("spec/fixtures/packages/nuget/#{file_name}") },
+          headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)),
+          send_rewritten_field: true
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
@@ -341,6 +449,15 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     subject { delete api(url), headers: headers }
 
     it { is_expected.to have_request_urgency(:low) }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_nuget_package do
+      let(:boundary_object) { project }
+      let(:request) { delete api(url), headers: basic_auth_header(user.username, pat.token) }
+
+      before do
+        project.add_maintainer(user)
+      end
+    end
 
     context 'with valid target' do
       where(:auth, :visibility, :user_role, :shared_examples_name, :expected_status) do
@@ -429,14 +546,46 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/v2/authorize' do
-    it_behaves_like 'nuget authorize upload endpoint' do
-      let(:url) { "/projects/#{target.id}/packages/nuget/v2/authorize" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/v2/authorize" }
+
+    it_behaves_like 'nuget authorize upload endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:boundary_object) { project }
+      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/v2' do
-    it_behaves_like 'nuget upload endpoint' do
-      let(:url) { "/projects/#{target.id}/packages/nuget/v2" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/v2" }
+
+    it_behaves_like 'nuget upload endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :upload_nuget_package do
+      include_context 'workhorse headers'
+
+      let(:file_name) { 'package.nupkg' }
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :put,
+          file_key: :package,
+          params: { package: fixture_file_upload("spec/fixtures/packages/nuget/#{file_name}") },
+          headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)),
+          send_rewritten_field: true
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 

@@ -489,12 +489,6 @@ class Environment < ApplicationRecord
     end
   end
 
-  def knative_services_finder
-    if last_deployment&.cluster
-      Clusters::KnativeServicesFinder.new(last_deployment.cluster, self)
-    end
-  end
-
   def auto_stop_in
     auto_stop_at - Time.current if auto_stop_at
   end
@@ -572,7 +566,8 @@ class Environment < ApplicationRecord
   def run_stop_action!(job, link_identity:)
     ::Gitlab::Auth::Identity.link_from_job(job) if link_identity
 
-    job.play(job.user)
+    result = job.play(job.user)
+    result.payload[:job]
   rescue StateMachines::InvalidTransition
     # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry.
     # However, Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.

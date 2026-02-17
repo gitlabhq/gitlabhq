@@ -40,7 +40,7 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
       check "read_api"
       check "read_user"
 
-      click_on "Create token"
+      click_on "Generate token"
       wait_for_all_requests
 
       expect(access_token_table).to have_text(name)
@@ -60,7 +60,7 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
         click_button 'Add new token'
         fill_in "Token name", with: 'My PAT'
 
-        click_on "Create token"
+        click_on "Generate token"
         wait_for_all_requests
 
         expect(number_tokens_before).to equal(PersonalAccessToken.count)

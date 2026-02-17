@@ -296,16 +296,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           .not_to change { MergeRequest::CommitsMetadata.count }
       end
     end
-
-    context 'when merge_request_diff_commits_dedup is disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_commits_dedup: false)
-      end
-
-      it 'does not delete MergeRequest::CommitsMetadata records' do
-        expect { destroy_project(project, user, {}) }.not_to change { MergeRequest::CommitsMetadata.count }
-      end
-    end
   end
 
   context 'deleting a project with merge request diffs' do

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
+RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success|
   shared_examples 'granting access' do
     it 'grants access' do
       request
 
-      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to have_gitlab_http_status(expected_success_status)
     end
   end
 
@@ -18,7 +18,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
       # Only check JSON body if present (GET/POST/etc have bodies, HEAD doesn't)
       if response.body.present?
         expect(json_response['error']).to eq('insufficient_granular_scope')
-        expect(json_response['error_description']).to eq(message)
+        expect(json_response['error_description']).to include(message)
       end
     end
   end
@@ -58,7 +58,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
 
       let(:message) do
         'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          "[#{Array(permissions).join(', ')}]" + (boundary.path ? " for \"#{boundary.path}\"." : '.')
+          "[#{Array(permissions).join(', ')}]" + (boundary.path ? " for \"#{boundary.path}\"" : '')
       end
 
       it_behaves_like 'denying access'

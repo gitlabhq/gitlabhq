@@ -31,7 +31,6 @@ describe('CreateMenu component', () => {
         fullPath: 'full-path',
         isGroup: false,
         workItemPlanningViewEnabled: true,
-        projectStudioEnabled: false,
         ...provide,
       },
       propsData: {
@@ -64,7 +63,7 @@ describe('CreateMenu component', () => {
       createWrapper();
 
       expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-        crossAxis: -158,
+        crossAxis: -8,
         mainAxis: 4,
       });
     });
@@ -246,7 +245,7 @@ describe('CreateMenu component', () => {
     createWrapper({ provide: { isImpersonating: true } });
 
     expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -158,
+      crossAxis: -8,
       mainAxis: 4,
     });
   });

@@ -386,7 +386,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
 
     context 'when env not available' do
       it 'returns 404' do
-        allow_any_instance_of(Environment).to receive(:available?) { false }
+        allow_any_instance_of(Environment).to receive(:available?).and_return(false)
 
         subject
 

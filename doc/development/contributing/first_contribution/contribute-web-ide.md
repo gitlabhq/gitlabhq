@@ -7,12 +7,9 @@ title: Contribute code with the Web IDE
 
 The [GitLab Web IDE](../../../user/project/web_ide/_index.md) is a built-in advanced editor with commit staging.
 
-{{< alert type="warning" >}}
-
-This tutorial is designed to be a general introduction to contributing to the GitLab project
-and is not an example of a change that should be submitted for review.
-
-{{< /alert >}}
+> [!warning]
+> This tutorial is designed to be a general introduction to contributing to the GitLab project
+> and is not an example of a change that should be submitted for review.
 
 The example in this section shows how to modify a line of code as part of a community contribution
 to GitLab code using the Web IDE.
@@ -22,7 +19,7 @@ to GitLab code using the Web IDE.
 1. Search the GitLab code for the string `Syntax highlighting`.
    From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab):
 
-   1. On the top bar, select **Search or go to**.
+   1. In the top bar, select **Search or go to**.
    1. Enter the search string `"Syntax highlighting"`.
 
 1. Select the filename

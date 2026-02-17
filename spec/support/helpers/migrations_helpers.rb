@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 module MigrationsHelpers
-  FINALIZE_FIRST_ERROR = <<ERROR
-Schema should not be specified for background migrations, finalize the migration first.
-The schema will be defaulted to the finalizing migration.
-
-See https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#finalize-a-batched-background-migration
-ERROR
-
   def migration_out_of_test_window?(migration_class)
     return false if ENV.fetch('RUN_ALL_MIGRATION_TESTS', false)
 
@@ -25,12 +18,10 @@ ERROR
 
       migration_milestone < min_milestone
     elsif migration_class < Gitlab::BackgroundMigration::BatchedMigrationJob
-      finalized_by = finalized_by_version.presence
-
       # Execute tests for batched background migrations that are not yet finalized
-      return false unless finalized_by
+      return false unless finalized?
 
-      finalize_migration_class = migration_class_for(finalized_by)
+      finalize_migration_class = migration_class_for(finalized_by_version)
 
       # Execute tests if we can't find migration class
       return false unless finalize_migration_class
@@ -187,31 +178,12 @@ ERROR
     end
   end
 
-  def finalized_by_version
-    finalized_by = ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary
-      .entry(described_class.to_s.demodulize)&.finalized_by
-
-    finalized_by.to_i if finalized_by.present?
-  end
-
-  def migration_schema_version
-    metadata_schema = self.class.metadata[:schema]
-
-    if metadata_schema == :latest
-      migrations.last.version
-    elsif self.class.metadata[:level] == :background_migration
-      raise FINALIZE_FIRST_ERROR if ENV['CI'].nil? && !metadata_schema.nil?
-
-      metadata_schema || finalized_by_version || migrations.last.version
-    else
-      metadata_schema || previous_migration.version
-    end
-  end
-
   def schema_migrate_down!
+    return if self.class.metadata[:schema] == :latest
+
     with_db_config do
       disable_migrations_output do
-        migration_context.down(migration_schema_version)
+        migration_context.down(previous_migration.version)
       end
     end
 

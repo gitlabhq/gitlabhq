@@ -12,6 +12,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'DeployKeysAppRoot',
     apolloProvider: createApolloProvider({
       enabledKeysEndpoint: el.dataset.enabledEndpoint,
       availableProjectKeysEndpoint: el.dataset.availableProjectEndpoint,

@@ -1,3 +1,14 @@
+- env_override_active = Gitlab::Usage::ProductUsageDataSetting.source == :environment
+- effective_value = Gitlab::Usage::ProductUsageDataSetting.enabled?
+
+- if env_override_active
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+    - c.with_body do
+      - env_var_name = 'GITLAB_PRODUCT_USAGE_DATA_ENABLED'
+      - status_text = effective_value ? _('enabled') : _('disabled')
+      - message = s_('AdminSettings|This setting is currently controlled by the %{env_var} environment variable and cannot be changed through the UI. Current value: %{value}')
+      = message.html_safe % { env_var: content_tag(:code, env_var_name), value: content_tag(:strong, status_text) }
+
 = gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-product-usage-data-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
@@ -5,11 +16,12 @@
     .form-group
       - label = s_('AdminSettings|Enable event tracking')
       = f.gitlab_ui_checkbox_component :gitlab_product_usage_data_enabled, '%{label}'.html_safe % { label: label },
-        help_text: s_('AdminSettings|Send event data to GitLab.')
+        help_text: s_('AdminSettings|Send event data to GitLab.'),
+        checkbox_options: { disabled: env_override_active, checked: effective_value }
     .form-group
       = f.gitlab_ui_checkbox_component :snowplow_enabled, _('Enable Snowplow tracking'),
         help_text: s_('AdminSettings|Send event data to your own Snowplow collector.'),
-        checkbox_options: { data: { testid: 'snowplow-enabled-checkbox' } }
+        checkbox_options: { disabled: env_override_active, data: { testid: 'snowplow-enabled-checkbox' } }
     #js-snowplow-settings.gl-ml-6
       .form-group
         = f.label :snowplow_collector_hostname, _('Collector hostname')
@@ -27,5 +39,4 @@
         .form-text.gl-text-subtle
           = _('The Snowplow cookie domain.')
 
-  = f.submit _('Save changes'), pajamas_button: true
-
+  = f.submit _('Save changes'), pajamas_button: true, disabled: env_override_active

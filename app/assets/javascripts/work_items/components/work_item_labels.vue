@@ -2,7 +2,7 @@
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import { difference, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { __, createListFormat, s__, sprintf } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
@@ -155,7 +155,7 @@ export default {
       return this.isGroup ? __('Manage group labels') : __('Manage project labels');
     },
     workspaceType() {
-      return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
   },
   watch: {

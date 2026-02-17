@@ -19,11 +19,11 @@ Every call to this API requires authentication.
 If a user is not a member of a project and the project is private, a `GET`
 request on that project results in a `404` status code.
 
-## Get issues statistics
+## Retrieve issues statistics for a user
 
-Gets issues count statistics on all issues the authenticated user has access to. By default it
-returns only issues created by the current user. To get all issues,
-use parameter `scope=all`.
+Retrieves statistics for issues accessible by the current user. By default, 
+it returns only issues created by the current user. To get all issues,
+set the `scope` attribute to `all`.
 
 ```plaintext
 GET /issues_statistics
@@ -80,9 +80,9 @@ Example response:
 }
 ```
 
-## Get group issues statistics
+## Retrieve issues statistics for a group
 
-Gets issues count statistics for given group.
+Retrieves statistics for issues in a specified group.
 
 ```plaintext
 GET /groups/:id/issues_statistics
@@ -138,9 +138,9 @@ Example response:
 }
 ```
 
-## Get project issues statistics
+## Retrieve issues statistics for a project
 
-Gets issues count statistics for given project.
+Retrieves statistics for issues in a specified project.
 
 ```plaintext
 GET /projects/:id/issues_statistics

@@ -6,11 +6,8 @@ description: Developer information explaining terminology and features used in m
 title: Merge request concepts
 ---
 
-{{< alert type="note" >}}
-
-The documentation below is the single source of truth for the merge request terminology and functionality.
-
-{{< /alert >}}
+> [!note]
+> The documentation below is the single source of truth for the merge request terminology and functionality.
 
 The merge request is made up of several different key components and ideas that encompass the overall merge request experience. These concepts sometimes have competing and confusing terminology or overlap with other concepts. This page covers the following concepts:
 

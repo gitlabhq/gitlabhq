@@ -1,0 +1,6 @@
+---
+name: download_debian_distribution_release
+description: Grants the ability to download Debian distribution release files
+boundaries:
+  - group
+  - project

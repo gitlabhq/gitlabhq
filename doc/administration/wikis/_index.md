@@ -34,11 +34,8 @@ This setting is not available through the [**Admin** area settings](../settings/
 To configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
-{{< alert type="note" >}}
-
-The value of the limit must be in bytes. The minimum value is 1024 bytes.
-
-{{< /alert >}}
+> [!note]
+> The value of the limit must be in bytes. The minimum value is 1024 bytes.
 
 #### Through the Rails console
 

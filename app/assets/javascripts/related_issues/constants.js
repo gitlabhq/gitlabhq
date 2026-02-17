@@ -119,7 +119,7 @@ export const PathIdSeparator = {
 export const issuablesBlockHeaderTextMap = {
   [TYPE_ISSUE]: __('Linked items'),
   [TYPE_TICKET]: __('Linked items'),
-  [TYPE_INCIDENT]: __('Linked incidents or issues'),
+  [TYPE_INCIDENT]: __('Linked items'),
   [TYPE_EPIC]: __('Linked epics'),
 };
 

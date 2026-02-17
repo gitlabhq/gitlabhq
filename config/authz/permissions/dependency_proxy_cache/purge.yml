@@ -1,0 +1,5 @@
+---
+name: purge_dependency_proxy_cache
+description: Grants the ability to purge dependency proxy cache
+boundaries:
+  - group

@@ -11,12 +11,9 @@ title: Sidekiq execution SLIs (service level indicators)
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
-by default.
-
-{{< /alert >}}
+> [!note]
+> This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
+> by default.
 
 The Sidekiq execution Apdex measures the duration of successful jobs completion as an indicator for
 application performance.

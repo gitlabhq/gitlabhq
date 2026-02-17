@@ -1,19 +1,18 @@
-- @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if project_studio_enabled?
+- @main_wrapper_class = "container-queries-enabled gl-@container/panel js-container-queries-enabled"
 
 .layout-page.js-page-layout{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
-  - if project_studio_enabled?
-    = javascript_tag do
-      :plain
-        const outer = document.createElement('div');
-        outer.style.visibility = 'hidden';
-        outer.style.overflow = 'scroll';
-        document.body.appendChild(outer);
-        const inner = document.createElement('div');
-        outer.appendChild(inner);
-        const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-        outer.parentNode.removeChild(outer);
-        document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+  = javascript_tag do
+    :plain
+      const outer = document.createElement('div');
+      outer.style.visibility = 'hidden';
+      outer.style.overflow = 'scroll';
+      document.body.appendChild(outer);
+      const inner = document.createElement('div');
+      outer.appendChild(inner);
+      const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+      outer.parentNode.removeChild(outer);
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
   - context = group || @project
@@ -21,72 +20,44 @@
 
   - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user, organization: @organization)
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
-  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ class: super_sidebar_loading_state_class, data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
+  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ class: super_sidebar_loading_state_class, data: { root_path: root_path, sidebar: sidebar_data, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
-  = render_if_exists "layouts/tanuki_bot_chat"
   = render_if_exists "layouts/session_expire_modal"
 
-  - if project_studio_enabled?
-    .panels-container.gl-flex.gl-gap-3
-      .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative.js-content-panels{ class: 'gl-@container/content-panels' }
-        #static-panel-portal.js-static-panel.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
-          .panel-header
-            -# Broadcast messages
-            .broadcast-wrapper
-              = dispensable_render_if_exists "shared/token_expiration_banner"
-              = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+  .panels-container.gl-flex.gl-gap-3
+    .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative.js-content-panels{ class: 'gl-@container/content-panels' }
+      #static-panel-portal.js-static-panel.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
+        .panel-header
+          -# Broadcast messages
+          .broadcast-wrapper
+            = dispensable_render_if_exists "shared/token_expiration_banner"
+            = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
-            -# Top bar
-            - unless @hide_top_bar
-              = render "layouts/nav/top_bar", paneled_view: true
+          -# Top bar
+          - unless @hide_top_bar
+            = render "layouts/nav/top_bar", paneled_view: true
 
-          .panel-content
-            .panel-content-inner.js-static-panel-inner
-              -# Alerts
-              = render 'layouts/alerts', alert_class: alert_class, context: context
+        .panel-content
+          .panel-content-inner.js-static-panel-inner
+            -# Alerts
+            = render 'layouts/alerts', alert_class: alert_class, context: context
 
-              %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-                %main#content-body.content{ class: "gl-@container/panel gl-pb-3", **page_itemtype }
-                  -# mount drawers here for better page performance
-                  #js-drawer-container
-                  -# Sticky alerts
-                  = render "layouts/flash" unless @hide_flash
-                  = yield :after_flash_content
-                  = yield :before_content
-                  = yield
-              = yield :after_content
-              -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
-            = render_if_exists "shared/footer/global_footer"
+            %div{ class: "#{container_class unless @no_container} #{@content_class}" }
+              %main#content-body.content{ class: "gl-@container/panel gl-pb-3", **page_itemtype }
+                -# mount drawers here for better page performance
+                #js-drawer-container
+                -# Sticky alerts
+                = render "layouts/flash" unless @hide_flash
+                = yield :after_flash_content
+                = yield :before_content
+                = yield
+            = yield :after_content
+            -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+          = render_if_exists "shared/footer/global_footer"
 
 
-        #contextual-panel-portal.js-dynamic-panel.paneled-view.contextual-panel{
-          class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
-        }
+      #contextual-panel-portal.js-dynamic-panel.paneled-view.contextual-panel{
+        class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
+      }
 
-    = dispensable_render_if_exists 'layouts/duo_chat_panel'
-
-  - else
-    - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if project_studio_enabled?
-    .content-wrapper{ class: "#{@content_wrapper_class}" }
-      -# Broadcast messages
-      .broadcast-wrapper
-        = dispensable_render_if_exists "shared/token_expiration_banner"
-        = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
-
-      = render 'layouts/alerts', alert_class: alert_class, context: context
-
-      -# Top bar
-      - unless @hide_top_bar
-        = render "layouts/nav/top_bar", paneled_view: false
-
-      %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-        %main.content{ id: "content-body", **page_itemtype, class: @main_wrapper_class }
-          -# mount drawers here for better page performance
-          #js-drawer-container
-          = render "layouts/flash" unless @hide_flash
-          = yield :after_flash_content
-          = yield :before_content
-          = yield
-      = yield :after_content
-      -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
-      = render_if_exists "shared/footer/global_footer"
+  = dispensable_render_if_exists 'layouts/duo_chat_panel'

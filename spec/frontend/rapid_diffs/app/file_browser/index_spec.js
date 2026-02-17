@@ -9,6 +9,7 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
   props: jest.requireActual('~/rapid_diffs/app/file_browser/file_browser.vue').default.props,
@@ -17,6 +18,7 @@ jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
       attrs: {
         'data-file-browser-component': true,
         'data-group-blobs-list-items': JSON.stringify(this.groupBlobsListItems),
+        'data-linked-file-path': this.linkedFilePath,
       },
       on: {
         click: () => {
@@ -34,6 +36,7 @@ jest.mock('~/rapid_diffs/app/file_browser/file_browser_drawer.vue', () => ({
       attrs: {
         'data-file-browser-drawer-component': true,
         'data-group-blobs-list-items': JSON.stringify(this.groupBlobsListItems),
+        'data-linked-file-path': this.linkedFilePath,
       },
       on: {
         click: () => {
@@ -106,11 +109,16 @@ describe('Init file browser', () => {
   const initAppData = ({
     diffFilesEndpoint = '/diff-files-metadata',
     shouldSortMetadataFiles = true,
+    linkedFileData,
   } = {}) => {
-    appData = {
+    const data = {
       diffFilesEndpoint,
       shouldSortMetadataFiles,
     };
+    if (linkedFileData !== undefined) {
+      data.linkedFileData = linkedFileData;
+    }
+    appData = data;
   };
 
   const init = () => {
@@ -208,6 +216,23 @@ describe('Init file browser', () => {
     expect(mockAxios.history.get[0].url).toBe('/diff-files-metadata');
   });
 
+  it('adds href to diff files', async () => {
+    setWindowLocation('http://example.com/merge_requests/1/diffs');
+
+    const { useFileBrowser } = await import('~/diffs/stores/file_browser');
+    const setTreeData = jest.spyOn(useFileBrowser(), 'setTreeData');
+
+    await init();
+
+    expect(setTreeData).toHaveBeenCalled();
+    const [diffFiles] = setTreeData.mock.calls[0];
+    expect(diffFiles).toHaveLength(2);
+    expect(diffFiles[0].href).toContain('file_path=.gitlab%2Fci%2Fas-if-foss.gitlab-ci.yml');
+    expect(diffFiles[0].href).toContain('#6e9c59ba18901dfd9c99bb432c515d498f49690d');
+    expect(diffFiles[1].href).toContain('file_path=.gitlab%2Fci%2Fsetup.gitlab-ci.yml');
+    expect(diffFiles[1].href).toContain('#12dc3d87e90313d83a236a944f8a4869f1dc97e2');
+  });
+
   it('hides drawer toggle when app is hidden', async () => {
     // eslint-disable-next-line no-underscore-dangle
     useMainContainer()._setCurrentBreakpoint('sm');
@@ -215,5 +240,35 @@ describe('Init file browser', () => {
     useApp().appVisible = false;
     await nextTick();
     expect(getFileBrowserDrawerToggle()).toBe(null);
+  });
+
+  describe('linkedFileData', () => {
+    it('passes linkedFilePath from linkedFileData old_path first', async () => {
+      initAppData({ linkedFileData: { old_path: 'old.txt', new_path: 'new.txt' } });
+      await init();
+      const fileBrowser = getFileBrowser();
+      expect(fileBrowser.dataset.linkedFilePath).toBe('old.txt');
+    });
+
+    it('uses new_path when old_path is not available', async () => {
+      initAppData({ linkedFileData: { new_path: 'new.txt' } });
+      await init();
+      const fileBrowser = getFileBrowser();
+      expect(fileBrowser.dataset.linkedFilePath).toBe('new.txt');
+    });
+
+    it('uses old_path when new_path is not available', async () => {
+      initAppData({ linkedFileData: { old_path: 'old.txt' } });
+      await init();
+      const fileBrowser = getFileBrowser();
+      expect(fileBrowser.dataset.linkedFilePath).toBe('old.txt');
+    });
+
+    it('passes null if linkedFileData is null', async () => {
+      initAppData({ linkedFileData: null });
+      await init();
+      const fileBrowser = getFileBrowser();
+      expect(fileBrowser.dataset.linkedFilePath).toBeUndefined();
+    });
   });
 });

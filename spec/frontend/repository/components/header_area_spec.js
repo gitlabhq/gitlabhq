@@ -111,16 +111,18 @@ describe('HeaderArea', () => {
   describe('File tree browser toggle', () => {
     describe('when repositoryFileTreeBrowser is enabled', () => {
       it.each`
-        fileTreeVisible | isProjectOverview | expectedToggleVisible
-        ${false}        | ${false}          | ${true}
-        ${true}         | ${false}          | ${false}
-        ${false}        | ${true}           | ${false}
+        isProjectOverview | isExpanded | isPeekOn | expectedToggleVisible
+        ${false}          | ${false}   | ${false} | ${true}
+        ${false}          | ${true}    | ${false} | ${false}
+        ${false}          | ${false}   | ${true}  | ${true}
+        ${true}           | ${false}   | ${false} | ${false}
       `(
         'toggles file tree visibility',
-        ({ fileTreeVisible, isProjectOverview, expectedToggleVisible }) => {
+        ({ isExpanded, isPeekOn, isProjectOverview, expectedToggleVisible }) => {
           pinia = createTestingPinia({ stubActions: false });
           fileTreeBrowserStore = useFileTreeBrowserVisibility();
-          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(fileTreeVisible);
+          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+          fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(isPeekOn);
 
           const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
           wrapper = createComponent({
@@ -132,7 +134,7 @@ describe('HeaderArea', () => {
             },
           });
 
-          expect(findFileTreeToggle().exists()).toBe(expectedToggleVisible);
+          expect(findFileTreeToggle().isVisible()).toBe(expectedToggleVisible);
         },
       );
     });
@@ -221,7 +223,7 @@ describe('HeaderArea', () => {
         },
       });
 
-      expect(findFileTreeToggle().exists()).toBe(false);
+      expect(findFileTreeToggle().isVisible()).toBe(false);
     });
   });
 

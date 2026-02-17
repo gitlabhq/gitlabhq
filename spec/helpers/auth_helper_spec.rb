@@ -939,6 +939,28 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
   end
 
+  describe "#iam_oauth_authorize_url" do
+    context "with FF iam_svc_login disabled" do
+      before do
+        stub_feature_flags(iam_svc_login: false)
+      end
+
+      it "returns nil" do
+        expect(helper.iam_oauth_authorize_url(:google_oauth2)).to be_nil
+      end
+    end
+
+    context "with missing IAM URL" do
+      before do
+        allow(Gitlab.config.authn.iam_service).to receive(:url).and_return(nil)
+      end
+
+      it "returns nil" do
+        expect(helper.iam_oauth_authorize_url(:google_oauth2)).to be_nil
+      end
+    end
+  end
+
   def omniauth_providers_with_step_up_auth_config(step_up_auth_scope)
     auth_providers.map { |provider| Gitlab::Auth::OAuth::Provider.config_for(provider) }
                   .select { |provider_config| provider_config.dig("step_up_auth", step_up_auth_scope.to_s).present? }

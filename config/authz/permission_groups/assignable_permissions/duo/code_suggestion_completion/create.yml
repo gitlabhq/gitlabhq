@@ -1,0 +1,7 @@
+---
+name: create_code_suggestion_completion
+description: Grants the ability to create code suggestion completions
+permissions:
+  - create_code_suggestion_completion
+boundaries:
+  - user

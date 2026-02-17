@@ -15,7 +15,7 @@ module Auth
       :build_destroy_container_image
     ].freeze
     PROTECTED_TAG_ACTIONS = %w[push delete].freeze
-    ALLOWED_REGISTRY_SCOPE_NAMES = %w[catalog statistics].freeze
+    ALLOWED_REGISTRY_SCOPE_NAMES = %w[catalog statistics background-migrations].freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities

@@ -37,8 +37,14 @@ export default {
     refType() {
       return this.trackedRef.refType.toLowerCase() === 'tag' ? 'tag' : 'branch';
     },
+    commit() {
+      return this.trackedRef.commit;
+    },
+    hasCommit() {
+      return Boolean(this.commit);
+    },
     hasValidAuthoredDate() {
-      return isValidDate(newDate(this.trackedRef.commit.authoredDate));
+      return this.hasCommit && isValidDate(newDate(this.commit.authoredDate));
     },
   },
 };
@@ -65,30 +71,33 @@ export default {
         <span>{{ refTypeText }}</span>
       </span>
 
-      <span aria-hidden="true">·</span>
-
-      <span
-        class="gl-inline-flex gl-items-center gl-gap-1 gl-rounded-base gl-bg-strong gl-px-2"
-        data-testid="commit-short-id"
+      <div
+        v-if="hasCommit"
+        data-testid="commit-info"
+        class="gl-flex gl-flex-wrap gl-items-center gl-gap-2"
       >
-        <gl-icon name="commit" :size="12" />
-        <gl-link
-          v-if="!disableCommitLink"
-          :href="trackedRef.commit.webPath"
-          class="gl-text-subtle"
-          >{{ trackedRef.commit.shortId }}</gl-link
-        >
-        <span v-else class="gl-text-subtle">{{ trackedRef.commit.shortId }}</span>
-      </span>
-
-      <span aria-hidden="true">·</span>
-
-      <span class="gl-line-clamp-1" data-testid="commit-title">{{ trackedRef.commit.title }}</span>
-
-      <template v-if="hasValidAuthoredDate">
         <span aria-hidden="true">·</span>
-        <time-ago-tooltip :time="trackedRef.commit.authoredDate" />
-      </template>
+
+        <span
+          class="gl-inline-flex gl-items-center gl-gap-1 gl-rounded-base gl-bg-strong gl-px-2"
+          data-testid="commit-short-id"
+        >
+          <gl-icon name="commit" :size="12" />
+          <gl-link v-if="!disableCommitLink" :href="commit.webPath" class="gl-text-subtle">{{
+            commit.shortId
+          }}</gl-link>
+          <span v-else class="gl-text-subtle">{{ commit.shortId }}</span>
+        </span>
+
+        <span aria-hidden="true">·</span>
+
+        <span class="gl-line-clamp-1" data-testid="commit-title">{{ commit.title }}</span>
+
+        <template v-if="hasValidAuthoredDate">
+          <span aria-hidden="true">·</span>
+          <time-ago-tooltip :time="commit.authoredDate" />
+        </template>
+      </div>
     </div>
   </div>
 </template>

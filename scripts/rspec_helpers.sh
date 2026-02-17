@@ -140,32 +140,16 @@ function debug_rspec_variables() {
 
 function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
-  local new_exit_code="${1}"
   local rspec_retry_status=0
-
-  if [[ $rspec_run_status -eq 3 ]]; then
-    echoerr "Not retrying failing examples since we failed early on purpose!"
-    change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
-    exit "${new_exit_code}"
-  fi
 
   if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-    change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
-    exit "${new_exit_code}"
+    exit "${rspec_run_status}"
   fi
 
   if [[ $rspec_run_status -ne 0 ]]; then
     if is_rspec_last_run_results_file_missing; then
-      change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
-      exit "${new_exit_code}"
-    fi
-
-    local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
-    if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
-      echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
-      change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
-      exit "${new_exit_code}"
+      exit "${rspec_run_status}"
     fi
 
     retry_failed_rspec_examples $rspec_run_status || rspec_retry_status=$?
@@ -174,78 +158,7 @@ function handle_retry_rspec_in_new_process() {
     exit "${rspec_run_status}"
   fi
 
-  # The retry in a new RSpec process succeeded.
-  if [[ $rspec_retry_status -eq 0 ]]; then
-    exit "${rspec_retry_status}"
-  fi
-
-  # At this stage, we know the CI/CD job will fail.
-  #
-  # We'll change the exit code of the CI job.
-  change_exit_code_if_applicable $rspec_retry_status || new_exit_code=$?
-  exit $new_exit_code
-}
-
-function change_exit_code_if_applicable() {
-  local previous_exit_status=$1
-  local found_known_flaky_test=$previous_exit_status
-  local new_exit_code=$previous_exit_status
-
-  # We need to call the GitLab API for those functions.
-  if [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
-    change_exit_code_if_known_flaky_tests $previous_exit_status || found_known_flaky_test=$?
-  else
-    echoinfo "TEST_FAILURES_PROJECT_TOKEN is not set. We won't try to change the exit code."
-  fi
-
-  # Update new_exit_code if either of the checks changed the values
-  echo
-  echo "found_known_flaky_test: $found_known_flaky_test"
-
-  if [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
-    new_exit_code=$found_known_flaky_test
-  fi
-
-  echo "New exit code: $new_exit_code"
-  return $new_exit_code
-}
-
-function change_exit_code_if_known_flaky_tests() {
-  new_exit_code=$1
-  echo
-  echo "*******************************************************"
-  echo "Checking whether known flaky tests failed the job"
-  echo "*******************************************************"
-
-  found_known_flaky_tests_status=0
-  found_known_flaky_tests_output=$(found_known_flaky_tests) || found_known_flaky_tests_status=$?
-
-  echo "${found_known_flaky_tests_output}"
-  if [[ $found_known_flaky_tests_status -eq 0 ]]; then
-    echo
-    echo "Changing the CI/CD job exit code to 112, and creating the ${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH} file"
-    touch "${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH}"
-
-    new_exit_code=112
-  else
-    echo
-    echo "Not changing the CI/CD job exit code."
-  fi
-
-  return "${new_exit_code}"
-}
-
-function found_known_flaky_tests() {
-  # For the input files, we want to get both rspec-${CI_JOB_ID}.json (first RSpec run)
-  # and rspec-retry-${CI_JOB_ID}.json (second RSpec run).
-  #
-  # Depending on where this function will be called,
-  # we might have the two files, just one, or none available.
-  bundle exec existing-test-health-issue \
-    --token "${TEST_FAILURES_PROJECT_TOKEN}" \
-    --project "gitlab-org/gitlab" \
-    --input-files "rspec/rspec-*${CI_JOB_ID}.json" \
-    --health-problem-type failures;
+  exit "${rspec_retry_status}"
 }
 
 function rspec_parallelized_job() {

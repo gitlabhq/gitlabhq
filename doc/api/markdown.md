@@ -22,13 +22,10 @@ Use this API to render [Markdown](../user/markdown.md) content as HTML.
 
 All requests to this API must be [authenticated](rest/authentication.md).
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 ## Render an arbitrary Markdown document
 

@@ -11,14 +11,21 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
   let(:request_params) { { source_branch: 'a', target_branch: 'b' } }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/new" }
   let(:url_params) { '?source_branch=a&target_branch=b' }
+  let(:resource) { merge_request }
 
-  subject(:presenter) { described_class.new(merge_request, project, diff_view, diff_options, request_params) }
+  subject(:presenter) do
+    described_class.new(merge_request, project: project, diff_view: diff_view, diff_options: diff_options,
+      request_params: request_params)
+  end
 
   describe '#diffs_slice' do
     subject(:diffs_slice) { presenter.diffs_slice }
 
     it { is_expected.to be_nil }
   end
+
+  it_behaves_like 'rapid diffs presenter base diffs_resource'
+  it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
@@ -58,8 +65,8 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
     it { is_expected.to be(true) }
   end
 
-  describe '#should_sort_metadata_files?' do
-    subject(:method) { presenter.should_sort_metadata_files? }
+  describe '#sorted?' do
+    subject(:method) { presenter.sorted? }
 
     it { is_expected.to be(false) }
   end
@@ -69,5 +76,13 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
     subject(:method) { presenter.send(:offset) }
 
     it { is_expected.to be_nil }
+  end
+
+  describe '#linked_file' do
+    let(:request_params) { { source_branch: 'a', target_branch: 'b', old_path: 'test.txt', new_path: 'test.txt' } }
+
+    it 'returns nil because presenter is lazy' do
+      expect(presenter.linked_file).to be_nil
+    end
   end
 end

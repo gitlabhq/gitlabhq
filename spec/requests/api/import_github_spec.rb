@@ -258,6 +258,49 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         expect(json_response['errors']).to eq('This endpoint has been requested too many times. Try again later.')
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_github_import do
+      let_it_be(:target_namespace) { create(:group) }
+      let(:boundary_object) { target_namespace }
+
+      before_all do
+        target_namespace.add_maintainer(user)
+      end
+
+      before do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new)
+          .with(provider_repo, provider_repo[:name], target_namespace, user, type: provider, **access_params)
+          .and_return(double(execute: project))
+      end
+
+      let(:request) do
+        post api('/import/github', personal_access_token: pat), params: {
+          target_namespace: target_namespace.full_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_github_import do
+      let(:boundary_object) { :user }
+
+      before do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new)
+          .with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
+          .and_return(double(execute: project))
+      end
+
+      let(:request) do
+        post api('/import/github', personal_access_token: pat), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+      end
+    end
   end
 
   describe "POST /import/github/cancel" do
@@ -269,6 +312,13 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         allow(Import::Github::CancelProjectImportService)
           .to receive(:new).with(project, user)
           .and_return(double(execute: { status: :success, project: project }))
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :cancel_github_import do
+        let(:boundary_object) { :user }
+        let(:request) do
+          post api('/import/github/cancel', personal_access_token: pat), params: { project_id: project.id }
+        end
       end
 
       it 'returns success' do
@@ -317,6 +367,11 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         allow(Import::Github::GistsImportService)
           .to receive(:new).with(user, client, access_params)
           .and_return(double(execute: { status: :success }))
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_github_gist_import do
+        let(:boundary_object) { :user }
+        let(:request) { post api('/import/github/gists', personal_access_token: pat), params: params }
       end
 
       it 'returns 202' do

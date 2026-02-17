@@ -1,9 +1,9 @@
-import { omit } from 'lodash';
 import {
   buffer,
   renderTagClose,
   renderTagOpen,
   containsParagraphWithOnlyText,
+  tableCellAsTaskTableItem,
 } from '../serialization_helpers';
 import { isInBlockTable } from './table';
 
@@ -33,7 +33,14 @@ function renderTableRowAsMarkdown(state, node, isHeaderRow = false) {
     if (i) state.write(' | ');
 
     const { length } = state.out;
-    const cellContent = buffer(state, () => state.render(cell, node, i));
+    const taskTableItem = tableCellAsTaskTableItem(cell);
+    const cellContent = buffer(
+      state,
+      taskTableItem
+        ? () => state.render(taskTableItem, cell, i)
+        : () => state.render(cell, node, i),
+    );
+
     state.write(cellContent.replace(/\|/g, '\\|'));
     cellWidths.push(state.out.length - length);
   });
@@ -50,7 +57,7 @@ function renderTableRowAsHTML(state, node) {
   node.forEach((cell, _, i) => {
     const tag = cell.type.name === 'tableHeader' ? 'th' : 'td';
 
-    renderTagOpen(state, tag, omit(cell.attrs, 'sourceMapKey', 'sourceMarkdown'));
+    renderTagOpen(state, tag, cell.attrs);
 
     const buffered = buffer(state, () => {
       if (!containsParagraphWithOnlyText(cell)) {
@@ -77,7 +84,9 @@ const tableRow = (state, node) => {
   if (isInBlockTable(node)) {
     renderTableRowAsHTML(state, node);
   } else {
-    renderTableRowAsMarkdown(state, node, node.child(0).type.name === 'tableHeader');
+    const firstChild = node.child(0);
+    const isHeaderRow = firstChild.type.name === 'tableHeader';
+    renderTableRowAsMarkdown(state, node, isHeaderRow);
   }
 };
 

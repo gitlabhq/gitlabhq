@@ -73,11 +73,8 @@ You can configure redirects for your site using a `_redirects` file. For more in
 
 Permanently delete all Pages deployments for a project.
 
-{{< alert type="note" >}}
-
-The change cannot be undone.
-
-{{< /alert >}}
+> [!warning]
+> The change cannot be undone.
 
 To delete your pages:
 
@@ -323,11 +320,8 @@ create-pages:
       - dist
 ```
 
-{{< alert type="warning" >}}
-
-The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/519499) in GitLab 17.9 and must now be nested under the `pages` keyword.
-
-{{< /alert >}}
+> [!note]
+> The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/519499) in GitLab 17.9 and must now be nested under the `pages` keyword.
 
 ## Regenerate unique domain for GitLab Pages
 
@@ -344,12 +338,12 @@ If anyone tries to access the old URL, they receive a `404` error.
 
 Prerequisites
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The **Use unique domain** setting [must be enabled](_index.md#unique-domains) in your project's Pages settings.
 
 To regenerate a unique domain for your GitLab Pages site:
 
-1. On the left sidebar, select  **Deploy** > **Pages**.
+1. On the left sidebar, select **Deploy** > **Pages**.
 1. Next to **Access pages**, press **Regenerate unique domain**.
 1. GitLab generates a new unique domain for your Pages site.
 
@@ -401,7 +395,7 @@ create-pages:
   environment: production
 ```
 
-The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
+The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 

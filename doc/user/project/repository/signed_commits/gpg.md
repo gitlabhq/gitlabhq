@@ -16,12 +16,9 @@ title: Sign commits with GPG
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key.
 
-{{< alert type="note" >}}
-
-GitLab uses the term GPG for all OpenPGP, PGP, and GPG-related material and
-implementations.
-
-{{< /alert >}}
+> [!note]
+> GitLab uses the term GPG for all OpenPGP, PGP, and GPG-related material and
+> implementations.
 
 For GitLab to consider a commit verified:
 
@@ -308,8 +305,5 @@ If the password entry prompt doesn't appear:
    - Restart your terminal.
    - Run `source ~/.bashrc` or `source ~/.zshrc`.
 
-{{< alert type="note" >}}
-
-The exact steps may vary depending on your operating system and shell configuration.
-
-{{< /alert >}}
+> [!note]
+> The exact steps may vary depending on your operating system and shell configuration.

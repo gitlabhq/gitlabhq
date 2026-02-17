@@ -8,8 +8,8 @@ $diff-file-header: 41px;
   margin-bottom: $gl-padding;
 
   .code.md-suggestion-diff {
-    border-bottom-left-radius: $gl-border-radius-base-inner;
-    border-bottom-right-radius: $gl-border-radius-base-inner;
+    border-bottom-left-radius: $gl-border-radius-lg-inner;
+    border-bottom-right-radius: $gl-border-radius-lg-inner;
   }
 
   .file-title,
@@ -130,6 +130,7 @@ $diff-file-header: 41px;
     @apply gl-bg-strong;
     text-align: center;
     padding: $gl-padding;
+    border-radius: var(--diff-file-image-viewer-border-radius);
 
     &:has(> .view) {
       padding-bottom: $gl-padding-32;
@@ -456,7 +457,7 @@ table.code {
   margin: 0;
   padding: 0;
   table-layout: fixed;
-  border-radius: 0 0 $gl-border-radius-base-inner $gl-border-radius-base-inner;
+  border-radius: 0 0 $gl-border-radius-lg-inner $gl-border-radius-lg-inner;
 
   .diff-td.highlight-top {
     box-shadow: inset 0 1px var(--highlight-border-color, $blue-300);
@@ -579,17 +580,17 @@ table.code {
     .diff-grid-left {
       .diff-td:first-child,
       td:first-child {
-        border-bottom-left-radius: $gl-border-radius-base-inner;
+        border-bottom-left-radius: $gl-border-radius-lg-inner;
 
         .diff-line-expand-button {
-          border-bottom-left-radius: $gl-border-radius-base-inner;
+          border-bottom-left-radius: $gl-border-radius-lg-inner;
         }
       }
     }
 
     .diff-td:last-child:not(.left-side.parallel),
     td:last-child:not(.left-side.parallel) {
-      border-bottom-right-radius: $gl-border-radius-base-inner;
+      border-bottom-right-radius: $gl-border-radius-lg-inner;
     }
   }
 
@@ -889,11 +890,6 @@ table.code {
   .file-title {
     @apply gl-bg-feedback-info;
   }
-}
-
-// This is not inside page_bundles because then it won't receive a proper color value for the dark theme
-.diff-file-row.is-active.is-linked {
-  @apply gl-bg-feedback-info;
 }
 
 .collapsed-file-warning {

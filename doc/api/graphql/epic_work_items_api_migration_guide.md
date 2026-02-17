@@ -73,12 +73,9 @@ around with existing queries:
 
 ### Query epics
 
-{{< alert type="note" >}}
-
-Epic IDs are different from work item IDs, but the IID (ID incremented for each group) remains the same.
-For example, an epic at `/gitlab-org/-/epics/123` has the same IID `123` as a work item.
-
-{{< /alert >}}
+> [!note]
+> Epic IDs are different from work item IDs, but the IID (ID incremented for each group) remains the same.
+> For example, an epic at `/gitlab-org/-/epics/123` has the same IID `123` as a work item.
 
 **Before (Epic API)**:
 

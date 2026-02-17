@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Environment do
+RSpec.describe Gitlab::Ci::Config::Entry::Environment, feature_category: :environment_management do
   let(:entry) { described_class.new(config) }
 
   before do

@@ -66,15 +66,45 @@ module ActiveContext
         end
 
         def current_search_embedding_version
-          self::MODELS[collection_record.search_embedding_version] || {}
+          self::MODELS[collection_record&.search_embedding_version] || {}
         end
 
         def current_indexing_embedding_versions
-          collection_record.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
+          collection_record&.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
         end
 
         def current_embedding_fields
           current_indexing_embedding_versions.map { |v| v[:field].to_s }
+        end
+
+        def embedding_model_selector
+          raise NotImplementedError
+        end
+
+        def current_indexing_embedding_model
+          return nil if collection_record&.current_indexing_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.current_indexing_embedding_model)
+        end
+
+        def next_indexing_embedding_model
+          return nil if collection_record&.next_indexing_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.next_indexing_embedding_model)
+        end
+
+        def search_embedding_model
+          return nil if collection_record&.search_embedding_model.nil?
+
+          embedding_model_selector.for(collection_record.search_embedding_model)
+        end
+
+        def indexing_embedding_models
+          [current_indexing_embedding_model, next_indexing_embedding_model].compact
+        end
+
+        def indexing_embedding_fields
+          indexing_embedding_models.map(&:field)
         end
       end
 

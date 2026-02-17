@@ -17,14 +17,12 @@ bundle install
 bundle exec rspec <path/to/spec.rb>
 ```
 
-{{< alert type="note" >}}
+Additionally:
 
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - You may be able to use the password pre-set for `root` in your GDK installation [See GDK help](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/14bd8b6eb875d72eb1b482e0ec00cbf8fc3ebf99/HELP#L62). If you have changed your `root` password from the default, export the password as `GITLAB_ADMIN_PASSWORD`.
 - By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (for example, a custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](running_tests_that_require_special_setup.md) for running some of those tests against GDK or another local GitLab instance.
-
-{{< /alert >}}
 
 By default, URL of GitLab instance is set based on `config/gitlab.yml` configuration file. To override it and use different URL, see [overriding GitLab address](#overriding-gitlab-address) section.
 
@@ -70,11 +68,8 @@ See the section above for situations that might require adjustment to the comman
     gitlab/gitlab-ee:nightly
    ```
 
-   {{< alert type="note" >}}
-
-   If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
-
-   {{< /alert >}}
+   > [!note]
+   > If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
 
 1. Once GitLab is up and accessible on `http://127.0.0.1`, in another shell tab, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
 
@@ -100,11 +95,8 @@ See the section above for situations that might require adjustment to the comman
    - [Ruby](https://rubyinstaller.org/downloads/). Refer to the [`.ruby-version` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.ruby-version)
      for the exact version of Ruby to install.
 
-   {{< alert type="note" >}}
-
-   Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
-
-   {{< /alert >}}
+   > [!note]
+   > Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
 
 1. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
 
@@ -153,10 +145,10 @@ Tests can be put in quarantine by assigning `:quarantine` metadata. This means t
 bundle exec rspec --tag quarantine
 ```
 
-Alternatively, the `DISABLE_QUARATINE` variable can be used
+Alternatively, the `GLCI_DISABLE_QUARANTINE` variable can be used
 
 ```shell
-DISABLE_QUARANTINE=true bundle exec bin/qa Test::Instance::All http://localhost:3000
+GLCI_DISABLE_QUARANTINE=true bundle exec bin/qa Test::Instance::All http://localhost:3000
 ```
 
 ### Custom `bin/qa` test runner
@@ -189,11 +181,8 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000 --disable-feature g
 
 This will instruct the QA framework to disable the `gitaly_enforce_requests_limits` feature flag ([via the API](../../../../api/features.md)) if not already disabled, run all the tests in the `Test::Instance::All` scenario, and then enable the feature flag again if it was enabled earlier.
 
-{{< alert type="note" >}}
-
-You can also [toggle feature flags in the tests themselves](../best_practices/feature_flags.md).
-
-{{< /alert >}}
+> [!note]
+> You can also [toggle feature flags in the tests themselves](../best_practices/feature_flags.md).
 
 Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature` are QA framework options, not `rspec` options.
 

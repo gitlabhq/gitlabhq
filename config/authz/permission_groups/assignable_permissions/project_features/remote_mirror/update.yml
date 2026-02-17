@@ -4,4 +4,5 @@ description: Grants the ability to update remote mirrors
 boundaries:
   - project
 permissions:
+  - sync_remote_mirror
   - update_remote_mirror

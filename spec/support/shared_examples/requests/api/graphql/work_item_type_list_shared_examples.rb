@@ -41,6 +41,42 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
       end.to issue_same_number_of_queries_as(control).with_threshold(5)
       expect(graphql_errors).to be_blank
     end
+
+    context 'when filtering by name' do
+      let(:query) do
+        <<~QUERY
+          query {
+            #{parent_key}(fullPath: "#{parent.full_path}") {
+              workItemTypes(name: ISSUE) {
+                nodes {
+                  #{work_item_type_fields}
+                }
+              }
+            }
+          }
+        QUERY
+      end
+
+      it_behaves_like 'a working graphql query that returns data'
+    end
+
+    context 'when filtering with only_available' do
+      let(:query) do
+        <<~QUERY
+          query {
+            #{parent_key}(fullPath: "#{parent.full_path}") {
+              workItemTypes(onlyAvailable: true) {
+                nodes {
+                  #{work_item_type_fields}
+                }
+              }
+            }
+          }
+        QUERY
+      end
+
+      it_behaves_like 'a working graphql query that returns data'
+    end
   end
 
   context "when user doesn't have access to the parent" do

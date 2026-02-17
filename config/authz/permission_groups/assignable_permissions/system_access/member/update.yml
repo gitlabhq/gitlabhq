@@ -1,0 +1,12 @@
+---
+name: update_member
+description: Grants the ability to update members
+boundaries:
+  - group
+  - project
+permissions:
+  - approve_member
+  - create_ldap_member_override
+  - delete_ldap_member_override
+  - toggle_state_member
+  - update_member

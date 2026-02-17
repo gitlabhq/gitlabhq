@@ -29,11 +29,11 @@ module API
               failure [
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[conan_packages]
+              tags %w[packages]
             end
 
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-            route_setting :authorization, skip_job_token_policies: true
+            route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: true
 
             get 'ping', urgency: :default do
               header 'X-Conan-Server-Capabilities', x_conan_server_capabilities_header.join(',')
@@ -68,7 +68,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               params do
@@ -78,7 +78,8 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get 'packages/:conan_package_reference', urgency: :low do
                 authorize_read_package!(project)
@@ -101,12 +102,13 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get urgency: :low do
                 authorize_read_package!(project)
@@ -129,7 +131,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
               params do
                 requires :conan_package_reference, type: String, desc: 'Conan package ID',
@@ -138,7 +140,8 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get 'packages/:conan_package_reference/digest', urgency: :low do
                 present_package_download_urls
@@ -152,12 +155,13 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get 'digest', urgency: :low do
                 present_recipe_download_urls
@@ -177,7 +181,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               params do
@@ -187,7 +191,8 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get 'packages/:conan_package_reference/download_urls', urgency: :low do
                 present_package_download_urls
@@ -201,12 +206,13 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :read_conan_package, boundary_type: :project
 
               get 'download_urls', urgency: :low do
                 present_recipe_download_urls
@@ -227,7 +233,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               params do
@@ -237,7 +243,8 @@ module API
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :upload_conan_package, boundary_type: :project
 
               post 'packages/:conan_package_reference/upload_urls', urgency: :low do
                 authorize_read_package!(project)
@@ -254,12 +261,13 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, job_token_policies: :read_packages,
-                allow_public_access_for_enabled_project_features: :package_registry
+                allow_public_access_for_enabled_project_features: :package_registry,
+                permissions: :upload_conan_package, boundary_type: :project
 
               post 'upload_urls', urgency: :low do
                 authorize_read_package!(project)
@@ -276,11 +284,12 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :admin_packages
+              route_setting :authorization, job_token_policies: :admin_packages,
+                permissions: :delete_conan_package, boundary_type: :project
 
               delete urgency: :low do
                 authorize!(:destroy_package, project)
@@ -329,12 +338,13 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
 
                 get urgency: :low do
                   download_package_file(:recipe_file)
@@ -349,7 +359,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 params do
@@ -359,7 +369,8 @@ module API
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :admin_packages
+                route_setting :authorization, job_token_policies: :admin_packages,
+                  permissions: :upload_conan_package, boundary_type: :project
 
                 put urgency: :low do
                   upload_package_file(:recipe_file)
@@ -374,11 +385,12 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :admin_packages
+                route_setting :authorization, job_token_policies: :admin_packages,
+                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
@@ -403,12 +415,13 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
 
                 get urgency: :low do
                   download_package_file(:package_file)
@@ -423,11 +436,12 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :admin_packages
+                route_setting :authorization, job_token_policies: :admin_packages,
+                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
@@ -443,7 +457,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 params do
@@ -453,7 +467,8 @@ module API
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :admin_packages
+                route_setting :authorization, job_token_policies: :admin_packages,
+                  permissions: :upload_conan_package, boundary_type: :project
 
                 put urgency: :low do
                   upload_package_file(:package_file)

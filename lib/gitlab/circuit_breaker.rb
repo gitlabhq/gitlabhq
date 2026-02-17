@@ -14,8 +14,9 @@ module Gitlab
 
       # @param [String] unique name for the circuit
       # @param options [Hash] an options hash setting optional values per circuit
-      def run_with_circuit(service_name, options = {}, &block)
-        circuit(service_name, options).run(exception: false, &block)
+      # @param exception [Boolean] when true, raises exceptions on circuit failures
+      def run_with_circuit(service_name, options = {}, exception: false, &block)
+        circuit(service_name, options).run(exception: exception, &block)
       end
 
       private

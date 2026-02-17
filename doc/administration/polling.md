@@ -31,6 +31,10 @@ The default value (`1`) is recommended for the majority of GitLab installations.
 
 ## Configure
 
+Prerequisites:
+
+- Administrator access.
+
 To adjust the polling interval multiplier:
 
 1. In the upper-right corner, select **Admin**.

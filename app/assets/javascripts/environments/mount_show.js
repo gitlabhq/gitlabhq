@@ -21,6 +21,7 @@ export const initHeader = () => {
 
   return new Vue({
     el,
+    name: 'EnvironmentsDetailHeaderRoot',
     apolloProvider,
     provide: {
       projectFullPath: dataset.projectFullPath,
@@ -113,6 +114,7 @@ export const initPage = async () => {
 
   return new Vue({
     el,
+    name: 'EnvironmentsRouterViewRoot',
     apolloProvider,
     router,
     provide: {

@@ -97,12 +97,9 @@ performance impact this might have on your code. There is a trade-off between th
 
 ### Handling duplicate records
 
-{{< alert type="note" >}}
-
-This parameter applies only to `bulk_insert!`. If you intend to update existing
-records, use `bulk_upsert!` instead.
-
-{{< /alert >}}
+> [!note]
+> This parameter applies only to `bulk_insert!`. If you intend to update existing
+> records, use `bulk_upsert!` instead.
 
 It may happen that some records you are trying to insert already exist, which would result in
 primary key conflicts. There are two ways to address this problem: failing fast by raising an

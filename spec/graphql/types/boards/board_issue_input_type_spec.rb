@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['BoardIssueInput'] do
+RSpec.describe GitlabSchema.types['BoardIssueInput'], feature_category: :portfolio_management do
   it { expect(described_class.graphql_name).to eq('BoardIssueInput') }
 
   it 'has specific fields' do
     allowed_args = %w[labelName milestoneTitle assigneeUsername authorUsername
-                      releaseTag myReactionEmoji not search assigneeWildcardId confidential]
+      releaseTag myReactionEmoji not search assigneeWildcardId confidential]
 
     expect(described_class.arguments.keys).to include(*allowed_args)
     expect(described_class.arguments['not'].type).to eq(Types::Boards::NegatedBoardIssueInputType)

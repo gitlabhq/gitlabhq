@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/gitaly/v16/streamio"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/streamio"
 )
 
 // DiffClient wraps the Gitaly DiffServiceClient.

@@ -144,18 +144,9 @@ For parent-child pipelines, policy evaluation considers a maximum of 1,000 child
 
 ## Merge request approval policy editor
 
-{{< history >}}
-
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
-
-{{< /history >}}
-
-{{< alert type="note" >}}
-
-Only project Owners have the [permissions](../../permissions.md#project-permissions)
-to select Security Policy Project.
-
-{{< /alert >}}
+> [!note]
+> Only project Owners have the [permissions](../../permissions.md#project-permissions)
+> to select Security Policy Project.
 
 Once your policy is complete, save it by selecting **Configure with a merge request** at the bottom of the
 editor. This redirects you to the merge request on the project's configured security policy project.
@@ -177,12 +168,9 @@ The [policy editor](_index.md#policy-editor) supports YAML mode and rule mode.
 The YAML file with merge request approval policies consists of an array of objects matching the merge request approval
 policy schema nested under the `approval_policy` key. You can configure a maximum of five policies under the `approval_policy` key.
 
-{{< alert type="note" >}}
-
-Merge request approval policies were defined under the `scan_result_policy` key. Until GitLab 17.0, policies can be
-defined under both keys. Starting from GitLab 17.0, only `approval_policy` key is supported.
-
-{{< /alert >}}
+> [!note]
+> Merge request approval policies were defined under the `scan_result_policy` key. Until GitLab 17.0, policies can be
+> defined under both keys. Starting from GitLab 17.0, only `approval_policy` key is supported.
 
 When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
@@ -196,14 +184,12 @@ the following sections and tables provide an alternative.
 
 {{< history >}}
 
-- The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
-- The `enforcement_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`.
-- The `enforcement_type` field was [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
+- The `enforcement_type` field:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`.
+  - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6. Feature flag `security_policy_approval_warn_mode` removed.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221747) in GitLab 18.9. Feature flag `security_policy_approval_warn_mode` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
@@ -223,9 +209,13 @@ the following sections and tables provide an alternative.
 
 {{< history >}}
 
-- The merge request approval policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `enforce_vulnerability_attributes_rules`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
-- The merge request approval policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
-- The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
+- Merge request approval policy field `vulnerability_attributes`:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `enforce_vulnerability_attributes_rules`.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
+- The merge request approval policy field `vulnerability_age` was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
+- The `branch_exceptions` field:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
 - The `vulnerability_states` option `newly_detected` was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/422414) in GitLab 17.0 and the options `new_needs_triage` and `new_dismissed` were added to replace it.
 
 {{< /history >}}
@@ -312,10 +302,12 @@ This rule enforces the defined actions for any merge request based on the commit
 
 {{< history >}}
 
-- [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `multiple_approval_actions`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550) support to specify custom roles as `role_approvers` in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_custom_roles`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
+- Support for specifying up to five separate `require_approval` actions:
+  - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `multiple_approval_actions`.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
+- Support for specifying custom roles as `role_approvers`:
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550)  in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_custom_roles`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
 
@@ -401,12 +393,14 @@ actions:
 
 {{< history >}}
 
-- The `send_bot_message` action type was [introduced for projects](https://gitlab.com/gitlab-org/gitlab/-/issues/438269) in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment`. Disabled by default.
-- [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment` removed.
-- The `send_bot_message` action type was [introduced for groups](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment_group`. Disabled by default.
-- [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment_group` removed.
+- The `send_bot_message` action type for projects:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438269) in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment`. Disabled by default.
+  - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.0.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment` removed.
+- The `send_bot_message` action type for groups:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment_group`. Disabled by default.
+  - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment_group` removed.
 
 {{< /history >}}
 
@@ -431,7 +425,9 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
-- License scanning support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/579664) in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_warn_mode_license_scanning`. Enabled by default
+- License scanning support:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/579664) in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_warn_mode_license_scanning`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221747) in GitLab 18.9. Feature flag `security_policy_approval_warn_mode` removed.
 
 {{< /history >}}
 
@@ -484,22 +480,26 @@ approval_policy:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420724) the `block_group_branch_modification` field in GitLab 16.8 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_block_group_branch_modification`.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437306) in GitLab 17.6.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503930) in GitLab 17.7. Feature flag `scan_result_policy_block_group_branch_modification` removed.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423101) the `block_unprotecting_branches` field in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_settings`. Disabled by default.
-- The `scan_result_policy_settings` feature flag was replaced by the `scan_result_policies_block_unprotecting_branches` feature flag in 16.4.
-- The `block_unprotecting_branches` field was [replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137153) by `block_branch_modification` field in GitLab 16.7.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423901) in GitLab 16.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433415) in GitLab 16.11. Feature flag `scan_result_policies_block_unprotecting_branches` removed.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) the `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_any_merge_request`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423988) in GitLab 16.6.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423988) in GitLab 16.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432127) in GitLab 16.8. Feature flag `scan_result_any_merge_request` removed.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) the `prevent_pushing_and_force_pushing` field in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_force_push`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.6.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.9. Feature flag `scan_result_policies_block_force_push` removed.
+- The `block_group_branch_modification` field:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420724) in GitLab 16.8 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_block_group_branch_modification`.
+  - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437306) in GitLab 17.6.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503930) in GitLab 17.7. Feature flag `scan_result_policy_block_group_branch_modification` removed.
+- The `block_unprotecting_branches` field
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423101) in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_settings`. Disabled by default.
+  - The `block_unprotecting_branches` field was [replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137153) by `block_branch_modification` field in GitLab 16.7.
+- The `scan_result_policies_block_unprotecting_branches` feature flag replaced the `scan_result_policy_settings` feature flag in 16.4.
+  - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423901) in GitLab 16.7.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433415) in GitLab 16.11. Feature flag `scan_result_policies_block_unprotecting_branches` removed.
+- The `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_any_merge_request`. Disabled by default.
+  - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423988) in GitLab 16.6.
+  - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423988) in GitLab 16.7.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432127) in GitLab 16.8. Feature flag `scan_result_any_merge_request` removed.
+- The `prevent_pushing_and_force_pushing` field
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) in GitLab 16.4 [with flag](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_force_push`. Disabled by default.
+  - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.6.
+  - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.7.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.9. Feature flag `scan_result_policies_block_force_push` removed.
 
 {{< /history >}}
 
@@ -519,13 +519,12 @@ The settings set in the policy overwrite settings in the project.
 
 {{< history >}}
 
-- The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.0 [with a flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
-- The `fallback_behavior` field was [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
+- The `fallback_behavior` field:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.0 [with a flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
+  - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.1. Feature flag `security_scan_result_policies_unblock_fail_open_approval_rules` removed.
 
 {{< /history >}}
-
-> [!flag]
-> On GitLab Self-Managed, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
@@ -544,7 +543,7 @@ The settings set in the policy overwrite settings in the project.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
 You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
@@ -598,13 +597,10 @@ approval_policy:
 
 ##### Example of `policy_tuning` with a pipeline execution policy
 
-{{< alert type="warning" >}}
-
-This feature does not work with pipeline execution policies created before GitLab 17.10.
-To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
-For more information, see [Recreate pipeline execution policies created before GitLab 17.10](#recreate-pipeline-execution-policies-created-before-gitlab-1710).
-
-{{< /alert >}}
+> [!warning]
+> This feature does not work with pipeline execution policies created before GitLab 17.10.
+> To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+> For more information, see [Recreate pipeline execution policies created before GitLab 17.10](#recreate-pipeline-execution-policies-created-before-gitlab-1710).
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](enforcement/security_policy_projects.md):
@@ -644,10 +640,10 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
-1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
+1. In the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
 1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.
 1. Merge the generated merge request.
 1. Go back to **Secure** > **Policies** and select **New policy**.
@@ -1080,7 +1076,7 @@ To resolve these issues:
 - For new projects, set up and run the necessary security scans on the default branch before creating merge requests.
 - Consider using scan execution policies or pipeline execution policies to ensure consistent execution of security scans across all branches.
 - Consider using [`fallback_behavior`](#fallback_behavior) with `open` to prevent invalid or unenforceable rules in a policy from requiring approval.
-- Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
+- Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the source branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
 
 ### `Target: none` in security bot comments
 
@@ -1164,3 +1160,40 @@ known vulnerabilities.
 If you want to allow merge requests that fix vulnerabilities to proceed without
 any additional approvals due to a detected vulnerability, consider removing the
 `detected` state from your policy configuration.
+
+### Inconsistent policy evaluation between merged results pipelines and branch pipelines
+
+When a project has [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md)
+enabled and also runs branch pipelines with security scans, you might experience
+inconsistencies in the way that merge request approval policies are evaluated in the different pipelines. Consider the following example:
+
+1. Both a merged results pipeline and a branch pipeline run security scans for the same merge request.
+1. The branch pipeline completes after the merged results pipeline.
+1. The policy evaluation selects the branch pipeline for comparison instead of the merged results pipeline.
+
+Merge request approval policies evaluate completed pipelines
+for the latest commit, and the pipeline that completes last is selected for
+comparison. When the branch pipeline completes after the merged results pipeline,
+the policy uses the branch pipeline for evaluation.
+
+To avoid this issue:
+
+- Run security scans only in merged results pipelines: Configure your security
+  scanning jobs to run only in merge request pipelines when merged results
+  pipelines are enabled. Use [`rules`](../../../ci/jobs/job_rules.md) to control
+  when security jobs run:
+
+  ```yaml
+  sast:
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  ```
+
+- Avoid duplicate pipelines: Follow the guidance in
+  [avoid duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines)
+  to ensure security scans run in only one pipeline type per commit.
+- Use consistent scanner configurations: Run the same scanners with the same
+  pipeline type for both source and target branches.
+
+For more information about duplicate pipelines, see
+[two pipelines when pushing to a branch](../../../ci/pipelines/mr_pipeline_troubleshooting.md#two-pipelines-when-pushing-to-a-branch).

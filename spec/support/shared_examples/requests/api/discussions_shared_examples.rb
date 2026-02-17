@@ -61,6 +61,8 @@ RSpec.shared_examples 'with cross-reference system notes' do
 end
 
 RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
+  noteable_type_singular = noteable_type.to_s.split('/').last.singularize
+
   shared_examples 'ai_workflows scope' do
     context 'when authenticated with a token that has the ai_workflows scope' do
       let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
@@ -101,6 +103,13 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       let(:note_action) { get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", oauth_access_token: oauth_token) }
       let(:expected_status) { :ok }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :"read_#{noteable_type_singular}_discussion" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
@@ -121,6 +130,13 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
     it_behaves_like 'ai_workflows scope' do
       let(:note_action) { get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}", oauth_access_token: oauth_token) }
       let(:expected_status) { :ok }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :"read_#{noteable_type_singular}_discussion" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}", personal_access_token: pat)
+      end
     end
   end
 
@@ -226,6 +242,23 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       let(:note_action) { post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", oauth_access_token: oauth_token), params: { body: 'hi!' } }
       let(:expected_status) { :created }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :"create_#{noteable_type_singular}_discussion" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
+
+  describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do
+    it_behaves_like 'authorizing granular token permissions', :"read_#{noteable_type_singular}_discussion_note" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes",
+          personal_access_token: pat)
+      end
+    end
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do
@@ -282,6 +315,23 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       let(:note_action) { post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes", oauth_access_token: oauth_token), params: { body: 'hi!' } }
       let(:expected_status) { :created }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :"create_#{noteable_type_singular}_discussion_note" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes", personal_access_token: pat), params: { body: 'Hello!' }
+      end
+    end
+  end
+
+  describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
+    it_behaves_like 'authorizing granular token permissions', :"read_#{noteable_type_singular}_discussion_note" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes/#{note.id}",
+          personal_access_token: pat)
+      end
+    end
   end
 
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
@@ -318,6 +368,14 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :"update_#{noteable_type_singular}_discussion_note" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes/#{note.id}",
+          personal_access_token: pat), params: { body: 'Hello!' }
+      end
+    end
   end
 
   describe "DELETE /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
@@ -343,6 +401,13 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       let(:request) do
         api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
             "discussions/#{note.discussion_id}/notes/#{note.id}", user)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :"delete_#{noteable_type_singular}_discussion_note" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes/#{note.id}", personal_access_token: pat)
       end
     end
   end

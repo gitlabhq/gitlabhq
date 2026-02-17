@@ -310,11 +310,11 @@ export default {
     cancelEditing() {
       this.isEditing = this.isNewDiscussion;
       this.addNoteKey = this.generateUniqueId();
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
     },
     showReplyForm() {
       this.isEditing = true;
-      this.$emit('startReplying');
+      this.$emit('start-replying');
     },
     addDiscussionToCache(cache, newNote) {
       const queryArgs = {
@@ -424,12 +424,12 @@ export default {
             :uploads-path="uploadsPath"
             @focus="$emit('focus')"
             @blur="$emit('blur')"
-            @toggleResolveDiscussion="$emit('resolve')"
-            @submitForm="updateWorkItem"
-            @cancelEditing="cancelEditing"
+            @toggle-resolve-discussion="$emit('resolve')"
+            @submit-form="updateWorkItem"
+            @cancel-editing="cancelEditing"
             @error="$emit('error', $event)"
-            @startEditing="$emit('startEditing')"
-            @stopEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @stop-editing="$emit('stop-editing')"
           />
           <discussion-reply-placeholder
             v-else
@@ -443,7 +443,7 @@ export default {
               data-testid="resolve-discussion-button"
               :is-resolving="isResolving"
               :button-title="resolveDiscussionTitle"
-              @onClick="$emit('resolve')"
+              @on-click="$emit('resolve')"
             />
           </div>
         </div>

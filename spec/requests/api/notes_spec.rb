@@ -245,7 +245,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         let(:request_path) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
 
         before do
-          WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
+          stub_all_work_item_widgets(notes: false)
         end
 
         it 'does not fetch notes' do
@@ -283,6 +283,46 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         end
       end
     end
+
+    describe 'granular token permissions for issue notes' do
+      let(:url) { "/projects/#{project.id}/issues/#{issue.iid}/notes" }
+      let(:note_url) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(note_url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_issue_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(url, personal_access_token: pat), params: { body: 'Test note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_issue_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(note_url, personal_access_token: pat), params: { body: 'Updated note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_issue_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(note_url, personal_access_token: pat)
+        end
+      end
+    end
   end
 
   context "when noteable is a Snippet" do
@@ -293,6 +333,46 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:parent) { project }
       let(:noteable) { snippet }
       let(:note) { snippet_note }
+    end
+
+    describe 'granular token permissions for snippet notes' do
+      let(:url) { "/projects/#{project.id}/snippets/#{snippet.id}/notes" }
+      let(:note_url) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(note_url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_snippet_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(url, personal_access_token: pat), params: { body: 'Test note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_snippet_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(note_url, personal_access_token: pat), params: { body: 'Updated note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_snippet_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(note_url, personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -308,6 +388,46 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:parent) { project }
       let(:noteable) { wiki_page_meta }
       let(:note) { wiki_page_meta_note }
+    end
+
+    describe 'granular token permissions for wiki page notes' do
+      let(:url) { "/projects/#{project.id}/wiki_pages/#{wiki_page_meta.id}/notes" }
+      let(:note_url) { "/projects/#{project.id}/wiki_pages/#{wiki_page_meta.id}/notes/#{wiki_page_meta_note.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_wiki_page_meta_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_wiki_page_meta_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(note_url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_wiki_page_meta_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(url, personal_access_token: pat), params: { body: 'Test note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_wiki_page_meta_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(note_url, personal_access_token: pat), params: { body: 'Updated note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_wiki_page_meta_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(note_url, personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -531,6 +651,46 @@ RSpec.describe API::Notes, feature_category: :team_planning do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    describe 'granular token permissions for merge request notes' do
+      let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
+      let(:note_url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{merge_request_note.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(note_url, personal_access_token: pat)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(url, personal_access_token: pat), params: { body: 'Test note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_merge_request_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(note_url, personal_access_token: pat), params: { body: 'Updated note' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_merge_request_note do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(note_url, personal_access_token: pat)
         end
       end
     end

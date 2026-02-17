@@ -2,6 +2,10 @@
 key_path: counts.count_total_view_admin_application_settings_roles_and_permissions_pageload_monthly
 description: Monthly count of total users who visisted the admin application settings roles and permissions page
 product_group: engagement
+product_categories:
+- navigation
+- settings
+- permissions
 performance_indicator_type: []
 value_type: number
 status: active

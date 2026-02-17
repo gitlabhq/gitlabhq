@@ -1,0 +1,5 @@
+---
+name: update_container_repository_protection_rule
+description: Grants the ability to update container repository protection rules
+boundaries:
+  - project

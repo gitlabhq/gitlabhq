@@ -1,0 +1,5 @@
+---
+name: read_descendant_group
+description: Grants the ability to read a descendant group
+boundaries:
+  - group

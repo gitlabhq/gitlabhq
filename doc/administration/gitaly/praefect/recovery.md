@@ -239,12 +239,9 @@ To check a project's repository checksums across on all Gitaly nodes, run the
 
 ### Accept data loss
 
-{{< alert type="warning" >}}
-
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
-[recovery efforts](#data-recovery) must be performed before using it.
-
-{{< /alert >}}
+> [!warning]
+> `accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
+> [recovery efforts](#data-recovery) must be performed before using it.
 
 If it is not possible to bring one of the up to date replicas back online, you may have to accept data
 loss. When accepting data loss, Praefect marks the chosen replica of the repository as the latest version
@@ -258,12 +255,9 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Enable writes or accept data loss
 
-{{< alert type="warning" >}}
-
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
-Data [recovery efforts](#data-recovery) must be performed before using it.
-
-{{< /alert >}}
+> [!warning]
+> `accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
+> Data [recovery efforts](#data-recovery) must be performed before using it.
 
 Praefect provides the following subcommands to re-enable writes or accept data loss. If it is not possible to bring one
 of the up-to-date nodes back online, you might have to accept data loss:
@@ -424,13 +418,10 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Manually add a single repository to the tracking database
 
-{{< alert type="warning" >}}
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
-add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
-repositories are not associated with the repository path used by GitLab and are inaccessible.
-
-{{< /alert >}}
+> [!warning]
+> Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
+> add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
+> repositories are not associated with the repository path used by GitLab and are inaccessible.
 
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
@@ -483,13 +474,10 @@ This command fails if:
 
 ### Manually add many repositories to the tracking database
 
-{{< alert type="warning" >}}
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
-add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
-repositories are not associated with the repository path used by GitLab and are inaccessible.
-
-{{< /alert >}}
+> [!warning]
+> Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
+> add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
+> repositories are not associated with the repository path used by GitLab and are inaccessible.
 
 Migrations using the API automatically add repositories to the Praefect tracking database.
 

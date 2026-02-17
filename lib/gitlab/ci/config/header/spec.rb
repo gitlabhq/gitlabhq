@@ -11,13 +11,6 @@ module Gitlab
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
-
-            validate on: :composed do
-              if config.is_a?(Hash) && config.key?(:include) &&
-                  !Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_file_inputs)
-                errors.add(:config, "contains unknown keys: include")
-              end
-            end
           end
 
           entry :inputs, ::Gitlab::Config::Entry::ComposableHash,

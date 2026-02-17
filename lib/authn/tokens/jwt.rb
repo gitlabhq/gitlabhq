@@ -49,12 +49,12 @@ module Authn
           token_prefix + token
         end
 
-        def rsa_decode(token:, signing_public_key:, subject_type:, token_prefix:)
+        def rsa_decode(token:, signing_public_key:, subject_type:, token_prefix:, verify_expiration: true)
           return unless token.start_with?(token_prefix)
 
           token = token.delete_prefix(token_prefix)
 
-          payload, _header = ::JSONWebToken::RSAToken.decode(token, signing_public_key)
+          payload, _header = ::JSONWebToken::RSAToken.decode(token, signing_public_key, verify_expiration:)
 
           new(payload: payload, subject_type: subject_type)
         rescue JWT::DecodeError
@@ -77,6 +77,12 @@ module Authn
         nil
       end
       strong_memoize_attr :subject
+
+      def expired?
+        return false unless payload&.key?('exp')
+
+        Time.zone.at(payload['exp']).past?
+      end
 
       attr_reader :payload, :subject_type
     end

@@ -64,7 +64,7 @@ export default {
         <resolve-discussion-button
           :is-resolving="loading"
           :button-title="toggleResolveBtnLabel"
-          @onClick="onToggleResolve"
+          @on-click="onToggleResolve"
         />
       </div>
     </div>

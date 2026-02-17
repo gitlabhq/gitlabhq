@@ -1,0 +1,22 @@
+---
+name: read_merge_request
+description: Grants the ability to read merge requests
+boundaries:
+  - group
+  - project
+  - user
+permissions:
+  - read_merge_request
+  - read_merge_request_participant
+  - read_merge_request_reviewer
+  - read_merge_request_commit
+  - read_merge_request_draft_note
+  - read_merge_request_pipeline
+  - read_merge_request_diff
+  - read_merge_request_raw_diff
+  - read_merge_request_merge_ref
+  - read_merge_request_closes_issue
+  - read_merge_request_related_issue
+  - read_merge_request_context_commit
+  - read_merge_request_discussion
+  - read_merge_request_discussion_note

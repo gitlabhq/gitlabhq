@@ -35,8 +35,6 @@ module SystemNotes
     def relate_issuable(noteable_ref)
       body = "marked this #{noteable_name} as related to #{extract_issuable_reference(noteable_ref)}"
 
-      track_issue_event(:track_issue_related_action)
-
       create_note(NoteSummary.new(noteable, project, author, body, action: 'relate'))
     end
 
@@ -50,8 +48,6 @@ module SystemNotes
     # Returns the created Note object
     def unrelate_issuable(noteable_ref)
       body = "removed the relation with #{noteable_ref.to_reference(noteable.resource_parent)}"
-
-      track_issue_event(:track_issue_unrelated_action)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'unrelate'))
     end
@@ -300,8 +296,9 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_task_status(new_task)
+      item_kind = new_task.task_table_item? ? 'task table item' : 'checklist item'
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-      body = "marked the checklist item **#{::GLFMMarkdown.escape_commonmark_inline(new_task.text)}** as #{status_label}"
+      body = "marked the #{item_kind} **#{::GLFMMarkdown.escape_commonmark_inline(new_task.text)}** as #{status_label}"
 
       track_issue_event(:track_issue_description_changed_action)
 
@@ -326,8 +323,6 @@ module SystemNotes
       cross_reference = noteable_ref.to_reference(container)
       body = "moved #{direction} #{cross_reference}"
 
-      track_issue_event(:track_issue_moved_action)
-
       create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
     end
 
@@ -349,8 +344,6 @@ module SystemNotes
 
       cross_reference = noteable_ref.to_reference(container)
       body = "cloned #{direction} #{cross_reference}"
-
-      track_issue_event(:track_issue_cloned_action) if direction == :to
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned', created_at: created_at))
     end

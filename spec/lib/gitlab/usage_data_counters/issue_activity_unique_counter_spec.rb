@@ -60,22 +60,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue closed actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_CLOSED }
-
-      subject(:track_event) { described_class.track_issue_closed_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue reopened actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_REOPENED }
-
-      subject(:track_event) { described_class.track_issue_reopened_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue label changed actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_LABEL_CHANGED }
@@ -100,38 +84,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue moved actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_MOVED }
-
-      subject(:track_event) { described_class.track_issue_moved_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue cloned actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_CLONED }
-
-      subject(:track_event) { described_class.track_issue_cloned_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue relate actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_RELATED }
-
-      subject(:track_event) { described_class.track_issue_related_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue unrelate actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_UNRELATED }
-
-      subject(:track_event) { described_class.track_issue_unrelated_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue marked as duplicate actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_MARKED_AS_DUPLICATE }
@@ -153,30 +105,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
       let(:event) { described_class::ISSUE_UNLOCKED }
 
       subject(:track_event) { described_class.track_issue_unlocked_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue designs added actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_ADDED }
-
-      subject(:track_event) { described_class.track_issue_designs_added_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue designs modified actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_MODIFIED }
-
-      subject(:track_event) { described_class.track_issue_designs_modified_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue designs removed actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_REMOVED }
-
-      subject(:track_event) { described_class.track_issue_designs_removed_action(author: user, project: project) }
     end
   end
 

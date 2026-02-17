@@ -28,7 +28,7 @@ module ImportHelper
 
   def import_will_timeout_message(_ci_cd_only)
     timeout = time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)
-    _('The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination.') % { timeout: timeout }
+    format(_('The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination.'), timeout: timeout)
   end
 
   def import_svn_message(_ci_cd_only)
@@ -45,7 +45,7 @@ module ImportHelper
   end
 
   def import_wait_and_refresh_message
-    _('Please wait while we import the repository for you. Refresh at will.')
+    _('Please wait and do not make any changes to the repository until import is complete. You can refresh this page at any time.')
   end
 
   def import_github_authorize_message

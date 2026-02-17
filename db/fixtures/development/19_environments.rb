@@ -6,7 +6,8 @@ class Gitlab::Seeder::Environments
   end
 
   def seed!
-    @project.create_mock_monitoring_integration!(active: true)
+    integration = @project.mock_monitoring_integration || @project.build_mock_monitoring_integration
+    integration.update!(active: true)
 
     create_master_deployments!('production')
     create_master_deployments!('staging')

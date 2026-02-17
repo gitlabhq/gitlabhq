@@ -1,0 +1,5 @@
+---
+name: read_commit_discussion
+description: Grants the ability to read commit discussions and notes
+boundaries:
+  - project

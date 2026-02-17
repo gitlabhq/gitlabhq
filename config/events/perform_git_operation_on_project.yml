@@ -1,0 +1,18 @@
+---
+description: Tracks human-only users, separate from bots, for git operations.
+internal_events: true
+status: active
+action: perform_git_operation_on_project
+identifiers:
+- project
+- namespace
+- user
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209190
+tiers:
+- free
+- premium
+- ultimate

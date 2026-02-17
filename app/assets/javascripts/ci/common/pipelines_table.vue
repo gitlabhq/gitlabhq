@@ -14,8 +14,8 @@ import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.v
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
-// Query should correspond to the `stacked` value of this table: `lg`.
-const HIDE_WHEN_STACKED = '@max-lg/panel:!gl-hidden';
+// Query should correspond to the `stacked` value of this table: `md`.
+const HIDE_WHEN_STACKED = '@max-md/panel:!gl-hidden';
 
 /**
  * Pipelines Table
@@ -91,7 +91,7 @@ export default {
         {
           key: 'pipeline',
           label: __('Pipeline'),
-          tdClass: `${this.tdClasses}`,
+          tdClass: this.tdClasses,
           columnClass: 'gl-w-5/20',
           thAttr: { 'data-testid': 'pipeline-th' },
         },
@@ -106,13 +106,13 @@ export default {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: this.mergeRequestPath ? 'gl-w-4/20' : 'gl-w-5/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-3/20' : 'gl-w-4/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: this.mergeRequestPath ? 'gl-w-5/20' : 'gl-w-4/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-6/20' : 'gl-w-5/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
@@ -220,7 +220,7 @@ export default {
       :tbody-tr-attr="$options.TBODY_TR_ATTR"
       :tbody-tr-class="rowClass"
       details-td-class="!gl-pt-2"
-      stacked="lg"
+      stacked="md"
       fixed
     >
       <template #head(actions)>
@@ -265,7 +265,7 @@ export default {
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
           :upstream-pipeline="item.triggered_by"
-          @miniGraphStageClick="trackPipelineMiniGraph"
+          @mini-graph-stage-click="trackPipelineMiniGraph"
         />
       </template>
 

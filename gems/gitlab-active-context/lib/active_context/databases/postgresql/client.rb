@@ -10,8 +10,6 @@ module ActiveContext
           attr_accessor :default_connection_pool
         end
 
-        DEFAULT_POOL_SIZE = 5
-        DEFAULT_CONNECT_TIMEOUT = 5
         BULK_OPERATIONS = [:upsert, :delete].freeze
 
         attr_reader :connection_pool, :options
@@ -36,11 +34,11 @@ module ActiveContext
           operations_by_collection = operations.group_by { |op| op.each_key.first }
 
           operations_by_collection.each do |collection_name, collection_operations|
-            model = ar_model_for(collection_name)
-
-            BULK_OPERATIONS.each do |operation_type|
-              failed_ops = perform_bulk_operation(operation_type, model, collection_name, collection_operations)
-              failed_operations.concat(failed_ops)
+            with_model_for(collection_name) do |model|
+              BULK_OPERATIONS.each do |operation_type|
+                failed_ops = perform_bulk_operation(operation_type, model, collection_name, collection_operations)
+                failed_operations.concat(failed_ops)
+              end
             end
           end
 
@@ -57,9 +55,6 @@ module ActiveContext
           handle_connection(raw_connection: false, &block)
         end
 
-        # Creates an ActiveRecord model for a specific table and yields it within the connection context
-        # @param table_name [String] The name of the table to create a model for
-        # @yield [Class] A dynamically created ActiveRecord model class with the correct connection
         def with_model_for(table_name)
           model_class = Class.new(::ActiveRecord::Base) do
             self.table_name = table_name
@@ -75,17 +70,9 @@ module ActiveContext
 
           with_connection do |conn|
             model_class.define_singleton_method(:connection) { conn }
+            model_class.define_singleton_method(:connection_pool) { conn.pool }
             yield model_class
           end
-        end
-
-        # For backward compatibility and simpler queries
-        def ar_model_for(table_name)
-          klass = nil
-          with_model_for(table_name) do |model_class|
-            klass = model_class
-          end
-          klass
         end
 
         private
@@ -124,23 +111,7 @@ module ActiveContext
         end
 
         def build_database_config
-          {
-            adapter: 'postgresql',
-            host: options[:host],
-            port: options[:port],
-            database: options[:database],
-            username: options[:username],
-            password: options[:password],
-            connect_timeout: options.fetch(:connect_timeout, DEFAULT_CONNECT_TIMEOUT),
-            pool: calculate_pool_size,
-            prepared_statements: false,
-            advisory_locks: false,
-            database_tasks: false # This signals Rails that this is an auxiliary database
-          }.compact
-        end
-
-        def calculate_pool_size
-          options[:pool_size] || DEFAULT_POOL_SIZE
+          Config.build_database_config(options)
         end
 
         def close

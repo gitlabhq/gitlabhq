@@ -73,20 +73,6 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
         let(:designs) { [] }
 
         it_behaves_like "a top-level error"
-
-        it 'does not track events or increments usage metrics', :clean_gitlab_redis_shared_state do
-          expect { safe_run_service }
-            .to not_trigger_internal_events(
-              Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED,
-              'delete_design_management_design'
-            ).and not_increment_usage_metrics(
-              "redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly",
-              "redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly",
-              "redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly",
-              "redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly",
-              "counts.design_management_designs_delete"
-            )
-        end
       end
 
       context 'one design is passed' do
@@ -99,21 +85,6 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
         it 'removes that design' do
           expect { run_service }
             .to change { issue.designs.current.count }.from(3).to(2)
-        end
-
-        it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
-          expect { run_service }
-            .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED)
-              .with(user: user, project: project, category: 'InternalEventTracking')
-            .and trigger_internal_events('delete_design_management_design')
-              .with(user: user, project: project)
-            .and increment_usage_metrics(
-              "redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly",
-              "redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly",
-              "redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly",
-              "redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly",
-              "counts.design_management_designs_delete"
-            )
         end
 
         it 'creates an event in the activity stream' do
@@ -170,20 +141,6 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
             .to change { issue.designs.current.count }.from(3).to(1)
             .and change { Event.count }.by(2)
             .and change { Event.destroyed_action.for_design.count }.by(2)
-        end
-
-        it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
-          expect { run_service }
-            .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED)
-              .with(user: user, project: project, category: 'InternalEventTracking')
-            .and trigger_internal_events('delete_design_management_design')
-              .twice.with(user: user, project: project)
-            .and increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly'
-            ).and increment_usage_metrics('counts.design_management_designs_delete').by(2)
         end
 
         it 'schedules deleting todos for that design' do

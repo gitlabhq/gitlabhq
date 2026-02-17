@@ -24,12 +24,9 @@ title: Validity checks
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab validity checks determines whether a secret, like an access token, is active.
 A secret is active when:
@@ -65,12 +62,9 @@ for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Validity checks support the following secret types:
 

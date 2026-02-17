@@ -1,0 +1,5 @@
+---
+name: add_merge_request_spent_time
+description: Grants the ability to add spent time for merge requests
+boundaries:
+  - project

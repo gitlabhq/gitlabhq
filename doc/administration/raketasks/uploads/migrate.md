@@ -57,7 +57,7 @@ sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
 {{< /tabs >}}
 
 You can optionally track progress and verify that all uploads migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
@@ -91,13 +91,10 @@ The Rake task uses three parameters to find uploads to migrate:
 | `model_class`    | string        | Type of the model to migrate from.                     |
 | `mount_point`    | string/symbol | Name of the model's column the uploader is mounted on. |
 
-{{< alert type="note" >}}
-
-These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
-instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
-to migrate any uploads not included in the listed types.
-
-{{< /alert >}}
+> [!note]
+> These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
+> instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
+> to migrate any uploads not included in the listed types.
 
 This task also accepts an environment variable which you can use to override
 the default batch size:
@@ -177,16 +174,13 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::Design
 If you need to disable [object storage](../../object_storage.md) for any reason, you must first
 migrate your data out of object storage and back into your local storage.
 
-{{< alert type="warning" >}}
-
-**Extended downtime is required** so no new files are created in object storage during
-the migration. A configuration setting to allow migrating
-from object storage to local files with only a brief moment of downtime for configuration changes
-is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
-
-**Additionally,** in Cloud Native GitLab, it is generally unsafe to migrate data to local storage because it is ephemeral and not shared with all GitLab Rails application containers.
-
-{{< /alert >}}
+> [!warning]
+> **Extended downtime is required** so no new files are created in object storage during
+> the migration. A configuration setting to allow migrating
+> from object storage to local files with only a brief moment of downtime for configuration changes
+> is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
+> 
+> **Additionally,** in Cloud Native GitLab, it is generally unsafe to migrate data to local storage because it is ephemeral and not shared with all GitLab Rails application containers.
 
 ### All-in-one Rake task
 

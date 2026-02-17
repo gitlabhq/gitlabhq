@@ -3,7 +3,10 @@
 module MergeRequests
   class CreatePipelineService < MergeRequests::BaseService
     def execute(merge_request)
-      return cannot_create_pipeline_error unless can_create_pipeline_for?(merge_request)
+      return cannot_create_pipeline_error('no commits to build') if merge_request.has_no_commits?
+
+      duplicate_error = check_duplicate_pipeline(merge_request)
+      return duplicate_error if duplicate_error
 
       create_merge_request_pipeline(merge_request)
     end
@@ -26,19 +29,13 @@ module MergeRequests
     def create_merge_request_pipeline(merge_request)
       project, ref = pipeline_project_and_ref(merge_request)
 
-      pipeline = Ci::CreatePipelineService.new(project,
+      Ci::CreatePipelineService.new(project,
         current_user,
         ref: ref,
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
         gitaly_context: params[:gitaly_context]
       ).execute(:merge_request_event, merge_request: merge_request)
-
-      if params[:pipeline_creation_request].present?
-        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
-      end
-
-      pipeline
     end
 
     def allowed?(merge_request)
@@ -97,12 +94,30 @@ module MergeRequests
         .can_update_branch?(merge_request.source_branch)
     end
 
-    def cannot_create_pipeline_error
-      error_message = 'Cannot create a pipeline for this merge request.'
+    def check_duplicate_pipeline(merge_request)
+      return if allow_duplicate
 
-      ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], error_message)
+      existing_pipeline = merge_request.find_diff_head_pipeline
+      return unless existing_pipeline
+      return unless existing_pipeline.merge_request?
+      return unless existing_pipeline.merge_request_diff_sha == merge_request.diff_head_sha
 
-      ServiceResponse.error(message: error_message, payload: nil)
+      if existing_pipeline.running? || existing_pipeline.pending?
+        cannot_create_pipeline_error('duplicate pipeline still in progress', retriable: true)
+      else
+        cannot_create_pipeline_error('duplicate pipeline')
+      end
+    end
+
+    def cannot_create_pipeline_error(reason, retriable: false)
+      message = "Cannot create a pipeline for this merge request: #{reason}."
+
+      if retriable
+        ServiceResponse.error(message: message, payload: nil, reason: :retriable_error)
+      else
+        ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], message)
+        ServiceResponse.error(message: message, payload: nil)
+      end
     end
   end
 end

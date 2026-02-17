@@ -1,0 +1,8 @@
+---
+name: resend_webhook_event
+description: Grants the ability to resend webhook events
+boundaries:
+  - group
+  - project
+permissions:
+  - resend_webhook_event

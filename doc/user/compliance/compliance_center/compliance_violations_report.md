@@ -191,12 +191,9 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 ## Static compliance violations report
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/551236) in GitLab 18.2
-and is planned for removal in 18.8.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/551236) in GitLab 18.2
+> and is planned for removal in 18.8.
 
 The static compliance violations report provides a high-level view of merge request activity for all projects in the group.
 

@@ -32,7 +32,7 @@ module BlobViewer
     def json_data
       @json_data ||= begin
         prepare!
-        Gitlab::Json.parse(blob.data)
+        Gitlab::Json.safe_parse(blob.data)
       rescue StandardError
         {}
       end

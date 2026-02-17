@@ -14,7 +14,7 @@ RSpec.describe ScheduleMigrateExternalDiffsWorker, feature_category: :code_revie
       worker.perform
     end
 
-    it 'will not run if the lease is already taken' do
+    it 'does not run if the lease is already taken' do
       stub_exclusive_lease_taken('schedule_migrate_external_diffs_worker', timeout: 2.hours)
 
       expect(MergeRequests::MigrateExternalDiffsService).not_to receive(:enqueue!)

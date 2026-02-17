@@ -25,7 +25,7 @@ While OpenSSH uses a restricted shell approach, `gitlab-sshd`:
 - Supports [group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address)
   for applications running behind a proxy.
 
-For more details about the implementation, see [the blog post](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).
+For more details about the implementation, see [the blog post](https://about.gitlab.com/blog/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).
 
 If you are considering switching from OpenSSH to `gitlab-sshd`, consider:
 

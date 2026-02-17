@@ -220,4 +220,107 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
       end
     end
   end
+
+  describe '#session_expiration_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:provider_name) { 'openid_connect' }
+    let(:scope) { 'admin_mode' }
+    let(:session) { {} }
+
+    let(:omniauth_provider_config) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect',
+        **provider_config
+      )
+    end
+
+    subject(:flow) { described_class.new(session: session, provider: provider_name, scope: scope) }
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
+    end
+
+    where(:provider_config, :expected_result) do
+      { 'step_up_auth' => { 'session_expiration_enabled' => true } }  | true
+      { 'step_up_auth' => { 'session_expiration_enabled' => false } } | false
+      { 'step_up_auth' => {} }                                        | true
+      {}                                                              | true
+    end
+
+    with_them do
+      it 'returns the expected value' do
+        expect(flow.send(:session_expiration_enabled?)).to eq(expected_result)
+      end
+    end
+  end
+
+  describe '#expired? with session_expiration_enabled configuration' do
+    let(:provider_name) { 'openid_connect' }
+    let(:scope) { 'admin_mode' }
+    let(:exp_timestamp) { 1.hour.ago.to_i }
+    let(:session) do
+      {
+        'omniauth_step_up_auth' => {
+          provider_name => {
+            scope => {
+              'state' => 'succeeded',
+              'exp_timestamp' => exp_timestamp
+            }
+          }
+        }
+      }
+    end
+
+    let(:omniauth_provider_config) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect',
+        **provider_config
+      )
+    end
+
+    subject(:flow) { described_class.new(session: session, provider: provider_name, scope: scope) }
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
+    end
+
+    context 'when session_expiration_enabled is true (default)' do
+      let(:provider_config) { { 'step_up_auth' => { 'session_expiration_enabled' => true } } }
+
+      it 'returns true when exp_timestamp has passed' do
+        expect(flow.expired?).to be true
+      end
+
+      it 'returns false for succeeded? when expired' do
+        expect(flow.succeeded?).to be false
+      end
+    end
+
+    context 'when session_expiration_enabled is false' do
+      let(:provider_config) { { 'step_up_auth' => { 'session_expiration_enabled' => false } } }
+
+      it 'returns false regardless of exp_timestamp' do
+        expect(flow.expired?).to be false
+      end
+
+      it 'returns true for succeeded? even when exp_timestamp has passed' do
+        expect(flow.succeeded?).to be true
+      end
+
+      it 'does not transition state to expired' do
+        flow.expired?
+        session_state = session.dig('omniauth_step_up_auth', provider_name, scope, 'state')
+        expect(session_state).to eq('succeeded')
+      end
+    end
+
+    context 'when session_expiration_enabled is not configured' do
+      let(:provider_config) { { 'step_up_auth' => {} } }
+
+      it 'defaults to checking expiration (returns true when expired)' do
+        expect(flow.expired?).to be true
+      end
+    end
+  end
 end

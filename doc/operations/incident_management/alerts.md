@@ -17,7 +17,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 
 ## Alert list
 
-Users with at least the Developer role can access the Alert list at **Monitor** > **Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
+Users with the Developer, Maintainer, or Owner role can access the Alert list at **Monitor** > **Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
 
 The alert list displays the following information:
 
@@ -63,7 +63,7 @@ Alerts contain one of the following icons:
 
 ## Alert details page
 
-Go to the Alert details view by visiting the [Alert list](#alert-list) and selecting an alert from the list. You need at least the Developer role to access alerts. Select any alert in the list to examine its alert details page.
+Go to the Alert details view by visiting the [Alert list](#alert-list) and selecting an alert from the list. You need the Developer, Maintainer, or Owner role to access alerts. Select any alert in the list to examine its alert details page.
 
 Alerts provide **Overview** and **Alert details** tabs to give you the right amount of information you need.
 
@@ -115,7 +115,7 @@ The available statuses are:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To change an alert's status:
 
@@ -126,7 +126,7 @@ To change an alert's status:
 
 - From the [alert details page](#alert-details-page):
 
-  1. On the right sidebar, select **Edit**.
+  1. In the right sidebar, select **Edit**.
   1. Select a status.
 
 To stop email notifications for alert recurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts), change the alert's status away from **Triggered**.
@@ -135,7 +135,7 @@ To stop email notifications for alert recurrences in projects with [email notifi
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 When you [close an incident](manage_incidents.md#close-an-incident) that is linked to an alert, GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**. You are then credited with the alert's status change.
 
@@ -166,7 +166,7 @@ To assign an alert:
 
 1. Display the list of current alerts:
 
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Monitor** > **Alerts**.
 
 1. Select your desired alert to display its details.
@@ -176,7 +176,7 @@ To assign an alert:
 1. If the right sidebar is not expanded, select
    **Expand sidebar** ({{< icon name="chevron-double-lg-right" >}}) to expand it.
 
-1. On the right sidebar, locate the **Assignee**, and then select **Edit**.
+1. In the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the list, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
@@ -186,7 +186,7 @@ After completing their portion of investigating or fixing the alert, users can u
 
 You can manually create a [to-do item](../../user/todos.md) for yourself from an alert, and view it later on your **To-Do List**.
 
-To add a to-do item, on the right sidebar, select **Add a to-do item**.
+To add a to-do item, in the right sidebar, select **Add a to-do item**.
 
 ### Trigger actions from alerts
 
@@ -201,11 +201,11 @@ Turn on creating [incidents](incidents.md) automatically whenever an alert is tr
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To configure the actions:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.

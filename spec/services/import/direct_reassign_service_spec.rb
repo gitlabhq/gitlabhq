@@ -236,6 +236,19 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
       end
     end
 
+    context 'when transaction block is executed' do
+      it 'executes the transaction block for model reassignment' do
+        # Create a simple record to reassign
+        test_issue = create(:issue, author_id: placeholder_user_id)
+
+        # Call the private method directly to test the transaction block
+        direct_reassign.send(:direct_reassign_model_user_references, 'Issue', 'author_id')
+
+        # Verify the record was reassigned
+        expect(test_issue.reload.author_id).to eq(reassign_to_user_id)
+      end
+    end
+
     context 'when tables were not available' do
       before do
         allow(described_class).to receive(:model_list)

@@ -1,0 +1,3 @@
+---
+description: Grants the ability to read and validate CI/CD configuration.
+name: CI Config

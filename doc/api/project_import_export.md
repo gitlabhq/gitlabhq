@@ -171,9 +171,9 @@ POST /projects/import
 | `file`            | string            | Yes      | The file to be uploaded. |
 | `path`            | string            | Yes      | Name and path for new project. |
 | `name`            | string            | No       | The name of the project to be imported. Defaults to the path of the project if not provided. |
-| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 | `overwrite`       | boolean           | No       | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
@@ -226,12 +226,9 @@ requests.post(url, headers=headers, data=data, files=files)
 }
 ```
 
-{{< alert type="note" >}}
-
-The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
-
-{{< /alert >}}
+> [!note]
+> The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
+> As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
 
 ## Import a file from a remote object storage
 
@@ -247,12 +244,9 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
+> On GitLab.com and GitLab Dedicated, this feature is available.
 
 ```plaintext
 POST /projects/remote-import
@@ -263,9 +257,9 @@ POST /projects/remote-import
 | `path`            | string            | Yes      | Name and path for the new project. |
 | `url`             | string            | Yes      | URL for the file to import. |
 | `name`            | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `overwrite`       | boolean           | No       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 
@@ -418,9 +412,9 @@ POST /projects/remote-import-s3
 | `region`            | string            | Yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
 | `secret_access_key` | string            | Yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
 | `name`              | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`         | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`      | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`    | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`         | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`      | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`    | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -512,11 +506,7 @@ be populated with any occurrences of relations that failed to import due to eith
 
 > [!note]
 > An element's `id` field in `failed_relations` references the failure record, not the relation.
-
-{{< alert type="note" >}}
-
-The `failed_relations` array is capped to 100 items.
-{{< /alert >}}
+> Also, the `failed_relations` array is capped to 100 items.
 
 ```json
 {

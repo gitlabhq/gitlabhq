@@ -2,6 +2,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { renderGlql } from '~/behaviors/markdown/render_glql';
 import { renderJSONTable } from '~/behaviors/markdown/render_json_table';
 import { renderImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
+import renderSandboxedMermaid from '~/behaviors/markdown/render_sandboxed_mermaid';
 
 jest.mock('~/behaviors/markdown/render_glql', () => ({
   renderGlql: jest.fn(),
@@ -16,11 +17,33 @@ jest.mock('~/behaviors/markdown/render_image_lightbox', () => ({
   renderImageLightbox: jest.fn(),
 }));
 
+jest.mock('~/behaviors/markdown/render_sandboxed_mermaid', () => jest.fn());
+
 describe('renderGFM', () => {
   it('handles a missing element', () => {
     expect(() => {
       renderGFM();
     }).not.toThrow();
+  });
+
+  describe('rendering a mermaid block', () => {
+    let element;
+
+    beforeEach(() => {
+      element = document.createElement('div');
+    });
+
+    it.each`
+      description                          | innerHTML                                                                                                                                        | selector
+      ${'with js-render-mermaid class'}    | ${'<div class="gl-relative markdown-code-block"><pre data-canonical-lang="mermaid"><code class="js-render-mermaid">graph LR</code></pre></div>'} | ${'.js-render-mermaid'}
+      ${'with language class on code tag'} | ${'<div><pre><code class="language-mermaid">graph LR</code></pre></div>'}                                                                        | ${'code.language-mermaid'}
+    `('calls renderSandboxedMermaid $description', ({ innerHTML, selector }) => {
+      element.innerHTML = innerHTML;
+
+      renderGFM(element);
+
+      expect(renderSandboxedMermaid).toHaveBeenCalledWith([element.querySelector(selector)]);
+    });
   });
 
   describe('rendering a glql block', () => {

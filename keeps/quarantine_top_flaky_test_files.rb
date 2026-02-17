@@ -5,9 +5,9 @@ require_relative 'helpers/gitlab_api_helper'
 module Keeps
   class QuarantineTopFlakyTestFiles < ::Gitlab::Housekeeper::Keep
     TOP_FLAKY_TEST_FILES_PROJECT_ID = 69718754 # gitlab-org/quality/test-failure-issues
-    TOP_FLAKY_TEST_FILES_LABEL = 'automation:top-flaky-test-file'
-    TOP_FLAKY_TEST_EXCLUDE_LABEL = 'flaky-test::false-positive'
-    QUERY_URL = "https://gitlab.com/api/v4/projects/#{TOP_FLAKY_TEST_FILES_PROJECT_ID}/issues/?order_by=updated_at&state=opened&labels[]=#{TOP_FLAKY_TEST_FILES_LABEL}&not[labels][]=#{TOP_FLAKY_TEST_EXCLUDE_LABEL}&per_page=20".freeze
+    TOP_FLAKY_TEST_FILES_LABELS = 'automation:top-flaky-test-file,flaky-test-reviewed'
+    TOP_FLAKY_TEST_EXCLUDE_LABELS = 'flaky-test::false-positive,flakiness-class::misclassified,quarantine'
+    QUERY_URL = "https://gitlab.com/api/v4/projects/#{TOP_FLAKY_TEST_FILES_PROJECT_ID}/issues/?order_by=updated_at&state=opened&labels[]=#{TOP_FLAKY_TEST_FILES_LABELS}&not[labels][]=#{TOP_FLAKY_TEST_EXCLUDE_LABELS}&per_page=20".freeze
     SHARED_EXAMPLES_INCLUSION_PATTERNS = %w[
       it_behaves_like
       include_examples
@@ -32,7 +32,7 @@ module Keeps
     private
 
     def prepare_change(change, flaky_test_file_issue)
-      filename = withdraw_filename_from_issue(flaky_test_file_issue)
+      filename = extract_filename_from_issue(flaky_test_file_issue)
       failing_tests = flaky_test_file_issue['description'].scan(/#{filename}:\d+/)
 
       return if failing_tests.empty?
@@ -62,18 +62,24 @@ module Keeps
 
     def construct_change(change, relative_file_path, flaky_test_file_issue)
       spec_name = relative_file_path.split('/').last
+      owner_product_group = extract_testfile_owner_from_issue(flaky_test_file_issue)
+      owner_product_group.tr!('_', ' ') if owner_product_group
+      owner_product_group_label = owner_product_group ? "group::#{owner_product_group}" : nil
       change.title = "Quarantine flaky #{spec_name}"
       change.changed_files = [relative_file_path]
       change.description = <<~MARKDOWN
         ### Summary
 
-        The `#{relative_file_path}` test file has been identified as one of the most flaky files in our test suite.
-        Hence this auto-quarantine MR is created.
+        The `#{relative_file_path}` test file has been identified as a **top pipeline-blocking flaky test**, determined using test execution metrics. This auto-quarantine MR quarantines affected tests in the test file to improve pipeline stability.
+
+        Visit the handbook page for more details: [Reporting of Top Flaky Test Files](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/#reporting-of-top-flaky-test-files)
 
         More details about the statistics for this test file can be found in the corresponding issue: #{flaky_test_file_issue['web_url']}.
 
-        This MR quarantines affected tests in the test file. Stage group that owns this tests should review, update if needed \
-        and merge this MR to quarantine the tests unless the tests can be fixed in timely manner.
+        The product group that owns these tests should:
+        1. Review the quarantine changes in this MR
+        2. Either **merge this MR** to quarantine the tests, OR
+        3. **Fix the underlying flakiness** in line with [Flaky tests - Urgency Tiers and Response Timelines](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/#urgency-tiers-and-response-timelines)
 
         ### References
 
@@ -85,13 +91,14 @@ module Keeps
         'type::maintenance',
         'maintenance::refactor',
         'quarantine',
-        'quarantine::flaky'
+        'quarantine::flaky',
+        owner_product_group_label
       ].compact
       change
     end
 
     def build_identifiers(flaky_test_file_issue)
-      filename = withdraw_filename_from_issue(flaky_test_file_issue)
+      filename = extract_filename_from_issue(flaky_test_file_issue)
       [self.class.name.demodulize, filename]
     end
 
@@ -136,12 +143,17 @@ module Keeps
           file_lines[line] = add_quarantine_for_it_example(file_lines, line, flaky_test_file_issue)
         else
           puts "WARN: Can not auto-quarantine #{test}"
+          next
         end
 
         puts "INFO: File updated to quarantine #{test}"
       end
 
-      file_lines.join
+      updated_file_content = file_lines.join
+
+      return if full_file_content == updated_file_content
+
+      updated_file_content
     end
 
     def add_quarantine_for_shared_example(file_lines, line, flaky_test_file_issue)
@@ -199,7 +211,7 @@ module Keeps
       true
     end
 
-    def withdraw_filename_from_issue(flaky_test_file_issue)
+    def extract_filename_from_issue(flaky_test_file_issue)
       match = match_filename(flaky_test_file_issue)
       match[:filename]
     end
@@ -209,6 +221,11 @@ module Keeps
       match = flaky_test_file_issue['description'].match(/\|\s*Spec file\s*\|\s*(?<filename>\s*.+?.rb)/m)
       match ||= flaky_test_file_issue['description'].match(/\s*\*\*File:\*\*\s*\s*`(?<filename>\s*.+?.rb)`/m)
       match
+    end
+
+    def extract_testfile_owner_from_issue(flaky_test_file_issue)
+      match = flaky_test_file_issue['description'].match(/\s*\*\*Product Group:\*\*\s*\s*(?<product_group>\s*.+?)\n/m)
+      match&.[](:product_group)
     end
   end
 end

@@ -454,7 +454,6 @@ Style/GuardClause:
     - 'spec/support/helpers/filtered_search_helpers.rb'
     - 'spec/support/helpers/gitaly_setup.rb'
     - 'spec/support/helpers/javascript_fixtures_helpers.rb'
-    - 'spec/support/helpers/login_helpers.rb'
     - 'spec/support/helpers/stub_gitlab_calls.rb'
     - 'spec/support/helpers/test_env.rb'
     - 'spec/support/import_export/export_file_helper.rb'

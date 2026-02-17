@@ -15,9 +15,9 @@ RSpec.shared_examples 'update with repository actions' do
 
       aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(snippet.repository.blob_at('master', existing_blob.path)).to be_nil
+        expect(snippet.repository.blob_at(snippet.default_branch, existing_blob.path)).to be_nil
 
-        blob = snippet.repository.blob_at('master', new_file_name)
+        blob = snippet.repository.blob_at(snippet.default_branch, new_file_name)
         expect(blob).not_to be_nil
         expect(blob.data).to eq(new_content)
       end
@@ -48,7 +48,7 @@ RSpec.shared_examples 'update with repository actions' do
 
         update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
 
-        blob = snippet.repository.blob_at('master', file_name)
+        blob = snippet.repository.blob_at(snippet.default_branch, file_name)
         expect(blob).not_to be_nil
         expect(blob.data).to eq content
       end

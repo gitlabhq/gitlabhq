@@ -13,19 +13,10 @@ title: Conan 1 packages in the package registry
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Conan package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-
-{{< /alert >}}
+> [!warning]
+> The Conan package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
+> work and timelines to make it production ready.
 
 Publish Conan packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -35,6 +26,9 @@ remote and authenticate with it.
 
 Then you can run `conan` commands and publish your package to the
 package registry.
+
+> [!note]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 For documentation of the specific API endpoints that the Conan package manager client uses, see [Conan v1 API](../../../api/packages/conan_v1.md) or [Conan v2 API](../../../api/packages/conan_v2.md).
 
@@ -126,14 +120,11 @@ To authenticate to the package registry, you need one of the following:
   scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#publish-a-conan-package-by-using-cicd).
 
-{{< alert type="note" >}}
-
-Packages from private and internal projects are hidden if you are not
-authenticated. If you try to search or download a package from a private or internal
-project without authenticating, you receive the error `unable to find the package in remote`
-in the Conan client.
-
-{{< /alert >}}
+> [!note]
+> Packages from private and internal projects are hidden if you are not
+> authenticated. If you try to search or download a package from a private or internal
+> project without authenticating, you receive the error `unable to find the package in remote`
+> in the Conan client.
 
 ### Add your credentials to the GitLab remote
 
@@ -155,12 +146,9 @@ conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_acc
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-{{< alert type="note" >}}
-
-Because your authentication with GitLab expires on a regular basis, you may
-occasionally need to re-enter your personal access token.
-
-{{< /alert >}}
+> [!note]
+> Because your authentication with GitLab expires on a regular basis, you may
+> occasionally need to re-enter your personal access token.
 
 ### Set a default remote for your project (optional)
 
@@ -174,12 +162,9 @@ In a terminal, run this command:
 conan remote add_ref Hello/0.1@mycompany/beta gitlab
 ```
 
-{{< alert type="note" >}}
-
-The package recipe includes the version, so the default remote for
-`Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
-
-{{< /alert >}}
+> [!note]
+> The package recipe includes the version, so the default remote for
+> `Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
 
 If you don't set a default user or remote, you can still include the user and
 remote in your commands:
@@ -283,13 +268,10 @@ Prerequisites:
    conan install .. <options>
    ```
 
-{{< alert type="note" >}}
-
-If you try installing the package you created in this tutorial, the install command
-has no effect because the package already exists.
-Delete `~/.conan/data` to clean up the packages stored in the cache.
-
-{{< /alert >}}
+> [!note]
+> If you try installing the package you created in this tutorial, the install command
+> has no effect because the package already exists.
+> Delete `~/.conan/data` to clean up the packages stored in the cache.
 
 ## Remove a Conan package
 
@@ -304,12 +286,9 @@ There are two ways to remove a Conan package from the GitLab package registry.
   You must explicitly include the remote in this command, otherwise the package
   is removed only from your local system cache.
 
-  {{< alert type="note" >}}
-
-  This command removes all recipe and binary package files from the
-  package registry.
-
-  {{< /alert >}}
+  > [!note]
+  > This command removes all recipe and binary package files from the
+  > package registry.
 
 - From the GitLab user interface:
 
@@ -344,14 +323,11 @@ The scope of your search depends on your Conan remote configuration:
 
 The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
 
-{{< alert type="note" >}}
-
-When searching for packages, the Conan v1 CLI displays only package details
-for packages uploaded with Conan v1. Packages uploaded with Conan v2 appear in search results,
-but their details are not shown. This is because Conan v1 expects the `recipe_hash` field in the
-package reference metadata, which is only present in packages uploaded with Conan v1.
-
-{{< /alert >}}
+> [!note]
+> When searching for packages, the Conan v1 CLI displays only package details
+> for packages uploaded with Conan v1. Packages uploaded with Conan v2 appear in search results,
+> but their details are not shown. This is because Conan v1 expects the `recipe_hash` field in the
+> package reference metadata, which is only present in packages uploaded with Conan v1.
 
 ## Fetch Conan package information from the package registry
 
@@ -363,11 +339,8 @@ conan info Hello/0.1@mycompany/beta
 
 ## Download a Conan package
 
-{{< alert type="flag" >}}
-
-Packages uploaded before [Conan info metadata extraction](#extract-conan-metadata) was enabled cannot be downloaded with the `conan download` CLI command.
-
-{{< /alert >}}
+> [!note]
+> Packages uploaded before [Conan info metadata extraction](#extract-conan-metadata) was enabled cannot be downloaded with the `conan download` CLI command.
 
 You can download a Conan package's recipe and binaries to your local cache without using settings that use the `conan download` command.
 
@@ -434,11 +407,8 @@ When you upload a Conan package, GitLab automatically extracts metadata from the
 - Package options
 - Package requirements and dependencies
 
-{{< alert type="note" >}}
-
-Packages uploaded before this feature was enabled (GitLab 17.10) do not have their metadata extracted. For these packages, some search and download functionalities are limited.
-
-{{< /alert >}}
+> [!note]
+> Packages uploaded before this feature was enabled (GitLab 17.10) do not have their metadata extracted. For these packages, some search and download functionalities are limited.
 
 ## Conan revisions
 
@@ -449,20 +419,14 @@ Packages uploaded before this feature was enabled (GitLab 17.10) do not have the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Conan 1 revisions are supported only when the remote is setup on a [project](#add-a-remote-for-your-project),
-not for the entire [instance](#add-a-remote-for-your-instance).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Conan 1 revisions provide package immutability in the package registry. When you make changes to a recipe or a package without changing its version, Conan calculates a unique identifier (revision) to track these changes.
+
+> [!note]
+> Conan 1 revisions are supported only when the remote is setup on a [project](#add-a-remote-for-your-project),
+> not for the entire [instance](#add-a-remote-for-your-instance).
 
 ### Types of revisions
 
@@ -551,11 +515,8 @@ Or:
 conan remove package_name/version@user/channel#revision_hash:package_id --remote=gitlab
 ```
 
-{{< alert type="note" >}}
-
-When you delete packages with revisions, you must include the `--remote=gitlab` flag. Otherwise, the package is removed only from your local system cache.
-
-{{< /alert >}}
+> [!note]
+> When you delete packages with revisions, you must include the `--remote=gitlab` flag. Otherwise, the package is removed only from your local system cache.
 
 ### Immutable revisions workflow
 

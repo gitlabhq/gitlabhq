@@ -1026,6 +1026,42 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'custom_attribute permissions' do
+    let(:group) { create(:group, :public) }
+
+    context 'when no user' do
+      let(:current_user) { nil }
+
+      it { expect_disallowed(:read_custom_attribute) }
+      it { expect_disallowed(:delete_custom_attribute) }
+      it { expect_disallowed(:update_custom_attribute) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:read_custom_attribute) }
+        it { expect_allowed(:delete_custom_attribute) }
+        it { expect_allowed(:update_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:read_custom_attribute) }
+        it { expect_disallowed(:delete_custom_attribute) }
+        it { expect_disallowed(:update_custom_attribute) }
+      end
+    end
+
+    context 'when current_user is owner' do
+      let(:current_user) { owner }
+
+      it { expect_disallowed(:read_custom_attribute) }
+      it { expect_disallowed(:delete_custom_attribute) }
+      it { expect_disallowed(:update_custom_attribute) }
+    end
+  end
+
   describe 'design activity' do
     let_it_be(:group) { create(:group, :public) }
 

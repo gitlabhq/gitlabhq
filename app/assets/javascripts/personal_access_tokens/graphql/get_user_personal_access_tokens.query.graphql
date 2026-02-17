@@ -11,7 +11,9 @@ query getUserPersonalAccessTokens(
   $revoked: Boolean
   $expiresBefore: Date
   $expiresAfter: Date
+  $createdBefore: Time
   $createdAfter: Time
+  $lastUsedBefore: Time
   $lastUsedAfter: Time
   $search: String
 ) {
@@ -27,7 +29,9 @@ query getUserPersonalAccessTokens(
       revoked: $revoked
       expiresBefore: $expiresBefore
       expiresAfter: $expiresAfter
+      createdBefore: $createdBefore
       createdAfter: $createdAfter
+      lastUsedBefore: $lastUsedBefore
       lastUsedAfter: $lastUsedAfter
       search: $search
     ) {

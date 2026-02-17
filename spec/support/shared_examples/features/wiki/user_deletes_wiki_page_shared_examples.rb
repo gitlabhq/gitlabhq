@@ -19,7 +19,8 @@ RSpec.shared_examples 'User deletes wiki page' do
   end
 
   shared_examples 'deletes a wiki page' do
-    specify 'deletes a page', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+    specify 'deletes a page', :js,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24077' do
       click_on('Edit')
       click_on('Delete')
       find('[data-testid="confirm-deletion-button"]').click

@@ -56,6 +56,7 @@ export default {
           data: { content },
         } = await axios.get(this.contentApi, { params: { render_html: true } });
         this.content = content;
+        this.isLoadingContent = false;
 
         this.$nextTick()
           .then(() => {
@@ -70,9 +71,8 @@ export default {
             });
           });
       } catch (e) {
-        this.loadingContentFailed = true;
-      } finally {
         this.isLoadingContent = false;
+        this.loadingContentFailed = true;
       }
     },
   },
@@ -106,6 +106,6 @@ export default {
     ref="content"
     v-safe-html="content"
     data-testid="wiki-page-content"
-    class="js-wiki-page-content md"
+    class="js-wiki-page-content md gl-px-3"
   ></div>
 </template>

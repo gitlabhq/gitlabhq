@@ -38,7 +38,7 @@ This integration can be turned on for a project or for all projects in a group o
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - You must use a Confluence Cloud URL (`https://example.atlassian.net/wiki/`).
 
 To set up the integration for your project or group:

@@ -103,6 +103,13 @@ class Compare
     )
   end
 
+  def diff_stats
+    return unless diff_refs
+
+    repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+  end
+  strong_memoize_attr(:diff_stats)
+
   def changed_paths
     project
       .repository

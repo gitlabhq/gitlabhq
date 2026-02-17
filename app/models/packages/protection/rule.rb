@@ -28,7 +28,8 @@ module Packages
         length: { maximum: 255 }
 
       validates :package_type, presence: true
-      validates :pattern, allow_blank: true, length: { maximum: 255 }
+      validates :pattern, presence: true, length: { maximum: 255 },
+        uniqueness: { scope: [:project_id, :package_type, :target_field, :pattern_type] }
 
       # npm specific validations
       validates :package_name_pattern, format: NPM_PACKAGE_NAME_FORMAT, if: :npm?

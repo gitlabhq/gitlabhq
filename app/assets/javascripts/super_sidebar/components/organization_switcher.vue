@@ -1,5 +1,13 @@
 <script>
-import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlAvatar,
+  GlIcon,
+  GlLoadingIcon,
+  GlLink,
+  GlBadge,
+  GlButton,
+} from '@gitlab/ui';
 import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -40,9 +48,8 @@ export default {
   }),
   feedbackUrl:
     'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
-  components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge },
+  components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge, GlButton },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectStudioEnabled'],
   data() {
     return {
       organizations: {},
@@ -134,8 +141,8 @@ export default {
     },
     dropdownOffset() {
       return {
-        mainAxis: 0,
-        crossAxis: this.projectStudioEnabled ? 12 : 0,
+        mainAxis: 4,
+        crossAxis: 22,
       };
     },
   },
@@ -156,14 +163,7 @@ export default {
     @shown="onShown"
   >
     <template #toggle>
-      <button
-        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-text-left gl-font-semibold gl-leading-1"
-        :class="{
-          'gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3': !projectStudioEnabled,
-          'btn gl-button btn-default gl-gap-3 !gl-px-2': projectStudioEnabled,
-        }"
-        data-testid="toggle-button"
-      >
+      <gl-button class="organization-switcher-button !gl-px-2" data-testid="toggle-button">
         <gl-avatar
           :size="24"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
@@ -171,13 +171,11 @@ export default {
           :entity-name="currentOrganization.name"
           :src="currentOrganization.avatar_url"
         />
-        <span
-          class="gl-grow"
-          :class="{ 'gl-max-w-10 gl-truncate sm:gl-max-w-15': projectStudioEnabled }"
-          >{{ currentOrganization.name }}</span
-        >
+        <span class="gl-max-w-10 gl-grow gl-truncate sm:gl-max-w-15">{{
+          currentOrganization.name
+        }}</span>
         <gl-icon class="gl-button-icon gl-new-dropdown-chevron" name="chevron-down" />
-      </button>
+      </gl-button>
     </template>
 
     <template #group-label="{ group }">

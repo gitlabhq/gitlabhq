@@ -5,13 +5,9 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-ee/app/helpers/ee/merge_requests_helper.rb:
-- render_items_list
 ee/app/helpers/ee/sorting_titles_values_helper.rb:
 - sort_value_version_asc
 - sort_value_version_desc
-ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb:
-- duo_pro_trial_status_cta_label
 ee/app/helpers/gitlab_subscriptions/trials_helper.rb:
 - trial_submit_text
 - namespace_selector_data
@@ -21,11 +17,6 @@ ee/app/models/cloud_connector/keys.rb:
 - create_new_key!
 - trim!
 - truncated_pem
-ee/app/models/concerns/ai/customizable_permission.rb:
-- ai_minimum_access_level_to_execute
-ee/app/models/concerns/approval_rule_like.rb:
-- vulnerability_attribute_known_exploited
-- vulnerability_attribute_epss_score
 ee/app/models/concerns/ee/issuable_link.rb:
 - blocked_issuables_for_collection
 ee/app/models/concerns/ee/vulnerability_flag_helpers.rb:
@@ -47,8 +38,6 @@ ee/app/models/concerns/security/scan_result_policy.rb:
 - applicable_scan_result_policies_with_real_index
 ee/app/models/dast_site_profile.rb:
 - scan_file_path_or_dast_site_url
-ee/app/models/ee/active_session.rb:
-- unset_marketing_user_cookies
 ee/app/models/ee/ci/build.rb:
 - has_artifact?
 - collect_license_scanning_reports!
@@ -60,8 +49,6 @@ ee/app/models/ee/ci/pipeline.rb:
 ee/app/models/ee/ci/runner.rb:
 - cost_factor_for_project
 - allowed_plan_names
-ee/app/models/ee/clusters/concerns/application_core.rb:
-- distinct_by_user
 ee/app/models/ee/epic.rb:
 - elapsed_days
 - max_hierarchy_depth_achieved?
@@ -73,8 +60,6 @@ ee/app/models/ee/group.rb:
 - count_within_namespaces
 ee/app/models/ee/group_member.rb:
 - provisioned_by_this_group?
-ee/app/models/ee/issue.rb:
-- can_assign_epic?
 ee/app/models/ee/merge_request.rb:
 - sync_project_approval_rules_for_policy_configuration
 - delete_approval_rules_for_policy_configuration
@@ -85,7 +70,6 @@ ee/app/models/ee/namespace.rb:
 ee/app/models/ee/namespace_statistics.rb:
 - update_wiki_size
 ee/app/models/ee/project.rb:
-- member_usernames_among
 - mirror_last_update_failed?
 - search_by_visibility
 - group_ldap_synced?
@@ -115,15 +99,11 @@ ee/app/models/members/member_role.rb:
 - customizable_permissions_exempt_from_consuming_seat
 ee/app/models/namespaces/storage/root_size.rb:
 - remaining_storage_size
-ee/app/models/package_metadata/advisory.rb:
-- from_dependency_scanning?
 ee/app/models/project_security_setting.rb:
 - set_validity_checks!
 ee/app/models/search/zoekt.rb:
 - index_in
 - delete_in
-ee/app/models/secrets_management/group_secrets_managers/pipeline_helper.rb:
-- ci_policy_name_for_environment
 ee/app/models/security/attribute.rb:
 - really_destroy!
 ee/app/models/security/category.rb:
@@ -131,10 +111,6 @@ ee/app/models/security/category.rb:
 ee/app/models/security/orchestration_policy_configuration.rb:
 - compliance_framework_ids_with_policy_index
 - experiment_configuration
-ee/app/models/virtual_registries/packages/maven/upstream.rb:
-- cache_local_entries
-ee/app/models/work_items/statuses/system_defined/status.rb:
-- find_by_work_item_and_name
 app/helpers/ci/catalog/resources_helper.rb:
 - can_view_namespace_catalog?
 - js_ci_catalog_data
@@ -149,12 +125,6 @@ app/helpers/groups_helper.rb:
 app/helpers/integrations_helper.rb:
 - integration_issue_type
 - integration_todo_target_type
-app/helpers/issuables_helper.rb:
-- user_dropdown_label
-- project_dropdown_label
-- group_dropdown_label
-app/helpers/issues_helper.rb:
-- can_admin_issue?
 app/helpers/routing/groups/members_helper.rb:
 - approve_access_request_group_member_path
 - resend_invite_group_member_path
@@ -175,9 +145,6 @@ app/helpers/sorting_titles_values_helper.rb:
 - sort_value_version_desc
 app/models/application_record.rb:
 - deleted_from_database?
-app/models/application_setting.rb:
-- max_login_attempts_column_exists?
-- failed_login_attempts_unlock_period_in_minutes_column_exists?
 app/models/application_setting_implementation.rb:
 - ensure_key_restrictions!
 app/models/bulk_imports/export.rb:
@@ -194,25 +161,16 @@ app/models/ci/job_artifact.rb:
 app/models/ci/job_token/allowlist.rb:
 - project_link_traversal_ids
 - group_link_traversal_ids
-- bulk_add_projects!
 - bulk_add_groups!
 app/models/ci/pipeline.rb:
 - has_archive_artifacts?
 - has_erasable_artifacts?
-app/models/ci/resource_group.rb:
-- waiting_processables
 app/models/ci/runner.rb:
 - belongs_to_one_project?
 - fallback_owner_project
 app/models/clusters/cluster.rb:
 - platform_kubernetes_active?
 - legacy_auto_devops_domain
-app/models/clusters/concerns/application_core.rb:
-- can_uninstall?
-- schedule_status_update
-- update_command
-- uninstall_command
-- post_uninstall
 app/models/clusters/concerns/application_data.rb:
 - certificate_files
 app/models/clusters/concerns/application_status.rb:
@@ -221,6 +179,7 @@ app/models/clusters/concerns/application_version.rb:
 - update_available?
 app/models/commit.rb:
 - touch_later
+- valid_full_sha
 app/models/concerns/awardable.rb:
 - user_authored?
 app/models/concerns/counter_attribute.rb:
@@ -235,10 +194,6 @@ app/models/concerns/integrations/base/integration.rb:
 - instance_exists_for?
 app/models/concerns/integrations/base/issue_tracker.rb:
 - enabled_in_gitlab_config
-app/models/concerns/issuable.rb:
-- has_multiple_assignees?
-- supports_issue_type?
-- can_assign_epic?
 app/models/concerns/mentionable.rb:
 - referenced_projects
 - referenced_group_users
@@ -271,20 +226,13 @@ app/models/concerns/runner_token_expiration_interval.rb:
 - effective_runner_token_expiration_interval_human_readable
 app/models/concerns/sha_attribute.rb:
 - load_schema!
-app/models/concerns/suppress_composite_primary_key_warning.rb:
-- suppress_composite_primary_key
-app/models/concerns/transactions.rb:
-- reset_open_transactions_baseline
 app/models/concerns/use_sql_function_for_primary_key_lookups.rb:
 - _query_by_sql
 app/models/concerns/user_mention_behaviour.rb:
 - has_mentions?
 - mentioned_groups
 - mentioned_projects
-app/models/environment.rb:
-- knative_services_finder
 app/models/event.rb:
-- find_sti_class
 - created_target?
 - note_target_id
 - recent_repository_update?
@@ -292,31 +240,22 @@ app/models/group.rb:
 - get_ids_by_ids_or_paths
 - blocked_owners
 - has_maintainer?
-- members_from_self_and_ancestors_with_effective_access_level
 - hierarchy_members_with_inactive
 app/models/import/source_user_placeholder_reference.rb:
 - aliased_composite_key
-app/models/integrations/drone_ci.rb:
-- allow_target_ci?
 app/models/issue.rb:
 - previous_updated_at
 - email_participants_emails
 app/models/jira_import_state.rb:
-- owner_class_attribute_default
 - non_initial?
 app/models/merge_request.rb:
-- head_pipeline_active?
 - diff_base_commit
 - diff_start_commit
-- reopenable?
 - can_be_closed?
 - find_assignee
 app/models/merge_request_diff.rb:
 - migrate_files_to_database!
-app/models/ml/experiment.rb:
-- count_for_project
 app/models/namespace.rb:
-- send_update_instructions
 - any_project_with_pages_deployed?
 - saved_change_to_parent?
 - saved_change_to_path_or_parent?
@@ -326,22 +265,16 @@ app/models/project.rb:
 - import_scheduled?
 - updating_remote_mirror?
 - issue_exists?
-- latest_successful_pipeline_for
 - enable_ci
 - valid_runners_token?
 - storage_upgradable?
-- limited_protected_branches
 - deploy_token_create_url
-- deploy_token_revoke_url_for
 app/models/project_statistics.rb:
 - update_wiki_size
 - update_snippets_size
 - update_lfs_objects_size
 - update_uploads_size
 - update_container_registry_size
-app/models/project_team.rb:
-- members_in_project_and_ancestors
-- members_with_access_levels
 app/models/todo.rb:
 - unmergeable?
 - merge_train_removed?
@@ -350,8 +283,11 @@ app/models/todo.rb:
 - for_alert?
 - for_issue_or_work_item?
 - for_ssh_key?
-- self_assigned?
 app/models/user.rb:
-- owner_class_attribute_default
-- inactive_message
-- will_save_change_to_login?
+- legacy_otp_secret
+ee/app/models/ai/duo_code_review.rb:
+- classic?
+ee/app/models/concerns/ai/user_authorizable.rb:
+- any_group_with_ai_available?
+app/models/ci/stage.rb:
+- update_legacy_status

@@ -1,0 +1,7 @@
+---
+name: read_compliance_policy_setting
+description: Grants the ability to read compliance policy settings
+boundaries:
+  - instance
+permissions:
+  - read_compliance_policy_setting

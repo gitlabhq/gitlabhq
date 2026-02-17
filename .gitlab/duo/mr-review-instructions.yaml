@@ -8,6 +8,8 @@
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
 # - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
+# - Field Standardisation in Observability: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_field_standardisation/
+
 
 # This file defines custom review criteria that will be applied to specific files
 # during merge request reviews. Instructions are grouped by name and can target
@@ -24,7 +26,7 @@ instructions:
          - If CE code needs EE-aware behavior, use `prepend_mod` hooks or `Gitlab.ee?` guards
          - Flag direct references to `EE::` namespaced classes in CE code
          - This prevents FOSS build failures
-         - Reference: https://docs.gitlab.com/development/ee_features/
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -59,7 +61,7 @@ instructions:
           - Flag callbacks that have side effects (external API calls, updating other records, complex business logic)
           - Flag bulk operations on associated records in callbacks (performance concern as associations grow)
           - Acceptable uses: data normalization on current model only (trimming whitespace, setting defaults)
-          - Reference: https://docs.gitlab.com/development/backend/ruby_style_guide/#avoid-activerecord-callbacks
+          - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#avoid-activerecord-callbacks
 
   - name: Database Migrations
     fileFilters:
@@ -82,7 +84,7 @@ instructions:
          - Check if an index exists or is being added for the foreign key column
          - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 50 GB total size (including all indexes and column data) after adding a new column with a foreign key on GitLab.com."
          - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
-         - Ask: "Are you following the guidelines for adding foreign keys to existing tables to avoid downtime and migration failures? See: https://docs.gitlab.com/development/database/foreign_keys/#avoiding-downtime-and-migration-failures"
+         - Ask: "Are you following the guidelines for adding foreign keys to existing tables to avoid downtime and migration failures? See: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/foreign_keys.md#avoiding-downtime-and-migration-failures"
       11. For column additions without foreign keys to pre-existing tables (not created in the current merge request):
           - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 100 GB total size (including all indexes and column data) after adding a new column on GitLab.com."
           - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
@@ -94,7 +96,11 @@ instructions:
             - Group fixed-width columns together in descending size order (8-byte types first, then 4-byte, etc.)
             - Place variable-width columns (text, varchar, arrays, json, jsonb) at the end
           - Ask: "Have you ordered the columns to minimize space usage by grouping fixed-width columns together and placing variable-width columns at the end?"
-          - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/ee/development/database/ordering_table_columns.html"
+          - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/development/database/ordering_table_columns/"
+      14. For migrations that drop or replace an index:
+          - Remind: "Before removing an index, verify queries can use other existing indexes efficiently. Confirm the index is unused on GitLab.com and Self-Managed."
+          - Suggest: "For investigating index usage you can start by gathering all the metadata available for the index. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/TsYVxcBHR?orgId=1)"
+          - Ask: "Are you following the guidelines for dropping unused indexes? See: https://docs.gitlab.com/development/database/adding_database_indexes/#dropping-unused-indexes"
 
   - name: Test Coverage
     fileFilters:
@@ -115,7 +121,7 @@ instructions:
          - Fallback logic (|| operators)
          - Error states
       8. Follow the testing pyramid: most tests at unit level, fewer at integration/system level
-      9. Reference: https://docs.gitlab.com/development/testing_guide/testing_levels/
+      9. Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md
 
   - name: Documentation
     fileFilters:
@@ -130,17 +136,18 @@ instructions:
       7. Avoid sales or marketing language, including words like "easily" or "simply."
       8. Avoid writing about the document itself. Get straight to the point instead of using phrases like "This page shows."
       9. Tend toward lowercase, use sentence case for topic titles, and match UI text capitalization.
-      10. Split long lines at approximately 100 characters and start each new sentence on a new line.
-      11. Use bold for UI elements only.
-      12. Use sentence case for table headers.
-      13. When describing the location of a UI element, use the location first, then action the user must take.
-      14. When linking to GitLab issues, include the GitLab issue number in the link text.
-      15. Start optional steps with "Optional."
-      16. Resize wide or tall screenshots. Compress size on disk to 100 KB or less. Use descriptive lowercase filenames with underscores instead of hyphens. Filenames should include the major and minor version of GitLab in the format "_v18_6".
-      17. Avoid using blockquotes.
-      18. Do not promise work in future milestones. Instead, say work is being proposed.
-      19. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
-      20. Along with the previous instructions, documentation should follow the "GitLab Documentation Style Guide".
+      10. Use bold for UI elements only.
+      11. Use sentence case for table headers.
+      12. When describing the location of a UI element, use the location first, then action the user must take.
+      13. When linking to GitLab issues, include the GitLab issue number in the link text.
+      14. Start optional steps with "Optional."
+      15. Resize wide or tall screenshots. Compress size on disk to 100 KB or less. Use descriptive lowercase filenames with underscores instead of hyphens. Filenames should include the major and minor version of GitLab in the format "_v18_6".
+      16. Avoid using blockquotes.
+      17. Do not promise work in future milestones. Instead, say work is being proposed.
+      18. Along with the previous instructions, documentation should follow:
+          - The GitLab Documentation style guide: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/styleguide/_index.md
+          - The GitLab Documentation recommended word list: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/styleguide/word_list.md
+          - GitLab Flavored Markdown syntax standards: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md
 
   - name: API documentation
     fileFilters:
@@ -153,7 +160,7 @@ instructions:
       5. If endpoints attributes are available only to higher subscription tiers or specific offerings, include this information in the attribute description.
       6. For complex object types, represent sub-attributes with dots, like 'project.name' or 'projects[].name' for arrays.
       7. For curl commands, use long option names ('--header' instead of '-H'), declare URLs with the '--url' parameter in double quotes, and use line breaks with '\' for readability.
-      8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines.
+      8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/restful_api_styleguide.md
 
   - name: Localization template files
     fileFilters:
@@ -185,3 +192,15 @@ instructions:
       - "db/schema_migrations/**/*"
     instructions: |
       1. These files are auto-generated and do not require a newline at the end of the file - do not flag missing newlines
+
+  - name: Log Field Standards
+    fileFilters:
+      - "**/*.rb"
+    instructions: |
+      Backend engineers should be complying with the new field standardisation in observability best practices
+      1. For any log lines that have been altered:
+        - Ask: "If you are adding or modifying fields, please ensure that the field is defined within the LabKit Ruby Fields module engineers should follow Field Standardisation Guidelines - https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_field_standardisation/
+        - Remind: "Common logging fields should be defined within the LabKit Ruby fields module - https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/fields.rb?ref_type=heads and imported from there."
+      2. For any new fields being added to log messages:
+        - Check to ensure that these fields are not dynamically generated
+        - Remind: "We're aiming to standardise the fields that we emit across all of our services at GitLab through this approach"

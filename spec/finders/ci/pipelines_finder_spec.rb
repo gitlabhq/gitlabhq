@@ -35,8 +35,8 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
       let(:params) { { scope: 'finished' } }
       let!(:pipelines) do
         [create(:ci_pipeline, project: project, status: 'success'),
-         create(:ci_pipeline, project: project, status: 'failed'),
-         create(:ci_pipeline, project: project, status: 'canceled')]
+          create(:ci_pipeline, project: project, status: 'failed'),
+          create(:ci_pipeline, project: project, status: 'canceled')]
       end
 
       it 'returns matched pipelines' do

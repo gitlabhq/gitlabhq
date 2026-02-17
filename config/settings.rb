@@ -103,11 +103,10 @@ Settings = GitlabSettings.load(file, Rails.env) do
   def verify_constant_array(modul, current, default)
     values = default || []
     unless current.nil?
-      values = []
-      current.each do |constant|
-        values.push(verify_constant(modul, constant, nil))
+      values = current.filter_map do |constant|
+        value = verify_constant(modul, constant, nil)
+        value unless value.nil?
       end
-      values.delete_if { |value| value.nil? }
     end
 
     values

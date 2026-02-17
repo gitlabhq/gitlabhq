@@ -25,11 +25,8 @@ Each rule allows you to match either:
 
 This feature evolved out of [protected branches](repository/branches/protected.md).
 
-{{< alert type="note" >}}
-
-To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
-
-{{< /alert >}}
+> [!note]
+> To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
 
 ## Configure protected tags
 
@@ -48,12 +45,9 @@ Prerequisites:
    1. Select **Create wildcard**.
 1. In **Allowed to create**, select roles that may create protected tags.
 
-   {{< alert type="note" >}}
-
-   In GitLab Premium and Ultimate, you can also add groups or individual users
-   to **Allowed to create**.
-
-   {{< /alert >}}
+   > [!note]
+   > In GitLab Premium and Ultimate, you can also add groups or individual users
+   > to **Allowed to create**.
 
 1. Select **Protect**.
 
@@ -117,12 +111,9 @@ graph LR
 To grant access to Subgroup Y members for Project A, you must share the project with the subgroup.
 Adding the subgroup directly to the protected tag settings is not effective and isn't applicable to subgroup members.
 
-{{< alert type="note" >}}
-
-For a group to have protected tag permissions, the project must be directly shared with the group.
-Inherited project membership from parent groups is not sufficient for protected tag permissions.
-
-{{< /alert >}}
+> [!note]
+> For a group to have protected tag permissions, the project must be directly shared with the group.
+> Inherited project membership from parent groups is not sufficient for protected tag permissions.
 
 ## Wildcard protected tags
 
@@ -235,7 +226,7 @@ Prerequisites:
 To delete a protected tag:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Tags**.
+1. In the left sidebar, select **Code** > **Tags**.
 1. Next to the tag you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
 

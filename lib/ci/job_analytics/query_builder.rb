@@ -39,10 +39,10 @@ module Ci
       private
 
       def build_finder
-        finder = ::ClickHouse::Finders::Ci::FinishedBuildsFinder.new
-                                                                .for_project(project.id)
-                                                                .select(*select_fields)
-                                                                .select_aggregations(*aggregations)
+        finder = base_finder
+          .for_project(project.id)
+          .select(*select_fields)
+          .select_aggregations(*aggregations)
 
         finder = finder.order_by(*extract_sort_info(sort)) if sort
 
@@ -54,6 +54,16 @@ module Ci
           source: source,
           ref: ref
         )
+      end
+
+      def base_finder
+        return ::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder.new if use_deduplicated_finder?
+
+        ::ClickHouse::Finders::Ci::FinishedBuildsFinder.new
+      end
+
+      def use_deduplicated_finder?
+        ::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper.backfill_in_progress?
       end
 
       def extract_sort_info(value)

@@ -53,7 +53,7 @@ For visibility, all `/chatops` commands that target production must be executed 
 and cross-posted (with the command results) to the responsible team's Slack channel.
 
 - Ensure that the feature MRs have been deployed to both production and canary with `/chatops run auto_deploy status <merge-commit-of-your-feature>`
-- [ ] Depending on the [type of actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors) you are using, pick one of these options:
+- [ ] Depending on the [type of actor](https://docs.gitlab.com/development/feature_flags/#feature-actors) you are using, pick one of these options:
   - For **project-actor**: `/chatops run feature set --project=gitlab-org/gitlab,gitlab-org/gitlab-foss,gitlab-com/www-gitlab-com <feature-flag-name> true`
   - For **group-actor**: `/chatops run feature set --group=gitlab-org,gitlab-com <feature-flag-name> true`
   - For **user-actor**: `/chatops run feature set --user=<gitlab-username-of-dri> <feature-flag-name> true`
@@ -99,8 +99,8 @@ To do so, follow these steps:
 
 - [ ] Create a merge request with the following changes.
     - [ ] If feature was enabled for various actors, ensure the feature has been enabled globally on production `/chatops run feature get <feature-flag-name>`. If the feature has not been globally enabled then enable the feature globally using: `/chatops run feature set <feature-flag-name> true`
-    - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/ee/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
-    - [ ] Decide [which changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog) is needed.
+    - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
+    - [ ] Decide [which changelog entry](https://docs.gitlab.com/development/feature_flags/#changelog) is needed.
 - [ ] Ensure that the default-enabling MR has been included in the release package.
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`

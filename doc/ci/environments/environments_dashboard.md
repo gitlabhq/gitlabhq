@@ -24,11 +24,11 @@ see which pipelines are green and which are red allowing you to
 diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Environments**.
 
-![Environments Dashboard showing two rows of projects with their deployment environments and pipeline status.](img/environments_dashboard_v12_5.png)
+![Environments Dashboard showing two rows of projects with their deployment environments and pipeline status.](img/environments_dashboard_v18_8.png)
 
 The Environments dashboard displays a paginated list of projects that includes
 up to three environments per project.

@@ -1,0 +1,5 @@
+---
+name: read_project_export
+description: Grants the ability to read project exports
+boundaries:
+  - project

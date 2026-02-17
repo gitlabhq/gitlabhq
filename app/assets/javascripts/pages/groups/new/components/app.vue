@@ -38,11 +38,6 @@ export default {
       required: false,
       default: false,
     },
-    isSaas: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     initialBreadcrumbs() {
@@ -97,7 +92,6 @@ export default {
     :initial-breadcrumbs="initialBreadcrumbs"
     :panels="panels"
     :title="s__('GroupsNew|Create new group')"
-    :is-saas="isSaas"
     persistence-key="new_group_last_active_tab"
   />
 </template>

@@ -52,14 +52,17 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           params do
             use :package_name
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
             authenticate_non_public: true
-          route_setting :authorization, skip_job_token_policies: true
+          # Granular token authorization is skipped because:
+          # 1. When no package exists, project_or_nil returns nil and the request redirects to npmjs.org
+          # 2. When a package exists, authorize_read_package!(project) provides authorization inside the block
+          route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = declared_params[:package_name]
             packages =

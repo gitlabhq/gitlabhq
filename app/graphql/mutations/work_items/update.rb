@@ -63,7 +63,7 @@ module Mutations
       argument :title,
         GraphQL::Types::String,
         required: false,
-        description: copy_field_description(Types::WorkItemType, :title)
+        description: copy_field_description(::Types::WorkItemType, :title)
 
       field :work_item, ::Types::WorkItemType,
         null: true, scopes: [:api, :ai_workflows],

@@ -22,6 +22,7 @@ export default (containerId = 'update-shared-runners-form') => {
 
   return new Vue({
     el: containerEl,
+    name: 'UpdateSharedRunnersFormRoot',
     provide: {
       groupId,
       groupName,

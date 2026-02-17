@@ -7,6 +7,9 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
   let_it_be(:resource) { create(:group, owners: user) }
   let_it_be(:access_token_user) { create(:user, :project_bot, maintainer_of: resource) }
 
+  let_it_be(:another_resource) { create(:group) }
+  let_it_be(:access_token_user_from_another_resource) { create(:user, :project_bot, maintainer_of: another_resource) }
+
   before do
     sign_in(user)
   end

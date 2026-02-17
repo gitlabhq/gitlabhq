@@ -1,0 +1,5 @@
+---
+name: authorize_pypi_package
+description: Grants the ability to authorize PyPI package uploads
+boundaries:
+  - project

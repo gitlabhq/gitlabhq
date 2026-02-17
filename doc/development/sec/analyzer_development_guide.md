@@ -293,12 +293,9 @@ After the above steps have been completed, the automatic release process execute
 | Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
 | Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
 
-{{< alert type="warning" >}}
-
-Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
-variable permissions should be announced in the section's Slack channel.
-
-{{< /alert >}}
+> [!warning]
+> Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
+> variable permissions should be announced in the section's Slack channel.
 
 ### Token rotation for service account
 
@@ -315,11 +312,8 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 1. Update the expiry date of the `GITLAB_TOKEN` field in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) table.
 1. Set the following variables to the new Personal Access Token created in step 2 above:
 
-   {{< alert type="note" >}}
-
-   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
-
-   {{< /alert >}}
+   > [!note]
+   > It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
 
    1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/analyzers`](https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings) group.
 
@@ -411,7 +405,7 @@ Assuming the current analyzer release is `v{N}`:
 
       Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 
-1. During the milestone of the major release, when there are no more changes to be merged into the `default`  or `v{N+1}` branches:
+1. During the milestone of the major release, when there are no more changes to be merged into the `default` or `v{N+1}` branches:
    1. Create a `v{N}` branch from the `default` branch.
    1. Create a Merge Request in the `v{N+1}` branch to squash all the `release candidate` changelog entries into a single entry for `v{N+1}`.
 
@@ -482,7 +476,7 @@ Verify whether the underlying tool has:
 
 - A [permissive software license](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software).
 - Headless execution (CLI tool).
-- Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+- Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker/).
 - Compatible projects that can be detected based on filenames or extensions.
 - Offline execution (no internet access) or can be configured to use custom proxies and/or CA certificates.
 - The image is compatible with other container orchestration tools (see [testing container orchestration compatibility](#testing-container-orchestration-compatibility)).
@@ -584,35 +578,35 @@ In order to push images to this location:
 
    1. Add the following permissions:
 
-      - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
+      - Maintainer: `@gitlab-org/secure/managers`
       - Developer: [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation)
 
-         This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+        This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
 
    1. Configure the following project settings:
 
       - `Settings -> General -> Visibility, project features, permissions`
-         - `Project visibility`
-            - `Public`
-         - `Additional options`
-            - `Users can request access`
-               - `Disabled`
-         - `Issues`
+        - `Project visibility`
+          - `Public`
+        - `Additional options`
+          - `Users can request access`
             - `Disabled`
-         - `Repository`
-            - `Only Project Members`
-            - `Merge Requests`
-               - `Disabled`
-            - `Forks`
-               - `Disabled`
-            - `Git Large File Storage (LFS)`
-               - `Disabled`
-            - `CI/CD`
-               - `Disabled`
-         - `Container Registry`
-            - `Everyone with access`
-         - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
+        - `Issues`
+          - `Disabled`
+        - `Repository`
+          - `Only Project Members`
+          - `Merge Requests`
             - `Disabled`
+          - `Forks`
+            - `Disabled`
+          - `Git Large File Storage (LFS)`
+            - `Disabled`
+          - `CI/CD`
+            - `Disabled`
+        - `Container Registry`
+          - `Everyone with access`
+        - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
+          - `Disabled`
 
 1. Configure the following options for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 
@@ -624,11 +618,8 @@ In order to push images to this location:
 
    1. [`CI/CD` environment variables](../../ci/variables/_index.md)
 
-      {{< alert type="note" >}}
-
-      It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
-
-      {{< /alert >}}
+      > [!note]
+      > It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
 
       | Key                     | Value                                                                       |
       |-------------------------|-----------------------------------------------------------------------------|

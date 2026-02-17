@@ -5,7 +5,13 @@ module MergeRequests
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(merge_request, skip_updating_state: false, skip_system_note: false, skip_notification: false)
       return unless merge_request.approved_by?(current_user)
+
       return if merge_request.merged?
+
+      merge_request.log_approval_deletion_on_merged_or_locked_mr(
+        source: 'MergeRequests::RemoveApprovalService',
+        current_user: current_user
+      )
 
       # paranoid protection against running wrong deletes
       return unless merge_request.id && current_user.id

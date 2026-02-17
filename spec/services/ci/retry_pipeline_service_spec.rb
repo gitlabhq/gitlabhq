@@ -29,6 +29,13 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
     end
 
+    it 'clears the finished_at timestamp' do
+      pipeline.update!(finished_at: 1.hour.ago)
+
+      expect { service.execute(pipeline) }
+        .to change { pipeline.reload.finished_at }.to(nil)
+    end
+
     context 'when there are already retried jobs present' do
       before do
         create_build('rspec', :canceled, build_stage, retried: true)
@@ -385,6 +392,29 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
 
         it 'assigns the current user to the source bridge' do
           expect { service.execute(pipeline) }.to change { bridge.reload.user }.to(user)
+        end
+
+        context 'when the bridge record has been modified by another process' do
+          before do
+            allow(pipeline).to receive(:reset_source_bridge!).and_raise(ActiveRecord::StaleObjectError)
+          end
+
+          it 'returns an error response' do
+            response = service.execute(pipeline)
+
+            expect(response.http_status).to eq(:conflict)
+            expect(response.message).to eq('Error updating stale job')
+          end
+
+          context 'when the rescue_stale_object_errors_in_pipeline_processing feature flag is disabled' do
+            before do
+              stub_feature_flags(rescue_stale_object_errors_in_pipeline_processing: false)
+            end
+
+            it 'raises an error' do
+              expect { service.execute(pipeline) }.to raise_error(ActiveRecord::StaleObjectError)
+            end
+          end
         end
       end
     end

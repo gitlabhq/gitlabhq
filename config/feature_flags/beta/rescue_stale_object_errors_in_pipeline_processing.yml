@@ -1,0 +1,10 @@
+---
+name: rescue_stale_object_errors_in_pipeline_processing
+description: Rescue `StaleObjectError` in pipeline processing services
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/573539
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217895
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585622
+milestone: '18.9'
+group: group::pipeline execution
+type: beta
+default_enabled: true

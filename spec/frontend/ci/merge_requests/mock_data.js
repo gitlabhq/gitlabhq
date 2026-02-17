@@ -127,13 +127,15 @@ export const generateMockPipeline = ({
   },
 });
 
-const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', count = 1 } = {}) => {
+const createMergeRequestPipelines = ({
+  mergeRequestEventType = 'MERGE_TRAIN',
+  count = 1,
+  status = 'SKIPPED',
+} = {}) => {
   const pipelines = [];
 
-  for (let i = 0; i < count; i += 1) {
-    pipelines.push(
-      generateMockPipeline({ id: String(i), mergeRequestEventType, status: 'SKIPPED' }),
-    );
+  for (let i = 1; i <= count; i += 1) {
+    pipelines.push(generateMockPipeline({ id: String(i), mergeRequestEventType, status }));
   }
 
   return {
@@ -150,7 +152,11 @@ const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', co
   };
 };
 
-export const generateMRPipelinesResponse = ({ mergeRequestEventType = '', count = 1 } = {}) => {
+export const generateMRPipelinesResponse = ({
+  mergeRequestEventType = '',
+  count = 1,
+  status = 'SKIPPED',
+} = {}) => {
   return {
     data: {
       project: {
@@ -163,9 +169,371 @@ export const generateMRPipelinesResponse = ({ mergeRequestEventType = '', count 
           iid: '1',
           title: 'Fix everything',
           webPath: '/merge_requests/1',
-          pipelines: createMergeRequestPipelines({ count, mergeRequestEventType }),
+          pipelines: createMergeRequestPipelines({ count, mergeRequestEventType, status }),
         },
       },
     },
   };
 };
+
+export const mockPipelineUpdateResponse = {
+  data: {
+    ciPipelineStatusUpdated: {
+      id: 'gid://gitlab/Ci::Pipeline/701',
+      iid: '63',
+      detailedStatus: {
+        id: 'running-701-701',
+        icon: 'status_running',
+        text: 'Running',
+        detailsPath: '/root/ci-project/-/pipelines/880',
+        __typename: 'DetailedStatus',
+        name: 'RUNNING',
+        label: 'running',
+        hasDetails: true,
+      },
+      createdAt: '2025-12-08T20:06:34Z',
+      finishedAt: null,
+      duration: null,
+      name: 'Ruby 3.0 master branch pipeline',
+      ref: 'main',
+      refPath: 'refs/heads/main',
+      refText:
+        'In <a class="ref-container gl-link" href="/root/ci-project/-/commits/main">main</a>',
+      commit: {
+        id: 'gid://gitlab/Commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
+        name: 'Edit .gitlab-ci.yml',
+        sha: '577d7917b5d80ef8cd8e543186aae41ccd870022',
+        shortId: '577d7917',
+        title: 'Edit .gitlab-ci.yml',
+        webUrl:
+          'http://gdk.test:3000/root/ci-project/-/commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
+        author: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80&d=identicon',
+          webPath: '/root',
+          name: 'Administrator',
+          __typename: 'UserCore',
+        },
+        __typename: 'Commit',
+      },
+      user: {
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        webPath: '/root',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80&d=identicon',
+        __typename: 'UserCore',
+      },
+      source: 'web',
+      latest: true,
+      yamlErrors: false,
+      yamlErrorMessages: null,
+      failureReason: null,
+      configSource: 'REPOSITORY_SOURCE',
+      stuck: false,
+      type: 'branch',
+      path: '/root/ci-project/-/pipelines/880',
+      retryable: false,
+      cancelable: true,
+      stages: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Ci::Stage/870',
+            name: 'build',
+            detailedStatus: {
+              id: 'running-870-870',
+              icon: 'status_running',
+              text: 'Running',
+              detailsPath: '/root/ci-project/-/pipelines/880#build',
+              __typename: 'DetailedStatus',
+              tooltip: 'running',
+            },
+            __typename: 'CiStage',
+          },
+          {
+            id: 'gid://gitlab/Ci::Stage/871',
+            name: 'test',
+            detailedStatus: {
+              id: 'created-871-871',
+              icon: 'status_created',
+              text: 'Created',
+              detailsPath: '/root/ci-project/-/pipelines/880#test',
+              __typename: 'DetailedStatus',
+              tooltip: 'created',
+            },
+            __typename: 'CiStage',
+          },
+          {
+            id: 'gid://gitlab/Ci::Stage/872',
+            name: 'deploy',
+            detailedStatus: {
+              id: 'created-872-872',
+              icon: 'status_created',
+              text: 'Created',
+              detailsPath: '/root/ci-project/-/pipelines/880#deploy',
+              __typename: 'DetailedStatus',
+              tooltip: 'created',
+            },
+            __typename: 'CiStage',
+          },
+        ],
+        __typename: 'CiStageConnection',
+      },
+      mergeRequest: null,
+      mergeRequestEventType: null,
+      project: {
+        id: 'gid://gitlab/Project/19',
+        fullPath: 'root/ci-project',
+        __typename: 'Project',
+      },
+      hasManualActions: false,
+      hasScheduledActions: false,
+      failedJobsCount: 0,
+      __typename: 'Pipeline',
+      downstream: {
+        nodes: [],
+        __typename: 'PipelineConnection',
+      },
+    },
+  },
+};
+
+export const mockPipelineUpdateResponseEmpty = {
+  data: {
+    ciPipelineStatusUpdated: null,
+  },
+};
+
+export const mockPipelines = [
+  {
+    id: 'gid://gitlab/Ci::Pipeline/701',
+    iid: '63',
+    detailedStatus: {
+      id: 'success-701-701',
+      icon: 'status_warning',
+      label: 'passed with warnings',
+      text: 'Warning',
+      detailsPath: '/root/ci-project/-/pipelines/701',
+      hasDetails: true,
+      __typename: 'DetailedStatus',
+      name: 'SUCCESS_WITH_WARNINGS',
+    },
+    createdAt: '2025-09-25T16:23:33Z',
+    finishedAt: '2025-09-25T16:24:02Z',
+    duration: 17,
+    failedJobsCount: 0,
+    name: 'Ruby 3.0 master branch pipeline',
+    ref: 'main',
+    refPath: 'refs/heads/main',
+    refText:
+      'For \u003ca class="ref-container gl-link" href="/root/ci-project/-/commits/main"\u003emain\u003c/a\u003e',
+    commit: {
+      id: 'gid://gitlab/Commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      name: 'Update .gitlab-ci.yml file',
+      sha: 'ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      shortId: 'ab708cdc',
+      title: 'Update .gitlab-ci.yml file',
+      webUrl:
+        'http://gdk.test:3000/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      author: {
+        id: 'gid://gitlab/User/1',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80\u0026d=identicon',
+        webPath: '/root',
+        name: 'Administrator',
+        __typename: 'UserCore',
+      },
+      __typename: 'Commit',
+    },
+    user: {
+      id: 'gid://gitlab/User/1',
+      name: 'Administrator',
+      webPath: '/root',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80\u0026d=identicon',
+      __typename: 'UserCore',
+    },
+    source: 'schedule',
+    latest: true,
+    yamlErrors: false,
+    yamlErrorMessages: '',
+    failureReason: null,
+    configSource: 'REPOSITORY_SOURCE',
+    stuck: false,
+    type: 'branch',
+    path: '/root/ci-project/-/pipelines/701',
+    retryable: true,
+    cancelable: false,
+    downstream: { __typename: 'PipelineConnection', nodes: [] },
+    stages: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Ci::Stage/429',
+          name: 'build',
+          detailedStatus: {
+            id: 'success-429-429',
+            icon: 'status_success',
+            text: 'Passed',
+            detailsPath: '/root/ci-project/-/pipelines/701#build',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+        {
+          id: 'gid://gitlab/Ci::Stage/431',
+          name: 'test',
+          detailedStatus: {
+            id: 'success-431-431',
+            icon: 'status_warning',
+            text: 'Warning',
+            detailsPath: '/root/ci-project/-/pipelines/701#test',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+        {
+          id: 'gid://gitlab/Ci::Stage/434',
+          name: 'deploy',
+          detailedStatus: {
+            id: 'success-434-434',
+            icon: 'status_success',
+            text: 'Passed',
+            detailsPath: '/root/ci-project/-/pipelines/701#deploy',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+      ],
+      __typename: 'CiStageConnection',
+    },
+    mergeRequest: null,
+    mergeRequestEventType: null,
+    project: {
+      id: 'gid://gitlab/Project/19',
+      fullPath: 'root/ci-project',
+      __typename: 'Project',
+    },
+    hasManualActions: false,
+    hasScheduledActions: false,
+    __typename: 'Pipeline',
+  },
+  {
+    id: 'gid://gitlab/Ci::Pipeline/699',
+    iid: '62',
+    detailedStatus: {
+      id: 'success-699-699',
+      icon: 'status_warning',
+      label: 'passed with warnings',
+      text: 'Warning',
+      detailsPath: '/root/ci-project/-/pipelines/699',
+      hasDetails: true,
+      __typename: 'DetailedStatus',
+      name: 'SUCCESS_WITH_WARNINGS',
+    },
+    createdAt: '2025-09-18T15:04:38Z',
+    finishedAt: '2025-09-18T15:04:59Z',
+    duration: 16,
+    failedJobsCount: 0,
+    name: 'Ruby 3.0 master branch pipeline',
+    ref: 'main',
+    refPath: 'refs/heads/main',
+    refText:
+      'For \u003ca class="ref-container gl-link" href="/root/ci-project/-/commits/main"\u003emain\u003c/a\u003e',
+    commit: {
+      id: 'gid://gitlab/Commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      name: 'Update .gitlab-ci.yml file',
+      sha: 'ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      shortId: 'ab708cdc',
+      title: 'Update .gitlab-ci.yml file',
+      webUrl:
+        'http://gdk.test:3000/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      author: {
+        id: 'gid://gitlab/User/1',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80\u0026d=identicon',
+        webPath: '/root',
+        name: 'Administrator',
+        __typename: 'UserCore',
+      },
+      __typename: 'Commit',
+    },
+    user: {
+      id: 'gid://gitlab/User/1',
+      name: 'Administrator',
+      webPath: '/root',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80\u0026d=identicon',
+      __typename: 'UserCore',
+    },
+    source: 'web',
+    latest: true,
+    yamlErrors: false,
+    yamlErrorMessages: '',
+    failureReason: null,
+    configSource: 'REPOSITORY_SOURCE',
+    stuck: false,
+    type: 'branch',
+    path: '/root/ci-project/-/pipelines/699',
+    retryable: true,
+    cancelable: false,
+    downstream: { __typename: 'PipelineConnection', nodes: [] },
+    stages: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Ci::Stage/424',
+          name: 'build',
+          detailedStatus: {
+            id: 'success-424-424',
+            icon: 'status_success',
+            text: 'Passed',
+            detailsPath: '/root/ci-project/-/pipelines/699#build',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+        {
+          id: 'gid://gitlab/Ci::Stage/425',
+          name: 'test',
+          detailedStatus: {
+            id: 'success-425-425',
+            icon: 'status_warning',
+            text: 'Warning',
+            detailsPath: '/root/ci-project/-/pipelines/699#test',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+        {
+          id: 'gid://gitlab/Ci::Stage/426',
+          name: 'deploy',
+          detailedStatus: {
+            id: 'success-426-426',
+            icon: 'status_success',
+            text: 'Passed',
+            detailsPath: '/root/ci-project/-/pipelines/699#deploy',
+            __typename: 'DetailedStatus',
+            tooltip: 'passed',
+          },
+          __typename: 'CiStage',
+        },
+      ],
+      __typename: 'CiStageConnection',
+    },
+    mergeRequest: null,
+    mergeRequestEventType: null,
+    project: {
+      id: 'gid://gitlab/Project/19',
+      fullPath: 'root/ci-project',
+      __typename: 'Project',
+    },
+    hasManualActions: false,
+    hasScheduledActions: false,
+    __typename: 'Pipeline',
+  },
+];

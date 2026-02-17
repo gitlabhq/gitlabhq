@@ -37,7 +37,7 @@ It is possible to run end-to-end tests for a merge request by triggering the `e2
 
 **This runs end-to-end tests against a custom EE (with an Ultimate license) Docker image built from your merge request's changes.**
 
-Manual action that starts end-to-end tests is also available in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs.html#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
+Manual action that starts end-to-end tests is also available in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs/#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
 
 #### With merged results pipelines
 
@@ -111,11 +111,8 @@ Examples could include:
 
 Skip running end-to-end tests by applying the `pipeline:skip-e2e` label to the merge request.
 
-{{< alert type="warning" >}}
-
-There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
-
-{{< /alert >}}
+> [!warning]
+> There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
 
 #### Dynamic parallel job scaling
 

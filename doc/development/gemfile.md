@@ -163,11 +163,8 @@ Read more about [Gems development guidelines](gems.md).
 
    You should also update the `@rails/actioncable` NPM package that follows the current version of Rails.
 
-{{< alert type="note" >}}
-
-When upgrading to the next patch release, you can skip to step 5 and upgrade the Gemfiles and NPM packages directly.
-
-{{< /alert >}}
+> [!note]
+> When upgrading to the next patch release, you can skip to step 5 and upgrade the Gemfiles and NPM packages directly.
 
 ## Upgrading dependencies because of vulnerabilities
 

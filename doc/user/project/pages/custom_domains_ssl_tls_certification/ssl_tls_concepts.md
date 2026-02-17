@@ -18,13 +18,10 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
-{{< alert type="note" >}}
-
-Certificates are **not** required to add to your custom
-(sub)domain on your GitLab Pages project, though they are
-highly recommendable.
-
-{{< /alert >}}
+> [!note]
+> Certificates are **not** required to add to your custom
+> (sub)domain on your GitLab Pages project, though they are
+> highly recommendable.
 
 Let's start with an introduction to the importance of HTTPS.
 
@@ -84,4 +81,4 @@ source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_
 Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/application-services/products/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
 Their certs are valid up to 15 years. See the tutorial on
-[how to add a Cloudflare Certificate to your GitLab Pages website](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/).
+[how to add a Cloudflare Certificate to your GitLab Pages website](https://about.gitlab.com/blog/setting-up-gitlab-pages-with-cloudflare-certificates/).

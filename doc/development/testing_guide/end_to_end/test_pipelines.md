@@ -123,7 +123,7 @@ export default function () {
 
 ```
 
-You can currently give any value for `TTFB_THRESHOLD` and `RPS_THRESHOLD` as they are currenlty not being used for reporting and will be removed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/75>
+You can currently give any value for `TTFB_THRESHOLD` and `RPS_THRESHOLD` as they are currently not being used for reporting and will be removed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/75>
 
 You can refer to other test present in [`qa/performance_test/k6_test`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/performance_test/k6_test?ref_type=heads) to write your tests.
 

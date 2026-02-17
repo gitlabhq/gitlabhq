@@ -282,12 +282,12 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
       it 'creates private subgroup' do
         fill_in 'Subgroup name', with: 'bar'
+        wait_for_requests
         click_button 'foo'
+        find('li[role="option"]', text: 'foo2').click
 
-        expect(page).to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo2')
-        expect(page).not_to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo3')
+        expect(page).not_to have_selector('li[role="option"]', text: 'foo3')
 
-        click_button 'foo2'
         click_button 'Create subgroup'
 
         expect(page).to have_current_path(group_path('foo2/bar'), ignore_query: true)
@@ -369,7 +369,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
       expect { remove_with_confirm('Delete', group.path) }.to change {
         group.reload.self_deletion_scheduled?
       }.from(false).to(true)
-      expect(page).to have_content "pending deletion"
+      expect(page).to have_content "permanently deleted"
     end
   end
 
@@ -564,6 +564,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
-    click_button 'Confirm'
+    click_button 'Yes, delete group'
   end
 end

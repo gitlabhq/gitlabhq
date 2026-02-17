@@ -1,0 +1,31 @@
+trigger-ai-gateway-tagging:
+  stage: ai-gateway
+  # We need the tagging process to be executed even if other jobs in the gitlab pipeline fails
+  needs: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
+  before_script:
+    - apk add --no-cache curl bash
+  script:
+    - bash scripts/aigw-tagging.sh
+  extends:
+    - .ai-gateway:rules:tagging
+  allow_failure: true
+
+# Preparation for DAP feature tests in core feature pages
+# See https://docs.gitlab.com/development/testing_guide/testing_ai_features/ for more information.
+ai-gateway:update-test-branch:
+  extends:
+    - .ai-gateway:rules:update-test-branch
+  stage: ai-gateway
+  needs: []
+  variables:
+    TEST_BRANCH_NAME: "aigw%2Ftest-branch"
+  script:
+    - |
+      curl --request DELETE \
+      --header "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_AI_GATEWAY_UPDATE_TEST_BRANCH" \
+      --url "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/branches/$TEST_BRANCH_NAME"
+    - |
+      curl --request POST \
+      --header "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_AI_GATEWAY_UPDATE_TEST_BRANCH" \
+      --url "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/branches?branch=$TEST_BRANCH_NAME&ref=$CI_DEFAULT_BRANCH"

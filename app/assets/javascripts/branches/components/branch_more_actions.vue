@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', {
+      eventHub.$emit('open-modal', {
         branchName: this.branchName,
         defaultBranchName: this.defaultBranchName,
         deletePath: this.deletePath,

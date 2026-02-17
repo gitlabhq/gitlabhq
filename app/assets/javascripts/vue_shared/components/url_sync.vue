@@ -13,6 +13,10 @@ export const URL_MERGE_PARAMS_STRATEGY = 'merge';
  * the update is done by updating the query property or
  * by using updateQuery method in the scoped slot.
  * note: do not use both prop and updateQuery method.
+ *
+ * When a `router` prop is provided (Vue Router instance), query updates
+ * will use router.push/replace instead of direct history manipulation.
+ * This ensures compatibility with Vue Router's navigation system.
  */
 export default normalizeRender({
   props: {
@@ -34,6 +38,11 @@ export default normalizeRender({
       validator: (value) =>
         [HISTORY_PUSH_UPDATE_METHOD, HISTORY_REPLACE_UPDATE_METHOD].includes(value),
     },
+    useRouter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   watch: {
     query: {
@@ -45,18 +54,78 @@ export default normalizeRender({
         }
       },
     },
+    '$route.query': {
+      deep: true,
+      handler(newQuery, oldQuery) {
+        if (this.useRouter && JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+          this.$emit('popstate', { state: { query: newQuery } });
+        }
+      },
+    },
   },
   mounted() {
-    window.addEventListener('popstate', this.handlePopState);
+    if (!this.useRouter) {
+      window.addEventListener('popstate', this.handlePopState);
+    }
   },
   beforeDestroy() {
-    window.removeEventListener('popstate', this.handlePopState);
+    if (!this.useRouter) {
+      window.removeEventListener('popstate', this.handlePopState);
+    }
   },
   methods: {
     handlePopState(event) {
       this.$emit('popstate', event);
     },
     updateQuery(newQuery) {
+      if (this.useRouter) {
+        this.updateQueryViaRouter(newQuery);
+      } else {
+        this.updateQueryViaHistory(newQuery);
+      }
+    },
+    updateQueryViaRouter(newQuery) {
+      const currentQuery = this.$route?.query || {};
+      let mergedQuery;
+
+      if (this.urlParamsUpdateStrategy === URL_SET_PARAMS_STRATEGY) {
+        mergedQuery = { ...newQuery };
+      } else {
+        const normalizedCurrentQuery = {};
+        Object.keys(currentQuery).forEach((key) => {
+          const normalizedKey = key.replace(/\[\]$/, '');
+          normalizedCurrentQuery[normalizedKey] = currentQuery[key];
+        });
+        mergedQuery = { ...normalizedCurrentQuery, ...newQuery };
+      }
+
+      const finalQuery = {};
+      Object.keys(mergedQuery).forEach((key) => {
+        const value = mergedQuery[key];
+        if (value === null || value === undefined) {
+          return;
+        }
+        if (Array.isArray(value)) {
+          finalQuery[`${key}[]`] = value;
+        } else {
+          finalQuery[key] = value;
+        }
+      });
+
+      if (JSON.stringify(currentQuery) === JSON.stringify(finalQuery)) {
+        return;
+      }
+
+      const navigationMethod =
+        this.historyUpdateMethod === HISTORY_PUSH_UPDATE_METHOD ? 'push' : 'replace';
+
+      this.$router[navigationMethod]({ query: finalQuery }).catch((err) => {
+        if (err.name !== 'NavigationDuplicated') {
+          throw err;
+        }
+      });
+    },
+    updateQueryViaHistory(newQuery) {
       const url =
         this.urlParamsUpdateStrategy === URL_SET_PARAMS_STRATEGY
           ? setUrlParams(this.query, {

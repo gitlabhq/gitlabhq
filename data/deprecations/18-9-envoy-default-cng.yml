@@ -1,0 +1,32 @@
+- title: "Support for NGINX Ingress"
+  # The milestones for the deprecation announcement, and the removal.
+  announcement_milestone: "18.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # window:  # Does not impact .com so no rollout window.
+  reporter: clemensbeck  # The GitLab username of the person reporting the change
+  stage: systems  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226
+  check_impact:  # Impacted instances should be easy to assess from descritpion - Link to a resource, like a tool, issue, docs section, or KB article, that has *concrete steps* for customers to assess the impact of this change.
+  impact: medium # Can be one of: [critical, high, medium, low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?maturity=complete&scope=instance&identification_complexity=manual&additional_complexity=no&migration_complexity=minor_manual&pipeline_impact=none&base_impact=none&compliance_impact=none&availability_impact=minor&API_impact=none&authorization_impact=none # Use the impact calculator and paste the full url in here. It will deep link to the configuration. https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact_offering: self-managed # The offering this impacts. Can be one or a combination of: [GitLab.com, Dedicated, self-managed]
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The GitLab Helm chart currently bundles NGINX Ingress as the default networking component. With
+    NGINX Ingress reaching end-of-life in March 2026, we are transitioning to Gateway API with Envoy
+    Gateway.
+
+    Starting with GitLab 19.0, Gateway API and the bundled Envoy Gateway become the default configuration.
+    If migration to Envoy Gateway isn't feasible for your deployment, you can explicitly re-enable the
+    bundled NGINX Ingress, which remains available until its planned removal in GitLab 20.0.
+
+    This change does not impact the NGINX in the Linux package, or GitLab Helm chart and GitLab Operator instances
+    that use an externally managed Ingress or Gateway API controller.
+
+    We will provide best-effort security maintenance for our forked NGINX Ingress chart and builds until
+    the full removal. To ensure a smooth transition, we recommend planning your migration to the provided
+    Gateway API solution or an externally managed Ingress controller.

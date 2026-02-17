@@ -37,7 +37,6 @@ If you already know what you want to do, Chat can do the work for you.
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}

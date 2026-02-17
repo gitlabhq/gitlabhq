@@ -1,0 +1,5 @@
+---
+name: read_commit_signature
+description: Grants the ability to read commit signatures
+boundaries:
+  - project

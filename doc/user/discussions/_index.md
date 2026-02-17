@@ -69,12 +69,9 @@ When you mention someone, in a work item or merge request, they become a [partic
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Avoid mentioning `@all` in comments and descriptions. `@all` mentions more than
 just the participants of the project, issue, or merge request, but all members
@@ -115,7 +112,7 @@ When you add comments to a merge request diff, these comments persist, even when
 To add a commit diff comment:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**, and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
    - To comment on an entire file, find the file you want to comment on and,
@@ -136,14 +133,11 @@ The comment displays on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Code** > **Commits** page.
 
-{{< alert type="note" >}}
-
-When your comment contains a reference to a commit included in the merge request,
-it's converted to a link in the context of the merge request.
-For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
-`https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
-
-{{< /alert >}}
+> [!note]
+> When your comment contains a reference to a commit included in the merge request,
+> it's converted to a link in the context of the merge request.
+> For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
+> `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
 
 ## Reply to a comment by sending email
 
@@ -165,7 +159,7 @@ Email replies that create standard or threaded comments are subject to a two yea
 ## Edit a comment
 
 You can edit your own comment at any time.
-Anyone with at least the Maintainer role can also edit a comment made by someone else.
+Anyone with the Maintainer or Owner role can also edit a comment made by someone else.
 
 To edit a comment:
 
@@ -190,8 +184,8 @@ When you do, only project members can add and edit comments.
 
 Prerequisites:
 
-- In merge requests, you must have at least the Developer role.
-- In issues, you must have at least the Planner role.
+- In merge requests, you must have the Developer, Maintainer, or Owner role.
+- In issues, you must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To lock an issue or merge request:
 
@@ -214,8 +208,8 @@ If the item was not previously confidential, users without access may appear as 
 Who can be notified:
 
 - Users assigned to the item, regardless of role.
-- Users who authored the item, if they have at least the Guest role.
-- Users with at least a Planner role in the group or project the item belongs to.
+- Users who authored the item, if they have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
+- Users with the Planner, Reporter, Developer, Maintainer, or Owner role in the group or project the item belongs to.
 
 ## Add an internal note
 
@@ -239,7 +233,7 @@ Internal notes differ from public comments:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add an internal note:
 
@@ -304,7 +298,7 @@ When you reply to a standard comment, you create a thread.
 
 Prerequisites:
 
-- You must have at least the Guest role.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - You must be in an issue, merge request, or epic. Threads in commits and snippets are not supported.
 
 To create a thread by replying to a comment:
@@ -322,7 +316,7 @@ You can create a thread without replying to a standard comment.
 
 Prerequisites:
 
-- You must have at least the Guest role.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - You must be in an issue, merge request, commit, or snippet.
 
 To create a thread:
@@ -338,12 +332,14 @@ To create a thread:
 
 {{< history >}}
 
-- Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `resolvable_issue_threads`. Disabled by default.
-- Resolvable threads for issues [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
-- Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
+- Resolvable threads for issues:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `resolvable_issue_threads`. Disabled by default.
+  - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
-- Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
-- Resolvable threads for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
+- Resolvable threads for epics:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -354,7 +350,7 @@ Resolved threads can be reopened later by any user who has permission to resolve
 Prerequisites:
 
 - You must be in an epic, issue, task, objective, key result, or merge request.
-- You must have at least the Developer role or be the author of the issue or merge request.
+- You must have the Developer, Maintainer, or Owner role or be the author of the issue or merge request.
 
 To resolve a thread:
 
@@ -384,7 +380,7 @@ such as:
 
 {{< collapsible title="Model information" >}}
 
-- LLM for GitLab.com, GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 4.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
+- [Default LLM](../gitlab_duo/model_selection.md#default-models)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -393,7 +389,7 @@ such as:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags/_index.md) named `summarize_notes_with_duo`. Disabled by default.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and changed to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags/_index.md) named `summarize_notes_with_duo`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Changed to include Premium in GitLab 18.0.

@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
         }.by(1001) # the +1 is because the sequence has is_called = true
       end
 
-      it 'will still increase the value of sequences that have is_called = False' do
+      it 'increases the value of sequences that have is_called = False' do
         # see `is_called`: https://www.postgresql.org/docs/12/functions-sequence.html
         # choosing a new arbitrary value for the sequence
         new_value = last_value_of_sequence(ApplicationRecord.connection, main_org_sequence_name) + 1000

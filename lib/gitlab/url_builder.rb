@@ -14,7 +14,6 @@ module Gitlab
       # Using a case statement here is preferable for readability and maintainability.
       # See discussion in https://gitlab.com/gitlab-org/gitlab/-/issues/217397
       #
-      # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/CyclomaticComplexity
       def build(object, **options)
         # Objects are sometimes wrapped in a BatchLoader instance
@@ -31,10 +30,9 @@ module Gitlab
           compare_url(object, **options)
         when Group
           instance.group_canonical_url(object, **options)
-        when WorkItem
-          instance.work_item_url(object, **options)
+        # This also covers WorkItem due to inheritance
         when Issue
-          instance.issue_url(object, **options)
+          instance.work_item_url(object, **options)
         when MergeRequest
           instance.merge_request_url(object, **options)
         when Milestone
@@ -71,7 +69,6 @@ module Gitlab
           raise NotImplementedError, "No URL builder defined for #{object.inspect}"
         end
       end
-      # rubocop:enable Metrics/AbcSize
       # rubocop:enable Metrics/CyclomaticComplexity
 
       def board_url(board, **options)
@@ -106,7 +103,7 @@ module Gitlab
 
           instance.project_commit_url(note.project, note.commit_id, anchor: dom_id(note), **options)
         elsif note.for_issue?
-          instance.issue_url(note.noteable, anchor: dom_id(note), **options)
+          instance.work_item_url(note.noteable, anchor: dom_id(note), **options)
         elsif note.for_merge_request?
           instance.merge_request_url(note.noteable, anchor: dom_id(note), **options)
         elsif note.for_snippet?
@@ -163,10 +160,7 @@ module Gitlab
       def package_url(package, **options)
         project = package.project
 
-        if package.terraform_module?
-          return instance.project_infrastructure_registry_url(project, package,
-**options)
-        end
+        return instance.project_infrastructure_registry_url(project, package, **options) if package.terraform_module?
 
         instance.project_package_url(project, package, **options)
       end

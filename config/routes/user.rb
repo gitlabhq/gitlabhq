@@ -100,6 +100,8 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :projects
     get :contributed, as: :contributed_projects
     get :starred, as: :starred_projects
+    get 'projects/contributed', to: 'users#projects', as: :projects_contributed
+    get 'projects/starred', to: 'users#projects', as: :projects_starred
     get :snippets
     get :followers
     get :following

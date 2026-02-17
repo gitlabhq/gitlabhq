@@ -20,13 +20,10 @@ For more information about this feature, see also [DevOps adoption by group](../
 
 ## DevOps score
 
-{{< alert type="note" >}}
-
-To view the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
-DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
-If Service Ping is not activated, the DevOps score value is 0.
-
-{{< /alert >}}
+> [!note]
+> To view the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
+> DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
+> If Service Ping is not activated, the DevOps score value is 0.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 
@@ -45,6 +42,10 @@ before this feature becomes available.
 
 ## View DevOps adoption
 
+Prerequisites:
+
+- Administrator access.
+
 To view DevOps adoption for your instance:
 
 1. In the upper-right corner, select **Admin**.
@@ -54,7 +55,7 @@ To view DevOps adoption for your instance:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To add a group to DevOps adoption:
 
@@ -66,7 +67,7 @@ To add a group to DevOps adoption:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To remove a group from DevOps adoption:
 

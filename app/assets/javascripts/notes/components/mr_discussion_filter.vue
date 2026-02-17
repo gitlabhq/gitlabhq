@@ -162,19 +162,24 @@ export default {
         @select-all="selectAll"
         @select="select"
       >
-        <template #toggle>
-          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none !gl-border-r-0">
-            <gl-sprintf v-if="multipleSelected" :message="$options.multipleSelectedPhrase">
-              <template #length>{{ mergeRequestFilters.length - 1 }}</template>
-              <template #strong>
-                <strong>{{ firstSelected.text }}</strong>
-              </template>
-            </gl-sprintf>
-            <gl-sprintf v-else :message="selectedFilterText">
-              <template #strong="{ content }">
-                <strong>{{ content }}</strong>
-              </template>
-            </gl-sprintf>
+        <template #toggle="{ accessibilityAttributes: { id, ...accessibilityAttributes } }">
+          <gl-button
+            class="!gl-rounded-br-none !gl-rounded-tr-none !gl-border-r-0"
+            v-bind="accessibilityAttributes"
+          >
+            <span :id="id">
+              <gl-sprintf v-if="multipleSelected" :message="$options.multipleSelectedPhrase">
+                <template #length>{{ mergeRequestFilters.length - 1 }}</template>
+                <template #strong>
+                  <strong>{{ firstSelected.text }}</strong>
+                </template>
+              </gl-sprintf>
+              <gl-sprintf v-else :message="selectedFilterText">
+                <template #strong="{ content }">
+                  <strong>{{ content }}</strong>
+                </template>
+              </gl-sprintf>
+            </span>
             <gl-icon name="chevron-down" />
           </gl-button>
         </template>

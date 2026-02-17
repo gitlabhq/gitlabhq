@@ -6,6 +6,10 @@ module API
       project_id: %r{[0-9]+}
     ).freeze
 
+    def self.resource_type
+      :group
+    end
+
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
@@ -42,7 +46,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[debian_packages]
+          tags %w[packages]
         end
 
         get 'pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do

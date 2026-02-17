@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundOperation::Executor, '#perform', feature_category: :database do
-  subject(:perform) { described_class.new(connection: connection).perform(job) }
+  subject(:perform) { described_class.new(connection: connection, metrics: metrics).perform(job) }
 
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:job_class) { Class.new(Gitlab::Database::BackgroundOperation::Job) }
   let(:sub_batch_exception) { Gitlab::Database::BackgroundOperation::Executor::SubBatchTimeoutError }
+  let(:metrics) do
+    instance_double(Gitlab::Database::BackgroundOperation::Observability::PrometheusMetrics, track: true)
+  end
 
   let_it_be(:pause_ms) { 250 }
   let_it_be(:worker) { create(:background_operation_worker, :active, job_arguments: [:id, :other_id]) }
@@ -58,6 +61,13 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Executor, '#perform', feat
     expect(job.attempts).to eq(1)
     expect(job.started_at).to eq(Time.current)
     expect(job.metrics).to eq(test_metrics)
+  end
+
+  it 'track metrics to prometheus' do
+    expect(worker_instance).to receive(:perform).with(no_args)
+    expect(metrics).to receive(:track).with(job)
+
+    perform
   end
 
   context 'when running a job that failed previously', :freeze_time do

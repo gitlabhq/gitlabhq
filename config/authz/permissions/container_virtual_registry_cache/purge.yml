@@ -1,0 +1,5 @@
+---
+name: purge_container_virtual_registry_cache
+description: Grants the ability to purge container virtual registry cache
+boundaries:
+  - group

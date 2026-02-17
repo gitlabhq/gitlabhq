@@ -31,6 +31,11 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
         end
 
+        it_behaves_like 'authorizing granular token permissions', :read_resource_access_token do
+          let(:boundary_object) { resource }
+          let(:request) { get api("/#{source_type}s/#{resource_id}/access_tokens", personal_access_token: pat) }
+        end
+
         it "gets a list of all access tokens for the specified #{source_type}" do
           get_tokens
 
@@ -281,6 +286,13 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context "when the user has valid permissions" do
+        it_behaves_like 'authorizing granular token permissions', :read_resource_access_token do
+          let(:boundary_object) { resource }
+          let(:request) do
+            get api("/#{source_type}s/#{resource_id}/access_tokens/#{token_id}", personal_access_token: pat)
+          end
+        end
+
         it "gets the #{source_type} access token from the #{source_type}" do
           get_token
 
@@ -370,18 +382,27 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
     end
 
     context "DELETE #{source_type}s/:id/access_tokens/:token_id", :sidekiq_inline do
-      subject(:delete_token) { delete api("/#{source_type}s/#{resource_id}/access_tokens/#{token_id}", user) }
+      let(:path) { "/#{source_type}s/#{resource_id}/access_tokens/#{token_id}" }
 
       let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
       let_it_be(:token) { create(:personal_access_token, user: project_bot) }
       let_it_be(:resource_id) { resource.id }
       let_it_be(:token_id) { token.id }
 
+      subject(:delete_token) { delete api(path, user) }
+
       before do
         resource.add_maintainer(project_bot)
       end
 
       context "when the user has valid permissions" do
+        it_behaves_like 'authorizing granular token permissions', :delete_resource_access_token do
+          let(:boundary_object) { resource }
+          let(:request) do
+            delete api(path, personal_access_token: pat)
+          end
+        end
+
         it "deletes the #{source_type} access token from the #{source_type}" do
           delete_token
 
@@ -453,16 +474,24 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       let(:expires_at) { 1.month.from_now }
       let(:access_level) { 20 }
 
+      let(:path) { "/#{source_type}s/#{resource_id}/access_tokens" }
       let(:params) do
         base_params.merge(expires_at: expires_at, access_level: access_level)
       end
 
-      subject(:create_token) { post api("/#{source_type}s/#{resource_id}/access_tokens", user), params: params }
+      subject(:create_token) { post api(path, user), params: params }
 
       context "when the user has valid permissions" do
         let_it_be(:resource_id) { resource.id }
 
         context "with valid params" do
+          it_behaves_like 'authorizing granular token permissions', :create_resource_access_token do
+            let(:boundary_object) { resource }
+            let(:request) do
+              post api(path, personal_access_token: pat), params: params
+            end
+          end
+
           context "with full params" do
             it "creates a #{source_type} access token with the user-provided params", :aggregate_failures do
               create_token
@@ -674,6 +703,11 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['token']).not_to eq(token.token)
           expect(json_response['expires_at']).to eq(1.week.from_now.to_date.iso8601)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :rotate_resource_access_token do
+          let(:boundary_object) { resource }
+          let(:request) { post api(path, personal_access_token: pat), params: params }
         end
       end
 

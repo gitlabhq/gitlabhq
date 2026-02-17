@@ -657,7 +657,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
   describe '#change_task_status' do
     let(:noteable) { create(:issue, project: project) }
-    let(:task)     { double(:task, complete?: true, text: 'task', source: ' task') }
+    let(:task)     { double(:task, complete?: true, text: 'task', source: ' task', task_table_item?: false) }
 
     subject { service.change_task_status(task) }
 
@@ -692,6 +692,39 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it 'does not leak Markdown into the system note' do
         expect(subject.note).to eq("marked the checklist item **task with\\*\\* Markdown** as completed")
+      end
+    end
+
+    context 'with task table items' do
+      let(:markdown_before) do
+        <<~MARKDOWN
+          My task table:
+
+          |     | Action       | When    |
+          | --- | ------------ | ------- |
+          | [ ] | Do something | Soon    |
+          | [x] | Do nothing   | **Now** |
+        MARKDOWN
+      end
+
+      let(:markdown_after) do
+        <<~MARKDOWN
+            My task table, with an extra newline to
+            shift sourcepos:
+
+            |     | Action       | When     |
+            | --- | ------------ | -------- |
+            | [ ] | Do something | Whenever |
+            | [ ] | Do nothing   | **Now**  |
+        MARKDOWN
+      end
+
+      let(:task) do
+        Taskable.get_updated_tasks(old_content: markdown_before, new_content: markdown_after).first
+      end
+
+      it "posts the 'marked the checklist item as complete' system note" do
+        expect(subject.note).to eq("marked the task table item **Do nothing | Now** as incomplete")
       end
     end
   end
@@ -829,41 +862,6 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it 'defaults to current time when created_at is not given', :freeze_time do
         expect(subject.created_at).to be_like_time(Time.current)
-      end
-    end
-
-    context 'metrics', :clean_gitlab_redis_shared_state do
-      context 'cloned from' do
-        let(:direction) { :from }
-
-        it 'does not track usage' do
-          expect { subject }
-            .to not_trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED)
-            .and not_increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly'
-            )
-        end
-      end
-
-      context 'cloned to' do
-        let(:direction) { :to }
-
-        it 'tracks internal events and increments usage metrics' do
-          expect { subject }
-            .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED)
-              .with(project: project, user: author, category: 'InternalEventTracking')
-            .and increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly'
-            ).by(1)
-            .and increment_usage_metrics(
-              # Cloner and original issue author are two unique users
-              # --> Not great that we're tracking the original author as an active user...
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly'
-            ).by(2)
-        end
       end
     end
   end

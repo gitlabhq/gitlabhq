@@ -112,7 +112,10 @@ describe('Blob Simple Viewer component', () => {
           BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+        expect(findBlameComponents().at(0).props()).toMatchObject({
+          blameInfo,
+          projectPath: 'test',
+        });
       });
 
       it('calls the blame data query', async () => {
@@ -163,6 +166,8 @@ describe('Blob Simple Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Unable to load blame information. Please try again.',
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: expect.any(Error),
         });
@@ -184,6 +189,8 @@ describe('Blob Simple Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: backendErrorMessage,
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: graphQLError,
         });

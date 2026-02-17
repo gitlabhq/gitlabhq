@@ -1,8 +1,7 @@
 <script>
-import { GlLink, GlCard, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import { GlLink, GlCard, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { sanitize } from '~/lib/dompurify';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import defaultAvatarUrl from 'images/no_avatar.png';
@@ -23,7 +22,6 @@ export default {
     UserAvatarLink,
     GlLink,
     GlCard,
-    GlTruncate,
     ActionButtons: CommitListItemActionButtons,
     Description: CommitListItemDescription,
     OverflowMenu: CommitListItemOverflowMenu,
@@ -53,10 +51,6 @@ export default {
     },
     anchorId() {
       return `commit-list-item-${this.commit.id}`;
-    },
-    sanitizedTitle() {
-      if (!this.commit.titleHtml) return '';
-      return sanitize(this.commit.titleHtml, this.$options.safeHtmlConfig);
     },
   },
   destroyed() {
@@ -99,16 +93,17 @@ export default {
           />
           <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @md/panel:gl-flex">
             <h3 class="gl-m-0 gl-min-w-0 gl-grow gl-text-base">
-              <gl-link
-                :href="commit.webPath"
-                class="gl-whitespace-normal !gl-break-all gl-font-bold gl-text-default hover:gl-text-default @md/panel:gl-line-clamp-1"
-                data-testid="commit-title-link"
-                :class="{ 'gl-italic': !commit.message }"
-              >
-                <gl-truncate :text="sanitizedTitle" with-tooltip>
-                  <span v-safe-html="sanitizedTitle"></span>
-                </gl-truncate>
-              </gl-link>
+              <div class="gl-flex">
+                <gl-link
+                  :href="commit.webPath"
+                  class="gl-inline-block gl-min-w-0 gl-max-w-full gl-truncate gl-font-bold gl-text-default hover:gl-text-default"
+                  data-testid="commit-title-link"
+                  :class="{ 'gl-italic': !commit.message }"
+                  :title="commit.title"
+                >
+                  {{ commit.title }}
+                </gl-link>
+              </div>
               <div class="gl-text-wrap gl-text-sm gl-font-normal !gl-text-subtle">
                 <span
                   v-if="commit.author"
@@ -144,11 +139,12 @@ export default {
           </div>
           <overflow-menu
             :commit="commit"
-            class="gl-mr-3 gl-block @md/panel:gl-hidden"
+            class="gl-block @md/panel:gl-hidden"
             data-testid="overflow-menu"
           />
           <div
-            class="gl-border-l gl-block gl-h-7 gl-border-l-section @md/panel:gl-hidden"
+            v-if="commit.description"
+            class="gl-border-l gl-ml-3 gl-block gl-h-7 gl-border-l-section @md/panel:gl-hidden"
             data-testid="narrow-screen-expand-collapse-button-container"
           >
             <expand-collapse-button
@@ -163,7 +159,7 @@ export default {
       </template>
 
       <template v-if="!isCollapsed" #default>
-        <description :id="anchorId" :commit="commit" class="gl-display gl-block" />
+        <description :id="anchorId" :commit-sha="commit.sha" class="gl-display gl-block" />
       </template>
     </gl-card>
   </li>

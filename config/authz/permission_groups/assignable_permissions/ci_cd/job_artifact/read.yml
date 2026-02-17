@@ -1,0 +1,7 @@
+---
+name: read_job_artifact
+description: Grants the ability to read job artifacts
+boundaries:
+  - project
+permissions:
+  - download_job_artifact

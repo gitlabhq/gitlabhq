@@ -148,7 +148,7 @@ You can create a milestone either in a project or a group.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To create a milestone:
 
@@ -179,7 +179,7 @@ To avoid confusion within group hierarchies, duplicate milestone titles are not 
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To edit a milestone:
 
@@ -205,7 +205,7 @@ When a milestone is closed, its open issues remain open.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To close a milestone:
 
@@ -226,7 +226,7 @@ To close a milestone:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group the milestone belongs to.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group the milestone belongs to.
 
 To delete a milestone:
 
@@ -255,15 +255,12 @@ name into a single group milestone.
 All issues and merge requests that were previously assigned to one of these project
 milestones become assigned to the new group milestone.
 
-{{< alert type="warning" >}}
-
-This action cannot be reversed and the changes are permanent.
-
-{{< /alert >}}
+> [!warning]
+> This action cannot be reversed and the changes are permanent.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To promote a project milestone:
 
@@ -289,7 +286,7 @@ They are also visible in the work item board.
 To assign or unassign a milestone:
 
 1. View an issue, an epic, or a merge request.
-1. On the right sidebar, next to **Milestones**, select **Edit**.
+1. In the right sidebar, next to **Milestones**, select **Edit**.
 1. In the **Assign milestone** list, search for a milestone by typing its name.
    You can select from both project and group milestones.
 1. Select the milestone you want to assign.

@@ -32,22 +32,26 @@
             = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
                 = _("Overview")
-                = gl_badge_tag @merge_request.related_notes.user.count, { class: 'js-discussions-count' }
+                = render Pajamas::BadgeComponent.new do
+                  %span.js-discussions-count= @merge_request.notes.user.count
             - if @merge_request.source_project
               = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
                 = tab_link_for @merge_request, :commits do
                   = _("Commits")
-                  = gl_badge_tag tab_count_display(@merge_request, @commits_count), { class: 'js-commits-count' }
+                  = render Pajamas::BadgeComponent.new do
+                    %span.js-commits-count= tab_count_display(@merge_request, @commits_count)
             - if @project.builds_enabled?
               = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
                 = tab_link_for @merge_request, :pipelines do
                   = _("Pipelines")
-                  = gl_badge_tag @number_of_pipelines, { class: 'js-pipelines-mr-count' }
+                  = render Pajamas::BadgeComponent.new do
+                    %span.js-pipelines-mr-count= @number_of_pipelines
             = render_if_exists "projects/merge_requests/reports_tab"
             = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
               = tab_link_for @merge_request, :diffs do
                 = _("Changes")
-                = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
+                = render Pajamas::BadgeComponent.new do
+                  %span.js-changes-tab-count{ data: { gid: @merge_request.to_gid.to_s } }= tab_count_display(@merge_request, @diffs_count)
           .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
             #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s, can_resolve_discussion: @merge_request.resolvable_discussions.first&.can_resolve?(current_user).to_s } }
             - if !!@issuable_sidebar.dig(:current_user, :id)
@@ -96,7 +100,9 @@
       = render_if_exists "projects/merge_requests/reports_tab_pane"
       - if rapid_diffs_page_enabled?
         = render "projects/merge_requests/tabs/pane", name: "diffs", class: "diffs", id: 'diffs' do
-          = render 'projects/merge_requests/rapid_diffs_app'
+          = render ::RapidDiffs::AppComponent.new(rapid_diffs_presenter) do |c|
+            - c.with_diffs_list do
+              = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @merge_request, parallel_view: c.diff_view == :parallel)
       - else
         - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
         = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)

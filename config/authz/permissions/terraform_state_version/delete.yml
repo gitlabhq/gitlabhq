@@ -1,0 +1,5 @@
+---
+name: delete_terraform_state_version
+description: Grants the ability to delete a Terraform state version
+boundaries:
+  - project

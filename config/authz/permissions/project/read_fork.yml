@@ -1,5 +1,0 @@
----
-name: read_fork_project
-description: Grants the ability to view project forks
-boundaries:
-  - project

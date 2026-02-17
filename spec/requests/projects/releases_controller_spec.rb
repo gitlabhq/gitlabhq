@@ -75,7 +75,7 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
 
       subject { get url, params: { private_token: personal_access_token.token } }
 
-      it 'will allow sessionless users to download the file' do
+      it 'allows sessionless users to download the file' do
         subject
 
         expect(controller.current_user).to eq(user)

@@ -12,6 +12,7 @@ module ObjectStorage
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
   MissingFinalStorePathRootId = Class.new(StandardError)
+  InvalidHashFunction = Class.new(StandardError)
 
   class ExclusiveLeaseTaken < StandardError
     def initialize(lease_key)
@@ -61,6 +62,9 @@ module ObjectStorage
   end
 
   TMP_UPLOAD_PATH = 'tmp/uploads'
+
+  SUPPORTED_HASH_FUNCTIONS = %w[md5 sha1 sha256 sha512].freeze
+  SUPPORTED_HASH_FUNCTIONS_FIPS = (SUPPORTED_HASH_FUNCTIONS - %w[md5]).freeze
 
   module Store
     LOCAL = 1
@@ -197,6 +201,7 @@ module ObjectStorage
       def workhorse_authorize(
         has_length:,
         maximum_size: nil,
+        upload_hash_functions: nil,
         use_final_store_path: false,
         final_store_path_config: {})
         {}.tap do |hash|
@@ -211,7 +216,16 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
-          hash[:UploadHashFunctions] = %w[sha1 sha256 sha512] if ::Gitlab::FIPS.enabled?
+          # If UploadHashFunctions is not specified, all available functions
+          # will be used: md5, sha1, sha256, sha512.
+          if upload_hash_functions.present?
+            validate_hash_functions!(upload_hash_functions)
+
+            hash[:UploadHashFunctions] = upload_hash_functions
+          elsif ::Gitlab::FIPS.enabled?
+            hash[:UploadHashFunctions] = SUPPORTED_HASH_FUNCTIONS_FIPS
+          end
+
           hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end
@@ -266,6 +280,17 @@ module ObjectStorage
           storage_location_identifier,
           path
         )
+      end
+
+      private
+
+      def validate_hash_functions!(requested_functions)
+        supported_functions = ::Gitlab::FIPS.enabled? ? SUPPORTED_HASH_FUNCTIONS_FIPS : SUPPORTED_HASH_FUNCTIONS
+        invalid_functions = requested_functions - supported_functions
+
+        return unless invalid_functions.present?
+
+        raise InvalidHashFunction, "Unsupported hash functions: #{invalid_functions.join(', ')}"
       end
     end
 

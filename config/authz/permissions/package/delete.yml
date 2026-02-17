@@ -1,0 +1,5 @@
+---
+name: delete_package
+description: Grants the ability to delete packages
+boundaries:
+  - project

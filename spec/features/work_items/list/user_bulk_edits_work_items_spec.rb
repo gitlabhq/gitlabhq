@@ -93,6 +93,7 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
         allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(137)
 
         visit project_issues_path(project)
+
         # clear the type filter as we will also update task
         click_button 'Clear'
         click_bulk_edit

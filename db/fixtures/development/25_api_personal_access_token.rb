@@ -6,6 +6,8 @@ scopes = Gitlab::Auth.all_available_scopes
 
 Gitlab::Seeder.quiet do
   User.find_by(username: 'root').tap do |user|
+    user.personal_access_tokens.find_by(name: 'seeded-api-token')&.destroy
+
     params = {
       scopes: scopes.map(&:to_s),
       name: 'seeded-api-token'

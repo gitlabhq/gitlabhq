@@ -17,6 +17,7 @@ export const mountCommits = (el) => {
 
   return new Vue({
     el,
+    name: 'AuthorSelectAppRoot',
     store,
     render(h) {
       return h(AuthorSelectApp, {
@@ -46,6 +47,7 @@ export const initCommitsRefSwitcher = () => {
   const useSymbolicRefNames = Boolean(refType);
   return new Vue({
     el,
+    name: 'RefSelectorRoot',
     render(createElement) {
       return createElement(RefSelector, {
         props: {

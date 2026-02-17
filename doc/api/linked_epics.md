@@ -19,22 +19,18 @@ title: Linked epics API (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+> and is planned for removal in v5 of the API.
+> From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
+> Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
+> This change is a breaking change.
 
 If the Related Epics feature is not available in your GitLab plan, a `403` status code is returned.
 
-## List related epic links from a group
+## List all related epic links for a group
 
-Get a list of a given group's related epic links within group and sub-groups, filtered according to the user authorizations.
-The user needs to have access to the `source_epic` and `target_epic` to access the related epic link.
+Lists all related epic links for a specified group and its subgroups. The user needs to have access to both the `source_epic` and `target_epic` to view the related epic link.
 
 ```plaintext
 GET /groups/:id/related_epic_links
@@ -155,9 +151,9 @@ Example response:
 ]
 ```
 
-## List linked epics from an epic
+## List all linked epics for an epic
 
-Get a list of a given epic's linked epics filtered according to the user authorizations.
+Lists all linked epics for a specified epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/related_epics
@@ -241,7 +237,7 @@ Example response:
 
 {{< /history >}}
 
-Create a two-way relation between two epics. The user must have at least the Guest role for both groups.
+Creates a two-way relation between two epics. The user must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both groups.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/related_epics
@@ -368,7 +364,7 @@ Example response:
 
 {{< /history >}}
 
-Delete a two-way relation between two epics. The user must have at least the Guest role for both groups.
+Deletes a two-way relation between two specified epics. The user must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both groups.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id

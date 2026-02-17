@@ -34,14 +34,19 @@
 # Either a project or an author *must* be supplied.
 module Snippets
   class CountService
-    def initialize(current_user, author: nil, project: nil)
+    def initialize(current_user, organization_id: nil, author: nil, project: nil)
       if !author && !project
         raise(
           ArgumentError, 'Must provide either an author or a project'
         )
       end
 
-      @snippets_finder = SnippetsFinder.new(current_user, author: author, project: project)
+      @snippets_finder = SnippetsFinder.new(
+        current_user,
+        organization_id: organization_id,
+        author: author,
+        project: project
+      )
     end
 
     def execute

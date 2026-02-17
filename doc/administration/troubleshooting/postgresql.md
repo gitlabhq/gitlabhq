@@ -16,12 +16,9 @@ This page contains information about PostgreSQL the GitLab Support team uses
 when troubleshooting. GitLab makes this information public, so that anyone can
 make use of the Support team's collected knowledge.
 
-{{< alert type="warning" >}}
-
-Some procedures documented here may break your GitLab instance. Use at your
-own risk.
-
-{{< /alert >}}
+> [!warning]
+> Some procedures documented here may break your GitLab instance. Use at your
+> own risk.
 
 If you're on a [paid tier](https://about.gitlab.com/pricing/) and aren't sure
 how to use these commands, [contact Support](https://about.gitlab.com/support/)
@@ -77,7 +74,7 @@ sudo -u git -H psql -d gitlabhq_production
   for Linux package.
 - Use the console that's part of your external third-party PostgreSQL service.
 - Run `gitlab-rails dbconsole` in the toolbox pod.
-  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/#gitlab-specific-kubernetes-information) for details.
 
 > [!note]
 > For cloud native deployments using managed PostgreSQL services (such as AWS RDS),
@@ -96,7 +93,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 ### Procedures
 
-- [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) including:
+- [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database/) including:
   - SSL: enabling, disabling, and verifying.
   - Enabling Write Ahead Log (WAL) archiving.
   - Using an external (non-Omnibus) PostgreSQL installation; and backing it up.
@@ -110,7 +107,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [Running Geo with external PostgreSQL](../geo/setup/external_database.md).
 
-- [Upgrades when running PostgreSQL configured for HA](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-gitlab-ha-cluster).
+- [Upgrades when running PostgreSQL configured for HA](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-gitlab-ha-cluster).
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
@@ -155,16 +152,13 @@ Quoting from issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
-{{< alert type="note" >}}
-
-In Support, our general approach to reconfiguring timeouts (applies also to the
-HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
-makes GitLab usable for the customer, then it buys time to understand the
-problem more completely, implement a hot fix, or make some other change that
-addresses the root cause. Generally, the timeouts should be put back to
-reasonable defaults after the root cause is resolved.
-
-{{< /alert >}}
+> [!note]
+> In Support, our general approach to reconfiguring timeouts (applies also to the
+> HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
+> makes GitLab usable for the customer, then it buys time to understand the
+> problem more completely, implement a hot fix, or make some other change that
+> addresses the root cause. Generally, the timeouts should be put back to
+> reasonable defaults after the root cause is resolved.
 
 In this case, the guidance we had from development was to drop `deadlock_timeout`
 or `statement_timeout`, but to leave the third setting at 60 seconds. Setting
@@ -208,22 +202,16 @@ postgresql['idle_in_transaction_session_timeout'] = '60s'
 
 Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-{{< alert type="note" >}}
-
-These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
-or Amazon RDS is being used, these values don't get set, and would have to be set externally.
-
-{{< /alert >}}
+> [!note]
+> These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
+> or Amazon RDS is being used, these values don't get set, and would have to be set externally.
 
 ### Temporarily changing the statement timeout
 
-{{< alert type="warning" >}}
-
-The following advice does not apply in case
-[PgBouncer](../postgresql/pgbouncer.md) is enabled,
-because the changed timeout might affect more transactions than intended.
-
-{{< /alert >}}
+> [!warning]
+> The following advice does not apply in case
+> [PgBouncer](../postgresql/pgbouncer.md) is enabled,
+> because the changed timeout might affect more transactions than intended.
 
 In some situations, it may be desirable to set a different statement timeout
 without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation),
@@ -343,7 +331,7 @@ See [database requirements](../../install/requirements.md#postgresql) and review
 ### Serialization errors in the `production/sidekiq` log
 
 If you receive errors like this example in your `production/sidekiq` log, read
-about [setting `default_transaction_isolation` into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed) to fix the problem:
+about [setting `default_transaction_isolation` into read committed](https://docs.gitlab.com/omnibus/settings/database/#set-default_transaction_isolation-into-read-committed) to fix the problem:
 
 ```plaintext
 ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not serialize access due to concurrent update
@@ -352,7 +340,7 @@ ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not ser
 ### PostgreSQL replication slot errors
 
 If you receive errors like this example, read about how to resolve PostgreSQL HA
-[replication slot errors](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting-upgrades-in-an-ha-cluster):
+[replication slot errors](https://docs.gitlab.com/omnibus/settings/database/#troubleshooting-upgrades-in-an-ha-cluster):
 
 ```plaintext
 pg_basebackup: could not create temporary replication slot "pg_basebackup_12345": ERROR:  all replication slots are in use
@@ -386,7 +374,7 @@ When troubleshooting problems with Geo, you should:
 ### Mismatch in `pg_dump` and `psql` versions
 
 If you receive errors like this example, read about how to
-[back up and restore a non-packaged PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#backup-and-restore-a-non-packaged-postgresql-database):
+[back up and restore a non-packaged PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database/#backup-and-restore-a-non-packaged-postgresql-database):
 
 ```plaintext
 Dumping PostgreSQL database gitlabhq_production ... pg_dump: error: server version: 13.3; pg_dump version: 14.2

@@ -10,6 +10,12 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
   describe 'GET /application/plan_limits' do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_plan_limit do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'as an admin user' do
       context 'no params' do
         it 'returns plan limits', :aggregate_failures do
@@ -95,6 +101,12 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
   describe 'PUT /application/plan_limits' do
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { plan_name: 'default' } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_plan_limit do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { put api(path, personal_access_token: pat), params: { plan_name: 'default' } }
     end
 
     context 'as an admin user', :freeze_time do

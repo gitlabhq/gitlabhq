@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Backend GraphQL API guide
 ---
@@ -666,11 +666,8 @@ This can be overridden by passing a `description:` argument.
 
 ### Connection types
 
-{{< alert type="note" >}}
-
-For specifics on implementation, see [Pagination implementation](#pagination-implementation).
-
-{{< /alert >}}
+> [!note]
+> For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
 GraphQL uses [cursor based pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
 to expose collections of items. This provides the clients with a lot
@@ -802,13 +799,10 @@ returned per page if no limiting arguments (`first:` or `last:`) are provided by
 The `max_page_size` argument can be used to specify a different page size limit
 for a connection.
 
-{{< alert type="warning" >}}
-
-It's better to change the frontend client, or product requirements, to not need large amounts of
-records per page than it is to raise the `max_page_size`, as the default is set to ensure
-the GraphQL API remains performant.
-
-{{< /alert >}}
+> [!warning]
+> It's better to change the frontend client, or product requirements, to not need large amounts of
+> records per page than it is to raise the `max_page_size`, as the default is set to ensure
+> the GraphQL API remains performant.
 
 For example:
 
@@ -928,16 +922,13 @@ This can be done in a resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
 
-{{< alert type="note" >}}
-
-It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
-This signals to consumers of the public GraphQL API that the field is not
-meant to be used yet.
-You can also
-[change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
-the schema item by removing its `experiment` property to make it public.
-
-{{< /alert >}}
+> [!note]
+> It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
+> This signals to consumers of the public GraphQL API that the field is not
+> meant to be used yet.
+> You can also
+> [change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
+> the schema item by removing its `experiment` property to make it public.
 
 ### Descriptions for feature-flagged items
 
@@ -1095,14 +1086,11 @@ change would typically constitute a breaking change.
 To continue to support clients using the old Global ID argument, we add a deprecation
 to `Gitlab::GlobalId::Deprecations`.
 
-{{< alert type="note" >}}
-
-If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
-deprecate it. We consider the change to the way a Global ID is expressed in a field to be
-backwards-compatible. We expect that clients don't parse these values: they are meant to
-be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
-
-{{< /alert >}}
+> [!note]
+> If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
+> deprecate it. We consider the change to the way a Global ID is expressed in a field to be
+> backwards-compatible. We expect that clients don't parse these values: they are meant to
+> be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
 
 **Example scenario**:
 
@@ -1174,15 +1162,12 @@ The API also accepts these types in the query signature for the argument:
 - `PrometheusServiceID`
 - `IntegrationsPrometheusID`
 
-{{< alert type="note" >}}
-
-Although queries that use the old type (`PrometheusServiceID` in this example) are
-considered valid and executable by the API, validator tools consider them to be invalid.
-They are considered invalid because we are deprecating using a bespoke method outside of the
-[`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
-aware of the support.
-
-{{< /alert >}}
+> [!note]
+> Although queries that use the old type (`PrometheusServiceID` in this example) are
+> considered valid and executable by the API, validator tools consider them to be invalid.
+> They are considered invalid because we are deprecating using a bespoke method outside of the
+> [`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
+> aware of the support.
 
 The documentation mentions that the old Global ID style is now deprecated.
 
@@ -1196,12 +1181,9 @@ An item marked as an experiment is
 removed at any time without notice. Mark an item as an experiment when it is subject to
 change and not ready for public use.
 
-{{< alert type="note" >}}
-
-Only mark new items as an experiment. Never mark existing items
-as an experiment because they're already public.
-
-{{< /alert >}}
+> [!note]
+> Only mark new items as an experiment. Never mark existing items
+> as an experiment because they're already public.
 
 To mark a schema item as an experiment, use the `experiment:` keyword.
 You must provide the `milestone:` that introduced the experimental item.
@@ -1718,29 +1700,27 @@ class MyThingResolver < BaseResolver
 end
 ```
 
-The `LooksAhead` concern also provides basic support for preloading associations based on nested GraphQL field
-definitions. The [WorkItemsResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/e824a7e39e08a83fb162db6851de147cf0bfe14a/app/graphql/resolvers/work_items_resolver.rb#L46)
-is a good example for this. `nested_preloads` is another method you can define to return a hash, but unlike the
-`preloads` method, the value for each hash key is another hash and not the list of associations to preload. So in
-the previous example, you could override `nested_preloads` like this:
+The `LooksAhead` concern also provides support for preloading associations based on nested GraphQL field
+definitions. Use an array of field names as the hash key to preload the given associations when the nested field is selected.
+For example:
 
 ```ruby
 class MyThingResolver < BaseResolver
   # ...
 
-  def nested_preloads
+  def preloads
     {
-      root_field: {
-        nested_field1: :association_to_preload,
-        nested_field2: [:association1, :association2]
-      }
+      [:root_field, :nested_field1] => :association_to_preload,
+      [:root_field, :nested_field2] => [:association1, :association2],
+      [:root_field, :nested_field2, :nested_field3] => :association3,
+      other_root_field: :other_association,
     }
   end
 end
 ```
 
 For an example of real world use,
-see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+see [`WorkItems::LookAheadPreloads`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/work_items/look_ahead_preloads.rb).
 
 #### `before_connection_authorization`
 
@@ -2258,11 +2238,8 @@ to deliver the messages over websockets.
 When a client subscribes to a subscription, we store their query in-memory in Puma workers. Then when the subscription is triggered,
 the Puma workers execute the stored GraphQL queries and push the results to the clients.
 
-{{< alert type="note" >}}
-
-We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
-
-{{< /alert >}}
+> [!note]
+> We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
 
 ### Building subscriptions
 

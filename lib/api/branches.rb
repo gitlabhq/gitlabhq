@@ -127,7 +127,7 @@ module API
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :protect_branch, boundary_type: :project
+      route_setting :authorization, permissions: :create_protected_branch, boundary_type: :project
       put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -168,7 +168,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :protect_branch, boundary_type: :project
+      route_setting :authorization, permissions: :delete_protected_branch, boundary_type: :project
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 

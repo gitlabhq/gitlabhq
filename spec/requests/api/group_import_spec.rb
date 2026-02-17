@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupImport, :with_current_organization, feature_category: :importers do
+RSpec.describe API::GroupImport, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'
@@ -134,6 +134,11 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :create_group_import do
+          let(:boundary_object) { :instance }
+          let(:request) { upload_archive(file_upload, workhorse_headers, params, personal_access_token: pat) }
         end
       end
 
@@ -290,9 +295,11 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
       end
     end
 
-    def upload_archive(file, headers = {}, params = {})
+    def upload_archive(file, headers = {}, params = {}, personal_access_token: nil)
+      request_user = personal_access_token.present? ? nil : user
+
       workhorse_finalize(
-        api('/groups/import', user),
+        api('/groups/import', request_user, personal_access_token: personal_access_token),
         method: :post,
         file_key: :file,
         params: params.merge(file: file),
@@ -354,6 +361,11 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
           expect(json_response['RemoteObject']).to be_nil
         end
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_group_import do
+      let(:boundary_object) { :instance }
+      let(:request) { post api('/groups/import/authorize', personal_access_token: pat), headers: workhorse_headers }
     end
   end
 end

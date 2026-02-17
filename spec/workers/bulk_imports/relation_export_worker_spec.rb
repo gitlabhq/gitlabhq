@@ -9,7 +9,17 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
   let_it_be(:relation) { 'labels' }
 
   let(:batched) { false }
-  let(:job_args) { [user.id, group.id, group.class.name, relation, batched] }
+  let(:offline_export_id) { nil }
+  let(:job_args) do
+    [
+      user.id,
+      group.id,
+      group.class.name,
+      relation,
+      batched,
+      { 'offline_export_id' => offline_export_id }
+    ]
+  end
 
   describe '#perform' do
     include_examples 'an idempotent worker' do
@@ -35,7 +45,13 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
           expect(export_service)
             .to receive(:new)
-            .with(user, group, relation, anything)
+            .with(
+              user,
+              group,
+              relation,
+              anything,
+              hash_including(offline_export_id:)
+            )
             .twice
             .and_return(service)
           expect(service).to receive(:execute).twice
@@ -65,12 +81,41 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       context 'when export is user_contributions' do
         let(:relation) { 'user_contributions' }
 
-        it 'enqueues the UserContributionsExportWorker' do
-          expect(BulkImports::UserContributionsExportWorker).to receive(:perform_async).with(
-            group.id, group.class.name, user.id
-          ).twice
+        it 'does not enqueue user contributions export' do
+          expect(BulkImports::UserContributionsExportWorker).not_to receive(:perform_async)
 
           perform_multiple(job_args)
+        end
+      end
+
+      context 'when offline export is provided' do
+        let_it_be(:export) { create(:offline_export) }
+        let(:offline_export_id) { export.id }
+
+        include_examples 'export service', BulkImports::RelationExportService
+
+        context 'and export is user_contributions' do
+          let(:relation) { 'user_contributions' }
+
+          it 'enqueues the UserContributionsExportWorker' do
+            expect(BulkImports::UserContributionsExportWorker).to receive(:perform_async).with(
+              group.id, group.class.name, user.id
+            ).twice
+
+            perform_multiple(job_args)
+          end
+
+          context 'when offline_transfer_exports feature flag is disabled' do
+            before do
+              stub_feature_flags(offline_transfer_exports: false)
+            end
+
+            it 'does not enqueue user contributions export' do
+              expect(BulkImports::UserContributionsExportWorker).not_to receive(:perform_async)
+
+              perform_multiple(job_args)
+            end
+          end
         end
       end
     end

@@ -1046,10 +1046,9 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         it 'does not check for spam on task status change' do
           params = {
             update_task: {
-              index: 1,
               checked: false,
               line_source: '- [x] Task 1',
-              line_number: 1
+              line_sourcepos: '1:4-1:4'
             }
           }
           service = described_class.new(container: project, current_user: user, params: params)
@@ -1067,10 +1066,9 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           let(:params) do
             {
               update_task: {
-                index: 1,
                 checked: false,
                 line_source: '- [x] Task 1',
-                line_number: 1
+                line_sourcepos: '1:4-1:4'
               }
             }
           end
@@ -1083,10 +1081,9 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         it 'does not pass old_associations to the after_update method' do
           params = {
             update_task: {
-              index: 1,
               checked: false,
               line_source: '- [x] Task 1',
-              line_number: 1
+              line_sourcepos: '1:4-1:4'
             }
           }
           service = described_class.new(container: project, current_user: user, params: params)

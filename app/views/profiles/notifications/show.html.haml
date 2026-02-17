@@ -1,5 +1,4 @@
 - page_title _('Notifications')
-- @force_desktop_expanded_sidebar = true
 
 - if @user.errors.any?
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|

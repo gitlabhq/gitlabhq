@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use AI-assisted features for relevant information about a merge request.
 title: GitLab Duo in merge requests
@@ -23,7 +23,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -62,172 +62,33 @@ Data usage: The diff of changes between the source branch's head and the target 
 GitLab Duo can review your merge request for potential errors and provide feedback on alignment to
 standards.
 
-Add GitLab Duo as a reviewer using one of:
+When you request a review from `@GitLabDuo`, one of the following features runs:
 
-- GitLab Duo Code Review (Classic): The classic code review functionality.
-- Code Review Flow: The new flow available through the GitLab Duo Agent Platform. Offers improved
-  context awareness and agentic capabilities.
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md): The new flow
+  available through the GitLab Duo Agent Platform. Uses GitLab Credits.
+- [GitLab Duo Code Review (Classic)](../../gitlab_duo/code_review_classic.md): The classic code
+  review functionality.
 
-The two options have different requirements and prerequisites. However, you request a review and
-interact with GitLab Duo the same way. Both options also support automatic reviews, custom
-instructions, and custom comments.
+The review feature that runs depends on the add-on of the user that starts the GitLab Duo review:
 
-### GitLab Duo Code Review (Classic)
+- Manual review requests: The user who requests the review.
+- Automatic reviews: The user who authors the merge request.
+- Merge requests that start in draft: The user who marks the MR as ready.
 
-{{< details >}}
+Because the review feature is based on the requesting user's add-on, both features can run in the
+same project.
 
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+### How the review features compare
 
-{{< /details >}}
+While you interact with both review features the same way, Code Review Flow offers enhanced
+capabilities compared to GitLab Duo Code Review (Classic):
 
-{{< collapsible title="Model information" >}}
+- Improved context awareness: Better understanding of repository structure and cross-file
+  dependencies.
+- Agentic capabilities: Multi-step reasoning for more thorough analysis.
+- Modern architecture: Built on the scalable GitLab Duo Agent Platform.
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
-
-{{< /collapsible >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/development_stages_support.md#experiment) behind two feature flags named [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632), both disabled by default.
-- Feature flags [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632) enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/516234) to beta in GitLab 17.10.
-- Changed to include Premium in GitLab 18.0.
-- Feature flag `ai_review_merge_request` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190639) in GitLab 18.1.
-- Feature flag `duo_code_review_chat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190640) in GitLab 18.1.
-- Generally available in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/524929) to be available on GitLab Duo with self-hosted models in beta in GitLab 18.3.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/548975) to be generally available on GitLab Duo with self-hosted models in GitLab 18.4.
-
-{{< /history >}}
-
-When your merge request is ready to be reviewed, use GitLab Duo Code Review (Classic) to perform an initial review:
-
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
-1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
-
-<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
-
-Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
-
-Data usage: When you use this feature, the following data is sent to the large language model:
-
-- Merge request title
-- Merge request description
-- File contents before changes applied (for context)
-- Merge request diffs
-- Filenames
-- [Custom instructions](#customize-review-instructions-for-gitlab-duo)
-
-### Code Review Flow
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core or Pro
-- Offering: GitLab.com, GitLab Self-Managed
-
-{{< /details >}}
-
-{{< collapsible title="Model information" >}}
-
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
-
-{{< /collapsible >}}
-
-{{< history >}}
-
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
-- Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209) in GitLab 18.8.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
-
-{{< /history >}}
-
-The Code Review Flow is available through the GitLab Duo Agent Platform and uses agentic AI for enhanced review capabilities.
-
-After you enable the flow, you can assign GitLab Duo as a reviewer.
-
-For setup and requirements, see [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
-
-### Interact with GitLab Duo in reviews
-
-You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your merge request. You can ask follow-up questions on its review comments, or ask questions on any discussion thread in your merge request.
-
-Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve your merge request.
-
-Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
-There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
-
-### Automatic reviews from GitLab Duo for a project
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) to a UI setting in GitLab 18.0.
-
-{{< /history >}}
-
-Automatic reviews from GitLab Duo ensure that all merge requests in your project receive an initial review.
-After a merge request is created, GitLab Duo reviews it unless:
-
-- It's marked as draft. For GitLab Duo to review the merge request, mark it ready.
-- It contains no changes. For GitLab Duo to review the merge request, add changes to it.
-
-Prerequisites:
-
-- You must have at least the [Maintainer role](../../permissions.md) in a project.
-
-To enable `@GitLabDuo` to automatically review merge requests:
-
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
-1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
-1. Select **Save changes**.
-
-### Automatic reviews from GitLab Duo for groups and applications
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
-- Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
-
-{{< /history >}}
-
-Use group or application settings to enable automatic reviews for multiple projects.
-
-Prerequisites:
-
-- To turn on automatic reviews for groups, have the Owner role for the group.
-- To turn on automatic reviews for all projects, be an administrator.
-
-To enable automatic reviews for groups:
-
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand the **Merge requests** section.
-1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
-1. Select **Save changes**.
-
-To enable automatic reviews for all projects:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
-1. Select **Save changes**.
-
-Settings cascade from application to group to project. More specific settings override broader ones.
-
-### Customize review instructions for GitLab Duo
-
-You can create custom MR review instructions to ensure consistent and specific
-code review standards in your project.
-
-Both GitLab Duo Code Review (Classic) and Code Review Flow support custom code review instructions.
-
-For more information, see [customize review instructions for GitLab Duo](../../../user/gitlab_duo/customize_duo/review_instructions.md)
+Both features support automatic reviews, custom instructions, and custom comments.
 
 ## Summarize a code review
 
@@ -242,7 +103,7 @@ For more information, see [customize review instructions for GitLab Duo](../../.
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -260,7 +121,7 @@ For more information, see [customize review instructions for GitLab Duo](../../.
 When you've completed your review of a merge request and are ready to [submit your review](reviews/_index.md#submit-a-review), use GitLab Duo Code Review Summary to generate a summary of your comments.
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find the merge request you want to review.
+1. In the left sidebar, select **Code** > **Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
 1. Select **Add Summary**.
 
@@ -286,7 +147,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -307,7 +168,7 @@ When preparing to merge your merge request, edit the proposed merge commit messa
 by using GitLab Duo Merge Commit Message Generation.
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
 1. Review the commit message provided and choose **Insert** to add it to the commit.

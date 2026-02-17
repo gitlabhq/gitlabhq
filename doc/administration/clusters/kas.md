@@ -286,6 +286,10 @@ to authenticate and authorize the user.
 [Receptive agents](../../user/clusters/agent/_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
 that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
+Prerequisites:
+
+- Administrator access.
+
 To enable receptive agents:
 
 1. In the upper-right corner, select **Admin**.

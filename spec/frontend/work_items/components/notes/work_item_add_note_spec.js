@@ -119,7 +119,7 @@ describe('Work item add note', () => {
         const noteText = 'updated desc';
         await createComponent({ isEditing: true, signedIn: true });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: noteText,
           isNoteInternal: isInternalComment,
         });
@@ -139,7 +139,7 @@ describe('Work item add note', () => {
         await createComponent();
         const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'test',
           isNoteInternal: isInternalComment,
         });
@@ -155,7 +155,7 @@ describe('Work item add note', () => {
       it('emits `replied` event and hides form after successful mutation', async () => {
         await createComponent({ isEditing: true, signedIn: true });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'some text',
           isNoteInternal: isInternalComment,
         });
@@ -170,7 +170,7 @@ describe('Work item add note', () => {
           signedIn: true,
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'some text',
           isNoteInternal: isInternalComment,
         });
@@ -188,7 +188,7 @@ describe('Work item add note', () => {
             .mockResolvedValue(createWorkItemNoteResponse({ errors: [error] })),
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
@@ -205,7 +205,7 @@ describe('Work item add note', () => {
           mutationHandler: jest.fn().mockRejectedValue(new Error(error)),
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
@@ -224,7 +224,7 @@ describe('Work item add note', () => {
           ),
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
@@ -241,7 +241,7 @@ describe('Work item add note', () => {
             .mockResolvedValue(createWorkItemNoteResponse({ messages: ['Added ~"Label" label.'] })),
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: '/label ~Label',
           isNoteInternal: isInternalComment,
         });
@@ -261,7 +261,7 @@ describe('Work item add note', () => {
             ),
         });
 
-        findCommentForm().vm.$emit('submitForm', {
+        findCommentForm().vm.$emit('submit-form', {
           commentText: '/label doesnotexist',
           isNoteInternal: isInternalComment,
         });
@@ -341,7 +341,7 @@ describe('Work item add note', () => {
             ),
           });
 
-          findCommentForm().vm.$emit('submitForm', {
+          findCommentForm().vm.$emit('submit-form', {
             commentText: command,
           });
 
@@ -441,7 +441,7 @@ describe('Work item add note', () => {
     it('emits `resolve` event when resolve discussion button is clicked', async () => {
       await createComponent({ isDiscussionResolvable: true, isEditing: false });
 
-      findResolveDiscussionButton().vm.$emit('onClick');
+      findResolveDiscussionButton().vm.$emit('on-click');
 
       expect(wrapper.emitted('resolve')).toHaveLength(1);
     });

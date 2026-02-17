@@ -1,6 +1,5 @@
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import { observeIntersectionOnce, getCoveringElement } from '~/lib/utils/viewport';
-import { getScrollingElement } from '~/lib/utils/panels';
 
 describe('Viewport utils', () => {
   const { trigger: triggerIntersection } = useMockIntersectionObserver();
@@ -14,7 +13,6 @@ describe('Viewport utils', () => {
 
       triggerIntersection(element, {
         entry: mockEntry,
-        options: { root: getScrollingElement(element) },
       });
 
       const result = await promise;
@@ -29,7 +27,6 @@ describe('Viewport utils', () => {
     const triggerWithRect = (top = 100, left = 50) => {
       triggerIntersection(element, {
         entry: { intersectionRect: { top, left } },
-        options: { root: getScrollingElement(element) },
       });
     };
 

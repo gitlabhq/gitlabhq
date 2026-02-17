@@ -1,0 +1,29 @@
+diff --git a/node_modules/@tiptap/vue-2/dist/index.js b/node_modules/@tiptap/vue-2/dist/index.js
+index e80329d..61b5a68 100644
+--- a/node_modules/@tiptap/vue-2/dist/index.js
++++ b/node_modules/@tiptap/vue-2/dist/index.js
+@@ -228,6 +228,12 @@ class VueRenderer {
+         const currentVueConstructor = (_c = (_b = (_a = this.ref.$props.editor) === null || _a === void 0 ? void 0 : _a.contentComponent) === null || _b === void 0 ? void 0 : _b.$options._base) !== null && _c !== void 0 ? _c : Vue; // eslint-disable-line
+         const originalSilent = currentVueConstructor.config.silent;
+         currentVueConstructor.config.silent = true;
++        // Mark props as mutable for Vue 3 compat mode
++        Object.defineProperty(this.ref.$props, '__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__', {
++            value: true,
++            enumerable: true,
++            configurable: true
++        });
+         Object
+             .entries(props)
+             .forEach(([key, value]) => {
+@@ -272,6 +278,11 @@ class VueNodeView extends NodeView {
+         });
+         // @ts-ignore
+         const vue = (_b = (_a = this.editor.contentComponent) === null || _a === void 0 ? void 0 : _a.$options._base) !== null && _b !== void 0 ? _b : Vue; // eslint-disable-line
++        Object.defineProperty(props, '__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__', {
++            value: true,
++            enumerable: true,
++            configurable: true
++        });
+         const Component = vue.extend(this.component).extend({
+             props: Object.keys(props),
+             provide: () => {

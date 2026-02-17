@@ -161,8 +161,6 @@ describe('AdminGroupsApp', () => {
   });
 
   it('allows deleting immediately on Inactive tab', async () => {
-    window.gon = { allow_immediate_namespaces_deletion: true };
-
     await createComponent({
       mountFn: mountExtended,
       handlers: [
@@ -174,7 +172,7 @@ describe('AdminGroupsApp', () => {
     await waitForPromises();
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
 
-    expect(wrapper.findByRole('button', { name: 'Delete immediately' }).exists()).toBe(true);
+    expect(wrapper.findByRole('button', { name: 'Delete permanently' }).exists()).toBe(true);
   });
 
   describe('when there are no groups', () => {

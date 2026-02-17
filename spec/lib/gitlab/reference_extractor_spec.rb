@@ -200,14 +200,14 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
       it 'returns both Jira and internal issues' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
-                                      ExternalIssue.new('FOOBAR-4567', project),
-                                      issue]
+          ExternalIssue.new('FOOBAR-4567', project),
+          issue]
       end
 
       it 'returns only Jira issues if the internal one does not exist' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and ##{non_existing_record_iid}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
-                                      ExternalIssue.new('FOOBAR-4567', project)]
+          ExternalIssue.new('FOOBAR-4567', project)]
       end
     end
 
@@ -220,7 +220,7 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
       it 'returns only Jira issues' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
-                                      ExternalIssue.new('FOOBAR-4567', project)]
+          ExternalIssue.new('FOOBAR-4567', project)]
       end
     end
   end

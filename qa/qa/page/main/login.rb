@@ -139,6 +139,10 @@ module QA
           has_button?('Accept All Cookies')
         end
 
+        def two_step_sign_in_flow?
+          has_no_element?('password-field')
+        end
+
         def click_accept_all_cookies
           click_button('Accept All Cookies')
         end
@@ -248,6 +252,12 @@ module QA
 
         def fill_in_credential(user)
           fill_element 'username-field', user.username
+
+          if two_step_sign_in_flow?
+            click_element 'sign-in-button'
+            Support::WaitForRequests.wait_for_requests
+          end
+
           fill_element 'password-field', user.password
         end
 

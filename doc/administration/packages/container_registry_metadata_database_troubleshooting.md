@@ -94,7 +94,7 @@ If you try to [import existing registry metadata](container_registry_metadata_da
 
 ```shell
 ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
-see https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html#troubleshooting
+see https://docs.gitlab.com/administration/packages/container_registry_metadata_database/#troubleshooting
 common_blobs=true dry_run=false error="tags table is not empty"
 ```
 

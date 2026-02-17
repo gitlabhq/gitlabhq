@@ -8,8 +8,8 @@ import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import { isCurrentUser } from '~/lib/utils/common_utils';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -17,6 +17,7 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'NoteableNote',
+  UPDATE_COMMENT_FORM,
   components: {
     NoteHeader,
     NoteActions,
@@ -123,7 +124,7 @@ export default {
         this.isDeleting = false;
       }
     },
-    async saveNote({ noteText }) {
+    async saveNote(noteText) {
       const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
 
       if (!confirmSubmit) return;
@@ -134,10 +135,9 @@ export default {
         const {
           data: { note: updatedNote },
         } = await axios.put(this.note.path, {
-          params: {
-            target_id: this.note.noteable_id,
-            note: { note: noteText },
-          },
+          rapid_diffs: true,
+          target_id: this.note.noteable_id,
+          note: { note: noteText },
         });
         this.$emit('cancelEditing');
         this.$emit('noteUpdated', updatedNote);
@@ -145,18 +145,14 @@ export default {
         if (error.response && error.response.status === HTTP_STATUS_GONE) {
           this.$emit('noteDeleted');
         } else {
-          createAlert({
-            message: updateNoteErrorMessage(error),
-            error,
-            parent: this.$el,
-          });
+          throw error;
         }
       } finally {
         this.isSaving = false;
       }
     },
-    onCancelEditing: ignoreWhilePending(async function cancel({ shouldConfirm, isDirty }) {
-      if (shouldConfirm && isDirty) {
+    onCancelEditing: ignoreWhilePending(async function cancel(shouldConfirm) {
+      if (shouldConfirm) {
         const msg = sprintf(__('Are you sure you want to cancel editing this %{commentType}?'), {
           commentType: this.commentType,
         });
@@ -191,8 +187,11 @@ export default {
     :id="`note_${note.id}`"
     :timeline-layout="timelineLayout"
     :is-last-discussion="isLastDiscussion"
-    :class="{ 'gl-pointer-events-none gl-opacity-5': isSaving || isDeleting }"
-    class="target:gl-bg-[var(--timeline-entry-target-background-color)]"
+    :class="{
+      'gl-pointer-events-none gl-opacity-5': isSaving || isDeleting,
+      'gl-bg-[var(--note-background)]': !timelineLayout,
+    }"
+    class="[--note-background:initial] target:[--note-background:var(--timeline-entry-target-background-color)]"
     data-testid="noteable-note-container"
   >
     <!-- Avatar slot for timeline layout -->
@@ -201,7 +200,7 @@ export default {
         :href="author.path"
         :data-user-id="authorId"
         :data-username="author.username"
-        class="js-user-link"
+        class="js-user-link gl-mt-2"
       >
         <gl-avatar
           :src="author.avatar_url"
@@ -214,17 +213,28 @@ export default {
 
     <!-- Content slot for timeline layout, default slot for non-timeline -->
     <template #content>
-      <div :class="timelineLayout && 'gl-border gl-rounded-lg gl-border-section gl-px-4 gl-py-2'">
-        <div class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2">
+      <div
+        :class="{
+          'gl-border gl-rounded-lg gl-border-section gl-bg-[var(--note-background)]':
+            timelineLayout,
+        }"
+      >
+        <div
+          class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2 gl-px-4 gl-pt-2"
+        >
           <note-header
-            class="gl-py-2"
+            class="gl-my-1 gl-py-2"
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
             :is-internal-note="note.internal"
             :is-imported="note.imported"
             :show-avatar="!timelineLayout"
-          />
+          >
+            <template #avatar-badge>
+              <slot name="avatar-badge"></slot>
+            </template>
+          </note-header>
           <note-actions
             :author-id="authorId"
             :note-url="note.noteable_note_url"
@@ -244,7 +254,7 @@ export default {
             @award="toggleAward"
           />
         </div>
-        <div class="gl-pb-3" :class="!timelineLayout && 'gl-pl-7'">
+        <div class="gl-pb-4 gl-pr-4" :class="timelineLayout ? 'gl-pl-4' : 'gl-ml-2 gl-pl-8'">
           <note-body
             :note="note"
             :can-edit="canEdit"
@@ -252,11 +262,13 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :save-note="saveNote"
+            :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             @cancelEditing="onCancelEditing"
             @input="$emit('noteEdited', $event)"
             @award="toggleAward"
           />
         </div>
+        <slot name="footer"></slot>
       </div>
     </template>
   </timeline-entry-item>

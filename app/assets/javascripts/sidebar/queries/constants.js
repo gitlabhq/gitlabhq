@@ -10,8 +10,8 @@ import {
   TYPE_TICKET,
   TYPE_MERGE_REQUEST,
   TYPE_TEST_CASE,
-  WORKSPACE_GROUP,
-  WORKSPACE_PROJECT,
+  NAMESPACE_GROUP,
+  NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import createGroupOrProjectLabelMutation from '../components/labels/labels_select_widget/graphql/create_label.mutation.graphql';
@@ -150,19 +150,19 @@ export const referenceQueries = {
 };
 
 export const workspaceLabelsQueries = {
-  [WORKSPACE_PROJECT]: {
+  [NAMESPACE_PROJECT]: {
     query: projectLabelsQuery,
     dataPath: 'namespace.labels',
   },
-  [WORKSPACE_GROUP]: {
+  [NAMESPACE_GROUP]: {
     query: groupLabelsQuery,
     dataPath: 'namespace.labels',
   },
 };
 
 export const workspaceCreateLabelMutation = {
-  [WORKSPACE_PROJECT]: createGroupOrProjectLabelMutation,
-  [WORKSPACE_GROUP]: createGroupOrProjectLabelMutation,
+  [NAMESPACE_PROJECT]: createGroupOrProjectLabelMutation,
+  [NAMESPACE_GROUP]: createGroupOrProjectLabelMutation,
 };
 
 export const issuableLabelsQueries = {
@@ -254,14 +254,14 @@ export const issuableMilestoneQueries = {
 export const milestonesQueries = {
   [TYPE_ISSUE]: {
     query: {
-      [WORKSPACE_GROUP]: groupMilestonesQuery,
-      [WORKSPACE_PROJECT]: projectMilestonesQuery,
+      [NAMESPACE_GROUP]: groupMilestonesQuery,
+      [NAMESPACE_PROJECT]: projectMilestonesQuery,
     },
   },
   [TYPE_MERGE_REQUEST]: {
     query: {
-      [WORKSPACE_GROUP]: groupMilestonesQuery,
-      [WORKSPACE_PROJECT]: projectMilestonesQuery,
+      [NAMESPACE_GROUP]: groupMilestonesQuery,
+      [NAMESPACE_PROJECT]: projectMilestonesQuery,
     },
   },
 };

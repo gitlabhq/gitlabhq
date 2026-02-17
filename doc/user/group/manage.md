@@ -7,18 +7,15 @@ title: Manage groups
 
 Use groups to manage one or more related projects at the same time.
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
-For more information about efforts to create an organization view of all groups,
-[see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A top-level group offers insights in your entire organization through a complete
-[Security Dashboard and Center](../application_security/security_dashboard/_index.md),
-[Vulnerability report](../application_security/vulnerability_report/_index.md),
-[compliance center](../compliance/compliance_center/_index.md), and
-[value stream analytics](value_stream_analytics/_index.md).
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
+> For more information about efforts to create an organization view of all groups,
+> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+> A top-level group offers insights in your entire organization through a complete
+> [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
+> [Vulnerability report](../application_security/vulnerability_report/_index.md),
+> [compliance center](../compliance/compliance_center/_index.md), and
+> [value stream analytics](value_stream_analytics/_index.md).
 
 ## Add a group README
 
@@ -75,20 +72,14 @@ To change your group path (group URL):
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
 
-{{< alert type="warning" >}}
-
-It is not possible to rename a namespace if it contains a
-project with [Container Registry](../packages/container_registry/_index.md) tags,
-because the project cannot be moved.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-To ensure that groups with thousands of subgroups get processed correctly, you should test the path change in a test environment.
-Consider increasing the [Puma worker timeout](../../administration/operations/puma.md#change-the-worker-timeout) temporarily.
-For more information about our solution to mitigate this timeout risk, see [issue 432065](https://gitlab.com/gitlab-org/gitlab/-/issues/432065).
-{{< /alert >}}
+> [!warning]
+> It is not possible to rename a namespace if it contains a
+> project with [Container Registry](../packages/container_registry/_index.md) tags,
+> because the project cannot be moved.
+>
+> To ensure that groups with thousands of subgroups get processed correctly, you should test the path change in a test environment.
+> Consider increasing the [Puma worker timeout](../../administration/operations/puma.md#change-the-worker-timeout) temporarily.
+> For more information about our solution to mitigate this timeout risk, see [issue 432065](https://gitlab.com/gitlab-org/gitlab/-/issues/432065).
 
 ## Change the default branch protection of a group
 
@@ -111,16 +102,9 @@ for the group's projects to meet your group's needs.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15019) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Archive a group and all of its subgroups and projects. When archived, a group and its contents become read-only, and group data is preserved for future reference.
 
@@ -129,6 +113,10 @@ Additionally, archived groups:
 - Display an `Archived` badge on the group page
 - Appear in the **Inactive** tab on the **Your work** page, and **Explore** page
 - Cannot be transferred to another namespace
+
+### Known limitations
+
+Issues from archived groups will continue to appear on issue boards until [issue 585677](https://gitlab.com/gitlab-org/gitlab/-/work_items/585677) is resolved.
 
 Prerequisites:
 
@@ -141,11 +129,8 @@ To archive a group:
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
 
-{{< alert type="note" >}}
-
-Archiving a group automatically archives all its subgroups and projects. Individual subgroups or projects within an archived group cannot be unarchived separately.
-
-{{< /alert >}}
+> [!note]
+> Archiving a group automatically archives all its subgroups and projects. Individual subgroups or projects within an archived group cannot be unarchived separately.
 
 To archive a group from the **Your work** list view directly:
 
@@ -188,30 +173,19 @@ This action is also available on other list pages.
 
 ## Transfer a group
 
-Transferring groups moves them from one place to another in the same GitLab instance. You can:
+Transfer a group to move it from one location to another in the same GitLab instance. You can:
 
-- Transfer a subgroup to a new parent group.
-- Convert a top-level group into a subgroup by transferring it to the desired group.
-- Convert a subgroup into a top-level group by transferring it out of its current group.
-
-If you need to copy a group to a different GitLab instance,
-[migrate the group by direct transfer](import/_index.md).
-
-When transferring groups, note:
-
-- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/_index.md#repository-path-changes).
-- You must update your local repositories to point to the new location.
-- If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
-- Only explicit group membership is transferred, not inherited membership. If the group's Owners have only inherited membership, this leaves the group without an Owner. In this case, the user transferring the group becomes the group's Owner.
-- Transfers fail if the group is a top-level group and [npm packages](../packages/npm_registry/_index.md) following the [naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
-- `container_registry` images in the archived projects must be deleted before the transfer. For more information, see the [troubleshooting section](troubleshooting.md#missing-or-insufficient-permission-delete-button-disabled).
-- Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group-level endpoint.
-- Existing package names must be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/_index.md#naming-convention), [npm](../packages/npm_registry/_index.md#naming-convention), [Conan 1](../packages/conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
-- Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
+- Transfer a subgroup to a different parent group.
+- Convert a top-level group into a subgroup.
+- Convert a subgroup into a top-level group.
 
 Prerequisites:
 
-- You must have the Owner role for the source and target group.
+- The Owner role for the source and target groups.
+- Enable subgroup creation in the target group (if applicable).
+
+> [!note]
+> You cannot transfer a group if it's archived or pending deletion.
 
 To transfer a group:
 
@@ -219,8 +193,53 @@ To transfer a group:
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Select **Transfer group**.
-1. Select the group name in the drop down menu.
+1. From the dropdown list, select the group.
 1. Select **Transfer group**.
+
+After you transfer a group, make sure you:
+
+- Update local repository remotes to new URLs.
+- Verify group member access and permissions.
+- Update package configurations if necessary.
+- Test CI/CD pipelines and integrations.
+
+If you need to copy a group to a different GitLab instance,
+[migrate the group by direct transfer](import/_index.md).
+
+### What data gets transferred
+
+A group transfer includes:
+
+- All subgroups and projects with the group
+- Explicit group memberships and roles
+- Group settings and configurations
+
+### Known issues
+
+When transferring a group, keep the
+following restrictions in mind.
+
+Membership restrictions:
+
+- Inherited memberships are lost. Only direct group members are transferred.
+- If a group Owner has an inherited membership, the user that transfers the group
+becomes the new Owner.
+
+Visibility and access restrictions:
+
+- If a target parent group has lower visibility, the visibility settings of all subgroups and projects
+are adjusted to match the visibility of the target parent group.
+- Repository URLs change. You must update your local repositories to point to the new location. For more information, see [Repository page changes](../project/repository/_index.md#repository-path-changes).
+
+Package and container registry restrictions:
+
+- Transfers fail if the target group is a top-level group where npm packages that follow the [npm naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
+- Existing packages that use a group endpoint must be updated per the package's steps for setting up the group-level endpoint.
+- Existing package names must be updated if the package uses an instance-level endpoint and the group was moved to another top-level group.
+
+Subscription restrictions:
+
+- Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then, the top-level group can be transferred as a subgroup to another top-level group.
 
 ## Disable email notifications
 
@@ -344,12 +363,9 @@ To disable group mentions:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can prevent [enterprise users](../enterprise_user/_index.md) in your group from creating
 [snippets](../snippets.md) in their personal namespace. When disabled, enterprise users
@@ -382,11 +398,8 @@ can invite users again.
 On GitLab Self-Managed and GitLab Dedicated instances, you can prevent user invitations for the entire instance.
 For more information, see [prevent invitations to a groups and projects](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects).
 
-{{< alert type="note" >}}
-
-Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
-
-{{< /alert >}}
+> [!note]
+> Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
 
 Prerequisites:
 
@@ -444,11 +457,8 @@ and must be paid at the next [quarterly reconciliation](../../subscriptions/quar
 When you turn on restricted access, groups cannot add new billable users when there are no seats
 left in the subscription.
 
-{{< alert type="note" >}}
-
-If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
-
-{{< /alert >}}
+> [!note]
+> If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
 
 ### Turn on restricted access
 
@@ -469,17 +479,35 @@ is automatically turned on.
 
 You can still independently configure [project sharing for the group and its subgroups](../project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
+### Provisioning behavior with SAML, SCIM, and LDAP
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
+
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+When seats become available, they can be promoted to their intended access level.
+Existing users with billable roles are not affected by this behavior.
+
+You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+
 ### Known issues
 
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the [Minimal Access fallback](#provisioning-behavior-with-saml-scim-and-ldap) feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role add members simultaneously.
-  - New billable members delay accepting an invitation.
-  - You change from using the user cap to restricted access, and have members pending approval
-    from before you changed to restricted access. In this case, those members remain in a pending state. If
-    pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
+  - New billable members delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
@@ -513,11 +541,8 @@ When the number of billable members reaches the user cap, the group Owner must a
 Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 disabled for the group and its subgroups.
 
-{{< alert type="warning" >}}
-
-When you specify a user cap, any members added through group sharing lose access to the group.
-
-{{< /alert >}}
+> [!warning]
+> When you specify a user cap, any members added through group sharing lose access to the group.
 
 ### Set a user cap for a group
 
@@ -586,6 +611,11 @@ To ensure that the user cap applies when groups, subgroups, or projects are shar
 A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
+
+## Changing from user cap to restricted access
+
+When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
+To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
 
 ## Group file templates
 
@@ -760,27 +790,20 @@ To view the activity feed in Atom format, select the
 
 ## Display GitLab Credits user data
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - Namespace setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
-  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`.
+  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
 
 Prerequisites:
 

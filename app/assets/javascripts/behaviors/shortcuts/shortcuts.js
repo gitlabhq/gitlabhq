@@ -237,6 +237,7 @@ export default class Shortcuts {
 
       this.helpModalVueInstance = new Vue({
         el: this.helpModalElement,
+        name: 'ShortcutsHelpRoot',
         components: {
           ShortcutsHelp: () => import('./shortcuts_help.vue'),
         },

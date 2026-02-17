@@ -1,0 +1,5 @@
+---
+name: update_epic_link
+description: Grants the ability to update epic links
+boundaries:
+  - group

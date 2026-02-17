@@ -1,7 +1,8 @@
 ---
 name: archive_project
-description: Grants the ability to archive and unarchive projects
+description: Grants the ability to archive projects
 permissions:
   - archive_project
+  - unarchive_project
 boundaries:
   - project

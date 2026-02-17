@@ -46,11 +46,11 @@ Only AWS S3 is supported as a deploy target.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Select the **Active** checkbox.
@@ -78,7 +78,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project.
    You can do this through [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring),
    which ensures you get the up-to-date Status Page features.
-1. On the left sidebar, select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Add the following variables from your Amazon Console:
    - `S3_BUCKET_NAME` - The name of the Amazon S3 bucket.
@@ -89,22 +89,19 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
    - `AWS_DEFAULT_REGION` - The AWS region.
    - `AWS_ACCESS_KEY_ID` - The AWS access key ID.
    - `AWS_SECRET_ACCESS_KEY` - The AWS secret.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. To deploy the Status Page to S3, select **New pipeline**.
 
-{{< alert type="warning" >}}
-
-Consider limiting who can access issues in this project, as any user who can view
-the incident can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
-
-{{< /alert >}}
+> [!warning]
+> Consider limiting who can access issues in this project, as any user who can view
+> the incident can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
 
 ### Sync incidents to the Status Page
 
 After creating the CI/CD variables, configure the Project you want to use for
 Incidents:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Fill in your cloud provider's credentials and make sure to select the **Active** checkbox.
@@ -160,12 +157,9 @@ After publication, you can access the incident's details page by selecting the
 
 To publish an update to the Incident, update the incident's description.
 
-{{< alert type="warning" >}}
-
-When referenced incidents are changed (such as title or confidentiality) the incident
-they were referenced in is not updated.
-
-{{< /alert >}}
+> [!warning]
+> When referenced incidents are changed (such as title or confidentiality) the incident
+> they were referenced in is not updated.
 
 ### Publish comments on incidents
 
@@ -177,12 +171,9 @@ To publish comments to the Status Page Incident:
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per incident) are also published.
 
-{{< alert type="warning" >}}
-
-Anyone with access to view the incident can add an emoji reaction to a comment, so
-consider limiting access to issues to team members only.
-
-{{< /alert >}}
+> [!warning]
+> Anyone with access to view the incident can add an emoji reaction to a comment, so
+> consider limiting access to issues to team members only.
 
 ### Update the incident status
 

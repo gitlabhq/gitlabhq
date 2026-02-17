@@ -3,30 +3,10 @@
 module Gitlab
   module InternalEvents
     module EventDefinitions
-      InvalidMetricConfiguration = Class.new(StandardError)
-
       class << self
-        VALID_UNIQUE_VALUES = %w[user.id project.id namespace.id].freeze
-
         def load_configurations
           @events = load_metric_definitions
           nil
-        end
-
-        def unique_properties(event_name)
-          unique_values = events.fetch(event_name, [])
-
-          unique_values.filter_map do |unique_value|
-            next unless unique_value # legacy events include `nil` unique_value
-
-            unique_value = unique_value.to_s
-
-            unless VALID_UNIQUE_VALUES.include?(unique_value)
-              raise(InvalidMetricConfiguration, "Invalid unique value '#{unique_value}' for #{event_name}")
-            end
-
-            unique_value.split('.').first.to_sym
-          end
         end
 
         private

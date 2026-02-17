@@ -4,6 +4,7 @@ require_relative '../config/environment'
 require_relative '../lib/generators/post_deployment_migration/post_deployment_migration_generator'
 require_relative './helpers/postgres_ai'
 require_relative 'helpers/groups'
+require_relative 'overdue_finalize_background_migrations/outdated_migration_checker'
 require 'rubocop'
 
 module Keeps
@@ -24,6 +25,9 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
+    MERGE_REQUEST_URL_REGEX = %r{/-/merge_requests/(?<mr_iid>\d+)}
+    API_MERGE_REQUEST_URL = "https://gitlab.com/api/v4/projects/278964/merge_requests/%<mr_iid>s"
+
     def each_identified_change
       batched_background_migrations.each do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
@@ -94,11 +98,9 @@ module Keeps
         'maintenance::removal'
       ]
 
-      change.reviewers = groups_helper.pick_reviewer_for_feature_category(
-        feature_category,
-        change.identifiers,
-        fallback_feature_category: 'database'
-      )
+      change.assignees = assignees_from_introduced_by_mr(migration['introduced_by_url'])
+
+      change.reviewers = reviewer(change.identifiers)
     end
 
     def change_description(migration_record, job_name, last_migration_file)
@@ -264,7 +266,11 @@ module Keeps
     end
 
     def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+      ::Keeps::Helpers::Groups.instance
+    end
+
+    def reviewer(identifiers)
+      ::Keeps::Helpers::ReviewerRoulette.instance.random_reviewer_for('maintainer::database', identifiers: identifiers)
     end
 
     def migration_code_not_present_message
@@ -298,6 +304,44 @@ module Keeps
       gitlab_schema = migration_record.gitlab_schema
       connection = Gitlab::Database.schemas_to_base_models[gitlab_schema].first.connection
       Gitlab::Database.db_config_name(connection)
+    end
+
+    def assignees_from_introduced_by_mr(introduced_by_url)
+      return unless introduced_by_url
+
+      merge_request = get_merge_request(introduced_by_url)
+      return unless merge_request && merge_request[:assignees]
+
+      merge_request[:assignees].pluck(:username) # rubocop:disable CodeReuse/ActiveRecord -- outside the rails app
+    end
+
+    def get_merge_request(merge_request_url)
+      matches = MERGE_REQUEST_URL_REGEX.match(merge_request_url)
+      return unless matches
+
+      # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
+      response = Gitlab::HTTP_V2.try_get(
+        format(API_MERGE_REQUEST_URL, mr_iid: matches[:mr_iid])
+      )
+      # rubocop:enable Gitlab/HttpV2
+
+      unless response.success?
+        @logger.puts(
+          "Get URL: #{merge_request_url} Failed with response code: #{response.code} and body:\n#{response.body}"
+        )
+        return
+      end
+
+      Gitlab::Json.safe_parse(response.body, symbolize_names: true)
+    end
+
+    # Override to force push when migration is overdue (3 weeks old or before required stop)
+    def should_push_code?(change, push_when_approved)
+      super || outdated_migration_checker.existing_migration_timestamp_outdated?(change.identifiers)
+    end
+
+    def outdated_migration_checker
+      @outdated_migration_checker ||= OverdueFinalizeBackgroundMigrations::OutdatedMigrationChecker.new(logger: @logger)
     end
   end
 end

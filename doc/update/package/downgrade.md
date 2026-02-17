@@ -84,12 +84,9 @@ To roll back a Linux package instance to an earlier GitLab version:
 The restore overwrites all newer GitLab database content with the older state.
 A rollback is only recommended where necessary. For example, if post-upgrade tests reveal problems that cannot be resolved quickly.
 
-{{< alert type="warning" >}}
-
-You must have at least a database backup created with the exact same version and edition you are downgrading to.
-The backup is required to revert the schema changes (migrations) made during the upgrade.
-
-{{< /alert >}}
+> [!warning]
+> You must have at least a database backup created with the exact same version and edition you are downgrading to.
+> The backup is required to revert the schema changes (migrations) made during the upgrade.
 
 To roll back GitLab shortly after an upgrade:
 

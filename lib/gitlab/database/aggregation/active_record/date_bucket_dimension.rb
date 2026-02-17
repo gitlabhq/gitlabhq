@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ActiveRecord
-        class DateBucketDimension < Column
+        class DateBucketDimension < DimensionDefinition
           include ParameterizedDefinition
 
           self.supported_parameters = %i[granularity]

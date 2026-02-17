@@ -6,6 +6,7 @@ export default () => {
   const attrs = JSON.parse(element.getAttribute('data'));
   return new Vue({
     el: element,
+    name: 'GoogleCloudDatabasesFormRoot',
     render: (createElement) => createElement(Form, { attrs }),
   });
 };

@@ -12,6 +12,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'GitlabSlackApplicationRoot',
     render(createElement) {
       return createElement(GitlabSlackApplication, {
         props: {

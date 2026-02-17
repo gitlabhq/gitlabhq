@@ -5,7 +5,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
 
   before do
     project.add_maintainer(maintainer)
-    gitlab_sign_in(maintainer)
+    sign_in(maintainer)
   end
 
   context "new #{issuable_type}", :js do
@@ -58,7 +58,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
         project.add_guest(guest)
 
         gitlab_sign_out
-        gitlab_sign_in(guest)
+        sign_in(guest)
         visit public_send("project_#{issuable_type}_path", project, issuable)
       end
 

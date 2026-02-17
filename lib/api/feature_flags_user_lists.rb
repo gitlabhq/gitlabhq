@@ -4,8 +4,7 @@ module API
   class FeatureFlagsUserLists < ::API::Base
     include PaginationParams
 
-    feature_flags_user_lists_tags = %w[feature_flags_user_lists]
-
+    feature_flags_user_lists_tags = %w[feature_flags]
     error_formatter :json, ->(message, _backtrace, _options, _env, _original_exception) {
       message.is_a?(String) ? { message: message }.to_json : message.to_json
     }
@@ -38,6 +37,7 @@ module API
 
           use :pagination
         end
+        route_setting :authorization, permissions: :read_feature_flag_user_list, boundary_type: :project
         get do
           user_lists = ::FeatureFlagsUserListsFinder.new(user_project, current_user, params).execute
           present paginate(user_lists),
@@ -58,6 +58,7 @@ module API
           requires :name, type: String, desc: 'The name of the list'
           requires :user_xids, type: String, desc: 'A comma separated list of external user ids'
         end
+        route_setting :authorization, permissions: :create_feature_flag_user_list, boundary_type: :project
         post do
           # TODO: Move the business logic to a service class in app/services/feature_flags.
           # https://gitlab.com/gitlab-org/gitlab/-/issues/367021
@@ -86,6 +87,7 @@ module API
           ]
           tags feature_flags_user_lists_tags
         end
+        route_setting :authorization, permissions: :read_feature_flag_user_list, boundary_type: :project
         get do
           present user_project.operations_feature_flags_user_lists.find_by_iid!(params[:iid]),
             with: ::API::Entities::FeatureFlag::UserList
@@ -105,6 +107,7 @@ module API
           optional :name, type: String, desc: 'The name of the list'
           optional :user_xids, type: String, desc: 'A comma separated list of external user ids'
         end
+        route_setting :authorization, permissions: :update_feature_flag_user_list, boundary_type: :project
         put do
           # TODO: Move the business logic to a service class in app/services/feature_flags.
           # https://gitlab.com/gitlab-org/gitlab/-/issues/367021
@@ -128,6 +131,7 @@ module API
           ]
           tags feature_flags_user_lists_tags
         end
+        route_setting :authorization, permissions: :delete_feature_flag_user_list, boundary_type: :project
         delete do
           # TODO: Move the business logic to a service class in app/services/feature_flags.
           # https://gitlab.com/gitlab-org/gitlab/-/issues/367021

@@ -13,6 +13,7 @@ export default (el = document.querySelector('#js-ambiguous-ref-modal')) => {
 
   return new Vue({
     el,
+    name: 'AmbiguousRefModalRoot',
     render(createElement) {
       return createElement(AmbiguousRefModal, { props: { refName: ref } });
     },

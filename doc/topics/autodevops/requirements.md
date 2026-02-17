@@ -24,7 +24,7 @@ To prepare the deployment:
 
    1. [Kubernetes](#auto-devops-requirements-for-kubernetes).
    1. [Amazon Elastic Container Service (ECS)](cloud_deployments/auto_devops_with_ecs.md).
-   1. [Amazon Elastic Kubernetes Service (EKS)](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/).
+   1. [Amazon Elastic Kubernetes Service (EKS)](https://about.gitlab.com/blog/deploying-application-eks/).
    1. [Amazon EC2](cloud_deployments/auto_devops_with_ec2.md).
    1. [Google Kubernetes Engine](cloud_deployments/auto_devops_with_gke.md).
    1. [Bare metal](#auto-devops-requirements-for-bare-metal).
@@ -45,18 +45,15 @@ that works best for your needs:
 
 You can choose the deployment method when enabling Auto DevOps or later:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
-to minimize downtime and risk.
-
-{{< /alert >}}
+> [!note]
+> Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
+> to minimize downtime and risk.
 
 ## Auto DevOps base domain
 
@@ -119,12 +116,9 @@ To make full use of Auto DevOps with Kubernetes, you need:
      the Ingress manifest to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
 
-     {{< alert type="note" >}}
-
-     If your cluster is installed on bare metal, see
-     [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
-
-     {{< /alert >}}
+     > [!note]
+     > If your cluster is installed on bare metal, see
+     > [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
 
 - **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps) and
   [Auto Deploy](stages.md#auto-deploy))
@@ -136,13 +130,13 @@ To make full use of Auto DevOps with Kubernetes, you need:
 - **GitLab Runner** (for all stages)
 
   Your runner must be configured to run Docker, usually with either the
-  [Docker](https://docs.gitlab.com/runner/executors/docker.html)
+  [Docker](https://docs.gitlab.com/runner/executors/docker/)
   or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executors, with
-  [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
+  [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker/#use-docker-in-docker-with-privileged-mode).
   The runners don't need to be installed in the Kubernetes cluster, but the
   Kubernetes executor is easy to use and automatically autoscales.
   You can configure Docker-based runners to autoscale as well, using
-  [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
+  [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine/).
 
   Runners should be registered as [instance runners](../../ci/runners/runners_scope.md#instance-runners)
   for the entire GitLab instance, or [project runners](../../ci/runners/runners_scope.md#project-runners)

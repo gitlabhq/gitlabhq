@@ -35,6 +35,8 @@ const createComponent = ({
 describe('IssuableForm', () => {
   let wrapper;
 
+  const findLabelsSelect = () => wrapper.findComponent(LabelsSelect);
+
   beforeEach(() => {
     wrapper = createComponent();
   });
@@ -51,9 +53,9 @@ describe('IssuableForm', () => {
           },
         ];
 
-        wrapper.vm.handleUpdateSelectedLabels(labels);
+        findLabelsSelect().vm.$emit('updateSelectedLabels', labels);
 
-        expect(wrapper.vm.selectedLabels).toStrictEqual(labels);
+        expect(wrapper.vm.issuableMeta.selectedLabels).toStrictEqual(labels);
       });
     });
   });
@@ -118,7 +120,7 @@ describe('IssuableForm', () => {
         allowScopedLabels: true,
         labelsFetchPath: wrapper.vm.labelsFetchPath,
         labelsManagePath: wrapper.vm.labelsManagePath,
-        selectedLabels: wrapper.vm.selectedLabels,
+        selectedLabels: wrapper.vm.issuableMeta.selectedLabels,
         labelsListTitle: 'Select label',
         footerCreateLabelTitle: 'Create project label',
         footerManageLabelTitle: 'Manage project labels',

@@ -1,0 +1,5 @@
+---
+name: create_issue_note_award_emoji
+description: Grants the ability to create award emoji reactions on issue notes
+boundaries:
+  - project

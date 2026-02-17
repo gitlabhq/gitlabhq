@@ -37,8 +37,8 @@ Prerequisites:
 - The `test` stage is required in the `.gitlab-ci.yml` file. If your project defines its own
   `stages` list, make sure the `test` stage is included.
 - On GitLab Self-Managed you need GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable IaC scanning:
@@ -123,14 +123,11 @@ Supported configuration formats:
 - AWS CloudFormation
 - Azure Resource Manager
 
-  {{< alert type="note" >}}
-
-  IaC scanning can analyze Azure Resource Manager templates in JSON format.
-  If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
-  you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
-  convert your Bicep files into JSON before IaC scanning can analyze them.
-
-  {{< /alert >}}
+  > [!note]
+  > IaC scanning can analyze Azure Resource Manager templates in JSON format.
+  > If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
+  > you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
+  > convert your Bicep files into JSON before IaC scanning can analyze them.
 
 - Dockerfile
 - Google Deployment Manager
@@ -138,12 +135,9 @@ Supported configuration formats:
 - OpenAPI
 - Terraform
 
-  {{< alert type="note" >}}
-
-  Terraform modules in a custom registry are not scanned for vulnerabilities.
-  For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
-
-  {{< /alert >}}
+  > [!note]
+  > Terraform modules in a custom registry are not scanned for vulnerabilities.
+  > For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
 
 ## Optimization
 
@@ -279,7 +273,7 @@ However, if no network connectivity is available, you must change the default Gi
 `pull_policy` variable.
 
 Configure the GitLab Runner CI/CD variable `pull_policy` to
-[`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 
 ### Use local IaC analyzer image
 
@@ -328,12 +322,9 @@ To use a specific analyzer version:
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.
 
-   {{< alert type="note" >}}
-
-   Only set this variable in a specific job. If you set it at the top level, the version you set is
-   used for other SAST analyzers.
-
-   {{< /alert >}}
+   > [!note]
+   > Only set this variable in a specific job. If you set it at the top level, the version you set is
+   > used for other SAST analyzers.
 
    Set the tag to:
 
@@ -411,7 +402,7 @@ For more information see [Downloading artifacts](../../../ci/jobs/job_artifacts.
 After validating the IaC scanning results for one project, you can implement the same approach across additional projects.
 
 - Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply IaC scanning settings across groups.
-- Share and reuse a central ruleset by [specifying a remote configuration file](../sast/customize_rulesets.md#specify-a-remote-configuration-file).
+- Share and reuse a central ruleset by [specifying a remote configuration file](../sast/customize_rulesets.md#use-a-remote-ruleset-file).
 
 ## Troubleshooting
 

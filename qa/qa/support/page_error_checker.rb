@@ -58,6 +58,13 @@ module QA
             return report!(page, error_code)
           end
 
+          # Basic 502 error pages render plain text in pre tags instead of structured HTML
+          error_text = page_html(page).xpath("//pre").map(&:text).first
+          if error_text&.match?(/^\d{3}\s+(Bad Gateway|Internal Server Error|Service Unavailable|Gateway Timeout)/)
+            error_code = error_text[0, 3].to_i
+            return report!(page, error_code)
+          end
+
           # GDK shows backtrace rather than error page
           report!(page, 500) if page_html(page).xpath("//body//section").map { |t| t[:class] }.first.eql?('backtrace')
         rescue StandardError => e

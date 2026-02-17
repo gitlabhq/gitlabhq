@@ -64,7 +64,6 @@ describe('WorkItemDetailModal component', () => {
         fullPath: 'group/project',
         reportAbusePath: 'report/abuse',
         groupPath: '',
-        hasDesignManagementFeature: false,
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
         isGroup: false,

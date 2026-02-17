@@ -102,6 +102,12 @@ RSpec.shared_examples 'creating a pipeline with environment keyword' do
   end
 
   context 'when environment with duplicate names' do
+    before do
+      # TEMP: To account for +1 query to ci_pipeline_artifacts.
+      # Remove with FF `ci_read_pipeline_variables_from_artifact`
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
+    end
+
     let(:config) do
       YAML.dump({
         deploy: { environment: { name: 'production' }, **base_config },

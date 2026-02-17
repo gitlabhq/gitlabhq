@@ -4,7 +4,7 @@
  */
 .file-holder {
   @apply gl-border;
-  @apply gl-rounded-base;
+  @apply gl-rounded-lg;
 
   &.file-holder-top-border {
     @apply gl-border;
@@ -12,7 +12,7 @@
 
     .file-title {
       // Prevents the top border getting clipped by the background
-      @apply gl-rounded-t-base;
+      @apply gl-rounded-t-lg;
     }
   }
 
@@ -243,7 +243,7 @@ span.idiff {
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);
-    border-radius: $gl-border-radius-base-inner $gl-border-radius-base-inner 0 0;
+    border-radius: $gl-border-radius-lg-inner $gl-border-radius-lg-inner 0 0;
 
     @include gl-container-width-up(md, panel) {
       flex-wrap: nowrap;

@@ -70,7 +70,8 @@ module Gitlab
         attrs[:GitalyServer][:call_metadata].merge!(
           'user_id' => attrs[:GL_ID].presence,
           'username' => attrs[:GL_USERNAME].presence,
-          'remote_ip' => Gitlab::ApplicationContext.current_context_attribute(:remote_ip).presence
+          'remote_ip' => Gitlab::ApplicationContext.current_context_attribute(:remote_ip).presence,
+          'retry_config' => retry_config
         ).compact!
 
         attrs
@@ -352,16 +353,23 @@ module Gitlab
       end
 
       def gitaly_server_hash(repository)
+        metadata = Feature::Gitaly.server_feature_flags(
+          user: ::Feature::Gitaly.user_actor,
+          repository: repository,
+          project: ::Feature::Gitaly.project_actor(repository.container),
+          group: ::Feature::Gitaly.group_actor(repository.container)
+        )
+        metadata['retry_config'] = retry_config
+
         {
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          call_metadata: Feature::Gitaly.server_feature_flags(
-            user: ::Feature::Gitaly.user_actor,
-            repository: repository,
-            project: ::Feature::Gitaly.project_actor(repository.container),
-            group: ::Feature::Gitaly.group_actor(repository.container)
-          )
+          call_metadata: metadata
         }
+      end
+
+      def retry_config
+        Gitlab::Json.dump(Gitlab::GitalyClient.retry_policy)
       end
 
       def gitaly_diff_or_patch_hash(repository, diff_refs)

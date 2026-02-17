@@ -33,12 +33,9 @@ files must be provided:
 Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
 included on each signature. This is typically an intermediate CA.
 
-{{< alert type="warning" >}}
-
-Be mindful of the access levels for your private keys and visibility to
-third parties.
-
-{{< /alert >}}
+> [!warning]
+> Be mindful of the access levels for your private keys and visibility to
+> third parties.
 
 For Linux package installations:
 

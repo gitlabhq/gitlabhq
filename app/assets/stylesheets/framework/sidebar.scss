@@ -437,7 +437,6 @@
             padding: 0 $gl-spacing-scale-3;
             margin-bottom: calc((#{$content-wrapper-padding} * -1));
             overflow-y: auto;
-            overscroll-behavior: contain;
           }
         }
       }

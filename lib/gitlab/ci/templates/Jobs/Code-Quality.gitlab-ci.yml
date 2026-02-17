@@ -1,16 +1,16 @@
 code_quality:
   stage: test
-  image: docker:20.10.12
+  image: docker:29.1.4
   allow_failure: true
   services:
-    - name: 'docker:20.10.12-dind'
+    - name: 'docker:29.1.4-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_CERT_PATH: ""
     DOCKER_TLS_CERTDIR: ""
     DOCKER_TLS_VERIFY: ""
-    CODE_QUALITY_IMAGE_TAG: "0.96.0-gitlab.1"
+    CODE_QUALITY_IMAGE_TAG: "0.96.0-gitlab.3"
     CODE_QUALITY_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:$CODE_QUALITY_IMAGE_TAG"
     DOCKER_SOCKET_PATH: /var/run/docker.sock
   needs: []

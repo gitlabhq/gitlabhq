@@ -19,7 +19,7 @@ module Resolvers
           ::Types::GlobalIDType[::IncidentManagement::TimelineEvent],
           required: true,
           description: 'ID of the timeline event.',
-          prepare: ->(id, ctx) { id.model_id }
+          prepare: ->(id, _ctx) { id.model_id }
       end
 
       def resolve_with_lookahead(**args)

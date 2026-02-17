@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe ReactiveCachingWorker, feature_category: :shared do
+RSpec.describe ReactiveCachingWorker, feature_category: :redis do
   it_behaves_like 'reactive cacheable worker'
 end

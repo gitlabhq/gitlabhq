@@ -24,6 +24,7 @@ module API
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
           use :access_token_params
         end
+        route_setting :authorization, permissions: :read_resource_access_token, boundary_type: source_type.to_sym
         get ":id/access_tokens" do
           resource = find_source(source_type, params[:id])
 
@@ -44,6 +45,7 @@ module API
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
           requires :token_id, type: String, desc: "The ID of the token"
         end
+        route_setting :authorization, permissions: :read_resource_access_token, boundary_type: source_type.to_sym
         get ":id/access_tokens/:token_id" do
           resource = find_source(source_type, params[:id])
 
@@ -70,6 +72,7 @@ module API
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :token_id, type: String, desc: "The ID of the token"
         end
+        route_setting :authorization, permissions: :delete_resource_access_token, boundary_type: source_type.to_sym
         delete ':id/access_tokens/:token_id' do
           resource = find_source(source_type, params[:id])
           token = find_token(resource, params[:token_id])
@@ -114,6 +117,7 @@ module API
             desc: "The access level of the token in the #{source_type}",
             documentation: { example: 40 }
         end
+        route_setting :authorization, permissions: :create_resource_access_token, boundary_type: source_type.to_sym
         post ':id/access_tokens' do
           resource = find_source(source_type, params[:id])
 
@@ -143,6 +147,7 @@ module API
             desc: "The expiration date of the token",
             documentation: { example: '2021-01-31' }
         end
+        route_setting :authorization, permissions: :rotate_resource_access_token, boundary_type: source_type.to_sym
         post ':id/access_tokens/:token_id/rotate' do
           resource = find_source(source_type, params[:id])
 

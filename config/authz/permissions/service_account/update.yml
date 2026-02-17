@@ -1,0 +1,6 @@
+---
+name: update_service_account
+description: Grants the ability to update service accounts
+boundaries:
+  - group
+  - instance

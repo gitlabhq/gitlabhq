@@ -34,6 +34,7 @@ describe('WorkItemCreatedUpdated component', () => {
   const createComponent = async ({
     workItemIid = '1',
     author = null,
+    externalAuthor = null,
     hidden = false,
     imported = false,
     updatedAt,
@@ -45,6 +46,7 @@ describe('WorkItemCreatedUpdated component', () => {
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       author,
+      externalAuthor,
       hidden,
       imported,
       updatedAt,
@@ -127,17 +129,26 @@ describe('WorkItemCreatedUpdated component', () => {
     });
   });
 
-  it('shows author name and link', async () => {
-    const author = mockAssignees[0];
-    await createComponent({ author });
+  describe('created text', () => {
+    it('shows external author, author name and link when available', async () => {
+      const author = mockAssignees[0];
+      await createComponent({ author, externalAuthor: 'external_user@example.com' });
 
-    expect(findCreatedAtText()).toBe(`created by ${author.name}`);
-  });
+      expect(findCreatedAtText()).toBe(`created by external_user@example.com via ${author.name}`);
+    });
 
-  it('shows created time when author is null', async () => {
-    await createComponent({ author: null });
+    it('shows author name and link', async () => {
+      const author = mockAssignees[0];
+      await createComponent({ author });
 
-    expect(findCreatedAtText()).toBe('created');
+      expect(findCreatedAtText()).toBe(`created by ${author.name}`);
+    });
+
+    it('shows created time when author is null', async () => {
+      await createComponent({ author: null });
+
+      expect(findCreatedAtText()).toBe('created');
+    });
   });
 
   describe('confidential badge', () => {

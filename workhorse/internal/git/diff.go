@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -19,6 +19,7 @@ type diffParams struct {
 	RawDiffRequest string
 }
 
+// SendDiff is a senddata.Injector for handling Git diff requests
 var SendDiff = &diff{"git-diff:"}
 
 func (d *diff) Inject(w http.ResponseWriter, r *http.Request, sendData string) {

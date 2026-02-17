@@ -3,10 +3,6 @@
 module IssuesHelper
   include Issues::IssueTypeHelpers
 
-  def can_admin_issue?
-    can?(current_user, :admin_issue, @group || @project)
-  end
-
   def show_timeline_view_toggle?(issue)
     # Overridden in EE
     false
@@ -52,7 +48,7 @@ module IssuesHelper
   end
 
   def awards_sort(awards)
-    awards.sort_by do |award, award_emojis|
+    awards.sort_by do |award, _award_emojis|
       case award
       when AwardEmoji::THUMBS_UP
         0

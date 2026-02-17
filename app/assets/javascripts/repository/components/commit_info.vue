@@ -32,11 +32,6 @@ export default {
       required: false,
       default: null,
     },
-    prevBlameLink: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return { showDescription: false };
@@ -188,10 +183,5 @@ export default {
       <div class="gl-grow"></div>
       <slot></slot>
     </div>
-    <div
-      v-if="prevBlameLink"
-      v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"
-      data-event-tracking="click_previous_blame_on_blob_page"
-    ></div>
   </div>
 </template>

@@ -26,9 +26,9 @@ Prerequisites:
 
 - You must be an administrator.
 
-## Get information about a model
+## Retrieve model information
 
-This endpoint is an [experiment](../../policy/development_stages_support.md) and might be changed or removed without notice.
+Retrieves information about a data model in an instance. This operation is an [experiment](../../policy/development_stages_support.md) and might be changed or removed without notice.
 
 ```plaintext
 GET /admin/data_management/:model_name
@@ -46,11 +46,13 @@ The `:model_name` parameter must be one of:
 - `group_wiki_repositories`
 - `lfs_objects`
 - `merge_request_diffs`
+- `packages_nuget_symbols`
 - `packages_package_files`
 - `pages_deployments`
 - `projects`
 - `projects_wiki_repositories`
 - `snippet_repositories`
+- `supply_chain_attestations`
 - `terraform_state_versions`
 - `uploads`
 
@@ -114,7 +116,9 @@ Example response:
 ]
 ```
 
-## Recalculate the checksum of selected model records
+## Recalculate checksums for model records
+
+Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation.
 
 ```plaintext
 PUT /admin/data_management/:model_name/checksum
@@ -126,7 +130,7 @@ PUT /admin/data_management/:model_name/checksum
 | `checksum_state`   | string  | No       | Filter by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
 | `identifiers`      | array   | No       | Filter records with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
 
-This endpoint marks all selected records from the model for checksum recalculation, filtered by `checksum_state` and `identifiers` parameters if provided. It enqueues a background job to do so. If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and a JSON response containing the following information:
+If successful, it returns [`200`](../rest/troubleshooting.md#status-codes) and a JSON response containing the following information:
 
 | Attribute | Type   | Description                                       |
 |-----------|--------|---------------------------------------------------|
@@ -146,7 +150,9 @@ Example response:
 }
 ```
 
-## Get information about a specific model record
+## Retrieve information about a model record
+
+Retrieves information about a specified model record.
 
 ```plaintext
 GET /admin/data_management/:model_name/:id
@@ -157,7 +163,7 @@ GET /admin/data_management/:model_name/:id
 | `model_name`        | string            | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.    |
 | `record_identifier` | string or integer | Yes      | The unique identifier of the requested model. Can be an integer or a base64 encoded string. |
 
-If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. It includes the following
+If successful, it returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. It includes the following
 response attributes:
 
 | Attribute              | Type              | Description                                                                    |
@@ -191,7 +197,9 @@ Example response:
 }
 ```
 
-## Recalculate the checksum of a specific model record
+## Recalculate the checksum of a model record
+
+Recalculates the checksum of a specified model record. The checksum value is a representation of the queried model hashed with the md5 or sha256 algorithm.
 
 ```plaintext
 PUT /admin/data_management/:model_name/:record_identifier/checksum
@@ -202,7 +210,7 @@ PUT /admin/data_management/:model_name/:record_identifier/checksum
 | `model_name`        | string            | Yes      | The pluralized name of the requested model. Must belong to the `:model_name` list above.                                  |
 | `record_identifier` | string or integer | Yes      | Unique identifier of the record. Can be an integer or a base64 encoded string (taken from the response of the GET query). |
 
-If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. The checksum value is a representation of the queried model hashed with the md5 or sha256 algorithm.
+If successful, it returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/data_management/projects/1/checksum"

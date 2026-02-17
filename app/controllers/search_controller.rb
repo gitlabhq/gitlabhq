@@ -71,8 +71,7 @@ class SearchController < ApplicationController
   def count
     params.require([:search, :scope])
 
-    scope = search_service.scope
-
+    @scope = search_service.scope
     @search_level = search_service.level
     @search_type = search_type
 
@@ -80,20 +79,24 @@ class SearchController < ApplicationController
     @global_search_duration_s = Benchmark.realtime do
       count = if @search_type == 'basic'
                 ApplicationRecord.with_fast_read_statement_timeout do
-                  search_service.search_results.formatted_count(scope)
+                  search_service.search_results.formatted_count(@scope)
                 end
               else
-                search_service.search_results.formatted_count(scope)
+                search_service.search_results.formatted_count(@scope)
               end
-
-      # Users switching tabs will keep fetching the same tab counts so it's a
-      # good idea to cache in their browser just for a short time. They can still
-      # clear cache if they are seeing an incorrect count but inaccurate count is
-      # not such a bad thing.
-      expires_in 1.minute
-
-      render json: { count: count }
     end
+
+    # Users switching tabs will keep fetching the same tab counts so it's a
+    # good idea to cache in their browser just for a short time. They can still
+    # clear cache if they are seeing an incorrect count but inaccurate count is
+    # not such a bad thing.
+    expires_in 1.minute
+
+    render json: { count: count }
+
+    record_search_apdex
+  ensure
+    record_search_error
   end
 
   def settings
@@ -121,16 +124,47 @@ class SearchController < ApplicationController
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
     @scope = params[:scope]
+    @search_type = search_type
+    @search_level = search_service.level
 
     # Cache the response on the frontend
     expires_in 1.minute
 
-    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter, scope: @scope))
+    results = nil
+    @global_search_duration_s = Benchmark.realtime do
+      results = search_autocomplete_opts(term, filter: @filter, scope: @scope)
+    end
+
+    render json: Gitlab::Json.dump(results)
+
+    record_search_apdex
+  ensure
+    record_search_error
   end
 
   def opensearch; end
 
   private
+
+  def record_search_apdex
+    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
+      elapsed: @global_search_duration_s,
+      search_type: @search_type,
+      search_level: @search_level,
+      search_scope: @scope
+    )
+  end
+
+  def record_search_error
+    # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
+    # with a 200 status code, but an empty @global_search_duration_s.
+    Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
+      error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
+      search_type: @search_type,
+      search_level: @search_level,
+      search_scope: @scope
+    )
+  end
 
   def authenticate?
     return false if action_name == 'opensearch'
@@ -158,25 +192,11 @@ class SearchController < ApplicationController
 
     return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
 
-    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
-      elapsed: @global_search_duration_s,
-      search_type: @search_type,
-      search_level: @search_level,
-      search_scope: @scope
-    )
+    record_search_apdex
 
     increment_search_counters
   ensure
-    if @search_type
-      # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
-      # with a 200 status code, but an empty @global_search_duration_s.
-      Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-        error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
-        search_type: @search_type,
-        search_level: @search_level,
-        search_scope: @scope
-      )
-    end
+    record_search_error
   end
 
   # overridden in EE
@@ -315,7 +335,7 @@ class SearchController < ApplicationController
   end
 
   def filter_params
-    params.permit(:confidential, :state, language: [])
+    params.permit(:confidential, :state, language: [], type: [])
   end
 
   def settings_for_project(project_id)

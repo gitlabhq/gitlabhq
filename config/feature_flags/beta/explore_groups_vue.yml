@@ -1,0 +1,10 @@
+---
+name: explore_groups_vue
+description: Migrate Explore > Groups to Vue
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/13791
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218063
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/585432
+milestone: '18.8'
+group: group::organizations
+type: beta
+default_enabled: false

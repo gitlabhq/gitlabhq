@@ -416,11 +416,14 @@ export default {
       </gl-tab>
 
       <template #toolbar-end>
-        <div class="gl-ml-auto gl-flex gl-gap-2">
+        <div class="gl-ml-auto gl-flex gl-items-center gl-gap-2">
           <gl-button
             v-gl-modal="$options.uploadCsvModalId"
             icon="media"
             data-testid="reassign-csv-button"
+            size="medium"
+            category="secondary"
+            type="button"
           >
             {{ s__('UserMapping|Reassign with CSV file') }}
           </gl-button>

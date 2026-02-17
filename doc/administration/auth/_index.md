@@ -6,13 +6,6 @@ description: Authentication methods such as LDAP, OmniAuth, SAML, SCIM, OIDC, an
 title: User identity
 ---
 
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
 GitLab integrates with a number of third party tools and protocols to better support authentication and authorization.
 
 Connect GitLab to your organization's existing identity infrastructure to centralize user

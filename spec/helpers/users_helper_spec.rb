@@ -202,7 +202,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
         stub_config_setting(impersonation_enabled: true)
       end
 
-      it 'allows the admin to impersonate a  user' do
+      it 'allows the admin to impersonate a user' do
         expect(helper.impersonation_enabled?).to eq(true)
       end
 
@@ -665,7 +665,8 @@ RSpec.describe UsersHelper, feature_category: :user_management do
         allow(helper).to receive(:current_user).and_return(nil)
       end
 
-      it 'executes no queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444713' do
+      it 'executes no queries',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25599' do
         sample = ActiveRecord::QueryRecorder.new do
           helper.load_max_project_member_accesses(projects)
         end
@@ -679,7 +680,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'preloads ProjectPolicy#lookup_access_level! and UsersHelper#max_member_project_member_access for current_user in two queries', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446111' do
+      it 'preloads ProjectPolicy#lookup_access_level! and UsersHelper#max_member_project_member_access for current_user in two queries', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25598' do
         preload_queries = ActiveRecord::QueryRecorder.new do
           helper.load_max_project_member_accesses(projects)
         end

@@ -64,14 +64,11 @@ job:
 - If the pipeline is a scheduled pipeline, the job is not added to the pipeline.
 - In all other cases, the job is added to the pipeline, with `when: on_success`.
 
-{{< alert type="warning" >}}
-
-If you use a `when` clause as the final rule (not including `when: never`), two
-simultaneous pipelines may start. Both push pipelines and merge request pipelines can
-be triggered by the same event (a push to the source branch for an open merge request).
-See how to [avoid duplicate pipelines](#avoid-duplicate-pipelines) for more details.
-
-{{< /alert >}}
+> [!warning]
+> If you use a `when` clause as the final rule (not including `when: never`), two
+> simultaneous pipelines may start. Both push pipelines and merge request pipelines can
+> be triggered by the same event (a push to the source branch for an open merge request).
+> See how to [avoid duplicate pipelines](#avoid-duplicate-pipelines) for more details.
 
 ### Run jobs for scheduled pipelines
 
@@ -121,6 +118,25 @@ job:
 The rule for this job compares all files and paths in the current branch
 recursively (`**/*`) against the `main` branch. The rule matches and the
 job runs only when there are changes to the files in the branch.
+
+## Run a job when a file is not present
+
+You can use `rules: exists` to configure a job to run only when a specific file does not exist.
+
+For example, to run a job in a merge request pipeline when the `example.yml` file does not exist:
+
+```yaml
+job:
+  script: echo "Hello, Rules!"
+  rules:
+    - exists:
+      - "example_dir/example.yml"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+```
+
+In this example, if the `example_dir/example.yml` file exists in the branch, the job does not run.
+If the file does not exist, the job can run in merge request pipelines.
 
 ## Common `if` clauses with predefined variables
 
@@ -342,7 +358,7 @@ runs in all cases except merge requests.
 ## Reuse rules in different jobs
 
 Use [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) to reuse rules in different
-jobs. You can combine `!reference` rules with regular job-defined rules. For example:
+jobs. You can combine `!reference` rules with rules defined in the job. For example:
 
 ```yaml
 .default_rules:

@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
+import { getDraft, updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
@@ -22,7 +22,15 @@ import projectPermissionsQuery from '../graphql/ai_permissions_for_project.query
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
 import namespacePathsQuery from '../graphql/namespace_paths.query.graphql';
-import { i18n, NEW_WORK_ITEM_IID, TRACKING_CATEGORY_SHOW, ROUTES } from '../constants';
+import {
+  i18n,
+  NEW_WORK_ITEM_IID,
+  DEFAULT_DESCRIPTION_TEMPLATE_NAME,
+  TRACKING_CATEGORY_SHOW,
+  CREATION_CONTEXT_LIST_ROUTE,
+  ROUTES,
+  WIDGET_TYPE_DESCRIPTION,
+} from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
 
@@ -58,6 +66,11 @@ export default {
       default: '',
     },
     workItemIid: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemWidgetsAutoSaveKey: {
       type: String,
       required: false,
       default: '',
@@ -257,9 +270,6 @@ export default {
         ? newWorkItemFullPath(this.fullPath, this.newWorkItemType)
         : this.fullPath;
     },
-    autosaveKey() {
-      return this.workItemId || `new-${this.workItemType}-description-draft`;
-    },
     canEdit() {
       return this.workItem?.userPermissions?.updateWorkItem || false;
     },
@@ -358,17 +368,22 @@ export default {
     },
   },
   mounted() {
-    const DEFAULT_TEMPLATE_NAME = 'default';
     const templateNameFromRoute =
       this.$route?.query[paramName] || this.$route?.query[oldParamNameFromPreWorkItems];
+    const redirectedFromList =
+      this.$route?.query.initialCreationContext === CREATION_CONTEXT_LIST_ROUTE;
     const templateName = !this.isNewWorkItemRoute
-      ? DEFAULT_TEMPLATE_NAME
-      : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
+      ? DEFAULT_DESCRIPTION_TEMPLATE_NAME
+      : templateNameFromRoute || DEFAULT_DESCRIPTION_TEMPLATE_NAME;
 
     // Ensure that template is set during Create Flow only if any of the following is true:
     // - Template name is present in URL.
     // - Description is empty.
-    if (this.isCreateFlow && (templateNameFromRoute || this.descriptionText.trim() === '')) {
+    // - Redirected from listing via expand button on modal
+    if (
+      this.isCreateFlow &&
+      (templateNameFromRoute || this.descriptionText.trim() === '' || redirectedFromList)
+    ) {
       this.selectedTemplate = {
         name: templateName,
         projectId: null,
@@ -382,18 +397,38 @@ export default {
         this.conflictedDescription = this.workItemDescription?.description;
       }
     },
+    updateDraftDescription(descriptionText = '') {
+      if (this.isCreateFlow) {
+        // Update context-aware draft description only during create
+        const draftData = JSON.parse(getDraft(this.workItemWidgetsAutoSaveKey));
+        if (draftData && draftData[WIDGET_TYPE_DESCRIPTION]) {
+          draftData[WIDGET_TYPE_DESCRIPTION].description = descriptionText;
+          updateDraft(this.workItemWidgetsAutoSaveKey, JSON.stringify(draftData));
+        }
+      } else {
+        // use workItemId during edit
+        updateDraft(this.workItemId, descriptionText);
+      }
+    },
+    clearDraftWorkItem() {
+      clearDraft(this.isCreateFlow ? this.workItemWidgetsAutoSaveKey : this.workItemId);
+    },
     async startEditing() {
       this.isEditing = true;
       this.wasEdited = true;
 
       if (this.createFlow || this.enableEditFromRedirect) {
-        this.descriptionText = this.workItemDescription?.description;
+        const draftWidgets = JSON.parse(getDraft(this.workItemWidgetsAutoSaveKey));
+        const descriptionWidget = draftWidgets ? draftWidgets[WIDGET_TYPE_DESCRIPTION] : {};
+        const draftDescription = descriptionWidget?.description || '';
+
+        this.descriptionText = draftDescription || this.workItemDescription?.description;
         if (this.enableEditFromRedirect) {
           updateHistory({ url: removeParams(['edit']) });
         }
         this.enableEditFromRedirect = false;
       } else {
-        const draftDescription = getDraft(this.autosaveKey) || '';
+        const draftDescription = getDraft(this.workItemId) || '';
         if (draftDescription.trim() !== '') {
           this.descriptionText = draftDescription;
         } else {
@@ -425,7 +460,7 @@ export default {
 
       this.isEditing = false;
       this.$emit('cancelEditing');
-      clearDraft(this.autosaveKey);
+      this.clearDraftWorkItem();
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;
     },
@@ -434,7 +469,7 @@ export default {
         return;
       }
 
-      updateDraft(this.autosaveKey, this.descriptionText);
+      this.updateDraftDescription(this.descriptionText);
     },
     async updateWorkItem(event = {}) {
       const { key } = event;
@@ -450,7 +485,7 @@ export default {
         );
       }
 
-      this.$emit('updateWorkItem', { clearDraft: () => clearDraft(this.autosaveKey) });
+      this.$emit('updateWorkItem', { clearDraft: () => this.clearDraftWorkItem() });
 
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;
@@ -464,7 +499,7 @@ export default {
       if (!onMountInit || !this.isCreateFlow) {
         this.$emit('updateDraft', this.descriptionText);
       }
-      updateDraft(this.autosaveKey, this.descriptionText);
+      this.updateDraftDescription(this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
       this.wasEdited = true;

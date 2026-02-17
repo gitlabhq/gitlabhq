@@ -145,6 +145,7 @@ You can use a custom Docker registry, instead of the GitLab registry, to host th
 
 Prerequisites:
 
+- The Maintainer or Owner role for the project.
 - The custom Docker registry must provide images for all the official analyzers.
 
 > [!note]
@@ -169,6 +170,10 @@ variables:
 You can disable all default SAST analyzers, leaving only [custom analyzers](#custom-analyzers)
 enabled.
 
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
 To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `"true"` in your
 `.gitlab-ci.yml` file.
 
@@ -186,6 +191,10 @@ variables:
 
 Analyzers are run automatically according to the
 source code languages detected. However, you can disable select analyzers.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
 
 To disable select analyzers, set the CI/CD variable `SAST_EXCLUDED_ANALYZERS` to a comma-delimited
 string listing the analyzers that you want to prevent running.

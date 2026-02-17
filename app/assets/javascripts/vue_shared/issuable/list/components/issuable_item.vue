@@ -29,10 +29,11 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -40,6 +41,7 @@ import {
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
+import { routeForWorkItemTypeName } from '~/work_items/router/utils';
 import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
 
 export default {
@@ -65,6 +67,9 @@ export default {
   inject: {
     isGroup: {
       default: false,
+    },
+    getWorkItemTypeConfiguration: {
+      default: null,
     },
   },
   props: {
@@ -136,32 +141,44 @@ export default {
     issuableIid() {
       return this.issuable.iid;
     },
+    workItemType() {
+      return this.issuable.workItemType?.name;
+    },
     workItemFullPath() {
       return (
         this.issuable.namespace?.fullPath || this.issuable.reference?.split(this.issuableSymbol)[0]
       );
     },
     isIncident() {
-      return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
-        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT
-      );
+      // Remove once we have the workItemConfig returning real data
+      const isTypeIncident =
+        this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT ||
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT;
+
+      return this.workItemConfig?.isIncidentManagement || isTypeIncident;
     },
     isServiceDeskIssue() {
-      const isServiceDeskIssue =
+      const isTypeServiceDeskIssue =
         (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
-          this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE) &&
+          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
         this.issuable?.author?.username === SUPPORT_BOT_USERNAME;
-      const isTicket =
+
+      const isTicketType =
         this.issuable?.type === WORK_ITEM_TYPE_ENUM_TICKET ||
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TICKET;
-      return isServiceDeskIssue || isTicket;
+        this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
+      return this.workItemConfig?.isServiceDesk || isTypeServiceDeskIssue || isTicketType;
     },
     isTestCase() {
       return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TEST_CASE ||
+        this.workItemType === WORK_ITEM_TYPE_NAME_TEST_CASE ||
         this.issuable?.type === WORK_ITEM_TYPE_ENUM_TEST_CASE
       );
+    },
+    workItemConfig() {
+      // Legacy applications may not have the configuration getter available
+      return this.getWorkItemTypeConfiguration
+        ? this.getWorkItemTypeConfiguration(this.workItemType)
+        : {};
     },
     author() {
       return this.issuable.author || {};
@@ -182,7 +199,7 @@ export default {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
     },
     type() {
-      return this.issuable.type || this.issuable.workItemType?.name.toUpperCase();
+      return this.issuable.type || this.workItemType?.toUpperCase();
     },
     labels() {
       return (
@@ -301,15 +318,15 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return this.issuable.__typename === 'MergeRequest';
     },
-    issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        // Use legacy view for unsupported work item types
-        // incidents and Service Desk issues
-        !this.isIncident &&
-        !this.isServiceDeskIssue &&
-        !this.isTestCase
-      );
+    isAllowedType() {
+      return !this.isIncident && !this.isServiceDeskIssue && !this.isTestCase;
+    },
+    useWorkItemTemplate() {
+      if (this.isGroup) return false;
+
+      // Use new config-based check first, fall back to legacy hardcoded checks for backward compatibility
+      // TODO: Add back !this.useIssueView once it is populated by the backend
+      return this.isAllowedType;
     },
     hiddenIssuableTitle() {
       if (this.isMergeRequest) {
@@ -350,10 +367,11 @@ export default {
       e.preventDefault();
       // Unsupported types incidents and Service Desk issues
       // should not open in drawer
-      if (this.isIncident || this.isServiceDeskIssue || this.isTestCase || !this.preventRedirect) {
+      if (!this.isAllowedType || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }
+
       this.$emit('select-issuable', {
         id: this.issuable.id,
         iid: this.issuableIid,
@@ -370,14 +388,19 @@ export default {
         fullPath: this.fullPath,
         webUrl: this.issuableLinkHref,
         isGroup: this.isGroup,
-        issueAsWorkItem: this.issueAsWorkItem,
+        issueAsWorkItem: this.useWorkItemTemplate,
       });
 
       if (shouldRouterNav) {
+        const { useWorkItemUrl } = this.glFeatures;
+        const workItemTypeParameter = useWorkItemUrl
+          ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
+          : routeForWorkItemTypeName(this.issuable.workItemType?.name);
         this.$router.push({
           name: 'workItem',
           params: {
             iid: this.issuableIid,
+            type: workItemTypeParameter,
           },
         });
       } else {
@@ -510,10 +533,11 @@ export default {
         </span>
       </div>
       <div class="issuable-info gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-gap-y-1">
-        <slot v-if="hasSlotContents('reference')" name="reference"></slot>
-        <span v-else data-testid="issuable-reference" class="issuable-reference">
-          {{ reference }}
-        </span>
+        <slot name="reference">
+          <span data-testid="issuable-reference" class="issuable-reference">
+            {{ reference }}
+          </span>
+        </slot>
         <span class="-gl-ml-2 gl-hidden @sm/panel:gl-block" aria-hidden="true">&middot;</span>
         <span class="issuable-authored -gl-ml-2 gl-hidden @sm/panel:gl-block">
           <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
@@ -533,20 +557,20 @@ export default {
               <span v-if="externalAuthor" data-testid="external-author"
                 >{{ externalAuthor }} {{ __('via') }}</span
               >
-              <slot v-if="hasSlotContents('author')" name="author"></slot>
-              <gl-link
-                v-else
-                :data-user-id="authorId"
-                :data-username="author.username"
-                :data-name="author.name"
-                :data-avatar-url="author.avatarUrl"
-                :href="author.webPath"
-                data-testid="issuable-author"
-                class="author-link js-user-link gl-text-sm !gl-text-subtle"
-                @click.stop
-              >
-                <span class="author">{{ author.name }}</span>
-              </gl-link>
+              <slot name="author">
+                <gl-link
+                  :data-user-id="authorId"
+                  :data-username="author.username"
+                  :data-name="author.name"
+                  :data-avatar-url="author.avatarUrl"
+                  :href="author.webPath"
+                  data-testid="issuable-author"
+                  class="author-link js-user-link gl-text-sm !gl-text-subtle"
+                  @click.stop
+                >
+                  <span class="author">{{ author.name }}</span>
+                </gl-link>
+              </slot>
             </template>
           </gl-sprintf>
           <gl-sprintf v-else :message="__('created %{timeAgo}')">

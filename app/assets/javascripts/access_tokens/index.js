@@ -8,7 +8,6 @@ import { parseRailsFormFields } from '~/lib/utils/forms';
 import { __, sprintf } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import AccessTokens from '~/vue_shared/access_tokens/components/access_tokens.vue';
-import GenerateFineGrainedTokenApp from '~/vue_shared/access_tokens/components/fine_grained_tokens/generate_token_app.vue';
 import AccessTokenTableApp from './components/access_token_table_app.vue';
 import InactiveAccessTokenTableApp from './components/inactive_access_token_table_app.vue';
 import ExpiresAtField from './components/expires_at_field.vue';
@@ -97,6 +96,7 @@ export const initExpiresAtField = () => {
 
   return new Vue({
     el,
+    name: 'ExpiresAtFieldRoot',
     render(h) {
       return h(ExpiresAtField, {
         props: {
@@ -151,9 +151,13 @@ export const initSharedAccessTokenApp = () => {
     accessTokenRevoke,
     accessTokenRotate,
     accessTokenShow,
+    accessTokenTableUrl,
   } = el.dataset;
 
-  const router = new VueRouter({ mode: 'history' });
+  const router = new VueRouter({
+    mode: 'history',
+    routes: [{ path: '*', component: { render: () => null } }],
+  });
 
   return new Vue({
     el,
@@ -169,6 +173,7 @@ export const initSharedAccessTokenApp = () => {
       accessTokenRevoke,
       accessTokenRotate,
       accessTokenShow,
+      accessTokenTableUrl,
     },
     render(createElement) {
       return createElement(AccessTokens, {
@@ -177,7 +182,6 @@ export const initSharedAccessTokenApp = () => {
           tokenName: accessTokenName,
           tokenDescription: accessTokenDescription,
           tokenScopes: accessTokenScopes && JSON.parse(accessTokenScopes),
-          useFineGrainedTokens: gon.features.fineGrainedPersonalAccessTokens,
         },
       });
     },
@@ -201,24 +205,12 @@ export const initTokensApp = () => {
 
   return new Vue({
     el,
+    name: 'TokensAppRoot',
     provide: {
       tokenTypes,
     },
     render(createElement) {
       return createElement(TokensApp);
-    },
-  });
-};
-
-export const initGenerateFineGrainedTokenApp = () => {
-  const el = document.getElementById('js-generate-fine-grained-token-app');
-
-  if (!el) return null;
-
-  return new Vue({
-    el,
-    render(createElement) {
-      return createElement(GenerateFineGrainedTokenApp);
     },
   });
 };

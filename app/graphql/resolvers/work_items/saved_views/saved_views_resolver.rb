@@ -7,7 +7,8 @@ module Resolvers
         argument :id,
           ::Types::GlobalIDType[::WorkItems::SavedViews::SavedView],
           required: false,
-          description: 'ID of the saved view.'
+          description: 'ID of the saved view. Required when requesting work_items, filters, or filter_warnings fields.',
+          prepare: ->(id, _ctx) { GitlabSchema.parse_gid(id).model_id }
 
         argument :search,
           GraphQL::Types::String,
@@ -27,8 +28,9 @@ module Resolvers
 
         type Types::WorkItems::SavedViews::SavedViewType.connection_type, null: true
 
-        def resolve(**_args)
-          ::WorkItems::SavedViews::SavedView.none
+        def resolve(**args)
+          ::WorkItems::SavedViews::SavedViewsFinder.new(user: current_user, namespace: object,
+            params: args).execute.preload_namespace
         end
       end
     end

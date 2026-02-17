@@ -1,10 +1,11 @@
 package git
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -22,7 +23,13 @@ func handleReceivePack(w *HTTPResponseWriter, r *http.Request, a *api.Response) 
 
 	gitProtocol := r.Header.Get("Git-Protocol")
 
-	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(r.Context(), a.GitalyServer)
+	// Extract correlation ID from X-Gitaly-Correlation-Id header and store in context
+	ctx := r.Context()
+	if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+		ctx = context.WithValue(ctx, gitaly.GitalyCorrelationIDKey, correlationID)
+	}
+
+	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
 	if err != nil {
 		return nil, fmt.Errorf("smarthttp.ReceivePack: %v", err)
 	}

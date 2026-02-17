@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Code Suggestions documentation for developers interested in contributing features or bugfixes.
 title: Code Suggestions development guidelines
@@ -12,7 +12,7 @@ The recommended setup for locally developing and debugging Code Suggestions is t
 
 - IDE Extension (for example, GitLab Workflow extension for VS Code).
 - Main application configured correctly (for example, GDK).
-- [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
+- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
 This should enable everyone to locally see how any change made in an IDE is sent to the main application to be transformed into a prompt before being sent to the respective model.
 

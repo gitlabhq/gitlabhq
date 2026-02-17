@@ -278,12 +278,9 @@ Review the invite errors and try again:
 - Alex Smith: Access level should be greater than or equal to Owner inherited membership from group Development
 ```
 
-{{< alert type="note" >}}
-
-You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group,
-as they have an inherited membership from the parent group.
-
-{{< /alert >}}
+> [!note]
+> You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group,
+> as they have an inherited membership from the parent group.
 
 You decide to keep Alex as an Owner in this subgroup as it is appropriate given
 their role for the organization. Select **Cancel** to cancel this invite.
@@ -380,14 +377,11 @@ in the User Experience subgroup.
 However, due to inherited permissions, adding Grayson Garcia to the User Experience
 subgroup also adds them to the UX Design nested subgroup as a Developer.
 
-{{< alert type="note" >}}
-
-Be mindful of inherited permissions for groups and subgroups.
-Add users to a minimum number of groups and subgroups.
-This approach minimizes the chance of inadvertently adding a
-user to a group they do not need to be a member of.
-
-{{< /alert >}}
+> [!note]
+> Be mindful of inherited permissions for groups and subgroups.
+> Add users to a minimum number of groups and subgroups.
+> This approach minimizes the chance of inadvertently adding a
+> user to a group they do not need to be a member of.
 
 1. Go to the User Experience subgroup members page.
 1. Add Frankie Ali and Hunter Silva as **Reporters**. Give Hunter the same expiration date.

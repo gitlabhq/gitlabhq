@@ -17,6 +17,7 @@ const initRunnerTokenExpirationIntervals = (selector = '#js-runner-token-expirat
 
   return new Vue({
     el,
+    name: 'ExpirationIntervalsRoot',
     render(h) {
       return h(ExpirationIntervals, {
         props: {

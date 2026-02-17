@@ -8,13 +8,10 @@ title: Efficient `IN` operator queries
 This document describes a technique for building efficient ordered database queries with the `IN`
 SQL operator and the usage of a GitLab utility module to help apply the technique.
 
-{{< alert type="note" >}}
-
-The described technique makes heavy use of
-[keyset pagination](pagination_guidelines.md#keyset-pagination).
-It's advised to get familiar with the topic first.
-
-{{< /alert >}}
+> [!note]
+> The described technique makes heavy use of
+> [keyset pagination](pagination_guidelines.md#keyset-pagination).
+> It's advised to get familiar with the topic first.
 
 ## Motivation
 
@@ -54,13 +51,10 @@ ORDER BY "issues"."created_at" ASC,
 LIMIT 20
 ```
 
-{{< alert type="note" >}}
-
-For pagination, ordering by the `created_at` column is not enough,
-we must add the `id` column as a
-[tie-breaker](pagination_performance_guidelines.md#tie-breaker-column).
-
-{{< /alert >}}
+> [!note]
+> For pagination, ordering by the `created_at` column is not enough,
+> we must add the `id` column as a
+> [tie-breaker](pagination_performance_guidelines.md#tie-breaker-column).
 
 The execution of the query can be largely broken down into three steps:
 
@@ -166,11 +160,8 @@ The technique can only optimize `IN` queries that satisfy the following requirem
 - The columns in the `ORDER BY` clause are distinct
   (the combination of the columns uniquely identifies one particular row in the table).
 
-{{< alert type="warning" >}}
-
-This technique does not improve the performance of the `COUNT(*)` queries.
-
-{{< /alert >}}
+> [!warning]
+> This technique does not improve the performance of the `COUNT(*)` queries.
 
 ## The `InOperatorOptimization` module
 
@@ -180,14 +171,11 @@ the efficient `IN` query technique described in the previous section.
 To build optimized, ordered `IN` queries that meet [the requirements](#requirements),
 use the utility class `QueryBuilder` from the module.
 
-{{< alert type="note" >}}
-
-The generic keyset pagination module introduced in the merge request
-[51481](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51481)
-plays a fundamental role in the generalized implementation of the technique
-in `Gitlab::Pagination::Keyset::InOperatorOptimization`.
-
-{{< /alert >}}
+> [!note]
+> The generic keyset pagination module introduced in the merge request
+> [51481](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51481)
+> plays a fundamental role in the generalized implementation of the technique
+> in `Gitlab::Pagination::Keyset::InOperatorOptimization`.
 
 ### Basic usage of `QueryBuilder`
 
@@ -591,11 +579,8 @@ FROM
 LIMIT 20
 ```
 
-{{< alert type="note" >}}
-
-To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
-
-{{< /alert >}}
+> [!note]
+> To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
 
 #### Using calculated `ORDER BY` expression
 
@@ -683,12 +668,9 @@ Ordering records by mixed columns where one or more columns are coming from `JOI
 works with limitations. It requires extra configuration via Common Table Expression (CTE). The trick is to use a
 non-materialized CTE to act as a "fake" table which exposes all required columns.
 
-{{< alert type="note" >}}
-
-The query performance might not improve compared to the standard `IN` query. Always
-check the query plan.
-
-{{< /alert >}}
+> [!note]
+> The query performance might not improve compared to the standard `IN` query. Always
+> check the query plan.
 
 Example: order issues by `projects.name, issues.id` within the group hierarchy
 
@@ -760,15 +742,12 @@ Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 10
 end
 ```
 
-{{< alert type="note" >}}
-
-The query loads complete database rows from the disk. This may cause increased I/O and slower
-database queries. Depending on the use case, the primary key is often only
-needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
-`id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
-loaded. In this case, you can omit the `finder_query` parameter.
-
-{{< /alert >}}
+> [!note]
+> The query loads complete database rows from the disk. This may cause increased I/O and slower
+> database queries. Depending on the use case, the primary key is often only
+> needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
+> `id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
+> loaded. In this case, you can omit the `finder_query` parameter.
 
 Example for loading the `ORDER BY` columns only:
 
@@ -978,12 +957,9 @@ Order the keyset arrays according to the original `ORDER BY` clause with `LIMIT 
 `UNNEST [] WITH ORDINALITY` table function. The function locates the "lowest" keyset cursor
 values and gives us the array position. These cursor values are used to locate the record.
 
-{{< alert type="note" >}}
-
-At this point, we haven't read anything from the database tables, because we relied on
-fast index-only scans.
-
-{{< /alert >}}
+> [!note]
+> At this point, we haven't read anything from the database tables, because we relied on
+> fast index-only scans.
 
 | `project_ids` | `created_at_values` | `id_values` |
 | ------------- | ------------------- | ----------- |
@@ -1124,10 +1100,7 @@ Performance comparison for the `gitlab-org` group:
 | `IN` query           | 240833                        | 1.2s                    | 660ms                 |
 | Optimized `IN` query | 9783                          | 450ms                   | 22ms                  |
 
-{{< alert type="note" >}}
-
-Before taking measurements, the group lookup query was executed separately to make
-the group data available in the buffer cache. Since it's a frequently called query, it
-hits many shared buffers during the query execution in the production environment.
-
-{{< /alert >}}
+> [!note]
+> Before taking measurements, the group lookup query was executed separately to make
+> the group data available in the buffer cache. Since it's a frequently called query, it
+> hits many shared buffers during the query execution in the production environment.

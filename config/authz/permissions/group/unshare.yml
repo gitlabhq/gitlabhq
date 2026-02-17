@@ -1,0 +1,5 @@
+---
+name: unshare_group
+description: Grants the ability to unshare a group
+boundaries:
+  - group

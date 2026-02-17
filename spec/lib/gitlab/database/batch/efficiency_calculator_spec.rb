@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Batch::EfficiencyCalculator, feature_category: :database do
   let(:batch_size) { 10_000 }
-  let(:record) do
+  let(:worker) do
     instance_double(Gitlab::Database::BackgroundOperation::Worker, batch_size: batch_size, max_batch_size: 50_000)
   end
 
-  let(:calculator) { described_class.new(record: record) }
+  let(:calculator) { described_class.new(worker: worker) }
 
   describe '#optimized_batch_size' do
     subject(:optimized_size) { calculator.optimized_batch_size }

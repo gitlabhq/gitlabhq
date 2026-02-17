@@ -24,12 +24,9 @@ If users add or remove keys frequently, the operating system may not cache the
 Instead of using the `authorized_keys` file, you can configure GitLab Shell to look up
 SSH keys. It is faster because the lookup is indexed in the GitLab database.
 
-{{< alert type="note" >}}
-
-For standard (non-deploy key) users, consider using [SSH certificates](ssh_certificates.md).
-They are faster than database lookups, but are not a drop-in replacement for the `authorized_keys` file.
-
-{{< /alert >}}
+> [!note]
+> For standard (non-deploy key) users, consider using [SSH certificates](ssh_certificates.md).
+> They are faster than database lookups, but are not a drop-in replacement for the `authorized_keys` file.
 
 ## Fast lookup is required for Geo
 
@@ -80,8 +77,9 @@ to use fast lookup automatically.
 
 Prerequisites:
 
-- OpenSSH 6.9 or later is required because `AuthorizedKeysCommand` must
+- OpenSSH 6.9 or later, because `AuthorizedKeysCommand` must
   accept a fingerprint. To check your version, run `sshd -V`.
+- Administrator access.
 
 To set up fast lookup with OpenSSH:
 

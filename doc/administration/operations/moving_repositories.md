@@ -38,8 +38,7 @@ To move repositories:
 1. Schedule repository moves for projects, snippets, and group.
 1. If you use [Geo](../geo/_index.md),
    [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-resources-for-the-selected-component).
-1. When using Horizontal Pod Autoscaler on Sidekiq pods, you should configure HPA with fixed replicas
-   (`minReplicas` = `maxReplicas`) to prevent scaling during migration.
+1. When using Horizontal Pod Autoscaler on Sidekiq pods, [disable HPA for Sidekiq pods](https://docs.gitlab.com/charts/gitlab/sidekiq/#disable-hpa-scaling) to prevent scaling during migration.
 
 ### Move projects
 
@@ -47,7 +46,7 @@ You can move all projects or individual projects.
 
 To move all projects by using the API:
 
-1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard)
+1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#create-repository-storage-moves-for-all-projects-on-a-storage-shard)
    using the API. For example:
 
    ```shell
@@ -57,7 +56,7 @@ To move all projects by using the API:
         "https://gitlab.example.com/api/v4/project_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
+1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#list-all-project-repository-storage-moves)
    using the API. The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.
@@ -81,7 +80,7 @@ To move all projects by using the API:
 1. Repeat for each storage as required.
 
 If you don't want to move all projects, follow the instructions for
-[moving individual projects](../../api/project_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-project).
+[moving individual projects](../../api/project_repository_storage_moves.md#create-a-repository-storage-move-for-a-project).
 
 ### Move snippets
 
@@ -98,7 +97,7 @@ To move all snippets by using the API:
         "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#retrieve-all-snippet-repository-storage-moves).
+1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#list-all-snippet-repository-storage-moves).
    The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.
@@ -130,7 +129,7 @@ You can move all groups or individual groups.
 
 To move all groups by using the API:
 
-1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard).
+1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#create-group-repository-storage-moves-for-a-storage-shard).
    For example:
 
    ```shell
@@ -140,7 +139,7 @@ To move all groups by using the API:
         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves).
+1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#list-all-group-repository-storage-moves).
    The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.
@@ -157,7 +156,7 @@ To move all groups by using the API:
 1. Repeat for each storage as required.
 
 If you don't want to move all groups, follow the instructions for
-[individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group).
+[individual groups](../../api/group_repository_storage_moves.md#create-a-group-repository-storage-move).
 
 ## Migrate to another GitLab instance
 
@@ -174,12 +173,9 @@ In this case, there are ways you can copy all your repositories from `/var/opt/g
 - The target directory contains an outdated copy of the repositories.
 - When you have thousands of repositories.
 
-{{< alert type="warning" >}}
-
-Each of the approaches can or does overwrite data in the target directory `/mnt/gitlab/repositories`. You must correctly
-specify the source and the target.
-
-{{< /alert >}}
+> [!warning]
+> Each of the approaches can or does overwrite data in the target directory `/mnt/gitlab/repositories`. You must correctly
+> specify the source and the target.
 
 ### Use backup and restore (recommended)
 
@@ -233,12 +229,9 @@ You can use a `rsync` to move repositories if:
 - The target directory already contains a partial or outdated copy of the repositories, which means copying all the data
   again with `tar` is inefficient.
 
-{{< alert type="warning" >}}
-
-You must use the `--delete` option when using `rsync`. Using `rsync` without `--delete` can cause data loss and
-repository corruption. For more information, see [issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
-
-{{< /alert >}}
+> [!warning]
+> You must use the `--delete` option when using `rsync`. Using `rsync` without `--delete` can cause data loss and
+> repository corruption. For more information, see [issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 The `/.` in the following command is very important, otherwise you can get the wrong directory structure in the target
 directory. If you want to see progress, replace `-a` with `-av`.

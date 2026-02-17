@@ -11,6 +11,12 @@ module Ci
         end
       end
 
+      def drop_incomplete(builds, failure_reason:)
+        fetch(builds) do |build|
+          drop_incomplete_build :outdated, build, failure_reason
+        end
+      end
+
       def drop_stuck(builds, failure_reason:)
         fetch(builds) do |build|
           break unless build.stuck?
@@ -44,6 +50,25 @@ module Ci
         build.doom!
 
         track_exception_for_build(ex, build)
+      end
+
+      def drop_incomplete_build(type, build, reason)
+        log_dropping_message(type, build, reason)
+        Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
+          # retry_lock resets the build on retry. Builds only lock on status, so
+          # if we retry then the status has changed. This saves us a rescue +
+          # query below.
+          b.drop!(reason) unless b.complete?
+        end
+      rescue StandardError => ex
+        # If this causes many race conditions we will need a common lock of
+        # build status updates and this method.
+        # Errors are expected when jobs complete during timeout processing.
+        # Only track exceptions for incomplete builds as those are unexpected.
+        unless build.reset.complete?
+          track_exception_for_build(ex, build)
+          build.doom!
+        end
       end
 
       def track_exception_for_build(ex, build)

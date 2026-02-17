@@ -12,6 +12,7 @@ import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
@@ -22,7 +23,13 @@ import {
   findStatusWidget,
   getDisplayReference,
 } from '../../utils';
-import { STATE_OPEN, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
+import { routeForWorkItemTypeName } from '../../router/utils';
+import {
+  STATE_OPEN,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+} from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
@@ -50,6 +57,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     preventRouterNav: {
       default: false,
@@ -187,11 +195,17 @@ export default {
       if (shouldDefaultNavigate || !hasListRoute) {
         this.$emit('click', e);
       } else {
+        const { useWorkItemUrl } = this.glFeatures;
+        const workItemTypeName = workItem.workItemType.name.toLowerCase();
+        const workItemTypeParameter = useWorkItemUrl
+          ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
+          : routeForWorkItemTypeName(workItemTypeName);
         e.preventDefault();
         this.$router.push({
           name: 'workItem',
           params: {
             iid: workItem.iid,
+            type: workItemTypeParameter,
           },
         });
       }

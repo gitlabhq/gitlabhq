@@ -161,11 +161,8 @@ To ensure agent for Kubernetes is properly installed:
     make test
    ```
 
-   {{< alert type="note" >}}
-
-   You might also need to do this in the `<GDK_ROOT>/gitlab-k8s-agent`, which is used by the GDK.
-
-   {{< /alert >}}
+   > [!note]
+   > You might also need to do this in the `<GDK_ROOT>/gitlab-k8s-agent`, which is used by the GDK.
 
 When `make test` passes, agent for Kubernetes is ready to use.
 
@@ -177,11 +174,8 @@ When `make test` passes, agent for Kubernetes is ready to use.
    1. Create a private project named `gitlab-agent-configurations` with a README.
    1. In the project, create a file at `.gitlab/agents/remotedev/config.yaml` with your `agentk` configuration.
 
-   {{< alert type="note" >}}
-
-   When you create or change this file, you must start or restart `agentk` described in step 4.
-
-   {{< /alert >}}
+   > [!note]
+   > When you create or change this file, you must start or restart `agentk` described in step 4.
 
 1. Register `agentk` with GitLab:
 
@@ -325,13 +319,10 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
                 image: "registry.gitlab.com/gitlab-org/workspaces/gitlab-workspaces-docs/ubuntu:04@sha256:07590ca30ebde8a5339c3479404953e43ee70e7e9e0c2ede2770684010ddf7fe"
       ```
 
-      {{< alert type="note" >}}
-
-      The SHA256 is required to ensure the pulled container is the AMD64 architecture container.
-      The GitLab VS Code fork for Workspaces does not support other architectures yet.
-      To track this, see [issue 392693](https://gitlab.com/gitlab-org/gitlab/-/issues/392693).
-
-      {{< /alert >}}
+      > [!note]
+      > The SHA256 is required to ensure the pulled container is the AMD64 architecture container.
+      > The GitLab VS Code fork for Workspaces does not support other architectures yet.
+      > To track this, see [issue 392693](https://gitlab.com/gitlab-org/gitlab/-/issues/392693).
 
 1. Create a new workspace:
 
@@ -339,12 +330,9 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
    1. Select **New Workspace**.
    1. Choose the project with your devfile (or search for `shell` to find GitLab Shell).
 
-      {{< alert type="note" >}}
-
-      If you get an error about a missing agent configuration, check your `agentk` debug logs to ensure
-      that your `agentk` successfully connects and reads your agent configuration file.
-
-      {{< /alert >}}
+      > [!note]
+      > If you get an error about a missing agent configuration, check your `agentk` debug logs to ensure
+      > that your `agentk` successfully connects and reads your agent configuration file.
 
    1. Choose your cluster agent.
    1. If you skipped the devfile step, select **Use GitLab default devfile**.
@@ -354,13 +342,10 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
 
 1. To enable Extensions Marketplace for Web IDE in a workspace, see [manage extensions](../../user/project/web_ide/_index.md#manage-extensions).
 
-   {{< alert type="note" >}}
-
-   By default, the GitLab VS Code fork for Workspaces server uses [Open VSX](https://open-vsx.org/)
-   Extensions Marketplace. These settings are configured during a workspace startup in the `product.json`
-   file. This file is located in the `${GL_EDITOR_VOLUME_DIR}/code-server` directory.
-
-   {{< /alert >}}
+   > [!note]
+   > By default, the GitLab VS Code fork for Workspaces server uses [Open VSX](https://open-vsx.org/)
+   > Extensions Marketplace. These settings are configured during a workspace startup in the `product.json`
+   > file. This file is located in the `${GL_EDITOR_VOLUME_DIR}/code-server` directory.
 
    To customize the Extensions Marketplace configuration, these are the relevant properties in the
    `product.json` file:
@@ -385,7 +370,7 @@ To enable AI features in workspaces:
    GitLab Self-Managed Ultimate Subscription with GitLab Duo Pro add-on license yourself, follow the cloud license
    with CustomersDot approach.
 
-1. Configure your instance to use the staging AI gateway (`https://cloud.staging.gitlab.com/ai`).
+1. Configure your instance to use the staging AI Gateway (`https://cloud.staging.gitlab.com/ai`).
 
 For workspaces, you must enable GitLab Duo Chat features. They are only available with a GitLab Duo Enterprise
 license. You cannot provision this license for yourself through the staging Customers Portal.
@@ -395,22 +380,16 @@ To upgrade your subscription from GitLab Duo Pro to GitLab Duo Enterprise, submi
 If configured correctly, in the **Admin** > **GitLab Duo Pro** settings, the message,
 **No health problems detected.** is displayed.
 
-{{< alert type="note" >}}
-
-While using GitLab Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
-It is a common error response from the GitLab Duo API when using the staging gateway.
-
-{{< /alert >}}
+> [!note]
+> While using GitLab Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
+> It is a common error response from the GitLab Duo API when using the staging gateway.
 
 ## IDE Setup
 
 ### RubyMine
 
-{{< alert type="note" >}}
-
-It is planned to move some of the information in this section to the [RubyMine](https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/individual-ides/rubymine/) handbook section, or ideally shared with SCM.
-
-{{< /alert >}}
+> [!note]
+> It is planned to move some of the information in this section to the [RubyMine](https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/individual-ides/rubymine/) handbook section, or ideally shared with SCM.
 
 #### Scopes
 
@@ -451,14 +430,11 @@ scripts/remote_development/run-smoke-test-suite.sh
 - There is an end to end test that verifies the creation of a new running workspace.
 - The test works by running UI actions on a running installation of a test GitLab instance, using GDK, KAS, and `agentk`.
 
-{{< alert type="note" >}}
-
-The test does not set up or teardown any of these components as a part of its execution.
-
-At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
-of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
-
-{{< /alert >}}
+> [!note]
+> The test does not set up or teardown any of these components as a part of its execution.
+> 
+> At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
+> of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
 
 To run the test:
 
@@ -577,11 +553,8 @@ To do this:
 | Get pod details             | `kubectl -n NAMESPACE get pods POD_NAME -o yaml` |
 | List API resources          | `kubectl api-resources` |
 
-{{< alert type="note" >}}
-
-If you omit `-n NAMESPACE` from commands, `kubectl` uses the current namespace.
-
-{{< /alert >}}
+> [!note]
+> If you omit `-n NAMESPACE` from commands, `kubectl` uses the current namespace.
 
 #### Logs and debugging
 
@@ -623,12 +596,9 @@ Run commands in the workspace container (example with log tailing):
 PODNAME=$(kubectl get po -o name | cut -d/ -f2) && CONTAINER_NAME=$(kubectl get pod $PODNAME -o jsonpath='{range .spec.containers[*]}{.name}{"\t"}{range .env[*]}{.name}{","}{end}{"\n"}{end}' | grep GL_TOOLS_DIR | cut -f 1) && kubectl exec $PODNAME -c $CONTAINER_NAME -it -- /bin/bash -c "tail -n 100 -f /tmp/*.log"
 ```
 
-{{< alert type="note" >}}
-
-These commands run in the current namespace. Use `kubens` to switch to the workspace namespace before
-running them.
-
-{{< /alert >}}
+> [!note]
+> These commands run in the current namespace. Use `kubens` to switch to the workspace namespace before
+> running them.
 
 #### Cleanup operations
 
@@ -650,11 +620,8 @@ Delete all workspace namespaces:
 kubectl get namespace | grep gl- | cut -f1 -d" " | xargs -I {} kubectl delete namespace {}
 ```
 
-{{< alert type="note" >}}
-
-This cleanup may take time. If it stalls, restart Rancher Desktop and try again.
-
-{{< /alert >}}
+> [!note]
+> This cleanup may take time. If it stalls, restart Rancher Desktop and try again.
 
 #### Additional resources
 

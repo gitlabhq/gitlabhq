@@ -25,7 +25,7 @@ find it in the server you installed GitLab, under `/etc/gitlab/initial_root_pass
 
 ## Email and notifications
 
-- [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html): Configure SMTP
+- [SMTP](https://docs.gitlab.com/omnibus/settings/smtp/): Configure SMTP
   for proper email notifications support.
 - [Incoming email](../administration/incoming_email.md): Configure incoming email
   so that users can use email to reply to comments, create new issues and merge requests, etc.

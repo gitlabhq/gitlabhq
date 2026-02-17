@@ -7,7 +7,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let!(:user)         { create(:user) }
-  let!(:group)        { create(:group_with_deletion_schedule, deleted_at: Time.current) }
+  let!(:group)        { create(:group_with_deletion_schedule) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group) }
@@ -151,21 +151,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   describe 'synchronous delete' do
     it_behaves_like 'group destruction', false
 
-    it 'marks the group as deleted', :freeze_time do
-      expect(group).to receive(:update_attribute).with(:deleted_at, Time.current)
-
-      destroy_group(group, user, false)
-    end
-
     context 'when destroying the group throws an error' do
       before do
         allow(group).to receive(:destroy).and_raise(StandardError)
-      end
-
-      it 'unmarks the group as delete' do
-        expect { destroy_group(group, user, false) }.to raise_error(StandardError)
-
-        expect(group.deleted_at).to be_nil
       end
 
       context 'when group state is deletion_scheduled' do
@@ -275,6 +263,29 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     it 'returns a more descriptive error message' do
       expect { destroy_group(group, user, false) }
         .to raise_error(described_class::DestroyError, "You can't delete this group because you're blocked.")
+    end
+  end
+
+  context 'when user does not have authorization to delete the group' do
+    let(:unauthorized_user) { create(:user) }
+
+    it 'returns an unauthorized error response and does not mark deletion in progress' do
+      expect(group).not_to be_member(unauthorized_user)
+
+      result = destroy_group(group, unauthorized_user, false)
+
+      expect(result).to eq(described_class::UnauthorizedError)
+      expect(group.reload).not_to be_deletion_in_progress
+      expect(group).not_to be_deletion_scheduled
+    end
+
+    it 'returns an unauthorized error response for async_execute' do
+      expect(group).not_to be_member(unauthorized_user)
+
+      result = destroy_group(group, unauthorized_user, true)
+
+      expect(result).to eq(described_class::UnauthorizedError)
+      expect(group.reload).not_to be_deletion_in_progress
     end
   end
 

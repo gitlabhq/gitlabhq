@@ -28,6 +28,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       title_html
       userPermissions
       widgets
+      features
       work_item_type
       created_at
       updated_at
@@ -71,7 +72,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
   describe 'fields with :ai_workflows scope' do
     expected_scoped_fields = %w[
       author closedAt confidential createdAt description id iid imported namespace project
-      state title updatedAt userDiscussionsCount widgets workItemType archived
+      state title updatedAt userDiscussionsCount widgets features workItemType archived
     ]
 
     expected_scoped_fields.each do |field_name|

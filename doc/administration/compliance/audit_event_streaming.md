@@ -38,12 +38,9 @@ incoming data.
 
 Audit events are sent using the POST request method protocol supported by HTTP.
 
-{{< alert type="warning" >}}
-
-Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust
-the streaming destination.
-
-{{< /alert >}}
+> [!warning]
+> Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust
+> the streaming destination.
 
 Manage streaming destinations for an entire instance.
 

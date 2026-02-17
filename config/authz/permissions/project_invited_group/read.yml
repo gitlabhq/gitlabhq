@@ -1,0 +1,5 @@
+---
+name: read_project_invited_group
+description: Grants the ability to read invited groups for a project
+boundaries:
+  - project

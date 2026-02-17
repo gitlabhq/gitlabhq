@@ -2,14 +2,14 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duoチャットのベストプラクティス
+title: GitLab Duo Chatのベストプラクティス
 ---
 
-質問でGitLab Duo Chatのプロンプトを実行する際は、具体的な例と具体的なガイダンスを得るために、以下のベストプラクティスを適用してください。
+質問でGitLab Duo Chatのプロンプトを実行する際は、具体的な例とガイダンスを得るために、次のベストプラクティスを適用してください。
 
 ## 会話をする {#have-a-conversation}
 
-チャットは検索フォームではなく、会話のように扱います。検索のような質問から始め、関連する質問でスコープを絞り込みます。やり取りを通じてコンテキストをビルドします。
+チャットは検索フォームではなく、会話のように扱います。検索のような質問から始め、関連する質問でスコープを絞り込みます。やり取りを通じてコンテキストを構築します。
 
 たとえば、次のように質問します:
 
@@ -17,15 +17,21 @@ title: GitLab Duoチャットのベストプラクティス
 c# start project best practices
 ```
 
-次に、次の手順を実行します:
+その後、次の手順を実行します:
 
 ```plaintext
 Please show the project structure for the C# project.
 ```
 
+GitLab Duo Chat (エージェント型)エージェント型を使用すると、複数のプロジェクトを含む会話ができます。
+
+```plaintext
+Tell me the difference between project A and project B.
+```
+
 ## プロンプトを調整する {#refine-the-prompt}
 
-より良い応答を得るには、より多くのコンテキストを事前に提供します。支援が必要なことのスコープ全体を考え抜き、1つのプロンプトに含めます。
+より良い応答を得るには、より多くのコンテキストを最初に提供します。どの範囲でサポートが必要かを十分に考え、1つのプロンプトに含めます。
 
 ```plaintext
 How can I get started creating an empty C# console application in VS Code?
@@ -33,9 +39,17 @@ Please show a .gitignore and .gitlab-ci.yml configuration with steps for C#,
 and add security scanning for GitLab.
 ```
 
+または、GitLab Duo Chat (エージェント型)を使用します:
+
+```plaintext
+Create an empty C# console application.
+Show a .gitignore and .gitlab-ci.yml configuration with steps for C#,
+and add security scanning for GitLab.
+```
+
 ## プロンプトパターンに従う {#follow-prompt-patterns}
 
-プロンプトを問題文、支援のリクエストとして構成し、具体性を追加します。すべてを事前に質問する必要があると感じないでください。
+プロンプトを問題の説明とサポートの依頼として構成し、その後具体性を追加します。最初の質問にすべてを含める必要はありません。
 
 ```plaintext
 I need to fulfill compliance requirements. How can I get started with Codeowners and approval rules?
@@ -47,6 +61,14 @@ I need to fulfill compliance requirements. How can I get started with Codeowners
 Please show an example for Codeowners with different teams: backend, frontend, release managers.
 ```
 
+または、GitLab Duo Chat (エージェント型)を使用します:
+
+```plaintext
+Create Codeowners with different teams: backend, frontend, release managers.
+
+The group names are "backend-dev," "frontend-dev," and "release-man."
+```
+
 ## ローコンテキストコミュニケーションを使用する {#use-low-context-communication}
 
 コードが選択されていても、何も表示されていないかのようにコンテキストを提供します。言語、フレームワーク、要件などの要素を具体的に指定します。
@@ -56,23 +78,31 @@ When implementing a pure virtual function in an inherited C++ class,
 should I use virtual function override, or just function override?
 ```
 
-## 繰り返し {#repeat-yourself}
+このコンテキストは、複数のソースから自律的に検索し、取得する情報を組み合わせるため、GitLab Duo Chat (エージェント型)を使用する場合は重要ではありません。ただし、Chatが可能な限り効率的に動作するように、明示的にする必要があります。
 
-予期しない、または奇妙な応答が得られた場合は、質問を言い換えてみてください。さらにコンテキストを追加します。
+## 繰り返す {#repeat-yourself}
+
+予期しない応答、または的外れな応答が得られた場合は、質問を言い換えてみてください。さらにコンテキストを追加します。
 
 ```plaintext
 How can I get started creating an C# application in VS Code?
 ```
 
-次に、次の手順を実行します。
+次の手順を実行します。
 
 ```plaintext
 How can I get started creating an empty C# console application in VS Code?
 ```
 
+または、GitLab Duo Chat (エージェント型)を使用します:
+
+```plaintext
+Create an empty C# console application in my test project.
+```
+
 ## 辛抱強く待つ {#be-patient}
 
-はい/いいえの質問は避けてください。まず一般的に始めて、必要に応じて詳細を指定します。
+はい/いいえで答えられる質問は避けてください。まず一般的な内容から始めて、必要に応じて詳細を指定します。
 
 ```plaintext
 Explain labels in GitLab. Provide an example for efficient usage with issue boards.
@@ -80,11 +110,11 @@ Explain labels in GitLab. Provide an example for efficient usage with issue boar
 
 ## 必要なときにリセットする {#reset-when-needed}
 
-チャットが間違ったトラックで停止した場合は、`/reset`を使用します。
+Chatが間違った方向に進んでしまった場合は、`/reset`を使用します。
 
 ## スラッシュコマンドプロンプトを調整する {#refine-slash-command-prompts}
 
-基本的なスラッシュコマンドを超えてください。より具体的な提案でそれらを使用します。
+基本的なスラッシュコマンドを使うのではなく、より具体的な提案でスラッシュコマンドを使用してください。
 
 ```plaintext
 /refactor into a multi-line written string. Show different approaches for all C++ standards.
@@ -96,8 +126,10 @@ Explain labels in GitLab. Provide an example for efficient usage with issue boar
 /explain why this code has multiple vulnerabilities
 ```
 
+スラッシュコマンドは引き続きGitLab Duo Chat (エージェント型)で機能しますが、GitLab Duo Chat (Classic)ほど重要ではありません。Chatにコードの説明またはコードをリファクタリングするように依頼したり、プロジェクトを検索したり、ファイルを作成および編集したり、複数のソースからの情報を同時に分析したりできます。
+
 ## 関連トピック {#related-topics}
 
-- GitLab Duoチャットのベストプラクティス[ブログ記事](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
-- [チャットの使用方法に関する動画](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ)
-- [GitLab Duoチャット学習セッションをリクエストする](https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/476)
+- GitLab Duo Chatのベストプラクティス[ブログ記事](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
+- [Chatの使用方法に関する動画](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ)
+- [GitLab Duo Chat学習セッションをリクエストする](https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/476)

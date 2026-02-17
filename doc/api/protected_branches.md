@@ -186,9 +186,9 @@ The following example response includes:
 ]
 ```
 
-## Get a single protected branch or wildcard protected branch
+## Retrieve a protected branch or wildcard protected branch
 
-Get a single protected branch or wildcard protected branch.
+Retrieves a specified protected branch or wildcard protected branch.
 
 ```plaintext
 GET /projects/:id/protected_branches/:name
@@ -713,7 +713,7 @@ This configuration allows these users to unprotect the branch:
 
 - The user with ID `123`.
 - Members of the group with ID `456`.
-- Users with at least the Maintainer role (access level 40).
+- Users with the Maintainer or Owner role (access level 40).
 
 ## Unprotect repository branches
 

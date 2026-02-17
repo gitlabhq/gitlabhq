@@ -38,9 +38,10 @@ module Resolvers
       alias_method :repository, :object
 
       def resolve(**arguments)
-        commits = repository.list_commits(**list_commits_arguments(arguments.dup)).presence&.commits || []
+        response = repository.list_commits(**list_commits_arguments(arguments.dup))
+        end_cursor = Base64.encode64(response.next_cursor) if response.next_cursor
 
-        Gitlab::Graphql::ExternallyPaginatedArray.new(*page_info_cursors(commits), *commits)
+        Gitlab::Graphql::ExternallyPaginatedArray.new(nil, end_cursor, *response.commits)
       rescue Gitlab::Git::CommandError => e
         raise Gitlab::Graphql::Errors::BaseError.new(
           "ListCommits: Gitlab::Git::CommandError",
@@ -52,7 +53,6 @@ module Resolvers
 
       def list_commits_arguments(arguments)
         limit = [arguments.delete(:first), field.max_page_size || context.schema.default_max_page_size].compact.min # rubocop:disable Graphql/Descriptions -- This is incorrectly flagging `field`. We should ensure that there's nothing before `field` in the cop
-
         page_token = arguments.delete(:after)
 
         arguments[:pagination_params] = {}.tap do |pagination_params|
@@ -61,30 +61,6 @@ module Resolvers
         end
 
         arguments
-      end
-
-      # Each cursor is a base64 encoded SHA value. The previous_cursor is
-      # generated from the first commit in the list and the next_cursor is
-      # generated from the last commit in the list.
-      #
-      # `commits` could be:
-      # 1. [] - an empty list.
-      # 2. [Commit(#1)] - a list with a single item.
-      # 3. [Commit(#1), ..., Commit(#15)] - a list with multiple items.
-      #
-      # Returns => [previous_cursor, next_cursor]
-      # 1. [nil, nil]
-      # 2. [SHA#1, SHA#1]
-      # 3. [SHA#1, SHA#15]
-      def page_info_cursors(commits)
-        return [nil, nil] if commits.empty?
-        return Array.new(2, encode_token(commits.first.sha)) if commits.length == 1
-
-        [encode_token(commits.first.sha), encode_token(commits.last.sha)]
-      end
-
-      def encode_token(sha)
-        Base64.encode64(sha)
       end
     end
   end

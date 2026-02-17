@@ -10,6 +10,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'MergeScheduleInputRoot',
     render(h) {
       return h(MergeScheduleInput, {
         props: {

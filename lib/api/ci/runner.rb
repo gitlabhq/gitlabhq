@@ -287,7 +287,7 @@ module API
         put '/:id', urgency: :low, feature_category: :continuous_integration do
           check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
-          job = authenticate_job!(heartbeat_runner: true)
+          job = authenticate_job!(heartbeat_runner: true, fail_on_expired_token: true)
 
           Gitlab::Metrics.add_event(:update_build)
 
@@ -319,7 +319,7 @@ module API
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
           check_rate_limit!(:runner_jobs_patch_trace_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
-          job = authenticate_job!(heartbeat_runner: true)
+          job = authenticate_job!(heartbeat_runner: true, fail_on_expired_token: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']

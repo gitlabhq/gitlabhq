@@ -474,27 +474,38 @@ displays to the right of the mini graph.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18311) in GitLab 18.6.
+- Security reports from child pipelines [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18377) in GitLab 18.9 [with a feature flag](../../administration/feature_flags/_index.md) named `show_child_security_reports_in_mr_widget`. Enabled by default.
 
 {{< /history >}}
 
-You can view reports from child pipelines in merge request widgets. This provides a
-unified view of test results and quality checks across your pipeline hierarchy
-without manually navigating through multiple pipelines to identify failures.
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+You can view and download reports from child pipelines in merge request widgets.
+This provides a unified view of test results and quality checks across your pipeline hierarchy
+without manually navigating through multiple pipelines to identify failures and vulnerabilities.
 
 The following report types from child pipelines are supported:
 
-- Unit test reports (Junit)
+- Unit test reports (JUnit)
 - Code quality reports
 - Terraform reports
 - Metric reports
+- Security reports (SAST, secret detection, dependency scanning, container scanning, DAST, API fuzzing)
 
-Test results from child pipelines also appear in the parent pipeline's **Tests** tab.
+Security reports work with child pipelines from the same project,
+dynamically generated child pipelines, and pipelines created by pipeline execution policies.
+Reports from [scan execution policies](../../user/application_security/policies/scan_execution_policies.md) are not supported.
 
-To ensure complete report information in merge request widgets,
-child pipelines that generate [artifacts reports](../yaml/artifacts_reports.md) should use
-[`strategy: depend`](../yaml/_index.md#triggerstrategy) or [`strategy: mirror`](../yaml/_index.md#triggerstrategy).
+Test results and [security findings](../../user/application_security/detect/security_scanning_results.md)
+from child pipelines also appear in the parent pipeline's **Tests** and **Security** tabs.
 
-For example:
+Child pipeline security findings can trigger [merge request approval policies](../../user/application_security/policies/merge_request_approval_policies.md).
+If a child pipeline detects vulnerabilities, you might need additional approvals before you can merge.
+
+To ensure reports from child pipelines appear in merge request widgets,
+use [`strategy: depend`](../yaml/_index.md#triggerstrategy) or [`strategy: mirror`](../yaml/_index.md#triggerstrategy)
+for child pipelines that generate artifacts reports. For example:
 
 ```yaml
 test-backend:
@@ -507,6 +518,9 @@ test-frontend:
     include: frontend-tests.yml
     strategy: depend
 ```
+
+Without these strategies, the parent pipeline completes before child pipelines finish,
+and their reports don't appear in the merge request.
 
 ## Fetch artifacts from an upstream pipeline
 
@@ -608,14 +622,11 @@ upstream pipeline:
 
 {{< /tabs >}}
 
-{{< alert type="warning" >}}
-
-Make sure the upstream job finishes before the downstream job starts, otherwise you cannot fetch the artifacts.
-Use [`needs`](../yaml/_index.md#needs) to make the downstream job wait for the upstream job.
-
-For more information, see [issue 356016](https://gitlab.com/gitlab-org/gitlab/-/issues/356016).
-
-{{< /alert >}}
+> [!warning]
+> Make sure the upstream job finishes before the downstream job starts, otherwise you cannot fetch the artifacts.
+> Use [`needs`](../yaml/_index.md#needs) to make the downstream job wait for the upstream job.
+> 
+> For more information, see [issue 356016](https://gitlab.com/gitlab-org/gitlab/-/issues/356016).
 
 ### Fetch artifacts from an upstream merge request pipeline
 
@@ -888,7 +899,7 @@ the ones defined in the upstream project take precedence.
 
 {{< /details >}}
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-an-environment-variable-to-another-job).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-environment-variables-to-later-jobs).
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 

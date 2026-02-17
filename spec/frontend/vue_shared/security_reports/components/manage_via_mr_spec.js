@@ -202,17 +202,4 @@ describe('ManageViaMr component', () => {
       },
     );
   });
-
-  describe('button props', () => {
-    it('passes the variant and category props to the GlButton', () => {
-      const variant = 'danger';
-      const category = 'tertiary';
-      createComponent({ variant, category });
-
-      expect(wrapper.findComponent(GlButton).props()).toMatchObject({
-        variant,
-        category,
-      });
-    });
-  });
 });

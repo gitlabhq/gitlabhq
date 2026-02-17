@@ -1,0 +1,7 @@
+---
+name: create_bulk_import
+description: Grants the ability to start a new GitLab Migration (bulk import)
+permissions:
+  - create_bulk_import
+boundaries:
+  - instance

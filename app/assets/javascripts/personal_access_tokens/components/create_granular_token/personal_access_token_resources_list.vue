@@ -1,7 +1,14 @@
 <script>
-import { GlButton, GlIcon, GlCollapse, GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
-import { uniq, groupBy, map, mapValues, xor } from 'lodash';
-import { __ } from '~/locale';
+import {
+  GlButton,
+  GlIcon,
+  GlCollapse,
+  GlFormCheckboxGroup,
+  GlFormCheckbox,
+  GlPopover,
+} from '@gitlab/ui';
+import { xor } from 'lodash';
+import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
   name: 'PersonalAccessTokenResourcesList',
@@ -11,6 +18,7 @@ export default {
     GlCollapse,
     GlFormCheckboxGroup,
     GlFormCheckbox,
+    GlPopover,
   },
   props: {
     permissions: {
@@ -24,7 +32,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['input', 'change'],
+  emits: ['input'],
   data() {
     return {
       expanded: [],
@@ -39,10 +47,8 @@ export default {
         this.$emit('input', newValue);
       },
     },
-    groupedItems() {
-      return mapValues(groupBy(this.permissions, 'category'), (resources) =>
-        uniq(map(resources, 'resource')),
-      );
+    resourcesGroupedByCategory() {
+      return groupPermissionsByResourceAndCategory(this.permissions);
     },
   },
   methods: {
@@ -52,38 +58,35 @@ export default {
     isExpanded(category) {
       return this.expanded.includes(category);
     },
-    formatCategoryName(category) {
-      // special case
-      if (category === 'ci_cd') return this.$options.i18n.cicd;
-
-      return this.removeUnderscore(category);
-    },
-    removeUnderscore(string) {
-      return string.replace(/_/g, ' ');
-    },
-  },
-  i18n: {
-    cicd: __('CI/CD'),
   },
 };
 </script>
 <template>
   <gl-form-checkbox-group v-model="selected">
-    <div v-for="(resources, category) in groupedItems" :key="category" class="gl-mb-4">
-      <gl-button category="tertiary" class="gl-font-bold" @click="toggle(category)">
-        <gl-icon :name="isExpanded(category) ? 'chevron-down' : 'chevron-right'" />
-        <span class="gl-capitalize">{{ formatCategoryName(category) }}</span>
+    <div v-for="category in resourcesGroupedByCategory" :key="category.key" class="gl-mb-4">
+      <gl-button category="tertiary" class="gl-font-bold" @click="toggle(category.key)">
+        <gl-icon :name="isExpanded(category.key) ? 'chevron-down' : 'chevron-right'" />
+        <span>
+          {{ category.name }}
+        </span>
       </gl-button>
 
-      <gl-collapse :visible="isExpanded(category)">
-        <div v-for="(resource, index) in resources" :key="index" class="gl-flex gl-items-center">
-          <gl-form-checkbox
-            :value="resource"
-            class="gl-ml-6 gl-mt-4 gl-capitalize"
-            @change="$emit('change', resource)"
-          >
-            {{ removeUnderscore(resource) }}
+      <gl-collapse :visible="isExpanded(category.key)">
+        <div
+          v-for="resource in category.resources"
+          :key="resource.key"
+          class="gl-flex gl-items-center"
+        >
+          <gl-form-checkbox :value="resource.key" class="gl-ml-6 gl-mt-4">
+            {{ resource.name }}
           </gl-form-checkbox>
+
+          <span v-if="resource.description" class="gl-ml-3 gl-mt-2">
+            <gl-icon :id="resource.key" name="information-o" class="gl-cursor-pointer" />
+            <gl-popover :target="resource.key" triggers="focus" no-fade boundary="viewport">
+              {{ resource.description }}
+            </gl-popover>
+          </span>
         </div>
       </gl-collapse>
     </div>

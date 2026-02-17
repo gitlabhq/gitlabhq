@@ -40,7 +40,7 @@ Security incidents related to credentials exposure can vary in severity from low
 
 - Determine the type and scope of the token.
 - Identify the token owner and the relevant team based on the token information.
-  - For personal access tokens, you can use the [personal access token API](../api/personal_access_tokens.md#get-details-on-a-personal-access-token) to quickly retrieve token details.
+  - For personal access tokens, you can use the [personal access token API](../api/personal_access_tokens.md#retrieve-a-personal-access-token) to quickly retrieve token details.
 - [Revoke](../api/personal_access_tokens.md#revoke-a-personal-access-token) or [rotate](../api/group_access_tokens.md#rotate-a-group-access-token) the token after you have assessed its scope and potential impact. Revoking a production token is a balance between the security risk posed by the exposed token, and the availability risk revoking a token might cause. Only revoke the token if you are:
   - Confident in your understanding of the potential impact of token revocation.
   - Following your company's security incident response guidelines.
@@ -66,7 +66,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-legacy).
+- Reset any credentials the user might have had access to. For example, users with the Maintainer or Owner role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-legacy).
 - [Reset user passwords](reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.

@@ -28,7 +28,7 @@ Each merge request is compared to the other, earlier merge requests, to ensure t
 For more information about:
 
 - How merge trains work, review the [merge train workflow](#merge-train-workflow).
-- Why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+- Why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/all-aboard-merge-trains/).
 
 ## Merge train workflow
 
@@ -113,7 +113,7 @@ Prerequisites:
 
 To enable merge trains:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In GitLab 16.4 and earlier, in the **Merge method** section, verify that **Merge commit** is selected.
    In GitLab 16.5 and later, you can use any merge method.
@@ -153,8 +153,8 @@ The merge train details page shows active merge requests in the queue and merged
 
 To access the merge train details from the list of merge requests:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Merge trains**.
 1. Optional. Filter the merge trains by target branch.
 
@@ -214,6 +214,10 @@ To remove a merge request from a merge train:
 If you have a high-priority merge request, like a critical patch that must
 be merged urgently, you can select **Merge immediately**.
 
+> [!warning]
+> Merging immediately can use a lot of CI/CD resources. Use this option
+> only in critical situations.
+
 When you merge a merge request immediately:
 
 - The commits from the merge request are merged, ignoring the status of the merge train.
@@ -222,19 +226,9 @@ When you merge a merge request immediately:
   with a new merge train pipeline for each. These new merge train pipelines now contain
   the commits added by the merge request that was merged immediately.
 
-{{< alert type="warning" >}}
-
-Merging immediately can use a lot of CI/CD resources. Use this option
-only in critical situations.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
-merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
-
-{{< /alert >}}
+> [!note]
+> The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
+> merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
 
 ### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
 
@@ -251,13 +245,10 @@ merge method and the source branch is behind the target branch. See [issue 43407
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../administration/feature_flags/_index.md)
-named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature,
+> an administrator can [disable the feature flag](../../administration/feature_flags/_index.md)
+> named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can allow merge requests to be merged without completely restarting a running merge train.
 Use this feature to quickly merge changes that can safely skip the pipeline, for example
@@ -267,15 +258,12 @@ You cannot skip merge trains for fast-forward or semi-linear merge methods. For 
 
 Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
 
-{{< alert type="warning" >}}
-
-You can use this feature to quickly merge security or bug fixes, but the changes
-in the merge request that skipped the train are not verified against
-any of the other merge requests in the train. If these other merge train pipelines
-complete successfully and merge, there is a risk that the combined changes are incompatible.
-The target branch could then require additional work to resolve the new failures.
-
-{{< /alert >}}
+> [!warning]
+> You can use this feature to quickly merge security or bug fixes, but the changes
+> in the merge request that skipped the train are not verified against
+> any of the other merge requests in the train. If these other merge train pipelines
+> complete successfully and merge, there is a risk that the combined changes are incompatible.
+> The target branch could then require additional work to resolve the new failures.
 
 Prerequisites:
 
@@ -284,7 +272,7 @@ Prerequisites:
 
 To enable skipping the train without pipeline restarts:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, ensure the **Enable merged results pipelines**
    and **Enable merge trains** options are enabled.

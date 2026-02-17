@@ -217,9 +217,11 @@ export default {
         :a-mode="diffFile.a_mode"
         :b-mode="diffFile.b_mode"
       >
-        <template #image-overlay="{ renderedWidth, renderedHeight }">
+        <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
           <image-diff-overlay
             v-if="renderedWidth"
+            :width="width"
+            :height="height"
             :rendered-width="renderedWidth"
             :rendered-height="renderedHeight"
             :discussions="imageDiscussions"

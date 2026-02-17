@@ -1,8 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-// eslint-disable-next-line no-restricted-imports
-import { SCOPE } from '../../constants';
+import { SCOPE, MIN_ACCESS_LEVEL, TAB_NAME } from '~/ci/catalog/constants';
 
 export default {
   name: 'CatalogTabs',
@@ -22,7 +21,7 @@ export default {
       required: true,
     },
   },
-  emits: ['setScope'],
+  emits: ['tab-change'],
   computed: {
     tabs() {
       return [
@@ -31,17 +30,36 @@ export default {
           scope: SCOPE.all,
           testId: 'resources-all-tab',
           count: this.resourceCounts.all,
+          name: TAB_NAME.all,
         },
         {
           text: s__('CiCatalog|Your groups'),
           scope: SCOPE.namespaces,
           testId: 'resources-group-tab',
           count: this.resourceCounts.namespaces,
+          name: TAB_NAME.namespaces,
+        },
+        {
+          text: s__('CiCatalog|Analytics'),
+          scope: SCOPE.namespaces,
+          testId: 'resources-analytics-tab',
+          count: this.resourceCounts.analytics,
+          minAccessLevel: MIN_ACCESS_LEVEL,
+          name: TAB_NAME.analytics,
         },
       ];
     },
     showLoadingIcon() {
       return this.isLoading;
+    },
+  },
+  methods: {
+    onTabChange(tab) {
+      this.$emit('tab-change', {
+        name: tab.name,
+        scope: tab.scope,
+        minAccessLevel: tab.minAccessLevel,
+      });
     },
   },
 };
@@ -54,7 +72,7 @@ export default {
         v-for="tab in tabs"
         :key="tab.text"
         :data-testid="tab.testId"
-        @click="$emit('setScope', tab.scope)"
+        @click="onTabChange(tab)"
       >
         <template #title>
           <span>{{ tab.text }}</span>

@@ -64,6 +64,7 @@ describe('JiraConnect API', () => {
         minAccessLevel: mockMinAccessLevel,
         page: mockPage,
         perPage: mockPerPage,
+        top_level_only: false,
       });
 
     it('returns success response', async () => {
@@ -73,6 +74,7 @@ describe('JiraConnect API', () => {
           min_access_level: mockMinAccessLevel,
           page: mockPage,
           per_page: mockPerPage,
+          top_level_only: false,
         })
         .replyOnce(HTTP_STATUS_OK, mockResponse);
 
@@ -85,6 +87,31 @@ describe('JiraConnect API', () => {
           page: mockPage,
           per_page: mockPerPage,
           search: undefined,
+          top_level_only: false,
+        },
+      });
+      expect(response.data).toEqual(mockResponse);
+    });
+
+    it('passes top_level_only as true', async () => {
+      jest.spyOn(axiosInstance, 'get');
+      axiosMock.onGet(mockGroupsPath).replyOnce(HTTP_STATUS_OK, mockResponse);
+
+      response = await fetchGroups(mockGroupsPath, {
+        minAccessLevel: mockMinAccessLevel,
+        page: mockPage,
+        perPage: mockPerPage,
+        top_level_only: true,
+      });
+
+      expect(axiosInstance.get).toHaveBeenCalledWith(mockGroupsPath, {
+        headers: {},
+        params: {
+          min_access_level: mockMinAccessLevel,
+          page: mockPage,
+          per_page: mockPerPage,
+          search: undefined,
+          top_level_only: true,
         },
       });
       expect(response.data).toEqual(mockResponse);

@@ -28,7 +28,7 @@ GET requests do not require authentication. All other broadcast message API endp
 - Guests result in `401 Unauthorized`.
 - Regular users result in `403 Forbidden`.
 
-## Get all broadcast messages
+## List all broadcast messages
 
 {{< details >}}
 
@@ -37,7 +37,7 @@ GET requests do not require authentication. All other broadcast message API endp
 
 {{< /details >}}
 
-List all broadcast messages.
+Lists all broadcast messages.
 
 ```plaintext
 GET /broadcast_messages
@@ -69,7 +69,7 @@ Example response:
 ]
 ```
 
-## Get a specific broadcast message
+## Retrieve a broadcast message
 
 {{< details >}}
 
@@ -78,7 +78,7 @@ Example response:
 
 {{< /details >}}
 
-Get a specific broadcast message.
+Retrieves a specified broadcast message.
 
 ```plaintext
 GET /broadcast_messages/:id
@@ -119,7 +119,7 @@ Example response:
 > [!warning]
 > Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
 
-Create a new broadcast message.
+Creates a broadcast message.
 
 ```plaintext
 POST /broadcast_messages
@@ -193,7 +193,7 @@ Example response:
 > [!warning]
 > Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
 
-Update an existing broadcast message.
+Updates a specified broadcast message.
 
 ```plaintext
 PUT /broadcast_messages/:id
@@ -266,7 +266,7 @@ Example response:
 
 ## Delete a broadcast message
 
-Delete a broadcast message.
+Deletes a specified broadcast message.
 
 ```plaintext
 DELETE /broadcast_messages/:id

@@ -42,14 +42,11 @@ To access the DLE's services, you can:
 
 For more assistance, use the `#database` Slack channel.
 
-{{< alert type="note" >}}
-
-If you need only temporary access to a production replica, instead of a Database Lab
-clone, follow the runbook procedure for connecting to the
-[database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
-This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
-
-{{< /alert >}}
+> [!note]
+> If you need only temporary access to a production replica, instead of a Database Lab
+> clone, follow the runbook procedure for connecting to the
+> [database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
+> This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
 
 ### Query testing
 
@@ -134,18 +131,15 @@ For information on testing migrations, review our
 
 ### Access the console with `psql`
 
-{{< alert type="note" >}}
-
-You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
-
-{{< /alert >}}
+> [!note]
+> You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
 
 To access the database lab instances, you must:
 
 - Have your user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and
   the `db-lab` role. Example: [MR](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/merge_requests/6330).
-- Have `AllFeaturesUser` role in [postgres.ai](https://console.postgres.ai/). If you don't have this already, post in
-  `#g_database_frameworks` Slack channel and tag `@db-team` to update/add the role.
+- `AllFeaturesUser` is the default role given in [postgres.ai](https://console.postgres.ai/). If you don't have this already, post in
+  `#g_database_frameworks` Slack channel and tag `@db-team` to add the role.
 - Configure `ssh` as follows:
 
 ```plaintext

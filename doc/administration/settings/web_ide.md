@@ -27,12 +27,9 @@ To circumvent this limitation, GitLab instance administrators can set up a custo
 custom extension host domain points to the GitLab instance itself which can also serve the VS Code static
 assets just like the default solution.
 
-{{< alert type="warning" >}}
-
-There are severe security risks associated with configuring overly broad wildcard domains in the Web IDE extension
-host domain. Misconfiguration can lead to compromise of your GitLab instance and all associated data.
-
-{{< /alert >}}
+> [!warning]
+> There are severe security risks associated with configuring overly broad wildcard domains in the Web IDE extension
+> host domain. Misconfiguration can lead to compromise of your GitLab instance and all associated data.
 
 ## Set up custom extension host domain
 

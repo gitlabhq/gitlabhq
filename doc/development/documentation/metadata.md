@@ -94,9 +94,10 @@ the description should be a short sentence that starts with an active verb.
 The description should give users a clear idea of the information they will find
 on the page and the value of visiting the page.
 
-For other pages, descriptions are not actively maintained. However, if you want to add one,
-use a short description of what the page is about.
-For guidance, see the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions).
+For other pages, use a short description of what the page is about:
+
+- For REST API resources, see [page metadata for REST API resources](restful_api_styleguide.md#page-metadata).
+- For general guidance, see the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions).
 
 ## Avoid pages being added to global navigation
 

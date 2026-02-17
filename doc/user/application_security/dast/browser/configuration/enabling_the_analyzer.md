@@ -40,12 +40,9 @@ To create the CI/CD job:
    - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
      Latest version of the DAST template.
 
-   {{< alert type="warning" >}}
-
-   The latest version of the template may include breaking changes. Use the
-   stable template unless you need a feature provided only in the latest template.
-
-   {{< /alert >}}
+   > [!warning]
+   > The latest version of the template may include breaking changes. Use the
+   > stable template unless you need a feature provided only in the latest template.
 
 1. Add a `dast` stage to your GitLab CI/CD stages configuration.
 

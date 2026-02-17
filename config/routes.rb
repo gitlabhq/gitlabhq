@@ -48,7 +48,9 @@ InitializerConnections.raise_if_new_database_connection do
       get '/.well-known/oauth-protected-resource' => 'oauth/protected_resource_metadata#show', as: :oauth_protected_resource_metadata
       post '/oauth/register(.:format)' => 'oauth/dynamic_registrations#create', as: :oauth_register
 
-      draw :oauth
+      Gitlab.ee do
+        draw :oauth
+      end
 
       use_doorkeeper_openid_connect do
         controllers discovery: 'jwks'
@@ -60,6 +62,7 @@ InitializerConnections.raise_if_new_database_connection do
       # https://github.com/mcp-auth/mcp-typescript-sdk/blob/31acdcbb189056ec83d14a4f7a37ae2b1c67680e/src/client/auth.ts#L697-L702
       get '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider'
       get '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider'
+      get '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show'
 
       use_doorkeeper_device_authorization_grant do
         controller device_authorizations: 'oauth/device_authorizations'
@@ -73,6 +76,7 @@ InitializerConnections.raise_if_new_database_connection do
       match '/.well-known/webfinger' => 'jwks#webfinger', via: :options
       match '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider', via: :options
       match '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider', via: :options
+      match '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show', via: :options
 
       match '/oauth/token' => 'oauth/tokens#create', via: :options
       match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
@@ -187,7 +191,10 @@ InitializerConnections.raise_if_new_database_connection do
           post '/reset_oauth_application_settings' => 'admin/applications#reset_web_ide_oauth_application_settings'
         end
 
-        draw :operations
+        Gitlab.ee do
+          draw :operations
+        end
+
         draw :jira_connect
 
         Gitlab.ee do
@@ -247,8 +254,8 @@ InitializerConnections.raise_if_new_database_connection do
         get 'jwks' => 'jwks#index'
 
         draw :snippets
-        draw :profile
-        draw :user_settings
+        draw_all :profile
+        draw_all :user_settings
 
         post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
 
@@ -305,7 +312,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       get '/-/g/:id' => 'groups/redirect#redirect_from_id'
 
-      draw :group
+      draw_all :group
 
       resources :projects, only: [:index, :new, :create]
 
@@ -313,7 +320,7 @@ InitializerConnections.raise_if_new_database_connection do
       get '/-/p/:id' => 'projects/redirect#redirect_from_id'
 
       draw :git_http
-      draw :api
+      draw_all :api
       draw :activity_pub
       draw :customers_dot
       draw :device_auth
@@ -321,13 +328,17 @@ InitializerConnections.raise_if_new_database_connection do
       draw :help
       draw :google_api
       draw :import
-      draw :uploads
-      draw :explore
-      draw :admin
-      draw :dashboard
-      draw :identity_verification
-      draw :user
-      draw :project
+      draw_all :uploads
+      draw_all :explore
+      draw_all :admin
+      draw_all :dashboard
+
+      Gitlab.ee do
+        draw :identity_verification
+      end
+
+      draw_all :user
+      draw_all :project
       draw :unmatched_project
       draw :well_known
 
@@ -393,6 +404,6 @@ InitializerConnections.raise_if_new_database_connection do
 
     # Load all custom URLs definitions via `direct' after the last route
     # definition.
-    draw :directs
+    draw_all :directs
   end
 end

@@ -1,14 +1,9 @@
-import { getScrollingElement } from '~/lib/utils/panels';
-
 export const observeIntersectionOnce = (element) => {
   return new Promise((resolve) => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        resolve(entry);
-        observer.disconnect();
-      },
-      { root: getScrollingElement(element) },
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      resolve(entry);
+      observer.disconnect();
+    });
     observer.observe(element);
   });
 };

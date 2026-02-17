@@ -40,7 +40,7 @@ Status checks fail if they stay in the pending state for more than two minutes.
 
 External status check responses can be viewed by:
 
-- Users with at least the Reporter role in the project
+- Users with the Reporter, Developer, Maintainer, or Owner role in the project
 - Any authenticated user who can view the merge request when the project has internal visibility
 
 This means that if you have an internal project, any logged-in user who can access the merge request can view the external status check responses.
@@ -130,11 +130,8 @@ The **Update status check** form is then shown.
 
 ![Status checks update form](img/status_checks_update_form_v14_0.png)
 
-{{< alert type="note" >}}
-
-You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
-
-{{< /alert >}}
+> [!note]
+> You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
 
 To update the status check, change the values in the form and select **Update status check**.
 
@@ -182,7 +179,7 @@ and ensures they come from a legitimate source.
 
 Within the **Status checks** sub-section, select **Remove** ({{< icon name="remove" >}})
 next to the status check you want to delete.
-The **Remove status check?** modal is then shown.
+The **Remove status check?** dialog is then shown.
 
 ![Status checks delete modal](img/status_checks_delete_modal_v14_0.png)
 
@@ -210,7 +207,7 @@ When there are pending status checks, the widget polls for updates every few sec
 To retry a failed status check:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the merge request reports section, and expand the dropdown list to show the list of external status checks.
 1. Select **Retry** ({{< icon name="retry" >}}) on the failed external status check row. The status check is put back into a pending state.
 
@@ -218,12 +215,9 @@ An organization might have a policy that does not allow merging merge requests i
 external status checks do not pass. However, the details in the widget are for informational
 purposes only.
 
-{{< alert type="note" >}}
-
-GitLab cannot guarantee that the external status checks are properly processed by
-the related external service.
-
-{{< /alert >}}
+> [!note]
+> GitLab cannot guarantee that the external status checks are properly processed by
+> the related external service.
 
 ## Troubleshooting
 

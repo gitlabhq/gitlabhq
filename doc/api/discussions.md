@@ -556,20 +556,17 @@ curl --request DELETE \
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab
-17.0 and is planned for removal in v5 of the API. This change is a breaking change.
-
-Use the Work Items API instead:
-
-- GitLab 17.4 to 18.0: Required when [the new look for epics](../user/group/epics/_index.md#epics-as-work-items)
-  is enabled.
-- GitLab 18.1 and later: Required for all installations.
-
-For more information, see the [API migration guide](graphql/epic_work_items_api_migration_guide.md).
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab
+> 17.0 and is planned for removal in v5 of the API. This change is a breaking change.
+>
+> Use the Work Items API instead:
+>
+> - GitLab 17.4 to 18.0: Required when [the new look for epics](../user/group/epics/_index.md#epics-as-work-items)
+> is enabled.
+> - GitLab 18.1 and later: Required for all installations.
+>
+> For more information, see the [API migration guide](graphql/epic_work_items_api_migration_guide.md).
 
 ### List group epic discussion items
 
@@ -1062,7 +1059,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 Creates a new thread to a single project merge request. Similar to creating
 a note but other comments (replies) can be added to it later. For other approaches,
 see [Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
-and [Create new merge request note](notes.md#create-new-merge-request-note) in the Notes API.
+and [Create a merge request note](notes.md#create-a-merge-request-note) in the Notes API.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions
@@ -1119,7 +1116,7 @@ curl --request POST \
 
 To create a new thread:
 
-1. [Get the latest merge request version](merge_requests.md#get-merge-request-diff-versions):
+1. [Get the latest merge request version](merge_requests.md#retrieve-merge-request-diff-versions):
 
    ```shell
    curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1220,7 +1217,7 @@ Resolve or reopen a thread of discussion in a merge request.
 
 Prerequisites:
 
-- You must have at least the Developer role, or be the author of the change being reviewed.
+- You must have the Developer, Maintainer, or Owner role, or be the author of the change being reviewed.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id

@@ -1,0 +1,5 @@
+---
+name: approve_member
+description: Grants the ability to approve members
+boundaries:
+  - group

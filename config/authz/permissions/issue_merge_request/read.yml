@@ -1,0 +1,5 @@
+---
+name: read_issue_merge_request
+description: Grants the ability to read merge requests related to issues
+boundaries:
+  - project

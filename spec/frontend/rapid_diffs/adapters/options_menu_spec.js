@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { optionsMenuAdapter } from '~/rapid_diffs/adapters/options_menu';
 
@@ -32,8 +33,10 @@ describe('Diff File Options Menu Adapter', () => {
 
   const mount = () => {
     const viewer = 'any';
+    const oldPath = '/old';
+    const newPath = '/new';
     document.body.innerHTML = `
-      <diff-file data-file-data='${JSON.stringify({ viewer })}'>
+      <diff-file id="file" data-file-data='${JSON.stringify({ viewer, old_path: oldPath, new_path: newPath })}'>
         <div class="rd-diff-file">
           <div class="rd-diff-file-header">
           <div class="rd-diff-file-options-menu">
@@ -67,7 +70,7 @@ describe('Diff File Options Menu Adapter', () => {
     expect(get('serverButton')).not.toBeNull();
   });
 
-  it('replaces the server-rendered button with a Vue GlDisclosureDropdown when the button is clicked', () => {
+  it('replaces the server-rendered button with a Vue GlDisclosureDropdown when the button is clicked', async () => {
     const button = get('serverButton');
 
     expect(get('vueButton')).toBeNull();
@@ -81,6 +84,8 @@ describe('Diff File Options Menu Adapter', () => {
      * happen once (desireable!), so testing that it's no longer present is good
      */
     expect(get('serverButton')).toBeNull();
+    // Wait for Vue 3 to complete child component rendering and focus
+    await nextTick();
     expect(document.activeElement).toEqual(get('vueButton'));
   });
 
@@ -91,8 +96,8 @@ describe('Diff File Options Menu Adapter', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items).toHaveLength(1);
-    expect(items[0].textContent.trim()).toBe(item1.text);
-    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[0].textContent.trim()).toBe('Copy link to the file');
+    expect(items[1].textContent.trim()).toBe(item1.text);
+    expect(items[1].querySelector('a').getAttribute('href')).toBe(item1.href);
   });
 });

@@ -10,6 +10,14 @@ import {
   locationSearchWithWildcardValues,
   urlParams,
   urlParamsWithWildcardValues,
+  savedViewFiltersObject,
+  savedViewFilterTokens,
+  saveSavedViewParams,
+  saveSavedViewResponse,
+  editSavedViewParams,
+  editSavedViewResponse,
+  editSavedViewFormOnlyParams,
+  editSavedViewFormOnlyResponse,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -24,6 +32,9 @@ import {
   getSortOptions,
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
+  getSavedViewFilterTokens,
+  saveSavedView,
+  handleEnforceSubscriptionLimit,
 } from 'ee_else_ce/work_items/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -229,5 +240,315 @@ describe('groupMultiSelectFilterTokens', () => {
         { type: 'label', multiSelect: true },
       ]),
     ).toEqual(groupedFilteredTokens);
+  });
+});
+
+describe('getSavedViewFilterTokens', () => {
+  it('returns valid filter tokens given a saved view filters object', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersObject)).toEqual(savedViewFilterTokens);
+  });
+});
+
+describe('handleEnforceSubscriptionLimit', () => {
+  let mockApolloClient;
+  let mockQuery;
+  let mockMutate;
+
+  beforeEach(() => {
+    mockQuery = jest.fn();
+    mockMutate = jest.fn();
+    mockApolloClient = {
+      query: mockQuery,
+      mutate: mockMutate,
+    };
+  });
+
+  it('does not unsubscribe when under the limit', async () => {
+    mockQuery.mockResolvedValue({
+      data: {
+        namespace: {
+          savedViews: {
+            nodes: [
+              { id: 'gid://gitlab/SavedView/1', name: 'View 1' },
+              { id: 'gid://gitlab/SavedView/2', name: 'View 2' },
+            ],
+          },
+        },
+      },
+    });
+
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit: 5,
+      apolloClient: mockApolloClient,
+      namespacePath: 'my-group',
+    });
+
+    expect(mockQuery).toHaveBeenCalledWith({
+      query: expect.anything(),
+      variables: {
+        fullPath: 'my-group',
+        subscribedOnly: true,
+        sort: 'RELATIVE_POSITION',
+      },
+      fetchPolicy: 'cache-only',
+    });
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('unsubscribes from second-to-last view when over the limit when creating a view', async () => {
+    mockQuery.mockResolvedValue({
+      data: {
+        namespace: {
+          savedViews: {
+            nodes: [
+              { id: 'gid://gitlab/SavedView/1', name: 'View 1' },
+              { id: 'gid://gitlab/SavedView/2', name: 'View 2' },
+              { id: 'gid://gitlab/SavedView/3', name: 'View 3' },
+              { id: 'gid://gitlab/SavedView/4', name: 'View 4' },
+            ],
+          },
+        },
+      },
+    });
+    mockMutate.mockResolvedValue({});
+
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit: 3,
+      apolloClient: mockApolloClient,
+      namespacePath: 'my-group',
+      creating: true,
+    });
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: {
+            id: 'gid://gitlab/SavedView/3', // Second-to-last view
+          },
+        },
+      }),
+    );
+  });
+
+  it('unsubscribes from second-to-last view when over the limit not creating a view', async () => {
+    mockQuery.mockResolvedValue({
+      data: {
+        namespace: {
+          savedViews: {
+            nodes: [
+              { id: 'gid://gitlab/SavedView/1', name: 'View 1' },
+              { id: 'gid://gitlab/SavedView/2', name: 'View 2' },
+              { id: 'gid://gitlab/SavedView/3', name: 'View 3' },
+              { id: 'gid://gitlab/SavedView/4', name: 'View 4' },
+            ],
+          },
+        },
+      },
+    });
+    mockMutate.mockResolvedValue({});
+
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit: 3,
+      apolloClient: mockApolloClient,
+      namespacePath: 'my-group',
+      creating: false,
+    });
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: {
+            id: 'gid://gitlab/SavedView/4', // Second-to-last view
+          },
+        },
+      }),
+    );
+  });
+});
+
+describe('saveSavedView', () => {
+  let mockApolloClient;
+  let mockMutate;
+  let mockQuery;
+
+  beforeEach(() => {
+    mockMutate = jest.fn();
+    mockQuery = jest.fn();
+    mockApolloClient = {
+      mutate: mockMutate,
+      query: mockQuery,
+    };
+  });
+
+  describe('when creating a new saved view', () => {
+    it('calls mutate with workItemSavedViewCreate', async () => {
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewResponse);
+
+      mockQuery.mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [{ id: 'gid://gitlab/SavedView/1', name: 'View 1' }],
+            },
+          },
+        },
+      });
+
+      const result = await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              namespacePath: 'my-group',
+              name: 'My View',
+              description: 'A test view',
+              private: false,
+              filters: { state: 'opened' },
+              sort: 'CREATED_DESC',
+              displaySettings: { groupBy: 'assignee' },
+            },
+          },
+        }),
+      );
+      expect(result.data.workItemSavedViewCreate.savedView.id).toBe('gid://gitlab/SavedView/1');
+    });
+
+    it('calls handleEnforceSubscriptionLimit when enforceSubscriptionLimit is true', async () => {
+      mockQuery = jest.fn().mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [{ id: 'gid://gitlab/SavedView/1', name: 'View 1' }],
+            },
+          },
+        },
+      });
+
+      const apolloClient = {
+        mutate: mockMutate,
+        query: mockQuery,
+      };
+
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient,
+        enforceSubscriptionLimit: true,
+        subscribedSavedViewLimit: 3,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewResponse);
+
+      await saveSavedView(params);
+
+      expect(mockQuery).toHaveBeenCalledWith({
+        query: expect.anything(),
+        variables: {
+          fullPath: 'my-group',
+          subscribedOnly: true,
+          sort: 'RELATIVE_POSITION',
+        },
+        fetchPolicy: 'cache-only',
+      });
+    });
+
+    it('does not call handleEnforceSubscriptionLimit when enforceSubscriptionLimit is false', async () => {
+      const apolloClient = {
+        mutate: mockMutate,
+        query: jest.fn(),
+      };
+
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient,
+        enforceSubscriptionLimit: false,
+        subscribedSavedViewLimit: 3,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewResponse);
+
+      await saveSavedView(params);
+
+      expect(mockQuery).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when editing a saved view', () => {
+    it('calls mutate with workItemSavedViewUpdate', async () => {
+      const params = {
+        ...editSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      mockMutate.mockResolvedValue(editSavedViewResponse);
+
+      const result = await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              id: 'gid://gitlab/SavedView/1',
+              name: 'Updated View',
+              description: 'Updated description',
+              private: false,
+              filters: { state: 'closed' },
+              sort: 'UPDATED_DESC',
+              displaySettings: { groupBy: 'status' },
+            },
+          },
+        }),
+      );
+      expect(result.data.workItemSavedViewUpdate.savedView.name).toBe('Updated View');
+    });
+
+    it('does not call handleEnforceSubscriptionLimit when editing', async () => {
+      const apolloClient = {
+        mutate: mockMutate,
+        query: jest.fn(),
+      };
+
+      const params = {
+        ...editSavedViewParams,
+        apolloClient,
+        subscribedSavedViewLimit: 3,
+      };
+
+      mockMutate.mockResolvedValue(editSavedViewResponse);
+
+      await saveSavedView(params);
+
+      expect(mockQuery).not.toHaveBeenCalled();
+    });
+
+    it('excludes filters and sort when editing form only', async () => {
+      const params = {
+        ...editSavedViewFormOnlyParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      mockMutate.mockResolvedValue(editSavedViewFormOnlyResponse);
+
+      await saveSavedView(params);
+
+      const callArgs = mockMutate.mock.calls[0][0];
+      expect(callArgs.variables.input).toEqual({
+        id: 'gid://gitlab/SavedView/1',
+        name: 'Updated View',
+        description: 'Updated description',
+        private: false,
+      });
+      expect(callArgs.variables.input.filters).toBeUndefined();
+      expect(callArgs.variables.input.sort).toBeUndefined();
+      expect(callArgs.variables.input.displaySettings).toBeUndefined();
+    });
   });
 });

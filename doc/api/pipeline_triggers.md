@@ -16,7 +16,7 @@ Use this API to [trigger pipelines](../ci/triggers/_index.md).
 
 ## List project trigger tokens
 
-Get a list of a project's pipeline trigger tokens.
+Lists a project's pipeline trigger tokens.
 
 ```plaintext
 GET /projects/:id/triggers
@@ -48,9 +48,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 The trigger token is displayed in full if the trigger token was created by the authenticated
 user. Trigger tokens created by other users are shortened to four characters.
 
-## Get trigger token details
+## Retrieve trigger token details
 
-Get details of a project's pipeline trigger token.
+Retrieves details of a project's pipeline trigger token.
 
 ```plaintext
 GET /projects/:id/triggers/:trigger_id
@@ -80,7 +80,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Create a trigger token
 
-Create a pipeline trigger token for a project.
+Creates a pipeline trigger token for a project.
 
 ```plaintext
 POST /projects/:id/triggers
@@ -112,7 +112,7 @@ curl --request POST \
 
 ## Update a pipeline trigger token
 
-Update a project's pipeline trigger token.
+Updates a project's pipeline trigger token.
 
 ```plaintext
 PUT /projects/:id/triggers/:trigger_id
@@ -143,9 +143,9 @@ curl --request PUT \
 }
 ```
 
-## Remove a pipeline trigger token
+## Delete a pipeline trigger token
 
-Remove a project's pipeline trigger token.
+Deletes a project's pipeline trigger token.
 
 ```plaintext
 DELETE /projects/:id/triggers/:trigger_id
@@ -172,7 +172,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Trigger a pipeline by using a [pipeline trigger token](../ci/triggers/_index.md#create-a-pipeline-trigger-token)
+Triggers a pipeline by using a [pipeline trigger token](../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
 With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).

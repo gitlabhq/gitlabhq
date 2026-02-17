@@ -256,7 +256,7 @@ self.reactive_cache_hard_limit = 5.megabytes
 - This is the type of work performed by the `calculate_reactive_cache` method. Based on this attribute,
   it's able to pick the right worker to process the caching job. Make sure to
   set it as `:external_dependency` if the work performs any external request
-  (for example, Kubernetes, Sentry); otherwise set it to `:no_dependency`.
+  (for example, Kubernetes, Sentry); otherwise set it to `:no_dependency` or `no_dependency_low_urgency`.
 
 #### `self.reactive_cache_worker_finder`
 

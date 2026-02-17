@@ -17,6 +17,10 @@ The following sections provide possible solutions to Gitaly errors.
 See also [Gitaly timeout](../settings/gitaly_timeouts.md) settings,
 and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#parsing-gitalycurrent).
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Check versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version
@@ -170,7 +174,7 @@ Confirm the following are all true:
   UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../user/project/_index.md#create-a-blank-project)
   successfully creates the project but doesn't create the README.
-- When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
+- When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs/#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors
   when reaching the `/api/v4/internal/allowed` endpoint:
 
@@ -522,12 +526,9 @@ go tool trace heap.bin
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md)
-named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md)
+> named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
 
 You can profile Git operations that Gitaly performs by sending additional information about Git operations to Gitaly logs. With this information, users have more insight
 for performance optimization, debugging, and general telemetry collection. For more information, see the [Git Trace2 API reference](https://git-scm.com/docs/api-trace2).
@@ -618,13 +619,10 @@ The new rule takes effect after the daemon restarts.
 In GitLab 17.0, support for configuring storages with duplicate paths [was removed](https://gitlab.com/gitlab-org/gitaly/-/issues/5598). This can mean that you
 must remove duplicate storage configuration from `gitaly` configuration.
 
-{{< alert type="warning" >}}
-
-Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
-causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
-projects between storages in all other situations.
-
-{{< /alert >}}
+> [!warning]
+> Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
+> causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
+> projects between storages in all other situations.
 
 When removing from the Gitaly configuration a storage that used the same path as another storage,
 the projects associated with the old storage must be reassigned to the new one.

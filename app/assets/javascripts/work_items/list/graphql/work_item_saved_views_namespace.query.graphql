@@ -1,0 +1,19 @@
+# @feature_category: portfolio_management
+query savedViews($fullPath: ID!, $subscribedOnly: Boolean, $sort: WorkItemsSavedViewsSort) {
+  namespace(fullPath: $fullPath) {
+    id
+    savedViews(subscribedOnly: $subscribedOnly, sort: $sort) {
+      nodes {
+        id
+        name
+        description
+        subscribed
+        isPrivate: private
+        userPermissions {
+          updateSavedView
+          deleteSavedView
+        }
+      }
+    }
+  }
+}

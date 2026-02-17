@@ -1,5 +1,5 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
 title: Application Settings analysis
@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 510
+- Number of attributes: 517
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 298 (57.99999999999999%)
-- Number of attributes on GitLab.com different from the defaults: 224 (44.0%)
-- Number of attributes with `clusterwide` set: 510 (100.0%)
-- Number of attributes with `clusterwide: true` set: 137 (27.0%)
+- Number of attributes on GitLab.com different from the defaults: 223 (43.0%)
+- Number of attributes with `clusterwide` set: 517 (100.0%)
+- Number of attributes with `clusterwide: true` set: 142 (27.0%)
 
 ## Individual columns
 
@@ -106,6 +106,7 @@ title: Application Settings analysis
 | `database_grafana_tag` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `database_max_running_batched_background_migrations` | `false` | `integer` | `` | `true` | `2` | `true` | `true`| `false` |
 | `database_reindexing` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `database_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `deactivate_dormant_users` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `deactivate_dormant_users_period` | `false` | `integer` | `integer` | `true` | `90` | `false` | `false`| `true` |
 | `deactivation_email_additional_text` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -151,8 +152,11 @@ title: Application Settings analysis
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
 | `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `duo_foundational_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `true`| `false` |
 | `duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
+| `duo_sast_fp_detection_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
+| `duo_workflows_default_image_registry` | `false` | `text` | `` | `false` | `null` | `false` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ecdsa_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ed25519_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
@@ -165,7 +169,7 @@ title: Application Settings analysis
 | `elasticsearch` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `elasticsearch_aws_secret_access_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `elasticsearch_password` | `true` | `bytea` | `string` | `false` | `null` | `true` | `false`| `true` |
-| `elasticsearch_url` | `false` | `character` | `string` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
+| `elasticsearch_url` | `false` | `character` | `string or array of strings` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
 | `email_additional_text` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `email_author_in_body` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `true`| `true` |
 | `email_confirmation_setting` | `false` | `smallint` | `string` | `false` | `0` | `true` | `true`| `true` |
@@ -266,7 +270,9 @@ title: Application Settings analysis
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `lock_auto_duo_code_review_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `lock_duo_foundational_flows_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `lock_duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `lock_duo_sast_fp_detection_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_ldap` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_saml` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
@@ -313,7 +319,7 @@ title: Application Settings analysis
 | `mirror_max_delay` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
 | `model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `namespace_aggregation_schedule_lease_duration_in_seconds` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
-| `namespace_deletion_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
+| `namespace_deletion_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `namespace_storage_forks_cost_factor` | `false` | `double` | `` | `true` | `1.0` | `true` | `false`| `false` |
 | `new_user_signups_cap` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `notes_create_limit` | `false` | `integer` | `` | `true` | `300` | `true` | `true`| `false` |
@@ -408,6 +414,7 @@ title: Application Settings analysis
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_push_protection_available` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
+| `secrets_manager_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `security_and_compliance_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
@@ -497,6 +504,7 @@ title: Application Settings analysis
 | `throttle_unauthenticated_requests_per_period` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `time_tracking_limit_to_hours` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `token_prefixes` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `topology_service_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `transactional_emails` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `two_factor_grace_period` | `false` | `integer` | `integer` | `false` | `48` | `true` | `false`| `true` |
 | `unconfirmed_users_delete_after_days` | `false` | `integer` | `integer` | `true` | `7` | `true` | `true`| `true` |

@@ -8,7 +8,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
 import getPackageErrorsCountQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_errors_count.query.graphql';
@@ -105,13 +105,13 @@ describe('PackageErrorsCount', () => {
 
   describe.each`
     type
-    ${WORKSPACE_PROJECT}
-    ${WORKSPACE_GROUP}
+    ${NAMESPACE_PROJECT}
+    ${NAMESPACE_GROUP}
   `('$type query', ({ type }) => {
     let provide;
     let resolver;
 
-    const isGroupPage = type === WORKSPACE_GROUP;
+    const isGroupPage = type === NAMESPACE_GROUP;
 
     beforeEach(async () => {
       provide = { ...defaultProvide, isGroupPage };

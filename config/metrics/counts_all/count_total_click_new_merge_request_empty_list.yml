@@ -1,7 +1,9 @@
 ---
 key_path: counts.count_total_click_new_merge_request_empty_list
 description: Total count of clicks New merge request on empty list
-product_group: acquisition
+product_group: activation
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

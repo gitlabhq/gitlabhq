@@ -16,6 +16,12 @@ title: GitLab appearance
 
 You can update your settings to change the look and feel of your instance.
 
+## Prerequisites
+
+You must have administrator access.
+
+## Access appearance settings
+
 To open the **Appearance** settings:
 
 1. In the upper-right corner, select **Admin**.
@@ -100,7 +106,7 @@ To customize the logo on your sign-in and register pages:
 1. Under **Logo**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
-You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
+You can also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
 
 ### Disable cookie-based language selector
 
@@ -116,12 +122,9 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags/_index.md) named `disable_preferred_language_cookie`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags/_index.md) named `disable_preferred_language_cookie`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
 
 You can remove the cookie-based language selector from the footer of the sign-in and register pages by enabling the `disable_preferred_language_cookie` feature flag.
 

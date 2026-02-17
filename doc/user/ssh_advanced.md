@@ -50,7 +50,7 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
    `-O resident` indicates that the key should be stored on the FIDO authenticator itself.
    Resident key is easier to import to a new computer because it can be loaded directly
    from the security key by [`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)
-   or  [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
+   or [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
 
 1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
 
@@ -199,12 +199,9 @@ To update a previously-cloned repository that is aliased as `origin`:
 git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 
-{{< alert type="note" >}}
-
-Private and public keys contain sensitive data. Ensure the permissions
-on the files make them readable to you but not accessible to others.
-
-{{< /alert >}}
+> [!note]
+> Private and public keys contain sensitive data. Ensure the permissions
+> on the files make them readable to you but not accessible to others.
 
 ## Use different keys for different repositories
 

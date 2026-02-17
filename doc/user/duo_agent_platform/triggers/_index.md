@@ -8,7 +8,6 @@ title: Triggers
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -21,19 +20,14 @@ title: Triggers
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 A trigger determines when a flow runs.
 
-You specify the service account that runs the flow, and which conditions make the flow run.
-
-For example, you can specify flows to be triggered when you mention a service account
-in a discussion, or when you assign the service account as a reviewer.
+For example, you can specify flows to be triggered when you mention them
+in a discussion, or when you assign them as a reviewer.
 
 ## Create a trigger
 
@@ -45,7 +39,7 @@ in a discussion, or when you assign the service account as a reviewer.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a trigger:
 
@@ -60,8 +54,8 @@ To create a trigger:
      to an issue or merge request.
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
-1. From the **Service account user** dropdown list,
-   select the service account user.
+1. From the **Service account** dropdown list,
+   select a user to be [the composite identity](../../duo_agent_platform/composite_identity.md).
 1. For **Configuration source**, select one of the following:
    - **AI Catalog**: From the flows configured for this project,
      select a flow for the trigger to execute.

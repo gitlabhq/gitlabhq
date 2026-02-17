@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/gitaly/v16/client"
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/client"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )

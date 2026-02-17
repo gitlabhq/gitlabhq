@@ -1,7 +1,7 @@
-query ciPipelineCreationInputs($fullPath: ID!, $ref: String!) {
+query ciPipelineCreationInputs($fullPath: ID!, $ref: String!, $failOnCacheMiss: Boolean = false) {
   project(fullPath: $fullPath) {
     id
-    ciPipelineCreationInputs(ref: $ref) {
+    ciPipelineCreationInputs(ref: $ref, failOnCacheMiss: $failOnCacheMiss) {
       default
       description
       name

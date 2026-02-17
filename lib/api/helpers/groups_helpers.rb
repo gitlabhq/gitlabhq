@@ -37,7 +37,6 @@ module API
           optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
           optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
         end
-        optional :shared_runners_setting, type: String, values: ::Namespace::SHARED_RUNNERS_SETTINGS, desc: 'Enable/disable shared runners for the group and its subgroups and projects'
         optional :enabled_git_access_protocol, type: String, values: %w[ssh http all], desc: 'Allow only the selected protocols to be used for Git access.'
       end
 

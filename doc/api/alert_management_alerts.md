@@ -18,6 +18,8 @@ Additional endpoints are available with the [GraphQL API](graphql/reference/_ind
 
 ## Upload metric image
 
+Uploads a metric image for a specified alert.
+
 ```plaintext
 POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 ```
@@ -50,7 +52,9 @@ Example response:
 }
 ```
 
-## List metric images
+## List all metric images
+
+Lists all metric images for a specified alert.
 
 ```plaintext
 GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
@@ -91,7 +95,9 @@ Example response:
 ]
 ```
 
-## Update metric image
+## Update a metric image
+
+Updates a specified metric image for an alert.
 
 ```plaintext
 PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
@@ -127,7 +133,9 @@ Example response:
 }
 ```
 
-## Delete metric image
+## Delete a metric image
+
+Deletes a specified metric image for an alert.
 
 ```plaintext
 DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id

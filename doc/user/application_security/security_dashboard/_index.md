@@ -56,12 +56,9 @@ To view the Security Dashboards, the following is required:
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least 1 detected vulnerability in the project.
 
-{{< alert type="note" >}}
-
-The Security Dashboards show results of scans from the most recent completed pipeline on the
-[default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
-
-{{< /alert >}}
+> [!note]
+> The Security Dashboards show results of scans from the most recent completed pipeline on the
+> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
 ## Viewing the Security Dashboard
 
@@ -155,12 +152,9 @@ To view the security dashboard for a project or a group you must have:
 - At least one detected vulnerability in the project.
 - [Advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) with [Advanced search](../../search/advanced_search.md) enabled.
 
-{{< alert type="note" >}}
-
-The security dashboards show results of scans from the most recently completed pipeline on the
-[default branch](../../project/repository/branches/default.md). Dashboards are updated with the results of completed pipelines run on the default branch. They do not include vulnerabilities discovered in pipelines from other un-merged branches.
-
-{{< /alert >}}
+> [!note]
+> The security dashboards show results of scans from the most recently completed pipeline on the
+> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the results of completed pipelines run on the default branch. They do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
 ### Viewing the security dashboard
 
@@ -220,14 +214,17 @@ To view details:
 1. Hover over a data point to see the vulnerability count for that day.
 1. Use the **time frame selector** to switch between 30, 60, or 90 days.
 1. Drag the range handles ({{< icon name="scroll-handle" >}}) to zoom in on a specific period.
-1. Use the dropdowns to filter the chart by:
-   - **Severity** (for example: Critical, High, Medium)
-   - **Report type** (SAST, DAST, dependency scanning, and others)
+1. Use the dropdown to filter by **Severity** (for example, **Critical**, **High**, **Medium**)
+1. Use the buttons to group the data by either of the following options:
+   - **Severity**: Critical, high, medium, low, info, and unknown.
+   - **Report type**: SAST, DAST, and dependency scanning and others.
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
 > [!note]
 > Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
+>
+> Due to [issue 590022](https://gitlab.com/gitlab-org/gitlab/-/issues/590022) and [issue 590018](https://gitlab.com/gitlab-org/gitlab/-/issues/590018)), vulnerability counts in the **Vulnerabilities over time** chart may not be accurate. The first issue affects dependency scanning and container scanning vulnerabilities. The second issue affects vulnerabilities that were dismissed or resolved, and then confirmed.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
@@ -243,6 +240,21 @@ To view details:
    - Any page-level filters you have set are also applied.
 
 ![severity level](img/security_dashboard_severity_panels_v18_5.png)
+
+#### Vulnerabilities by age
+
+The **Vulnerabilities by age** chart is available on group dashboards. It shows the distribution of unresolved vulnerabilities based on the amount of time
+since they were first detected. You can group vulnerabilities by severity or by report type, helping you identify where remediation activities may be needed.
+
+To view details:
+
+1. Hover over a data point to see the vulnerability count for that age grouping.
+1. Use the dropdown list to filter by **Severity** (for example, **Critical**, **High**, **Medium**)
+1. Use the buttons to group the data by either of the following options:
+   - **Severity**: Critical, high, medium, low, info, and unknown.
+   - **Report type**: SAST, DAST, and dependency scanning and others.
+
+![vulnerabilities by age](img/vulnerabilities_by_age_chart_v18_9.png)
 
 ### Filter the entire dashboard
 

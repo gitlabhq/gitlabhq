@@ -72,6 +72,7 @@ export default {
     validation: validation(),
   },
   mixins: [InternalEvents.mixin()],
+  inheritAttrs: false,
   props: {
     modalId: {
       type: String,

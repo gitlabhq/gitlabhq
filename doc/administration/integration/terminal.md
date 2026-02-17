@@ -15,21 +15,13 @@ description: Information about Web terminals.
 
 {{< history >}}
 
+- This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `certificate_based_clusters`.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `certificate_based_clusters`.
 
 - Read more about the non-deprecated [Web Terminals accessible through the Web IDE](../../user/project/web_ide/_index.md).
 - Read more about the non-deprecated [Web Terminals accessible from a running CI job](../../ci/interactive_web_terminal/_index.md).
@@ -41,11 +33,8 @@ GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/_index.md#web-terminals-deprecated) for environments.
 
-{{< alert type="note" >}}
-
-Only users with at least the [Maintainer role](../../user/permissions.md) for the project access web terminals.
-
-{{< /alert >}}
+> [!note]
+> Only users with at least the [Maintainer role](../../user/permissions.md) for the project access web terminals.
 
 ## How web terminals work
 
@@ -74,22 +63,19 @@ precautions to keep interactive web terminal data encrypted between them, and
 everything protected with authorization guards. This is described in more
 detail below.
 
-- Interactive web terminals are completely disabled unless [`[session_server]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) is configured.
+- Interactive web terminals are completely disabled unless [`[session_server]`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section) is configured.
 - Every time the runner starts, it generates an `x509` certificate that is used for a `wss` (Web Socket Secure) connection.
-- For every created job, a random URL is generated which is discarded at the end of the job. This URL is used to establish a web socket connection. The URL for the session is in the format `(IP|HOST):PORT/session/$SOME_HASH`, where the `IP/HOST` and `PORT` are the configured [`listen_address`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
+- For every created job, a random URL is generated which is discarded at the end of the job. This URL is used to establish a web socket connection. The URL for the session is in the format `(IP|HOST):PORT/session/$SOME_HASH`, where the `IP/HOST` and `PORT` are the configured [`listen_address`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section).
 - Every session URL that is created has an authorization header that needs to be sent, to establish a `wss` connection.
 - The session URL is not exposed to the users in any way. GitLab holds all the state internally and proxies accordingly.
 
 ## Enabling and disabling terminal support
 
-{{< alert type="note" >}}
-
-AWS Classic Load Balancers do not support web sockets.
-If you want web terminals to work, use AWS Network Load Balancers.
-Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
-for more information.
-
-{{< /alert >}}
+> [!note]
+> AWS Classic Load Balancers do not support web sockets.
+> If you want web terminals to work, use AWS Network Load Balancers.
+> Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
+> for more information.
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse must be configured to pass the `Connection` and `Upgrade` headers
@@ -131,8 +117,13 @@ they receive a `Connection failed` message.
 
 ## Limiting WebSocket connection time
 
-By default, terminal sessions do not expire. To limit the terminal session
-lifetime in your GitLab instance:
+By default, terminal sessions do not expire.
+
+Prerequisites:
+
+- Administrator access.
+
+To limit the terminal session lifetime in your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Web terminal**.

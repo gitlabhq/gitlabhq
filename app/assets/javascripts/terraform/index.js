@@ -28,6 +28,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TerraformListRoot',
     apolloProvider: new VueApollo({ defaultClient }),
     provide: {
       projectPath,

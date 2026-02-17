@@ -13,11 +13,8 @@ description: "Configure and manage settings for project and group integrations o
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/_index.md).
-
-{{< /alert >}}
+> [!note]
+> This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/_index.md).
 
 Project and group administrators can configure and enable integrations.
 As an instance administrator, you can:
@@ -39,12 +36,9 @@ To configure default settings for an integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-This may affect all or most of the groups and projects on your GitLab instance. Review the details
-below.
-
-{{< /alert >}}
+> [!warning]
+> This may affect all or most of the groups and projects on your GitLab instance. Review the details
+> below.
 
 If this is the first time you are setting up instance-level settings for an integration:
 

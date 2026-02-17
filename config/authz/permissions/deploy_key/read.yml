@@ -1,0 +1,6 @@
+---
+name: read_deploy_key
+description: Grants the ability to view deploy keys
+boundaries:
+  - instance
+  - project

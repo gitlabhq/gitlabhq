@@ -49,7 +49,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Estonian
   - Proofreaders needed.
 - Farsi
-  - Iman manati   [GitLab](https://gitlab.com/baratiiman3), [Crowdin](https://crowdin.com/profile/iman31)
+  - Iman manati [GitLab](https://gitlab.com/baratiiman3), [Crowdin](https://crowdin.com/profile/iman31)
 - Filipino
   - Proofreaders needed.
 - French
@@ -70,7 +70,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Indonesian
   - Rahayu Rafika - [GitLab](https://gitlab.com/Vkfikaa), [Crowdin](https://crowdin.com/profile/rahayurafika_12)
 - Irish
-  - Aindriú Mac Giolla Eoin -  [GitLab](https://gitlab.com/aindriu80), [Crowdin](https://crowdin.com/profile/aindriu80)
+  - Aindriú Mac Giolla Eoin - [GitLab](https://gitlab.com/aindriu80), [Crowdin](https://crowdin.com/profile/aindriu80)
 - Italian
   - Proofreaders needed.
 - Japanese

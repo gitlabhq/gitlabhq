@@ -55,6 +55,8 @@ describe('WorkItemChildrenWrapper', () => {
 
   Vue.use(VueApollo);
 
+  const getWorkItemTypeConfiguration = jest.fn().mockReturnValue({ widgetDefinitions: [] });
+
   const createComponent = ({
     workItemType = 'Objective',
     confidential = false,
@@ -65,6 +67,7 @@ describe('WorkItemChildrenWrapper', () => {
     canUpdate = false,
     showClosed = true,
     moveWorkItemMutationHandler = moveWorkItemMutationSuccessHandler,
+    getWorkItemTypeConfigurationMock = getWorkItemTypeConfiguration,
   } = {}) => {
     const mockApollo = createMockApollo(
       [
@@ -99,6 +102,9 @@ describe('WorkItemChildrenWrapper', () => {
         canUpdate,
         showClosed,
         parent: workItemByIidResponseFactory().data.namespace.workItem,
+      },
+      provide: {
+        getWorkItemTypeConfiguration: getWorkItemTypeConfigurationMock,
       },
       mocks: {
         $toast,
@@ -176,11 +182,46 @@ describe('WorkItemChildrenWrapper', () => {
     expect(findChildItemsContainer().classes('disabled-content')).toBe(true);
   });
 
+  describe('shouldAutoExpandOnDrag', () => {
+    it.each`
+      autoExpandTreeOnMove | workItemType   | expected | description
+      ${true}              | ${'Task'}      | ${true}  | ${'returns true when autoExpandTreeOnMove flag is true'}
+      ${false}             | ${'Task'}      | ${false} | ${'returns false when autoExpandTreeOnMove flag is false'}
+      ${null}              | ${'Epic'}      | ${true}  | ${'returns true for Epic when autoExpandTreeOnMove is null (fallback logic)'}
+      ${null}              | ${'Objective'} | ${true}  | ${'returns true for Objective when autoExpandTreeOnMove is null (fallback logic)'}
+      ${null}              | ${'Task'}      | ${false} | ${'returns false for other types when autoExpandTreeOnMove is null (fallback logic)'}
+      ${undefined}         | ${'Epic'}      | ${true}  | ${'returns true for Epic when widget definition is empty (fallback logic)'}
+    `('$description', ({ autoExpandTreeOnMove, workItemType, expected }) => {
+      const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue({
+        widgetDefinitions:
+          autoExpandTreeOnMove === undefined ? [] : [{ type: 'HIERARCHY', autoExpandTreeOnMove }],
+      });
+      createComponent({ getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration });
+
+      expect(wrapper.vm.shouldAutoExpandOnDrag(workItemType)).toBe(expected);
+    });
+
+    it.each`
+      configValue  | description
+      ${null}      | ${'returns false when getWorkItemTypeConfiguration returns null'}
+      ${undefined} | ${'returns false when getWorkItemTypeConfiguration returns undefined'}
+    `('$description', ({ configValue }) => {
+      const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue(configValue);
+      createComponent({ getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration });
+
+      expect(wrapper.vm.shouldAutoExpandOnDrag('Task')).toBe(false);
+    });
+  });
+
   describe('drag & drop', () => {
     let dragParams;
     let draggedItem;
+    let mockEvt;
+    let mockOriginalEvt;
 
     beforeEach(() => {
+      jest.clearAllTimers();
+      mockToggleHierarchyTreeChildResolver.mockClear();
       isLoggedIn.mockReturnValue(true);
       createComponent({ canUpdate: true, children: childrenWorkItemsObjectives });
 
@@ -191,6 +232,25 @@ describe('WorkItemChildrenWrapper', () => {
         newIndex: 0,
         from: wrapper.element,
         to: wrapper.element,
+      };
+
+      mockEvt = {
+        relatedContext: {
+          element: childrenWorkItemsObjectives[0],
+        },
+      };
+
+      mockOriginalEvt = {
+        clientX: 10,
+        clientY: 10,
+        target: {
+          getBoundingClientRect() {
+            return {
+              top: 5,
+              left: 5,
+            };
+          },
+        },
       };
     });
 
@@ -275,6 +335,8 @@ describe('WorkItemChildrenWrapper', () => {
         input: {
           id: 'gid://gitlab/WorkItem/6',
           parentId: 'gid://gitlab/WorkItem/5',
+          adjacentWorkItemId: undefined,
+          relativePosition: undefined,
         },
         endCursor: '',
         pageSize: 1, // number of children
@@ -316,31 +378,42 @@ describe('WorkItemChildrenWrapper', () => {
       expect(mockCacheUpdate).not.toHaveBeenCalled();
     });
 
-    it('opens nested child on move', async () => {
-      const mockEvt = {
-        relatedContext: {
-          element: childrenWorkItemsObjectives[0],
-        },
-      };
-      const mockOriginalEvt = {
-        clientX: 10,
-        clientY: 10,
-        target: {
-          getBoundingClientRect() {
-            return {
-              top: 5,
-              left: 5,
-            };
-          },
-        },
-      };
+    it('opens nested child on move when autoExpandTreeOnMove is true', async () => {
+      const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue({
+        widgetDefinitions: [{ type: 'HIERARCHY', autoExpandTreeOnMove: true }],
+      });
+      createComponent({
+        canUpdate: true,
+        children: childrenWorkItemsObjectives,
+        getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration,
+      });
 
-      wrapper.findComponent(Draggable).vm.$attrs.move(mockEvt, mockOriginalEvt);
+      findDraggable().vm.$attrs.move(mockEvt, mockOriginalEvt);
 
       jest.runAllTimers();
       await nextTick();
 
       expect(mockToggleHierarchyTreeChildResolver).toHaveBeenCalled();
+    });
+
+    it('does not open nested child on move when autoExpandTreeOnMove is false', async () => {
+      const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue({
+        widgetDefinitions: [{ type: 'HIERARCHY', autoExpandTreeOnMove: false }],
+      });
+      createComponent({
+        canUpdate: true,
+        children: childrenWorkItemsObjectives,
+        getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration,
+      });
+
+      jest.clearAllTimers();
+      mockToggleHierarchyTreeChildResolver.mockClear();
+
+      findDraggable().vm.$attrs.move(mockEvt, mockOriginalEvt);
+
+      await nextTick();
+
+      expect(mockToggleHierarchyTreeChildResolver).not.toHaveBeenCalled();
     });
   });
 

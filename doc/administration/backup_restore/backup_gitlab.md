@@ -55,11 +55,8 @@ This file includes:
 
 ## Data not included in a backup
 
-{{< alert type="warning" >}}
-
-You are highly advised to read about [storing configuration files](#storing-configuration-files) to back up those separately.
-
-{{< /alert >}}
+> [!warning]
+> You are highly advised to read about [storing configuration files](#storing-configuration-files) to back up those separately.
 
 - [Mattermost data](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
@@ -99,7 +96,7 @@ Further reading:
 - [Back up Git repositories concurrently](#back-up-git-repositories-concurrently).
 - [Back up and restore large reference architectures](backup_large_reference_architectures.md).
 - [Alternative backup strategies](#alternative-backup-strategies).
-- [Blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/2025/06/05/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
+- [Blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
 
 ## What data needs to be backed up?
 
@@ -191,16 +188,15 @@ See also:
 
 ### Storing configuration files
 
-{{< alert type="warning" >}}
-
-The backup Rake task GitLab provides does not store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD secure variables. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The secrets file may change after upgrades.
-{{< /alert >}}
+> [!warning]
+> The backup Rake task GitLab provides does not store your configuration files.
+> The primary reason for this is that your database contains items including encrypted information
+> for two-factor authentication and the CI/CD secure variables. Storing encrypted information
+> in the same location as its key defeats the purpose of using encryption in the first place.
+> For example, the secrets file contains your database encryption key. If you lose it,
+> then the GitLab application will not be able to decrypt any encrypted values in the database.
+>
+> Additionally, the secrets file may change after upgrades.
 
 You should back up the configuration directory. At the very minimum, you must back up:
 
@@ -211,7 +207,7 @@ You should back up the configuration directory. At the very minimum, you must ba
 - `/etc/gitlab/gitlab-secrets.json`
 - `/etc/gitlab/gitlab.rb`
 
-For more information, see [Backup and restore Linux package (Omnibus) configuration](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration).
+For more information, see [Backup and restore Linux package (Omnibus) configuration](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-omnibus-gitlab-configuration).
 
 {{< /tab >}}
 
@@ -232,7 +228,7 @@ For more information, see [Backup and restore Linux package (Omnibus) configurat
 
 {{< tab title="GitLab Helm chart" >}}
 
-- Follow the [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#back-up-the-secrets)
+- Follow the [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets)
   instructions.
 
 {{< /tab >}}
@@ -296,7 +292,7 @@ sudo gitlab-backup create
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Run the backup task by using `kubectl` to run the `backup-utility` script on the GitLab toolbox pod. For more details, see the [charts backup documentation](https://docs.gitlab.com/charts/backup-restore/backup.html).
+Run the backup task by using `kubectl` to run the `backup-utility` script on the GitLab toolbox pod. For more details, see the [charts backup documentation](https://docs.gitlab.com/charts/backup-restore/backup/).
 
 {{< /tab >}}
 
@@ -387,12 +383,9 @@ sudo gitlab-backup create STRATEGY=copy
 
 #### Backup filename
 
-{{< alert type="warning" >}}
-
-If you use a custom backup filename, you can't
-[limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
-
-{{< /alert >}}
+> [!warning]
+> If you use a custom backup filename, you can't
+> [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
 Backup files are created with filenames according to [specific defaults](backup_archive_process.md#backup-id). However, you can
 override the `<backup-id>` portion of the filename by setting the `BACKUP`
@@ -464,17 +457,8 @@ DECOMPRESS_CMD=tee gitlab-backup restore
 
 ##### Parallel compression with `pigz`
 
-{{< alert type="warning" >}}
-
-While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-`pigz` is not included in the GitLab Linux package. You must install it yourself.
-
-{{< /alert >}}
+> [!warning]
+> While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
 
 An example of compressing backups with `pigz` using 4 processes:
 
@@ -488,19 +472,13 @@ Because `pigz` compresses to the `gzip` format, it is not required to use `pigz`
 DECOMPRESS_CMD="pigz --decompress --stdout" sudo gitlab-backup restore
 ```
 
+> [!note]
+> `pigz` is not included in the GitLab Linux package. You must install it yourself.
+
 ##### Parallel compression with `zstd`
 
-{{< alert type="warning" >}}
-
-While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-`zstd` is not included in the GitLab Linux package. You must install it yourself.
-
-{{< /alert >}}
+> [!warning]
+> While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
 
 An example of compressing backups with `zstd` using 4 threads:
 
@@ -513,6 +491,9 @@ An example of decompressing backups with `zstd`:
 ```shell
 DECOMPRESS_CMD="zstd --decompress --stdout" sudo gitlab-backup restore
 ```
+
+> [!note]
+> `zstd` is not included in the GitLab Linux package. You must install it yourself.
 
 #### Confirm archive can be transferred
 
@@ -585,7 +566,7 @@ sudo gitlab-backup create SKIP=db,uploads
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup.html#skipping-components) in charts backup documentation.
+See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup/#skipping-components) in charts backup documentation.
 
 {{< /tab >}}
 
@@ -606,11 +587,8 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=p
 
 #### Skipping tar creation
 
-{{< alert type="note" >}}
-
-It is not possible to skip the tar creation when using [object storage](#upload-backups-to-a-remote-cloud-storage) for backups.
-
-{{< /alert >}}
+> [!note]
+> It is not possible to skip the tar creation when using [object storage](#upload-backups-to-a-remote-cloud-storage) for backups.
 
 The last part of creating a backup is generation of a `.tar` file containing all the parts. In some cases, creating a `.tar` file might be wasted effort or even directly harmful, so you can skip this step by adding `tar` to the `SKIP` environment variable. Example use-cases:
 
@@ -685,7 +663,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=tr
 kubectl exec <Toolbox pod name> -it -- backup-utility --repositories-server-side
 ```
 
-When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup),
 add the `--repositories-server-side` flag to the extra arguments.
 
 {{< /tab >}}
@@ -749,15 +727,12 @@ toolbox:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
-creates a self-contained backup tar archive. This is because all subtasks except repositories are
-still creating full backups (they overwrite the existing full backup).
-See [issue 19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256) for a feature request to
-support incremental backups for all subtasks.
-
-{{< /alert >}}
+> [!note]
+> Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
+> creates a self-contained backup tar archive. This is because all subtasks except repositories are
+> still creating full backups (they overwrite the existing full backup).
+> See [issue 19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256) for a feature request to
+> support incremental backups for all subtasks.
 
 Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
@@ -866,11 +841,8 @@ REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-uti
 
 #### Upload backups to a remote (cloud) storage
 
-{{< alert type="note" >}}
-
-It is not possible to [skip the tar creation](#skipping-tar-creation) when using object storage for backups.
-
-{{< /alert >}}
+> [!note]
+> It is not possible to [skip the tar creation](#skipping-tar-creation) when using object storage for backups.
 
 You can let the backup script upload the `.tar` file it creates to remote storage.
 In the following example, we use Amazon S3 for storage, but you can also use
@@ -1330,11 +1302,8 @@ setting.
 
 #### Configuring cron to make daily backups
 
-{{< alert type="warning" >}}
-
-The following cron jobs do not back up your GitLab configuration files or SSH host keys.
-
-{{< /alert >}}
+> [!warning]
+> The following cron jobs do not back up your GitLab configuration files or SSH host keys.
 
 **Important:** Remember to also back up:
 
@@ -1387,11 +1356,8 @@ When troubleshooting backup problems, however, replace `CRON=1` with `--trace` t
 
 #### Limit backup lifetime for local files (prune old backups)
 
-{{< alert type="warning" >}}
-
-The process described in this section doesn't work if you used a custom filename for your backups.
-
-{{< /alert >}}
+> [!warning]
+> The process described in this section doesn't work if you used a custom filename for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set
 a limited lifetime for backups. The next time the backup task runs, backups
@@ -1564,11 +1530,8 @@ In the following cases, consider using file system data transfer or snapshots as
 - Your GitLab instance has a lot of forked projects and the regular backup task duplicates the Git data for all of them.
 - Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
 
-{{< alert type="warning" >}}
-
-Gitaly Cluster (Praefect) [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
-
-{{< /alert >}}
+> [!warning]
+> Gitaly Cluster (Praefect) [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
 
 When considering using file system data transfer or snapshots:
 

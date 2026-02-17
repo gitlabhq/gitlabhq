@@ -39,12 +39,9 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
    `Entire domain (GitLab)` or `Selected organizational units` for both **Verify user
    credentials** and **Read user information**. Select **Add LDAP Client**.
 
-   {{< alert type="note" >}}
-
-   If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
-   , turn on `Read group information`.
-
-   {{< /alert >}}
+   > [!note]
+   > If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync),
+   > turn on `Read group information`.
 
    ![Google Workspace window with access permissions for adding LDAP client.](img/google_secure_ldap_add_step_2_v11_9.png)
 

@@ -306,7 +306,7 @@ RSpec.shared_examples 'wiki controller actions' do
           '.gitlab/redirects.yml',
           "PageA: PageB\nPageB: PageC\nPageC: /PageA/\n",
           message: 'Create redirects file',
-          branch_name: 'master'
+          branch_name: wiki.default_branch
         )
       end
 
@@ -330,7 +330,7 @@ RSpec.shared_examples 'wiki controller actions' do
           '.gitlab/redirects.yml',
           "PageA: PageB\nLoopA: LoopB\nLoopB: LoopA\n#{redirect_limit_yml}",
           message: 'Create redirects file',
-          branch_name: 'master'
+          branch_name: wiki.default_branch
         )
       end
 

@@ -5,14 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Composite identity
 ---
 
-{{< details >}}
-
-- Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554156) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow_use_composite_identity`.
@@ -20,12 +12,9 @@ title: Composite identity
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Composite identity is an authentication and authorization mechanism that combines two identities into a single token:
 
@@ -106,7 +95,7 @@ The composite identity is part of the workflow.
 AI Catalog flows use different token types with different permission scopes:
 
 - OAuth tokens used for composite identity in AI workflows have access restricted to the `ai_workflows` and `mcp` scopes.
-  This OAuth token is passed to the AI gateway to run the flow.
+  This OAuth token is passed to the AI Gateway to run the flow.
 - CI job tokens that are triggered as part of the flow have permissions further restricted by the
   [available job token permissions](../../ci/jobs/ci_job_token.md#job-token-access).
 
@@ -132,4 +121,4 @@ is considered the author because:
 - From a compliance perspective, prompting an AI system to write code is equivalent to writing the code yourself.
 - The service account acts as a proxy for the human user's intent.
 
-Organizations subject to compliance requirements should [turn off foundational flows](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off) that create merge requests.
+Organizations subject to compliance requirements should [turn off foundational flows](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off) that create merge requests.

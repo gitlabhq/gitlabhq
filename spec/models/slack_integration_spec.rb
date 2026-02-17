@@ -11,7 +11,23 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
 
   describe 'constant' do
     it 'is expected that DEFAULT_ALIAS is defined with the correct value' do
-      expect(SlackIntegration::INSTANCE_ALIAS).to eq('_gitlab-instance')
+      expect(described_class::ORGANIZATION_ALIAS).to eq('gitlab-organization')
+    end
+  end
+
+  describe '.organization_alias' do
+    it 'returns organization alias with org_id provided' do
+      expect(described_class.organization_alias(1)).to eq('gitlab-organization-1')
+    end
+
+    context 'when organization_id is not an integer' do
+      it 'raises ArgumentError', :aggregate_failures do
+        expect { described_class.organization_alias(nil) }
+          .to raise_error ArgumentError, 'organization_id must be an Integer'
+
+        expect { described_class.organization_alias('1') }
+          .to raise_error ArgumentError, 'organization_id must be an Integer'
+      end
     end
   end
 

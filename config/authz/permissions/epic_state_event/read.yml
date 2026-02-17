@@ -1,0 +1,5 @@
+---
+name: read_epic_state_event
+description: Grants the ability to read Epic state events.
+boundaries:
+  - project

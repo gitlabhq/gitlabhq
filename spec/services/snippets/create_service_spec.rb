@@ -119,7 +119,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       it 'commits the files to the repository' do
         subject
 
-        blob = snippet.repository.blob_at('master', base_opts[:file_name])
+        blob = snippet.repository.blob_at(snippet.default_branch, base_opts[:file_name])
 
         expect(blob.data).to eq base_opts[:content]
       end
@@ -288,7 +288,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       it 'commit the files to the repository' do
         expect(subject).to be_success
 
-        blob = snippet.repository.blob_at('master', file_path)
+        blob = snippet.repository.blob_at(snippet.default_branch, file_path)
 
         expect(blob.data).to eq content
       end
@@ -329,8 +329,8 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
 
         it 'generates the file path for the files' do
           expect(subject).to be_success
-          expect(snippet.repository.blob_at('master', 'snippetfile1.txt').data).to eq content
-          expect(snippet.repository.blob_at('master', 'snippetfile2.txt').data).to eq content
+          expect(snippet.repository.blob_at(snippet.default_branch, 'snippetfile1.txt').data).to eq content
+          expect(snippet.repository.blob_at(snippet.default_branch, 'snippetfile2.txt').data).to eq content
         end
       end
     end

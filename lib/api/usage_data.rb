@@ -119,7 +119,7 @@ module API
           { code: 404, message: 'Not found' }
         ]
         produces ['application/yaml']
-        tags %w[usage_data metrics]
+        tags %w[metrics]
       end
       params do
         optional :include_paths, type: Boolean, desc: 'Include file paths in the metric definitions',

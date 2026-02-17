@@ -128,7 +128,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Received response from AI gateway
+### Received response from AI Gateway
 
   - Description: when response from AIGW is returned
   - Class: `Gitlab::Llm::AiGateway::Client`
@@ -141,7 +141,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Received error from AI gateway
+### Received error from AI Gateway
 
   - Description: when error is returned from AIGW for streaming command
   - Class: `Gitlab::Llm::AiGateway::Client`
@@ -154,7 +154,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Performing request to AI gateway
+### Performing request to AI Gateway
 
   - Description: before performing request to the AI GW
   - Class: `Gitlab::Llm::AiGateway::Client`
@@ -227,7 +227,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Searching docs from AI gateway
+### Searching docs from AI Gateway
 
   - Description: performing search docs request
   - Class: `Gitlab::Llm::AiGateway::DocsClient`
@@ -240,7 +240,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Searched docs content from AI gateway
+### Searched docs content from AI Gateway
 
   - Description: response from AIGW with docs
   - Class: `Gitlab::Llm::AiGateway::DocsClient`

@@ -13,18 +13,15 @@ title: Rails console
 {{< /details >}}
 
 At the heart of GitLab is a web application
-[built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
+[built using the Ruby on Rails framework](https://about.gitlab.com/blog/why-we-use-rails-to-build-gitlab/).
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console)
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
 
-{{< alert type="warning" >}}
-
-The Rails console interacts directly with GitLab. In many cases,
-there are no handrails to prevent you from permanently modifying, corrupting
-or destroying production data. If you would like to explore the Rails console
-with no consequences, you are strongly advised to do so in a test environment.
-
-{{< /alert >}}
+> [!warning]
+> The Rails console interacts directly with GitLab. In many cases,
+> there are no handrails to prevent you from permanently modifying, corrupting
+> or destroying production data. If you would like to explore the Rails console
+> with no consequences, you are strongly advised to do so in a test environment.
 
 The Rails console is for GitLab system administrators who are troubleshooting
 a problem or need to retrieve some data that can only be done through direct
@@ -133,7 +130,7 @@ Partial output:
  "bot_type"=>nil}
 ```
 
-Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp.html#testing-the-smtp-configuration):
+Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp/#testing-the-smtp-configuration):
 
 ```ruby
 e = u.email

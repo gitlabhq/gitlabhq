@@ -1,7 +1,7 @@
 <!--
    IMPORTANT: Add appropriate labels BEFORE you save the merge request. CI/CD jobs
    can be skipped only if the labels are applied BEFORE the CI/CD pipeline is created.
-   See https://docs.gitlab.com/ee/development/pipelines#revert-mrs for more info.
+   See https://docs.gitlab.com/development/pipelines/#revert-mrs for more info.
 -->
 
 ## Purpose of revert

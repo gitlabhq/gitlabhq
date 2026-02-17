@@ -54,8 +54,6 @@ the security of NGINX itself:
 
    # Turn off session ticket reuse
    nginx['ssl_session_tickets'] = "off"
-   # Pick our own curve instead of what openssl hands us
-   nginx['ssl_ecdh_curve'] = "secp384r1"
    ```
 
 1. Reconfigure GitLab:
@@ -79,7 +77,7 @@ works, and review the information on
 ## Environment Variables
 
 You can customize multiple
-[environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+[environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables/)
 on self-managed systems. The main environment variable to
 take advantage of from a security perspective is `GITLAB_ROOT_PASSWORD` during the
 installation process. If you are installing the self-managed system with a

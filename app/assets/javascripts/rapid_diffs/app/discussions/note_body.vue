@@ -45,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    saveNoteErrorMessages: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     noteBody: {
@@ -80,6 +85,7 @@ export default {
       :autosave-key="autosaveKey"
       :restore-from-autosave="restoreFromAutosave"
       :save-note="saveNote"
+      :save-note-error-messages="saveNoteErrorMessages"
       @input="$emit('input', $event)"
       @cancel="$emit('cancelEditing', $event)"
     />

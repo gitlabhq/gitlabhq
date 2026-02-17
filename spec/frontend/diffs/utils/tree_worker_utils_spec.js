@@ -90,6 +90,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
               removedLines: 10,
               tempFile: false,
               submodule: undefined,
+              href: undefined,
               type: 'blob',
               tree: [],
             },
@@ -118,6 +119,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
                   removedLines: 0,
                   tempFile: true,
                   submodule: undefined,
+                  href: undefined,
                   type: 'blob',
                   tree: [],
                 },
@@ -139,6 +141,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
                   removedLines: 0,
                   tempFile: true,
                   submodule: undefined,
+                  href: undefined,
                   type: 'blob',
                   tree: [],
                 },
@@ -170,6 +173,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
               path: 'constructor/test/aFile.js',
               removedLines: 0,
               submodule: undefined,
+              href: undefined,
               tempFile: true,
               tree: [],
               type: 'blob',
@@ -196,6 +200,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
           },
           addedLines: 1,
           removedLines: 0,
+          href: undefined,
           tree: [],
         },
         {
@@ -217,6 +222,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
           },
           addedLines: 0,
           removedLines: 0,
+          href: undefined,
           tree: [],
         },
       ]);
@@ -237,6 +243,28 @@ describe('~/diffs/utils/tree_worker_utils', () => {
         'submodule @ abcdef123',
         'package.json',
       ]);
+    });
+  });
+
+  describe('href attribute', () => {
+    it('includes href in blob entries when provided', () => {
+      const filesWithHref = [
+        {
+          new_path: 'app/index.js',
+          old_path: 'app/old_index.js',
+          file_hash: 'abc123',
+          href: 'http://example.com/diffs?old_path=app/old_index.js&new_path=app/index.js#abc123',
+          deleted_file: false,
+          new_file: false,
+          removed_lines: 5,
+          added_lines: 10,
+        },
+      ];
+      const { tree } = generateTreeList(filesWithHref);
+
+      expect(tree[0].tree[0].href).toBe(
+        'http://example.com/diffs?old_path=app/old_index.js&new_path=app/index.js#abc123',
+      );
     });
   });
 

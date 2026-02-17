@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['TimestampRange'], feature_category: :shared do
+RSpec.describe GitlabSchema.types['TimestampRange'], feature_category: :api do
   let(:input) { { start: "2025-10-03T17:05:33Z", end: "2025-10-08T10:45:53Z" } }
   let(:output) { { start: Time.parse(input[:start]), end: Time.parse(input[:end]) } }
 

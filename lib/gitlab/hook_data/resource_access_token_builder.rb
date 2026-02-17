@@ -9,6 +9,7 @@ module Gitlab
         id
         name
         expires_at
+        last_used_at
       ].freeze
 
       alias_method :resource_access_token, :object

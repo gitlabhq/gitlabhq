@@ -81,6 +81,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     let(:request) { get api('/bulk_imports', user), params: params }
     let(:params) { {} }
 
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import do
+      let(:boundary_object) { :instance }
+      let(:request) { get api('/bulk_imports', personal_access_token: pat) }
+    end
+
     it 'returns a list of bulk imports authored by the user' do
       request
 
@@ -240,7 +245,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         end
       end
 
-      context 'when entities do not specify a namespace', :with_current_organization do
+      context 'when entities do not specify a namespace' do
         let(:params) do
           {
             configuration: {
@@ -266,6 +271,13 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
           expect(json_response['status']).to eq('created')
         end
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_bulk_import do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api('/bulk_imports', personal_access_token: pat), params: params
       end
     end
 
@@ -489,6 +501,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   describe 'GET /bulk_imports/entities' do
     let(:request) { get api('/bulk_imports/entities', user) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import_entity do
+      let(:boundary_object) { :instance }
+      let(:request) { get api('/bulk_imports/entities', personal_access_token: pat) }
+    end
+
     it 'returns a list of all import entities authored by the user' do
       request
 
@@ -512,6 +529,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   describe 'GET /bulk_imports/:id' do
     let(:request) { get api("/bulk_imports/#{import_1.id}", user) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import do
+      let(:boundary_object) { :instance }
+      let(:request) { get api("/bulk_imports/#{import_1.id}", personal_access_token: pat) }
+    end
+
     it 'returns specified bulk import' do
       request
 
@@ -524,6 +546,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
   describe 'GET /bulk_imports/:id/entities' do
     let(:request) { get api("/bulk_imports/#{import_2.id}/entities", user) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import_entity do
+      let(:boundary_object) { :instance }
+      let(:request) { get api("/bulk_imports/#{import_2.id}/entities", personal_access_token: pat) }
+    end
 
     it 'returns specified bulk import entities with failures' do
       request
@@ -546,6 +573,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
   describe 'GET /bulk_imports/:id/entities/:entity_id' do
     let(:request) { get api("/bulk_imports/#{import_1.id}/entities/#{entity_2.id}", user) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import_entity do
+      let(:boundary_object) { :instance }
+      let(:request) { get api("/bulk_imports/#{import_1.id}/entities/#{entity_2.id}", personal_access_token: pat) }
+    end
 
     it 'returns specified bulk import entity' do
       request
@@ -574,6 +606,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   describe 'GET /bulk_imports/:id/entities/:entity_id/failures' do
     let(:request) { get api("/bulk_imports/#{import_2.id}/entities/#{entity_3.id}/failures", user) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_bulk_import_entity_failure do
+      let(:boundary_object) { :instance }
+      let(:request) { get api("/bulk_imports/#{import_2.id}/entities/#{entity_3.id}/failures", personal_access_token: pat) }
+    end
+
     it 'returns specified entity failures' do
       request
 
@@ -586,6 +623,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
   describe 'POST /bulk_imports/:id/cancel' do
     let(:import) { create(:bulk_import, user: user) }
+
+    it_behaves_like 'authorizing granular token permissions', :cancel_bulk_import do
+      let(:boundary_object) { :instance }
+      let(:request) { post api("/bulk_imports/#{import.id}/cancel", personal_access_token: pat) }
+    end
 
     context 'when user is canceling their own migration' do
       it 'cancels the migration and returns 200' do

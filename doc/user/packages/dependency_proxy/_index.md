@@ -89,11 +89,8 @@ you must authenticate with it.
 Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry),
 but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
 
-{{< alert type="note" >}}
-
-[Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) does not apply during authentication with the dependency proxy for container images. If you are an administrator with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope, that token works even though Admin Mode is enabled.
-
-{{< /alert >}}
+> [!note]
+> [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) does not apply during authentication with the dependency proxy for container images. If you are an administrator with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope, that token works even though Admin Mode is enabled.
 
 For example, to manually sign in:
 
@@ -430,7 +427,7 @@ services:
 
 ### Issues when authenticating to the dependency proxy from CI/CD jobs
 
-GitLab Runner authenticates automatically to the dependency proxy. However, the underlying Docker engine is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#precedence-of-docker-authorization-resolving).
+GitLab Runner authenticates automatically to the dependency proxy. However, the underlying Docker engine is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration/#precedence-of-docker-authorization-resolving).
 
 Misconfigurations in the authentication mechanism may cause `HTTP Basic: Access denied` and `403: Access forbidden` errors.
 
@@ -471,13 +468,10 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 
 ### `exec format error` when running images from the dependency proxy
 
-{{< alert type="note" >}}
-
-This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
-For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
-or use the workaround documented below.
-
-{{< /alert >}}
+> [!note]
+> This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
+> For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
+> or use the workaround documented below.
 
 This error occurs if you try to use the dependency proxy on an ARM-based Docker install in GitLab 16.2 or earlier.
 The dependency proxy only supports the x86_64 architecture when pulling an image with a specific tag.

@@ -51,8 +51,7 @@ _quarantine:
       - gitlab-qa-run-*/**/test-metrics-*.json
   rules:
     - !reference [.rules:test:external-trigger-never, rules]
-    - !reference [.rules:test:omnibus-base, rules]
-    - !reference [.rules:test:manual-except-default-branch, rules]
+    - when: manual
 
 # ------------------------------------------
 # Test jobs
@@ -112,7 +111,7 @@ gitaly-reftables-backend:
     QA_SCENARIO: Test::Integration::Praefect
     QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
-    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled,dap_onboarding_empty_states=disabled"
+    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/

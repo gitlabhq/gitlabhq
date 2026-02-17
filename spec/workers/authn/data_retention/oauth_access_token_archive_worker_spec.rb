@@ -51,23 +51,7 @@ RSpec.describe Authn::DataRetention::OauthAccessTokenArchiveWorker, feature_cate
       end
     end
 
-    context 'when the feature flag :archive_revoked_access_tokens is disabled' do
-      before do
-        stub_feature_flags(archive_revoked_access_tokens: false)
-      end
-
-      it 'does not delete any tokens' do
-        expect { worker.perform }.not_to change { OauthAccessToken.count }
-        expect(OauthAccessToken.count).to eq(5)
-      end
-
-      it 'does not enqueue another job' do
-        expect(described_class).not_to receive(:perform_in)
-        worker.perform
-      end
-    end
-
-    context 'when the feature flag :archive_revoked_access_tokens is enabled', :freeze_time do
+    context 'when there are revoked tokens to delete', :freeze_time do
       context 'when there are revoked tokens to delete' do
         it 'deletes only revoked tokens created before cutoff date' do
           expect { worker.perform }.to change { OauthAccessToken.count }.by(-2)

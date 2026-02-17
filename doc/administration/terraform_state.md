@@ -125,13 +125,10 @@ The following settings are:
 
 ### Migrate to object storage
 
-{{< alert type="warning" >}}
-
-It's not possible to migrate Terraform state files from object storage back to local storage,
-so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
-to change this behavior.
-
-{{< /alert >}}
+> [!warning]
+> It's not possible to migrate Terraform state files from object storage back to local storage,
+> so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
+> to change this behavior.
 
 To migrate Terraform state files to object storage:
 
@@ -148,7 +145,7 @@ To migrate Terraform state files to object storage:
   ```
 
 You can optionally track progress and verify that all Terraform state files migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
@@ -195,11 +192,8 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-  {{< alert type="note" >}}
-
-  If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
-
-  {{< /alert >}}
+   > [!note]
+   > If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
    ```ruby
    gitlab_rails['terraform_state_object_store_connection'] = {

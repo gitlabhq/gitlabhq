@@ -51,6 +51,7 @@ describe('CommitFilteredSearch', () => {
             icon: 'pencil',
             token: UserToken,
             dataType: 'user',
+            valueField: 'name',
             defaultUsers: [],
             operators: OPERATORS_IS_NOT_OR,
             fullPath: 'gitlab-org/gitlab',

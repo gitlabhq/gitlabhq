@@ -7,7 +7,6 @@ module API
     before { authenticate! }
 
     NAMESPACES_TAGS = %w[namespaces].freeze
-
     helpers do
       params :optional_list_params_ee do
         # EE::API::Namespaces would override this helper

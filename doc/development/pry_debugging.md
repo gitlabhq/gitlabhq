@@ -16,12 +16,9 @@ You can then connect to this session by using the [pry-shell](https://github.com
 You can watch [this video](https://www.youtube.com/watch?v=Lzs_PL_BySo), for more information about
 how to use the `pry-shell`.
 
-{{< alert type="warning" >}}
-
-`binding.pry` can occasionally experience autoloading issues and fail during name resolution.
-If needed, `binding.irb` can be used instead with a more limited feature set.
-
-{{< /alert >}}
+> [!warning]
+> `binding.pry` can occasionally experience autoloading issues and fail during name resolution.
+> If needed, `binding.irb` can be used instead with a more limited feature set.
 
 ## `byebug` vs `binding.irb` vs `binding.pry`
 

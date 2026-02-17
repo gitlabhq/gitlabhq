@@ -124,11 +124,8 @@ describe('when my_experiment is enabled', () => {
 });
 ```
 
-{{< alert type="note" >}}
-
-This method of stubbing in Jest specs does not automatically un-stub itself at the end of the test. We merge our stubbed experiment in with all the other global data in `window.gl`. If you must remove the stubbed experiments after your test or ensure a clean global object before your test, you must manage the global object directly yourself:
-
-{{< /alert >}}
+> [!note]
+> This method of stubbing in Jest specs does not automatically un-stub itself at the end of the test. We merge our stubbed experiment in with all the other global data in `window.gl`. If you must remove the stubbed experiments after your test or ensure a clean global object before your test, you must manage the global object directly yourself:
 
 ```javascript
 describe('tests that care about global state', () => {

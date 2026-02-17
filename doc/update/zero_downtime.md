@@ -59,8 +59,10 @@ When considering a zero-downtime upgrade, be aware that:
 
 - Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not
   the latest. For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You
-  should verify the version-specific upgrade notes relevant to your [upgrade path](upgrade_paths.md) and be
+  should verify the [version-specific upgrade notes](versions/_index.md) relevant to your [upgrade path](upgrade_paths.md) and be
   aware of any required upgrade stops:
+
+  - [GitLab 18 upgrade notes](versions/gitlab_18_changes.md)
   - [GitLab 17 upgrade notes](versions/gitlab_17_changes.md)
   - [GitLab 16 upgrade notes](versions/gitlab_16_changes.md)
   - [GitLab 15 upgrade notes](versions/gitlab_15_changes.md)
@@ -184,18 +186,17 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
 
 ### Upgrade Gitaly Cluster (Praefect) nodes
 
+> [!note]
+> This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql).
+> The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database.
+> A third party database solution is required to avoid downtime.
+
 For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
-{{< alert type="note" >}}
-
-The upgrade process attempts to do a graceful handover to a new Praefect process.
-Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
-In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
-
-{{< /alert >}}
-
 > [!note]
-> This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
+> The upgrade process attempts to do a graceful handover to a new Praefect process.
+> Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
+> In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
 
 Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
 migrations should run on only one Praefect node. To do this, designate a **Praefect deploy node** that runs the migrations:
@@ -396,12 +397,9 @@ for each secondary site. The required order is upgrading the primary first, then
 the secondaries. You must also run any post-deployment migrations on the primary after
 all secondaries have been updated.
 
-{{< alert type="note" >}}
-
-The same [requirements](#requirements) and [considerations](#considerations) apply for upgrading a live GitLab environment with
-Geo.
-
-{{< /alert >}}
+> [!note]
+> The same [requirements](#requirements) and [considerations](#considerations) apply for upgrading a live GitLab environment with
+> Geo.
 
 ### Primary site
 

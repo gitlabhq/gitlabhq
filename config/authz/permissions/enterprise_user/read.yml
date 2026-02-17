@@ -1,0 +1,5 @@
+---
+name: read_enterprise_user
+description: Grants the ability to read enterprise users
+boundaries:
+  - group

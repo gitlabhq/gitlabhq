@@ -20,12 +20,9 @@ title: Rate limit on Organizations API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -35,6 +32,10 @@ exceed a rate of 400 within one minute are blocked. Access to the endpoint is re
 You can configure the per minute rate limit per user for requests to the [POST /organizations API](../../api/organizations.md#create-an-organization). The default is 10.
 
 ## Change the rate limit
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 

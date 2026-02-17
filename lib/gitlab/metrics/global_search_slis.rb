@@ -17,6 +17,7 @@ module Gitlab
         ADVANCED_CONTENT_TARGET_S = 2.452
         ADVANCED_CODE_TARGET_S = 15.52
         ZOEKT_TARGET_S = 15.52
+        DEFAULT_TARGET_S = 5
 
         def initialize_slis!
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)
@@ -52,6 +53,8 @@ module Gitlab
             ADVANCED_CODE_TARGET_S
           elsif search_type == 'zoekt' && code_search?(search_scope)
             ZOEKT_TARGET_S
+          else
+            DEFAULT_TARGET_S
           end
         end
 

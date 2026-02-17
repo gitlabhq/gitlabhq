@@ -27,7 +27,7 @@ Value stream analytics helps businesses:
 
 - Visualize their end-to-end DevSecOps workstreams.
 - Identify and solve inefficiencies.
-- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/2025/02/20/how-we-reduced-mr-review-time-with-value-stream-management/)).
+- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/)).
 
 For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
@@ -146,11 +146,8 @@ The following table gives an overview of the pre-defined stages in value stream 
 | Review    | The median time taken to review a merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | The median time between merging a merge request that has a closing issue pattern until the very first deployment to a [production environment](#production-environment). If there isn't a production environment, this is not tracked. |
 
-{{< alert type="note" >}}
-
-Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
-
-{{< /alert >}}
+> [!note]
+> Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
 
 ### Example workflow
 
@@ -214,11 +211,8 @@ For example, a stage tracks when the `in progress` label is added and removed, w
 With the original calculation method, the duration is five hours (from 9:00 to 14:00).
 With cumulative label event duration calculation enabled, the duration is three hours (9:00 to 10:00 and 12:00 to 14:00).
 
-{{< alert type="note" >}}
-
-When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
-
-{{< /alert >}}
+> [!note]
+> When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
 
 #### Reaggregate data after upgrade
 
@@ -311,8 +305,8 @@ To view value stream analytics for your group or project:
 
       The charts and list display workflow items created during the date range.
 1. Optional. Sort results by ascending or descending:
-      - To sort by most recent or oldest workflow item, select the **Last event** header.
-      - To sort by most or least amount of time spent in each stage, select the **Duration** header.
+   - To sort by most recent or oldest workflow item, select the **Last event** header.
+   - To sort by most or least amount of time spent in each stage, select the **Duration** header.
 
 A badge next to the workflow items table header shows the number of workflow items that
 completed during the selected stage.
@@ -322,11 +316,8 @@ The table shows a list of related workflow items for the selected stage. Based o
 - Issues
 - Merge requests
 
-{{< alert type="note" >}}
-
-The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
-
-{{< /alert >}}
+> [!note]
+> The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
 
 ### Data filters
 
@@ -429,12 +420,9 @@ To view the median time spent in each stage by a group:
       - In the **To** field, select an end date.
 1. To view the metrics for each stage, above the **Filter results** text box, hover over a stage.
 
-{{< alert type="note" >}}
-
-The date range selector filters items by the event time. The event time is when the
-selected stage finished for the given item.
-
-{{< /alert >}}
+> [!note]
+> The date range selector filters items by the event time. The event time is when the
+> selected stage finished for the given item.
 
 ## View tasks by type
 
@@ -490,11 +478,8 @@ To create a value stream with default stages:
    - Select a **Start event** and a **Stop event**.
 1. Select **New value stream**.
 
-{{< alert type="note" >}}
-
-If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
-
-{{< /alert >}}
+> [!note]
+> If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
 
 ### With custom stages
 
@@ -529,7 +514,7 @@ time from a staging environment to production, you could use the following label
 You can automatically add labels by using [GitLab webhook events](../../project/integrations/webhook_events.md),
 so that a label is applied to merge requests or issues when a specific event occurs.
 Then, you can add label-based stages to track your workflow.
-To learn more about the implementation, see the blog post [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+To learn more about the implementation, see the blog post [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/applying-gitlab-labels-automatically/).
 
 ### Example configuration
 
@@ -695,12 +680,9 @@ group(fullPath: "your-group-path") {
 
 Depending how you want to consume the data, you can request metrics for one specific stage or all stages in your value stream.
 
-{{< alert type="note" >}}
-
-Requesting metrics for all stages might be too slow for some installations.
-The recommended approach is to request metrics stage by stage.
-
-{{< /alert >}}
+> [!note]
+> Requesting metrics for all stages might be too slow for some installations.
+> The recommended approach is to request metrics stage by stage.
 
 Requesting metrics for the stage:
 
@@ -731,12 +713,9 @@ group(fullPath: "your-group-path") {
 }
 ```
 
-{{< alert type="note" >}}
-
-You should always request metrics with a given time frame.
-The longest supported time frame is 180 days.
-
-{{< /alert >}}
+> [!note]
+> You should always request metrics with a given time frame.
+> The longest supported time frame is 180 days.
 
 The `metrics` node supports additional filtering options:
 

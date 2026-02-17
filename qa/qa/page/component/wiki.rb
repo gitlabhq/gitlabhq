@@ -21,7 +21,7 @@ module QA
             element 'wiki-empty-state'
           end
 
-          base.view 'app/assets/javascripts/wikis/components/wiki_header.vue' do
+          base.view 'app/assets/javascripts/wikis/components/wiki_sidebar_toggle.vue' do
             element 'wiki-sidebar-toggle'
           end
         end

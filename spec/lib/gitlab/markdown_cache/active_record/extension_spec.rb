@@ -5,6 +5,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
   let_it_be(:project) { create(:project) }
 
   let(:klass) do
+    type_id = build(:work_item_system_defined_type, :issue).id
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'
       include CacheMarkdownField
@@ -14,7 +15,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
       attribute :author
       attribute :project
 
-      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+      before_validation -> { self.work_item_type_id = type_id }
     end
   end
 

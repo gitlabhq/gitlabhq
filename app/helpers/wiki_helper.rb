@@ -18,11 +18,14 @@ module WikiHelper
   end
 
   def wiki_sidebar_toggle_button
+    css_classes = 'js-sidebar-wiki-toggle-open wiki-sidebar-toggle toggle-action-open gl-mr-2'
+    css_classes += ' @lg/panel:gl-hidden' if Feature.enabled?(:wiki_floating_sidebar_toggle, @wiki.container)
+
     render Pajamas::ButtonComponent.new(
       category: :tertiary,
-      icon: 'list-bulleted',
+      icon: Feature.enabled?(:wiki_floating_sidebar_toggle, @wiki.container) ? 'sidebar' : 'list-bulleted',
       button_options: {
-        class: 'wiki-sidebar-header-toggle js-sidebar-wiki-toggle-open gl-mr-2',
+        class: css_classes,
         "aria-label": _('Toggle sidebar')
       })
   end
@@ -39,18 +42,24 @@ module WikiHelper
       .join(' / ')
   end
 
+  def wiki_breadcrumb_items(page_slug)
+    parts = page_slug.split('/').reject(&:empty?)
+    parts.pop
+
+    parts.each_with_index.map do |_, i|
+      slug = parts[0..i].join('/')
+      basename = File.basename(slug)
+      title = WikiPage.unhyphenize(basename)
+      title = 'Home' if title.casecmp('home') == 0
+
+      { text: title, href: wiki_page_path(@wiki, slug) }
+    end
+  end
+
   def wiki_breadcrumb_collapsed_links(page_slug)
-    page_slug_split = page_slug.split('/')
-    page_slug_split.pop(1)
-    current_slug = ""
-    page_slug_split
-      .map do |dir_or_page|
-        current_slug = "#{current_slug}#{dir_or_page}/"
-        add_to_breadcrumb_collapsed_links(
-          { text: WikiPage.unhyphenize(dir_or_page).capitalize, href: wiki_page_path(@wiki, current_slug) },
-          location: :after
-        )
-      end
+    wiki_breadcrumb_items(page_slug).each do |item|
+      add_to_breadcrumb_collapsed_links(item, location: :after)
+    end
   end
 
   def wiki_attachment_upload_url

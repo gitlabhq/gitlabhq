@@ -13,10 +13,13 @@ FactoryBot.define do
 
     trait :current do
       status { 2 }
+      current_from { Time.current }
     end
 
     trait :active do
       status { 3 }
+      current_from { 1.month.ago }
+      current_until { 1.week.ago }
     end
   end
 end

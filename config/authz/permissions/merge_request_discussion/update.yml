@@ -1,0 +1,5 @@
+---
+name: update_merge_request_discussion
+description: Grants the ability to resolve/unresolve merge request discussions
+boundaries:
+  - project

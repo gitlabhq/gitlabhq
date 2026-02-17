@@ -18,9 +18,9 @@ For group iterations, use the [group iterations API](group_iterations.md).
 
 We no longer have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
 
-## List project iterations
+## List all project iterations
 
-Returns a list of project iterations.
+Lists all iterations for a specified project.
 
 Iterations created by **Enable automatic scheduling** in
 [Iteration cadences](../user/group/iterations/_index.md#iteration-cadences) return `null` for

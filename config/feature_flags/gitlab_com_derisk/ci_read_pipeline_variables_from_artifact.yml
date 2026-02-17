@@ -1,0 +1,12 @@
+---
+name: ci_read_pipeline_variables_from_artifact
+description: |
+  Enables reading pipeline variables from pipeline artifacts (object storage) when they exist.
+  Otherwise falls back to reading from ci_pipeline_variables table as before.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/584542
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222547
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585224
+milestone: '18.9'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

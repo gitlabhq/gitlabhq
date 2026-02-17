@@ -5,7 +5,6 @@ module API
     include PaginationParams
 
     releases_tags = %w[releases]
-
     RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
       .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
     RELEASE_CLI_USER_AGENT = 'GitLab-release-cli'
@@ -48,6 +47,7 @@ module API
 
         use :pagination
       end
+      route_setting :authorization, permissions: :read_release, boundary_type: :group
       get ":id/releases" do
         finder_options = {
           sort: params[:sort]
@@ -98,7 +98,8 @@ module API
         optional :updated_after, type: DateTime, desc: 'Return releases updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases,
+      route_setting :authorization, permissions: :read_release, boundary_type: :project,
+        job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases' do
         releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort, :updated_before, :updated_after)).execute
@@ -135,7 +136,8 @@ module API
           desc: 'If `true`, a response includes HTML rendered markdown of the release description'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases,
+      route_setting :authorization, permissions: :read_release, boundary_type: :project,
+        job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
@@ -164,7 +166,8 @@ module API
           as: :filepath
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases,
+      route_setting :authorization, permissions: :read_release, boundary_type: :project,
+        job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/:tag_name/downloads/*direct_asset_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
@@ -194,7 +197,8 @@ module API
           desc: 'The path to be suffixed to the latest release'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases,
+      route_setting :authorization, permissions: :read_release, boundary_type: :project,
+        job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/permalink/latest(/)(*suffix_path)', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
@@ -280,7 +284,8 @@ module API
                 'and the release will published to the CI catalog as it was before this parameter was introduced.'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :admin_releases
+      route_setting :authorization, permissions: :create_release, boundary_type: :project,
+        job_token_policies: :admin_releases
       post ':id/releases' do
         authorize_create_release!
 
@@ -326,7 +331,8 @@ module API
         mutually_exclusive :milestones, :milestone_ids, message: 'Cannot specify milestones and milestone_ids at the same time'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :admin_releases
+      route_setting :authorization, permissions: :update_release, boundary_type: :project,
+        job_token_policies: :admin_releases
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_update_release!
 
@@ -357,7 +363,8 @@ module API
         requires :tag_name, type: String, desc: 'The Git tag the release is associated with', as: :tag
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :admin_releases
+      route_setting :authorization, permissions: :delete_release, boundary_type: :project,
+        job_token_policies: :admin_releases
       delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_destroy_release!
 

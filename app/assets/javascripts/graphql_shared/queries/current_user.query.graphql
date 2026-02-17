@@ -1,5 +1,6 @@
 #import "../fragments/user.fragment.graphql"
 
+# @feature_category: user_profile
 query currentUser {
   currentUser {
     ...User

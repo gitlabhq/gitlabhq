@@ -67,14 +67,14 @@ export default {
         return !this.issuableIid;
       },
       update(data) {
-        return data.workspace?.issuable?.currentUserTodos.nodes[0]?.id;
+        return data.namespace?.issuable?.currentUserTodos.nodes[0]?.id;
       },
       result({ data }) {
         if (!data) {
           return;
         }
 
-        const currentUserTodos = data.workspace?.issuable?.currentUserTodos?.nodes ?? [];
+        const currentUserTodos = data.namespace?.issuable?.currentUserTodos?.nodes ?? [];
         this.todoId = currentUserTodos[0]?.id;
         this.$emit('todoUpdated', currentUserTodos.length > 0);
       },
@@ -158,7 +158,7 @@ export default {
             };
             const sourceData = store.readQuery(queryProps);
             const data = produce(sourceData, (draftState) => {
-              draftState.workspace.issuable.currentUserTodos.nodes = this.hasTodo ? [] : [todo];
+              draftState.namespace.issuable.currentUserTodos.nodes = this.hasTodo ? [] : [todo];
             });
             store.writeQuery({
               data,

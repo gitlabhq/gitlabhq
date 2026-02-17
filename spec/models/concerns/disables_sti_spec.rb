@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DisablesSti, feature_category: :shared do
+RSpec.describe DisablesSti, feature_category: :database do
   describe '.allow_legacy_sti_class' do
     it 'is nil by default' do
       expect(ApplicationRecord.allow_legacy_sti_class).to eq(nil)

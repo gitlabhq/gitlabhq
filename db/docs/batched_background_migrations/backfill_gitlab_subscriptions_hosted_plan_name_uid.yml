@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillGitlabSubscriptionsHostedPlanNameUid
+description: Backfill hosted_plan_name_uid column in gitlab_subscriptions table from associated plan names
+feature_category: subscription_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217075
+milestone: '18.9'
+queued_migration_version: 20260115114900

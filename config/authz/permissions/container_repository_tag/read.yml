@@ -1,0 +1,5 @@
+---
+name: read_container_repository_tag
+description: Grants the ability to read container repository tags
+boundaries:
+  - project

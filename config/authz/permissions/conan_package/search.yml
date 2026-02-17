@@ -1,0 +1,6 @@
+---
+name: search_conan_package
+description: Grants the ability to search for Conan packages
+boundaries:
+  - project
+  - instance

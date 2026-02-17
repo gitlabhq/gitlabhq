@@ -65,7 +65,7 @@ module Gitlab
         result = {}
         samples_by_db.each do |db, samples|
           result[db] = {}
-          parsed_samples = Gitlab::Json.parse(samples)
+          parsed_samples = Gitlab::Json.safe_parse(samples)
 
           next if parsed_samples.length < min_samples
 
@@ -96,7 +96,7 @@ module Gitlab
           'payload' => payload
         }
 
-        existing_samples = cached_samples ? ::Gitlab::Json.parse(cached_samples) : []
+        existing_samples = cached_samples ? ::Gitlab::Json.safe_parse(cached_samples) : []
         existing_samples.append(sample)
 
         existing_samples = existing_samples.filter { |s| s['created_at'] > now - SAMPLING_WINDOW_SECONDS }

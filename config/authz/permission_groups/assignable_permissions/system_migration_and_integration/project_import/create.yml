@@ -1,0 +1,8 @@
+---
+name: create_project_import
+description: Grants the ability to import projects
+permissions:
+  - create_project_import
+boundaries:
+  - group
+  - user

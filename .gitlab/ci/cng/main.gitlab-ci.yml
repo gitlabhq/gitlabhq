@@ -56,8 +56,8 @@ include:
     GITLAB_TAG: "${GITLAB_TAG}"
     GITLAB_ASSETS_TAG: "${GITLAB_ASSETS_TAG}"
     COMPILE_ASSETS: "${COMPILE_ASSETS}"
-    CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
-    EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
+    CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ci/jobs/job_rules/#cicd-variable-expressions, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
+    EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ci/jobs/job_rules/#cicd-variable-expressions, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
     GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
     GITLAB_KAS_VERSION: "${GITLAB_KAS_VERSION}"
     GITLAB_PAGES_VERSION: "${GITLAB_PAGES_VERSION}"

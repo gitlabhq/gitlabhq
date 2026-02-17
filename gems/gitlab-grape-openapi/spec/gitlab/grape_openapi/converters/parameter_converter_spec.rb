@@ -561,6 +561,103 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema).to eq({ type: 'string' })
         end
       end
+
+      context 'with Proc default' do
+        let(:options) { { type: 'String', default: -> { 'dynamic' } } }
+
+        it 'does not include Proc default (not serializable)' do
+          expect(converter.schema).to eq({ type: 'string' })
+        end
+      end
+
+      context 'with lambda default' do
+        let(:options) { { type: 'Integer', default: -> { Time.current.to_i } } }
+
+        it 'does not include lambda default (not serializable)' do
+          expect(converter.schema).to eq({ type: 'integer' })
+        end
+      end
+
+      context 'with Proc enum values' do
+        let(:options) { { type: 'String', values: -> { %w[foo bar] } } }
+
+        it 'does not include Proc enum (not serializable)' do
+          expect(converter.schema).to eq({ type: 'string' })
+        end
+      end
+
+      context 'with lambda enum values' do
+        let(:options) { { type: 'Integer', values: -> { [1, 2, 3] } } }
+
+        it 'does not include lambda enum (not serializable)' do
+          expect(converter.schema).to eq({ type: 'integer' })
+        end
+      end
+
+      context 'with Time object default' do
+        let(:options) { { type: 'String', default: Time.current } }
+
+        it 'does not include Time object default (not serializable)' do
+          expect(converter.schema).to eq({ type: 'string' })
+        end
+      end
+
+      context 'with ActiveSupport::TimeWithZone default', if: defined?(ActiveSupport::TimeWithZone) do
+        let(:time_zone) { ActiveSupport::TimeZone.new('UTC') }
+        let(:time_with_zone) { time_zone.parse('2024-08-14T17:26:19.883Z') }
+        let(:options) { { type: 'DateTime', default: time_with_zone } }
+
+        it 'serializes to default time string' do
+          expect(converter.schema).to eq({
+            type: 'string',
+            format: 'date-time',
+            default: '2025-08-01T00:00:00.000Z'
+          })
+        end
+      end
+
+      context 'with ActiveSupport::TimeWithZone default and example', if: defined?(ActiveSupport::TimeWithZone) do
+        let(:time_zone) { ActiveSupport::TimeZone.new('UTC') }
+        let(:time_with_zone) { time_zone.parse('2024-08-14T17:26:19.883Z') }
+        let(:options) do
+          { type: 'DateTime', default: time_with_zone, documentation: { example: '2024-08-14T17:26:19.883Z' } }
+        end
+
+        it 'uses example value when available' do
+          expect(converter.schema).to eq({
+            type: 'string',
+            format: 'date-time',
+            default: '2024-08-14T17:26:19.883Z'
+          })
+        end
+      end
+    end
+
+    describe 'Date handling' do
+      context 'with Date type' do
+        let(:options) { { type: 'Date' } }
+
+        it 'converts to string with date format' do
+          expect(converter.schema).to eq({ type: 'string', format: 'date' })
+        end
+      end
+
+      context 'with Date and default value' do
+        let(:options) { { type: 'Date', default: '2023-01-01' } }
+
+        it 'includes default with proper format' do
+          expect(converter.schema).to eq({ type: 'string', format: 'date', default: '2023-01-01' })
+        end
+      end
+
+      context 'with Date and example value' do
+        let(:options) { { type: 'Date', documentation: { example: '2024-06-15' } } }
+
+        it 'includes format in schema' do
+          expect(converter.schema).to eq({ type: 'string', format: 'date' })
+          expect(converter.example).to eq('2024-06-15')
+        end
+      end
     end
 
     describe 'DateTime handling' do
@@ -686,6 +783,14 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
     end
 
     describe 'format resolution' do
+      context 'with Date type' do
+        let(:options) { { type: 'Date' } }
+
+        it 'resolves format to date' do
+          expect(converter.resolve_object_format).to eq('date')
+        end
+      end
+
       context 'with DateTime type' do
         let(:options) { { type: 'DateTime' } }
 

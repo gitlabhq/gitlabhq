@@ -16,7 +16,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
@@ -150,13 +150,21 @@ type McpServerConfig struct {
 	PreApprovedTools *[]string
 }
 
+// DuoWorkflowServiceConfig holds configuration for a Duo Workflow service endpoint.
+type DuoWorkflowServiceConfig struct {
+	URI     string
+	Headers map[string]string
+	Secure  bool
+}
+
 // DuoWorkflow holds configuration for the Duo Workflow service.
 type DuoWorkflow struct {
-	Headers            map[string]string
-	ServiceURI         string
-	Secure             bool
-	McpServers         map[string]McpServerConfig
-	LockConcurrentFlow bool
+	Service                   *DuoWorkflowServiceConfig
+	CloudServiceForSelfHosted *DuoWorkflowServiceConfig
+	McpServers                map[string]McpServerConfig
+	LockConcurrentFlow        bool
+	// ServerCapabilities is a list of capability strings provided by Rails.
+	ServerCapabilities []string
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

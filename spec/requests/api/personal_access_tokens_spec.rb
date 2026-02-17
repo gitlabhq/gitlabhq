@@ -311,6 +311,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       let_it_be(:current_user) { create(:user) }
       let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
 
+      it_behaves_like 'authorizing granular token permissions', :read_personal_access_token do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { get api(path, personal_access_token: pat) }
+      end
+
       it 'returns all PATs belonging to the signed-in user' do
         get api(path, personal_access_token: current_users_token)
 
@@ -508,6 +514,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
     context 'when current_user is not an administrator' do
       let_it_be(:other_users_path) { "/personal_access_tokens/#{token1.id}" }
 
+      it_behaves_like 'authorizing granular token permissions', :read_personal_access_token do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { get api(user_token_path, personal_access_token: pat) }
+      end
+
       it 'returns users own PAT by id' do
         get api(user_token_path, current_user)
 
@@ -559,6 +571,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
     let_it_be(:token) { create(:personal_access_token) }
 
     let(:path) { "/personal_access_tokens/#{token.id}/rotate" }
+
+    it_behaves_like 'authorizing granular token permissions', :rotate_personal_access_token do
+      let(:user) { token.user }
+      let(:boundary_object) { :user }
+      let(:request) { post api(path, personal_access_token: pat) }
+    end
 
     it "rotates user's own token", :freeze_time do
       post api(path, token.user)
@@ -683,6 +701,12 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       let_it_be(:user_token) { create(:personal_access_token, user: current_user) }
       let_it_be(:user_token_path) { "/personal_access_tokens/#{user_token.id}" }
       let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: current_user) }
+
+      it_behaves_like 'authorizing granular token permissions', :revoke_personal_access_token do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { delete api(user_token_path, personal_access_token: pat) }
+      end
 
       it 'fails revokes a different users token' do
         delete api(path, current_user)

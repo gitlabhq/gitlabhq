@@ -1,4 +1,4 @@
-import { GlFormInputGroup, GlFormCheckbox } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormCheckbox, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -6,7 +6,6 @@ import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/h
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CICDProjectForm from '~/projects/new_v2/components/ci_cd_project_form.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -51,7 +50,7 @@ describe('CI/CD Project Form', () => {
       stubs: {
         GlFormInputGroup,
         GlFormCheckbox,
-        MultiStepFormTemplate,
+        GlMultiStepFormTemplate,
       },
     });
   };
@@ -66,7 +65,7 @@ describe('CI/CD Project Form', () => {
   });
 
   const findForm = () => wrapper.find('form');
-  const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findSharedProjectCreationFields = () => wrapper.findComponent(SharedProjectCreationFields);
   const findUrlInput = () => wrapper.findByTestId('repository-url');
   const findUrlInputWrapper = () => wrapper.findByTestId('repository-url-form-group');
@@ -76,8 +75,8 @@ describe('CI/CD Project Form', () => {
   const findGitHubButton = () => wrapper.findByTestId('connect-github-project-button');
   const findBackButton = () => wrapper.findByTestId('create-cicd-project-back-button');
 
-  it('passes the correct props to MultiStepFormTemplate', () => {
-    expect(findMultiStepFormTemplate().props()).toMatchObject({
+  it('passes the correct props to GlMultiStepFormTemplate', () => {
+    expect(findGlMultiStepFormTemplate().props()).toMatchObject({
       title: defaultProps.option.title,
       currentStep: 2,
       stepsTotal: 2,

@@ -28,10 +28,14 @@ module Authz
         private
 
         def load_all
-          load_files_to_hash(config_path) do |file, content|
-            item = new(content, file)
-            [item.name.presence || file, item]
+          load_files_to_hash(config_path) do |file_path, content|
+            definition = new(content, file_path)
+            [resource_identifier(definition, file_path), definition]
           end
+        end
+
+        def resource_identifier(definition, file_path)
+          definition.name.presence || file_path
         end
 
         def load_files_to_hash(glob_path)

@@ -93,13 +93,13 @@ export default {
         return !this.iid;
       },
       update(data) {
-        return data.workspace?.issuable || {};
+        return data.namespace?.issuable || {};
       },
       result({ data }) {
         if (!data) {
           return;
         }
-        this.$emit(`${this.dateType}Updated`, data.workspace?.issuable?.[this.dateType]);
+        this.$emit(`${this.dateType}Updated`, data.namespace?.issuable?.[this.dateType]);
       },
       error() {
         createAlert({

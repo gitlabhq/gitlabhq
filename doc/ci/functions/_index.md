@@ -1,0 +1,619 @@
+---
+stage: Verify
+group: CI Functions Platform
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab CI/CD Functions
+---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+GitLab CI/CD Functions are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
+You are not required to use functions. However, the reusability, composability, testability, and independence
+of functions make it easier to understand and maintain CI/CD pipeline.
+
+To get started, you can try the [set up functions tutorial](../../tutorials/set_up_cicd_functions/_index.md).
+To start creating your own functions, see [creating your own function](#create-your-own-function). To understand how pipelines can benefit
+from using both CI/CD Components and CI/CD Functions, see [combine CI/CD Components and CI/CD Functions](#combine-cicd-components-and-cicd-functions).
+
+This experimental feature is still in active development and might have breaking
+changes at any time. Review the [changelog](https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md)
+for full details on any breaking changes.
+
+> [!note]
+> In GitLab Runner 17.11 and later, when you use the Docker executor, GitLab Runner injects the
+> `step-runner` binary into the build container. For all other executors, ensure that the `step-runner`
+> binary is in the execution environment. Support for the legacy Docker image
+> `registry.gitlab.com/gitlab-org/step-runner:v0`, maintained by the step runner team,
+> ends in GitLab 18.0.
+
+## Function workflow
+
+A function either runs a sequence of functions or executes a command. Each function specifies inputs and outputs, and has
+access to CI/CD job variables, environment variables, and resources such as the file
+system and networking. Functions are hosted locally on the file system, in GitLab.com repositories, or in any other Git source.
+
+Additionally, functions:
+
+- Run in a Docker container created by the GitLab Runner team, you can review the [`Dockerfile`](https://gitlab.com/gitlab-org/step-runner/-/blob/main/Dockerfile).
+  Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
+  when functions will run inside the environment defined by the CI/CD job.
+- Are specific to Linux. Follow [epic 15074](https://gitlab.com/groups/gitlab-org/-/epics/15074)
+  to track when functions supports multiple operating systems.
+
+For example, this job uses the [`run`](../yaml/_index.md#run) CI/CD keyword to run a function:
+
+```yaml
+job:
+  variables:
+    CI_SAY_HI_TO: "Sally"
+  run:
+    - name: say_hi
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v1.0.0
+      inputs:
+        message: "hello, ${{job.CI_SAY_HI_TO}}"
+```
+
+When this job runs, the message `hello, Sally` is printed to job log.
+The definition of the echo function is:
+
+```yaml
+spec:
+  inputs:
+    message:
+      type: string
+---
+exec:
+  command:
+    - bash
+    - -c
+    - echo '${{inputs.message}}'
+```
+
+## Use CI/CD Functions
+
+Configure a GitLab CI/CD job to use functions with the `run` keyword. You cannot use `before_script`,
+`after_script`, or `script` in a job when you are running CI/CD Functions.
+
+The `run` keyword accepts a list of functions to run. Functions are run one at a time in the order they are defined in the list.
+Each list item has a `name` and either `step`, `script`, or `action`.
+
+Name must consist only of alphanumeric characters and underscores, and must not start with a number.
+
+### Run a function
+
+Run a function by providing the [function location](#function-location) using the `step` keyword.
+
+Inputs and environment variables can be passed to the function, and these can contain expressions that interpolate values.
+Functions run in the directory defined by the `CI_PROJECT_DIR` [predefined variable](../variables/predefined_variables.md).
+
+For example, the echo function loaded from the Git repository `gitlab.com/components/echo`
+receives the environment variable `USER: Fred` and the input `message: hello Sally`:
+
+```yaml
+job:
+  variables:
+    CI_SAY_HI_TO: "Sally"
+  run:
+    - name: say_hi
+      step: gitlab.com/components/echo@v1.0.0
+      env:
+        USER: "Fred"
+      inputs:
+        message: "hello ${{job.CI_SAY_HI_TO}}"
+```
+
+### Run a script
+
+Run a script in a shell with the `script` keyword. Environment variables passed to scripts
+using `env` are set in the shell. Script functions run in the directory defined by the `CI_PROJECT_DIR`
+[predefined variable](../variables/predefined_variables.md).
+
+For example, the following script prints the GitLab user to the job log:
+
+```yaml
+my-job:
+  run:
+    - name: say_hi
+      script: echo hello ${{job.GITLAB_USER_LOGIN}}
+```
+
+Script functions use the `bash` shell, falling back to use `sh` if bash is not found.
+
+### Function location
+
+Functions are loaded from a relative path on the file system, GitLab.com repositories,
+or any other Git source.
+
+#### Load a function from the file system
+
+Load a function from the file system using a relative path that starts with a full-stop `.`.
+The folder referenced by the path must contain a `step.yml` function definition file.
+Path separators must always use forward-slashes `/`, regardless of operating system.
+
+For example:
+
+```yaml
+- name: my-step
+  step: ./path/to/my-step
+```
+
+#### Load a function from a Git repository
+
+Load a function from a Git repository by supplying the URL and revision (commit, branch, or tag) of the repository.
+You can also specify the relative directory and filename of the function in the `steps` folder of the repository.
+If the URL is specified without a directory, then `step.yml` is loaded from the `steps` folder.
+
+For example:
+
+- Specify the function with a branch:
+
+  ```yaml
+  job:
+    run:
+      - name: specifying_a_branch
+        step: gitlab.com/components/echo@main
+  ```
+
+- Specify the function with a tag:
+
+  ```yaml
+  job:
+    run:
+      - name: specifying_a_tag
+        step: gitlab.com/components/echo@v1.0.0
+  ```
+
+- Specify the function with a directory, filename, and Git commit in a repository:
+
+  ```yaml
+  job:
+    run:
+      - name: specifying_a_directory_file_and_commit_within_the_repository
+        step: gitlab.com/components/echo/-/reverse/my-step.yml@3c63f399ace12061db4b8b9a29f522f41a3d7f25
+  ```
+
+To specify a folder or file outside the `steps` folder, use the expanded `step` syntax:
+
+- Specify a directory and filename relative to the repository root.
+
+  ```yaml
+  job:
+    run:
+      - name: specifying_a_directory_outside_steps
+        step:
+          git:
+            url: gitlab.com/components/echo
+            rev: main
+            dir: my-steps/sub-directory  # optional, defaults to the repository root
+            file: my-step.yml            # optional, defaults to `step.yml`
+  ```
+
+### Expressions
+
+Expressions are a mini-language enclosed in double curly-braces `${{ }}`. Expressions are evaluated
+just prior to function execution in the job environment and can be used in:
+
+- Input values
+- Environment variable values
+- Function location URL
+- The executable command
+- The executable work directory
+- Outputs in a sequence of functions
+- The `script` function
+- The `action` function
+
+Expressions can reference the following variables:
+
+| Variable                    | Example                                                       | Description |
+|:----------------------------|:--------------------------------------------------------------|:------------|
+| `env`                       | `${{env.HOME}}`                                               | Access environment variables set in the execution environment or in previous functions. |
+| `export_file`               | `echo '{"name":"NAME","value":"Fred"}' >${{export_file}}`     | The path to the [export file](#export-an-environment-variable). Write to this file to export environment variables for use by subsequent running functions. |
+| `inputs`                    | `${{inputs.message}}`                                         | Access the function's inputs. |
+| `job`                       | `${{job.GITLAB_USER_NAME}}`                                   | Access GitLab CI/CD variables, limited to those starting with `CI_`, `DOCKER_` or `GITLAB_`. |
+| `output_file`               | `echo '{"name":"meaning_life","value":42}' >${{output_file}}` | The path to the [output file](#return-an-output). Write to this file to set output variables from the function. |
+| `step_dir`                  | `work_dir: ${{step_dir}}`                                     | The directory where the function has been downloaded. Use to refer to files in the function, or to set the working directory of an executable function. |
+| `steps.[step_name].outputs` | `${{steps.my_step.outputs.name}}`                             | Access [outputs](#specify-outputs) from previously executed functions. Choose the specific function using the function name. |
+| `work_dir`                  | `${{work_dir}}`                                               | The working directory of an executing function. |
+
+Expressions are different from template interpolation which uses double square-brackets (`$[[ ]]`)
+and are evaluated during job generation.
+
+Expressions only have access to CI/CD job variables with names starting with `CI_`, `DOCKER_`,
+or `GITLAB_`. Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073)
+to track when functions can access all CI/CD job variables.
+
+### Using prior function outputs
+
+Function inputs can reference outputs from prior functions by referencing the function name and output variable name.
+
+For example, if the `gitlab.com/components/random-string` function defined an output variable called `random_value`:
+
+```yaml
+job:
+  run:
+    - name: generate_rand
+      step: gitlab.com/components/random
+    - name: echo_random
+      step: gitlab.com/components/echo
+      inputs:
+        message: "The random value is: ${{steps.generate_rand.outputs.random_value}}"
+```
+
+### Environment variables
+
+Functions can [set](#set-environment-variables) environment variables, [export](#export-an-environment-variable)
+environment variables, and environment variables can be passed in when using `step`, `script`, or `action`.
+
+Environment variable precedence, from highest to lowest precedence, are variables set:
+
+1. By using `env` keyword in the `step.yml`.
+1. By using the `env` keyword passed to a function in a sequence of functions.
+1. By using the `env` keyword for all functions in a sequence.
+1. Where a previously run function has written to `${{export_file}}`.
+1. By the Runner.
+1. By the container.
+
+## Create your own function
+
+Create your own function by performing the following tasks:
+
+1. Create a GitLab project, a Git repository, or a directory on a file system that is accessible
+   when the CI/CD job runs.
+1. Create a `step.yml` file and place it in the root folder of the project, repository, or directory.
+1. Define the [specification](#the-function-specification) for the function in the `step.yml`.
+1. Define the [definition](#the-function-definition) for the function in the `step.yml`.
+1. Add any files that your function uses to the project, repository, or directory.
+
+After the function is created, you can [use the function in a job](#run-a-function).
+
+### The function specification
+
+The function specification is the first of two documents contained in the function `step.yml`.
+The specification defines inputs and outputs that the function receives and returns.
+
+#### Specify inputs
+
+Input names can only use alphanumeric characters and underscores, and must not start with a number.
+Inputs must have a type, and they can optionally specify a default value. An input with no default value
+is a required input, it must be specified when using the function.
+
+Inputs must be one of the following types.
+
+| Type      | Example                 | Description |
+|:----------|:------------------------|:------------|
+| `array`   | `["a","b"]`             | A list of un-typed items. |
+| `boolean` | `true`                  | True or false. |
+| `number`  | `56.77`                 | 64 bit float. |
+| `string`  | `"brown cow"`           | Text.       |
+| `struct`  | `{"k1":"v1","k2":"v2"}` | Structured content. |
+
+For example, to specify that the function accepts an optional input called `greeting` of type `string`:
+
+```yaml
+spec:
+  inputs:
+    greeting:
+      type: string
+      default: "hello, world"
+---
+```
+
+To provide the input when using the step:
+
+```yaml
+run:
+  - name: my_step
+    step: ./my-step
+    inputs:
+      greeting: "hello, another world"
+```
+
+#### Specify outputs
+
+Similar to inputs, output names can only use alphanumeric characters and underscores,
+and must not start with a number. Outputs must have a type, and they can optionally specify a default value.
+The default value is returned when the function doesn't return the output.
+
+Outputs must be one of the following types.
+
+| Type         | Example                 | Description |
+|:-------------|:------------------------|:------------|
+| `array`      | `["a","b"]`             | A list of un-typed items. |
+| `boolean`    | `true`                  | True or false. |
+| `number`     | `56.77`                 | 64 bit float. |
+| `string`     | `"brown cow"`           | Text.       |
+| `struct`     | `{"k1":"v1","k2":"v2"}` | Structured content. |
+
+For example, to specify that the function returns an output called `value` of type `number`:
+
+```yaml
+spec:
+  outputs:
+    value:
+      type: number
+---
+```
+
+To use the output when using the step:
+
+```yaml
+run:
+  - name: random_generator
+    step: ./random_gen
+  - name: echo_number
+    step: ./echo
+    inputs:
+      message: "Random number generated was ${{step.random_generator.outputs.value}}"
+```
+
+#### Specify delegated outputs
+
+Instead of specifying output names and types, outputs can be entirely delegated to a specific step.
+The outputs returned by the step are returned by your function. The `delegate` keyword
+in the function definition determines which step outputs are returned by the function.
+
+For example, the following function returns outputs returned by the `random_gen` function.
+
+```yaml
+spec:
+  outputs: delegate
+---
+run:
+  - name: random_generator
+    step: ./random_gen
+delegate: random_generator
+```
+
+#### Specify no inputs or outputs
+
+A function might not require any inputs or return any outputs. This could be when a function
+only writes to disk, sets an environment variable, or prints to STDOUT. In this case,
+`spec:` is empty:
+
+```yaml
+spec:
+---
+```
+
+### The function definition
+
+Functions can:
+
+- Set environment variables
+- Execute a command
+- Run a sequence of other functions.
+
+#### Set environment variables
+
+Set environment variables by using the `env` keyword. Environment variable names can only use
+alphanumeric characters and underscores, and must not start with a number.
+
+Environment variables are made available either to the executable command or to all of the functions
+if running a sequence of functions. For example:
+
+```yaml
+spec:
+---
+env:
+  FIRST_NAME: Sally
+  LAST_NAME: Seashells
+run:
+  # omitted for brevity
+```
+
+Functions only have access to a subset of environment variables from the runner environment.
+Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
+when functions can access all environment variables.
+
+#### Execute a command
+
+A function declares it executes a command by using the `exec` keyword. The command must be specified,
+but the working directory (`work_dir`) is optional. Environment variables set by the function
+are available to the running process.
+
+For example, the following function prints the function directory to the job log:
+
+```yaml
+spec:
+---
+exec:
+  work_dir: ${{step_dir}}
+  command:
+    - bash
+    - -c
+    - "echo ${PWD}"
+```
+
+> [!note]
+> Any dependency required by the executing function should also be installed by the function.
+> For example, if a function calls `go`, it should first install it.
+
+##### Return an output
+
+Executable functions return an output by adding a line to the `${{output_file}}` in JSON Line format.
+Each line is a JSON object with `name` and `value` key pairs. The `name` must be a string,
+and the `value` must be a type that matches the output type in the function specification:
+
+| Function specification type | Expected JSONL value type |
+|:------------------------|:--------------------------|
+| `array`                 | `array`                   |
+| `boolean`               | `boolean`                 |
+| `number`                | `number`                  |
+| `string`                | `string`                  |
+| `struct`                | `object`                  |
+
+For example, to return the output named `car` with `string` value `Range Rover`:
+
+```yaml
+spec:
+  outputs:
+    car:
+      type: string
+---
+exec:
+  command:
+    - bash
+    - -c
+    - echo '{"name":"car","value":"Range Rover"}' >${{output_file}}
+```
+
+##### Export an environment variable
+
+Executable functions export an environment variable by adding a line to the `${{export_file}}` in JSON Line format.
+Each line is a JSON object with `name` and `value` key pairs. Both `name` and `value` must be strings.
+
+For example, to set the variable `GOPATH` to value `/go`:
+
+```yaml
+spec:
+---
+exec:
+  command:
+    - bash
+    - -c
+    - echo '{"name":"GOPATH","value":"/go"}' >${{export_file}}
+```
+
+#### Run a sequence of functions
+
+A function declares it runs a sequence of functions using the `steps` keyword. Functions run one at a time
+in the order they are defined in the list. This syntax is the same as the `run` keyword.
+
+Functions must have a name consisting only of alphanumeric characters and underscores, and must not start with a number.
+
+For example, this function installs Go, then runs a second function that expects Go to already
+have been installed:
+
+```yaml
+spec:
+---
+run:
+  - name: install_go
+    step: ./go-steps/install-go
+    inputs:
+      version: "1.22"
+  - name: format_go_code
+    step: ./go-steps/go-fmt
+    inputs:
+      code: path/to/go-code
+```
+
+##### Return an output
+
+Outputs are returned from a sequence of functions by using the `outputs` keyword.
+The type of value in the output must match the type of the output in the function specification.
+
+For example, the following function returns the installed Java version as an output.
+This assumes the `install_java` function returns an output named `java_version`.
+
+```yaml
+spec:
+  outputs:
+    java_version:
+      type: string
+---
+run:
+  - name: install_java
+    step: ./common/install-java
+outputs:
+  java_version: "the java version is ${{steps.install_java.outputs.java_version}}"
+```
+
+Alternatively, all outputs of a sub-step can be returned using the `delegate` keyword.
+For example:
+
+```yaml
+spec:
+  outputs: delegate
+---
+run:
+  - name: install_java
+    step: ./common/install-java
+delegate: install_java
+```
+
+## Combine CI/CD Components and CI/CD Functions
+
+[CI/CD components](../components/_index.md) are reusable single pipeline configuration units. They are included in a pipeline when it is
+created, adding jobs and configuration to the pipeline. Files such as common scripts or programs
+from the component project cannot be referenced from a CI/CD job.
+
+CI/CD Functions are reusable units of a job. When the job runs, the referenced function is downloaded to
+the execution environment or image, bringing along any extra files included with the function.
+Execution of the function replaces the `script` in the job.
+
+Components and functions work well together to create solutions for CI/CD pipelines. Functions handle the complexity of
+how jobs are composed, and automatically retrieve the files necessary to run the job. Components provide
+a method to import job configuration, but hide the underlying job composition from the user.
+
+Functions and components use different syntax for expressions to help differentiate the expression types.
+Component expressions use square brackets `$[[ ]]` and are evaluated during pipeline creation.
+Function expressions use braces `${{ }}` and are evaluated during job execution, just before executing the function.
+
+For example, a project could use a component that adds a job to format Go code:
+
+- In the project's `.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+  - component: gitlab.com/my-components/go@main
+    inputs:
+      fmt_packages: "./..."
+  ```
+
+- Internally, the component uses CI/CD Functions to compose the job, which installs Go then runs
+  the formatter. In the component's `templates/go.yml` file:
+
+  ```yaml
+  spec:
+    inputs:
+      fmt_packages:
+        description: The Go packages that will be formatted using the Go formatter.
+      go_version:
+        default: "1.22"
+        description: The version of Go to install before running go fmt.
+  ---
+
+  format code:
+    run:
+      - name: install_go
+        step: ./languages/go/install
+        inputs:
+          version: $[[ inputs.go_version ]]                    # version set to the value of the component input go_version
+      - name: format_code
+        step: ./languages/go/go-fmt
+        inputs:
+          go_binary: ${{ steps.install_go.outputs.go_binary }} # go_binary set to the value of the go_binary output from the previous function
+          fmt_packages: $[[ inputs.fmt_packages ]]             # fmt_packages set to the value of the component input fmt_packages
+  ```
+
+In this example, the CI/CD component hides the complexity of the functions from the component author.
+
+## Troubleshooting
+
+### Fetching functions from an HTTPS URL
+
+An error message such as `tls: failed to verify certificate: x509: certificate signed by unknown authority` indicates
+that the operating system does not recognize or trust the server hosting the function.
+
+A common cause is when functions are run in a job with a Docker image that doesn't have any trusted root certificates installed.
+Resolve the issue by installing certificates in the container or by baking them into the job `image`.
+
+You can use a `script` function to install dependencies in the container before fetching any functions.
+For example:
+
+```yaml
+ubuntu_job:
+  image: ubuntu:24.04
+  run:
+    - name: install_certs  # Install trusted certificates first
+      script: apt update && apt install --assume-yes --no-install-recommends ca-certificates
+    - name: echo_step      # With trusted certificates, use HTTPS without errors
+      step: https://gitlab.com/user/my_steps/hello_world@main
+```

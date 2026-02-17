@@ -72,6 +72,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
           end
         end
 
+        let(:dynamic_views) do
+          ['ci_builds_views_100']
+        end
+
         db_infos.to_h { |db_info| [db_info.name, db_info.connection_class] }
           .compact.each do |db_config_name, connection_class|
           context "validates '#{db_config_name}' using '#{connection_class}'" do
@@ -89,7 +93,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
             end
 
             it 'non-existing data sources are removed' do
-              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources
+              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources - dynamic_views
 
               expect(extra_data_sources).to be_empty, \
                 "Extra table/view(s) #{extra_data_sources.to_a} found in " \
@@ -232,68 +236,107 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
+  describe 'Schema YAML files' do
+    it 'loads all schema files without errors' do
+      schema_files = Dir.glob(Rails.root.join('db/gitlab_schemas/*.yaml'))
+
+      schema_files.each do |file|
+        expect { Gitlab::Database::GitlabSchemaInfo.load_file(file) }.not_to raise_error
+      end
+    end
+
+    it 'all loaded schemas have correct structure' do
+      Gitlab::Database.all_gitlab_schemas.each_value do |schema_info|
+        expect(schema_info.name).to be_a(Symbol)
+        expect(schema_info.allow_cross_joins).to be_a(Hash)
+        expect(schema_info.allow_cross_transactions).to be_a(Hash)
+        expect(schema_info.allow_cross_foreign_keys).to be_a(Hash)
+      end
+    end
+  end
+
   context 'when testing cross schema access' do
     using RSpec::Parameterized::TableSyntax
 
     describe '.cross_joins_allowed?' do
-      where(:schemas, :tables, :result) do
-        %i[] | %w[] | true
-        %i[gitlab_main] | %w[evidences] | true
-        %i[gitlab_main_user gitlab_main] | %w[users evidences] | true
-        %i[gitlab_main_user gitlab_ci] | %w[users ci_pipelines] | false
-        %i[gitlab_main_user gitlab_main gitlab_ci] | %w[users evidences ci_pipelines] | false
-        %i[gitlab_main_user gitlab_internal] | %w[users schema_migrations] | false
-        %i[gitlab_main gitlab_ci] | %w[evidences schema_migrations] | false
-        %i[gitlab_main_user gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
-        %i[gitlab_main_user gitlab_shared] | %w[users detached_partitions] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users namespaces] | true
-        %i[gitlab_main gitlab_main_org] | %w[plans namespaces] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users achievements] | true
+      where(:tables, :result) do
+        %w[] | true
+        %w[evidences] | true
+        %w[users evidences] | true
+        %w[users ci_pipelines] | false
+        %w[users evidences ci_pipelines] | false
+        %w[users schema_migrations] | false
+        %w[evidences schema_migrations] | false
+        %w[users evidences detached_partitions] | true
+        %w[users detached_partitions] | true
+        %w[users namespaces] | true
+        %w[plans namespaces] | true
+        %w[users achievements] | true
       end
 
       with_them do
-        it { expect(described_class.cross_joins_allowed?(schemas, tables)).to eq(result) }
+        it { expect(described_class.cross_joins_allowed?(tables)).to eq(result) }
       end
     end
 
     describe '.cross_transactions_allowed?' do
-      where(:schemas, :tables, :result) do
-        %i[] | %w[] | true
-        %i[gitlab_main] | %w[evidences] | true
-        %i[gitlab_main_user gitlab_main] | %w[users evidences] | true
-        %i[gitlab_main_user gitlab_ci] | %w[users ci_pipelines] | false
-        %i[gitlab_main_user gitlab_main gitlab_ci] | %w[users evidences ci_pipelines] | false
-        %i[gitlab_main_user gitlab_internal] | %w[users schema_migrations] | true
-        %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
-        %i[gitlab_main_user gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
-        %i[gitlab_main_user gitlab_shared] | %w[users detached_partitions] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users namespaces] | true
-        %i[gitlab_main gitlab_main_org] | %w[plans namespaces] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users achievements] | true
+      where(:tables, :result) do
+        %w[] | true
+        %w[evidences] | true
+        %w[users evidences] | true
+        %w[users ci_pipelines] | false
+        %w[users evidences ci_pipelines] | false
+        %w[users schema_migrations] | true
+        %w[evidences ci_pipelines] | false
+        %w[users evidences detached_partitions] | true
+        %w[users detached_partitions] | true
+        %w[users namespaces] | true
+        %w[plans namespaces] | true
+        %w[users achievements] | true
       end
 
       with_them do
-        it { expect(described_class.cross_transactions_allowed?(schemas, tables)).to eq(result) }
+        it { expect(described_class.cross_transactions_allowed?(tables)).to eq(result) }
+      end
+
+      context 'with additional_schemas parameter' do
+        it 'allows cross transactions when additional schema matches table schemas' do
+          # ci_pipelines and ci_builds are both gitlab_ci
+          # Adding gitlab_ci as additional_schema should pass
+          result = described_class.cross_transactions_allowed?(%w[ci_pipelines ci_builds],
+            additional_schemas: [:gitlab_ci])
+
+          expect(result).to be(true)
+        end
+
+        it 'prevents cross transactions when additional schema is incompatible' do
+          # ci_pipelines and ci_builds are both gitlab_ci
+          # Adding gitlab_sec as additional_schema should fail (ci and sec are not allowed together)
+          result = described_class.cross_transactions_allowed?(%w[ci_pipelines ci_builds],
+            additional_schemas: [:gitlab_sec])
+
+          expect(result).to be(false)
+        end
       end
     end
 
     describe '.cross_foreign_key_allowed?' do
-      where(:schemas, :tables, :result) do
-        %i[] | %w[] | false
-        %i[gitlab_main] | %w[evidences] | true
-        %i[gitlab_main_user gitlab_main] | %w[users clusters] | true
-        %i[gitlab_main_user gitlab_ci] | %w[users ci_pipelines] | false
-        %i[gitlab_main_user gitlab_internal] | %w[users schema_migrations] | false
-        %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
-        %i[gitlab_main_user gitlab_shared] | %w[users detached_partitions] | false
-        %i[gitlab_main_user gitlab_main_org] | %w[users namespaces] | true
-        %i[gitlab_main gitlab_main_org] | %w[plans namespaces] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users achievements] | true
-        %i[gitlab_main_user gitlab_main_org] | %w[users agent_group_authorizations] | true
+      where(:tables, :result) do
+        %w[] | false
+        %w[evidences] | true
+        %w[users clusters] | true
+        %w[users ci_pipelines] | false
+        %w[users schema_migrations] | false
+        %w[evidences ci_pipelines] | false
+        %w[users detached_partitions] | false
+        %w[users namespaces] | true
+        %w[plans namespaces] | true
+        %w[users achievements] | true
+        %w[users agent_group_authorizations] | true
       end
 
       with_them do
-        it { expect(described_class.cross_foreign_key_allowed?(schemas, tables)).to eq(result) }
+        it { expect(described_class.cross_foreign_key_allowed?(tables)).to eq(result) }
       end
     end
   end

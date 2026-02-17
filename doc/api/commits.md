@@ -149,20 +149,28 @@ POST /projects/:id/repository/commits
 > [!note]
 > This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
-| Attribute        | Type           | Required | Description |
-|------------------|----------------|----------|-------------|
-| `branch`         | string         | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
-| `commit_message` | string         | Yes      | Commit message. |
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `branch`         | string            | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
+| `commit_message` | string            | Yes      | Commit message. |
 | `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `actions[]`      | array          | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
-| `allow_empty`    | boolean        | No       | When `true`, creates an empty commit. Default is `false`. |
-| `author_email`   | string         | No       | Specify the commit author's email address. |
-| `author_name`    | string         | No       | Specify the commit author's name. |
-| `force`          | boolean        | No       | If `true`, overwrites the target branch with a new commit based on the `start_branch` or `start_sha`. |
-| `start_branch`   | string         | No       | Name of the branch to start the new branch from. |
-| `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
-| `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
-| `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
+| `actions[]`      | array             | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `allow_empty`    | boolean           | No       | When `true`, creates an empty commit. Default is `false`. |
+| `author_email`   | string            | No       | Specify the commit author's email address. |
+| `author_name`    | string            | No       | Specify the commit author's name. |
+| `force`          | boolean           | No       | If `true`, overwrites `branch` with a new commit based on `start_branch` or `start_sha`, replacing the branch's existing commit history. Default is `false`. <sup>1</sup> |
+| `start_branch`   | string            | No       | Name of the branch to use as the parent for the new commit. If not provided and `start_sha` is also not provided, defaults to the value of `branch`. Mutually exclusive with `start_sha`. <sup>1</sup> |
+| `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to use as the source for `start_branch` or `start_sha`. Defaults to the value of `id`. |
+| `start_sha`      | string            | No       | SHA of the commit to use as the parent for the new commit. Must be a full 40-character SHA. Mutually exclusive with `start_branch`. <sup>1</sup> |
+| `stats`          | boolean           | No       | Include commit stats. Default is `true`. |
+
+**Footnotes**:
+
+1. When `force` is `true`, provide `start_branch` or `start_sha` to specify a
+   different parent commit.
+   If neither is provided, `start_branch` defaults to the value of `branch`, and the new
+   commit is based on the current branch tip.
+   In that case, `force` has no effect because the result is the same as a regular commit.
 
 > [!note]
 > Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
@@ -293,9 +301,9 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
-## Get a single commit
+## Retrieve a commit
 
-Get a specific commit identified by the commit hash or name of a branch or tag.
+Retrieves a specified commit identified by the commit hash or name of a branch or tag.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha
@@ -369,9 +377,9 @@ Example response:
 }
 ```
 
-## Get references a commit is pushed to
+## List all references a commit is pushed to
 
-Get all references (from branches or tags) a commit is pushed to.
+Lists all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
 ```plaintext
@@ -649,7 +657,7 @@ responds with `200 OK`:
 In the event of a failure, an error displays that is identical to a failure without
 dry run.
 
-## Get commit diff
+## Retrieve commit diff
 
 {{< history >}}
 
@@ -657,7 +665,7 @@ dry run.
 
 {{< /history >}}
 
-Get the diff of a commit in a project.
+Retrieves the diff of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/diff
@@ -671,32 +679,11 @@ Parameters:
 | `sha`     | string         | Yes      | The commit hash or name of a repository branch or tag. |
 | `unidiff` | boolean        | No       | If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [diff limits](../administration/diff_limits.md). When a commit
-exceeds the configured maximum number of files, pagination stops and no additional files are
-returned beyond the limit. For GitLab.com specific limits, see
-[diff display limits](../user/gitlab_com/_index.md#diff-display-limits).
-
-{{< /alert >}}
-
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
-
-| Attribute      | Type    | Description |
-|----------------|---------|-------------|
-| `a_mode`       | string  | File mode before the change. |
-| `b_mode`       | string  | File mode after the change. |
-| `deleted_file` | boolean | If `true`, the file was deleted. |
-| `diff`         | string  | The diff content. |
-| `new_file`     | boolean | If `true`, this is a new file. |
-| `new_path`     | string  | New path of the file. |
-| `old_path`     | string  | Old path of the file. |
-| `renamed_file` | boolean | If `true`, the file was renamed. |
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
-```
+> [!note]
+> This endpoint is subject to [diff limits](../administration/diff_limits.md). When a commit
+> exceeds the configured maximum number of files, pagination stops and no additional files are
+> returned beyond the limit. For GitLab.com specific limits, see
+> [diff display limits](../user/gitlab_com/_index.md#diff-display-limits).
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -713,6 +700,11 @@ response attributes:
 | `old_path`     | string  | Old path of the file. |
 | `renamed_file` | boolean | File has been renamed. |
 | `too_large`    | boolean | File diffs are excluded and cannot be retrieved. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
+```
 
 Example response:
 
@@ -733,9 +725,9 @@ Example response:
 ]
 ```
 
-## Get commit comments
+## List all commit comments
 
-Get the comments of a commit in a project.
+Lists all the comments of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/comments
@@ -780,7 +772,7 @@ Example response:
 
 ## Post comment to commit
 
-Adds a comment to a commit.
+Creates a comment on a commit.
 
 To post a comment in a particular line of a particular file, you must specify
 the full commit SHA, the `path`, the `line`, and `line_type` should be `new`.
@@ -796,7 +788,7 @@ In any of the previous cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
 For other approaches to commenting on a merge request, see
-[Create new merge request note](notes.md#create-new-merge-request-note) in the Notes API,
+[Create a merge request note](notes.md#create-a-merge-request-note) in the Notes API,
 and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
 in the Discussions API.
 
@@ -854,9 +846,9 @@ Example response:
 }
 ```
 
-## Get commit discussions
+## List all commit discussions
 
-Get the discussions of a commit in a project.
+Lists all the discussions of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/discussions
@@ -1034,12 +1026,9 @@ When you set a commit status:
 
 For more information, see [external commit statuses](../ci/ci_cd_for_external_repos/external_commit_statuses.md).
 
-{{< alert type="note" >}}
-
-When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
-Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
-
-{{< /alert >}}
+> [!note]
+> When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
+> Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
 
 If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
 
@@ -1229,9 +1218,9 @@ Example response:
 ]
 ```
 
-## Get commit signature
+## Retrieve commit signature
 
-Get the [signature from a commit](../user/project/repository/signed_commits/_index.md),
+Retrieves the [signature from a commit](../user/project/repository/signed_commits/_index.md),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext

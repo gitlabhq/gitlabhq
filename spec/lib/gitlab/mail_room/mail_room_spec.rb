@@ -11,7 +11,8 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
       url: "localhost",
       db: 99,
       sentinels: [{ host: 'localhost', port: 1234 }],
-      sentinels?: true
+      sentinels?: true,
+      ssl_params: nil
     )
   end
 
@@ -122,6 +123,67 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
           sentinels: [{ host: 'localhost', port: 1234 }]
         )
       end
+
+      context 'when redis ssl_params are present' do
+        let(:ssl_params) do
+          {
+            ca_file: '/etc/gitlab/ssl/redis-bundle.crt',
+            cert: '/etc/gitlab/ssl/redis-client.crt',
+            key: '/etc/gitlab/ssl/redis-client.key'
+          }
+        end
+
+        before do
+          allow(fake_redis_queues).to receive(:ssl_params).and_return(ssl_params)
+        end
+
+        it 'includes redis_ssl_params in the config' do
+          config = first_value
+          expect(config).to include(
+            redis_ssl_params: ssl_params
+          )
+        end
+      end
+
+      context 'when redis ssl_params are not present' do
+        it 'does not include redis_ssl_params in the config' do
+          config = first_value
+          expect(config).not_to have_key(:redis_ssl_params)
+        end
+      end
+
+      context 'when sentinel ssl is present' do
+        let(:sentinels) do
+          [
+            {
+              host: 'sentinel1.example.com',
+              port: 26379,
+              ssl: true,
+              ssl_params: {
+                ca_file: '/etc/gitlab/ssl/sentinel-bundle.crt',
+                cert: '/etc/gitlab/ssl/sentinel-client.crt',
+                key: '/etc/gitlab/ssl/sentinel-client.key'
+              }
+            }
+          ]
+        end
+
+        before do
+          allow(fake_redis_queues).to receive(:sentinels).and_return(sentinels)
+        end
+
+        it 'includes sentinel ssl and ssl_params in the config' do
+          config = first_value
+          expect(config[:sentinels]).to eq(sentinels)
+        end
+      end
+
+      context 'when sentinel ssl is not present' do
+        it 'does not include sentinel ssl in the config' do
+          config = first_value
+          expect(config[:sentinels]).to eq([{ host: 'localhost', port: 1234 }])
+        end
+      end
     end
 
     describe 'setting up the log path' do
@@ -185,7 +247,7 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
 
   describe 'config/mail_room.yml' do
     let(:mail_room_template) { ERB.new(File.read(Rails.root.join("./config/mail_room.yml"))).result }
-    let(:mail_room_yml) { YAML.safe_load(mail_room_template, permitted_classes: [Symbol]) }
+    let(:mail_room_yml) { YAML.safe_load(mail_room_template, symbolize_names: true, permitted_classes: [Symbol]) }
 
     shared_examples 'renders mail-specific config file correctly' do
       it 'renders mail room config file correctly' do
@@ -321,6 +383,72 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
               jwt_algorithm: 'HS256',
               jwt_secret_path: '/path/to/secret/file'
             }
+          )
+        )
+      end
+    end
+
+    context 'when redis ssl_params are configured' do
+      let(:ssl_params) do
+        {
+          ca_file: '/etc/gitlab/ssl/redis-bundle.crt',
+          cert: '/etc/gitlab/ssl/redis-client.crt',
+          key: '/etc/gitlab/ssl/redis-client.key'
+        }
+      end
+
+      before do
+        allow(fake_redis_queues).to receive(:ssl_params).and_return(ssl_params)
+      end
+
+      it 'includes redis_ssl_params in delivery_options' do
+        expect(mail_room_yml[:mailboxes]).to all(
+          match(
+            a_hash_including(
+              delivery_options: include(redis_ssl_params: ssl_params)
+            )
+          )
+        )
+      end
+    end
+
+    context 'when sentinel ssl is configured' do
+      let(:sentinels) do
+        [{ host: 'sentinel1.example.com', port: 26379, ssl: true }]
+      end
+
+      before do
+        allow(fake_redis_queues).to receive(:sentinels).and_return(sentinels)
+      end
+
+      it 'includes sentinel ssl in both delivery and arbitration options' do
+        expect(mail_room_yml[:mailboxes]).to all(
+          match(
+            a_hash_including(
+              delivery_options: include(sentinels: sentinels),
+              arbitration_options: include(sentinels: sentinels)
+            )
+          )
+        )
+      end
+    end
+
+    context 'when sentinel ssl_params are configured' do
+      let(:sentinels) do
+        [{ host: 'sentinel1.example.com', port: 26379, ssl_params: { ca_file: '/etc/gitlab/ssl/sentinel-bundle.crt' } }]
+      end
+
+      before do
+        allow(fake_redis_queues).to receive(:sentinels).and_return(sentinels)
+      end
+
+      it 'includes sentinel ssl_params in both delivery and arbitration options' do
+        expect(mail_room_yml[:mailboxes]).to all(
+          match(
+            a_hash_including(
+              delivery_options: include(sentinels: sentinels),
+              arbitration_options: include(sentinels: sentinels)
+            )
           )
         )
       end

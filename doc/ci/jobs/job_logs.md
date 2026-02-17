@@ -19,7 +19,7 @@ A job log displays the full execution history of a [CI/CD job](_index.md).
 To view job logs:
 
 1. Select the project for which you want to view job logs.
-1. On the left sidebar, select **CI/CD** > **Pipelines**.
+1. In the left sidebar, select **CI/CD** > **Pipelines**.
 1. Select the pipeline you want to inspect.
 1. In the pipeline view, in the list of jobs, select a job to view the job logs page.
 
@@ -41,7 +41,7 @@ To use full screen mode, your web browser must also support it. If your web brow
 
 {{< history >}}
 
-- Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html), `FF_SCRIPT_SECTIONS`.
+- Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/), `FF_SCRIPT_SECTIONS`.
 
 {{< /history >}}
 
@@ -170,7 +170,7 @@ When you delete a job log you also [erase the entire job](../../api/jobs.md#eras
 
 For more details, see [Delete job logs](../../user/storage_management_automation.md#delete-job-logs).
 
-## Job log timestamps
+## Timestamps
 
 {{< details >}}
 
@@ -183,38 +183,42 @@ For more details, see [Delete job logs](../../user/storage_management_automation
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `parse_ci_job_timestamps`. Disabled by default.
 - Feature flag `parse_ci_job_timestamps` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/202293) in GitLab 18.9.
 
 {{< /history >}}
 
-You can generate a timestamp in the [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html)
-for each line in a CI/CD job log. With job log timestamps, you can identify the duration
-of a specific section in the job. By default, job logs do not include a timestamp for each log line.
+By default, job logs include timestamps in the [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html)
+for each line. Use timestamps to troubleshoot performance issues, identify bottlenecks, and measure how long specific build steps take.
 
 When timestamps are enabled, the job log uses approximately 10% more storage space.
 
+The following shows an example of a job log with timestamps:
+
+![A job log with timestamps in UTC for each line](img/ci_log_timestamp_v17_6.png)
+
+### Control timestamps in job logs
+
 Prerequisites:
 
-- You must be on GitLab Runner 17.0 or later.
+- GitLab Runner 18.7 or later.
 
-To enable timestamps in job logs, add a `FF_TIMESTAMPS` [CI/CD variable](../runners/configure_runners.md#configure-runner-behavior-with-variables)
-to your pipeline and set it to `true`.
+To control whether timestamps appear in job logs, use the `FF_TIMESTAMPS` CI/CD variable:
 
-For example, [add the variable to your `.gitlab-ci.yml` file](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file):
+- Set to `false` to disable timestamps
+- Set to `true` to explicitly enable timestamps
+
+For example:
 
 ```yaml
 variables:
-  FF_TIMESTAMPS: true
+  FF_TIMESTAMPS: false  # Disables timestamps
 
 job:
   script:
-    - echo "This job's log has ISO 8601 timestamps!"
+    - echo "This job's log behavior depends on FF_TIMESTAMPS value"
 ```
 
-Here's an example log output with `FF_TIMESTAMPS` enabled:
-
-![A job log showing timestamps in UTC for each line](img/ci_log_timestamp_v17_6.png)
-
-To provide feedback on this feature, leave a comment on [issue 463391](https://gitlab.com/gitlab-org/gitlab/-/issues/463391).
+For more information, see [define a CI/CD variable in the `.gitlab-ci.yml` file](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 
 ## Troubleshooting
 

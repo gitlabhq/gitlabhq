@@ -41,7 +41,7 @@ for all projects, so no configuration is required.
 
 Even though the domain is linked to a project, it is available to the entire group hierarchy
 including all nested subgroups and projects. Members in the linked project with
-[at least the Maintainer role](../permissions.md#project-permissions) can modify or remove
+[the Maintainer or Owner role](../permissions.md#project-permissions) can modify or remove
 the domain. If this project is deleted, your associated domains are also removed.
 
 For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
@@ -70,12 +70,9 @@ To add a custom domain for a group:
      - If you want to provide your own SSL/TLS certificate, select
        **Manually enter certificate information**. You can also add a certificate and key later.
 
-       {{< alert type="note" >}}
-
-       A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
-       if you are not using GitLab Pages.
-
-       {{< /alert >}}
+       > [!note]
+       > A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
+       > if you are not using GitLab Pages.
 
 1. Select **Add Domain**.
    GitLab saves the domain information.
@@ -88,17 +85,14 @@ To add a custom domain for a group:
 
 After successful verification, the domain status changes to **Verified** and can be used for enterprise user management.
 
-{{< alert type="note" >}}
-
-Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
-Until it completes, the domain remains unverified in GitLab.
-
-If the domain is still unverified after seven days, GitLab automatically removes the domain.
-
-After verification, GitLab periodically reverifies the domain. To avoid potential issues,
-maintain the `TXT` record on your domain provider.
-
-{{< /alert >}}
+> [!note]
+> Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
+> Until it completes, the domain remains unverified in GitLab.
+> 
+> If the domain is still unverified after seven days, GitLab automatically removes the domain.
+> 
+> After verification, GitLab periodically reverifies the domain. To avoid potential issues,
+> maintain the `TXT` record on your domain provider.
 
 ### View group domains
 
@@ -189,7 +183,7 @@ From this list, non-enterprise users have one of the following:
 You can restrict the specific authentication methods available to enterprise users, which can help
 reduce the security footprint of your users.
 
-- [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
+- [Disable password authentication](../group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users).
 - [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 - [Disable SSH Keys](../../user/ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
@@ -242,7 +236,7 @@ The new email address must be from a verified domain. If your organization has n
 domains, your enterprise users cannot change their primary email address.
 
 Group Owners can modify the email address for enterprise users in their group with the
-[group enterprise users API](../../api/group_enterprise_users.md#modify-an-enterprise-user).
+[group enterprise users API](../../api/group_enterprise_users.md#update-an-enterprise-user).
 
 Only GitLab support can change the primary email address to an email address from a
 non-verified domain. This action [releases the enterprise user](#release-an-enterprise-user).
@@ -260,7 +254,7 @@ the user, you can choose to either:
 
 - Permanently delete the user and their
   [contributions](../../user/profile/account/delete_account.md#associated-records).
-- Keep their contributions and transfer them to a system-wide ghost user account.
+- Keep their contributions and transfer them to a ghost user.
 
 ### Release an enterprise user
 

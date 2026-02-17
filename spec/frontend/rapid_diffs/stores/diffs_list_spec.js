@@ -19,6 +19,7 @@ describe('Diffs list store', () => {
   const findStreamContainer = () => document.querySelector('#js-stream-container');
   const findDiffsList = () => document.querySelector('[data-diffs-list]');
   const findDiffsOverlay = () => document.querySelector('[data-diffs-overlay]');
+  const findLoadingIndicator = () => document.querySelector('[data-list-loading]');
 
   const itCancelsRunningRequest = (action) => {
     it('cancels running request', async () => {
@@ -55,14 +56,40 @@ describe('Diffs list store', () => {
     });
   };
 
+  const itShowsLoadingIndicator = (action) => {
+    it('shows loading indicator while streaming', async () => {
+      let resolveStreamRender;
+      renderHtmlStreams.mockImplementation(() => {
+        return new Promise((resolve) => {
+          resolveStreamRender = resolve;
+        });
+      });
+
+      expect(findLoadingIndicator().hidden).toBe(true);
+
+      action();
+
+      await waitForPromises();
+      expect(findLoadingIndicator().hidden).toBe(false);
+
+      resolveStreamRender();
+      await waitForPromises();
+
+      expect(findLoadingIndicator().hidden).toBe(true);
+    });
+  };
+
   beforeEach(() => {
     const pinia = createTestingPinia({ stubActions: false });
     setActivePinia(pinia);
     store = useDiffsList();
     setHTMLFixture(`
-      <div id="js-stream-container"></div>
-      <div data-diffs-overlay></div>
-      <div data-diffs-list>Existing data</div>
+      <div data-rapid-diffs>
+        <div id="js-stream-container"></div>
+        <div data-diffs-overlay></div>
+        <div data-diffs-list>Existing data</div>
+        <div data-list-loading hidden></div>
+      </div>
     `);
     global.fetch = jest.fn();
     toPolyfillReadable.mockImplementation((obj) => obj);
@@ -113,6 +140,7 @@ describe('Diffs list store', () => {
 
     itCancelsRunningRequest(() => store.streamRemainingDiffs('/stream'));
     itSetsStatuses(() => store.streamRemainingDiffs('/stream'));
+    itShowsLoadingIndicator(() => store.streamRemainingDiffs('/stream', findStreamContainer()));
   });
 
   describe('#reloadDiffs', () => {
@@ -129,6 +157,7 @@ describe('Diffs list store', () => {
 
     itCancelsRunningRequest(() => store.reloadDiffs('/stream'));
     itSetsStatuses(() => store.reloadDiffs('/stream'));
+    itShowsLoadingIndicator(() => store.reloadDiffs('/stream'));
 
     it('sets loading state', () => {
       store.reloadDiffs('/stream');

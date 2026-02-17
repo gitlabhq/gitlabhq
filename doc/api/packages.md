@@ -30,7 +30,7 @@ Use this API to interact with [GitLab Packages](../administration/packages/_inde
 
 ### For a project
 
-Get a list of project packages. All package types are included in results. When
+Lists all packages for a specified project. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
 By default, packages with `default`, `deprecated`, and `error` status are returned. Use the `status` parameter to view other
 packages.
@@ -100,7 +100,7 @@ can result in malformed data or broken packages.
 
 ### For a group
 
-Get a list of project packages at the group level.
+Lists all packages for a specified group.
 When accessed without authentication, only packages of public projects are returned.
 By default, packages with `default`, `deprecated`, and `error` status are returned. Use the `status` parameter to view other
 packages.
@@ -195,7 +195,7 @@ The `_links` object contains the following properties:
 Although you can filter packages by status, working with packages that have a `processing` status
 can result in malformed data or broken packages.
 
-## Get a project package
+## Retrieve a project package
 
 {{< history >}}
 
@@ -203,7 +203,7 @@ can result in malformed data or broken packages.
 
 {{< /history >}}
 
-Get a single project package. Only packages with status `default` or `deprecated` are returned.
+Retrieves a specified project package. Only packages with status `default` or `deprecated` are returned.
 
 ```plaintext
 GET /projects/:id/packages/:package_id
@@ -280,7 +280,7 @@ The `_links` object contains the following properties:
 
 ## List package files
 
-Get a list of package files of a single package.
+Lists all package files for a specified package.
 
 ```plaintext
 GET /projects/:id/packages/:package_id/package_files
@@ -360,7 +360,7 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 
 {{< /history >}}
 
-Get a list of pipelines for a single package. The results are sorted by `id` in descending order.
+Lists all pipelines for a specified package. The results are sorted by `id` in descending order.
 
 The results are [paginated](rest/_index.md#keyset-based-pagination) and return up to 20 records per page.
 
@@ -427,7 +427,7 @@ Example response:
 
 ## Delete a project package
 
-Deletes a project package.
+Deletes a specified project package.
 
 ```plaintext
 DELETE /projects/:id/packages/:package_id
@@ -457,14 +457,11 @@ If a package is protected by a [protection rule](../user/packages/package_regist
 
 ## Delete a package file
 
-{{< alert type="warning" >}}
+> [!warning]
+> Deleting a package file may corrupt your package making it unusable or unpullable from your package
+> manager client. When deleting a package file, be sure that you understand what you're doing.
 
-Deleting a package file may corrupt your package making it unusable or unpullable from your package
-manager client. When deleting a package file, be sure that you understand what you're doing.
-
-{{< /alert >}}
-
-Delete a package file:
+Deletes a specified package file.
 
 ```plaintext
 DELETE /projects/:id/packages/:package_id/package_files/:package_file_id

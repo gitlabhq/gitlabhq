@@ -14,14 +14,11 @@ To automate runner creation and registration:
 1. [Automate GitLab Runner installation and registration](#automate-runner-installation-and-registration).
 1. [View runners with the same configuration](#view-runners-with-the-same-configuration).
 
-{{< alert type="note" >}}
-
-The instructions in this tutorial describe runner creation and registration
-with runner authentication tokens, which have replaced the deprecated registration
-method that uses registration tokens. For more information, see
-[The new runner registration workflow](../../ci/runners/new_creation_workflow.md#the-new-runner-registration-workflow).
-
-{{< /alert >}}
+> [!note]
+> The instructions in this tutorial describe runner creation and registration
+> with runner authentication tokens, which have replaced the deprecated registration
+> method that uses registration tokens. For more information, see
+> [The new runner registration workflow](../../ci/runners/new_creation_workflow.md#the-new-runner-registration-workflow).
 
 ## Before you begin
 
@@ -51,12 +48,9 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
@@ -77,20 +71,17 @@ For more information, see the history.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
+A project access token gives access to just one project, while a group access token
+gives access to all projects in the group.
 
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Project access tokens are treated as [internal users](../../administration/internal_users.md).
-If an internal user creates a project access token, that token is able to access
-all projects that have visibility level set to [Internal](../../user/public_access.md).
-
-{{< /alert >}}
+> [!warning]
+> Project access tokens are treated as [internal users](../../administration/internal_users.md).
+> If an internal user creates a project access token, that token is able to access
+> all projects that have visibility level set to [Internal](../../user/public_access.md).
 
 To create a project access token:
 

@@ -18,9 +18,8 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     it_behaves_like '404 response'
   end
 
-  describe 'POST /offline_exports', :with_current_organization do
+  describe 'POST /offline_exports' do
     let(:bucket) { 'exports' }
-    let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
     let(:entity_params) { [{ 'full_path' => 'group/subgroup' }, { 'full_path' => 'group/project' }] }
     let(:aws_s3_credentials) do
       {
@@ -30,7 +29,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       }
     end
 
-    let(:minio_credentials) do
+    let(:s3_compatible_credentials) do
       {
         'aws_access_key_id' => 'minio-user-access-key',
         'aws_secret_access_key' => 'minio-secret-access-key',
@@ -42,7 +41,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     let(:params) do
       {
         bucket: bucket,
-        source_hostname: source_hostname,
         aws_s3_configuration: aws_s3_credentials,
         entities: entity_params
       }
@@ -61,7 +59,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           entities: entity_params
         }.merge(configuration_key => credentials)
       end
@@ -73,7 +70,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       it "starts a new offline export using #{provider} object storage default params" do
         expect(Import::Offline::Exports::CreateService).to receive(:new).with(
           user,
-          source_hostname,
           entity_params,
           {
             bucket: bucket,
@@ -95,7 +91,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
           expect(Import::Offline::Exports::CreateService).to receive(:new).with(
             user,
-            source_hostname,
             entity_params,
             {
               bucket: bucket,
@@ -118,7 +113,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
           expect(Import::Offline::Exports::CreateService).to receive(:new).with(
             user,
-            source_hostname,
             entity_params,
             {
               bucket: bucket,
@@ -142,9 +136,9 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:path_style_default) { false }
     end
 
-    it_behaves_like 'starting a new export', :minio do
-      let(:configuration_key) { :minio_configuration }
-      let(:credentials) { minio_credentials }
+    it_behaves_like 'starting a new export', :s3_compatible do
+      let(:configuration_key) { :s3_compatible_configuration }
+      let(:credentials) { s3_compatible_credentials }
       let(:path_style_default) { true }
     end
 
@@ -152,7 +146,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           entities: entity_params
         }
       end
@@ -164,9 +157,8 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           aws_s3_configuration: aws_s3_credentials,
-          minio_configuration: minio_credentials,
+          s3_compatible_configuration: s3_compatible_credentials,
           entities: entity_params
         }
       end

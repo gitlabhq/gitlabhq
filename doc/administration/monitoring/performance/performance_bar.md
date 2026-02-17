@@ -46,18 +46,18 @@ From left to right, the performance bar displays:
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
-  [Gitaly](../../gitaly/_index.md) calls. Select to display a modal window with more
+  [Gitaly](../../gitaly/_index.md) calls. Select to display a dialog with more
   details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
-  Redis calls. Select to display a modal window with more details.
+  Redis calls. Select to display a dialog with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of
-  Elasticsearch calls. Select to display a modal window with more details.
+  Elasticsearch calls. Select to display a dialog with more details.
 - **External HTTP calls**: the time taken (in milliseconds) and the total
-  number of external calls to other systems. Select to display a modal window
+  number of external calls to other systems. Select to display a dialog
   with more details.
 - **Load timings** of the page: if your browser supports load timings, several
   values in milliseconds, separated by slashes.
-  Select to display a modal window with more details. The values, from left to right:
+  Select to display a dialog with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/):
     Time until something was visible to the user. Displays `NaN` if your browser does not
@@ -86,14 +86,11 @@ From left to right, the performance bar displays:
 - **Stats** (optional): if the `GITLAB_PERFORMANCE_BAR_STATS_URL` environment variable is set,
   this URL is displayed in the bar. Used only on GitLab.com.
 
-{{< alert type="note" >}}
-
-Not all indicators are available in all environments. For instance, the memory view
-requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
-applied. When running GitLab locally using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit),
-this is typically not the case and the memory view cannot be used.
-
-{{< /alert >}}
+> [!note]
+> Not all indicators are available in all environments. For instance, the memory view
+> requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
+> applied. When running GitLab locally using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit),
+> this is typically not the case and the memory view cannot be used.
 
 ## Keyboard shortcut
 

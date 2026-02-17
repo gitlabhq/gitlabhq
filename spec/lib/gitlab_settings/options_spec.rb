@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :shared do
+RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :settings do
   let(:config) { { foo: { bar: 'baz' } } }
 
   subject(:options) { described_class.build(config) }

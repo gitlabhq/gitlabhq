@@ -352,9 +352,6 @@ to align all access patterns with a specific time-decay related access method.
 
 ### CI tables
 
-{{< alert type="note" >}}
-
-Requirements and analysis of the CI tables use case: still a work in progress. We intend
-to add more details after the analysis moves forward.
-
-{{< /alert >}}
+> [!note]
+> Requirements and analysis of the CI tables use case: still a work in progress. We intend
+> to add more details after the analysis moves forward.

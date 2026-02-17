@@ -1,0 +1,5 @@
+---
+name: create_chat_completion
+description: Grants the ability to create chat completions
+boundaries:
+  - user

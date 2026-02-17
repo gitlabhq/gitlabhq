@@ -29,6 +29,14 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
   describe 'GET /projects/:id/terraform/state/:name/versions/:serial' do
     subject(:request) { get api(state_version_path), headers: auth_header }
 
+    it_behaves_like 'authorizing granular token permissions', :read_terraform_state_version do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api(state_version_path, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'with invalid authentication' do
@@ -157,6 +165,14 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
 
   describe 'DELETE /projects/:id/terraform/state/:name/versions/:serial' do
     subject(:request) { delete api(state_version_path), headers: auth_header }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_terraform_state_version do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api(state_version_path, personal_access_token: pat)
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_terraform_state do
       let_it_be(:user) { maintainer }

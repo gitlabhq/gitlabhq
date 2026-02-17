@@ -103,7 +103,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def label_params
     allowed = [:title, :description, :color]
-    allowed << :archived if Feature.enabled?(:labels_archive, :instance)
+    allowed << :archived if Feature.enabled?(:labels_archive, group)
     allowed << :lock_on_merge if @group.supports_lock_on_merge?
 
     params.require(:label).permit(allowed)
@@ -126,7 +126,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def available_labels(options = params)
-    archived_param = if Feature.enabled?(:labels_archive, :instance) && !options[:ignore_archived]
+    archived_param = if Feature.enabled?(:labels_archive, group) && !options[:ignore_archived]
                        options[:archived].nil? ? false : options[:archived]
                      end
 

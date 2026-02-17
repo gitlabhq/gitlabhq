@@ -32,7 +32,7 @@ to access them as we do in Rails views), local variables are fine.
 
 Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/entities) to present the endpoint's payload.
 
-### Definining entity fields
+### Defining entity fields
 
 Every exposed field in an entity must include or reference a valid type.
 
@@ -337,12 +337,9 @@ User.create(params) # imagine the user submitted `admin=1`... :)
 User.create(declared(params, include_parent_namespaces: false).to_h)
 ```
 
-{{< alert type="note" >}}
-
-`declared(params)` return a `Hashie::Mash` object, on which you must
-call `.to_h`.
-
-{{< /alert >}}
+> [!note]
+> `declared(params)` return a `Hashie::Mash` object, on which you must
+> call `.to_h`.
 
 But we can use `params[key]` directly when we access single elements.
 

@@ -121,13 +121,10 @@ LFS is enabled by default. To disable it:
 Git LFS objects can be large in size. By default, they are stored on the server
 GitLab is installed on.
 
-{{< alert type="note" >}}
-
-For Docker installations, you can change the path where your data is mounted.
-For the Helm chart, use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For Docker installations, you can change the path where your data is mounted.
+> For the Helm chart, use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 To change the default local storage path location:
 
@@ -297,12 +294,9 @@ processing is done in the background and requires no downtime.
 
 ### Migrating back to local storage
 
-{{< alert type="note" >}}
-
-For the Helm chart, you should use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For the Helm chart, you should use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 To migrate back to local storage:
 
@@ -400,14 +394,11 @@ To migrate back to local storage:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880)
-(resolved in [Git LFS 3.6.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#360-20-november-2024)).
-If you clone a repository with multiple Git LFS objects using the pure SSH protocol,
-the client might crash due to a `nil` pointer reference.
-
-{{< /alert >}}
+> [!warning]
+> This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880)
+> (resolved in [Git LFS 3.6.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#360-20-november-2024)).
+> If you clone a repository with multiple Git LFS objects using the pure SSH protocol,
+> the client might crash due to a `nil` pointer reference.
 
 [`git-lfs` 3.0.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#300-24-sep-2021)
 released support for using SSH as the transfer protocol instead of HTTP.
@@ -525,7 +516,7 @@ You can see the total storage used for LFS objects for groups and projects in:
 
 ## Related topics
 
-- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/getting-started-with-git-lfs-tutorial/)
 - User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/_index.md)
 
 ## Troubleshooting
@@ -603,7 +594,7 @@ This script identifies all missing LFS objects in the database. Before deleting 
 
 ### LFS commands fail on TLS v1.3 server
 
-If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.html)
+If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx/)
 and only enable TLS v1.3 connections, LFS operations require a
 [Git LFS client](https://git-lfs.com/) version 2.11.0 or later. If you use
 a Git LFS client earlier than version 2.11.0, GitLab displays an error:
@@ -616,7 +607,7 @@ error: failed to fetch some objects from 'https://username:[MASKED]@gitlab.examp
 When using GitLab CI over a TLS v1.3 configured GitLab server, you must
 [upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/) 13.2.0
 or later to receive an updated Git LFS client version with
-the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image).
+the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image).
 
 To check an installed Git LFS client's version, run this command:
 
@@ -698,4 +689,4 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 1. Repeat the fork operation.
 
 > [!note]
-> For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
+> For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals/#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.

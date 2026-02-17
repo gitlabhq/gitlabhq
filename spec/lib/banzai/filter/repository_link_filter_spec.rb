@@ -149,23 +149,22 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
 
   shared_examples 'valid repository' do
     it 'handles Gitaly unavailable exceptions gracefully' do
-      allow_next_instance_of(Gitlab::GitalyClient::BlobService) do |blob_service|
-        allow(blob_service).to receive(:get_blob_types).and_raise(GRPC::Unavailable)
-      end
+      allow(project.repository).to receive(:get_blob_types).and_raise(GRPC::Unavailable)
 
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         an_instance_of(GRPC::Unavailable), project_id: project.id
       )
       doc = ""
-      expect { doc = filter(link('doc/api/README.md')) }.not_to raise_error
-      expect(doc.at_css('a')['href'])
-          .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
+      expect { doc = filter(link('doc/api/README.md') + link('doc/api/')) }.not_to raise_error
+
+      links = doc.css('a')
+
+      expect(links[0]['href']).to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
+      expect(links[1]['href']).to eq "/#{project_path}/-/blob/#{ref}/doc/api"
     end
 
     it 'handles Gitaly timeout exceptions gracefully' do
-      allow_next_instance_of(Gitlab::GitalyClient::BlobService) do |blob_service|
-        allow(blob_service).to receive(:get_blob_types).and_raise(GRPC::DeadlineExceeded)
-      end
+      allow(project.repository).to receive(:get_blob_types).and_raise(GRPC::DeadlineExceeded)
 
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         an_instance_of(GRPC::DeadlineExceeded), project_id: project.id

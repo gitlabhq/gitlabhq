@@ -54,6 +54,10 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     updateNote(note) {
       merge(this.allNotesById[note.id], note);
     },
+    updateNoteTextById(noteId, noteBody) {
+      const note = this.allNotesById[noteId];
+      note.note = noteBody;
+    },
     editNote({ note, value }) {
       note.editedNote = value;
     },
@@ -70,6 +74,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     },
     setEditingMode(note, value) {
       note.isEditing = value;
+      if (!value) note.editedNote = undefined;
     },
     requestLastNoteEditing(discussion) {
       const editableNote = discussion.notes.findLast((note) => {
@@ -155,6 +160,17 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
   getters: {
     getDiscussionById() {
       return (id) => this.discussions.find((discussion) => discussion.id === id);
+    },
+    getImageDiscussions() {
+      return (oldPath, newPath) =>
+        this.discussions.filter((discussion) => {
+          const position = discussion.notes[0].position || {};
+          return (
+            position.position_type === 'image' &&
+            position.old_path === oldPath &&
+            position.new_path === newPath
+          );
+        });
     },
     allNotesById() {
       return this.discussions.reduce((acc, discussion) => {

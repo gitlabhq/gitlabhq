@@ -61,7 +61,7 @@ To create a new application for your user:
 To create a new application for a group:
 
 1. Go to the desired group.
-1. On the left sidebar, select **Settings** > **Applications**.
+1. In the left sidebar, select **Settings** > **Applications**.
 1. Enter a **Name** and **Redirect URI**.
 1. Select OAuth 2 scopes as defined in [Authorized Applications](#view-all-authorized-applications).
 1. In the **Redirect URI**, enter the URL where users are sent after they authorize with GitLab.
@@ -79,6 +79,10 @@ To create a new application for a group:
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
+
+Prerequisites:
+
+- Administrator access.
 
 To create an application for your GitLab instance:
 
@@ -141,13 +145,10 @@ At any time you can revoke any access by selecting **Revoke**.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The ability to opt out of expiring access tokens was
-[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0. All
-existing integrations must be updated to support access token refresh.
-
-{{< /alert >}}
+> [!warning]
+> The ability to opt out of expiring access tokens was
+> [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0. All
+> existing integrations must be updated to support access token refresh.
 
 Access tokens expire after two hours. Integrations that use access tokens must
 generate new ones using the `refresh_token` attribute. Refresh tokens may be

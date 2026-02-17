@@ -1,0 +1,13 @@
+---
+name: ci_write_pipeline_variables_artifact
+description: |
+  Enables dual-write of pipeline variables to object storage as encrypted artifacts.
+  When enabled, pipeline variables are stored both in p_ci_pipeline_variables partitions
+  and as encrypted JSON artifacts in object storage
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/586935
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221972
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/580472
+milestone: '18.9'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

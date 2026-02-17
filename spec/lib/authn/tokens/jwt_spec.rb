@@ -90,6 +90,58 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
     context 'with expired token' do
       let(:expire_time) { 1.hour.ago }
 
+      it 'returns nil' do
+        expect(decoded_token).to be_nil
+      end
+    end
+  end
+
+  describe '.rsa_decode with verify_expiration: false' do
+    let(:encoded_token) do
+      described_class.rsa_encode(
+        subject: job,
+        signing_key: signing_key,
+        expire_time: expire_time,
+        token_prefix: token_prefix
+      )
+    end
+
+    subject(:decoded_token) do
+      described_class.rsa_decode(
+        token: encoded_token,
+        signing_public_key: signing_key.public_key,
+        subject_type: subject_type,
+        token_prefix: token_prefix,
+        verify_expiration: false
+      )
+    end
+
+    it 'returns a Jwt instance' do
+      expect(decoded_token).to be_a(described_class)
+    end
+
+    it 'correctly decodes the subject' do
+      expect(decoded_token.subject).to eq(job)
+    end
+
+    context 'with expired token' do
+      let(:expire_time) { 1.hour.ago }
+
+      it 'still decodes the token' do
+        expect(decoded_token).to be_a(described_class)
+        expect(decoded_token.subject).to eq(job)
+      end
+    end
+
+    context 'with invalid token' do
+      let(:encoded_token) { 'invalid-token' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with wrong prefix' do
+      let(:encoded_token) { 'wrong-prefix-token' }
+
       it { is_expected.to be_nil }
     end
   end
@@ -129,6 +181,34 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#expired?' do
+    subject(:expired?) { jwt.expired? }
+
+    context 'when payload has no exp claim' do
+      let(:jwt) { described_class.new(payload: {}, subject_type: subject_type) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when payload is nil' do
+      let(:jwt) { described_class.new(payload: nil, subject_type: subject_type) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when token has not expired' do
+      let(:jwt) { described_class.new(payload: { 'exp' => 1.hour.from_now.to_i }, subject_type: subject_type) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when token has expired' do
+      let(:jwt) { described_class.new(payload: { 'exp' => 1.hour.ago.to_i }, subject_type: subject_type) }
+
+      it { is_expected.to be true }
     end
   end
 end

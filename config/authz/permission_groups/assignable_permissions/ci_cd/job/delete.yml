@@ -1,0 +1,7 @@
+---
+name: delete_job
+description: Grants the ability to delete jobs
+permissions:
+  - erase_job
+boundaries:
+  - project

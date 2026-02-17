@@ -29,11 +29,8 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 If a project or repository has been updated but the state is not reflected in the UI, you may need to clear the project's or repository's cache.
 You can do so through [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and one of the following:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 ## Clear project cache
@@ -77,11 +74,8 @@ Projects::TransferService.new(p, current_user).execute(namespace)
 
 If a project cannot be deleted, you can attempt to delete it through [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 project = Project.find_by_full_path('<project_path>')
@@ -104,11 +98,8 @@ you may need to do this for a large number of projects.
 To toggle a specific feature, you can [start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
 and run the following function:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 projects = Group.find_by_name('_group_name').projects

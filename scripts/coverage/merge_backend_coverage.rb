@@ -4,6 +4,8 @@
 require 'json'
 require 'fileutils'
 
+require_relative 'path_normalizer'
+
 # Merges backend coverage from RSpec (LCOV) and E2E Coverband (JSON) into a single LCOV file.
 class BackendCoverageMerger
   RSPEC_LCOV_PATH = 'coverage/lcov/gitlab.lcov'
@@ -104,7 +106,8 @@ class BackendCoverageMerger
 
     data.each_value do |file_coverage|
       file_coverage.each do |filepath, line_data|
-        normalized_path = filepath.sub(%r{^\./}, '')
+        # Normalize paths to handle absolute paths and ./ prefix
+        normalized_path = PathNormalizer.normalize(filepath)
         coverage[normalized_path] ||= { lines: {}, branches: [], branch_stats: { found: 0, hit: 0 } }
         merge_line_data(coverage[normalized_path][:lines], line_data)
       end

@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
@@ -12,10 +13,10 @@ import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_
 import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
 import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
-import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
-import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
-import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
-import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
+import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
+import HealthStatus from '~/work_items/list/components/health_status.vue';
+import WorkItemListHeading from '~/work_items/list/components/work_item_list_heading.vue';
+import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithAnyIssues from '~/work_items/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -23,6 +24,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import {
   CREATED_DESC,
@@ -32,9 +34,13 @@ import {
 } from '~/work_items/list/constants';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   FILTERED_SEARCH_TERM,
@@ -62,16 +68,19 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
+import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
-import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
-import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
-import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
-import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
-import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
+import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
+import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
+import getWorkItemsFullQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import WorkItemsOnboardingModal from '~/work_items/components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -84,6 +93,7 @@ import {
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -96,13 +106,27 @@ import {
   workItemUserPreferenceUpdateMutationResponse,
   workItemUserPreferenceUpdateMutationResponseWithErrors,
   workItemCountsOnlyResponse,
+  singleSavedView,
+  workItemsQueryResponseWithFeatures,
 } from '../../mock_data';
+import {
+  exampleSavedViewResponse,
+  mockSavedViewsData,
+  savedViewResponseFactory,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
+  confirmAction: jest.fn().mockResolvedValue(true),
+}));
+jest.mock('ee_else_ce/work_items/list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/list/utils'),
+  saveSavedView: jest.fn(),
+}));
 
 const showToast = jest.fn();
 
@@ -130,11 +154,31 @@ const emptyHasWorkItemsResponse = {
   },
 };
 
+const emptySavedViewsResult = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      currentSavedViews: {
+        nodes: mockSavedViewsData,
+      },
+      subscribedSavedViewLimit: 100,
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: [],
+      },
+    },
+  },
+};
+
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
+let router;
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
+
+useLocalStorageSpy();
 
 const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
 const workItemsSubChildQueryHandler = jest
@@ -155,11 +199,38 @@ const mockPreferencesQueryHandler = jest.fn().mockResolvedValue({
 const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 const defaultHasWorkItemsHandler = jest.fn().mockResolvedValue(hasWorkItemsData);
 const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
+const namespaceSavedViewHandler = jest.fn().mockResolvedValue(exampleSavedViewResponse);
+
+const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: mockSavedViewsData,
+      },
+    },
+  },
+});
+
+const subscribeToSavedViewHandler = jest.fn().mockResolvedValue({
+  data: {
+    workItemSavedViewSubscribe: {
+      __typename: 'WorkItemSavedViewSubscribePayload',
+      errors: [],
+      savedView: {
+        __typename: 'WorkItemSavedViewType',
+        id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+      },
+    },
+  },
+});
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
-const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
+const findHealthStatus = () => wrapper.findComponent(HealthStatus);
 const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
@@ -180,6 +251,13 @@ const findServiceDeskEmptyStateWithAnyIssues = () =>
 const findServiceDeskEmptyStateWithoutAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithoutAnyTickets);
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
+const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
+const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
+const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
+const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
+const findWorkItemsOnboardingModal = () => wrapper.findComponent(WorkItemsOnboardingModal);
+const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
+const findViewLimitWarningModal = () => wrapper.findByTestId('view-limit-warning-modal');
 
 const mountComponent = ({
   provide = {},
@@ -190,7 +268,10 @@ const mountComponent = ({
   countsOnlyHandler = defaultCountsOnlyHandler,
   mockPreferencesHandler = mockPreferencesQueryHandler,
   userPreferenceMutationResponse = userPreferenceMutationHandler,
+  savedViewHandler = namespaceSavedViewHandler,
+  subscribeHandler = subscribeToSavedViewHandler,
   workItemPlanningView = false,
+  workItemFeaturesField = false,
   workItemsSavedViewsEnabled = false,
   props = {},
   additionalHandlers = [],
@@ -208,7 +289,7 @@ const mountComponent = ({
     },
   };
 
-  const router = new VueRouter({
+  router = new VueRouter({
     mode: 'history',
     routes: [
       { name: 'base', path: '/', component: WorkItemListActions },
@@ -218,29 +299,35 @@ const mountComponent = ({
 
   isLoggedIn.mockReturnValue(isLoggedInValue);
 
+  const apolloProvider = createMockApollo([
+    [getWorkItemsFullQuery, queryHandler],
+    [getWorkItemsSlimQuery, slimQueryHandler],
+    [getWorkItemStateCountsQuery, countsQueryHandler],
+    [getUserWorkItemsPreferences, mockPreferencesHandler],
+    [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+    [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+    [hasWorkItemsQuery, hasWorkItemsHandler],
+    [getWorkItemsCountOnlyQuery, countsOnlyHandler],
+    [namespaceSavedViewQuery, savedViewHandler],
+    [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
+    [subscribeToSavedViewMutation, subscribeHandler],
+    ...additionalHandlers,
+  ]);
+
   wrapper = shallowMountExtended(WorkItemsListApp, {
     router,
-    apolloProvider: createMockApollo([
-      [getWorkItemsFullQuery, queryHandler],
-      [getWorkItemsSlimQuery, slimQueryHandler],
-      [getWorkItemStateCountsQuery, countsQueryHandler],
-      [getUserWorkItemsPreferences, mockPreferencesHandler],
-      [namespaceWorkItemTypesQuery, namespaceQueryHandler],
-      [updateWorkItemListUserPreference, userPreferenceMutationResponse],
-      [hasWorkItemsQuery, hasWorkItemsHandler],
-      [getWorkItemsCountOnlyQuery, countsOnlyHandler],
-      ...additionalHandlers,
-    ]),
+    apolloProvider,
     provide: {
       glFeatures: {
         okrsMvc: true,
         workItemPlanningView,
+        workItemFeaturesField,
       },
       canReadCrmOrganization,
       canReadCrmContact,
       autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
-      canBulkUpdate: true,
-      canBulkEditEpics: true,
+      canAdminIssue: true,
+      canBulkAdminEpic: true,
       canCreateProjects: true,
       hasBlockedIssuesFeature: false,
       hasEpicsFeature: false,
@@ -277,6 +364,7 @@ const mountComponent = ({
       newIssuePath: '',
       workItemPlanningViewEnabled: false,
       workItemsSavedViewsEnabled,
+      subscribedSavedViewLimit: 5,
       ...provide,
     },
     propsData: {
@@ -295,7 +383,7 @@ const mountComponent = ({
   });
 };
 
-const mountComponentWithShowParam = async (issue) => {
+const mountComponentWithShowParam = async (issue, mountOptions = {}) => {
   const showParams = {
     id: getIdFromGraphQLId(issue.id),
     iid: issue.iid,
@@ -305,10 +393,13 @@ const mountComponentWithShowParam = async (issue) => {
   setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
   getParameterByName.mockReturnValue(show);
 
+  const { provide = {}, ...restOptions } = mountOptions;
   mountComponent({
     provide: {
       workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      ...provide,
     },
+    ...restOptions,
   });
   await waitForPromises();
   await nextTick();
@@ -346,10 +437,8 @@ describe('when work items are fetched', () => {
     expect(findWorkItemUserPreferences().props()).toMatchObject({
       isEpicsList: false, // default work item is null so not an epics list
       fullPath: 'full/path',
-      displaySettings: {
-        commonPreferences: { shouldOpenItemsInSidePanel: true },
-        namespacePreferences: {},
-      },
+      commonPreferences: { shouldOpenItemsInSidePanel: true },
+      namespacePreferences: {},
     });
   });
 
@@ -370,7 +459,7 @@ describe('when work items are fetched', () => {
   });
 
   it('renders IssueHealthStatus component', () => {
-    expect(findWorkItemHealthStatus().exists()).toBe(true);
+    expect(findHealthStatus().exists()).toBe(true);
   });
 
   it('renders work items', () => {
@@ -435,6 +524,93 @@ describe('when work items are fetched', () => {
 
     it('does not display error alert when there is no error', () => {
       expect(findGlAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('work items onboarding modal', () => {
+    describe('when workItemPlanningView flag and workItemsSavedViewsEnabled are enabled', () => {
+      describe('when user has not seen the modal before', () => {
+        it('renders the onboarding modal', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: true,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          expect(findWorkItemsOnboardingModal().exists()).toBe(true);
+        });
+
+        it('calls dismiss when modal emits close event', async () => {
+          const dismissSpy = jest.fn();
+
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: true,
+                dismiss: dismissSpy,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          const modal = findWorkItemsOnboardingModal();
+          modal.vm.$emit('close');
+          await nextTick();
+
+          expect(dismissSpy).toHaveBeenCalled();
+        });
+      });
+
+      describe('when user has already dismissed the modal', () => {
+        it('does not render the onboarding modal', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            stubs: {
+              WorkItemBulkEditSidebar: true,
+              UserCalloutDismisser: makeMockUserCalloutDismisser({
+                shouldShowCallout: false,
+              }),
+            },
+          });
+          await waitForPromises();
+
+          expect(findWorkItemsOnboardingModal().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('when workItemPlanningView flag is disabled', () => {
+      it('does not render UserCalloutDismisser', async () => {
+        mountComponent({
+          workItemPlanningView: false,
+          workItemsSavedViewsEnabled: true,
+        });
+        await waitForPromises();
+
+        expect(wrapper.findComponent(UserCalloutDismisser).exists()).toBe(false);
+      });
+    });
+
+    describe('when workItemsSavedViewsEnabled flag is disabled', () => {
+      it('does not render UserCalloutDismisser', async () => {
+        mountComponent({
+          workItemPlanningView: true,
+          workItemsSavedViewsEnabled: false,
+        });
+        await waitForPromises();
+
+        expect(wrapper.findComponent(UserCalloutDismisser).exists()).toBe(false);
+      });
     });
   });
 
@@ -1874,25 +2050,25 @@ describe('CreateWorkItem modal', () => {
 describe('when bulk editing', () => {
   describe('user permissions', () => {
     describe('when workItemType=Epic', () => {
-      it.each([true, false])('renders=$s when canBulkEditEpics=%s', async (canBulkEditEpics) => {
-        mountComponent({ provide: { canBulkEditEpics, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+      it.each([true, false])('renders=$s when canBulkAdminEpic=%s', async (canBulkAdminEpic) => {
+        mountComponent({ provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
         await waitForPromises();
 
-        expect(findBulkEditStartButton().exists()).toBe(canBulkEditEpics);
+        expect(findBulkEditStartButton().exists()).toBe(canBulkAdminEpic);
       });
     });
 
     describe('when group', () => {
       it.each`
-        canBulkUpdate | hasGroupBulkEditFeature | renders
+        canAdminIssue | hasGroupBulkEditFeature | renders
         ${true}       | ${true}                 | ${true}
         ${true}       | ${false}                | ${false}
         ${false}      | ${true}                 | ${false}
         ${false}      | ${false}                | ${false}
       `(
-        'renders=$renders when canBulkUpdate=$canBulkUpdate and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
-        async ({ canBulkUpdate, hasGroupBulkEditFeature, renders }) => {
-          mountComponent({ provide: { isGroup: true, canBulkUpdate, hasGroupBulkEditFeature } });
+        'renders=$renders when canAdminIssue=$canAdminIssue and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
+        async ({ canAdminIssue, hasGroupBulkEditFeature, renders }) => {
+          mountComponent({ provide: { isGroup: true, canAdminIssue, hasGroupBulkEditFeature } });
           await waitForPromises();
 
           expect(findBulkEditStartButton().exists()).toBe(renders);
@@ -1900,12 +2076,46 @@ describe('when bulk editing', () => {
       );
     });
 
-    describe('when project', () => {
-      it.each([true, false])('renders depending on canBulkUpdate=%s', async (canBulkUpdate) => {
-        mountComponent({ provide: { isGroup: false, canBulkUpdate } });
+    describe('when CE group with workItemPlanningViewEnabled', () => {
+      it('allows bulk editing when user can admin issues and group has projects', async () => {
+        mountComponent({
+          provide: {
+            isGroup: true,
+            canAdminIssue: true,
+            hasProjects: true,
+            hasEpicsFeature: false,
+            hasGroupBulkEditFeature: false,
+            workItemPlanningViewEnabled: true,
+          },
+        });
         await waitForPromises();
 
-        expect(findBulkEditStartButton().exists()).toBe(canBulkUpdate);
+        expect(findBulkEditStartButton().exists()).toBe(true);
+      });
+
+      it('does not allow bulk editing when user cannot admin issues', async () => {
+        mountComponent({
+          provide: {
+            isGroup: true,
+            canAdminIssue: false,
+            hasProjects: true,
+            hasEpicsFeature: false,
+            hasGroupBulkEditFeature: false,
+            workItemPlanningViewEnabled: true,
+          },
+        });
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when project', () => {
+      it.each([true, false])('renders depending on canAdminIssue=%s', async (canAdminIssue) => {
+        mountComponent({ provide: { isGroup: false, canAdminIssue } });
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(canAdminIssue);
       });
     });
   });
@@ -1989,11 +2199,363 @@ describe('when workItemPlanningView flag is enabled', () => {
 });
 
 describe('when workItemsSavedViewsEnabled flag is enabled', () => {
-  it('renders the WorkItemsSavedViewsSelectors', async () => {
+  beforeEach(async () => {
     mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
     await waitForPromises();
+  });
 
+  it('renders the WorkItemsSavedViewsSelectors', () => {
     expect(findWorkItemsSavedViewsSelectors().exists()).toBe(true);
+  });
+
+  describe('when not on a saved view', () => {
+    it('renders "Save view" button when filters change', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(findSaveViewButton().exists()).toBe(true);
+    });
+
+    it('renders "Save view" button when sort changes', async () => {
+      findIssuableList().vm.$emit('sort', UPDATED_DESC);
+      await nextTick();
+      await waitForPromises();
+
+      expect(findSaveViewButton().exists()).toBe(true);
+    });
+
+    it('opens the new saved view modal when clicking "Save view"', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().exists()).toBe(true);
+    });
+
+    it('displays the "not found" modal when the "sv_not_found" query parameter is in the URL', async () => {
+      await router.replace({ query: { sv_not_found: true } });
+
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+
+      await waitForPromises();
+
+      expect(findViewNotFoundModal().props('show')).toBe(true);
+    });
+
+    it('displays the "at limit" modal when the "sv_limit_id" query parameter is in the URL', async () => {
+      await router.replace({
+        query: { sv_limit_id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3' },
+      });
+
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+
+      await waitForPromises();
+
+      expect(findViewLimitWarningModal().props('show')).toBe(true);
+    });
+  });
+
+  describe('when on a saved view', () => {
+    beforeEach(async () => {
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+      await waitForPromises();
+    });
+
+    it('displays error alert when saved views selector component emits error', async () => {
+      const testError = new Error('Test error');
+      const errorMessage = 'An error occurred while removing the view. Please try again.';
+
+      findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
+      await nextTick();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(testError);
+      expect(findGlAlert().exists()).toBe(true);
+      expect(findGlAlert().text()).toContain(errorMessage);
+    });
+
+    it('fetches the saved view based on route parameter', () => {
+      expect(namespaceSavedViewHandler).toHaveBeenCalledWith({
+        fullPath: 'full/path',
+        id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+      });
+    });
+
+    it('navigates to /work_items with sv_not_found query parameter when saved view cannot be found', async () => {
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
+      });
+
+      expect(window.location.pathname).toBe('/work_items/views/3');
+
+      await waitForPromises();
+      await nextTick();
+
+      expect(window.location.pathname).toBe('/work_items');
+      expect(window.location.search).toContain('sv_not_found');
+    });
+
+    describe('when visiting an unsubscribed view', () => {
+      describe('when at subsription limit', () => {
+        it('navigates to /work_items with sv_limit_id query parameter', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler: jest
+              .fn()
+              .mockResolvedValue(savedViewResponseFactory({ subscribed: false, limit: 1 })),
+          });
+
+          expect(window.location.pathname).toBe('/work_items/views/3');
+
+          await waitForPromises();
+          await nextTick();
+
+          expect(window.location.pathname).toBe('/work_items');
+          expect(window.location.search).toContain('sv_limit_id');
+        });
+      });
+
+      describe('when not at subscription limit', () => {
+        it('calls the subscribe mutation with the correct parameters', async () => {
+          const savedViewHandler = jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ subscribed: false }));
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler,
+          });
+
+          // need to update this so that we don't start an infinte loop
+          // if the saved view is still unsubscribed, we'll try to subscribe again
+          savedViewHandler.mockResolvedValue(savedViewResponseFactory({ subscribed: true }));
+
+          await waitForPromises();
+
+          expect(subscribeToSavedViewHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+            },
+          });
+
+          expect(showToast).toHaveBeenCalledWith('View added to your list.');
+        });
+      });
+    });
+
+    it('captures error alert when saved view cannot be fetched', async () => {
+      const error = new Error('Network error');
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        savedViewHandler: jest.fn().mockRejectedValue(error),
+      });
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
+    it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
+      findIssuableList().vm.$emit('sort', CREATED_DESC);
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('renders "Save changes" and "Reset to defaults" buttons when display preferences change', async () => {
+      findWorkItemUserPreferences().vm.$emit('local-update', {
+        hiddenMetadataKeys: ['labels'],
+      });
+
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('resets filters, hides action buttons and resets local storage draft', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await waitForPromises();
+
+      findResetViewButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(false);
+      expect(findUpdateViewButton().exists()).toBe(false);
+      expect(localStorage.removeItem).toHaveBeenCalledWith('full/path-saved-view-3');
+    });
+
+    describe('when "Save changes" is clicked', () => {
+      beforeEach(async () => {
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        ]);
+
+        await nextTick();
+      });
+
+      it('prompts for confirmation', async () => {
+        await findUpdateViewButton().vm.$emit('click');
+
+        expect(confirmAction).toHaveBeenCalledWith(
+          null,
+          expect.objectContaining({
+            title: 'Save changes to Current sprint 3?',
+            modalHtmlMessage: expect.stringContaining(
+              'Changes will be applied for anyone else who has access to the view.',
+            ),
+            primaryBtnText: 'Save changes',
+          }),
+        );
+      });
+
+      it('calls saveSavedView when user confirms', async () => {
+        saveSavedView.mockResolvedValue({
+          data: {
+            workItemSavedViewUpdate: {
+              errors: [],
+              savedView: singleSavedView[0],
+            },
+          },
+        });
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(saveSavedView).toHaveBeenCalledTimes(1);
+
+        expect(showToast).toHaveBeenCalledWith('View has been saved.');
+      });
+
+      it('sets error when mutation returns errors', async () => {
+        saveSavedView.mockResolvedValue({
+          data: {
+            workItemSavedViewUpdate: {
+              errors: ['Something went wrong'],
+              savedView: null,
+            },
+          },
+        });
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+      });
+
+      it('sets error when mutation throws error', async () => {
+        saveSavedView.mockRejectedValue(new Error('Network error'));
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+      });
+
+      it('does not call saveSavedView when user cancels', async () => {
+        confirmAction.mockResolvedValue(false);
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(saveSavedView).not.toHaveBeenCalled();
+      });
+    });
+
+    it('persists unsaved changes to localStorage', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'full/path-saved-view-3',
+        expect.stringContaining('"filterTokens"'),
+      );
+    });
+
+    it('persists unsaved data when navigating back to the saved view', async () => {
+      findIssuableList().vm.$emit('sort', CREATED_DESC);
+      await nextTick();
+
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+      await nextTick();
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+      await nextTick();
+
+      expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
+    });
+  });
+
+  describe('subscription limit warning', () => {
+    it('passes showSubscriptionLimitWarning as false to modal when not at limit', async () => {
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        provide: {
+          subscribedSavedViewLimit: 10,
+        },
+      });
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(false);
+    });
+
+    it('passes showSubscriptionLimitWarning as true to modal when at limit', async () => {
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        provide: {
+          subscribedSavedViewLimit: 1,
+        },
+      });
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(true);
+    });
   });
 });
 
@@ -2113,12 +2675,18 @@ describe('iid filter search', () => {
 
   it('closes the drawer if there is no `show` param', async () => {
     const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-    await mountComponentWithShowParam(issue);
+    await mountComponentWithShowParam(issue, {
+      queryHandler: jest.fn().mockResolvedValue(workItemsQueryResponseCombined),
+    });
     await waitForPromises();
     expect(findDrawer().props('open')).toBe(true);
-    expect(findDrawer().props('activeItem')).toMatchObject(issue);
+    expect(findDrawer().props('activeItem')).toMatchObject({
+      id: issue.id,
+      iid: issue.iid,
+    });
 
     setWindowLocation('?');
+    getParameterByName.mockReturnValue(null);
     window.dispatchEvent(new Event('popstate'));
 
     await waitForPromises();
@@ -2171,10 +2739,8 @@ describe('when service desk list', () => {
   describe('nav actions', () => {
     it('does not render the bulk edit button, create work item modal, or actions dropdown', async () => {
       mountComponent({
-        provide: {
-          isServiceDeskSupported: true,
-          workItemType: WORK_ITEM_TYPE_NAME_TICKET,
-        },
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        workItemPlanningView: true,
       });
       await waitForPromises();
 
@@ -2203,6 +2769,64 @@ describe('when service desk list', () => {
       await waitForPromises();
 
       expect(findServiceDeskEmptyStateWithoutAnyIssues().exists()).toBe(true);
+    });
+  });
+
+  describe('document title', () => {
+    it('renders "Service Desk"', async () => {
+      mountComponent({
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        workItemPlanningView: true,
+      });
+      await waitForPromises();
+
+      expect(document.title).toBe('Service Desk · Test · GitLab');
+    });
+  });
+
+  describe('work item features field feature flag', () => {
+    describe('when the feature flag is off', () => {
+      it('does not pass features variable to the query', async () => {
+        mountComponent({
+          provide: {
+            isServiceDeskSupported: true,
+            workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+            glFeatures: { workItemFeaturesField: false },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(defaultQueryHandler).toHaveBeenCalled();
+        expect(defaultQueryHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({
+            useWorkItemFeatures: true,
+          }),
+        );
+      });
+    });
+
+    describe('when the feature flag is on', () => {
+      it('passes the useWorkItemFeatures to the query', async () => {
+        const mockQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseWithFeatures);
+
+        mountComponent({
+          provide: {
+            isServiceDeskSupported: true,
+            workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+            glFeatures: { workItemFeaturesField: true },
+          },
+          queryHandler: mockQueryHandler,
+        });
+
+        await waitForPromises();
+
+        expect(mockQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            useWorkItemFeatures: true,
+          }),
+        );
+      });
     });
   });
 });

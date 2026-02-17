@@ -23,14 +23,14 @@ module Keeps
         milestones.select { |milestone| Date.parse(milestone.date).future? }.reverse
       end
 
-      private
-
       def current_milestone
         @current_milestone ||=
           File.read(File.expand_path('../../VERSION', __dir__))
           .gsub(/^(\d+\.\d+).*$/, '\1')
           .chomp
       end
+
+      private
 
       def current_milestone_index
         milestones.index { |milestone| milestone.version == current_milestone }

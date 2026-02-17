@@ -56,8 +56,8 @@ RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_
   context 'when user can not run the bridge' do
     let_it_be(:user) { create(:user, developer_of: project) }
 
-    it 'allows user with developer role to play a bridge' do
-      expect { execute_service }.to raise_error Gitlab::Access::AccessDeniedError
+    it 'raises an error' do
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 end

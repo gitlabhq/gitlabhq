@@ -200,6 +200,7 @@ And optionally:
 - [`include:inputs`](#includeinputs)
 - [`include:rules`](#includerules)
 - [`include:integrity`](#includeintegrity)
+- [`include:cache`](#includecache)
 
 **Additional details**:
 
@@ -517,7 +518,7 @@ In this example, if the `INCLUDE_BUILDS` variable is:
 
 {{< /history >}}
 
-Use `integrity` with `include:remote` to specifiy a SHA256 hash of the included remote file.
+Use `integrity` with `include:remote` to specify a SHA256 hash of the included remote file.
 If `integrity` does not match the actual content, the remote file is not processed
 and the pipeline fails.
 
@@ -532,6 +533,62 @@ include:
   - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
     integrity: 'sha256-L3/GAoKaw0Arw6hDCKeKQlV1QPEgHYxGBHsH4zG1IY8='
 ```
+
+---
+
+#### `include:cache`
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351252) in GitLab 18.9 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `ci_cache_remote_includes`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Use `cache` with `include:remote` to cache the fetched remote file content and reduce HTTP requests.
+When enabled, the remote file is cached for a specified time-to-live (TTL), improving pipeline performance
+for configurations that use the same remote includes repeatedly.
+
+Consider the trade-off between performance and freshness when setting cache durations.
+Longer cache durations improve performance but might use stale content if the remote file changes frequently.
+
+When `cache` is not defined, the remote file is fetched every time.
+
+**Keyword type**: Global keyword.
+
+**Supported values**:
+
+- `true`: Enable caching with a default time-to-live (TTL) of 1 hour.
+- A duration (string): Valid TTL duration strings use time units
+  like `minutes`, `hours`, or `days` (minimum `1 minute`).
+
+**Example of `include:cache`**:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample1.gitlab-ci.yml'
+    cache: true
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample2.gitlab-ci.yml'
+    cache: '1 day'
+```
+
+**Additional details**:
+
+- Caching is only available for `include:remote`.
+- After the remote file is cached, the cached version
+  continues to be used until the TTL expires, even if the remote file content changes.
+- If you use [`integrity`](#includeintegrity) with `cache`, the integrity check is performed
+  on every pipeline run, even when using cached content.
 
 ---
 
@@ -1193,7 +1250,7 @@ in a header section.
 
 - `if`: A conditional expression to check input values, using [`$[[ inputs.input-id ]]` syntax](../inputs/_index.md#define-input-parameters-with-specinputs).
 - `options`: An array of allowed values for the input.
-- `default`: The default value for the input when this rule matches.
+- `default`: The default value for the input when this rule matches. Use [`default: null`](../inputs/_index.md#allow-user-entered-values-with-default-null) to allow users to enter their own value for the input.
 
 **Example of `spec:inputs:rules`**:
 
@@ -1277,6 +1334,7 @@ spec:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
 
 {{< /history >}}
 
@@ -1324,6 +1382,7 @@ deploy:
 
 **Additional details**:
 
+- You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
 - External input files must contain only the `inputs` key. Other keys cause validation errors.
 - External inputs are merged first, then inline inputs are applied.
 - Inline inputs take precedence over external inputs with the same name.
@@ -1333,7 +1392,7 @@ deploy:
 
 **Related topics**:
 
-- [Use inputs from external files](../inputs/_index.md#use-inputs-from-external-files).
+- [Use inputs from external files](../inputs/_index.md#define-pipeline-inputs-in-external-files).
 
 ---
 
@@ -1877,24 +1936,18 @@ job:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-`artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
-has more options.
-
-{{< /alert >}}
+> [!note]
+> `artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
+> has more options.
 
 Use `artifacts:public` to control whether job artifacts in public pipelines are available for download
 with the GitLab UI and API by anonymous users, or Guest and Reporter roles.
 
-{{< alert type="warning" >}}
-
-This option only affects GitLab UI and API access. CI/CD jobs using job tokens
-could still access artifacts with the runner API, regardless of this setting. To restrict
-job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
-to **Only project members**.
-
-{{< /alert >}}
+> [!warning]
+> This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+> could still access artifacts with the runner API, regardless of this setting. To restrict
+> job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+> to **Only project members**.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1903,7 +1956,7 @@ to **Only project members**.
 
 - `true` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous users, or Guest and Reporter roles.
-- `false`: Artifacts in the job are only available for download by users with at least the Developer role.
+- `false`: Artifacts in the job are only available for download by users with the Developer, Maintainer, or Owner role.
 
 **Example of `artifacts:public`**:
 
@@ -1929,14 +1982,11 @@ or API. This option does not prevent you from forwarding artifacts to downstream
 
 You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in the same job.
 
-{{< alert type="warning" >}}
-
-This option only affects GitLab UI and API access. CI/CD jobs using job tokens
-could still access artifacts with the runner API, regardless of this setting. To restrict
-job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
-to **Only project members**.
-
-{{< /alert >}}
+> [!warning]
+> This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+> could still access artifacts with the runner API, regardless of this setting. To restrict
+> job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+> to **Only project members**.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -1944,8 +1994,8 @@ to **Only project members**.
 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
-- `developer`: Artifacts in the job are only available for download by users with at least the Developer role.
-- `maintainer`: Artifacts in the job are only available for download by users with at least the Maintainer role.
+- `developer`: Artifacts in the job are only available for download by users with the Developer, Maintainer, or Owner role.
+- `maintainer`: Artifacts in the job are only available for download by users with the Maintainer or Owner role.
 - `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:
@@ -2420,12 +2470,9 @@ rspec:
 Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/repository/branches/protected.md)
 and unprotected branches.
 
-{{< alert type="warning" >}}
-
-When set to `true`, users without access to protected branches can read and write to
-cache keys used by protected branches.
-
-{{< /alert >}}
+> [!warning]
+> When set to `true`, users without access to protected branches can read and write to
+> cache keys used by protected branches.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -3187,7 +3234,7 @@ job1:
 
 **Related topics**:
 
-- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
 
 ---
 
@@ -3400,7 +3447,7 @@ test-job:
 
 {{< /history >}}
 
-Use `image:docker` to pass options to runners using the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+Use `image:docker` to pass options to runners using the [Docker executor](https://docs.gitlab.com/runner/executors/docker/)
 or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 This keyword does not work with other executor types.
 
@@ -3524,8 +3571,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
-- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies).
 
 ---
 
@@ -3926,7 +3973,7 @@ build_job:
 - To download artifacts from a different pipeline in the current project, set `project`
   to be the same as the current project, but use a different ref than the current pipeline.
   Concurrent pipelines running on the same ref could override the artifacts.
-- The user running the pipeline must have at least the Reporter role for the group or project,
+- The user running the pipeline must have the Reporter, Developer, Maintainer, or Owner role for the group or project,
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for
@@ -4068,6 +4115,10 @@ In this example:
   - `review-job` has no other needed jobs and starts immediately (at the same time as `build-job`),
     like `needs: []`.
 
+**Additional details**:
+
+- You cannot use `needs:optional` with [`needs:parallel:matrix`](#needsparallelmatrix).
+
 ---
 
 #### `needs:pipeline`
@@ -4158,6 +4209,7 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 **Additional details**:
 
+- You cannot use `needs:parallel:matrix` with [`needs:optional`](#needsoptional).
 - The order of the matrix identifiers in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
   the variables in the `linux:rspec` job in the previous example would be invalid:
@@ -4523,8 +4575,6 @@ for `PROVIDER` and `STACK`:
           PROVIDER: [aws, gcp]
   ```
 
-  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](yaml_optimization.md#reference-tags) with `parallel:matrix`.
-
 **Related topics**:
 
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
@@ -4541,10 +4591,10 @@ Use `release` to create a [release](../../user/project/releases/_index.md).
 The release job must have access to the [`glab` CLI](https://gitlab.com/gitlab-org/cli),
 which must be in the `$PATH`.
 
-If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
+If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/),
 you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/cli:latest`
 
-If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
+If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell/) or similar,
 [install `glab` CLI](https://gitlab.com/gitlab-org/cli#installation) on the server where the runner is registered.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -4797,7 +4847,7 @@ only one of the jobs starts. The other jobs wait until the `resource_group` is f
 
 Resource groups behave similar to semaphores in other programming languages.
 
-You can choose a [process mode](../resource_groups/_index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#edit-an-existing-resource-group) to send a request to edit an existing resource group.
+You can choose a [process mode](../resource_groups/_index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#update-a-resource-group) to send a request to edit an existing resource group.
 
 You can define multiple resource groups per environment. For example,
 when deploying to physical devices, you might have multiple physical devices. Each device
@@ -5647,7 +5697,7 @@ You can also provide optional environment variables and inputs.
 
 - An array of hashes, where each hash represents a step with the following possible keys:
   - `name`: A string representing the name of the step.
-  - `script`: A string or array of strings containing shell commands to execute.
+  - `script`: A string containing shell commands to execute.
   - `step`: A string identifying a predefined step to run.
   - `env`: Optional. A hash of environment variables specific to this step.
   - `inputs`: Optional. A hash of input parameters for predefined steps.
@@ -6000,6 +6050,68 @@ In this example, GitLab launches two containers for the job:
 
 ---
 
+#### `services:name`
+
+The full name of the image to use for the service.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: The name of the service image, including the registry path if needed, in one of these formats:
+
+- `<image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `<image-name>:<tag>`
+- `<image-name>@<digest>`
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+**Example of `services:name`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+  - name: registry.example.com/my-org/custom-service:latest
+```
+
+**Additional details**:
+
+- Use [`alias`](#servicesalias) to define unique name aliases when using multiple identical service images, or when the service image name is long.
+- When used with other service options like `entrypoint`, `command`, or `variables`, the `name` keyword is required.
+- For more information, see [accessing the services](../services/_index.md#accessing-the-services).
+
+---
+
+#### `services:alias`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9.
+
+{{< /history >}}
+
+Additional aliases to access the service from the job's container.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: A string with one or more aliases separated by spaces or commas.
+
+**Example of `services:alias`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+    alias: db,postgres,pg
+  - name: mysql:latest
+    alias: mysql-1
+```
+
+**Additional details**:
+
+- Multiple aliases can be separated by spaces or commas.
+- For more information, see [accessing the services](../services/_index.md#accessing-the-services).
+  and [using aliases as service container names for the Kubernetes executor](../services/_index.md#using-aliases-as-service-container-names-for-the-kubernetes-executor).
+
+---
+
 #### `services:docker`
 
 {{< history >}}
@@ -6089,6 +6201,82 @@ arm-sql-job:
 
 ---
 
+#### `services:entrypoint`
+
+A command or script to execute as the container's entrypoint.
+
+When the Docker container is created, the `entrypoint` is translated to the Docker `--entrypoint` option.
+The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/reference/dockerfile/#entrypoint),
+where each shell token is a separate string in the array.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: An array of strings representing the entrypoint command.
+
+**Example of `services:entrypoint`**:
+
+```yaml
+services:
+  - name: my-postgres:11.7
+    entrypoint: ["/usr/local/bin/db-postgres"]
+```
+
+---
+
+#### `services:command`
+
+Command or script that should be used as the container's command.
+
+It's translated to arguments passed to Docker after the image's name. The syntax is similar to the
+[Dockerfile `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive,
+where each shell token is a separate string in the array.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: An array of strings representing the command.
+
+**Example of `services:command`**:
+
+```yaml
+services:
+  - name: super/sql:latest
+    command: ["/usr/bin/super-sql", "run"]
+```
+
+---
+
+#### `services:variables`
+
+Additional environment variables that are passed exclusively to the service.
+Service variables are passed exclusively to the service container and are not available to the job container.
+
+The syntax is the same as [job variables](../variables/_index.md).
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: A hash of environment variable names and values.
+
+**Example of `services:variables`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+    alias: db
+    variables:
+      POSTGRES_DB: "my_custom_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "example"
+      PGDATA: "/var/lib/postgresql/data"
+```
+
+**Additional details**:
+
+- Service variables cannot reference themselves, they do not support variable expansion or interpolation.
+- Variables defined at the job or pipeline level are automatically passed to services. See [passing CI/CD variables to services](../services/_index.md#passing-cicd-variables-to-services) for more information.
+- Service variables are only available to the specific service they are defined for.
+
+---
+
 #### `services:pull_policy`
 
 {{< history >}}
@@ -6132,8 +6320,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
-- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies).
 
 ---
 
@@ -6185,7 +6373,7 @@ job4:
 - The stage name must be 255 characters or fewer.
 - Jobs can run in parallel if they run on different runners.
 - If you have only one runner, jobs can run in parallel if the runner's
-  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-global-section)
   is greater than `1`.
 
 ---
@@ -6412,7 +6600,7 @@ trigger-multi-project-pipeline:
   these variables to downstream pipelines.
 - [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
-- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
+- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 - You cannot use [`needs:pipeline:job`](#needspipelinejob) in a trigger job.
 
 **Related topics**:

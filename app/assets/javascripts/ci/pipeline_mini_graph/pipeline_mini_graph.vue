@@ -47,7 +47,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['jobActionExecuted', 'miniGraphStageClick'],
+  emits: ['job-action-executed', 'mini-graph-stage-click'],
   computed: {
     formattedDownstreamPipelines() {
       return normalizeDownstreamPipelines(this.downstreamPipelines);
@@ -96,8 +96,8 @@ export default {
     <pipeline-stages
       :is-merge-train="isMergeTrain"
       :stages="formattedStages"
-      @jobActionExecuted="$emit('jobActionExecuted')"
-      @miniGraphStageClick="$emit('miniGraphStageClick')"
+      @job-action-executed="$emit('job-action-executed')"
+      @mini-graph-stage-click="$emit('mini-graph-stage-click')"
     />
     <gl-icon
       v-if="hasDownstreamPipelines"

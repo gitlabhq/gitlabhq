@@ -5,11 +5,17 @@ import {
   GlForm,
   GlLink,
   GlButton,
+  GlButtonGroup,
+  GlCollapsibleListbox,
   GlSprintf,
   GlFormGroup,
   GlFormCheckbox,
   GlFormInput,
   GlFormSelect,
+  GlTooltipDirective,
+  GlDisclosureDropdown,
+  GlModal,
+  GlFormTextarea,
 } from '@gitlab/ui';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
@@ -20,6 +26,8 @@ import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -39,6 +47,11 @@ const MARKDOWN_LINK_TEXT = {
   rdoc: '{Link title}[link:page-slug]',
   asciidoc: 'link:page-slug[Link title]',
   org: '[[page-slug]]',
+};
+
+const SAVE_MESSAGE = {
+  DEFAULT: 'DEFAULT',
+  CUSTOM: 'CUSTOM',
 };
 
 function getPagePath(pageInfo) {
@@ -121,8 +134,10 @@ export default {
       newTemplate: s__('WikiPage|Create template'),
     },
     cancel: s__('WikiPage|Cancel'),
+    messageModalTitle: s__('WikiPage|Add a commit message'),
   },
   components: {
+    WikiSidebarToggle,
     GlForm,
     GlFormGroup,
     GlFormCheckbox,
@@ -134,6 +149,15 @@ export default {
     MarkdownEditor,
     WikiTemplate,
     DeleteWikiModal,
+    GlButtonGroup,
+    GlCollapsibleListbox,
+    GlModal,
+    GlFormTextarea,
+    LocalStorageSync,
+    GlDisclosureDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: [
@@ -144,6 +168,18 @@ export default {
     'templates',
     'pageHeading',
     'wikiUrl',
+  ],
+  saveOptions: [
+    {
+      text: s__('WikiPage|Save changes directly'),
+      description: s__('WikiPage|Uses the default commit message'),
+      value: SAVE_MESSAGE.DEFAULT,
+    },
+    {
+      text: s__('WikiPage|Save changes with message'),
+      description: s__('WikiPage|Review and write a commit message'),
+      value: SAVE_MESSAGE.CUSTOM,
+    },
   ],
   data() {
     const title = window.location.href.includes('random_title=true')
@@ -175,6 +211,8 @@ export default {
       placeholderText: this.$options.i18n.title.newPagePlaceholder,
       parentPath: '',
       initialTitleValue: '',
+      saveMessageMode: SAVE_MESSAGE.DEFAULT,
+      commitMessageModalOpen: false,
     };
   },
   computed: {
@@ -263,6 +301,12 @@ export default {
 
       return `${serializedFrontMatter}${this.content}`;
     },
+    messageModalAction() {
+      return {
+        primary: { text: this.submitButtonText },
+        cancel: { text: this.$options.i18n.cancel },
+      };
+    },
   },
   watch: {
     title() {
@@ -292,7 +336,7 @@ export default {
     async handleFormSubmit(e) {
       this.isFormDirty = false;
 
-      e.preventDefault();
+      e?.preventDefault();
 
       this.validateTitle();
 
@@ -306,7 +350,7 @@ export default {
       // Wait until form field values are refreshed
       await this.$nextTick();
 
-      e.target.submit();
+      this.$refs.form.$el.submit();
     },
 
     updateFrontMatterTitle() {
@@ -484,6 +528,13 @@ export default {
     validateTitle() {
       this.isTitleValid = Boolean(this.pageTitle.trim().length > 0);
     },
+    handleSave() {
+      if (this.saveMessageMode === SAVE_MESSAGE.CUSTOM) {
+        this.commitMessageModalOpen = true;
+      } else {
+        this.$refs.form.$el.submit();
+      }
+    },
   },
 };
 </script>
@@ -511,6 +562,17 @@ export default {
       type="hidden"
       name="wiki[last_commit_sha]"
       :value="pageInfo.lastCommitSha"
+    />
+    <input
+      v-if="glFeatures.wikiImmersiveEditor"
+      :value="commitMessage"
+      name="wiki[message]"
+      type="hidden"
+    />
+    <local-storage-sync
+      v-if="glFeatures.wikiImmersiveEditor"
+      v-model="saveMessageMode"
+      storage-key="wiki_save_message_mode"
     />
 
     <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
@@ -613,23 +675,115 @@ export default {
           >
             <template v-if="glFeatures.wikiImmersiveEditor" #header>
               <div
-                class="gl-sticky gl-top-0 gl-z-3 gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
+                class="gl-flex gl-items-start gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
               >
-                <h1
-                  class="gl-y-3 gl-heading-3 gl-line-clamp-2 gl-overflow-hidden gl-overflow-ellipsis md:gl-heading-2"
+                <div class="toggle-with-hide-transition gl-my-2 gl-shrink-0 gl-p-2">
+                  <wiki-sidebar-toggle action="open" />
+                </div>
+                <div
+                  class="flexible-input-container gl-my-2 gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >
-                  {{ pageTitle }}
-                </h1>
+                  <h1 v-if="isCustomSidebar" class="gl-heading-3 !gl-mb-0 md:gl-heading-2">
+                    {{ s__('Wiki|Edit Sidebar') }}
+                  </h1>
+                  <input
+                    v-else
+                    id="wiki_title"
+                    ref="titleInput"
+                    v-model="pageTitle"
+                    class="flexible-input gl-heading-3 !gl-mb-0 gl-flex-1 gl-overflow-hidden gl-rounded-md gl-border-none gl-bg-transparent gl-shadow-none md:gl-heading-2"
+                    data-testid="wiki-title-textbox"
+                    required
+                    :autofocus="!pageInfo.persisted"
+                    :placeholder="titlePlaceholder"
+                    :aria-label="titlePlaceholder"
+                    :state="isTitleValid"
+                    @input="handleTitleInput"
+                    @keydown="handleTitleKeydown"
+                    @focus="handleTitleFocus"
+                    @blur="validateTitle"
+                  />
+                  <gl-disclosure-dropdown
+                    icon="chevron-down"
+                    :toggle-text="s__('Wiki|Edit page options')"
+                    text-sr-only
+                    category="tertiary"
+                    no-caret
+                  >
+                    <div class="p-3 gl-min-w-md">
+                      <gl-form-group
+                        v-if="!isCustomSidebar"
+                        :label="$options.i18n.path.label"
+                        label-for="wiki_path"
+                      >
+                        <gl-form-input
+                          id="wiki_path"
+                          v-model="path"
+                          name="wiki[title]"
+                          data-testid="wiki-path-textbox"
+                          class="form-control !gl-font-monospace"
+                          :required="true"
+                          :readonly="generatePathFromTitle"
+                          :placeholder="$options.i18n.path.placeholder"
+                        />
+                        <gl-form-checkbox v-model="generatePathFromTitle" class="gl-mt-3 gl-pt-2">{{
+                          __('Generate page path from title')
+                        }}</gl-form-checkbox>
+                      </gl-form-group>
+                      <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
+                        <gl-form-select
+                          id="wiki_format"
+                          v-model="format"
+                          name="wiki[format]"
+                          :disabled="isContentEditorActive"
+                          :value="formatOptions.Markdown"
+                        >
+                          <option v-for="(key, label) of formatOptions" :key="key" :value="key">
+                            {{ label }}
+                          </option>
+                        </gl-form-select>
+                      </gl-form-group>
+                      <gl-form-group
+                        v-if="!isTemplate"
+                        :label="$options.i18n.template.label"
+                        label-for="wiki_template"
+                        class="gl-mb-0"
+                      >
+                        <wiki-template
+                          :format="format"
+                          :templates="templates"
+                          @input="setTemplate"
+                        />
+                      </gl-form-group>
+                    </div>
+                  </gl-disclosure-dropdown>
+                </div>
                 <div class="gl-flex-grow"></div>
                 <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
-                  <gl-button
-                    category="primary"
-                    variant="confirm"
-                    type="submit"
-                    data-testid="wiki-submit-button"
-                    >{{ submitButtonText }}</gl-button
-                  >
+                  <gl-button-group>
+                    <gl-button
+                      variant="confirm"
+                      type="submit"
+                      data-testid="wiki-submit-button"
+                      @click.prevent="handleSave"
+                      >{{ submitButtonText }}</gl-button
+                    >
+                    <gl-collapsible-listbox
+                      v-model="saveMessageMode"
+                      :items="$options.saveOptions"
+                      toggle-text="s__('Wiki|Save and choose commit message')"
+                      variant="confirm"
+                      data-testid="wiki-submit-message-mode"
+                      text-sr-only
+                      @select="handleSave"
+                    >
+                      <template #list-item="{ item }">
+                        <div class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</div>
+                        <div class="gl-text-subtle">{{ item.description }}</div>
+                      </template>
+                    </gl-collapsible-listbox>
+                  </gl-button-group>
                   <gl-button
                     data-testid="wiki-cancel-button"
                     :href="cancelFormHref"
@@ -707,5 +861,30 @@ export default {
       </div>
       <delete-wiki-modal />
     </div>
+
+    <gl-modal
+      v-if="glFeatures.wikiImmersiveEditor"
+      v-model="commitMessageModalOpen"
+      modal-id="commit-message-modal"
+      data-testid="commit-message-modal"
+      :title="$options.i18n.messageModalTitle"
+      :action-primary="messageModalAction.primary"
+      :action-cancel="messageModalAction.cancel"
+      @primary="handleFormSubmit"
+    >
+      <gl-form-group
+        :label="$options.i18n.commitMessage.label"
+        label-for="wiki_message"
+        label-sr-only
+      >
+        <gl-form-textarea
+          id="wiki_message"
+          v-model.trim="commitMessage"
+          class="form-control"
+          data-testid="wiki-message-textbox"
+          :placeholder="$options.i18n.commitMessage.label"
+        />
+      </gl-form-group>
+    </gl-modal>
   </gl-form>
 </template>

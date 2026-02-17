@@ -88,7 +88,7 @@ In the previous example:
 Git is a distributed version control system (DVCS).
 Everyone who works with the source code has a local copy of the complete repository.
 
-In GitLab, every project member with at least the Reporter role can clone the repository to create
+In GitLab, every project member with the Reporter, Developer, Maintainer, or Owner role can clone the repository to create
 a local copy.
 Users can upload the full repository anywhere after they obtain a local copy, including:
 
@@ -146,12 +146,9 @@ To add a user to a project:
    If you selected an access expiration date, the project member gets an email notification
    seven days before their access expires.
 
-   {{< alert type="warning" >}}
-
-   Maintainers have full permissions until their role expires, including the ability to
-   extend their own access expiration date.
-
-   {{< /alert >}}
+   > [!warning]
+   > Maintainers have full permissions until their role expires, including the ability to
+   > extend their own access expiration date.
 
 1. Select **Invite**.
    If you invited the user using their:
@@ -219,15 +216,12 @@ Instead of adding users one by one, you can [share a project with an entire grou
 You can import another project's direct members to your own project.
 Imported project members retain the same permissions as the project you import them from.
 
-{{< alert type="note" >}}
-
-Only direct members of a project are imported. Inherited or shared members of a project are not imported.
-
-{{< /alert >}}
+> [!note]
+> Only direct members of a project are imported. Inherited or shared members of a project are not imported.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 If the importing member's role for the target project is:
 
@@ -370,12 +364,9 @@ Prerequisites:
 1. Under **Project visibility**, ensure the **Users can request access** checkbox is not selected.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Disabling the **Allow users to request access** setting prevents new access requests.
-Existing pending requests are not removed and can still be approved or denied.
-
-{{< /alert >}}
+> [!note]
+> Disabling the **Allow users to request access** setting prevents new access requests.
+> Existing pending requests are not removed and can still be approved or denied.
 
 ## Membership and visibility rights
 

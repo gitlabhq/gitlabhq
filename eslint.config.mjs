@@ -16,14 +16,7 @@ if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO 
 const NO_HARDCODED_URLS_OPTIONS = {
   allowedKeys: ['path', 'redirect'],
   allowedFunctions: ['helpPagePath'],
-  allowedInterpolationVariables: [
-    'FORUM_URL',
-    'DOCS_URL',
-    'PROMO_URL',
-    'CONTRIBUTE_URL',
-    'DOCS_URL_IN_EE_DIR',
-    'CUSTOMERS_PORTAL_URL',
-  ],
+  allowedInterpolationVariables: ['FORUM_URL', 'DOCS_URL', 'PROMO_URL', 'CONTRIBUTE_URL'],
   allowedPatterns: ['\\/api\\/:version'],
   disallowedObjectProperties: ['relative_url_root'],
 };
@@ -135,33 +128,32 @@ const baseNoRestrictedSyntax = [
   },
   {
     selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
   },
   {
     selector:
       'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-    message:
-      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+    message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
@@ -370,8 +362,7 @@ export default [
         {
           object: 'window',
           property: 'open',
-          message:
-            'Use `visitUrl` in `jh_else_ce/lib/utils/url_utility` to avoid cross-site leaks.',
+          message: 'Use `visitUrl` in `~/constants` to avoid cross-site leaks.',
         },
         {
           object: 'window',
@@ -434,11 +425,6 @@ export default [
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
             restrictedImportsPatterns.gitlabUiDist,
-            {
-              group: ['../../*'],
-              message:
-                'Avoid relative imports two or more levels up. Use absolute imports instead.',
-            },
           ],
         },
       ],
@@ -465,6 +451,8 @@ export default [
       'unicorn/no-array-callback-reference': 'off',
       'local-rules/require-valid-help-page-path': 'error',
       'local-rules/vue-require-valid-help-page-link-component': 'error',
+      'local-rules/vue-require-vue-constructor-name': 'error',
+      'local-rules/no-orphaned-feature-flag-references': 'error',
     },
   },
   {
@@ -480,13 +468,7 @@ export default [
       'vue/no-undef-components': [
         'error',
         {
-          ignorePatterns: [
-            '^router-link$',
-            '^router-view$',
-            '^gl-emoji$',
-            'fe-island-duo-next',
-            'fe-island-visual-ci-editor',
-          ],
+          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
         },
       ],
 
@@ -572,35 +554,32 @@ export default [
         },
         {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
         },
         {
           selector:
             'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-          message:
-            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+          message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
@@ -642,7 +621,7 @@ export default [
               name: '~/locale',
               importNames: ['__', 's__'],
               message:
-                'Do not externalize strings in specs: https://docs.gitlab.com/ee/development/i18n/externalization.html#test-files-jest',
+                'Do not externalize strings in specs: https://docs.gitlab.com/development/i18n/externalization.html#test-files-jest',
             },
           ],
 
@@ -720,6 +699,7 @@ export default [
       '@graphql-eslint/no-unused-fragments': 'error',
       '@graphql-eslint/no-duplicate-fields': 'error',
       'local-rules/graphql-require-feature-category': 'error',
+      'local-rules/graphql-require-valid-urgency': 'error',
     },
   },
   {

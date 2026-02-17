@@ -1,6 +1,5 @@
 <script>
 import { GlAlert, GlSprintf } from '@gitlab/ui';
-import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
@@ -8,7 +7,7 @@ import { RESOURCE_TYPES } from '~/groups_projects/constants';
 export default {
   name: 'GroupDeleteModal',
   RESOURCE_TYPES,
-  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf, HelpPageLink },
+  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf },
   model: {
     prop: 'visible',
     event: 'change',
@@ -102,11 +101,6 @@ export default {
           }}
         </p>
       </gl-alert>
-    </template>
-    <template #restore-help-page-link="{ content }">
-      <help-page-link href="user/group/_index" anchor="restore-a-group">{{
-        content
-      }}</help-page-link>
     </template>
   </groups-projects-delete-modal>
 </template>

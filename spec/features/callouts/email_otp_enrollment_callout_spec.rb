@@ -25,6 +25,7 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
           expect(page).to have_content(expected_title)
           expect(page).to have_content(email_otp_required_after.strftime('%B %d, %Y'))
           expect(page).to have_content(s_('EmailOTP|GitLab will begin requiring email one-time passcodes'))
+          expect(page).to have_content(user.email)
           expect(page).to have_link(s_('EmailOTP|Review email addresses'), href: profile_emails_path)
         end
 

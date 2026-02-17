@@ -15,6 +15,10 @@ title: Customize the Help page message
 In large organizations, it is useful to have information about who to contact or where
 to go for help. You can customize and display this information on the GitLab `/help` page.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Add a help message to the Help page
 
 You can add a help message, which is shown at the top of the GitLab `/help` page (for example,
@@ -28,13 +32,10 @@ You can add a help message, which is shown at the top of the GitLab `/help` page
 
 You can now see the message on `/help`.
 
-{{< alert type="note" >}}
-
-By default, `/help` is visible to unauthenticated users. However, if the
-[**Public** visibility level](visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted, `/help` is visible only to authenticated users.
-
-{{< /alert >}}
+> [!note]
+> By default, `/help` is visible to unauthenticated users. However, if the
+> [**Public** visibility level](visibility_and_access_controls.md#restrict-visibility-levels)
+> is restricted, `/help` is visible only to authenticated users.
 
 ## Add a help message to the sign-in page
 
@@ -66,7 +67,7 @@ You can specify a custom URL to which users are directed when they:
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
-1. In the **Support page URL** field, enter the URL.
+1. In the **Support page URL** text box, enter the URL.
 1. Select **Save changes**.
 
 ## Redirect `/help` pages
@@ -76,10 +77,10 @@ You can redirect all `/help` links to a destination that meets the [necessary re
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
-1. In the **Documentation pages URL** field, enter the URL.
+1. In the **Documentation pages URL** text box, enter the URL.
 1. Select **Save changes**.
 
-If the **Documentation pages URL** field is empty, the GitLab instance displays a basic version of the documentation
+If the **Documentation pages URL** text box is empty, the GitLab instance displays a basic version of the documentation
 sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab.
 
 ### Destination requirements

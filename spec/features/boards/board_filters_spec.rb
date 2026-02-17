@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
+  include GlFilteredSearchHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user) }
@@ -16,10 +17,19 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let_it_be(:award_emoji1) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: issue_1) }
 
   let(:filtered_search) { find_by_testid('issue-board-filtered-search') }
-  let(:filter_input) { find('.gl-filtered-search-term-input') }
-  let(:filter_dropdown) { find('.gl-filtered-search-suggestion-list') }
-  let(:filter_first_suggestion) { find('.gl-filtered-search-suggestion-list').first('.gl-filtered-search-suggestion') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
+
+  def filter_input
+    gl_filtered_search_input(filtered_search)
+  end
+
+  def filter_dropdown
+    gl_filtered_search_dropdown(filtered_search)
+  end
+
+  def filter_first_suggestion
+    gl_filtered_search_first_suggestion(filtered_search)
+  end
 
   context 'for a project board' do
     let_it_be(:board) { create(:board, project: project) }

@@ -24,7 +24,8 @@ Below are available schemas related to Cells and Organizations:
 | `gitlab_shared_org` | Schema for tables with data across multiple databases and has `organization_id` for sharding. These tables inherit from `Gitlab::Database::SharedModel`. Tables in this schema are not allowed to use auto-incrementing integer schemas so that rows across the decomposed databases have unique primary keys. Use Composite, or UUID primary keys instead. |
 | `gitlab_shared_cell_local` | Schema for cell local shared tables that do not require sharding and exist across multiple databases. For example, `loose_foreign_keys_deleted_records`. These tables also inherit from `Gitlab::Database::SharedModel`. |
 
-Most tables will require a [sharding key](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables) to be defined.
+Most tables will require a [sharding key](../organization/sharding/_index.md#choosing-the-right-sharding-key) to be
+defined.
 
 To understand how existing tables are classified, you can use [this dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/schema_migration).
 
@@ -181,7 +182,6 @@ Examples of hard-coding static data include:
 - [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)
 - [Static defaults for work item statuses](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178180)
 - [`Ai::Catalog::BuiltInTool`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197300)
-- [`WorkItems::TypesFramework::SystemDefined::RelatedLinkRestriction`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199664)
 
 ## Other topics
 

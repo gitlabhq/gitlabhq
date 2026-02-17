@@ -1,0 +1,3 @@
+---
+name: delete_security_project_tracked_ref
+description: Grants ability to delete a tracked ref

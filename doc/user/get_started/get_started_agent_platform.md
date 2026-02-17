@@ -5,12 +5,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Get started with the GitLab Duo Agent Platform
 ---
 
-The GitLab Duo Agent Platform is an automated assistant that speeds up repetitive tasks
-while maintaining your organization's standards and practices.
+The GitLab Duo Agent Platform is an AI-native solution that embeds multiple
+intelligent assistants ("agents")
+throughout the software development lifecycle.
 
-Use the Agent Platform for things like creating files, generating merge requests from issues,
-analyzing and fixing security vulnerabilities, refactoring codebases,
-fixing and converting CI/CD configurations, integrating with external systems, and more.
+- Instead of following a linear workflow, collaborate asynchronously with AI agents.
+- Delegate routine tasks, from code refactoring and security scans to research,
+  to specialized AI agents.
+
+The Agent Platform is made up of several features,
+which are available in the GitLab UI and IDEs.
 
 ## Step 1: Access GitLab Duo Chat
 
@@ -103,3 +107,10 @@ For more information, see:
 - [Knowledge Graph](../project/repository/knowledge_graph/_index.md).
 - [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md).
 - [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md).
+
+## Resources
+
+- Eight-part tutorial: [Get started with GitLab Duo Agent Platform: The complete guide](https://about.gitlab.com/blog/gitlab-duo-agent-platform-complete-getting-started-guide/)
+- Blog: [GitLab engineer: How I improved my onboarding experience with AI](https://about.gitlab.com/blog/gitlab-engineer-how-i-improved-my-onboarding-experience-with-ai/)
+- Talk recording: [Agentic AI in GitLab Duo Agent Platform | Use Cases & Best Practices | DACH Roadshow Vienna 2025](https://www.youtube.com/watch?v=amJQkKhe5ys) ([slides](https://docs.google.com/presentation/d/e/2PACX-1vTX-DcBV9Rw6HQ7vNew8EWRv1NMGtKfRbb5eATRb9tENrOUbnbPdZJwXnub2OMnqv-nIV_v0hIQB6Ew/pub?start=false&loop=false&delayms=3000&slide=id.g38ddaede31e_0_36))
+<!-- Video published on 2025-12-09 -->

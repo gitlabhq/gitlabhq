@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def self.parse(cursor)
-            Gitlab::Json.parse(Base64.urlsafe_decode64(cursor)).with_indifferent_access
+            Gitlab::Json.safe_parse(Base64.urlsafe_decode64(cursor)).with_indifferent_access
           end
         end
 

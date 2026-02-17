@@ -18,18 +18,16 @@ title: Cluster management project (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The cluster management project was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To manage cluster applications, use the [GitLab agent for Kubernetes](agent/_index.md)
-with the [Cluster Management Project Template](management_project_template.md).
-
-{{< /alert >}}
-
 > [!flag]
 > This feature is not available by default on GitLab Self-Managed. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 A project can be designated as the management project for a cluster.
+
+> [!warning]
+> The cluster management project was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> To manage cluster applications, use the [GitLab agent for Kubernetes](agent/_index.md)
+> with the [Cluster Management Project Template](management_project_template.md).
+
 A management project can be used to run deployment jobs with
 Kubernetes
 [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
@@ -64,6 +62,10 @@ To use a cluster management project to manage your cluster:
 1. [Set the environment scope](#setting-the-environment-scope).
 
 ### Associate the cluster management project with the cluster
+
+Prerequisites:
+
+- Administrator access to associate an instance cluster.
 
 To associate a cluster management project with your cluster:
 

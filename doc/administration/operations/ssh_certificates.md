@@ -22,12 +22,9 @@ user, including ones that expire 24 hours after issuing.
 In such setups some external automated process is needed to constantly
 upload the new keys to GitLab.
 
-{{< alert type="warning" >}}
-
-OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
-able to accept a fingerprint. Check the version of OpenSSH on your server.
-
-{{< /alert >}}
+> [!warning]
+> OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
+> able to accept a fingerprint. Check the version of OpenSSH on your server.
 
 ## Why use OpenSSH certificates?
 

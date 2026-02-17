@@ -22,7 +22,7 @@ RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organiz
     context 'when all records exist' do
       it 'calls the transfer service' do
         expect_next_instance_of(
-          Organizations::Groups::TransferService,
+          Organizations::Transfer::GroupsService,
           group: group,
           new_organization: organization,
           current_user: user
@@ -44,7 +44,7 @@ RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organiz
       end
 
       it 'does not call the transfer service' do
-        expect(Organizations::Groups::TransferService).not_to receive(:new)
+        expect(Organizations::Transfer::GroupsService).not_to receive(:new)
 
         perform
       end
@@ -64,7 +64,7 @@ RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organiz
       end
 
       it 'does not call the transfer service' do
-        expect(Organizations::Groups::TransferService).not_to receive(:new)
+        expect(Organizations::Transfer::GroupsService).not_to receive(:new)
 
         perform
       end
@@ -84,7 +84,7 @@ RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organiz
       end
 
       it 'does not call the transfer service' do
-        expect(Organizations::Groups::TransferService).not_to receive(:new)
+        expect(Organizations::Transfer::GroupsService).not_to receive(:new)
 
         perform
       end

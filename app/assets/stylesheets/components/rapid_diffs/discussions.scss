@@ -1,5 +1,28 @@
 @use 'constants';
 
+.rd-discussion-timeline,
+.rd-image-with-discussions {
+  --content-border-radius: 0 0 #{$gl-border-radius-lg} #{$gl-border-radius-lg};
+}
+
+.rd-discussion-timeline {
+  @apply gl-max-w-limited;
+}
+
+.rd-discussion-timeline-comments {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    top: calc(#{$gl-spacing-scale-2} + #{$gl-spacing-scale-7}/2);
+    bottom: 0;
+    left: calc(#{$gl-spacing-scale-7}/2 - 1px);
+    background-color: $gl-background-color-strong;
+  }
+}
+
 .rd-discussion-row {
   --rd-line-border-color: var(--rd-content-border-color);
   --content-border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
@@ -9,6 +32,8 @@
   background-color: var(--gl-background-color-subtle);
   border-radius: var(--content-border-radius);
   border: 1px solid var(--rd-line-border-color);
+  border-left: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color));
+  border-right: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color));
   container: discussion-row / inline-size;
 }
 
@@ -33,6 +58,7 @@
 .rd-discussion-row > td:only-child {
   @container discussion-row (min-width: theme('maxWidth.limited')) {
     border-bottom-right-radius: 0;
+    border-right-color: var(--rd-line-border-color);
   }
 }
 

@@ -25,7 +25,8 @@ The [contribution analytics](../user/group/contribution_analytics/_index.md) rep
 
 Prerequisites:
 
-- You must have [ClickHouse configured](../integration/clickhouse.md) on your instance.
+- [ClickHouse configured](../integration/clickhouse.md) on your instance.
+- Administrator access.
 
 To enable ClickHouse:
 

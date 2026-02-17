@@ -1,0 +1,5 @@
+---
+name: purge_container_virtual_registry_upstream_cache
+description: Grants the ability to purge all cached container packages from a virtual registry upstream
+boundaries:
+  - group

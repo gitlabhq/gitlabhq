@@ -44,6 +44,11 @@ function getRoutes(fullPath) {
       component: WorkItemList,
     },
     {
+      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/views/:view_id`,
+      name: ROUTES.savedView,
+      component: WorkItemList,
+    },
+    {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,
       name: ROUTES.new,
       component: CreateWorkItem,

@@ -201,6 +201,7 @@ class SafeMathRenderer {
       : s__('math|Displaying this math block may cause performance issues on this page.');
 
     alert = new Vue({
+      name: 'RenderMathAlertRoot',
       render(h) {
         return h(
           GlAlert,

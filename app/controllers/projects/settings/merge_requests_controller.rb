@@ -38,6 +38,7 @@ module Projects
       def project_setting_attributes
         %i[
           squash_option
+          automatic_rebase_enabled
           allow_editing_commit_messages
           mr_default_target_self
         ]

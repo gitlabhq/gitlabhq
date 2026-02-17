@@ -17,11 +17,8 @@ Users can be deleted from a GitLab instance, either by:
 - The user themselves.
 - An administrator.
 
-{{< alert type="note" >}}
-
-Deleting a user deletes all projects in that user namespace.
-
-{{< /alert >}}
+> [!note]
+> Deleting a user deletes all projects in that user namespace.
 
 ## Delete your own account
 
@@ -37,20 +34,14 @@ Deleting a user deletes all projects in that user namespace.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, this feature is disabled by default. Use the
-[application settings API](../../../api/settings.md) to enable the
-`delay_user_account_self_deletion` setting for the instance.
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, this feature is disabled by default. Use the
+> [application settings API](../../../api/settings.md) to enable the
+> `delay_user_account_self_deletion` setting for the instance.
 
 You can schedule your account for deletion. When you delete your account, it enters a pending
-deletion state. Generally, deletions happen in an hour, but can take up to seven days for
-accounts that are either:
-
-- Associated with comments, issues, merge requests, notes, or snippets
-- Not part of a paid plan
+deletion state. Generally, deletions complete in one or two hours but can take up to seven days for
+accounts that are associated with comments, issues, merge requests, notes, or snippets.
 
 While your account is pending deletion:
 
@@ -59,12 +50,9 @@ While your account is pending deletion:
 - You cannot create a new account with the same primary email address unless you change the
   email address first.
 
-{{< alert type="note" >}}
-
-After the account is deleted, any user can create a user account with the same username. If
-another user takes the username, you cannot reclaim it.
-
-{{< /alert >}}
+> [!note]
+> After the account is deleted, any user can create a user account with the same username. If
+> another user takes the username, you cannot reclaim it.
 
 To delete your own account:
 
@@ -100,20 +88,18 @@ To delete a user:
    - **Delete user and contributions** to delete the user and their associated records. This option also removes all groups (and
      projects within these groups) where the user is the sole direct Owner of a group. Inherited ownership doesn't apply.
 
-{{< alert type="warning" >}}
-
-Using the **Delete user and contributions** option may result in removing more data than intended. See
-[associated records](#associated-records) for additional details.
-
-{{< /alert >}}
+> [!warning]
+> Using the **Delete user and contributions** option may result in removing more data than intended. See
+> [associated records](#associated-records) for additional details.
 
 ### Associated records
 
 When deleting users, you can either:
 
-- Delete just the user, but move contributions to a system-wide "Ghost User":
-  - The `@ghost` acts as a container for all deleted users' contributions.
-  - The user's profile and personal projects are deleted, instead of moved to the Ghost User.
+- Delete just the user, but move contributions to a ghost user:
+  - This internal user acts as a container for all deleted users' contributions.
+  - On GitLab.com, this user is called Ghost User (`@ghost1`).
+  - The user's profile and personal projects are deleted, instead of moved to Ghost User.
 - Delete the user and their contributions, including:
   - Abuse reports.
   - Emoji reactions.
@@ -141,11 +127,12 @@ records are always removed.
 The deleting associated records option can be requested in the [API](../../../api/users.md#delete-a-user) as well as
 the **Admin** area.
 
-{{< alert type="warning" >}}
-
-User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
-
-{{< /alert >}}
+> [!warning]
+> User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you
+> delete a user and their contributions are moved to a ghost user, the approval contributions refer to a missing or
+> invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user),
+> [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user)
+> them.
 
 ## Delete the root account on a GitLab Self-Managed instance
 
@@ -155,11 +142,8 @@ User approvals are associated with a user ID. Other user contributions do not ha
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
-
-{{< /alert >}}
+> [!warning]
+> The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
 
 You can delete the root account using either the UI or the [GitLab Rails console](../../../administration/operations/rails_console.md).
 
@@ -182,11 +166,8 @@ To delete the root account:
 
 ### Use the GitLab Rails console
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 Prerequisites:
 

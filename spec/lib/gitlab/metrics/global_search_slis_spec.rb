@@ -97,6 +97,8 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
       'advanced' | false | 2.452
       'advanced' | true  | 15.52
       'zoekt'    | true  | 15.52
+      'unknown'  | false | 5
+      nil        | false | 5
     end
 
     with_them do

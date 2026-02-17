@@ -100,7 +100,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.workspace?.issuable;
+        return data.namespace?.issuable;
       },
       skip() {
         return !this.iid;
@@ -109,7 +109,7 @@ export default {
         if (!data) {
           return;
         }
-        const issuable = data.workspace?.issuable;
+        const issuable = data.namespace?.issuable;
         if (issuable) {
           this.selected = issuable.assignees.nodes
             .filter((node) => node.type !== userTypes.placeholder)

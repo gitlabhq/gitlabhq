@@ -17,6 +17,25 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
+  describe 'factory' do
+    context 'when key has a user' do
+      let(:user) { create(:user) }
+      let(:key) { create(:personal_key, user: user) }
+
+      it 'sets organization_id from the user' do
+        expect(key.organization_id).to eq(user.organization_id)
+      end
+    end
+
+    context 'when key has no user' do
+      let(:key) { create(:key) }
+
+      it 'sets organization_id to the default organization' do
+        expect(key.organization_id).to be_present
+      end
+    end
+  end
+
   describe "Validation" do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_length_of(:title).is_at_most(255) }

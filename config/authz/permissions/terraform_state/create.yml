@@ -1,0 +1,5 @@
+---
+name: create_terraform_state
+description: Grants the ability to create or update Terraform state
+boundaries:
+  - project

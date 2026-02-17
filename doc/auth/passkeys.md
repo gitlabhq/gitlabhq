@@ -18,6 +18,7 @@ description: Passwordless authentication and 2FA using passkeys
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206407) in GitLab 18.6
   [with a flag](../administration/feature_flags/_index.md) named `passkeys`.
   Disabled by default on GitLab Self-Managed.
+- Generally available in GitLab 18.9. Feature flag enabled by default.
 
 {{< /history >}}
 
@@ -66,6 +67,8 @@ Prerequisites:
   - Mobile devices: iOS 16 and later, and Android 9 and later, with biometric authentication
     or device PINs turned on.
   - Security keys: Hardware security keys that support FIDO2 or WebAuthn.
+- Passkey sign-in must not be disabled for your [group](../user/group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users)
+  or [instance](../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication).
 
 To add a passkey:
 

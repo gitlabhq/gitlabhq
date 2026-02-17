@@ -1,0 +1,5 @@
+---
+name: create_group_import
+description: Grants the ability to create a group import
+boundaries:
+  - instance

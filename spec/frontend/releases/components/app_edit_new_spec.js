@@ -56,6 +56,7 @@ describe('Release edit/new component', () => {
       addEmptyAssetLink: jest.fn(),
       deleteRelease: jest.fn(),
       updateReleaseNotes: jest.fn(),
+      updateReleaseTagName: jest.fn(),
     };
 
     getters = {

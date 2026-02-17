@@ -113,22 +113,25 @@ module Gitlab
           add_to_queries(sql)
           context[:modified_tables_by_db][database].merge(tables)
           all_tables = context[:modified_tables_by_db].values.flat_map(&:to_a)
-          schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
-          schemas += ApplicationRecord.gitlab_transactions_stack
 
-          unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas, all_tables)
-            messages = []
-            messages << "Cross-database data modification of '#{schemas.to_a.join(', ')}' were detected within " \
-                        "a transaction modifying the '#{all_tables.to_a.join(', ')}' tables. "
-            messages << "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions " \
-                        "for details on how to resolve this exception."
-            messages += cleaned_queries
-
-            raise CrossDatabaseModificationAcrossUnsupportedTablesError, messages.join("\n\n")
+          if ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(all_tables, additional_schemas: ApplicationRecord.gitlab_transactions_stack)
+            return
           end
-        rescue CrossDatabaseModificationAcrossUnsupportedTablesError => e
-          ::Gitlab::ErrorTracking.track_exception(e, { gitlab_schemas: schemas, tables: all_tables, query: parsed.sql })
-          raise if dev_or_test_env?
+
+          schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables) + ApplicationRecord.gitlab_transactions_stack
+
+          messages = []
+          messages << "Cross-database data modification of '#{schemas.to_a.join(', ')}' were detected within " \
+                      "a transaction modifying the '#{all_tables.to_a.join(', ')}' tables. " \
+                      "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions " \
+                      "for details on how to resolve this exception."
+          messages += cleaned_queries
+
+          error = CrossDatabaseModificationAcrossUnsupportedTablesError.new(messages.join("\n\n"))
+
+          ::Gitlab::ErrorTracking.track_exception(error, { gitlab_schemas: schemas, tables: all_tables, query: parsed.sql })
+
+          raise(error) if dev_or_test_env?
         end
         # rubocop:enable Metrics/AbcSize
 

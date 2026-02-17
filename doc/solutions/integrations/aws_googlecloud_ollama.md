@@ -15,7 +15,7 @@ title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with 
 {{< /details >}}
 
 The document describes the installation and integration of GitLab and GitLab Duo with a self-hosted Large Language Model (LLM) running a Mistral model on Ollama. The guide describes the setup using 3 different
-virtual machines and can be easily followed along on AWS or GCP. Of course, the process is applicable to different deployment platforms, too.
+virtual machines and can be followed along on AWS or GCP. Of course, the process is applicable to different deployment platforms, too.
 
 This guide is a comprehensive, end-to-end set of instructions for getting the desired setup working. It calls out references to the many areas of GitLab documentation that were used to support the creation of the final configuration. The referenced docs are important when more background is needed to adjust the implementation to a specific scenario.
 <!-- TOC -->
@@ -61,7 +61,7 @@ For more information about the component and its purpose, see [AI Gateway](../..
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
     accTitle: GitLab Duo Self-Hosted architecture
-    accDescr: Shows the flow from GitLab Ultimate to the AI gateway, which connects to Ollama running Mistral.
+    accDescr: Shows the flow from GitLab Ultimate to the AI Gateway, which connects to Ollama running Mistral.
 
     A[GitLab<br/>Ultimate] --> C
     C[GitLab<br/>AI Gateway] --> B[Ollama<br/>Mistral]
@@ -164,7 +164,7 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available in [Install the GitLab AI gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January
+While the official installation guide is available in [Install the GitLab AI Gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January
 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Ensure that ...
@@ -214,11 +214,8 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    Environment="OLLAMA_HOST=172.31.11.27"
    ```
 
-   {{< alert type="note" >}}
-
-   Replace the IP address with your actual server's internal IP address.
-
-   {{< /alert >}}
+   > [!note]
+   > Replace the IP address with your actual server's internal IP address.
 
 1. Reload and restart the service:
 

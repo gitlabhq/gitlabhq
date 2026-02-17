@@ -64,35 +64,83 @@ RSpec.describe Gitlab::Graphql::Queries do
   end
 
   describe Gitlab::Graphql::Queries::Fragments do
-    subject { described_class.new(root) }
-
-    it 'has the right home' do
-      expect(subject.home).to eq (root / 'app/assets/javascripts').to_s
-    end
-
-    it 'has the right EE home' do
-      expect(subject.home_ee).to eq (root / 'ee/app/assets/javascripts').to_s
-    end
+    subject(:fragments) { described_class.new(root) }
 
     it 'caches query definitions' do
-      fragment = subject.get('foo')
+      fragment = fragments.get('foo')
 
       expect(fragment).to be_a(::Gitlab::Graphql::Queries::Definition)
-      expect(subject.get('foo')).to be fragment
+      expect(fragments.get('foo')).to be fragment
+    end
+
+    describe '#resolve' do
+      let(:current_file) { root / 'projects/project.fragment.graphql' }
+
+      subject(:resolve) { fragments.resolve(import_path, current_file) }
+
+      context 'when import_path uses ~' do
+        let(:import_path) { '~/users/user.fragment.graphql' }
+
+        it 'resolves home' do
+          expect(resolve).to eq((root / 'app/assets/javascripts/users/user.fragment.graphql').to_s)
+        end
+      end
+
+      context 'when using ee_else_ce' do
+        let(:import_path) { 'ee_else_ce/projects/graphql/project.fragment.graphql' }
+
+        it 'resolves to CE path when on CE', if: !Gitlab.ee? do
+          expect(resolve).to eq((root / 'app/assets/javascripts/projects/graphql/project.fragment.graphql').to_s)
+        end
+
+        it 'resolves to EE path when on EE', if: Gitlab.ee? do
+          expect(resolve).to eq((root / 'ee/app/assets/javascripts/projects/graphql/project.fragment.graphql').to_s)
+        end
+      end
+
+      context 'when using dot notation' do
+        let(:import_path) { './repository.fragment.graphql' }
+
+        it 'resolves to pwd' do
+          expect(resolve).to eq((root / 'projects/repository.fragment.graphql').to_s)
+        end
+      end
+
+      context 'when using double-dot notation' do
+        let(:import_path) { '../query.graphql' }
+
+        it 'resolves to pwd\'s parent' do
+          expect(resolve).to eq((root / 'query.graphql').to_s)
+        end
+      end
+
+      context 'when using relative path' do
+        let(:import_path) { 'app/assets/graphql/queries/namespaces/namespace.fragment.graphql' }
+
+        it 'resolves to absolute path' do
+          expect(resolve).to eq((Rails.root / import_path).to_s)
+        end
+      end
     end
   end
 
   describe '.all' do
-    it 'is the combination of finding queries in CE and EE' do
-      expect(described_class)
+    before do
+      allow(described_class)
         .to receive(:find).with(Rails.root / 'app/assets/javascripts').and_return([:ce_assets])
-      expect(described_class)
+      allow(described_class)
         .to receive(:find).with(Rails.root / 'ee/app/assets/javascripts').and_return([:ee_assets])
-      expect(described_class)
+      allow(described_class)
         .to receive(:find).with(Rails.root / 'app/graphql/queries').and_return([:ce_gql])
-      expect(described_class)
+      allow(described_class)
         .to receive(:find).with(Rails.root / 'ee/app/graphql/queries').and_return([:ee_gql])
+    end
 
+    it 'returns only CE queries when on CE', if: !Gitlab.ee? do
+      expect(described_class.all).to contain_exactly(:ce_assets, :ce_gql)
+    end
+
+    it 'returns EE and CE queries when on EE', if: Gitlab.ee? do
       expect(described_class.all).to contain_exactly(:ce_assets, :ee_assets, :ce_gql, :ee_gql)
     end
   end
@@ -176,11 +224,6 @@ RSpec.describe Gitlab::Graphql::Queries do
       let(:path) { 'ee_else_ce.import.graphql' }
 
       it_behaves_like 'a valid GraphQL query for the blog schema'
-
-      it 'can resolve the ee fields' do
-        expect(subject.text(mode: :ce)).not_to include('verified')
-        expect(subject.text(mode: :ee)).to include('verified')
-      end
     end
 
     context 'a query refering to parent directories' do

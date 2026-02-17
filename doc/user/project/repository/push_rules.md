@@ -37,13 +37,10 @@ Each regular expression is limited to 511 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
-{{< alert type="note" >}}
-
-Push rules are bypassed during fork synchronization.
-When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
-are applied directly without validation against the fork's push rules.
-
-{{< /alert >}}
+> [!note]
+> Push rules are bypassed during fork synchronization.
+> When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
+> are applied directly without validation against the fork's push rules.
 
 Push rules work as templates, not inherited settings:
 
@@ -57,13 +54,10 @@ Push rules work as templates, not inherited settings:
 To apply updated global push rules to existing projects, you must [override the global push rules](#override-global-push-rules-per-project)
 for each project individually.
 
-{{< alert type="note" >}}
-
-If you delete push rules from a project, the project has no push rules at all.
-The project does not automatically inherit rules from the group or instance.
-To restore push rules, you must configure them again for the project.
-
-{{< /alert >}}
+> [!note]
+> If you delete push rules from a project, the project has no push rules at all.
+> The project does not automatically inherit rules from the group or instance.
+> To restore push rules, you must configure them again for the project.
 
 ## Enable global push rules
 
@@ -109,14 +103,18 @@ the global settings. Projects do not automatically inherit changes to global pus
 
 Use these rules to validate users who make commits.
 
-{{< alert type="note" >}}
-
-These push rules apply only to commits and not [tags](tags/_index.md).
-
-{{< /alert >}}
+> [!note]
+> These push rules apply only to commits and not [tags](tags/_index.md).
 
 - **Reject unverified users**: The committer email must match one of the user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile) or [private commit email address](../../profile/_index.md#use-an-automatically-generated-private-commit-email).
-- **Reject inconsistent user name**: The commit author name must match the user's GitLab account name.
+- **Reject inconsistent user name**: The commit author name must match the user's GitLab account name
+  for commits where the author and committer emails are the same. The check is skipped when these
+  emails differ, which occurs during workflows like cherry-picking or rebasing commits from other
+  contributors.
+
+  This rule helps maintain commit hygiene by catching misconfigurations in users' Git settings,
+  but does not prevent impersonation. For cryptographic identity verification, use
+  [**Reject unsigned commits**](#require-signed-commits) instead.
 - **Check whether the commit author is a GitLab user**: Both the commit author and committer email addresses must match a GitLab user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile).
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
@@ -206,8 +204,8 @@ Use these rules to validate files contained in the commit.
 ### Prevent pushing secrets to the repository
 
 Never commit secrets, such as credential files and SSH private keys, to a version control
-system. In GitLab, you can use a predefined list of files to block those files from a
-repository. Merge requests that contain a file that matches the list are blocked.
+system. In GitLab, you can use a predefined list of filename patterns to prevent matching files from
+being pushed to a repository. Merge requests that contain a matching file are blocked.
 This push rule does not restrict files already committed to the repository.
 You must update the configuration of existing projects to use the rule, using the
 process described in [Override global push rules per project](#override-global-push-rules-per-project).
@@ -282,12 +280,9 @@ In Git, filenames include both the file's name, and all directories preceding th
 When you `git push`, each filename in the push is compared to the regular expression
 in **Prohibited filenames**.
 
-{{< alert type="note" >}}
-
-This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
-which does not support positive or negative lookaheads.
-
-{{< /alert >}}
+> [!note]
+> This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
+> which does not support positive or negative lookaheads.
 
 The regular expression can:
 
@@ -357,15 +352,12 @@ When you enable the **Reject unsigned commits** push rule:
 - Commits created through the GitLab UI or API are allowed even without signatures.
   These commits can come from the Web IDE, merge request actions, and API operations.
 
-{{< alert type="warning" >}}
-
-Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
-in your commit history even when the rule is enabled. The rule only validates commits pushed
-from external Git clients.
-
-For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
-
-{{< /alert >}}
+> [!warning]
+> Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
+> in your commit history even when the rule is enabled. The rule only validates commits pushed
+> from external Git clients.
+>
+> For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
 
 The signature must be created with a supported signing method:
 
@@ -426,11 +418,8 @@ or write a script to update each project using the [push rules API endpoint](../
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
 and create a filter for allowing commits from a specific email domain only through rails console:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ``` ruby
 Project.find_each do |p|

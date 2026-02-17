@@ -176,6 +176,56 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     it { is_expected.to include(*fields) }
   end
 
+  describe '#integration_list_data' do
+    let(:integration) { build(:jenkins_integration, project: project) }
+    let(:integrations) { [integration] }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(build(:user))
+    end
+
+    subject { helper.integration_list_data(integrations, project: project) }
+
+    it 'returns a hash with integrations' do
+      parsed = Gitlab::Json.safe_parse(subject[:integrations])
+      expect(parsed.first).to include('title' => integration.title)
+    end
+
+    it 'returns a hash with is_admin flag' do
+      expect(subject[:is_admin]).to eq('false')
+    end
+
+    context 'when current_user is a regular user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(build(:user))
+      end
+
+      it 'returns is_admin as false' do
+        expect(subject[:is_admin]).to eq('false')
+      end
+    end
+
+    context 'when current_user is an admin' do
+      before do
+        allow(helper).to receive(:current_user).and_return(build(:admin))
+      end
+
+      it 'returns is_admin as true' do
+        expect(subject[:is_admin]).to eq('true')
+      end
+    end
+
+    context 'when current_user is nil' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'returns is_admin as empty string' do
+        expect(subject[:is_admin]).to eq('')
+      end
+    end
+  end
+
   describe '#serialize_integration' do
     subject { helper.send(:serialize_integration, integration) }
 
@@ -342,26 +392,19 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     where(:issue_type, :expected_i18n_issue_type) do
       "issue"           | _('Issue')
       "incident"        | _('Incident')
-      "test_case"       | _('Test case')
-      "requirement"     | _('Requirement')
       "task"            | _('Task')
       "ticket"          | _('Service Desk Ticket')
     end
 
     with_them do
       before do
-        issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
         issue.save!(validate: false)
       end
 
       it "return the correct i18n issue type" do
         expect(described_class.integration_issue_type(issue.work_item_type.base_type)).to eq(expected_i18n_issue_type)
       end
-    end
-
-    it "only consider these enumeration values are valid" do
-      expected_valid_types = %w[issue incident test_case requirement task objective key_result epic ticket]
-      expect(WorkItems::Type.base_types.keys).to contain_exactly(*expected_valid_types)
     end
   end
 

@@ -32,7 +32,7 @@ Users added through LDAP:
 - Usually use a [licensed seat](../../../subscriptions/manage_users_and_seats.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
-  [is disabled](../../settings/sign_in_restrictions.md#password-authentication-enabled).
+  [is disabled](../../settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https).
 
 The LDAP distinguished name (DN) is associated with existing GitLab users when:
 
@@ -45,14 +45,11 @@ If an existing GitLab user wants to enable LDAP sign-in for themselves, they sho
 1. Check that their GitLab email address matches their LDAP email address.
 1. Sign in to GitLab by using their LDAP credentials.
 
-{{< alert type="note" >}}
-
-After a user links an LDAP identity to their GitLab account, they can no longer use the standard
-username and password authentication flow. Instead, users must authenticate with their LDAP
-credentials. Attempts to sign in with their username and password authentication, return
-an [invalid login or password error](ldap-troubleshooting.md#users-see-an-error-invalid-login-or-password).
-
-{{< /alert >}}
+> [!note]
+> After a user links an LDAP identity to their GitLab account, they can no longer use the standard
+> username and password authentication flow. Instead, users must authenticate with their LDAP
+> credentials. Attempts to sign in with their username and password authentication, return
+> an [invalid login or password error](ldap-troubleshooting.md#users-see-an-error-invalid-login-or-password).
 
 ## Security
 
@@ -205,7 +202,7 @@ The file you edit differs depending on your GitLab setup:
    ```
 
 For more information, see
-[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals/#ldap).
 
 {{< /tab >}}
 
@@ -325,13 +322,10 @@ The following basic settings are available:
 | `lowercase_usernames`           | {{< icon name="dotted-circle" >}} No | Boolean                       | If enabled, GitLab converts the name to lowercase. |
 | `retry_empty_result_with_codes` | {{< icon name="dotted-circle" >}} No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
 
-{{< alert type="note" >}}
-
-GitLab is unaffected by the stricter binding requirements for Microsoft Active Directory
-Services introduced with [Microsoft advisory ADV190023](https://msrc.microsoft.com/update-guide/en-us/advisory/ADV190023).
-For more information, see [issue 201894](https://gitlab.com/gitlab-org/gitlab/-/issues/201894#note_2807513217).
-
-{{< /alert >}}
+> [!note]
+> GitLab is unaffected by the stricter binding requirements for Microsoft Active Directory
+> Services introduced with [Microsoft advisory ADV190023](https://msrc.microsoft.com/update-guide/en-us/advisory/ADV190023).
+> For more information, see [issue 201894](https://gitlab.com/gitlab-org/gitlab/-/issues/201894#note_2807513217).
 
 ### SSL configuration settings
 
@@ -414,7 +408,7 @@ The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_opt
    ```
 
 For more information, see
-[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals/#ldap).
 
 {{< /tab >}}
 
@@ -1183,7 +1177,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the LDAP password. For more information,
-read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#ldap-password).
+read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secrets/#ldap-password).
 
 {{< /tab >}}
 

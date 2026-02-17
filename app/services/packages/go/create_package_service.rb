@@ -42,7 +42,7 @@ module Packages
           sha256: Digest::SHA256.hexdigest(content)
         }
 
-        digests[:md5] = Digest::MD5.hexdigest(content) unless Gitlab::FIPS.enabled?
+        digests[:md5] = Digest::MD5.hexdigest(content) unless Gitlab::FIPS.enabled? # rubocop:disable Fips/MD5 -- MD5 is not used when in FIPS-compliant mode
 
         [file, digests]
       end

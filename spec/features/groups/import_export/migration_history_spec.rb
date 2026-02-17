@@ -14,7 +14,7 @@ RSpec.describe 'Import/Export - GitLab migration history', :js, feature_category
   before do
     stub_application_setting(bulk_import_enabled: true)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit new_group_path
 

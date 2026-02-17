@@ -14,9 +14,9 @@ title: GitLab To-Do List API
 
 Use this API to interact with [to-do items](../user/todos.md).
 
-## Get a list of to-do items
+## List all to-do items
 
-Returns a list of to-do items. When no filter is applied, it
+Lists all to-do items. When no filter is applied, it
 returns all pending to-do items for the current user. Different filters allow the
 user to refine the request.
 

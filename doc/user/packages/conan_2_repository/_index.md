@@ -20,34 +20,25 @@ title: Conan 2 packages in the package registry
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The Conan 2 package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/8258) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The Conan 2 registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Publish Conan 2 packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
+
+> [!warning]
+> The Conan 2 package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/8258) details the remaining
+> work and timelines to make it production ready.
 
 To publish Conan 2 packages to the package registry, add the package registry as a
 remote and authenticate with it.
 
 Then you can run `conan` commands and publish your package to the
 package registry.
+
+> [!note]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 For documentation of the specific API endpoints that the Conan 2 package manager client uses, see [Conan v2 API](../../../api/packages/conan_v2.md)
 
@@ -98,14 +89,11 @@ To authenticate to the package registry, you need one of the following:
   scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#publish-a-conan-2-package-by-using-cicd).
 
-{{< alert type="note" >}}
-
-Packages from private and internal projects are hidden if you are not
-authenticated. If you try to search or download a package from a private or internal
-project without authenticating, you receive the error `unable to find the package in remote`
-in the Conan 2 client.
-
-{{< /alert >}}
+> [!note]
+> Packages from private and internal projects are hidden if you are not
+> authenticated. If you try to search or download a package from a private or internal
+> project without authenticating, you receive the error `unable to find the package in remote`
+> in the Conan 2 client.
 
 ### Add your credentials to the GitLab remote
 
@@ -127,12 +115,9 @@ conan remote login -p <personal_access_token or deploy_token> gitlab <gitlab_use
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-{{< alert type="note" >}}
-
-Because your authentication with GitLab expires on a regular basis, you may
-occasionally need to re-enter your personal access token.
-
-{{< /alert >}}
+> [!note]
+> Because your authentication with GitLab expires on a regular basis, you may
+> occasionally need to re-enter your personal access token.
 
 ## Publish a Conan 2 package
 
@@ -221,17 +206,14 @@ Prerequisites:
    conan install ../conanfile.txt
    ```
 
-{{< alert type="note" >}}
-
-If you try installing the package you created in this tutorial, the install command
-has no effect because the package already exists.
-Use this command to remove an existing package locally and then try again:
-
-```shell
-conan remove hello/0.1@mycompany/beta
-```
-
-{{< /alert >}}
+> [!note]
+> If you try installing the package you created in this tutorial, the install command
+> has no effect because the package already exists.
+> Use this command to remove an existing package locally and then try again:
+> 
+> ```shell
+> conan remove hello/0.1@mycompany/beta
+> ```
 
 ## Remove a Conan 2 package
 
@@ -246,12 +228,9 @@ There are two ways to remove a Conan 2 package from the GitLab package registry.
   You must explicitly include the remote in this command, otherwise the package
   is removed only from your local system cache.
 
-  {{< alert type="note" >}}
-
-  This command removes all recipe and binary package files from the
-  package registry.
-
-  {{< /alert >}}
+  > [!note]
+  > This command removes all recipe and binary package files from the
+  > package registry.
 
 - From the GitLab user interface:
 
@@ -280,14 +259,11 @@ packages in the target project, as long as you have permission to access it.
 
 The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
 
-{{< alert type="note" >}}
-
-When searching for packages, the Conan v2 CLI displays only package details
-for packages uploaded with Conan v2. Packages uploaded with Conan v1 appear in search results,
-but their details are not shown. This is because Conan v2 expects package references without the
-`recipe_hash` field, which is present in packages uploaded with Conan v1.
-
-{{< /alert >}}
+> [!note]
+> When searching for packages, the Conan v2 CLI displays only package details
+> for packages uploaded with Conan v2. Packages uploaded with Conan v1 appear in search results,
+> but their details are not shown. This is because Conan v2 expects package references without the
+> `recipe_hash` field, which is present in packages uploaded with Conan v1.
 
 ## Download a Conan 2 package
 

@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use Docker to build Docker images
+description: Build and push container images in GitLab CI/CD using the shell executor, Docker-in-Docker, socket binding, or pipe binding.
 ---
 
 {{< details >}}
@@ -86,7 +87,7 @@ For more information, see [security of the `docker` group](https://blog.zopyx.co
 
 "Docker-in-Docker" (`dind`) means:
 
-- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or
+- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker/) or
   the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 - The executor uses a [container image of Docker](https://hub.docker.com/_/docker/), provided
   by Docker, to run your CI/CD jobs.
@@ -109,13 +110,10 @@ You can use the Docker executor to run jobs in a Docker container.
 
 The Docker daemon supports connections over TLS. TLS is the default in Docker 19.03.12 and later.
 
-{{< alert type="warning" >}}
-
-This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
-escalation. This action can cause container breakout. For more information, see
-[runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
-
-{{< /alert >}}
+> [!warning]
+> This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
+> escalation. This action can cause container breakout. For more information, see
+> [runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
 
 To use Docker-in-Docker with TLS enabled:
 
@@ -180,7 +178,7 @@ To use Docker-in-Docker with TLS enabled:
      # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # Specify to Docker where to create the certificates. Docker
      # creates them automatically on boot, and creates
@@ -201,7 +199,7 @@ To use Docker-in-Docker with TLS enabled:
 
 Directories defined in `volumes = ["/certs/client", "/cache"]` in the
 [Docker-in-Docker with TLS enabled in the Docker executor](#docker-in-docker-with-tls-enabled-in-the-docker-executor)
-approach are [persistent between builds](https://docs.gitlab.com/runner/executors/docker.html#persistent-storage).
+approach are [persistent between builds](https://docs.gitlab.com/runner/executors/docker/#persistent-storage).
 If multiple CI/CD jobs using a Docker executor runner have Docker-in-Docker services enabled, then each job
 writes to the directory path. This approach might result in a conflict.
 
@@ -290,7 +288,7 @@ that you are using.
      # a network connection instead of the default /var/run/docker.sock socket.
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+     # https://docs.gitlab.com/ci/services/#accessing-the-services
      #
      DOCKER_HOST: tcp://docker:2375
      #
@@ -310,7 +308,7 @@ that you are using.
 
 You might need to configure proxy settings to use the `docker push` command.
 
-For more information, see [Proxy settings when using dind service](https://docs.gitlab.com/runner/configuration/proxy.html#proxy-settings-when-using-dind-service).
+For more information, see [Proxy settings when using dind service](https://docs.gitlab.com/runner/configuration/proxy/#proxy-settings-when-using-dind-service).
 
 #### Use the Kubernetes executor with Docker-in-Docker
 
@@ -321,7 +319,7 @@ You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/k
 To use Docker-in-Docker with TLS enabled in Kubernetes:
 
 1. Using the
-   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), update the
+   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/), update the
    [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)
    to specify a volume mount.
 
@@ -359,7 +357,7 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      DOCKER_HOST: tcp://docker:2376
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # Specify to Docker where to create the certificates. Docker
      # creates them automatically on boot, and creates
@@ -392,7 +390,7 @@ To use Docker-in-Docker with TLS disabled in Kubernetes, you must adapt the prev
 For example:
 
 1. Using the
-   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), update the
+   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/), update the
    [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137):
 
    ```yaml
@@ -426,7 +424,7 @@ For example:
      DOCKER_HOST: tcp://docker:2375
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # This instructs Docker not to start over TLS.
      DOCKER_TLS_CERTDIR: ""
@@ -477,7 +475,7 @@ making them incompatible.
 #### Use the Docker executor with Docker socket binding
 
 To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:/var/run/docker.sock"` to the
-[Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+[Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section).
 
 1. To mount `/var/run/docker.sock` while registering your runner, include the following options:
 
@@ -530,11 +528,11 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
 #### Use the Kubernetes executor with Docker socket binding
 
 To mount the Docker socket with the Kubernetes executor, add `"/var/run/docker.sock"` to the
-[Volumes in the `[[runners.kubernetes.volumes.host_path]]` section](https://docs.gitlab.com/runner/executors/kubernetes/index.html#hostpath-volume).
+[Volumes in the `[[runners.kubernetes.volumes.host_path]]` section](https://docs.gitlab.com/runner/executors/kubernetes/index/#hostpath-volume).
 
 1. To specify a volume mount, update the
    [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)
-   by using [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html).
+   by using [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/).
 
    ```yaml
    runners:
@@ -633,10 +631,10 @@ See: [Install Docker Community Edition (CE) on Windows Server](https://learn.mic
 
 #### Use the Docker executor with Docker pipe binding
 
-You can use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) to run jobs in a Windows-based container.
+You can use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/) to run jobs in a Windows-based container.
 
 To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:\\.\pipe\docker_engine"` to the
-[Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+[Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section).
 
 1. To mount `"\\.\pipe\docker_engine` while registering your runner, include the following options:
 
@@ -689,7 +687,7 @@ To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:
 
 #### Use the Kubernetes executor with Docker pipe binding
 
-You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html) to run jobs in a Windows-based container.
+You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) to run jobs in a Windows-based container.
 
 To use Kubernetes executor for Windows-based containers, you must include Windows nodes in your Kubernetes cluster.
 For more information, see [Windows containers in Kubernetes](https://kubernetes.io/docs/concepts/windows/intro/).
@@ -697,11 +695,11 @@ For more information, see [Windows containers in Kubernetes](https://kubernetes.
 You can use [Runner operating in a Linux environment but targeting Windows nodes](https://docs.gitlab.com/runner/executors/kubernetes/#example-for-windowsamd64)
 
 To mount the Docker pipe with the Kubernetes executor, add `"\\.\pipe\docker_engine"` to the
-[Volumes in the `[[runners.kubernetes.volumes.host_path]]` section](https://docs.gitlab.com/runner/executors/kubernetes/index.html#hostpath-volume).
+[Volumes in the `[[runners.kubernetes.volumes.host_path]]` section](https://docs.gitlab.com/runner/executors/kubernetes/index/#hostpath-volume).
 
 1. To specify a volume mount, update the
    [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)
-   by using [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html).
+   by using [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/).
 
    ```yaml
    runners:
@@ -788,7 +786,7 @@ services:
 
 If you are a GitLab Runner administrator, you can specify the `command` to configure the registry mirror
 for the Docker daemon. The `dind` service must be defined for the
-[Docker](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section)
+[Docker](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersdockerservices-section)
 or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
 
 Docker:
@@ -823,8 +821,8 @@ Kubernetes:
 
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
-[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-to specify a [volume mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
+to specify a [volume mount](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section).
 
 For example, if you have a `/opt/docker/daemon.json` file with the following
 content:
@@ -856,7 +854,7 @@ detected by the `dind` service.
 
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
-[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
 to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume).
 
 For example, if you have a `/tmp/daemon.json` file with the following
@@ -951,7 +949,7 @@ variables:
 If you use your own [runners](https://docs.gitlab.com/runner/), you
 can enable the driver for every project by setting the `DOCKER_DRIVER`
 environment variable in the
-[`[[runners]]` section of the `config.toml` file](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section):
+[`[[runners]]` section of the `config.toml` file](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section):
 
 ```toml
 environment = ["DOCKER_DRIVER=overlay2"]
@@ -975,8 +973,8 @@ To use Buildah with GitLab CI/CD, you need [a runner](https://docs.gitlab.com/ru
 of the following executors:
 
 - [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/).
-- [Docker](https://docs.gitlab.com/runner/executors/docker.html).
-- [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
+- [Docker](https://docs.gitlab.com/runner/executors/docker/).
+- [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine/).
 
 In this example, you use Buildah to:
 

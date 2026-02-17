@@ -162,7 +162,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       let_it_be(:project) { create(:project, developers: current_user) }
       let_it_be(:boundary) { Authz::Boundary.for(project) }
       let_it_be(:token, reload: true) do
-        create(:granular_pat, user: current_user, boundary: boundary, permissions: :create_issue)
+        create(:granular_pat, user: current_user, boundary: boundary, permissions: :write_work_item)
       end
 
       it_behaves_like "rotates token successfully"

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -27,6 +27,8 @@ describe('FileTreeBrowser', () => {
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
   const findOverlay = () => wrapper.findByTestId('overlay');
   const findFeedbackButton = () => wrapper.findByText('Provide feedback');
+  const findTreeList = () => wrapper.find('tree-list-stub');
+  const findTransition = () => wrapper.find('[name="file-tree-browser-slide"]');
 
   afterEach(() => {
     localStorage.clear();
@@ -129,6 +131,33 @@ describe('FileTreeBrowser', () => {
       );
     });
 
+    describe('Escape keydown', () => {
+      it('closes the file tree browser when Escape key is pressed in peek mode', () => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
+        createComponent();
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        document.dispatchEvent(event);
+
+        expect(fileTreeBrowserStore.fileTreeBrowserIsPeekOn).toBe(false);
+      });
+
+      it('does not close the file tree browser when Escape key is pressed in expanded mode', () => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
+        fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(false);
+        createComponent();
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        document.dispatchEvent(event);
+
+        expect(fileTreeBrowserStore.fileTreeBrowserIsExpanded).toBe(true);
+      });
+    });
+
     describe('PanelResizer component', () => {
       it('renders the panel resizer component', () => {
         expect(findPanelResizer().exists()).toBe(true);
@@ -179,6 +208,24 @@ describe('FileTreeBrowser', () => {
       expect(feedbackButton.attributes('href')).toBe(
         'https://gitlab.com/gitlab-org/gitlab/-/issues/581271',
       );
+    });
+
+    describe('isAnimating prop', () => {
+      it('passes isAnimating=false to TreeList by default', () => {
+        expect(findTreeList().props('isAnimating')).toBe(false);
+      });
+
+      it('passes isAnimating based on transition events', async () => {
+        findTransition().vm.$emit('before-leave');
+        await nextTick();
+
+        expect(findTreeList().props('isAnimating')).toBe(true);
+
+        findTransition().vm.$emit('after-leave');
+        await nextTick();
+
+        expect(findTreeList().props('isAnimating')).toBe(false);
+      });
     });
 
     describe('enableStickyHeight prop', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
+RSpec.describe 'Freeze Periods (JavaScript fixtures)', feature_category: :release_orchestration do
   include JavaScriptFixturesHelpers
   include TimeZoneHelper
 

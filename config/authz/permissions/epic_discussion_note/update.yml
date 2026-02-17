@@ -1,0 +1,5 @@
+---
+name: update_epic_discussion_note
+description: Grants the ability to edit notes in epic discussions
+boundaries:
+  - group

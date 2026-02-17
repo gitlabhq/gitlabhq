@@ -2,6 +2,10 @@
 
 module API
   class GroupDebianDistributions < ::API::Base
+    def self.resource_type
+      :group
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end

@@ -1,0 +1,7 @@
+---
+name: read_code_suggestion_enabled
+description: Grants the ability to check if code suggestions are enabled
+permissions:
+  - read_code_suggestion_enabled
+boundaries:
+  - project

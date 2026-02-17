@@ -1,0 +1,5 @@
+---
+name: delete_terraform_state
+description: Grants the ability to delete Terraform state
+boundaries:
+  - project

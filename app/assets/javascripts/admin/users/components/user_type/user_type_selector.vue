@@ -89,15 +89,16 @@ export default {
       </gl-form-radio>
     </gl-form-radio-group>
 
-    <gl-card class="gl-mb-7 gl-bg-transparent">
-      <div class="gl-mb-4">
+    <gl-card class="gl-mb-6">
+      <template #header>
         <label class="gl-mb-0">
           <gl-sprintf :message="s__('AdminUsers|Access summary for %{userType} user')">
             <template #userType>{{ selectedUserTypeName }}</template>
           </gl-sprintf>
         </label>
+
         <slot name="description"></slot>
-      </div>
+      </template>
 
       <slot>
         <regular-access-summary v-if="isRegularSelected" />

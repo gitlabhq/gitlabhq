@@ -81,6 +81,10 @@ module Mcp
           end
         end
 
+        def annotations
+          version_metadata.fetch(:annotations, {})
+        end
+
         # GraphQL-specific methods (only called when needed by GraphQL tools)
         def graphql_operation
           version_metadata.fetch(:graphql_operation) do

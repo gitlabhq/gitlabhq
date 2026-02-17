@@ -43,6 +43,14 @@ RSpec.describe Sidebars::MenuItem, feature_category: :navigation do
         expect(subject[:pill_count_field]).to eq('countField')
       end
     end
+
+    context 'with badge data' do
+      let(:extra) { { badge: { label: 'New', tooltip: 'Tooltip content' } } }
+
+      it 'includes badge data' do
+        expect(subject[:badge]).to eq({ label: 'New', tooltip: 'Tooltip content' })
+      end
+    end
   end
 
   describe '#render?' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'initRedirectListboxBehavior', '(JavaScript fixtures)', type: :helper do
+RSpec.describe 'initRedirectListboxBehavior', '(JavaScript fixtures)', type: :helper, feature_category: :design_system do
   include JavaScriptFixturesHelpers
   include ListboxHelper
 

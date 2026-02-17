@@ -23,11 +23,12 @@ If you use Git HTTP in your repository, common Git operations can generate many 
 GitLab can enforce rate limits on both authenticated and unauthenticated Git HTTP requests to improve
 the security and durability of your web application.
 
-{{< alert type="note" >}}
+> [!note]
+> [General user and IP rate limits](user_and_ip_rate_limits.md) aren't applied to Git HTTP requests.
 
-[General user and IP rate limits](user_and_ip_rate_limits.md) aren't applied to Git HTTP requests.
+## Prerequisites
 
-{{< /alert >}}
+You must have administrator access.
 
 ## Configure unauthenticated Git HTTP rate limits
 

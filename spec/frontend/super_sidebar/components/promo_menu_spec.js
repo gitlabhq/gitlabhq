@@ -80,6 +80,7 @@ describe('PromoMenu', () => {
           signInVisible: true,
           sidebarData: {
             new_user_registration_path: '/register',
+            trial_registration_path: '/trial_registrations/new',
             sign_in_path: '/sign-in',
           },
         },
@@ -87,7 +88,7 @@ describe('PromoMenu', () => {
       );
 
       expect(findSigninButton().props('href')).toBe('/sign-in');
-      expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSignupButton().props('href')).toBe('/trial_registrations/new');
       expect(findSignupButton().text()).toBe('Get free trial');
     });
 
@@ -104,6 +105,23 @@ describe('PromoMenu', () => {
       expect(findSigninButton().props('href')).toBe('/sign-in');
       expect(findSignupButton().props('href')).toBe('/register');
       expect(findSignupButton().text()).toBe('Register');
+    });
+
+    it('falls back to registration path when trial_registration_path is not available in SaaS mode', () => {
+      createComponent(
+        {
+          allowSignUp: true,
+          signInVisible: true,
+          sidebarData: {
+            new_user_registration_path: '/register',
+            sign_in_path: '/sign-in',
+          },
+        },
+        { isSaas: true },
+      );
+
+      expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSignupButton().text()).toBe('Get free trial');
     });
 
     it('does not render register button when signup is disabled', () => {

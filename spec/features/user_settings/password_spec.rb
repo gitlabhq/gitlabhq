@@ -46,20 +46,23 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
     end
 
     context 'when password authentication unavailable' do
-      context 'with Regular user' do
-        before do
-          gitlab_sign_in(user)
-        end
+      with_and_without_sign_in_form_vue do
+        context 'with Regular user' do
+          before do
+            gitlab_sign_in(user)
+          end
 
-        let(:user) { create(:user) }
+          let(:user) { create(:user) }
 
-        it 'renders 404 when password authentication is disabled for the web interface and Git' do
-          stub_application_setting(password_authentication_enabled_for_web: false)
-          stub_application_setting(password_authentication_enabled_for_git: false)
+          it 'renders 404 when password authentication is disabled for the web interface and Git' do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+            stub_application_setting(password_authentication_enabled_for_git: false)
 
-          visit edit_user_settings_password_path
+            visit edit_user_settings_password_path
 
-          expect(page).to have_gitlab_http_status(:not_found)
+            expect(page).to have_title('Not Found')
+            expect(page).to have_content('Page not found')
+          end
         end
       end
 

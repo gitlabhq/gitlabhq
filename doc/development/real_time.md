@@ -18,13 +18,10 @@ to receive state updates in real-time over a WebSocket.
 The following documentation tells you how to build and deploy view components that
 receive updates in real-time from the GitLab Ruby on Rails server.
 
-{{< alert type="note" >}}
-
-Action Cable and GraphQL subscriptions are a work-in-progress and under active development.
-Developers must evaluate their use case to check if these are the right tools to use.
-If you are not sure, ask for help in the [`#f_real-time` internal Slack channel](https://gitlab.slack.com/archives/CUX9Z2N66).
-
-{{< /alert >}}
+> [!note]
+> Action Cable and GraphQL subscriptions are a work-in-progress and under active development.
+> Developers must evaluate their use case to check if these are the right tools to use.
+> If you are not sure, ask for help in the [`#f_real-time` internal Slack channel](https://gitlab.slack.com/archives/CUX9Z2N66).
 
 ## Working Safely with WebSockets
 
@@ -68,13 +65,10 @@ To build a real-time view component on GitLab, you must:
 
 ### Integrate a Vue component with Apollo subscriptions
 
-{{< alert type="note" >}}
-
-Our current real-time stack assumes that client code is built using Vue as the rendering layer and
-Apollo as the state and networking layer. If you are working with a part of
-the GitLab frontend that has not been migrated to Vue + Apollo yet, complete that task first.
-
-{{< /alert >}}
+> [!note]
+> Our current real-time stack assumes that client code is built using Vue as the rendering layer and
+> Apollo as the state and networking layer. If you are working with a part of
+> the GitLab frontend that has not been migrated to Vue + Apollo yet, complete that task first.
 
 Consider a hypothetical `IssueView` Vue component that observes and renders GitLab `Issue` data.
 For simplicity, we assume here that all it does is render an issue's title and description:
@@ -310,11 +304,8 @@ module Types
 end
 ```
 
-{{< alert type="note" >}}
-
-If you are connecting an EE subscription, update `EE::Types::SubscriptionType` instead.
-
-{{< /alert >}}
+> [!note]
+> If you are connecting an EE subscription, update `EE::Types::SubscriptionType` instead.
 
 Make sure the `:issue_updated` argument matches the name used in the `subscription` request sent by the frontend in camel-case (`issueUpdated`), or `graphql-ruby` does not know which subscribers to inform. The event can now trigger.
 
@@ -336,11 +327,8 @@ module GraphqlTriggers
 end
 ```
 
-{{< alert type="note" >}}
-
-If the trigger is for an EE subscription, update `EE::GraphqlTriggers` instead.
-
-{{< /alert >}}
+> [!note]
+> If the trigger is for an EE subscription, update `EE::GraphqlTriggers` instead.
 
 - The first argument, `:issue_updated`, must match the `field` name used in the previous
   step.
@@ -426,13 +414,10 @@ Because a push initiated by the server needs to propagate over the network and t
 in the client without any user interaction whatsoever, real-time features can only be understood
 by looking at the entire stack including frontend and backend.
 
-{{< alert type="note" >}}
-
-For historic reasons, the controller routes that service updates in response to clients polling
-for changes are called `realtime_changes`. They use conditional GET requests and are unrelated
-to the real-time behavior covered in this guide.
-
-{{< /alert >}}
+> [!note]
+> For historic reasons, the controller routes that service updates in response to clients polling
+> for changes are called `realtime_changes`. They use conditional GET requests and are unrelated
+> to the real-time behavior covered in this guide.
 
 Any real-time update pushed into a client originates from the GitLab Rails application. We use the following
 technologies to initiate and service these updates:
@@ -522,15 +507,12 @@ Action Cable supports different implementations to track which client is subscri
 Shared storage is necessary because different clients might connect to the same Action Cable channel
 from different Puma instances.
 
-{{< alert type="note" >}}
-
-Do not confuse Action Cable channels with Redis PubSub channels. An Action Cable `Channel` object is a
-programming abstraction to classify and handle the various kinds of data going over the WebSocket connection.
-In Action Cable, the underlying PubSub channel is referred to as a broadcasting instead and the association
-between a client and a broadcasting is called a subscription. In particular, there can be many broadcastings
-(PubSub channels) and subscriptions for each Action Cable `Channel`.
-
-{{< /alert >}}
+> [!note]
+> Do not confuse Action Cable channels with Redis PubSub channels. An Action Cable `Channel` object is a
+> programming abstraction to classify and handle the various kinds of data going over the WebSocket connection.
+> In Action Cable, the underlying PubSub channel is referred to as a broadcasting instead and the association
+> between a client and a broadcasting is called a subscription. In particular, there can be many broadcastings
+> (PubSub channels) and subscriptions for each Action Cable `Channel`.
 
 Because Action Cable allows us to express different kinds of behavior through its `Channel` API, and because
 updates to any `Channel` can use the same WebSocket connection, we only require a single WebSocket connection
@@ -593,12 +575,9 @@ It simplifies:
 - Client-side state management and response caching.
 - Integrating GraphQL with view components using a bridge module.
 
-{{< alert type="note" >}}
-
-When reading the Apollo Client documentation, it assumes that React.js is used for view rendering. We do not use React.js
-at GitLab. We use Vue.js, which integrates with Apollo using the [Vue.js adapter](https://apollo.vuejs.org/).
-
-{{< /alert >}}
+> [!note]
+> When reading the Apollo Client documentation, it assumes that React.js is used for view rendering. We do not use React.js
+> at GitLab. We use Vue.js, which integrates with Apollo using the [Vue.js adapter](https://apollo.vuejs.org/).
 
 Apollo provides functions and hooks with which you define how:
 

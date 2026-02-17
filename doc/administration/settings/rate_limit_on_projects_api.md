@@ -13,6 +13,9 @@ description: Set rate limits on Projects API endpoints.
 
 {{< /details >}}
 
+> [!note]
+> When upgrading to GitLab 18.0 or later, configurable rate limits for this API are set to `0`. Administrators can adjust rate limits as needed. For information about which rate limits are affected, see [Rate limitations announced for Projects, Groups, and Users APIs](https://about.gitlab.com/blog/rate-limitations-announced-for-projects-groups-and-users-apis/#rate-limitation-details).
+
 ## Configure Projects API rate limits
 
 {{< history >}}
@@ -29,10 +32,14 @@ Configure the rate limit for each IP address and user for requests to the follow
 |-------------------------------------------------------------------------------------------------------------|---------|----------|
 | [`GET /projects`](../../api/projects.md#list-all-projects) (unauthenticated requests)                       | 400     | 10 minutes |
 | [`GET /projects`](../../api/projects.md#list-all-projects) (authenticated requests)                         | 2000    | 10 minutes |
-| [`GET /projects/:id`](../../api/projects.md#get-a-single-project)                                           | 400     | 1 minute |
-| [`GET /users/:user_id/projects`](../../api/projects.md#list-a-users-projects)                               | 300     | 1 minute |
-| [`GET /users/:user_id/contributed_projects`](../../api/projects.md#list-projects-a-user-has-contributed-to) | 100     | 1 minute |
+| [`GET /projects/:id`](../../api/projects.md#retrieve-a-project)                                             | 400     | 1 minute |
+| [`GET /users/:user_id/projects`](../../api/projects.md#list-all-personal-projects-for-a-user)               | 300     | 1 minute |
+| [`GET /users/:user_id/contributed_projects`](../../api/projects.md#list-all-projects-contributions-for-a-user) | 100     | 1 minute |
 | [`GET /users/:user_id/starred_projects`](../../api/project_starring.md#list-projects-starred-by-a-user)     | 100     | 1 minute |
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 
@@ -64,6 +71,10 @@ For more information about project API endpoints, see the [projects API](../../a
 Configure the rate limit for each project and user for requests to the
 [delete members endpoint](../../api/project_members.md#remove-a-member-from-a-project).
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -76,7 +87,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute
 - Applies for each project and user.
-- Can be set to 0 to disable the rate limit.
+- Can be set to `0` to disable the rate limit.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -95,6 +106,14 @@ after one minute.
 Configure the rate limit for requests to the
 [list project members endpoint](../../api/project_members.md#list-all-members-of-a-project).
 
+Both the `GET /projects/:id/members/all` and `GET /groups/:id/members/all`
+API endpoints share the same rate limit configuration. If you set a rate limit on the projects endpoint,
+the rate limit applies also to the groups endpoint.
+
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -107,7 +126,7 @@ The rate limit:
 
 - Defaults to 200 requests every minute.
 - Applies to each project and user.
-- Can be set to 0 to disable rate limits.
+- Can be set to `0` to disable rate limits.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

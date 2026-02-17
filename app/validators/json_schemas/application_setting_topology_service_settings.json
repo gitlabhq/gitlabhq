@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Holds Topology Service settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "topology_service_concurrency_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 200,
+      "description": "Maximum number of concurrent requests allowed to the Topology Service"
+    }
+  }
+}

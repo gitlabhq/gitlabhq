@@ -13,6 +13,9 @@ module Groups
       push_force_frontend_feature_flag(:work_item_planning_view,
         !!group&.work_items_consolidated_list_enabled?(current_user))
       push_force_frontend_feature_flag(:work_items_saved_views, !!group&.work_items_saved_views_enabled?(current_user))
+      push_force_frontend_feature_flag(:use_work_item_url, !!group&.use_work_item_url?)
+      push_force_frontend_feature_flag(:work_item_features_field,
+        Feature.enabled?(:work_item_features_field, current_user))
     end
 
     before_action :handle_new_work_item_path, only: [:show]
@@ -25,7 +28,9 @@ module Groups
 
     urgency :low, [:rss, :calendar]
 
-    def index; end
+    def index
+      dismiss_work_items_badge
+    end
 
     def show
       not_found unless group.supports_work_items?
@@ -67,6 +72,14 @@ module Groups
 
     def show_params
       params.permit(:iid)
+    end
+
+    def dismiss_work_items_badge
+      return unless current_user
+
+      ::Users::DismissCalloutService.new(
+        container: nil, current_user: current_user, params: { feature_name: :work_items_nav_badge }
+      ).execute
     end
   end
 end

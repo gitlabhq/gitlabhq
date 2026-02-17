@@ -149,6 +149,22 @@ RSpec.describe ObjectStorage::Config, feature_category: :shared do
     it { expect(subject.aws?).to be false }
     it { expect(subject.google?).to be true }
     it { expect(subject.fog_attributes).to eq({}) }
+
+    context 'with universe_domain' do
+      let(:credentials) do
+        {
+          provider: 'Google',
+          google_json_key_location: '/path/to/gcp.json',
+          universe_domain: 'googleapis.com'
+        }
+      end
+
+      it { expect(subject.universe_domain).to eq('googleapis.com') }
+    end
+
+    context 'without universe_domain' do
+      it { expect(subject.universe_domain).to be_nil }
+    end
   end
 
   context 'with SSE-KMS enabled' do

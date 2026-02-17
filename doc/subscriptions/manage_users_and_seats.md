@@ -25,6 +25,8 @@ inherited members, and invited users, with one of the following roles:
 - Maintainer
 - Owner
 
+On GitLab Self-Managed on the Premium tier, users who don't have access to a namespace are also billable.
+
 Billable users count toward the number of seats purchased in your subscription.
 The number of billable users changes when you block, deactivate, or add
 users to your instance or group during your current subscription period.
@@ -55,7 +57,7 @@ A user is not counted as a billable user if:
   or [blocked](../administration/moderate_users.md#block-a-user).
 - They are not a member of any projects or groups (Ultimate subscriptions only).
 - They have only the [Guest role](#free-guest-users) (Ultimate subscriptions only).
-- They have only the [Minimal Access role](../user/permissions.md#users-with-minimal-access) for any GitLab.com subscriptions or GitLab Self-Managed Ultimate subscriptions.
+- They have only the [Minimal Access role](../user/permissions.md#users-with-minimal-access).
 - The account is a GitLab-created service account:
   - [Ghost User](../user/profile/account/delete_account.md#associated-records).
   - Bots:
@@ -109,6 +111,11 @@ To avoid unexpected overage charges, you can:
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance for GitLab Self-Managed or in the namespace for GitLab.com.
 
+On GitLab Self-Managed in the **Premium** tier, if a Guest user has a higher role in any project or group (including their personal namespace),
+when you upgrade to the **Ultimate** tier that higher role takes precedence and they will consume a seat.
+To ensure that Guest users on GitLab Self-Managed Ultimate will not consume a seat,
+confirm that they have no other role assignments in the instance or namespace before upgrading. 
+
 - If your project is:
   - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-permissions).
   - Public, all users, including those with the Guest role, can access your project.
@@ -116,13 +123,10 @@ The user must not be assigned any other role, anywhere in the instance for GitLa
   The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
 - On GitLab Self-Managed, a user's highest assigned role is updated asynchronously and may take some time to update.
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, if a user creates a project, they are assigned the Maintainer or Owner role.
-To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../administration/external_users.md).
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, if a user creates a project, they are assigned the Maintainer or Owner role.
+> To prevent a user from creating projects, as an administrator, you can mark the user
+> as [external](../administration/external_users.md).
 
 ## Buy more seats
 
@@ -192,6 +196,10 @@ The number of maximum users reflects the highest number of billable users on you
 You can view and export your [license usage](../administration/license_usage.md).
 
 ### View users
+
+Prerequisites:
+
+- Administrator access.
 
 View the lists of users in your instance:
 
@@ -327,7 +335,7 @@ The alert displays at the following intervals:
 
 To view a list of seats being used:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Seats** tab.
 
@@ -343,7 +351,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 
 - The usage statistics are updated once per day, which may cause a difference between the information
@@ -356,7 +364,7 @@ To view your subscription information and a summary of seat counts:
 You can view the users that use seats on your subscription.
 To search for a user's seat usage:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, in the search field, enter the user's name or username.
    The search string must have minimum three characters.
@@ -370,7 +378,7 @@ the search string `ami` results in a match, but `amr` does not.
 
 To export seat usage data as a CSV file:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export list**.
 
@@ -382,7 +390,7 @@ Prerequisites:
 
 To export seat usage history as a CSV file:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export seat usage history**.
 
@@ -393,7 +401,7 @@ and is not affected by the current search.
 
 To remove a billable user from your GitLab.com subscription:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select **Remove user**.
@@ -403,3 +411,46 @@ If you add a member to a group by using the [share a group with another group](.
 
 - [Remove the member from the shared group](../user/group/_index.md#remove-a-member-from-the-group).
 - [Remove the invited group](../user/project/members/sharing_projects_groups.md#remove-an-invited-group).
+
+## Enterprise Agile Planning
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+GitLab Enterprise Agile Planning is an add-on that helps bring non-engineering users into the same
+DevSecOps platform where engineers build, test, secure, and deploy code.
+The add-on enables cross-team collaboration between developers and non-developers
+without having to purchase GitLab Ultimate licenses for non-engineering team members.
+
+With Enterprise Agile Planning seats, non-engineering team members can participate in planning
+workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
+executive dashboards to drive organizational visibility.
+
+For more information about Enterprise Agile Planning seats and how to purchase them,
+contact your [GitLab sales representative](https://customers.gitlab.com/contact_us).
+
+### Using Enterprise Agile Planning seats 
+
+A user occupies an Enterprise Agile Planning seat if:
+
+- Your subscription includes purchased Enterprise Agile Planning seats.
+- The highest [role](../user/permissions.md#default-roles) the user has across the top-level group, its subgroups, and projects is Planner.
+
+A user occupies an Ultimate seat instead of an Enterprise Agile Planning seat if either:
+
+- Your subscription does not include purchased Enterprise Agile Planning seats.
+- The user with the Planner role is assigned a higher role (such as Developer or Maintainer) anywhere in the organization hierarchy.
+
+To use your purchased Enterprise Agile Planning seats, you must first assign the Planner role to users
+in the [group](../user/group/_index.md#add-users-to-a-group) or [project](../user/project/members/_index.md#add-users-to-a-project).
+
+To prevent users with the Planner role from being assigned a different role and consequently consume Ultimate seats,
+you can use [global SAML group membership lock](../user/group/saml_sso/group_sync.md).
+
+You can view the number of Enterprise Agile Planning seats used in your
+[subscription details](manage_subscription.md#view-subscription) and in [Customers Portal](billing_account.md).
+On GitLab Self-Managed, you can also view the total number of users by role in [user statistics](../administration/admin_area.md#users-statistics).

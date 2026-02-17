@@ -12,15 +12,12 @@ title: Rate limits
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For GitLab.com, see
-[GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
-
-For GitLab Dedicated, see
-[Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).
-
-{{< /alert >}}
+> [!note]
+> For GitLab.com, see
+> [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+> 
+> For GitLab Dedicated, see
+> [Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application.
@@ -94,16 +91,16 @@ To avoid being rate limited, you can:
 
 - Stagger the execution of your automated pipelines.
 - Configure [exponential back off and retry](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html) for failed authentication attempts.
-- Use a documented process and [best practice](https://about.gitlab.com/blog/2023/10/25/access-token-lifetime-limits/#how-to-minimize-the-impact) to manage token expiry.
+- Use a documented process and [best practice](https://about.gitlab.com/blog/access-token-lifetime-limits/#how-to-minimize-the-impact) to manage token expiry.
 
 For configuration information, see
-[Linux package configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-failed-authentication-ban).
+[Linux package configuration options](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-failed-authentication-ban).
 
 ## Non-configurable limits
 
 ### Repository archives
 
-A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
+A rate limit for [downloading repository archives](../api/repositories.md#retrieve-file-archive-from-a-repository) is
 available. The limit applies to the project and to the user initiating the download either through
 the UI or the API.
 
@@ -169,7 +166,7 @@ The rate limit is 160 calls per 8 hours per authenticated user.
 
 {{< /history >}}
 
-There is a rate limit for [removing project or group members using the API endpoints](../api/group_members.md#remove-a-member-from-a-group) `/groups/:id/members` or `/project/:id/members`.
+There is a rate limit for [removing project or group members using the API endpoints](../api/group_members.md#remove-a-group-member) `/groups/:id/members` or `/project/:id/members`.
 
 The rate limit is 60 deletions per minute.
 
@@ -203,8 +200,8 @@ for the projects endpoint.
 Rate limits apply when accessing large files through specific repository API endpoints.
 For files larger than 10 MB, the rate limit is 5 calls per minute per object per project for:
 
-- [Repository blob endpoint](../api/repositories.md#get-a-blob-from-repository): `/projects/:id/repository/blobs/:sha`
-- [Repository file endpoint](../api/repository_files.md#get-file-from-repository): `/projects/:id/repository/files/:file_path`
+- [Repository blob endpoint](../api/repositories.md#retrieve-a-blob-from-a-repository): `/projects/:id/repository/blobs/:sha`
+- [Repository file endpoint](../api/repository_files.md#retrieve-a-file-from-a-repository): `/projects/:id/repository/files/:file_path`
 
 These limits help prevent excessive resource usage when accessing large repository files through
 the API.
@@ -261,7 +258,7 @@ The rate limit is 5 calls per minute per user per project.
 Rack Attack may block your load balancer if all traffic appears to come from
 the load balancer. In that case, you must:
 
-1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-gitlab-trusted_proxies-and-the-nginx-real_ip-module).
+1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx/#configuring-gitlab-trusted_proxies-and-the-nginx-real_ip-module).
    This keeps users' IPs from being listed as the load balancer IPs.
 1. Allowlist the load balancer's IP addresses.
 1. Reconfigure GitLab:
@@ -299,7 +296,7 @@ To remove a blocked IP:
    keys *rack::attack*
    ```
 
-   By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis.html#renamed-commands).
+   By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis/#renamed-commands).
 
-1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-rack-attack)
+1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration/#configuring-rack-attack)
    to prevent it being denylisted again.

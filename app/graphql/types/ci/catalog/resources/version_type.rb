@@ -21,6 +21,9 @@ module Types
           field :name, GraphQL::Types::String, null: true,
             description: 'Name that uniquely identifies the version within the catalog resource.'
 
+          field :semver, SemverType, null: true,
+            description: 'Semantic version information.'
+
           field :path, GraphQL::Types::String, null: true,
             description: 'Relative web path to the version.'
 

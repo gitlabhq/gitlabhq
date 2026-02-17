@@ -936,12 +936,14 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         allow(diff_file).to receive(:whitespace_only?).and_return(true)
       end
 
-      it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
-        allow(controller).to receive(:diffs_resource).and_return(diffs_collection)
+      it 'makes a call to presenter diff_files with ignore_whitespace_change: false' do
+        presenter = instance_double(RapidDiffs::ComparePresenter)
+        allow(controller).to receive(:rapid_diffs_presenter).and_return(presenter)
+        allow(presenter).to receive(:diff_files).and_return([diff_file])
 
-        expect(controller).to receive(:diffs_resource).with(
+        expect(presenter).to receive(:diff_files).with(
           hash_including(ignore_whitespace_change: false)
-        ).and_return(diffs_collection)
+        ).and_return([diff_file])
 
         send_request
 

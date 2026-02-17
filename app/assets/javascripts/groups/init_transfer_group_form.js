@@ -25,6 +25,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TransferGroupFormRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),

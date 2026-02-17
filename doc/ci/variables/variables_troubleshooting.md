@@ -47,13 +47,10 @@ export CI_PROJECT_TITLE="GitLab"
 
 ## Enable debug logging
 
-{{< alert type="warning" >}}
-
-Debug logging can be a serious security risk. The output contains the content of
-all variables available to the job. The output is uploaded to the
-GitLab server and visible in job logs.
-
-{{< /alert >}}
+> [!warning]
+> Debug logging can be a serious security risk. The output contains the content of
+> all variables available to the job. The output is uploaded to the
+> GitLab server and visible in job logs.
 
 You can use debug logging to help troubleshoot problems with pipeline configuration
 or job scripts. Debug logging exposes job execution details that are usually hidden
@@ -151,18 +148,15 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 
 ### Access to debug logging
 
-Access to debug logging is restricted to [users with at least the Developer role](../../user/permissions.md#project-cicd). Users with a lower role cannot see the logs when debug logging is enabled with a variable in:
+Access to debug logging is restricted to [users with the Developer, Maintainer, or Owner role](../../user/permissions.md#project-cicd). Users with a lower role cannot see the logs when debug logging is enabled with a variable in:
 
 - The [`.gitlab-ci.yml` file](_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 - The CI/CD variables set in the GitLab UI.
 
-{{< alert type="warning" >}}
-
-If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
-to all users with access to job logs. The permission levels are not checked by the runner,
-so you should only use the variable in GitLab itself.
-
-{{< /alert >}}
+> [!warning]
+> If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
+> to all users with access to job logs. The permission levels are not checked by the runner,
+> so you should only use the variable in GitLab itself.
 
 ## `argument list too long` error
 

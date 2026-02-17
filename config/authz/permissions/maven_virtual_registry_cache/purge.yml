@@ -1,0 +1,4 @@
+name: purge_maven_virtual_registry_cache
+description: Grants the ability to purge cache of Maven virtual registries
+boundaries:
+  - group

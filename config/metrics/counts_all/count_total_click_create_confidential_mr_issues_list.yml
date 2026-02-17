@@ -1,7 +1,9 @@
 ---
 key_path: counts.count_total_click_create_confidential_mr_issues_list
 description: Total count of clicks Create confidential merge request on issues list
-product_group: acquisition
+product_group: activation
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

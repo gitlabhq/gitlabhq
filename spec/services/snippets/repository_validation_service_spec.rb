@@ -16,7 +16,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       before do
         allow(repository).to receive(:branch_count).and_return(1)
         allow(repository).to receive(:ls_files).and_return(['foo'])
-        allow(repository).to receive(:branch_names).and_return(['master'])
+        allow(repository).to receive(:branch_names).and_return([snippet.default_branch])
       end
 
       it 'returns error when the repository has more than one branch' do

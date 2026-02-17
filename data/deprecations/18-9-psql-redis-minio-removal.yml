@@ -1,0 +1,32 @@
+- title: "Support for bundled PostgreSQL, Redis, and MinIO in GitLab Helm chart"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "19.0"
+  announcement_milestone: "18.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # window:  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com - Does not impact .com.
+  reporter: clemensbeck  # The GitLab username of the person reporting the change
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6271
+  check_impact: https://docs.gitlab.com/charts/installation/migration/bundled_chart_migration/ # Link to a resource, like a tool, issue, docs section, or KB article, that has *concrete steps* for customers to assess the impact of this change.
+  impact: medium # Can be one of: [critical, high, medium, low]
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?maturity=minimal&migration_complexity=major_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=none&pipeline_impact=none&compliance_impact=none&availability_impact=major&authorization_impact=none&API_impact=none # Use the impact calculator and paste the full url in here. It will deep link to the configuration. https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact_offering: self-managed # The offering this impacts. Can be one or a combination of: [GitLab.com, Dedicated, self-managed]
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    The GitLab Helm chart bundles a Bitnami PostgreSQL, Bitnami Redis, and
+    a fork of the official MinIO chart to make setting up GitLab easier. Because of several
+    changes to licensing, project maintenance, and public image availability these,
+    components will be removed from the GitLab Helm chart and GitLab Operator with no replacement.
+
+    These charts are currently enabled by default but are explicitly documented as not
+    recommended for production usage. Their sole purpose was to enable quick setup
+    proof of concept and test environments.
+
+    If you are running an instance with the bundled PostgreSQL, Redis, or MinIO, please
+    check the [migration guide](https://docs.gitlab.com/charts/installation/migration/bundled_chart_migration/).
+
+    The Redis and PostgreSQL provided by the Linux package are not impacted by this
+    change.

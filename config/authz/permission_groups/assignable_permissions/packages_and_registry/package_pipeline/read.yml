@@ -1,0 +1,7 @@
+---
+name: read_package_pipeline
+description: Grants the ability to read package pipelines
+permissions:
+  - read_package_pipeline
+boundaries:
+  - project

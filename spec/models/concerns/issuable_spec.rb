@@ -86,7 +86,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         stub_const("Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS", 2)
       end
 
-      it 'will not exceed the assignee limit' do
+      it 'does not exceed the assignee limit' do
         expect do
           subject.update!(assignees: [assignee_1, assignee_2, assignee_3])
         end.to raise_error(ActiveRecord::RecordInvalid)
@@ -910,13 +910,13 @@ RSpec.describe Issuable, feature_category: :team_planning do
       result = Issue.order_due_date_and_labels_priority
 
       expect(result).to eq([first_milestone_second_priority,
-                            first_milestone_no_priority,
-                            second_milestone_first_priority,
-                            second_milestone_second_priority,
-                            second_milestone_no_labels,
-                            third_milestone_first_priority,
-                            no_milestone_second_priority,
-                            third_milestone_no_priority])
+        first_milestone_no_priority,
+        second_milestone_first_priority,
+        second_milestone_second_priority,
+        second_milestone_no_labels,
+        third_milestone_first_priority,
+        no_milestone_second_priority,
+        third_milestone_no_priority])
     end
   end
 
@@ -1193,21 +1193,6 @@ RSpec.describe Issuable, feature_category: :team_planning do
       subject { issuable.incident_type_issue? }
 
       it { is_expected.to eq(incident) }
-    end
-  end
-
-  describe '#supports_issue_type?' do
-    where(:issuable_type, :supports_issue_type) do
-      :issue         | true
-      :merge_request | false
-    end
-
-    with_them do
-      let(:issuable) { build_stubbed(issuable_type) }
-
-      subject { issuable.supports_issue_type? }
-
-      it { is_expected.to eq(supports_issue_type) }
     end
   end
 

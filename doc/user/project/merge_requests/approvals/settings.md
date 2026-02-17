@@ -105,16 +105,13 @@ if the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
-{{< alert type="warning" >}}
-
-If a merge request is rebased by someone other than the user who originally committed the changes,
-the commit history is rewritten with a new committer. This might enable users who
-previously committed changes in a merge request to now approve changes in it, as they are
-no longer a committer.
-
-See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
-
-{{< /alert >}}
+> [!warning]
+> If a merge request is rebased by someone other than the user who originally committed the changes,
+> the commit history is rewritten with a new committer. This might enable users who
+> previously committed changes in a merge request to now approve changes in it, as they are
+> no longer a committer.
+> 
+> See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
 
 ## Prevent editing approval rules in merge requests
 
@@ -149,12 +146,9 @@ When you change this field, it can affect all open merge requests depending on t
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
-[disable the feature flag](../../../../administration/feature_flags/_index.md) named `ff_require_saml_auth_to_approve`. On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
+> [disable the feature flag](../../../../administration/feature_flags/_index.md) named `ff_require_saml_auth_to_approve`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can force potential approvers to first authenticate with SAML or a password.
 This permission enables an electronic signature for approvals, such as the one defined by
@@ -167,7 +161,7 @@ Prerequisites:
 1. On the top bar, select **Search or go to** and find your project.
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
-     [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
+     [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication).
    - SAML authentication for GitLab.com groups, see
      [SAML SSO for GitLab.com groups documentation](../../../group/saml_sso/_index.md).
    - SAML authentication for GitLab Self-Managed instances, see
@@ -206,7 +200,7 @@ To keep existing approvals after more changes are added to a merge request:
 
 If you automate the creation and approval of merge requests, build in logic to ensure commits are
 processed fully before approving the merge request. This prevents an unintentional approval reset.
-See [Approvals for automated merge requests](../../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests)
+See [Handle timing issues with automated approvals](../../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests)
 for more details.
 
 ## Remove approvals by Code Owners if their files changed
@@ -215,7 +209,7 @@ To remove approvals only from Code Owners whose files change in a new commit:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for a project.
+- You must have the Maintainer or Owner role for a project.
 
 To do this:
 

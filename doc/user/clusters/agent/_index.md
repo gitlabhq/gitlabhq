@@ -47,7 +47,7 @@ GitLab supports the following Kubernetes versions. If you want to run
 GitLab in a Kubernetes cluster, you might need a different version of Kubernetes:
 
 - For the [Helm Chart](https://docs.gitlab.com/charts/installation/cloud/).
-- For [GitLab Operator](https://docs.gitlab.com/operator/installation.html).
+- For [GitLab Operator](https://docs.gitlab.com/operator/installation/).
 
 You can upgrade your
 Kubernetes version to a supported version at any time:

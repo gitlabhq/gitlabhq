@@ -7,6 +7,7 @@ FactoryBot.define do
     redirect_uri { generate(:url) }
     owner
     owner_type { 'User' }
+    organization
   end
 
   trait :group_owned do

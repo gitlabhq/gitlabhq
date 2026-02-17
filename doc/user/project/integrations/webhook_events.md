@@ -55,13 +55,10 @@ Footnotes:
 | [Project event](#project-events)           | A project is created or deleted in a group. |
 | [Subgroup event](#subgroup-events)         | A subgroup is created or removed from a group. |
 
-{{< alert type="note" >}}
-
-If an author has no public email listed in their
-[GitLab profile](https://gitlab.com/-/user_settings/profile), the `email` attribute in the
-webhook payload displays a value of `[REDACTED]`.
-
-{{< /alert >}}
+> [!note]
+> If an author has no public email listed in their
+> [GitLab profile](https://gitlab.com/-/user_settings/profile), the `email` attribute in the
+> webhook payload displays a value of `[REDACTED]`.
 
 ## Push events
 
@@ -75,6 +72,11 @@ If you push more than 20 commits at once, the `commits`
 attribute in the payload contains information about the newest 20 commits only.
 Loading detailed commit data is expensive, so this restriction exists for performance reasons.
 The `total_commits_count` attribute contains the actual number of commits.
+
+> [!note]
+> A separate setting, `push_event_activities_limit`, controls whether GitLab creates
+> individual push events or a bulk push event in the activity feed. For more information, see
+> [Push event activities limit](../../../administration/settings/push_event_activities_limit.md).
 
 If you create and push a branch without any new commits, the
 `commits` attribute in the payload is empty.
@@ -909,22 +911,174 @@ Merge request events can be triggered even if the `changes` field is empty.
 Webhook receivers should always inspect the content of the `changes` field for the
 actual changes in a merge request.
 
+### Payload structure
+
+The JSON structure of the webhook payload is consistent across all action types.
+The differences are in which fields contain data and whether conditional fields such as `oldrev`,
+`system`, and `system_action` are present.
+
 The available values for `object_attributes.action` in the payload are:
 
-- `open`
-- `close`
-- `reopen`
-- `update`: Includes general updates and re-request review actions. Check the `changes` field to determine the specific type of update.
-- `approval`: An individual user has added their approval.
-- `approved`: A merge request has been fully approved by all required approvers.
-- `unapproval`: An individual user has removed their approval, either manually or by the system.
-- `unapproved`: A previously-approved merge request has lost its approved status, either manually or by the system.
-- `merge`
+- `open`: A merge request is created.
+- `close`: A merge request is closed.
+- `reopen`: A closed merge request is reopened.
+- `update`: A merge request is updated. This includes general updates and re-request
+  review actions. Check the `changes` field to determine the specific type of update.
+- `approval`: A user adds their approval.
+- `approved`: A merge request is fully approved by all required approvers.
+- `unapproval`: A user removes their approval, either manually or by the system.
+- `unapproved`: A previously approved merge request loses its approved status,
+  either manually or by the system.
+- `merge`: A merge request is merged.
 
-The field `object_attributes.oldrev` is only available when there are actual code changes, like:
+The merge request webhook payload contains these top-level fields:
 
-- New code is pushed.
+| Field               | Type   | Description |
+|---------------------|--------|-------------|
+| `object_kind`       | String | `"merge_request"` |
+| `event_type`        | String | `"merge_request"` |
+| `user`              | Object | User who triggered the event. |
+| `project`           | Object | The target project. |
+| `object_attributes` | Object | Merge request data. |
+| `changes`           | Object | Contains changed attributes during the action. |
+| `assignees`         | Array  | Currently assigned users. |
+| `reviewers`         | Array  | Currently assigned reviewers. |
+| `labels`            | Array  | Label objects. |
+| `repository`        | Object | Deprecated. Use `project` instead. Repository information. |
+
+### Deprecated fields
+
+The following fields are deprecated and included for backward compatibility only. Use the recommended alternatives instead:
+
+| Deprecated field                     | Recommended alternative |
+|--------------------------------------|-------------------------|
+| `object_attributes.assignee_id`      | `object_attributes.assignee_ids` |
+| `object_attributes.work_in_progress` | `object_attributes.draft` |
+| `project.http_url`                   | `project.git_http_url`  |
+| `project.homepage`                   | `project.web_url`       |
+| `project.ssh_url`                    | `project.git_ssh_url`   |
+| `project.url`                        | `project.git_ssh_url` or `project.git_http_url` |
+| `repository`                         | `project`               |
+
+### `object_attributes` field
+
+The `object_attributes` field contains the current state of the merge request.
+It includes the following fields:
+
+| Field                           | Type    | Description |
+|---------------------------------|---------|-------------|
+| `action`                        | String  | The action that triggered the webhook. For example, `open`, `update`, or `merge`. |
+| `approval_rules`                | Array   | Array of approval rule objects (EE only). |
+| `assignee_ids`                  | Array   | Array of assignee IDs. |
+| `author_id`                     | Integer | The ID of the merge request author. |
+| `blocking_discussions_resolved` | Boolean | Whether blocking discussions are resolved. |
+| `created_at`                    | String  | When the merge request was created. |
+| `description`                   | String  | The merge request description. |
+| `detailed_merge_status`         | String  | Detailed merge status information. For a list of potential values, see [merge status](../../../api/merge_requests.md#merge-status). |
+| `draft`                         | Boolean | Whether the merge request is a draft. |
+| `first_contribution`            | Boolean | Whether this is the author's first contribution. |
+| `head_pipeline_id`              | Integer | The ID of the head pipeline. |
+| `human_time_change`             | String  | Human-readable time change. |
+| `human_time_estimate`           | String  | Human-readable time estimate. |
+| `human_total_time_spent`        | String  | Human-readable total time spent. |
+| `id`                            | Integer | The merge request ID. |
+| `iid`                           | Integer | The internal ID of the merge request. |
+| `labels`                        | Array   | Array of label objects. |
+| `last_commit`                   | Object  | The last commit object with details. |
+| `last_edited_at`                | String  | When the merge request was last edited. |
+| `last_edited_by_id`             | Integer | The ID of the user who last edited it. |
+| `merge_commit_sha`              | String  | The SHA of the merge commit. |
+| `merge_error`                   | String  | Any merge error message. |
+| `merge_params`                  | Object  | Merge parameters. |
+| `merge_status`                  | String  | Status of the merge request. |
+| `merge_user_id`                 | Integer | The ID of the user who merged it. |
+| `merge_when_pipeline_succeeds`  | Boolean | Whether auto-merge is enabled. |
+| `milestone_id`                  | Integer | The ID of the milestone. |
+| `oldrev`                        | String  | The old commit SHA (only present for push-related events). |
+| `prepared_at`                   | String  | Timestamp of when the merge request was prepared. This field populates one time, only after all the [preparation steps](../../../api/merge_requests.md#preparation-steps) complete, and is not updated if more changes are added. |
+| `reviewer_ids`                  | Array   | Array of reviewer IDs. |
+| `source_branch`                 | String  | The source branch name. |
+| `source`                        | Object  | Source project details. For example, name and description. |
+| `source_project_id`             | Integer | The ID of the source project. |
+| `state_id`                      | Integer | The state ID (`1`: opened, `2`: closed, `3`: merged, `4`:locked). |
+| `state`                         | String  | The state of the merge request (`opened`, `closed`, `merged`, `locked`). |
+| `system_action`                 | String  | The system action (only present if `system` is `true`). |
+| `system`                        | Boolean | Whether the event was system-initiated. |
+| `target_branch`                 | String  | The target branch name. |
+| `target`                        | Object  | Target project details. For example, name and description. |
+| `target_project_id`             | Integer | The ID of the target project. |
+| `time_change`                   | Integer | Change in time spent in seconds. |
+| `time_estimate`                 | Integer | The time estimate in seconds. |
+| `title`                         | String  | The merge request title. |
+| `total_time_spent`              | Integer | Total time spent in seconds. |
+| `updated_at`                    | String  | When the merge request was last updated. |
+| `updated_by_id`                 | Integer | The ID of the user who last updated it. |
+| `url`                           | String  | The URL to the merge request. |
+
+### `changes` field
+
+The `changes` field contains only the fields that were modified during the action.
+Not all fields from `object_attributes` appear in `changes`.
+
+Each changed field follows this format:
+
+```json
+{
+  "field_name": {
+    "previous": "old_value",
+    "current": "new_value"
+  }
+}
+```
+
+#### Attributes
+
+- `assignees`
+- `blocking_discussions_resolved`
+- `description`
+- `draft`
+- `head_pipeline_id`
+- `labels`
+- `last_edited_at`
+- `last_edited_by_id`
+- `merge_commit_sha`
+- `merge_error`
+- `merge_params`
+- `merge_status`
+- `merge_user_id`
+- `merge_when_pipeline_succeeds`
+- `milestone_id`
+- `prepared_at`
+- `reviewer_ids`
+- `reviewers`
+- `state_id`
+- `target_branch`
+- `time_change`
+- `time_estimate`
+- `title`
+- `total_time_spent`
+- `updated_at`
+- `updated_by_id`
+
+### Merge request action-specific fields
+
+The `object_attributes.oldrev` field is only available for the `update` action when there are actual code changes, such as:
+
+- New code is pushed to the source branch.
 - A [suggestion](../merge_requests/reviews/suggestions.md) is applied.
+
+The following example shows an `update` event with `oldrev` (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update",
+    "oldrev": "e59094b8de0f2f91abbe4760a52d9137260252d8"
+  }
+}
+```
 
 ### System-initiated merge request events
 
@@ -932,9 +1086,9 @@ Some merge request events are triggered automatically by the system, such as whe
 due to new commit pushes. These system-initiated webhook events are only triggered by push events,
 and include more fields in the payload:
 
-- `system`: A boolean field. If `true`, the event was triggered by the system. If `false`, a user action
+- `object_attributes.system`: A boolean field. If `true`, the event was triggered by the system. If `false`, a user action
   triggered the event.
-- `system_action`: A string field, present only when `system` is `true`. Provides more context about
+- `object_attributes.system_action`: A string field, present only when `system` is `true`. Provides more context about
   the system action. Available values are:
 
   - `approvals_reset_on_push`: The project has enabled **Reset approvals on push**, and new commits were pushed.
@@ -942,6 +1096,20 @@ and include more fields in the payload:
     and Code Owner approvals were reset due to changes in files matching CODEOWNERS rules.
 
 Other approval reset scenarios do not trigger webhooks.
+
+The following example shows a system-initiated event (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update",
+    "system": true,
+    "system_action": "approvals_reset_on_push"
+  }
+}
+```
 
 ### Reviewer state tracking
 
@@ -954,7 +1122,7 @@ The `reviewers` array in merge request webhook payloads includes a `state` field
 - `approved`: Reviewer has approved the merge request
 - `unapproved`: Reviewer had previously approved but their approval was removed
 
-**Example reviewers array (partial payload):**
+The following example shows a reviewers array (partial payload):
 
 ```json
 {
@@ -979,7 +1147,7 @@ When a reviewer is re-requested for a merge request, a webhook is triggered with
 - **Current state** (second array): Shows the reviewer's updated state after the re-request, with `re_requested: true` for re-requested reviewers
 - **State transitions**: Demonstrates how the reviewer's state changed (for example, from `approved` to `unreviewed`)
 
-**Example re-request review changes (partial payload):**
+The following example shows re-request review changes (partial payload):
 
 ```json
 {
@@ -1025,7 +1193,9 @@ Request header:
 X-Gitlab-Event: Merge Request Hook
 ```
 
-Complete merge request webhook payload:
+The following example is a complete merge request webhook payload for an `open` action.
+Deprecated fields are omitted for clarity. For a list of deprecated fields and their
+recommended alternatives, see [Deprecated fields](#deprecated-fields).
 
 ```json
 {
@@ -1033,210 +1203,206 @@ Complete merge request webhook payload:
   "event_type": "merge_request",
   "user": {
     "id": 1,
-    "name": "Administrator",
-    "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
-    "email": "admin@example.com"
+    "name": "Alex Garcia",
+    "username": "agarcia",
+    "avatar_url": "https://www.gravatar.com/avatar/1a29da0ccd099482194440fac762f5ccb4ec53227761d1859979367644a889a5?s=80&d=identicon",
+    "email": "agarcia@example.com"
   },
   "project": {
-    "id": 1,
-    "name":"Gitlab Test",
-    "description":"Aut reprehenderit ut est.",
-    "web_url":"http://example.com/gitlabhq/gitlab-test",
-    "avatar_url":null,
-    "git_ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
-    "git_http_url":"http://example.com/gitlabhq/gitlab-test.git",
-    "namespace":"GitlabHQ",
-    "visibility_level":20,
-    "path_with_namespace":"gitlabhq/gitlab-test",
-    "default_branch":"master",
-    "ci_config_path":"",
-    "homepage":"http://example.com/gitlabhq/gitlab-test",
-    "url":"http://example.com/gitlabhq/gitlab-test.git",
-    "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
-    "http_url":"http://example.com/gitlabhq/gitlab-test.git"
-  },
-  "repository": {
-    "name": "Gitlab Test",
-    "url": "http://example.com/gitlabhq/gitlab-test.git",
-    "description": "Aut reprehenderit ut est.",
-    "homepage": "http://example.com/gitlabhq/gitlab-test"
+    "id": 2,
+    "name": "Flight Management",
+    "description": "Flight management application for tracking aircraft status.",
+    "web_url": "http://gitlab.example.com/flightjs/flight-management",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+    "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+    "namespace": "Flightjs",
+    "visibility_level": 0,
+    "path_with_namespace": "flightjs/flight-management",
+    "default_branch": "main",
+    "ci_config_path": null
   },
   "object_attributes": {
-    "id": 99,
-    "iid": 1,
-    "target_branch": "master",
-    "source_branch": "ms-viewport",
-    "source_project_id": 14,
-    "author_id": 51,
-    "assignee_ids": [6],
-    "assignee_id": 6,
-    "reviewer_ids": [6],
-    "title": "MS-Viewport",
-    "created_at": "2013-12-03T17:23:34Z",
-    "updated_at": "2013-12-03T17:23:34Z",
-    "last_edited_at": "2013-12-03T17:23:34Z",
-    "last_edited_by_id": 1,
-    "milestone_id": null,
-    "state_id": 1,
-    "state": "opened",
-    "blocking_discussions_resolved": true,
-    "work_in_progress": false,
+    "author_id": 1,
+    "created_at": "2026-01-16 05:56:22 UTC",
+    "description": "This merge request adds input validation to the booking form.",
     "draft": false,
+    "head_pipeline_id": null,
+    "id": 93,
+    "iid": 16,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "merge_commit_sha": null,
+    "merge_error": null,
+    "merge_params": {
+      "force_remove_source_branch": "1"
+    },
+    "merge_status": "checking",
+    "merge_user_id": null,
+    "merge_when_pipeline_succeeds": false,
+    "milestone_id": 8,
+    "source_branch": "feature/booking-validation",
+    "source_project_id": 2,
+    "state_id": 1,
+    "target_branch": "main",
+    "target_project_id": 2,
+    "time_estimate": 0,
+    "title": "Add input validation to booking form",
+    "updated_at": "2026-01-16 05:56:25 UTC",
+    "updated_by_id": null,
+    "prepared_at": "2026-01-16 05:56:25 UTC",
+    "assignee_ids": [
+      1
+    ],
+    "blocking_discussions_resolved": true,
+    "detailed_merge_status": "checking",
     "first_contribution": true,
-    "merge_status": "unchecked",
-    "target_project_id": 14,
-    "description": "",
-    "prepared_at": "2013-12-03T19:23:34Z",
-    "total_time_spent": 1800,
-    "time_change": 30,
-    "human_total_time_spent": "30m",
-    "human_time_change": "30s",
-    "human_time_estimate": "30m",
-    "url": "http://example.com/diaspora/merge_requests/1",
-    "source": {
-      "name":"Awesome Project",
-      "description":"Aut reprehenderit ut est.",
-      "web_url":"http://example.com/awesome_space/awesome_project",
-      "avatar_url":null,
-      "git_ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "git_http_url":"http://example.com/awesome_space/awesome_project.git",
-      "namespace":"Awesome Space",
-      "visibility_level":20,
-      "path_with_namespace":"awesome_space/awesome_project",
-      "default_branch":"master",
-      "homepage":"http://example.com/awesome_space/awesome_project",
-      "url":"http://example.com/awesome_space/awesome_project.git",
-      "ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "http_url":"http://example.com/awesome_space/awesome_project.git"
-    },
-    "target": {
-      "name":"Awesome Project",
-      "description":"Aut reprehenderit ut est.",
-      "web_url":"http://example.com/awesome_space/awesome_project",
-      "avatar_url":null,
-      "git_ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "git_http_url":"http://example.com/awesome_space/awesome_project.git",
-      "namespace":"Awesome Space",
-      "visibility_level":20,
-      "path_with_namespace":"awesome_space/awesome_project",
-      "default_branch":"master",
-      "homepage":"http://example.com/awesome_space/awesome_project",
-      "url":"http://example.com/awesome_space/awesome_project.git",
-      "ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "http_url":"http://example.com/awesome_space/awesome_project.git"
-    },
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "human_total_time_spent": null,
+    "labels": [
+      {
+        "id": 19,
+        "title": "enhancement",
+        "color": "#adb21a",
+        "project_id": null,
+        "created_at": "2026-01-07 00:03:52 UTC",
+        "updated_at": "2026-01-07 00:03:52 UTC",
+        "template": false,
+        "description": null,
+        "type": "GroupLabel",
+        "group_id": 24
+      }
+    ],
     "last_commit": {
-      "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
-      "message": "fixed readme",
-      "title": "Update file README.md",
-      "timestamp": "2012-01-03T23:36:29+02:00",
-      "url": "http://example.com/awesome_space/awesome_project/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "id": "e59094b8de0f2f91abbe4760a52d9137260252d8",
+      "message": "Add email format validation",
+      "title": "Add email format validation",
+      "timestamp": "2026-01-16T05:01:10+00:00",
+      "url": "http://gitlab.example.com/flightjs/flight-management/-/commit/e59094b8de0f2f91abbe4760a52d9137260252d8",
       "author": {
-        "name": "GitLab dev user",
-        "email": "gitlabdev@dv6700.(none)"
+        "name": "Alex Garcia",
+        "email": "agarcia@example.com"
       }
     },
-    "labels": [{
-      "id": 206,
-      "title": "API",
-      "color": "#ffffff",
-      "project_id": 14,
-      "created_at": "2013-12-03T17:15:43Z",
-      "updated_at": "2013-12-03T17:15:43Z",
-      "template": false,
-      "description": "API related issues",
-      "type": "ProjectLabel",
-      "group_id": 41
-    }],
-    "action": "open",
-    "detailed_merge_status": "mergeable"
-  },
-  "labels": [{
-    "id": 206,
-    "title": "API",
-    "color": "#ffffff",
-    "project_id": 14,
-    "created_at": "2013-12-03T17:15:43Z",
-    "updated_at": "2013-12-03T17:15:43Z",
-    "template": false,
-    "description": "API related issues",
-    "type": "ProjectLabel",
-    "group_id": 41
-  }],
-  "changes": {
-    "updated_by_id": {
-      "previous": null,
-      "current": 1
+    "reviewer_ids": [
+      25
+    ],
+    "source": {
+      "id": 2,
+      "name": "Flight Management",
+      "description": "Flight management application for tracking aircraft status.",
+      "web_url": "http://gitlab.example.com/flightjs/flight-management",
+      "avatar_url": null,
+      "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+      "namespace": "Flightjs",
+      "visibility_level": 0,
+      "path_with_namespace": "flightjs/flight-management",
+      "default_branch": "main",
+      "ci_config_path": null
     },
-    "draft": {
-      "previous": true,
-      "current": false
+    "state": "opened",
+    "system": false,
+    "target": {
+      "id": 2,
+      "name": "Flight Management",
+      "description": "Flight management application for tracking aircraft status.",
+      "web_url": "http://gitlab.example.com/flightjs/flight-management",
+      "avatar_url": null,
+      "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+      "namespace": "Flightjs",
+      "visibility_level": 0,
+      "path_with_namespace": "flightjs/flight-management",
+      "default_branch": "main",
+      "ci_config_path": null
+    },
+    "time_change": 0,
+    "total_time_spent": 0,
+    "url": "http://gitlab.example.com/flightjs/flight-management/-/merge_requests/16",
+    "approval_rules": [
+      {
+        "id": 4,
+        "approvals_required": 0,
+        "name": "All Members",
+        "rule_type": "any_approver",
+        "report_type": null,
+        "merge_request_id": 93,
+        "section": null,
+        "modified_from_project_rule": false,
+        "orchestration_policy_idx": null,
+        "vulnerabilities_allowed": 0,
+        "scanners": [],
+        "severity_levels": [],
+        "vulnerability_states": [
+          "new_needs_triage",
+          "new_dismissed"
+        ],
+        "security_orchestration_policy_configuration_id": null,
+        "scan_result_policy_id": null,
+        "applicable_post_merge": null,
+        "project_id": 2,
+        "approval_policy_rule_id": null,
+        "updated_at": "2026-01-16 05:56:22 UTC",
+        "created_at": "2026-01-16 05:56:22 UTC"
+      }
+    ],
+    "action": "open"
+  },
+  "labels": [
+    {
+      "id": 19,
+      "title": "enhancement",
+      "color": "#adb21a",
+      "project_id": null,
+      "created_at": "2026-01-07 00:03:52 UTC",
+      "updated_at": "2026-01-07 00:03:52 UTC",
+      "template": false,
+      "description": null,
+      "type": "GroupLabel",
+      "group_id": 24
+    }
+  ],
+  "changes": {
+    "merge_status": {
+      "previous": "preparing",
+      "current": "checking"
     },
     "updated_at": {
-      "previous": "2017-09-15 16:50:55 UTC",
-      "current":"2017-09-15 16:52:00 UTC"
+      "previous": "2026-01-16 05:56:22 UTC",
+      "current": "2026-01-16 05:56:25 UTC"
     },
-    "labels": {
-      "previous": [{
-        "id": 206,
-        "title": "API",
-        "color": "#ffffff",
-        "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
-        "template": false,
-        "description": "API related issues",
-        "type": "ProjectLabel",
-        "group_id": 41
-      }],
-      "current": [{
-        "id": 205,
-        "title": "Platform",
-        "color": "#123123",
-        "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
-        "template": false,
-        "description": "Platform related issues",
-        "type": "ProjectLabel",
-        "group_id": 41
-      }]
-    },
-    "last_edited_at": {
+    "prepared_at": {
       "previous": null,
-      "current": "2023-03-15 00:00:10 UTC"
-    },
-    "last_edited_by_id": {
-      "previous": null,
-      "current": 3278533
+      "current": "2026-01-16 05:56:25 UTC"
     }
   },
   "assignees": [
     {
-      "id": 6,
-      "name": "User1",
-      "username": "user1",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+      "id": 1,
+      "name": "Alex Garcia",
+      "username": "agarcia",
+      "avatar_url": "https://www.gravatar.com/avatar/1a29da0ccd099482194440fac762f5ccb4ec53227761d1859979367644a889a5?s=80&d=identicon",
+      "email": "[REDACTED]"
     }
   ],
   "reviewers": [
     {
-      "id": 6,
-      "name": "User1",
-      "username": "user1",
+      "id": 25,
+      "name": "Sidney Jones",
+      "username": "sjones",
+      "avatar_url": "https://www.gravatar.com/avatar/1be419860e7f852e20ca2691e6b55949f7809177e7765181da42e4448491e367?s=80&d=identicon",
+      "email": "[REDACTED]",
       "state": "unreviewed",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+      "re_requested": false
     }
   ]
 }
 ```
 
-{{< alert type="note" >}}
-
-The fields `assignee_id` and `merge_status` are [deprecated](../../../api/merge_requests.md).
-
-{{< /alert >}}
+> [!note]
+> The fields `assignee_id` and `merge_status` are [deprecated](../../../api/merge_requests.md).
 
 ## Wiki page events
 
@@ -2483,8 +2649,13 @@ These events trigger:
 
 - One day before the token expires
 - Seven days before the token expires
-- 30 days before the token expires, if the feature is enabled.
-- 60 days before the token expires, if the feature is enabled.
+- 30 days before the token expires (requires configuration)
+- 60 days before the token expires (requires configuration)
+
+For information on configuring the 30-day and 60-day notifications, see:
+
+- [Add additional webhook triggers for project access token expiration](../settings/_index.md#add-additional-webhook-triggers-for-project-access-token-expiration).
+- [Add additional webhook triggers for group access token expiration](../../group/manage.md#add-additional-webhook-triggers-for-group-access-token-expiration).
 
 The available values for `event_name` in the payload are:
 
@@ -2524,7 +2695,8 @@ Payload example for project:
     "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26"
+    "expires_at": "2024-01-26",
+    "last_used_at": "2024-01-20 10:15:30 UTC"
   },
   "event_name": "expiring_access_token"
 }
@@ -2546,7 +2718,8 @@ Payload example for group:
     "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26"
+    "expires_at": "2024-01-26",
+    "last_used_at": "2024-01-20 10:15:30 UTC"
   },
   "event_name": "expiring_access_token"
 }

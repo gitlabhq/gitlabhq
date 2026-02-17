@@ -71,6 +71,10 @@ module Ci
       reorder(sort_order[:order_by] => sort_order[:sort])
     end
 
+    def self.grouped_by_active
+      group(:active).count
+    end
+
     def owned_by?(current_user)
       owner == current_user
     end

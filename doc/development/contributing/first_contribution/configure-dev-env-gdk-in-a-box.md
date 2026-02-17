@@ -9,12 +9,9 @@ If you want to contribute to the GitLab codebase and want a development environm
 your changes, you can use
 [GDK-in-a-box](https://gitlab-org.gitlab.io/gitlab-development-kit/gdk_in_a_box/). GDK-in-a-box is available as a multi-platform container image, pre-configured with [the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
-{{< alert type="warning" >}}
-
-GDK-in-a-box Virtual Machine (VM) images are no longer supported and
-were deprecated in favor of the container-based images.
-
-{{< /alert >}}
+> [!warning]
+> GDK-in-a-box Virtual Machine (VM) images are no longer supported and
+> were deprecated in favor of the container-based images.
 
 The GDK is a local development environment that includes an installation of GitLab Self-Managed,
 sample projects, and administrator access with which you can test functionality.
@@ -54,11 +51,8 @@ If you prefer to use GDK locally without a container, use the steps in [Install 
 
 [View a demo video of this step](https://go.gitlab.com/b54mHb).
 
-{{< alert type="note" >}}
-
-You might need to modify the system configuration of your container runtime (CPU cores and RAM) before starting it. A suggested configuration is at least 12 GB RAM, and 4 cores.
-
-{{< /alert >}}
+> [!note]
+> You might need to modify the system configuration of your container runtime (CPU cores and RAM) before starting it. A suggested configuration is at least 12 GB RAM, and 4 cores.
 
 1. Start the container.
 1. In VS Code, select **Terminal** > **New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
@@ -115,11 +109,8 @@ docker start gdk
 
 ## Remove the GDK Container
 
-{{< alert type="warning" >}}
-
-This deletes the current container and any data inside. Ensure you have committed any changes before running this command.
-
-{{< /alert >}}
+> [!warning]
+> This deletes the current container and any data inside. Ensure you have committed any changes before running this command.
 
 You can remove the container by running the following command on your host:
 

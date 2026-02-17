@@ -13,6 +13,9 @@ description: Set rate limits on Groups API endpoints.
 
 {{< /details >}}
 
+> [!note]
+> When upgrading to GitLab 18.0 or later, configurable rate limits for this API are set to `0`. Administrators can adjust rate limits as needed. For information about which rate limits are affected, see [Rate limitations announced for Projects, Groups, and Users APIs](https://about.gitlab.com/blog/rate-limitations-announced-for-projects-groups-and-users-apis/#rate-limitation-details).
+
 ## Configure Groups API rate limits
 
 {{< history >}}
@@ -27,11 +30,15 @@ Configure the rate limit for each IP address and user for requests to the follow
 | Limit                                                           | Default | Interval |
 |-----------------------------------------------------------------|---------|----------|
 | [`GET /groups`](../../api/groups.md#list-groups)                | 200     | 1 minute |
-| [`GET /groups/:id`](../../api/groups.md#get-a-single-group)     | 400     | 1 minute |
+| [`GET /groups/:id`](../../api/groups.md#retrieve-a-group)     | 400     | 1 minute |
 | [`GET /groups/:id/groups/shared`](../../api/groups.md#list-shared-groups) | 0     | 1 minute |
 | [`GET /groups/:id/invited_groups`](../../api/groups.md#list-shared-groups) | 60     | 1 minute |
 | [`GET /groups/:id/projects`](../../api/groups.md#list-projects) | 600     | 1 minute |
 | [`POST /groups/:id/archive`](../../api/groups.md#archive-a-group) | 60    | 1 minute |
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 
@@ -59,12 +66,30 @@ exceed a rate of 400 per minute are blocked. Access to the endpoint is restored 
 
 {{< /history >}}
 
-A non-configurable rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-members-of-a-group-including-inherited-and-invited-members).
+A rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-group-members-including-inherited-and-invited-members).
+
+Both the `GET /projects/:id/members/all` and `GET /groups/:id/members/all` API endpoints
+share the same rate limit configuration. If you set a rate limit on the projects endpoint,
+the rate limit applies also to the groups endpoint.
+
+Prerequisites:
+
+- Administrator access.
+
+To modify this rate limit for both endpoints:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Network**.
+1. Expand **Projects API rate limits**.
+1. In the **Maximum requests to the GET /projects/:id/members/all API per minute per user or IP address** text box, enter a value.
+1. Select **Save changes**.
 
 The rate limit:
 
 - Defaults to 200 requests every minute.
 - Applies for each group and user.
+- Is configured through the Projects API rate limits settings. For more information, see [Configure rate limits on listing project members](rate_limit_on_projects_api.md#configure-rate-limits-on-listing-project-members).
+- Can be set to `0` to disable the rate limit for both endpoints.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -83,16 +108,9 @@ are blocked. Access to the endpoint resumes after one minute.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Configure a rate limit on requests to the following
 group archiving endpoints:
@@ -101,6 +119,10 @@ group archiving endpoints:
 POST /groups/:id/archive
 POST /groups/:id/unarchive
 ```
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 
@@ -114,7 +136,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute
 - Apply to each authenticated user. If requests are not authenticated, rate limits apply to the IP address.
-- Can be set to 0 to disable rate limits
+- Can be set to `0` to disable rate limits for both endpoints
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -134,7 +156,11 @@ see [Archive a group](../../api/groups.md#archive-a-group).
 {{< /history >}}
 
 Configure the rate limit for each group and user for requests to the
-[delete members endpoint](../../api/group_members.md#remove-a-member-from-a-group).
+[delete members endpoint](../../api/group_members.md#remove-a-group-member).
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 
@@ -148,7 +174,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute.
 - Applies for each group and user.
-- Can be set to 0 to disable the rate limit.
+- Can be set to `0` to disable the rate limit.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

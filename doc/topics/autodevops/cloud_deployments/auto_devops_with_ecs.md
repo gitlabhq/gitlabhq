@@ -10,7 +10,7 @@ You can choose to target AWS ECS as a deployment platform instead of using Kuber
 To get started on Auto DevOps to AWS ECS, you must add a specific CI/CD variable.
 To do so, follow these steps:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Specify which AWS platform to target during the Auto DevOps deployment
@@ -25,14 +25,11 @@ your application is deployed to AWS ECS.
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
 only the deployment to Kubernetes runs.
 
-{{< alert type="warning" >}}
-
-Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
-defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
-However, it's not recommended to [include](../../../ci/yaml/_index.md#includetemplate)
-it on its own. This template is designed to be used with Auto DevOps only. It may change
-unexpectedly causing your pipeline to fail if included on its own. Also, the job
-names within this template may also change. Do not override these jobs' names in your
-own pipeline, as the override stops working when the name changes.
-
-{{< /alert >}}
+> [!warning]
+> Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
+> defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
+> However, it's not recommended to [include](../../../ci/yaml/_index.md#includetemplate)
+> it on its own. This template is designed to be used with Auto DevOps only. It may change
+> unexpectedly causing your pipeline to fail if included on its own. Also, the job
+> names within this template may also change. Do not override these jobs' names in your
+> own pipeline, as the override stops working when the name changes.

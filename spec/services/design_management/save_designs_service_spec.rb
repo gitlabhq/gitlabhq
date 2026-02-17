@@ -105,9 +105,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       end
 
       it 'creates a commit, an event in the activity stream and updates the creation count', :aggregate_failures do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_added_action)
-                                                                           .with(author: user, project: project)
-
         expect { run_service }
           .to change { Event.count }.by(1)
           .and change { Event.for_design.created_action.count }.by(1)
@@ -118,23 +115,8 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         )
       end
 
-      it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
-        expect { run_service }
-          .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED)
-            .with(user: user, project: project, category: 'InternalEventTracking')
-          .and trigger_internal_events('create_design_management_design')
-            .with(user: user, project: project)
-          .and increment_usage_metrics(
-            'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly',
-            'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly',
-            'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-            'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly',
-            'counts.design_management_designs_create'
-          )
-      end
-
       it 'can run the same command in parallel',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450483' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18760' do
         parellism = 4
 
         blocks = Array.new(parellism).map do
@@ -192,11 +174,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         end
       end
 
-      context 'when HEAD branch is different from master' do
-        before do
-          stub_feature_flags(main_branch_over_master: true)
-        end
-
+      context 'when HEAD branch is main' do
         it 'does not raise an exception during update' do
           run_service
 
@@ -222,21 +200,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
 
           expect(updated_designs.size).to eq(1)
           expect(updated_designs.first.versions.size).to eq(2)
-        end
-
-        it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
-          expect { run_service }
-            .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_MODIFIED)
-              .with(user: user, project: project, category: 'InternalEventTracking')
-            .and trigger_internal_events('update_design_management_design')
-              .with(user: user, project: project)
-            .and increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly',
-              'counts.design_management_designs_update'
-            )
         end
 
         it 'records the correct events' do
@@ -316,28 +279,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
             .and change { Event.updated_action.count }.by(1)
             .and change { commit_count }.by(1)
         end
-
-        it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
-          expect { run_service }
-            .to trigger_internal_events(
-              Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED,
-              Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_MODIFIED
-            ).with(user: user, project: project, category: 'InternalEventTracking')
-            .and trigger_internal_events(
-              'create_design_management_design',
-              'update_design_management_design'
-            ).with(user: user, project: project)
-            .and increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly',
-              'counts.design_management_designs_update',
-              'counts.design_management_designs_create'
-            )
-        end
       end
 
       context 'when uploading multiple files' do
@@ -367,16 +308,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
             .and change { DesignManagement::Version.count }.by(1)
             .and change { Gitlab::GitalyClient.get_request_count }.by(5)
             .and change { commit_count }.by(1)
-            .and trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED)
-              .twice.with(user: user, project: project, category: 'InternalEventTracking')
-            .and trigger_internal_events('create_design_management_design')
-              .twice.with(user: user, project: project)
-            .and increment_usage_metrics(
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly',
-              'redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
-              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly'
-            ).and increment_usage_metrics('counts.design_management_designs_create').by(2)
         end
 
         context 'when uploading too many files' do

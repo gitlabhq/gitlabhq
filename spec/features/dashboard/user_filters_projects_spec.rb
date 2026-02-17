@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > User filters projects', :js, :with_current_organization, feature_category: :groups_and_projects do
+  include GlFilteredSearchHelpers
   let(:user) { create(:user, organization: current_organization) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace, created_at: 2.seconds.ago, updated_at: 2.seconds.ago) }
   let(:user2) { create(:user, organization: current_organization) }
@@ -63,10 +64,6 @@ RSpec.describe 'Dashboard > User filters projects', :js, :with_current_organizat
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
-    wait_for_requests
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

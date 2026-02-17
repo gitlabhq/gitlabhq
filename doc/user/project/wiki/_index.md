@@ -501,14 +501,16 @@ You can also restore wiki page templates using the same process. For more inform
 - Searching by title in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156054) in GitLab 17.1.
 - Limit of 15 items in the sidebar [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158084) in GitLab 17.2.
 - Sidebar [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/569910) from the upper right to the upper left of the page in GitLab 18.6.
+- Floating sidebar toggle [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221019) in GitLab 18.9 with a flag named `wiki_floating_sidebar_toggle`. Disabled by default.
 
 {{< /history >}}
 
 Wiki pages display a sidebar that contains a list of pages in the wiki,
 displayed as a nested tree, with sibling pages listed in alphabetical order.
 
-You can quickly find a page by its title in the wiki using the search box in
-the sidebar.
+You can find a page by its title in the wiki using the search box in
+the sidebar. You can toggle the sidebar open or closed using
+the sidebar toggle ({{< icon name="sidebar" >}}) located in the upper-left corner of the page.
 
 For performance reasons, the sidebar is limited to displaying 5000 entries. To
 view a list of all pages, select **View All Pages** in the sidebar.
@@ -669,18 +671,12 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This operation deletes all data in the wiki.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly, or under the
-right conditions. We highly recommend running them in a test environment with a backup of the
-instance ready to be restored, just in case.
-{{< /alert >}}
+> [!warning]
+> This operation deletes all data in the wiki.
+>
+> Any command that changes data directly could be damaging if not run correctly, or under the
+> right conditions. We highly recommend running them in a test environment with a backup of the
+> instance ready to be restored, just in case.
 
 To clear all data from a project wiki and recreate it in a blank state:
 

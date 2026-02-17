@@ -767,6 +767,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
             .with(a_hash_including(pagination_params: { page_token: 'page_token', limit: 1000 }))
         end
       end
+
+      context 'when there are more pages' do
+        it 'returns next_cursor' do
+          expect(repository.list_commits(ref: 'master', pagination_params: { limit: 10 }).next_cursor).to eq('54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
+        end
+      end
     end
 
     describe 'when storage is broken', :broken_storage do
@@ -1523,6 +1529,40 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect_to_raise_storage_error do
           broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
         end
+      end
+    end
+  end
+
+  describe '#fork_from' do
+    let_it_be(:source_project) { create(:project, :repository) }
+    let(:target_project) { create(:project) }
+
+    it 'creates a fork of the source repository' do
+      target_project.repository.fork_from(source_project.repository)
+
+      # Verify the fork was created by checking that refs match
+      expect(target_project.repository.branch_names).to match_array(source_project.repository.branch_names)
+      expect(target_project.repository.commit('master').id).to eq(source_project.repository.commit('master').id)
+    end
+
+    context 'when forking a specific branch' do
+      it 'creates a fork with only the specified branch' do
+        target_project.repository.fork_from(source_project.repository, 'flatten-dir')
+
+        # Verify only the specified branch exists
+        expect(target_project.repository.branch_names).to match_array(['flatten-dir'])
+        expect(target_project.repository.commit('flatten-dir').id).to eq(source_project.repository.commit('flatten-dir').id)
+      end
+    end
+
+    context 'when fork fails' do
+      it 'raises Gitlab::Git::CommandError' do
+        allow(target_project.repository.raw_repository.gitaly_repository_client)
+          .to receive(:fork_repository)
+          .and_raise(GRPC::BadStatus.new(GRPC::Core::StatusCodes::INTERNAL, 'Fork failed'))
+
+        expect { target_project.repository.fork_from(source_project.repository) }
+          .to raise_error(Gitlab::Git::CommandError)
       end
     end
   end
@@ -2349,6 +2389,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'returns empty array' do
         expect(repository.blobs_at([%w[master foobar]])).to be_empty
       end
+    end
+  end
+
+  describe '#get_blob_types' do
+    let(:revision_paths) { [['master', 'README.md'], ['master', 'files']] }
+
+    it 'delegates to raw_repository' do
+      expect(repository.raw_repository).to receive(:get_blob_types)
+        .with(revision_paths, -1)
+        .and_return({ 'README.md' => :blob, 'files' => :tree })
+
+      result = repository.get_blob_types(revision_paths, -1)
+
+      expect(result).to eq({ 'README.md' => :blob, 'files' => :tree })
     end
   end
 
@@ -4946,106 +5000,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it { is_expected.to be_nil }
   end
 
-  describe '#granular_ref_name_update' do
-    let(:repository) { project.repository }
-    let(:redis_set_cache) { instance_double(Gitlab::RepositorySetCache) }
+  describe '#redis_set_cache' do
+    subject(:redis_set_cache) { repository.send(:redis_set_cache) }
 
-    before do
-      allow(repository).to receive(:redis_set_cache).and_return(redis_set_cache)
-    end
+    it { is_expected.to be_kind_of(Gitlab::Repositories::RebuildableSetCache) }
 
-    context 'when ref is a branch' do
-      let(:branch_ref) { 'refs/heads/feature-branch' }
-
-      context 'when branch exists' do
-        before do
-          allow(repository).to receive(:ref_exists?).with(branch_ref).and_return(true)
-        end
-
-        it 'adds branch name to cache' do
-          expect(redis_set_cache).to receive(:granular_update).with('branch_names', 'feature-branch', :add)
-          expect(repository).to receive(:clear_memoization).with('branch_names')
-
-          repository.granular_ref_name_update(branch_ref)
-        end
+    context 'when ref_cache_with_rebuild_queue is disabled' do
+      before do
+        stub_feature_flags(ref_cache_with_rebuild_queue: false)
       end
 
-      context 'when branch does not exist' do
-        before do
-          allow(repository).to receive(:ref_exists?).with(branch_ref).and_return(false)
-        end
-
-        it 'removes branch name from cache' do
-          expect(redis_set_cache).to receive(:granular_update).with('branch_names', 'feature-branch', :remove)
-          expect(repository).to receive(:clear_memoization).with('branch_names')
-
-          repository.granular_ref_name_update(branch_ref)
-        end
-      end
-    end
-
-    context 'when ref is a tag' do
-      let(:tag_ref) { 'refs/tags/v1.0.0' }
-
-      context 'when tag exists' do
-        before do
-          allow(repository).to receive(:ref_exists?).with(tag_ref).and_return(true)
-        end
-
-        it 'adds tag name to cache' do
-          expect(redis_set_cache).to receive(:granular_update).with('tag_names', 'v1.0.0', :add)
-          expect(repository).to receive(:clear_memoization).with('tag_names')
-
-          repository.granular_ref_name_update(tag_ref)
-        end
-      end
-
-      context 'when tag does not exist' do
-        before do
-          allow(repository).to receive(:ref_exists?).with(tag_ref).and_return(false)
-        end
-
-        it 'removes tag name from cache' do
-          expect(redis_set_cache).to receive(:granular_update).with('tag_names', 'v1.0.0', :remove)
-          expect(repository).to receive(:clear_memoization).with('tag_names')
-
-          repository.granular_ref_name_update(tag_ref)
-        end
-      end
-    end
-
-    context 'when ref is neither branch nor tag' do
-      let(:other_ref) { 'refs/notes/commits' }
-
-      it 'does nothing' do
-        expect(redis_set_cache).not_to receive(:granular_update)
-        expect(repository).not_to receive(:clear_memoization)
-
-        repository.granular_ref_name_update(other_ref)
-      end
-    end
-
-    context 'with edge cases' do
-      it 'handles nil ref gracefully' do
-        expect(redis_set_cache).not_to receive(:granular_update)
-        expect(repository).not_to receive(:clear_memoization)
-
-        repository.granular_ref_name_update(nil)
-      end
-
-      it 'handles empty string ref gracefully' do
-        expect(redis_set_cache).not_to receive(:granular_update)
-        expect(repository).not_to receive(:clear_memoization)
-
-        repository.granular_ref_name_update('')
-      end
-
-      it 'handles malformed ref gracefully' do
-        expect(redis_set_cache).not_to receive(:granular_update)
-        expect(repository).not_to receive(:clear_memoization)
-
-        repository.granular_ref_name_update('invalid-ref-format')
-      end
+      it { is_expected.to be_kind_of(Gitlab::RepositorySetCache) }
     end
   end
 

@@ -1,0 +1,7 @@
+---
+name: enable_deploy_key
+description: Grants the ability to enable deploy keys
+boundaries:
+  - project
+permissions:
+  - enable_deploy_key

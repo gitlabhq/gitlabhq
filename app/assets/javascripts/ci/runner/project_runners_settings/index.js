@@ -41,6 +41,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
 
   return new Vue({
     el,
+    name: 'ProjectRunnersSettingsAppRoot',
     apolloProvider,
     provide: {
       projectId,

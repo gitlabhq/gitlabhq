@@ -15,9 +15,9 @@ title: Repositories API
 
 Use this API to manage [Git repositories](../user/project/repository/_index.md).
 
-## List repository tree
+## List all repository trees in a project
 
-Get a list of repository files and directories in a project. This endpoint can
+Lists all repository files and directories in a specified project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
 
 This command provides essentially the same features as the `git ls-tree`
@@ -25,15 +25,12 @@ command. For more information, refer to the section
 [Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
 in the Git internals documentation.
 
-{{< alert type="warning" >}}
-
-GitLab version 17.7 changes the error handling behavior when a requested path is not found.
-The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
-
-If your implementation relies on receiving a `200` status code with an empty array for
-missing paths, you must update your error handling to handle the new `404` responses.
-
-{{< /alert >}}
+> [!warning]
+> GitLab version 17.7 changes the error handling behavior when a requested path is not found.
+> The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+>
+> If your implementation relies on receiving a `200` status code with an empty array for
+> missing paths, you must update your error handling to handle the new `404` responses.
 
 ```plaintext
 GET /projects/:id/repository/tree
@@ -116,9 +113,9 @@ Example response:
 ]
 ```
 
-## Get a blob from repository
+## Retrieve a blob from a repository
 
-Allows you to receive information, such as size and content, about blobs in a repository.
+Retrieves information, such as size and content, about blobs in a repository.
 Blob content is Base64 encoded. This endpoint can be accessed without authentication,
 if the repository is publicly accessible.
 
@@ -163,9 +160,9 @@ Example response:
 }
 ```
 
-## Get raw blob content
+## Retrieve raw blob content
 
-Get the raw file contents for a blob, by blob SHA. This endpoint can be accessed
+Retrieves the raw file contents for a blob, by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```plaintext
@@ -186,9 +183,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/blobs/79f7bbd25901e8334750839545a9bd021f0e4c83/raw"
 ```
 
-## Get file archive
+## Retrieve file archive from a repository
 
-Get an archive of the repository. This endpoint can be accessed without
+Retrieves the file archive of the specified repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
 For GitLab.com users, this endpoint has a rate limit threshold of 5 requests per minute.
@@ -235,9 +232,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
+Retrieves the differences between two branches, tags, or commits in a specified project.
 This endpoint can be accessed without authentication if the repository is
-publicly accessible. Diffs can have an empty diff string if
-diff limits are reached.
+publicly accessible.
+
+When `compare_timeout` is `true`, the comparison exceeded size limits
+or timed out:
+
+- The `commits` array is always complete.
+- The `diffs` array might be incomplete.
+- Individual diff objects might have empty `diff` strings
+  if their content exceeded limits.
 
 ```plaintext
 GET /projects/:id/repository/compare
@@ -260,7 +265,7 @@ response attributes:
 | Attribute                | Type         | Description |
 |--------------------------|--------------|-------------|
 | `commit`                 | object       | Details of the latest commit in the comparison. |
-| `commits`                | object array | List of commits included in the comparison. |
+| `commits`                | object array | Commits between the two references. Always complete, even when `compare_timeout` is `true`. |
 | `commits[].author_email` | string       | Commit author's email address. |
 | `commits[].author_name`  | string       | Commit author's name. |
 | `commits[].created_at`   | datetime     | Commit creation timestamp. |
@@ -268,7 +273,7 @@ response attributes:
 | `commits[].short_id`     | string       | Short commit SHA. |
 | `commits[].title`        | string       | Commit title. |
 | `compare_same_ref`       | boolean      | If `true`, comparison uses the same reference for both from and to. |
-| `compare_timeout`        | boolean      | If `true`, comparison operation timed out. |
+| `compare_timeout`        | boolean      | If `true`, the comparison exceeded size limits or timed out. The `diffs` array might be incomplete. |
 | `diffs`                  | object array | List of file differences. |
 | `diffs[].a_mode`         | string       | Old file mode. |
 | `diffs[].b_mode`         | string       | New file mode. |

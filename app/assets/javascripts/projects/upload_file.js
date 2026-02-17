@@ -20,6 +20,7 @@ export const initUploadFileTrigger = () => {
 
   return new Vue({
     el: uploadFileTriggerEl,
+    name: 'UploadButtonRoot',
     router: createRouter(projectPath, originalBranch, fullName),
     provide: {
       targetBranch,

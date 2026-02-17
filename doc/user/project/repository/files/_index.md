@@ -67,10 +67,10 @@ The first file found in each category (in alphabetical order) is selected, with
 previewable files taking precedence over plain text files. For example, if
 multiple READMEs are available GitLab renders them in the following order:
 
-  1. `README.adoc`
-  1. `README.md`
-  1. `README.rst`
-  1. `README`
+1. `README.adoc`
+1. `README.md`
+1. `README.rst`
+1. `README`
 
 ### Render OpenAPI files
 
@@ -90,12 +90,9 @@ To render an OpenAPI file:
 1. Select **Display rendered file**.
 1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
 
-{{< alert type="note" >}}
-
-When `displayOperationId` is present in the query string and has any value, it
-evaluates to `true`. This behavior matches the default behavior of Swagger.
-
-{{< /alert >}}
+> [!note]
+> When `displayOperationId` is present in the query string and has any value, it
+> evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 ## View Git records for a file
 
@@ -133,11 +130,8 @@ To create a permalink:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 When viewing a repository file, GitLab shows a badge with the number of open merge requests that target
 the current branch and modify the file. This helps you identify files that have pending changes.
@@ -165,7 +159,7 @@ The file finder uses fuzzy search and highlights results as you type.
 To search for a file, press <kbd>t</kbd> anywhere in your project, or:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. In the upper right, select **Find file**.
 1. On the dialog, start entering the filename:
 

@@ -8,7 +8,7 @@ title: SLSA provenance specification
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com
 - Status: Experiment
 
 {{< /details >}}
@@ -19,13 +19,10 @@ title: SLSA provenance specification
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 The [SLSA provenance specification](https://slsa.dev/spec/v1.1/provenance) requires
 the `buildType` reference to be documented and published. This reference is to assist consumers of
@@ -46,12 +43,9 @@ This official [SLSA Provenance](https://slsa.dev/spec/v1.1/provenance) `buildTyp
 This `buildType` describes the execution of a workflow that builds a software
 artifact.
 
-{{< alert type="note" >}}
-
-Consumers should ignore unrecognized external parameters. Any changes must
-not change the semantics of existing external parameters.
-
-{{< /alert >}}
+> [!note]
+> Consumers should ignore unrecognized external parameters. Any changes must
+> not change the semantics of existing external parameters.
 
 ### External parameters
 

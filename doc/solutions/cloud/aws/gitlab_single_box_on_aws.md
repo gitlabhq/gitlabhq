@@ -20,7 +20,7 @@ If you want to provision a single GitLab instance on AWS, you have two options:
 
 ## Marketplace subscription
 
-GitLab provides a 5 user subscription as an AWS Marketplace subscription to help teams of all sizes to get started with an Ultimate licensed instance in record time. The Marketplace subscription can be easily upgraded to any GitLab licensing via an AWS Marketplace Private Offer, with the convenience of continued AWS billing. No migration is necessary to obtain a larger, non-time based license from GitLab. Per-minute licensing is automatically removed when you accept the private offer.
+GitLab provides a 5 user subscription as an AWS Marketplace subscription to help teams of all sizes to get started with an Ultimate licensed instance in record time. The Marketplace subscription can be upgraded to any GitLab licensing via an AWS Marketplace Private Offer, with the convenience of continued AWS billing. No migration is necessary to obtain a larger, non-time based license from GitLab. Per-minute licensing is automatically removed when you accept the private offer.
 
 For a tutorial on provisioning a GitLab Instance via a Marketplace Subscription, [use this tutorial](https://gitlab.awsworkshop.io/040_partner_setup.html). The tutorial links to the [GitLab Ultimate Marketplace Listing](https://aws.amazon.com/marketplace/pp/prodview-g6ktjmpuc33zk), but you can also use the [GitLab Premium Marketplace Listing](https://aws.amazon.com/marketplace/pp/prodview-amk6tacbois2k) to provision an instance.
 

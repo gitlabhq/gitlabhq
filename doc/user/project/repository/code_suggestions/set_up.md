@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Set up Code Suggestions.
-title: Set up Code Suggestions
+description: Set up Code Suggestions (Classic) in your IDE.
+title: Set up Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -20,7 +20,8 @@ title: Set up Code Suggestions
 
 {{< /history >}}
 
-You can use GitLab Duo Code Suggestions in several different IDEs.
+You can use GitLab Duo Code Suggestions (Classic) in several different IDEs.
+
 To set up Code Suggestions, follow the instructions for your IDE.
 
 ## Prerequisites
@@ -116,11 +117,8 @@ To review certificates you've already accepted:
 
 ### Eclipse
 
-{{< alert type="note" >}}
-
-To enable GitLab Duo Code Suggestions, open an Eclipse project. If you open a single file, Code Suggestions is disabled for all file types.
-
-{{< /alert >}}
+> [!note]
+> To enable GitLab Duo Code Suggestions, open an Eclipse project. If you open a single file, Code Suggestions is disabled for all file types.
 
 To verify that Code Suggestions is turned on in Eclipse:
 
@@ -157,11 +155,8 @@ For example, in Visual Studio:
 
 The process for turning off Code Suggestions is different for each IDE.
 
-{{< alert type="note" >}}
-
-You cannot turn off code generation and code completion separately.
-
-{{< /alert >}}
+> [!note]
+> You cannot turn off code generation and code completion separately.
 
 ### VS Code
 

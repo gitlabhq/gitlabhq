@@ -1,5 +1,5 @@
 import { BulletList } from '@tiptap/extension-bullet-list';
-import { getMarkdownSource } from '../services/markdown_sourcemap';
+import { getMarkdownSource } from '../services/markdown_source';
 
 export default BulletList.extend({
   addOptions() {

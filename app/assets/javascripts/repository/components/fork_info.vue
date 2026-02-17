@@ -32,6 +32,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'ForkInfo',
   i18n,
   components: {
     GlIcon,

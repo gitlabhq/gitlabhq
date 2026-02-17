@@ -475,7 +475,7 @@ Some key details about runners:
 - You can use the [`tags` keyword](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale/).
   Use autoscaling to provision runners only when needed and scale down when not needed.
 
 For example, in a GitHub Actions `workflow` file:
@@ -567,7 +567,7 @@ use_cat:
 A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
-[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching).
 
 For example, in a GitHub Actions `workflow` file:
 
@@ -698,6 +698,6 @@ Before doing any migration work, you should first:
 ### Additional Resources
 
 - [Video: How to migrate from GitHub to GitLab including Actions](https://youtu.be/0Id5oMl1Kqs?feature=shared)
-- [Blog: GitHub to GitLab migration the easy way](https://about.gitlab.com/blog/2023/07/11/github-to-gitlab-migration-made-easy/)
+- [Blog: GitHub to GitLab migration the easy way](https://about.gitlab.com/blog/github-to-gitlab-migration-made-easy/)
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

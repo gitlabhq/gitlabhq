@@ -1,0 +1,10 @@
+---
+name: explore_projects_vue
+description: Migrate Explore > Projects to Vue
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13786
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216796
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584084
+milestone: '18.8'
+group: group::organizations
+type: beta
+default_enabled: false

@@ -17,7 +17,7 @@ title: 'チュートリアル: GitLab Duoを使用してPythonでショップア
 
 このチュートリアルはシリーズの第1部であり、これらの要件を満たすデータベースバックエンドを備えた[Python](https://www.python.org/) Webアプリケーションの作成とデバッグについて説明します。
 
-以下のために、[GitLab Duo Chat](../../gitlab_duo_chat/_index.md)と[GitLab Duoコード提案](../../project/repository/code_suggestions/_index.md)を使用します:
+[GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)と[GitLab Duo Code Suggestions](../../project/repository/code_suggestions/_index.md)を使用すると、次のことができます:
 
 - 標準ディレクトリと必須ファイルを使用して、整理されたPythonプロジェクトをセットアップする。
 - Pythonの仮想環境を設定する。
@@ -49,20 +49,21 @@ title: 'チュートリアル: GitLab Duoを使用してPythonでショップア
 
 #### GitLab UIでChatを使用する {#use-chat-in-the-gitlab-ui}
 
-1. 右上隅で、**GitLab Duo Chat**を選択します。ブラウザタブの右側にドロワーが開きます。
-1. チャット入力ボックスに質問を入力します。**Enter**キーを押すか、**送信**を選択します。インタラクティブなAIチャットが回答を生成するまで、数秒かかる場合があります。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. GitLab Duoのサイドバーで、**新しいGitLab Duo Chat**（{{< icon name="pencil-square" >}}）または**現在のGitLab Duo Chat**（{{< icon name="duo-chat" >}}）を選択します。画面右側のGitLab Duoサイドバーに、Chatの会話が表示されます。
+1. チャットテキストボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。インタラクティブなAIチャットが回答を生成するまで、数秒かかる場合があります。
 
 #### Web IDEでChatを使用する {#use-chat-in-the-web-ide}
 
 1. Web IDEを開きます:
-   1. GitLab UIで、左側のサイドバーで**検索または移動先**を選択して、プロジェクトを見つけます。
+   1. GitLab UIの上部のバーで、**検索または移動先**を選択して、プロジェクトを検索します。
    1. ファイルを選択します。次に、右上隅で**編集** > **Web IDEで開く**を選択します。
 1. 次のいずれかの方法でChatを開きます:
    - 左側のサイドバーで、**GitLab Duo Chat**を選択します。
    - エディタで開いているファイルで、コードを選択します。
      1. 右クリックして、**GitLab Duo Chat**を選択します。
      1. **Explain selected code**、**Generate Tests**、または**Refactor**を選択します。
-   - キーボードショートカットを使用します:<kbd>ALT</kbd>+<kbd>d</kbd>（WindowsおよびLinuxの場合）、<kbd>Option</kbd>+<kbd>d</kbd>（Macの場合）を使用します。
+   - キーボードショートカットを使用します: <kbd>ALT</kbd>+<kbd>d</kbd>（WindowsおよびLinuxの場合）、<kbd>Option</kbd>+<kbd>d</kbd>（Macの場合）を使用します。
 1. メッセージボックスに質問を入力します。**Enter**キーを押すか、**送信**を選択します。
 
 #### IDEでChatを使用する {#use-chat-in-your-ide}
@@ -78,23 +79,21 @@ IDEでのChatの使用方法は、使用するIDEによって異なります。
 1. メッセージボックスに質問を入力します。**Enter**キーを押すか、**送信**を選択します。
 1. チャットペインの右上隅で、**Show Status**を選択して、コマンドパレットに情報を表示します。
 
-コードのサブセットを操作しているときにも、GitLab Duo Chatと対話できます。
+コードのサブセットを操作しているときに、GitLab Duo Chatを操作することもできます。
 
 1. VS Codeでファイルを開きます。Gitリポジトリ内のファイルである必要はありません。
 1. ファイルで、コードを選択します。
 1. 右クリックして、**GitLab Duo Chat**を選択します。
 1. オプションを選択するか、**Open Quick Chat**を選択し、`Can you simplify this code?`などの質問をして、<kbd>Enter</kbd>キーを押します。
 
-詳細については、[VS CodeでGitLab Duo Chatを使用する](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-vs-code)を参照してください。
+詳細については、[VS CodeでGitLab Duo Chatを使用する](../../gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)を参照してください。
 
 {{< /tab >}}
 
 {{< tab title="JetBrains IDE" >}}
 
 1. [PyCharm](https://www.jetbrains.com/pycharm/)や[IntelliJ IDEA](https://www.jetbrains.com/idea/)など、PythonをサポートするJetBrains IDEでプロジェクトを開きます。
-1. [チャットウィンドウ](../../gitlab_duo_chat/_index.md#in-a-chat-window)または[エディタウィンドウ](../../gitlab_duo_chat/_index.md#use-chat-while-working-in-the-editor-window)でGitLab Duo Chatを開きます。
-
-詳細については、[JetBrains IDEでGitLab Duo Chatを使用する](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides)を参照してください。
+1. [GitLab Duo Chat](../../gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides)を使用します。
 
 {{< /tab >}}
 
@@ -614,8 +613,8 @@ wheels/
 
 {{< /tab >}}
 
-{{< tab title="README.md" >}}
-<!-- markdownlint-disable MD029 -->
+{{< tab title="`README.md`" >}}
+
 セットアップと使用方法の指示が記載された包括的な`README`ファイル。
 
 ````markdown
@@ -1320,7 +1319,7 @@ def create_app(test_config=None):
 動作していない場合は、理由を調べる必要があります。Chatとコード提案を使用すれば、アプリケーションが期待どおりに動作するかを確認するテストを作成し、修正が必要な問題を特定できます。
 
 <!-- markdownlint-disable -->
-<i class="fa-youtube-play" aria-hidden="true"></i>詳しくは、[Duo /fixを使用する](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g)をご覧ください。
+<i class="fa-youtube-play" aria-hidden="true"></i>詳しくは、[Using GitLab Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g)をご覧ください。
 <!-- Video published on 2025-02-13 -->
 
 ## 関連トピック {#related-topics}
@@ -1328,9 +1327,10 @@ def create_app(test_config=None):
 - [GitLab Duoのユースケース](../use_cases.md)
 - [GitLab Duoのスタートガイド](../../get_started/getting_started_gitlab_duo.md)
 - ブログ投稿: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
+  <!-- Video published on 2025-06-02 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo Chat (Classic)](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
   <!-- Video published on 2024-04-18 -->
-- <i class="fa-youtube-play" aria-hidden="true"></i>[GitLab Duo Chat](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
-  <!-- Video published on 2024-01-24 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>[GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
   <!-- Video published on 2025-03-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)

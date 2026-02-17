@@ -12,6 +12,31 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
     end
   end
 
+  describe 'validations' do
+    let(:definition) { build(:work_item_system_defined_widget_definition, widget_type: "assignees") }
+
+    describe 'widget_type validation' do
+      it 'is valid with widget_type present' do
+        expect(definition).to be_valid
+      end
+    end
+
+    describe 'work_item_type_id validation' do
+      it 'is valid with work_item_type_id present' do
+        definition.work_item_type_id = 1
+
+        expect(definition).to be_valid
+      end
+
+      it 'is invalid without work_item_type_id' do
+        definition.work_item_type_id = nil
+
+        expect(definition).not_to be_valid
+        expect(definition.errors[:work_item_type_id]).to include("can't be blank")
+      end
+    end
+  end
+
   describe 'associations' do
     it 'belongs to work_item_type through fixed_items' do
       type = build(:work_item_system_defined_type, :task)
@@ -216,6 +241,12 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
     it 'returns unique widget classes' do
       expect(available_widgets.uniq.size).to eq(available_widgets.size)
     end
+
+    it 'handles invalid widget types gracefully' do
+      allow(described_class).to receive(:widget_types).and_return(%w[assignees invalid_widget])
+
+      expect { available_widgets }.not_to raise_error
+    end
   end
 
   describe '#widget_class' do
@@ -254,6 +285,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
       it 'returns nil for non-existent widget type' do
         definition = described_class.new(widget_type: :nonexistent_widget)
 
+        expect { definition.widget_class }.not_to raise_error
         expect(definition.widget_class).to be_nil
       end
 
@@ -279,6 +311,38 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
 
         expect(WorkItems::Widgets).to have_received(:const_get).with(anything, false)
       end
+    end
+  end
+
+  describe '.widget_classes' do
+    let(:widget_classes) { described_class.widget_classes }
+
+    it 'returns an array of widget classes' do
+      expect(widget_classes).to be_an(Array)
+      expect(widget_classes).to all(be_a(Class))
+    end
+
+    it 'returns unique widget classes' do
+      expect(widget_classes.uniq.size).to eq(widget_classes.size)
+    end
+
+    it 'filters out nil values' do
+      expect(widget_classes).not_to include(nil)
+    end
+
+    it 'gets widget classes from all widget definitions' do
+      all_definitions = described_class.all
+      expected_classes = all_definitions.filter_map(&:widget_class).uniq
+
+      expect(widget_classes).to match_array(expected_classes)
+    end
+
+    it 'returns a subset or equal to available_widgets' do
+      available = described_class.available_widgets
+
+      # widget_classes should be a subset since it only includes classes
+      # that are actually used in widget definitions
+      expect(widget_classes - available).to be_empty
     end
   end
 

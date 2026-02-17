@@ -1,5 +1,7 @@
 <script>
-export default {};
+export default {
+  name: 'AsideItem',
+};
 </script>
 <template>
   <div class="gl-flex gl-flex-col">

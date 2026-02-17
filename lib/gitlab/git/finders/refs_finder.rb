@@ -69,8 +69,17 @@ module Gitlab
         end
 
         def search_pattern
-          # **/* allows to match any level of nesting
-          [[prefix, "**/*", search, "*"].compact.join]
+          # When search contains wildcards, use restrictive pattern to match exact query
+          if wildcard_search?
+            [[prefix, search].compact.join]
+          else
+            # **/* allows to match any level of nesting
+            [[prefix, "**/*", search, "*"].compact.join]
+          end
+        end
+
+        def wildcard_search?
+          search.present? && search.include?('*')
         end
 
         def pagination_params

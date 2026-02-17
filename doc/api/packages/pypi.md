@@ -14,30 +14,21 @@ title: PyPI API
 
 Use this API to interact with the [PyPI package manager client](../../user/packages/pypi_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [PyPI package manager client](https://pypi.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [PyPI package manager client](https://pypi.org/)
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
+> [!note]
+> [Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
+> is recommended when FIPS mode is enabled.
 
-{{< alert type="note" >}}
+## Download a package file for a group
 
-[Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
-is recommended when FIPS mode is enabled.
-{{< /alert >}}
-
-## Download a package file from a group
-
-Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
+Downloads a specified PyPI package file for a group. The [simple API](#retrieve-package-descriptor-for-a-group)
 usually supplies this URL.
 
 ```plaintext
@@ -65,9 +56,9 @@ curl --user <username>:<personal_access_token> \
 This writes the downloaded file to `my.pypi.package-0.0.1.tar.gz` in the current
 directory.
 
-## Group-level simple API index
+## List all packages for a group
 
-Returns a list of packages in the group as an HTML file:
+Lists all packages for the specified group in an HTML file.
 
 ```plaintext
 GET groups/:id/-/packages/pypi/simple
@@ -106,9 +97,9 @@ curl --user <username>:<personal_access_token> \
 
 This writes the downloaded file to `simple_index.html` in the current directory.
 
-## Group level simple API entry point
+## Retrieve package descriptor for a group
 
-Returns the package descriptor as an HTML file:
+Retrieves the package descriptor as an HTML file for a specified package in a group.
 
 ```plaintext
 GET groups/:id/-/packages/pypi/simple/:package_name
@@ -148,9 +139,9 @@ curl --user <username>:<personal_access_token> \
 
 This writes the downloaded file to `simple.html` in the current directory.
 
-## Download a package file from a project
+## Download a package file for a project
 
-Download a PyPI package file. The [simple API](#project-level-simple-api-entry-point)
+Downloads a specified PyPI package file for a project. The [simple API](#retrieve-package-descriptor-for-a-project)
 usually supplies this URL.
 
 ```plaintext
@@ -178,9 +169,9 @@ curl --user <username>:<personal_access_token> \
 This writes the downloaded file to `my.pypi.package-0.0.1.tar.gz` in the current
 directory.
 
-## Project-level simple API index
+## List all packages for a project
 
-Returns a list of packages in the project as an HTML file:
+Lists all packages for the specified project in an HTML file.
 
 ```plaintext
 GET projects/:id/packages/pypi/simple
@@ -219,9 +210,9 @@ curl --user <username>:<personal_access_token> \
 
 This writes the downloaded file to `simple_index.html` in the current directory.
 
-## Project-level simple API entry point
+## Retrieve package descriptor for a project
 
-Returns the package descriptor as an HTML file:
+Retrieves the package descriptor as an HTML file for a specified package in a project.
 
 ```plaintext
 GET projects/:id/packages/pypi/simple/:package_name
@@ -263,7 +254,7 @@ This writes the downloaded file to `simple.html` in the current directory.
 
 ## Upload a package
 
-Upload a PyPI package:
+Uploads a PyPI package for a specified project.
 
 ```plaintext
 POST projects/:id/packages/pypi

@@ -22,6 +22,8 @@ class BulkImports::Entity < ApplicationRecord
 
   self.table_name = 'bulk_import_entities'
 
+  ignore_column :source_xid_convert_to_bigint, remove_with: '18.10', remove_after: '2026-03-13'
+
   FailedError = Class.new(StandardError)
 
   belongs_to :bulk_import, optional: false

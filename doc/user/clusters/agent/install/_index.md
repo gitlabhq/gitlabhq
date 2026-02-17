@@ -130,11 +130,8 @@ You must register an agent before you can install the agent in your cluster. To 
 1. GitLab generates an access token for the agent. You need this token to install the agent
    in your cluster.
 
-   {{< alert type="warning" >}}
-
-   Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
-
-   {{< /alert >}}
+   > [!warning]
+   > Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
 
 1. Copy the command under **Recommended installation method**. You need it when you use
    the one-liner installation method to install the agent in your cluster.
@@ -154,14 +151,11 @@ You must register an agent before you can install the agent in your cluster. To 
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-The GitLab Agent Helm Chart release does not fully support mTLS authentication.
-You should authenticate with the JWT method instead.
-Support for mTLS is tracked in
-[issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
-
-{{< /alert >}}
+> [!note]
+> The GitLab Agent Helm Chart release does not fully support mTLS authentication.
+> You should authenticate with the JWT method instead.
+> Support for mTLS is tracked in
+> [issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
 
 [Receptive agents](../_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
 cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
@@ -173,7 +167,7 @@ cannot establish a network connection to the GitLab instance, but can be connect
    The GitLab-to-agent connection can be cleartext gRPC (`grpc://`) or encrypted gRPC (`grpcs://`, recommended).
    GitLab can authenticate to the agent in your cluster using:
    - A JWT token. Available in both `grpc://` and `grpcs://` configurations. You don't need to generate client certificates with this method.
-1. Add a URL configuration to the agent with the [cluster agents API](../../../../api/cluster_agents.md#create-an-agent-url-configuration). If you delete the URL configuration, the receptive agent becomes an ordinary agent. You can associate a receptive agent with only one URL configuration at a time.
+1. Add a URL configuration to the agent with the [cluster agents API](../../../../api/cluster_agents.md#create-a-url-configuration). If you delete the URL configuration, the receptive agent becomes an ordinary agent. You can associate a receptive agent with only one URL configuration at a time.
 
 1. Install the agent into the cluster. Use the command you copied when you registered the agent, but remove the `--set config.kasAddress=...` parameter.
 
@@ -255,7 +249,7 @@ the CA certificate used by KAS. The certificate is automatically stored in a
 config map and mounted in the `agentk` pod.
 
 If KAS is installed with the GitLab chart, and the chart is configured to provide
-an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/charts/installation/tls.html#option-4-use-auto-generated-self-signed-wildcard-certificate), you can extract the CA certificate from the `RELEASE-wildcard-tls-ca` secret.
+an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/charts/installation/tls/#option-4-use-auto-generated-self-signed-wildcard-certificate), you can extract the CA certificate from the `RELEASE-wildcard-tls-ca` secret.
 
 ##### Use the agent behind an HTTP proxy
 
@@ -278,12 +272,9 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   ...
 ```
 
-{{< alert type="note" >}}
-
-DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PROXY` environment variable is set,
-and the domain DNS can't be resolved.
-
-{{< /alert >}}
+> [!note]
+> DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PROXY` environment variable is set,
+> and the domain DNS can't be resolved.
 
 ## Install multiple agents in your cluster
 
@@ -331,15 +322,12 @@ For the best experience, the version of the agent installed in your cluster shou
 
 ### Update the agent version
 
-{{< alert type="note" >}}
-
-Instead of using `--reuse-values`, you should specify all needed values.
-If you use `--reuse-values`, you might miss new defaults or use deprecated values.
-To retrieve previous `--set` arguments, use `helm get values <release name>`.
-You can save the values to a file with `helm get values gitlab-agent > agent.yaml`, and pass the file to Helm with `-f`:
-`helm upgrade gitlab-agent gitlab/gitlab-agent -f agent.yaml`. This safely replaces the behavior of `--reuse-values`.
-
-{{< /alert >}}
+> [!note]
+> Instead of using `--reuse-values`, you should specify all needed values.
+> If you use `--reuse-values`, you might miss new defaults or use deprecated values.
+> To retrieve previous `--set` arguments, use `helm get values <release name>`.
+> You can save the values to a file with `helm get values gitlab-agent > agent.yaml`, and pass the file to Helm with `-f`:
+> `helm upgrade gitlab-agent gitlab/gitlab-agent -f agent.yaml`. This safely replaces the behavior of `--reuse-values`.
 
 To update the agent to the latest version, you can run:
 

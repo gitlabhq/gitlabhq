@@ -8,6 +8,11 @@ import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import {
+  CI_FORM_MAX_POLLING_TIME,
+  CI_FORM_POLLING_INTERVAL,
+  NETWORK_STATUS_READY,
+} from '~/ci/constants';
 import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
@@ -15,6 +20,7 @@ import PipelineInputsPreviewDrawer from './pipeline_inputs_preview_drawer.vue';
 import { findMatchingRule, processQueryInputs } from './utils';
 
 const ARRAY_TYPE = 'ARRAY';
+const MAX_POLL_COUNT = CI_FORM_MAX_POLLING_TIME / CI_FORM_POLLING_INTERVAL;
 
 export default {
   name: 'PipelineInputsForm',
@@ -41,7 +47,8 @@ export default {
     },
     queryRef: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     emptySelectionText: {
       type: String,
@@ -52,32 +59,51 @@ export default {
       required: false,
       default: () => [],
     },
+    initialInputs: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   emits: ['update-inputs', 'update-inputs-metadata'],
   data() {
     return {
-      sourceInputs: [],
+      sourceInputs: null,
       inputs: [],
       selectedInputNames: [],
       searchTerm: '',
       showPreviewDrawer: false,
       hasDynamicRules: false,
+      pollInterval: CI_FORM_POLLING_INTERVAL,
+      pollCount: 0,
+      errorAlert: null,
     };
   },
   apollo: {
     sourceInputs: {
       query: getPipelineInputsQuery,
+      notifyOnNetworkStatusChange: true,
       variables() {
         return {
           fullPath: this.projectPath,
           ref: this.queryRef,
+          failOnCacheMiss: this.isLastPollAttempt,
         };
       },
       skip() {
-        return !this.projectPath;
+        return !this.projectPath || !this.queryRef;
+      },
+      pollInterval() {
+        return this.pollInterval;
       },
       update({ project }) {
-        const queryInputs = project?.ciPipelineCreationInputs || [];
+        const queryInputs = project?.ciPipelineCreationInputs;
+
+        // Cache miss - return null to keep loading state
+        if (queryInputs === null) return null;
+
+        // Cache hit - process and stop polling
+        this.stopPolling();
         const { processedInputs, hasDynamicRules } = processQueryInputs(
           queryInputs,
           this.savedInputs,
@@ -85,28 +111,35 @@ export default {
         );
 
         this.hasDynamicRules = hasDynamicRules;
-
         return processedInputs;
       },
-      result() {
-        this.inputs = structuredClone(this.sourceInputs);
+      result({ data, networkStatus }) {
+        // We need this for handling the reactive poll interval while also using frontend cache
+        // a status of 7 = 'ready'
+        if (networkStatus !== NETWORK_STATUS_READY) return;
+        this.pollCount += 1;
 
-        this.selectedInputNames = this.inputs
-          .filter((input) => input.isSelected && !input.hasRules)
-          .map((input) => input.name);
+        const queryInputs = data?.project?.ciPipelineCreationInputs;
 
-        this.$emit('update-inputs-metadata', {
-          totalAvailable: this.inputs.length,
-          totalModified: this.modifiedInputs.length,
-        });
+        if (queryInputs !== null) {
+          // Cache hit - initialize inputs
+          this.initializeInputs(this.sourceInputs);
+        } else if (this.isLastPollAttempt) {
+          this.stopPolling();
+          this.sourceInputs = [];
+        }
       },
       error(error) {
+        this.stopPolling();
         this.createErrorAlert(error);
         reportToSentry(this.$options.name, error);
       },
     },
   },
   computed: {
+    isLastPollAttempt() {
+      return this.pollCount >= MAX_POLL_COUNT;
+    },
     hasInputs() {
       return Boolean(this.inputs.length);
     },
@@ -117,7 +150,7 @@ export default {
       return this.emitModifiedOnly ? this.modifiedInputs : this.processedInputs;
     },
     isLoading() {
-      return this.$apollo.queries.sourceInputs.loading;
+      return this.sourceInputs === null;
     },
     modifiedInputs() {
       return this.processedInputs.filter((input) => !isEqual(input.value, input.default));
@@ -197,12 +230,23 @@ export default {
 
         if (matchingRule) {
           const options = matchingRule.options || [];
-          const isValueValid = Array.isArray(options) && options.includes(input.value);
+          const ruleIndex = input.rules.indexOf(matchingRule);
+          const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
+          const hasOptions = options.length > 0;
+
+          let value = matchingRule.default ?? '';
+
+          if (hasOptions && options.includes(input.value)) {
+            value = input.value;
+          } else if (!hasOptions && !ruleChanged) {
+            value = input.value;
+          }
 
           return {
             ...input,
             options,
-            value: isValueValid ? input.value : matchingRule.default || '',
+            value,
+            lastMatchedRuleIndex: ruleIndex,
             isSelected: true,
           };
         }
@@ -211,24 +255,79 @@ export default {
           ...input,
           options: [],
           value: '',
+          lastMatchedRuleIndex: null,
           isSelected: false,
         };
       });
     },
   },
+  watch: {
+    queryRef() {
+      this.resetPolling();
+    },
+  },
   created() {
+    if (!this.projectPath || !this.queryRef) {
+      this.sourceInputs = [];
+    }
+
     this.debouncedSearch = debounce((searchTerm) => {
       this.searchTerm = searchTerm;
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+    if (this.initialInputs?.length) {
+      const { processedInputs, hasDynamicRules } = processQueryInputs(
+        this.initialInputs,
+        this.savedInputs,
+        this.preselectAllInputs,
+      );
+
+      this.hasDynamicRules = hasDynamicRules;
+
+      this.initializeInputs(processedInputs);
+    }
   },
   methods: {
+    stopPolling() {
+      this.pollInterval = 0;
+    },
+    resetPolling() {
+      this.pollInterval = 0;
+      this.sourceInputs = null;
+      this.inputs = [];
+      this.selectedInputNames = [];
+      this.pollCount = 0;
+      this.dismissErrorAlert();
+      this.$nextTick(() => {
+        this.pollInterval = CI_FORM_POLLING_INTERVAL;
+      });
+    },
     createErrorAlert(error) {
       const graphQLErrors = error?.graphQLErrors?.map((err) => err.message) || [];
       const message = graphQLErrors.length
         ? graphQLErrors.join(', ')
         : s__('Pipelines|There was a problem fetching the pipeline inputs. Please try again.');
 
-      createAlert({ message });
+      this.errorAlert = createAlert({ message });
+    },
+    dismissErrorAlert() {
+      if (this.errorAlert) {
+        this.errorAlert.dismiss();
+        this.errorAlert = null;
+      }
+    },
+    initializeInputs(inputs) {
+      if (!inputs) return;
+      this.inputs = structuredClone(inputs);
+
+      this.selectedInputNames = this.inputs
+        .filter((input) => input.isSelected && !input.hasRules)
+        .map((input) => input.name);
+
+      this.$emit('update-inputs-metadata', {
+        totalAvailable: this.inputs.length,
+        totalModified: this.modifiedInputs.length,
+      });
     },
     formatInputValue(input) {
       let { value } = input;

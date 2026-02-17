@@ -16,12 +16,9 @@ title: Disaster Recovery (Geo) promotion runbooks
 
 Disaster Recovery (Geo) promotion runbooks.
 
-{{< alert type="warning" >}}
-
-This runbook is an [experiment](../../../../policy/development_stages_support.md#experiment). For complete, production-ready documentation, see the
-[disaster recovery documentation](../_index.md).
-
-{{< /alert >}}
+> [!warning]
+> This runbook is an [experiment](../../../../policy/development_stages_support.md#experiment). For complete, production-ready documentation, see the
+> [disaster recovery documentation](../_index.md).
 
 ## Geo planned failover for a multi-node configuration
 
@@ -64,13 +61,10 @@ What is not covered:
 
 ### Preparation
 
-{{< alert type="note" >}}
-
-Before following any of those steps, make sure you have `root` access to the
-**secondary** to promote it, because there isn't provided an automated way to
-promote a Geo replica and perform a failover.
-
-{{< /alert >}}
+> [!note]
+> Before following any of those steps, make sure you have `root` access to the
+> **secondary** to promote it, because there isn't provided an automated way to
+> promote a Geo replica and perform a failover.
 
 On the **secondary** site:
 
@@ -102,12 +96,9 @@ follow these steps to avoid unnecessary data loss:
    and make sure to stop any [background jobs](../../../maintenance_mode/_index.md#background-jobs).
 1. Finish replicating and verifying all data:
 
-   {{< alert type="warning" >}}
-
-   Not all data is automatically replicated. Read more about
-   [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
-
-   {{< /alert >}}
+   > [!warning]
+   > Not all data is automatically replicated. Read more about
+   > [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
 
    1. If you are manually replicating any
       [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
@@ -140,20 +131,13 @@ follow these steps to avoid unnecessary data loss:
 
 1. In this final step, you must permanently disable the **primary** site.
 
-   {{< alert type="warning" >}}
-
-   When the **primary** site goes offline, there may be data saved on the **primary** site
-   that has not been replicated to the **secondary** site. This data should be treated
-   as lost if you proceed.
-
-   {{< /alert >}}
-
-   {{< alert type="note" >}}
+   > [!warning]
+   > When the **primary** site goes offline, there may be data saved on the **primary** site
+   > that has not been replicated to the **secondary** site. This data should be treated
+   > as lost if you proceed.
 
    If you plan to [update the **primary** domain DNS record](../_index.md#step-4-optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
-
-   {{< /alert >}}
 
    When performing a failover, we want to avoid a split-brain situation where
    writes can occur in two different GitLab instances. So to prepare for the
@@ -171,22 +155,15 @@ follow these steps to avoid unnecessary data loss:
      sudo systemctl disable gitlab-runsvdir
      ```
 
-     {{< alert type="note" >}}
-
-     (**CentOS only**) In CentOS 6 or older, it is challenging to prevent GitLab from being
-     started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
-     It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
-
-     {{< /alert >}}
-
-     {{< alert type="note" >}}
-
-     (**Ubuntu 14.04 LTS**) If you are using an older version of Ubuntu
-     or any other distribution based on the Upstart init system, you can prevent GitLab
-     from starting if the machine reboots as `root` with
-     `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
-
-     {{< /alert >}}
+     > [!note]
+     >
+     > - In CentOS 6 or older, it is challenging to prevent GitLab from being
+     >   started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
+     >   It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
+     > - If you are using an older version of Ubuntu like 14.04 LTS
+     >   or any other distribution based on the Upstart init system, you can prevent GitLab
+     >   from starting if the machine reboots as `root` with
+     >   `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
 
    - If you do not have SSH access to the **primary** site, take the machine offline and
      prevent it from rebooting. As there are many ways you may prefer to accomplish

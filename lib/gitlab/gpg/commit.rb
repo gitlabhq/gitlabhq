@@ -4,13 +4,7 @@ module Gitlab
   module Gpg
     class Commit < Gitlab::Repositories::BaseSignedCommit
       def update_signature!(cached_signature)
-        if using_signature_class?
-          update_signature_with_keychain!(cached_signature, gpg_signature.gpg_key)
-        else
-          using_keychain do |gpg_key|
-            update_signature_with_keychain!(cached_signature, gpg_key)
-          end
-        end
+        update_signature_with_keychain!(cached_signature, gpg_signature.gpg_key)
       end
 
       def update_signature_with_keychain!(cached_signature, gpg_key)
@@ -28,129 +22,28 @@ module Gitlab
         CommitSignatures::GpgSignature
       end
 
-      def using_keychain
-        Gitlab::Gpg.using_tmp_keychain do
-          # first we need to get the fingerprint from the signature to query the gpg
-          # key belonging to the fingerprint.
-          # This way we can add the key to the temporary keychain and extract
-          # the proper signature.
-          # NOTE: the invoked method is #fingerprint but versions of GnuPG
-          # prior to 2.2.13 return 16 characters (the format used by keyid)
-          # instead of 40.
-          fingerprint = verified_signature&.fingerprint
-
-          break unless fingerprint
-
-          gpg_key = find_gpg_key(fingerprint)
-
-          if gpg_key
-            Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-            clear_memoization(:gpg_signatures)
-          end
-
-          yield gpg_key
-        end
-      end
-
-      def verified_signature
-        gpg_signatures.first
-      end
-
       def create_cached_signature!
-        if using_signature_class?
-          return unless gpg_signature.fingerprint
+        return unless gpg_signature.fingerprint
 
-          attributes = attributes(nil)
-          return CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
+        attributes = attributes(nil)
+        return CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
 
-          CommitSignatures::GpgSignature.safe_create!(attributes)
-        else
-          using_keychain do |gpg_key|
-            attributes = attributes(gpg_key)
-            break CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
-
-            CommitSignatures::GpgSignature.safe_create!(attributes)
-          end
-        end
-      end
-
-      def gpg_signatures
-        strong_memoize(:gpg_signatures) do
-          signatures = []
-
-          GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
-            signatures << verified_signature
-          end
-
-          signatures
-        rescue GPGME::Error
-          []
-        end
-      end
-
-      def multiple_signatures?
-        gpg_signatures.size > 1
+        CommitSignatures::GpgSignature.safe_create!(attributes)
       end
 
       def attributes(gpg_key)
+        sig = gpg_signature(gpg_key:)
+        gpg_key = sig.gpg_key
         {
           commit_sha: @commit.sha,
-          project: project
+          project: project,
+          gpg_key: gpg_key,
+          gpg_key_primary_keyid: gpg_key&.keyid || sig.fingerprint,
+          verification_status: sig.verification_status,
+          gpg_key_user_name: sig.user_infos[:name],
+          gpg_key_user_email: sig.user_infos[:email]
         }.tap do |attrs|
           attrs[:committer_email] = committer_email if check_for_mailmapped_commit_emails?
-          if using_signature_class?
-            sig = gpg_signature(gpg_key:)
-            gpg_key = sig.gpg_key
-            attrs[:gpg_key] = gpg_key
-            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || sig.fingerprint
-            attrs[:verification_status] = sig.verification_status
-            attrs[:gpg_key_user_name] = sig.user_infos[:name]
-            attrs[:gpg_key_user_email] = sig.user_infos[:email]
-          else
-            attrs[:gpg_key] = gpg_key
-            user_infos = user_infos(gpg_key)
-            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || verified_signature&.fingerprint
-            attrs[:verification_status] = verification_status(gpg_key)
-            attrs[:gpg_key_user_name] = user_infos[:name]
-            attrs[:gpg_key_user_email] = user_infos[:email]
-          end
-        end
-      end
-
-      def verification_status(gpg_key)
-        return :verified_system if verified_by_gitlab?
-        return :multiple_signatures if multiple_signatures?
-        return :unknown_key unless gpg_key
-        return :unverified_key unless gpg_key.verified?
-        return :unverified unless verified_signature&.valid?
-
-        if gpg_key.verified_and_belongs_to_email?(@commit.committer_email)
-          :verified
-        elsif gpg_key.user.all_emails.include?(@commit.committer_email)
-          :same_user_different_email
-        else
-          :other_user
-        end
-      end
-
-      # If a commit is signed by Gitaly, the Gitaly returns `SIGNER_SYSTEM` as a signer
-      # In order to calculate it, the signature is Verified using the Gitaly's public key:
-      # https://gitlab.com/gitlab-org/gitaly/-/blob/v16.2.0-rc2/internal/gitaly/service/commit/commit_signatures.go#L63
-      #
-      # It is safe to skip verification step if the commit has been signed by Gitaly
-      def verified_by_gitlab?
-        signer == :SIGNER_SYSTEM
-      end
-
-      def user_infos(gpg_key)
-        gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
-      end
-
-      def find_gpg_key(fingerprint)
-        if fingerprint.length > 16
-          GpgKey.find_by_fingerprint(fingerprint) || GpgKeySubkey.find_by_fingerprint(fingerprint)
-        else
-          GpgKey.find_by_primary_keyid(fingerprint) || GpgKeySubkey.find_by_keyid(fingerprint)
         end
       end
 
@@ -159,10 +52,6 @@ module Gitlab
           ::Gitlab::Gpg::Signature.new(signature_text, signed_text, signer, @commit.committer_email,
             preloaded_gpg_key: gpg_key)
         end
-      end
-
-      def using_signature_class?
-        Feature.enabled?(:gpg_commit_delegate_to_signature, project)
       end
     end
   end

@@ -18,30 +18,6 @@ You can customize components of Auto DevOps to fit your needs. For example, you 
 - Enable staging and canary deployments with a custom [CI/CD configuration](#customize-gitlab-ciyml).
 - Extend Auto DevOps with the [GitLab API](#extend-auto-devops-with-the-api).
 
-## Auto DevOps banner
-
-When Auto DevOps is not enabled, a banner displays for users with at
-least the Maintainer role:
-
-![Auto DevOps banner](img/autodevops_banner_v12_6.png)
-
-The banner can be disabled for:
-
-- A user, when they dismiss it themselves.
-- A project, by explicitly [disabling Auto DevOps](_index.md#enable-or-disable-auto-devops).
-- An entire GitLab instance:
-  - By an administrator running the following in a Rails console:
-
-    ```ruby
-    Feature.enable(:auto_devops_banner_disabled)
-    ```
-
-  - Through the REST API with an administrator access token:
-
-    ```shell
-    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"
-    ```
-
 ## Custom buildpacks
 
 You can customize your buildpacks when either:
@@ -99,12 +75,9 @@ For example, to build a Docker image based on based on the
 To pass complex values like spaces and newlines, use Base64 encoding.
 Complex, unencoded values can cause issues with character escaping.
 
-{{< alert type="warning" >}}
-
-Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
-[this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
-
-{{< /alert >}}
+> [!warning]
+> Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
+> [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
 
 ## Custom container image
 
@@ -307,13 +280,10 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 
 ## PostgreSQL database support
 
-{{< alert type="warning" >}}
-
-Provisioning a PostgreSQL database by default was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
-in GitLab 15.8 and will no longer be the default from 16.0. To enable database provisioning, set
-the associated [CI/CD variable](cicd_variables.md#database-variables).
-
-{{< /alert >}}
+> [!warning]
+> Provisioning a PostgreSQL database by default was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
+> in GitLab 15.8 and will no longer be the default from 16.0. To enable database provisioning, set
+> the associated [CI/CD variable](cicd_variables.md#database-variables).
 
 To support applications that require a database,
 [PostgreSQL](https://www.postgresql.org/) is provisioned by default.

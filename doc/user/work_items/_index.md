@@ -47,13 +47,10 @@ GitLab supports the following work item types:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 To organize work items (like issues, epics, and tasks) side-by-side, use the consolidated work items view.
 This view helps you understand the full scope of work, and prioritize effectively.

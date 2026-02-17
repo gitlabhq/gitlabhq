@@ -86,9 +86,9 @@ and the number of executed cached queries:
 
 ![Performance Bar Database Queries](img/performance_bar_members_page_v13_6.png)
 
-The page included 55 cached queries. Selecting the number displays a modal window
+The page included 55 cached queries. Selecting the number displays a dialog
 with more details about queries. Cached queries are marked with the `cached` label
-below the query. You can see multiple duplicate cached queries in this modal window:
+below the query. You can see multiple duplicate cached queries in this dialog:
 
 ![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries_v13_6.png)
 

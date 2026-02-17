@@ -10,7 +10,7 @@ RSpec.shared_examples 'project features apply to issuables' do |klass|
   let(:project) { create(:project, :public, project_args) }
 
   def project_args
-    feature = "#{described_class.model_name.plural}_access_level".to_sym
+    feature = :"#{described_class.model_name.plural}_access_level"
 
     args = { group: group }
     args[feature] = access_level

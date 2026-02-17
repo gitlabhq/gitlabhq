@@ -1,14 +1,12 @@
 <script>
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/alert';
-import { clearDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
+import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
-import { createNoteErrorMessages } from '~/notes/utils';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
@@ -96,7 +94,7 @@ export default {
 
       this.$emit('stopReplying');
     }),
-    async saveReply(noteText) {
+    async saveNote(noteText) {
       if (!noteText) {
         this.cancelReplyForm();
         return;
@@ -113,27 +111,11 @@ export default {
         note: { note: noteText },
       };
 
-      try {
-        const {
-          data: { discussion },
-        } = await axios.post(this.endpoints.discussions, postData);
-        clearDraft(this.autosaveKey);
-        this.$emit('discussionUpdated', discussion);
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = createNoteErrorMessages(
-            error.response.data,
-            error.response.status,
-          )[0];
-          createAlert({
-            message: errorMessage,
-            parent: this.$el,
-          });
-        }
-        throw error;
-      } finally {
-        this.$emit('stopReplying');
-      }
+      const {
+        data: { discussion },
+      } = await axios.post(this.endpoints.discussions, postData);
+      this.$emit('discussionUpdated', discussion);
+      this.$emit('stopReplying');
     },
   },
 };
@@ -164,7 +146,7 @@ export default {
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer="{ hasReplies }">
-        <li
+        <div
           v-if="canReply"
           data-testid="reply-wrapper"
           class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
@@ -177,7 +159,7 @@ export default {
             ref="noteForm"
             :internal="discussion.internal"
             :save-button-title="saveButtonTitle"
-            :save-note="saveReply"
+            :save-note="saveNote"
             :request-last-note-editing="() => requestLastNoteEditing(discussion)"
             autofocus
             :autosave-key="autosaveKey"
@@ -186,7 +168,7 @@ export default {
           <div v-else-if="userPermissions.can_create_note">
             <discussion-reply-placeholder @focus="showReplyForm" />
           </div>
-        </li>
+        </div>
       </template>
     </discussion-notes>
   </li>

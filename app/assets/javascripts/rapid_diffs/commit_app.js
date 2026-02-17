@@ -9,6 +9,8 @@ import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { initTimeline } from '~/rapid_diffs/app/init_timeline';
+import TaskList from '~/task_list';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
 class CommitRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
@@ -19,13 +21,20 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
     await this.#initDiscussions();
   }
 
+  /**
+   * Adjusts the diffs container width when switching between inline and side-by-side view modes.
+   *
+   * Listens for view type changes via the diffs store and toggles the `container-limited` class
+   * on the diffs container. Side-by-side/parallel view always renders full-width for diffs,
+   * no matter user preferences (fluid/fixed width). So we do NOT toggle the class.
+   */
   // eslint-disable-next-line class-methods-use-this
   #initViewModeResize() {
     useDiffsView().$onAction(({ name }) => {
       if (name !== 'updateViewType') return;
-      const container = document.querySelector('main .container-fluid');
-      if (!container) return;
-      container.classList.toggle(
+      const diffsContainer = document.querySelector('.js-fixed-layout');
+      if (!diffsContainer) return;
+      diffsContainer.classList.toggle(
         'container-limited',
         useDiffsView().viewType !== INLINE_DIFF_VIEW_TYPE,
       );
@@ -40,6 +49,21 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
       useDiffDiscussions(pinia).setInitialDiscussions(discussions);
       initNewDiscussionToggle(this.root);
       initTimeline(this.appData);
+      // eslint-disable-next-line no-new
+      new TaskList({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '[data-rapid-diffs]',
+        onSuccess: ({ id, note }) => {
+          useDiffDiscussions(pinia).updateNoteTextById(id, note);
+        },
+        onError: (error) => {
+          createAlert({
+            message: UPDATE_COMMENT_FORM.defaultError,
+            error,
+          });
+        },
+      });
     } catch (error) {
       createAlert({
         message: s__('RapidDiffs|Failed to load discussions. Try to reload the page.'),

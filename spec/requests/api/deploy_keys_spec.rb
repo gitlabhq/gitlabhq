@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures, feature_category: :continuous_delivery do
+RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuous_delivery do
   let_it_be(:user)        { create(:user) }
   let_it_be(:maintainer)  { create(:user) }
   let_it_be(:admin)       { create(:admin) }
@@ -20,6 +20,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
 
   describe 'GET /deploy_keys' do
     it_behaves_like 'GET request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :read_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -124,6 +130,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       let(:failed_status_code) { :forbidden }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { post api(path, personal_access_token: pat), params: attributes_for(:another_key) }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         post api(path), params: attributes_for(:another_key)
@@ -188,6 +200,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       let(:failed_status_code) { :not_found }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project }
+      let(:request) { get api(project_path, personal_access_token: pat) }
+    end
+
     def perform_request
       get api(project_path, admin, admin_mode: true)
     end
@@ -219,6 +237,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
 
     it_behaves_like 'GET request permissions for admin mode' do
       let(:failed_status_code) { :not_found }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project }
+      let(:request) { get api(path, personal_access_token: pat) }
     end
 
     it 'returns a single key' do
@@ -257,6 +281,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       let(:params) { attributes_for :another_key }
       let(:path) { project_path }
       let(:failed_status_code) { :not_found }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project }
+      let(:request) { post api(project_path, personal_access_token: pat), params: attributes_for(:another_key) }
     end
 
     it 'does not create an invalid ssh key' do
@@ -330,6 +360,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { title: 'new title', can_push: true } }
       let(:failed_status_code) { :not_found }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project }
+      let(:request) { put api(path, personal_access_token: pat), params: { can_push: true } }
     end
 
     subject do
@@ -498,6 +534,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       let(:failed_status_code) { :not_found }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :delete_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project }
+      let(:request) { delete api(path, personal_access_token: pat) }
+    end
+
     it 'removes existing key from project' do
       expect do
         delete api(path, admin, admin_mode: true)
@@ -560,6 +602,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
 
     it_behaves_like 'POST request permissions for admin mode' do
       let(:failed_status_code) { :not_found }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :enable_deploy_key do
+      let(:user) { admin }
+      let(:boundary_object) { project2 }
+      let(:request) { post api(path, personal_access_token: pat) }
     end
 
     context 'when the user can admin the project' do

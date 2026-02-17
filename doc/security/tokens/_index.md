@@ -122,7 +122,7 @@ licensed seats.
 You can use the [project access tokens API](../../api/project_access_tokens.md) to programmatically take
 action, such as [rotating a project access token](../../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Members of a project with at least the Maintainer role
+Members of a project with the Maintainer or Owner role
 [receive an email](../../user/project/settings/project_access_tokens.md#project-access-token-expiry-emails)
 when project access tokens are nearly expired.
 
@@ -179,7 +179,7 @@ instead of a runner registration token. Runner registration tokens are
 
 After you create a runner and its configuration, you receive a runner authentication token
 that you use to register the runner. The runner authentication token is stored locally in
-the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file,
+the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/) file,
 which you use to configure the runner.
 
 The runner uses the runner authentication token to authenticate with GitLab when it
@@ -204,18 +204,15 @@ You can use the runners API to [rotate or revoke a runner authentication token](
 
 ## Runner registration tokens (legacy)
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-GitLab has implemented a new [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
-a new method for registering runners and eliminates the
-runner registration token.
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> GitLab has implemented a new [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
+> a new method for registering runners and eliminates the
+> runner registration token.
 
 Runner registration tokens are used to
 [register](https://docs.gitlab.com/runner/register/) a
@@ -239,7 +236,7 @@ multiple jobs run on the same machine (for example, with the [shell runner](http
 You can use the [project allowlist](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
 
 On Docker Machine runners, you should configure
-[`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section)
+[`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersmachine-section)
 to ensure runner machines run only one build
 and are destroyed afterwards. Provisioning takes time,
 so this configuration can affect performance.

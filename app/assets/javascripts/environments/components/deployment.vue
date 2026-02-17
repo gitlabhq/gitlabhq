@@ -103,6 +103,9 @@ export default {
       const deploymentStatus = this.status ? this.status.toUpperCase() : '';
       return !isFinished({ status: deploymentStatus }) && this.deployment.pendingApprovalCount > 0;
     },
+    approvalPath() {
+      return this.deployment?.webPath || this.deployable?.webPath || this.deployable?.buildPath;
+    },
   },
   i18n: {
     latestBadge: s__('Deployment|Latest Deployed'),
@@ -126,7 +129,7 @@ export default {
           :deployment-job="deployable"
           :status="status"
         />
-        <gl-badge v-if="needsApproval" variant="warning">
+        <gl-badge v-if="needsApproval" variant="warning" :href="approvalPath">
           {{ $options.i18n.needsApproval }}
         </gl-badge>
         <gl-badge v-if="latest" variant="info">{{ $options.i18n.latestBadge }}</gl-badge>

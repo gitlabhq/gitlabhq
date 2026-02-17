@@ -1,0 +1,5 @@
+---
+name: create_saml_group_link
+description: Grants the ability to create SAML group links
+boundaries:
+  - group

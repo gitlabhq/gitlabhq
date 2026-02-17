@@ -12,11 +12,8 @@ title: SAML SSO for GitLab.com groups
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For GitLab Self-Managed, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md).
-
-{{< /alert >}}
+> [!note]
+> For GitLab Self-Managed, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md).
 
 Users can sign in to GitLab through their SAML identity provider.
 
@@ -209,9 +206,9 @@ The following GitLab settings correspond to the Keycloak fields.
    1. In the **Signature and Encryption** section, turn on **Sign documents**.
    1. On the **Keys** tab, make sure all sections are disabled.
    1. On the **Client scopes** tab:
-      1. Select the client scope for GitLab.
-      1. Select the `email` AttributeStatement.
-      1. Set the **User Attribute** field to `email`.
+      1. Select the client scope for GitLab. The name of the scope should look like `https://gitlab.com/groups/your-group-name-dedicated`.
+      1. Select **Configure a new mapper**, and select **User Attribute** in the window that opens.
+      1. On the **Add mapper** page, set the **Name**, **User Attribute**, and **SAML Attribute Name** fields to `email`.
       1. Select **Save**.
 1. Retrieve client information from Keycloak.
    1. In the **Action** dropdown list, select **Download adapter config**.
@@ -223,16 +220,13 @@ The following GitLab settings correspond to the Keycloak fields.
       1. Note the value of the `Location` attribute.
    1. Retrieve the certificate fingerprint.
       1. Note the value of the `<ds:X509Certificate>` tag.
-      1. Convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3).
+      1. Copy the value to a separate file and convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3). To do this, add `-----BEGIN CERTIFICATE-----` at the beginning of the file and `-----END CERTIFICATE-----` at the end of the file as new lines.
       1. [Calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
 
 ### Configure assertions
 
-{{< alert type="note" >}}
-
-These attributes are case-insensitive.
-
-{{< /alert >}}
+> [!note]
+> These attributes are case-insensitive.
 
 At minimum, you must configure the following assertions:
 
@@ -315,8 +309,8 @@ After you set up your identity provider to work with GitLab, you must configure 
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Recommended. Select:
-   - In GitLab 17.4 and later, **Disable password authentication for enterprise users**.
-     For more information, see the [Disable password authentication for enterprise users documentation](#disable-password-authentication-for-enterprise-users).
+   - In GitLab 17.4 and later, **Disable password and passkey authentication for enterprise users**.
+     For more information, see the [Disable password and passkey authentication for enterprise users documentation](#disable-password-and-passkey-authentication-for-enterprise-users).
    - **Enforce SSO-only authentication for web activity for this group**.
    - **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**.
      For more information, see the [SSO enforcement documentation](#sso-enforcement).
@@ -337,6 +331,22 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
 
+### Provisioning behavior with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When [restricted access](../manage.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+
 ### Link SAML to your existing GitLab.com account
 
 {{< history >}}
@@ -345,11 +355,8 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
-
-{{< /alert >}}
+> [!note]
+> If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
 
 To link SAML to your existing GitLab.com account:
 
@@ -429,12 +436,9 @@ Alternatively, ask the users to reconnect their SAML account.
 1. Ask relevant users to [unlink their account from the group](#unlink-accounts).
 1. Ask relevant users to [link their account to the new SAML app](#link-saml-to-your-existing-gitlabcom-account).
 
-{{< alert type="warning" >}}
-
-After users have signed into GitLab using SSO SAML, changing the **NameID** value
-breaks the configuration and could lock users out of the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> After users have signed into GitLab using SSO SAML, changing the **NameID** value
+> breaks the configuration and could lock users out of the GitLab group.
 
 For more information on the recommended value and format for specific identity
 providers, see [set up your identity provider](#set-up-your-identity-provider).
@@ -532,7 +536,7 @@ automatically confirms user accounts. Users still receive an
 - The user is provisioned with SAML or SCIM.
 - The user has an email address that belongs to the verified domain.
 
-### Disable password authentication for enterprise users
+### Disable password and passkey authentication for enterprise users
 
 {{< history >}}
 
@@ -550,11 +554,11 @@ You can disable password authentication for all [enterprise users](../../enterpr
 - The group SAML IdP for the GitLab web UI.
 - A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 
-To disable password authentication for enterprise users:
+To disable password and passkey authentication for enterprise users:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
-1. Under **Configuration**, select **Disable password authentication for enterprise users**.
+1. Under **Configuration**, select **Disable password and passkey authentication for enterprise users**.
 1. Select **Save changes**.
 
 ### Block user access
@@ -577,12 +581,9 @@ Users can unlink SAML for a group from their profile page. This can be helpful i
 - You no longer want a group to be able to sign you in to GitLab.com.
 - Your SAML **NameID** has changed and so GitLab can no longer find your user.
 
-{{< alert type="warning" >}}
-
-Unlinking an account removes all roles assigned to that user in the group.
-If a user re-links their account, roles need to be reassigned.
-
-{{< /alert >}}
+> [!warning]
+> Unlinking an account removes all roles assigned to that user in the group.
+> If a user re-links their account, roles need to be reassigned.
 
 Groups require at least one owner. If your account is the only owner in the
 group, you are not allowed to unlink the account. In that case, set up another user as a
@@ -629,16 +630,13 @@ SSO is enforced as follows:
 | Public                   | Off                 | Enforced             | Not enforced            | Not enforced                |
 | Public                   | On                  | Enforced             | Enforced                | Not enforced                |
 
-{{< alert type="note" >}}
-
-SSO enforcement does not apply to API requests. However, you can
-[disable password authentication for enterprise users](#disable-password-authentication-for-enterprise-users)
-to prevent password-based API access.
-
-An [issue proposes](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add
-SSO enforcement for API activity.
-
-{{< /alert >}}
+> [!note]
+> SSO enforcement does not apply to API requests. However, you can
+> [disable password and passkey authentication for enterprise users](#disable-password-and-passkey-authentication-for-enterprise-users)
+> to prevent password-based API access.
+>
+> An [issue proposes](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add
+> SSO enforcement for API activity.
 
 ### SSO-only for web activity enforcement
 
@@ -693,6 +691,12 @@ immediately. If the user:
 - Is signed out, they cannot access the group after being removed from the
   identity provider.
 
+### Repository mirroring with SSO enforcement
+
+When you enable **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**,
+repository mirroring is subject to SSO session requirements. For more information, see
+[Pull mirroring with SSO enforcement](../../project/repository/mirror/pull.md#pull-mirroring-with-sso-enforcement).
+
 ## Migrate to a new identity provider
 
 To migrate to a new identity provider, use the [SAML API](../../../api/saml.md) to update all of your group member's identities.
@@ -708,7 +712,7 @@ For example:
 
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
-- [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/2023/09/14/the-ultimate-guide-to-enabling-saml/)
+- [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/the-ultimate-guide-to-enabling-saml/)
 - [Authentication comparison between SaaS and GitLab Self-Managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 - [SAML Group Sync](group_sync.md)

@@ -7,26 +7,23 @@ module WorkItems
     end
 
     def execute(name: nil, only_available: false)
-      return WorkItems::Type.none if unavailable_container?
-      return order(WorkItems::Type.by_type(name)) if name.present? && !only_available
-      return order(WorkItems::Type) unless only_available
+      return [] if unavailable_container?
+
+      provider = ::WorkItems::TypesFramework::Provider.new(@container)
+      return Array.wrap(provider.find_by_base_type(name)) if name.present? && !only_available
+      return provider.all_ordered_by_name unless only_available
 
       ::WorkItems::TypesFilter
         .new(container: @container)
         .allowed_types
         .then { |types| name.present? ? types.intersection(Array.wrap(name)) : types }
-        .then { |types| WorkItems::Type.by_type(types) }
-        .then { |scope| order(scope) }
+        .then { |types| provider.by_base_types_ordered_by_name(types) }
     end
 
     private
 
     def unavailable_container?
       @container.blank? || @container.is_a?(Namespaces::UserNamespace)
-    end
-
-    def order(scope)
-      scope.order_by_name_asc
     end
   end
 end

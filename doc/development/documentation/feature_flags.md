@@ -177,6 +177,30 @@ If the feature flag is introduced and enabled in the same release, combine the e
 - [Introduced](https://issue-link) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `forti_token_cloud`. Enabled by default.
 ```
 
+If there are multiple feature flags for a feature in the history details, to improve readability you
+can use a nested list to group them with the feature:
+
+- Before:
+
+  ```markdown
+  - [Introduced](https://issue-link) in GitLab 18.3 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
+  - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.4.
+  - Dependency report sidepanel [introduced](https://issue-link) in GitLab 18.4 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
+  - Dependency report sidepanel [enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.5.
+  - Dependency report sidepanel [generally available](https://issue-link) in GitLab 18.6. Feature flags `flag_one` and `flag_two` removed.
+  ```
+
+- After:
+
+  ```markdown
+  - [Introduced](https://issue-link) in GitLab 18.3 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
+  - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.4.
+  - Dependency report sidepanel:
+    - [Introduced](https://issue-link) in GitLab 18.4 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
+    - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.5.
+    - [Generally available](https://issue-link) in GitLab 18.6. Feature flags `flag_one` and `flag_two` removed.
+  ```
+
 Delete `Enabled on GitLab.com` entries only when the feature is enabled by default for all offerings and the flag is removed:
 
 - Before:

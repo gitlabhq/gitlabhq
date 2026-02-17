@@ -30,7 +30,6 @@ describe('content_editor/services/content_editor', () => {
   });
 
   const testDoc = () => doc(p('document'));
-  const testEmptyDoc = () => doc();
 
   describe('.dispose', () => {
     it('destroys the tiptapEditor', () => {
@@ -39,24 +38,6 @@ describe('content_editor/services/content_editor', () => {
       contentEditor.dispose();
 
       expect(contentEditor.tiptapEditor.destroy).toHaveBeenCalled();
-    });
-  });
-
-  describe('empty', () => {
-    it('returns true when tiptapEditor is empty', async () => {
-      deserializer.deserialize.mockResolvedValueOnce({ document: testEmptyDoc() });
-
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(contentEditor.empty).toBe(true);
-    });
-
-    it('returns false when tiptapEditor is not empty', async () => {
-      deserializer.deserialize.mockResolvedValueOnce({ document: testDoc() });
-
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(contentEditor.empty).toBe(false);
     });
   });
 
@@ -71,36 +52,6 @@ describe('content_editor/services/content_editor', () => {
       contentEditor.setEditable(false);
 
       expect(contentEditor.editable).toBe(false);
-    });
-  });
-
-  describe('changed', () => {
-    it('returns true when the initial document changes', async () => {
-      deserializer.deserialize.mockResolvedValueOnce({ document: testDoc() });
-
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      contentEditor.tiptapEditor.commands.insertContent(' new content');
-
-      expect(contentEditor.changed).toBe(true);
-    });
-
-    it('returns false when the initial document hasn’t changed', async () => {
-      deserializer.deserialize.mockResolvedValueOnce({ document: testDoc() });
-
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(contentEditor.changed).toBe(false);
-    });
-
-    it('returns false when an initial document is not set and the document is empty', () => {
-      expect(contentEditor.changed).toBe(false);
-    });
-
-    it('returns true when an initial document is not set and the document is not empty', () => {
-      contentEditor.tiptapEditor.commands.insertContent('new content');
-
-      expect(contentEditor.changed).toBe(true);
     });
   });
 

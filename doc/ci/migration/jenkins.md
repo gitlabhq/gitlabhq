@@ -494,7 +494,7 @@ Some key details about runners:
 - You can use the [`tags` keyword](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale/).
   Use autoscaling to provision runners only when needed and scale down when not needed.
 
 For example, in a `Jenkinsfile`:
@@ -602,7 +602,7 @@ use_cat:
 A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
-[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching).
 Jenkins core does not provide caching.
 
 For example, in a `.gitlab-ci.yml` file:
@@ -730,11 +730,8 @@ Before doing any migration work, you should first:
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)
   to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
 
-  {{< alert type="note" >}}
-
-  The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
-  For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
-
-  {{< /alert >}}
+  > [!note]
+  > The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
+  > For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

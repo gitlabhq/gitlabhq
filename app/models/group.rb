@@ -146,7 +146,6 @@ class Group < Namespace
   scope :self_or_ancestors_aimed_for_deletion, -> { where(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
-  scope :self_not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
   scope :self_and_ancestors_not_aimed_for_deletion, -> { where.not(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
@@ -250,24 +249,9 @@ class Group < Namespace
   scope :with_users, -> { includes(:users) }
 
   scope :active, -> { self_and_ancestors_active }
-  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
   scope :inactive, -> { self_or_ancestors_inactive }
-  scope :self_inactive, -> do
-    namespace_setting_reflection = reflect_on_association(:namespace_settings)
-    namespace_setting_table = Arel::Table.new(namespace_setting_reflection.table_name)
-
-    deletion_schedule_reflection = reflect_on_association(:deletion_schedule)
-    deletion_schedule_table = Arel::Table.new(deletion_schedule_reflection.table_name)
-
-    joins(:namespace_settings)
-      .left_joins(:deletion_schedule)
-      .where(
-        namespace_setting_table[:archived].eq(true)
-          .or(deletion_schedule_table[:group_id].not_eq(nil))
-      )
-  end
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
@@ -294,10 +278,6 @@ class Group < Namespace
   end
 
   scope :excluding_groups, ->(groups) { where.not(id: groups) }
-
-  scope :by_visibility_level, ->(visibility) do
-    where(visibility_level: Gitlab::VisibilityLevel.level_value(visibility)) if visibility.present?
-  end
 
   scope :for_authorized_group_members, ->(user_ids) do
     joins(:group_members)
@@ -913,11 +893,6 @@ class Group < Namespace
       .members(active_users: only_active_users)
   end
 
-  def members_from_self_and_ancestors_with_effective_access_level
-    members_with_parents.select([:user_id, 'MAX(access_level) AS access_level'])
-                        .group(:user_id)
-  end
-
   def members_with_descendants
     GroupMember
       .active_without_invites_and_requests
@@ -1192,8 +1167,9 @@ class Group < Namespace
   end
 
   def use_work_item_url?
-    work_items_consolidated_list_enabled? &&
-      !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
+    return false if feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
+
+    work_items_consolidated_list_enabled?
   end
 
   # overriden in EE
@@ -1223,7 +1199,7 @@ class Group < Namespace
   override :feature_available?
   def feature_available?(feature, user = nil)
     # when we check the :issues feature at group level we need to check the `epics` license feature instead
-    feature = feature == :issues ? :epics : feature
+    feature = :epics if feature == :issues
 
     if ::Groups::FeatureSetting.available_features.include?(feature)
       group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage

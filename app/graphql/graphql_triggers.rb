@@ -27,8 +27,6 @@ module GraphqlTriggers
   end
 
   def self.ci_pipeline_statuses_updated(pipeline)
-    return unless Feature.enabled?(:ci_pipeline_statuses_updated_subscription, pipeline.project)
-
     GitlabSchema.subscriptions.trigger(
       :ci_pipeline_statuses_updated,
       { project_id: pipeline.project.to_gid },
@@ -45,8 +43,6 @@ module GraphqlTriggers
   end
 
   def self.ci_pipeline_creation_requests_updated(merge_request)
-    return unless Feature.enabled?(:ci_pipeline_creation_requests_realtime, merge_request.project)
-
     GitlabSchema.subscriptions.trigger(
       :ci_pipeline_creation_requests_updated,
       { merge_request_id: merge_request.to_gid },

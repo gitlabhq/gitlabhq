@@ -124,7 +124,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
               {
                 title: 'Awesome work_item',
                 description: 'please fix',
-                work_item_type: WorkItems::Type.default_by_type(:task)
+                work_item_type: build(:work_item_system_defined_type, :task)
               }
             end
 
@@ -154,7 +154,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
             {
               title: 'Awesome work_item',
               description: 'please fix',
-              work_item_type: WorkItems::Type.default_by_type(:task)
+              work_item_type: build(:work_item_system_defined_type, :task)
             }
           end
 

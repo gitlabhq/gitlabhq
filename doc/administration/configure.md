@@ -56,7 +56,7 @@ Customize and configure GitLab Self-Managed.
 - [Snippets](snippets/_index.md)
 - [S/MIME signing](smime_signing_email.md)
 - [Static objects external storage](static_objects_external_storage.md)
-- [Terraform limits](settings/terraform_limits.md)
+- [Terraform settings](settings/terraform_state_settings.md)
 - [Terraform state](terraform_state.md)
 - [Time zone](timezone.md)
 - [Uploads](uploads.md)

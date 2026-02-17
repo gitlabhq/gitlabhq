@@ -14,7 +14,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
     described_class.new(user, project, uploader)
   end
 
-  let_it_be(:issue_type) { ::WorkItems::Type.default_issue_type }
+  let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
 
   let(:work_items) { ::WorkItems::WorkItemsFinder.new(user, project: project).execute }
   let(:email_method) { :import_work_items_csv_email }
@@ -71,6 +71,9 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
             expect(result[:success]).to eq(0)
             expect(result[:error_lines]).to be_empty # there are problematic lines detailed below
             expect(result[:parse_error]).to eq(false)
+
+            skip unless Gitlab.ee?
+
             expect(result[:type_errors]).to match({
               blank: [],
               disallowed: { "epic" => [5] }, # tested in the EE version
@@ -88,8 +91,8 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
           it 'defaults the work item type to issue' do
             result = nil
 
-            issue_wit = WorkItems::Type.find_by(name: "Issue")
-            expect { result = subject }.to change { WorkItem.where(work_item_type: issue_wit).count }.by(2)
+            issue_wit = build(:work_item_system_defined_type, :issue)
+            expect { result = subject }.to change { WorkItem.where(work_item_type_id: issue_wit.id).count }.by(2)
 
             expect(result[:success]).to eq(2)
             expect(result[:error_lines]).to be_empty

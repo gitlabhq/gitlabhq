@@ -1,29 +1,13 @@
 ---
-stage: AI-powered
-group: Duo Chat
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Customize GitLab Duo
+redirect_to: '../../duo_agent_platform/customize/_index.md'
+remove_date: '2026-04-26'
 ---
 
-You can customize GitLab Duo to match your workflow, coding standards, or project requirements.
+<!-- markdownlint-disable -->
 
-## Customization options
+This document was moved to [another location](../../duo_agent_platform/customize/_index.md).
 
-| Method    | AI feature | Use cases    |
-|-----------|------------|--------------|
-| [Use custom rules](custom_rules.md) to provide instructions. | - GitLab Duo Chat | - Apply personal preferences.<br>- Enforce team standards. |
-| [Create an AGENTS.md file](agents_md.md) to provide instructions. | - GitLab Duo Chat<br>- Flows<br>- Other non-GitLab AI coding tools | - Account for project-specific context.<br>- Organize a monorepo.<br>- Enforce directory-specific conventions. |
-| [Create MR review instructions](review_instructions.md) to ensure consistent and specific code review standards in your project. | - GitLab Duo Code Review (Classic)<br>- Code Review Flow | Apply:<br>- Language-specific review rules.<br>- Security standards.<br>- Code quality requirements.<br>- File-specific guidelines. |
-
-## Best practices
-
-When you customize GitLab Duo, apply the following best practices:
-
-- Start with minimal, clear, and simple instructions, and add more as needed.
-  Keep the instruction file as short as possible.
-- Make sure the instructions are specific and actionable. Provide examples as
-  needed.
-- Choose the method that matches your use case.
-- Combine multiple methods to tailor and control how GitLab Duo behaves.
-- Document your choices in comments to explain why certain instructions exist.
-- Protect customization files with [Code Owners](../../project/codeowners/_index.md) to manage changes.
+<!-- This redirect file can be deleted after <2026-04-26>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

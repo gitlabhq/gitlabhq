@@ -17,13 +17,10 @@ Prerequisites:
   - HTTP archive (HAR) of API requests to test
   - Postman Collection v2.0 or v2.1
 
-  {{< alert type="warning" >}}
-
-  **Never** run fuzz testing against a production server. Not only can it perform any function that
-  the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-  data. Only run fuzzing against a test server.
-
-  {{< /alert >}}
+  > [!warning]
+  > **Never** run fuzz testing against a production server. Not only can it perform any function that
+  > the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+  > data. Only run fuzzing against a test server.
 
 To enable web API fuzzing use the web API fuzzing configuration form.
 
@@ -51,7 +48,7 @@ To generate an API fuzzing configuration snippet:
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [available CI/CD variables](variables.md).
 1. Select **Generate code snippet**.
-   A modal opens with the YAML snippet corresponding to the options you've selected in the form.
+   A dialog opens with the YAML snippet corresponding to the options you've selected in the form.
 1. Do one of the following:
    1. To copy the snippet to your clipboard, select **Copy code only**.
    1. To add the snippet to your project's `.gitlab-ci.yml` file, select
@@ -156,12 +153,9 @@ uses them to perform testing.
 
 For more details, including how to create a HAR file, see [HTTP archive format](../create_har_files.md).
 
-{{< alert type="warning" >}}
-
-HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. You should review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> HAR files may contain sensitive information such as authentication tokens, API keys, and session
+> cookies. You should review the HAR file contents before adding them to a repository.
 
 ### Configure web API fuzzing with a HAR file
 
@@ -346,13 +340,10 @@ When used with the GitLab API fuzzer, Postman Collections must contain definitio
 test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
 testing.
 
-{{< alert type="warning" >}}
-
-Postman Collection files may contain sensitive information such as authentication tokens, API keys,
-and session cookies. You should review the Postman Collection file contents before adding
-them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> Postman Collection files may contain sensitive information such as authentication tokens, API keys,
+> and session cookies. You should review the Postman Collection file contents before adding
+> them to a repository.
 
 ### Configure Web API fuzzing with a Postman Collection file
 
@@ -443,13 +434,10 @@ Variable scopes in Postman can be a daunting topic and not everyone is familiar 
 
 As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
-{{< alert type="note" >}}
-
-If a variable with the same name is declared in two different scopes, the value stored in the variable
-with narrowest scope is used. For example, if there is a global variable named `username` and
-a local variable named `username`, the local value is used when the request runs.
-
-{{< /alert >}}
+> [!note]
+> If a variable with the same name is declared in two different scopes, the value stored in the variable
+> with narrowest scope is used. For example, if there is a global variable named `username` and
+> a local variable named `username`, the local value is used when the request runs.
 
 The following is a summary of the variable scopes supported by the Postman Client and API fuzzing:
 

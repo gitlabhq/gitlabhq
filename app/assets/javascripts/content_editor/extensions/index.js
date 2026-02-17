@@ -49,7 +49,6 @@ export { default as Reference } from './reference';
 export { default as ReferenceLabel } from './reference_label';
 export { default as ReferenceDefinition } from './reference_definition';
 export { default as Selection } from './selection';
-export { default as Sourcemap } from './sourcemap';
 export { default as Strike } from './strike';
 export { default as Subscript } from './subscript';
 export { default as Suggestions } from './suggestions';

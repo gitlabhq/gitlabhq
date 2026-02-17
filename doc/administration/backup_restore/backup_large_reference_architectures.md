@@ -26,16 +26,13 @@ Follow these procedures for GitLab environments running reference architectures
 that support 3,000+ users, with special considerations for cloud-based
 databases and object storage.
 
-{{< alert type="note" >}}
-
-This document is intended for environments using:
-
-- [Linux package (Omnibus) and cloud-native hybrid reference architectures 60 RPS / 3,000 users and up](../reference_architectures/_index.md)
-- [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
-- [Amazon S3](https://aws.amazon.com/s3/) for object storage
-- [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
-
-{{< /alert >}}
+> [!note]
+> This document is intended for environments using:
+> 
+> - [Linux package (Omnibus) and cloud-native hybrid reference architectures 60 RPS / 3,000 users and up](../reference_architectures/_index.md)
+> - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
+> - [Amazon S3](https://aws.amazon.com/s3/) for object storage
+> - [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
 
 ## Configure daily backups
 
@@ -134,10 +131,10 @@ Set up cronjobs to perform Gitaly server-side backups:
 1. Configure Gitaly server-side backup destination on all Gitaly nodes by following [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups).
    This bucket is used exclusively by Gitaly to store repository data.
 1. While Gitaly backs up all Git repository data in its designated object storage bucket configured previously,
-   the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
-   Ensure this backup data is properly uploaded to remote (cloud) storage by following
+   the backup utility tool (`gitlab-backup`) uploads additional backup data. This data includes a `tar` file containing essential metadata for restores.
+   You can use the same bucket as other backups or a separate bucket. Ensure this backup data is properly uploaded to remote (cloud) storage by following
    [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
-1. (Optional) To solidify the durability of this backup data, back up both buckets configured previously with their respective object store provider by adding them to
+1. (Optional) To solidify the durability of this backup data, back up any buckets configured previously with their respective object store provider by adding them to
    [backups of object storage data](#configure-backup-of-object-storage-data).
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable, and skip PostgreSQL data:
@@ -181,13 +178,11 @@ Set up cronjobs to perform Gitaly server-side backups:
 1. Configure Gitaly server-side backup destination on all Gitaly nodes by following
    [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups). This bucket is used exclusively by Gitaly to store repository data.
 1. While Gitaly backs up all Git repository data in its designated object storage bucket configured previously,
-   the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
-   Ensure this backup data is properly uploaded to remote (cloud) storage by following
+   the backup utility tool (`gitlab-backup`) uploads additional backup data. This data includes a `tar` file containing essential metadata for restores.
+   You can use the same bucket as other backups or a separate bucket. Ensure this backup data is properly uploaded to remote (cloud) storage by following
    [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
-1. (Optional) To solidify the durability of this backup data, both buckets configured previously can be backed up by their respective object store provider by adding them
+1. (Optional) To solidify the durability of this backup data, any buckets configured previously can be backed up by their respective object store provider by adding them
    to [backups of object storage data](#configure-backup-of-object-storage-data).
-1. Ensure backup of both buckets by following [Configure backup of object storage data](#configure-backup-of-object-storage-data). Both storage buckets configured previously
-   should also be backed up by their respective object storage provider.
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable and skip all other data:
 
@@ -198,7 +193,7 @@ Set up cronjobs to perform Gitaly server-side backups:
    This causes Gitaly nodes to upload the Git data and some metadata to remote storage. See [Toolbox included tools](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#toolbox-included-tools).
 
 1. Check that the full backup created data in both the Gitaly backup bucket as well as the regular backup bucket. Incremental repository backup is not supported by `backup-utility` with server-side repository backup, see [charts issue 3421](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3421).
-1. [Configure cron to make daily backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup). Specifically, set `gitlab.toolbox.backups.cron.extraArgs` to include:
+1. [Configure cron to make daily backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup). Specifically, set `gitlab.toolbox.backups.cron.extraArgs` to include:
 
    ```shell
    --repositories-server-side --skip db --skip repositories --skip uploads --skip builds --skip artifacts --skip pages --skip lfs --skip terraform_state --skip registry --skip packages --skip ci_secure_files
@@ -341,7 +336,7 @@ new bucket.
    to point to the new database:
 
    - For Linux package installations, follow
-     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
      [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).
@@ -356,7 +351,7 @@ new bucket.
 1. If you restore to a new database instance, then reconfigure GitLab to point to the new database:
 
    - For Linux package installations, follow
-     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
      [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).

@@ -124,13 +124,10 @@ Most artifacts are compressed by GitLab Runner before being sent to the coordina
 If you're using the Linux package or have a self-compiled installation, you
 can change the location where the artifacts are stored locally.
 
-{{< alert type="note" >}}
-
-For Docker installations, you can change the path where your data is mounted.
-For the Helm chart, use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For Docker installations, you can change the path where your data is mounted.
+> For the Helm chart, use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 {{< tabs >}}
 
@@ -190,12 +187,9 @@ If you configure GitLab to store artifacts on object storage, you may also want 
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
 In both cases, job logs are archived and moved to object storage when the job completes.
 
-{{< alert type="warning" >}}
-
-In a multi-server setup you must use one of the options to
-[eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
-
-{{< /alert >}}
+> [!warning]
+> In a multi-server setup you must use one of the options to
+> [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
 You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 

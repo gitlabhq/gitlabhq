@@ -6,8 +6,8 @@ module RapidDiffs
 
     presents ::Commit, as: :resource
 
-    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil, environment = nil)
-      super(subject, diff_view, diff_options, request_params, environment)
+    def initialize(subject, diff_view:, diff_options:, request_params: nil, current_user: nil, environment: nil)
+      super(subject, diff_view:, diff_options:, request_params:, environment:)
       @current_user = current_user
     end
 
@@ -28,11 +28,13 @@ module RapidDiffs
     end
 
     override(:reload_stream_url)
-    def reload_stream_url(offset: nil, diff_view: nil)
+    def reload_stream_url(offset: nil, diff_view: nil, skip_old_path: nil, skip_new_path: nil)
       diffs_stream_project_commit_path(
         resource.project,
         resource.id,
         offset: offset,
+        skip_old_path: skip_old_path,
+        skip_new_path: skip_new_path,
         view: diff_view
       )
     end

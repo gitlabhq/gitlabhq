@@ -13,6 +13,7 @@ Array.from(document.querySelectorAll('.js-gitlab-user')).forEach(
   (node) =>
     new Vue({
       el: node,
+      name: 'UserSelectRoot',
       apolloProvider,
       render: (h) => h(UserSelect, { props: { name: node.dataset.name } }),
     }),

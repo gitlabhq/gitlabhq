@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   specify { expect(described_class.graphql_name).to eq('Pipeline') }
 
   specify { expect(described_class.interfaces).to include(::Types::Ci::PipelineInterface) }
@@ -113,7 +115,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-    let_it_be(:variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'KEY_1', value: 'VALUE_1') }
+
     let(:query) do
       %(
         {
@@ -141,6 +143,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     subject(:data) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     before do
+      create_or_replace_pipeline_variables(pipeline, { key: 'KEY_1', value: 'VALUE_1' })
       project.add_role(user, user_access_level) # rubocop:disable RSpec/BeforeAllRoleAssignment -- need dynamic settings `user_access_level`
     end
 
@@ -149,8 +152,8 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
       it 'returns the manual variables' do
         expect(manual_variables.size).to eq(1)
-        expect(manual_variables.first['key']).to eq(variable.key)
-        expect(manual_variables.first['value']).to eq(variable.value)
+        expect(manual_variables.first['key']).to eq('KEY_1')
+        expect(manual_variables.first['value']).to eq('VALUE_1')
         expect(manual_variables.first.keys).to match_array(%w[id key value])
       end
     end
@@ -160,7 +163,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
       it 'returns the manual variables with nil values' do
         expect(manual_variables.size).to eq(1)
-        expect(manual_variables.first['key']).to eq(variable.key)
+        expect(manual_variables.first['key']).to eq('KEY_1')
         expect(manual_variables.first['value']).to eq(nil)
         expect(manual_variables.first.keys).to match_array(%w[id key value])
       end

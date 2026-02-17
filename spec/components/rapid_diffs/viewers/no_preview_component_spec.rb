@@ -207,6 +207,36 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         verify_virtual_rendering_params
       end
     end
+
+    context 'with a binary file' do
+      before do
+        allow(diff_file).to receive_messages(text?: false, content_changed?: true, too_large?: false,
+          collapsed?: false, diffable?: true)
+      end
+
+      it 'does not raise encoding error when rendering' do
+        expect { render_component }.not_to raise_error
+        expect(page).to have_text("No diff preview for this file type.")
+        verify_virtual_rendering_params
+      end
+
+      it 'whitespace_only? returns false without triggering syntax highlighting' do
+        expect(diff_file).not_to receive(:diff_lines_for_serializer)
+        expect(diff_file.whitespace_only?).to be false
+      end
+    end
+
+    context 'with a binary file that is collapsed' do
+      before do
+        allow(diff_file).to receive_messages(text?: false, collapsed?: true)
+      end
+
+      it 'does not raise encoding error and shows collapsed message' do
+        expect { render_component }.not_to raise_error
+        expect(page).to have_text("Preview size limit exceeded, changes collapsed.")
+        verify_virtual_rendering_params
+      end
+    end
   end
 
   describe 'actions' do

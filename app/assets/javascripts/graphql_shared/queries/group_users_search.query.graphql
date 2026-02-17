@@ -2,7 +2,7 @@
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query groupUsersSearch($search: String!, $fullPath: ID!, $after: String, $first: Int, $ids: [ID!]) {
-  workspace: group(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     users: groupMembers(
       search: $search

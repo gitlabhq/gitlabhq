@@ -167,6 +167,13 @@ module Ci
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+    Ci::PipelineArtifact.file_types.each_key do |file_type|
+      has_one :"pipeline_artifacts_#{file_type}", -> { with_file_types(file_type) },
+        class_name: 'Ci::PipelineArtifact',
+        foreign_key: [:pipeline_id, :partition_id],
+        inverse_of: :pipeline
+    end
+
     has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
@@ -701,6 +708,31 @@ module Ci
       :ci_pipelines
     end
 
+    def self.projects_with_variables(project_ids, limit)
+      if Feature.disabled?(:query_projects_with_variables_from_ci_pipeline_artifacts, Feature.current_request)
+        return Ci::PipelineVariable.projects_with_variables(project_ids, limit)
+      end
+
+      project_ids_from_pipeline_variables =
+        Ci::PipelineVariable
+          .select(:project_id)
+          .where(project_id: project_ids)
+
+      project_ids_from_pipeline_artifacts =
+        Ci::PipelineArtifact
+          .select(:project_id)
+          .where(project_id: project_ids, file_type: :pipeline_variables)
+
+      project_ids_sql = <<~SQL.squish
+        (#{project_ids_from_pipeline_variables.to_sql})
+        UNION
+        (#{project_ids_from_pipeline_artifacts.to_sql})
+        LIMIT ?
+      SQL
+
+      connection.select_values(sanitize_sql_array([project_ids_sql, limit]))
+    end
+
     def ci_pipeline_statuses_rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :ci_pipeline_statuses_subscription,
@@ -732,6 +764,10 @@ module Ci
 
     def stages_names
       stages.order(:position).pluck(:name)
+    end
+
+    def ref_status_name
+      ci_ref&.status_name&.to_s
     end
 
     def ref_exists?
@@ -1037,6 +1073,15 @@ module Ci
       end
     end
 
+    def variables
+      return super if Feature.disabled?(:ci_read_pipeline_variables_from_artifact, project)
+
+      # TODO: Replace super with [] when Ci::PipelineVariable is dropped
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/587237
+      read_variables_from_pipeline_artifact || super
+    end
+    strong_memoize_attr :variables
+
     def variables_builder
       @variables_builder ||= ::Gitlab::Ci::Variables::Builder.new(self)
     end
@@ -1071,8 +1116,10 @@ module Ci
         if merge_request?
           MergeRequest.where(id: merge_request_id)
         else
-          MergeRequest.where(source_project_id: project_id, source_branch: ref)
-            .by_commit_sha(project, sha)
+          merge_requests_for_source_project = MergeRequest.where(source_project_id: project_id, source_branch: ref)
+          target_project_ids = merge_requests_for_source_project.from_fork.pluck(:target_project_id)
+          target_project_ids << project_id
+          merge_requests_for_source_project.by_commit_sha(target_project_ids, sha)
         end
     end
 
@@ -1638,12 +1685,6 @@ module Ci
       end
     end
 
-    private
-
-    def add_message(severity, content)
-      messages.build(severity: severity, content: content, project_id: project_id)
-    end
-
     def merge_request_diff_sha
       return unless merge_request?
 
@@ -1652,6 +1693,12 @@ module Ci
       else
         sha
       end
+    end
+
+    private
+
+    def add_message(severity, content)
+      messages.build(severity: severity, content: content, project_id: project_id)
     end
 
     def push_details
@@ -1746,6 +1793,14 @@ module Ci
 
     rescue Repository::AmbiguousRefError
       false
+    end
+
+    def read_variables_from_pipeline_artifact
+      artifact = pipeline_artifacts_pipeline_variables
+      return unless artifact
+
+      variables_attributes = Gitlab::Json.safe_parse(artifact.file.read)
+      variables_attributes.map { |var_attrs| Ci::PipelineVariableItem.new(pipeline: self, **var_attrs) }
     end
   end
 end

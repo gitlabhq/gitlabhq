@@ -39,13 +39,10 @@ You can use GitLab Flavored Markdown in:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-{{< alert type="note" >}}
-
-This Markdown specification is valid for GitLab only. We do our best to render the Markdown faithfully here,
-however the [GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
-use a different Markdown renderer.
-
-{{< /alert >}}
+> [!note]
+> This Markdown specification is valid for GitLab only. We do our best to render the Markdown faithfully here,
+> however the [GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
+> use a different Markdown renderer.
 
 To see exact examples of how GitLab renders any of these examples:
 
@@ -424,7 +421,7 @@ Examples:
 <!--
 The "2." and "4." in the previous example are changed to "1." in the following example,
 to match the style standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
+See https://docs.gitlab.com/development/documentation/styleguide/#lists
 -->
 
 When rendered, the example looks similar to:
@@ -460,7 +457,7 @@ They can even:
 <!--
 The "*" and "+" in the previous example are changed to "-" in the following example,
 to match the style standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
+See https://docs.gitlab.com/development/documentation/styleguide/#lists
 -->
 
 When rendered, the example looks similar to:
@@ -621,12 +618,9 @@ Fruits
 : orange
 ```
 
-{{< alert type="note" >}}
-
-The rich text editor does not support inserting new description lists. To insert a new description list, use the
-plain text editor. For more information, see [issue 535956](https://gitlab.com/gitlab-org/gitlab/-/issues/535956).
-
-{{< /alert >}}
+> [!note]
+> The rich text editor does not support inserting new description lists. To insert a new description list, use the
+> plain text editor. For more information, see [issue 535956](https://gitlab.com/gitlab-org/gitlab/-/issues/535956).
 
 ### Task lists
 
@@ -684,15 +678,11 @@ When rendered, the examples look similar to:
 > - This line shows a [relative link to a file one directory higher](../_index.md)
 > - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
-{{< alert type="note" >}}
-
 You cannot use relative links to reference project files in a wiki
 page, or a wiki page in a project file. This limitation exists because wikis are always
 in separate Git repositories in GitLab. For example, `[I'm a reference-style link](style)`
 points to `wikis/style` only when the link is inside a wiki Markdown file.
 For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
-
-{{< /alert >}}
 
 Use heading ID anchors to link to a specific section in a page:
 
@@ -766,9 +756,9 @@ When rendered, the example looks similar to:
 
 - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
 - Option to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
-- Option to reference issues, epics, and work items with `[work_item:NUMBER]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.2.
-- Option to reference issues, epics, and work items with `[work_item:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
-- Option to reference issues, epics, and work items with `[work_item:123]` syntax [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+- Option to reference issues, epics, and work items with `[work_item:123]` syntax:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
 - Option to reference epics with `[epic:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352864) in GitLab 18.4.
 
 {{< /history >}}
@@ -1056,9 +1046,8 @@ Watch the following video walkthrough of this feature:
   <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-{{< alert type="note" >}}
-Administrators can enable rendering of iframes in Markdown and configure the allowed iframe `src` hosts at the instance level. You can manage these settings via the [Application settings API](../api/settings.md#available-settings): `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw`.
-{{< /alert >}}
+> [!note]
+> Administrators can enable rendering of iframes in Markdown and configure the allowed iframe `src` hosts at the instance level. You can manage these settings via the [Application settings API](../api/settings.md#available-settings): `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw`.
 
 The `items` attribute is a list of objects representing the data points.
 
@@ -1478,11 +1467,12 @@ Visit the [official page](https://mermaidjs.github.io/) for more details. The
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
 issues in your diagrams.
 
+GitLab.com supports Mermaid version 10.
+
 To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Basic Mermaid diagram example
     accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
@@ -1497,7 +1487,6 @@ graph TD
 When rendered, the example looks similar to:
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Basic Mermaid diagram example
     accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
@@ -1512,7 +1501,6 @@ You can also include subgraphs:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
     accTitle: Mermaid diagram with subgraphs
     accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows.
@@ -1536,7 +1524,6 @@ graph TB
 When rendered, the example looks similar to:
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
     accTitle: Mermaid diagram with subgraphs rendered
     accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows as rendered.
@@ -1628,12 +1615,9 @@ When rendered, the example looks like:
 
 ![Example of math in GitLab](img/markdown_math_v17_2.png)
 
-{{< alert type="note" >}}
-
-The rich text editor does not support inserting new math blocks. To insert a new math block, use the
-plain text editor. For more information, see [issue 366527](https://gitlab.com/gitlab-org/gitlab/-/issues/366527).
-
-{{< /alert >}}
+> [!note]
+> The rich text editor does not support inserting new math blocks. To insert a new math block, use the
+> plain text editor. For more information, see [issue 366527](https://gitlab.com/gitlab-org/gitlab/-/issues/366527).
 
 ## Table of contents
 
@@ -1662,13 +1646,10 @@ or
 - Merge requests.
 - Epics.
 
-{{< alert type="note" >}}
-
-A table of contents renders also when you use the TOC code in single square brackets, regardless of
-being on its own line or not. This behavior is unintended.
-For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
-
-{{< /alert >}}
+> [!note]
+> A table of contents renders also when you use the TOC code in single square brackets, regardless of
+> being on its own line or not. This behavior is unintended.
+> For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
 
 <!--
 Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
@@ -2050,13 +2031,10 @@ When rendered, the example looks similar to:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Placeholders can be used to display certain types of changeable data, such as a project's title
 or latest tag. They are filled in each time the Markdown is rendered.
@@ -2189,6 +2167,10 @@ numbering.
 
 Regardless where you put the note, it's always shown at the bottom of the rendered file.
 
+> [!note]
+> The rich text editor does not support inserting new footnotes. To insert a new footnote, use the
+> plain text editor. For more information, see [issue 365265](https://gitlab.com/gitlab-org/gitlab/-/issues/365265).
+
 For example:
 
 - Referencing footnotes:
@@ -2215,13 +2197,6 @@ When rendered, footnotes look similar to:
 > [^1]: This text is inside a footnote.
 >
 > [^footnote-42]: This text is another footnote.
-
-{{< alert type="note" >}}
-
-The rich text editor does not support inserting new footnotes. To insert a new footnote, use the
-plain text editor. For more information, see [issue 365265](https://gitlab.com/gitlab-org/gitlab/-/issues/365265).
-
-{{< /alert >}}
 
 ## Inline HTML
 
@@ -2258,6 +2233,7 @@ are separated into their own lines:
 ```html
 <dl>
   <dt>Markdown in HTML</dt>
+  <dd>
 
   Does *not* work **very** well. HTML tags work, in most cases.
 

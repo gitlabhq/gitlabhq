@@ -168,7 +168,7 @@ describe('CRUD Component', () => {
         await nextTick();
 
         expect(localStorage.setItem).toHaveBeenCalledWith('crud-collapse-test-anchor', true);
-        expect(findBody().exists()).toBe(false);
+        expect(findBody().isVisible()).toBe(false);
       });
 
       it('does not emit an event on mounted when no local storage key is set', () => {
@@ -192,7 +192,7 @@ describe('CRUD Component', () => {
       });
 
       it('the collapsible area is collapsed initially', () => {
-        expect(findBody().exists()).toBe(false);
+        expect(findBody().isVisible()).toBe(false);
       });
 
       it('emits an event on mounted', () => {
@@ -244,11 +244,11 @@ describe('CRUD Component', () => {
     it('click on toggle hides content', async () => {
       createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
 
-      expect(findBody().exists()).toBe(true);
+      expect(findBody().isVisible()).toBe(true);
 
       await findCollapseToggle().vm.$emit('click');
 
-      expect(findBody().exists()).toBe(false);
+      expect(findBody().isVisible()).toBe(false);
       // Vue compat doesn't know about component props if it extends other component
       expect(
         findChevronIcon().props('isOn') ?? parseBoolean(findChevronIcon().attributes('is-on')),
@@ -258,7 +258,7 @@ describe('CRUD Component', () => {
     it('`collapsed` hides content by default', () => {
       createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
 
-      expect(findBody().exists()).toBe(false);
+      expect(findBody().isVisible()).toBe(false);
     });
 
     it('emits `expanded` when clicked on a collapsed toggle', async () => {

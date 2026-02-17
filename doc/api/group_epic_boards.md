@@ -25,7 +25,7 @@ request results in `404` status code.
 
 ## List all epic boards in a group
 
-Lists epic boards in the given group.
+Lists all epic boards for a specified group.
 
 ```plaintext
 GET /groups/:id/epic_boards
@@ -108,9 +108,9 @@ Example response:
 ]
 ```
 
-## Single group epic board
+## Retrieve a group epic board
 
-Gets a single group epic board.
+Retrieves a specified group epic board.
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id
@@ -198,8 +198,7 @@ Example response:
 
 {{< /history >}}
 
-Gets a list of the epic board's lists.
-Does not include `open` and `closed` lists.
+Lists all group epic board lists for a specified board. Does not include `open` and `closed` lists.
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id/lists
@@ -254,7 +253,7 @@ Example response:
 ]
 ```
 
-## Single group epic board list
+## Retrieve a group epic board list
 
 {{< history >}}
 
@@ -262,7 +261,7 @@ Example response:
 
 {{< /history >}}
 
-Gets a single board list.
+Retrieves a specified group epic board list.
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id/lists/:list_id

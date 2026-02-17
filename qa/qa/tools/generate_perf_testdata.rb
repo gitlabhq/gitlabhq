@@ -41,10 +41,8 @@ module QA
           method(:create_an_mr_with_large_files_and_many_mr_discussions)
         ]
 
-        threads_arr = []
-
-        methods_arr.each do |m|
-          threads_arr << Thread.new { m.call }
+        threads_arr = methods_arr.map do |m|
+          Thread.new { m.call }
         end
 
         threads_arr.each(&:join)

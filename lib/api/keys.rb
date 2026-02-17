@@ -12,11 +12,12 @@ module API
         detail 'Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID\
         of an SSH key'
         success Entities::SSHKeyWithUser
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :id, types: [String, Integer], desc: 'The ID of an SSH key', documentation: { example: '2' }
       end
+      route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance
       get ":id" do
         authenticated_as_admin!
 
@@ -29,12 +30,13 @@ module API
         success Entities::UserWithAdmin
         detail 'You can search for a user that owns a specific SSH key. Note only administrators can lookup SSH key\
         with the fingerprint of an SSH key'
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :fingerprint, type: String, desc: 'The fingerprint of an SSH key',
           documentation: { example: 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1' }
       end
+      route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance
       get do
         authenticated_with_can_read_all_resources!
 

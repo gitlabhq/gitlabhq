@@ -135,6 +135,7 @@ type RedisConfig struct {
 	DB               *int
 	MaxIdle          *int
 	MaxActive        *int
+	TLS              *TLSConfig `toml:"tls" json:"tls"`
 }
 
 // SentinelConfig contains configuration options specifically for Sentinel
@@ -203,6 +204,26 @@ type HealthCheckConfig struct {
 	RailsSkipInterval TomlDuration `toml:"rails_skip_interval" json:"rails_skip_interval"`
 }
 
+// LoadSheddingConfig holds configuration for load shedding
+type LoadSheddingConfig struct {
+	// Enabled indicates whether load shedding is active
+	Enabled bool `toml:"enabled" json:"enabled"`
+	// BacklogThreshold is the backlog threshold at which to start shedding load
+	BacklogThreshold int `toml:"backlog_threshold" json:"backlog_threshold"`
+	// BacklogHysteresis is the factor for deactivation (e.g., 0.8 means deactivate at 80% of threshold)
+	BacklogHysteresis float64 `toml:"backlog_hysteresis" json:"backlog_hysteresis"`
+	// RetryAfterSeconds is the Retry-After header value in seconds when shedding load
+	RetryAfterSeconds int `toml:"retry_after_seconds" json:"retry_after_seconds"`
+	// Strategy is the strategy to use for calculating effective backlog (max, sum; default: max)
+	Strategy string `toml:"strategy" json:"strategy"`
+	// CheckInterval is how often to sample the Puma backlog (independent of readiness checks)
+	CheckInterval TomlDuration `toml:"check_interval" json:"check_interval"`
+	// PumaControlURL is the URL to check Puma's control server for backlog metrics
+	PumaControlURL string `toml:"puma_control_url" json:"puma_control_url"`
+	// Timeout for control server requests
+	Timeout TomlDuration `toml:"timeout" json:"timeout"`
+}
+
 // Config holds the overall application configuration
 type Config struct {
 	ConfigCommand                string                   `toml:"config_command,omitempty" json:"config_command"`
@@ -232,6 +253,7 @@ type Config struct {
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
 	HealthCheckListener          *HealthCheckConfig       `toml:"health_check_listener" json:"health_check_listener"`
+	LoadSheddingConfig           *LoadSheddingConfig      `toml:"load_shedding" json:"load_shedding"`
 	Sentinel                     *SentinelConfig          `toml:"Sentinel" json:"Sentinel"`
 	CircuitBreakerConfig         CircuitBreakerConfig     `toml:"circuit_breaker" json:"circuit_breaker"`
 }
@@ -356,6 +378,29 @@ func (c *Config) ApplyHealthCheckDefaults() {
 			readinessProbeURL = c.Backend.String() + "/-/readiness"
 		}
 		c.HealthCheckListener.ReadinessProbeURL = readinessProbeURL
+	}
+}
+
+// ApplyLoadSheddingDefaults applies default values to load shedding configuration
+func (c *Config) ApplyLoadSheddingDefaults() {
+	if c.LoadSheddingConfig == nil || !c.LoadSheddingConfig.Enabled {
+		return
+	}
+
+	if c.LoadSheddingConfig.CheckInterval.Duration == 0 {
+		c.LoadSheddingConfig.CheckInterval = TomlDuration{Duration: 1 * time.Second}
+	}
+	if c.LoadSheddingConfig.Timeout.Duration == 0 {
+		c.LoadSheddingConfig.Timeout = TomlDuration{Duration: 5 * time.Second}
+	}
+	if c.LoadSheddingConfig.BacklogHysteresis <= 0 || c.LoadSheddingConfig.BacklogHysteresis > 1 {
+		c.LoadSheddingConfig.BacklogHysteresis = 0.8
+	}
+	if c.LoadSheddingConfig.Strategy == "" {
+		c.LoadSheddingConfig.Strategy = "max"
+	}
+	if c.LoadSheddingConfig.PumaControlURL == "" {
+		c.LoadSheddingConfig.PumaControlURL = "http://localhost:9293"
 	}
 }
 

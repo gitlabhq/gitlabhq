@@ -105,7 +105,7 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
      }
      ```
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
@@ -149,7 +149,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
    ![dsm_secret_import_1](img/dsm_secret_import_1_v16_9.png)
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`

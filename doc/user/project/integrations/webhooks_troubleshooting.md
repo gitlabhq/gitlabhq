@@ -31,13 +31,10 @@ For information about webhook events and JSON payloads, see [webhook events](web
 Use public tools to inspect and test webhook payloads.
 These tools provide catch-all endpoints for HTTP requests and respond with a `200 OK` status code.
 
-{{< alert type="warning" >}}
-
-Exercise caution when using public tools, as you might send sensitive data to external services.
-Use test tokens and rotate any secrets inadvertently sent to third parties.
-For enhanced privacy, [create a private webhook receiver](#create-a-private-webhook-receiver).
-
-{{< /alert >}}
+> [!warning]
+> Exercise caution when using public tools, as you might send sensitive data to external services.
+> Use test tokens and rotate any secrets inadvertently sent to third parties.
+> For enhanced privacy, [create a private webhook receiver](#create-a-private-webhook-receiver).
 
 Public webhook inspection tools include:
 
@@ -99,11 +96,8 @@ To create a private webhook receiver:
    - -> /
    ```
 
-{{< alert type="note" >}}
-
-To add this receiver, you might need to [allow requests to the local network](../../../security/webhooks.md).
-
-{{< /alert >}}
+> [!note]
+> To add this receiver, you might need to [allow requests to the local network](../../../security/webhooks.md).
 
 ## Resolve SSL certificate verification errors
 
@@ -138,9 +132,9 @@ If a webhook is not triggered, verify that:
 
 ## Error: `Webhook rate limit exceeded`
 
-A webhook might fail due to rate limiting.
-GitLab.com has [specific limits](../../gitlab_com/_index.md#webhooks)
-on the number of times a webhook can be called in a minute.
+A webhook might fail because of rate limiting.
+GitLab.com limits the total number of webhook calls each minute for each top-level namespace.
+For more information, see [rate limits](../../gitlab_com/_index.md#rate-limits).
 
 To confirm if rate limiting is the issue:
 

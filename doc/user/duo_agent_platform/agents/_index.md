@@ -8,14 +8,13 @@ title: Agents
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+- [Default LLM](../model_selection.md#default-models)
 
 {{< /collapsible >}}
 
@@ -27,12 +26,9 @@ title: Agents
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Agents are AI-powered assistants that help you accomplish specific
 tasks and answer complex questions.
@@ -54,5 +50,3 @@ GitLab provides three types of agents:
   outside GitLab. Use external agents to allow model providers like
   Claude to operate in GitLab. You can trigger an external agent
   directly from a discussion, issue, or merge request.
-
-To use agents, you must meet the [prerequisites](../_index.md#prerequisites).

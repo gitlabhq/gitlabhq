@@ -1,0 +1,6 @@
+---
+name: read_protected_environment
+description: Grants the ability to read protected environments
+boundaries:
+  - project
+  - group

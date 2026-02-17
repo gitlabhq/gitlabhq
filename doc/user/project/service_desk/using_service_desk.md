@@ -84,7 +84,7 @@ You can read and write comments as you usually do in GitLab:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To view Service Desk tickets:
 
@@ -205,7 +205,7 @@ Service Desk tickets are [confidential](../issues/confidential_issues.md), so th
 only visible to project members. The project owner can
 [make a ticket public](../issues/confidential_issues.md#in-an-existing-issue).
 When a Service Desk ticket becomes public, the ticket creator's and participants' email addresses are
-visible to signed-in users with at least the Reporter role for the project.
+visible to signed-in users with the Reporter, Developer, Maintainer, or Owner role for the project.
 
 In GitLab 15.8 and earlier, when a Service Desk ticket becomes public, the ticket creator's email
 address is disclosed to everyone who can view the project.

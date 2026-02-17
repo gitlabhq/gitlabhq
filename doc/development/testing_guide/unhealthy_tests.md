@@ -8,16 +8,52 @@ title: Unhealthy tests
 
 ## Flaky tests
 
+This page provides technical reference for understanding and debugging flaky tests in GitLab. For process information about flaky test management, monitoring, and best practices, see the [Flaky Tests handbook page](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/).
+
 ### What's a flaky test?
 
 It's a test that sometimes fails, but if you retry it enough times, it passes,
 eventually.
 
+### How to reproduce a flaky test locally?
+
+1. Reproduce the failure locally
+   - Find RSpec `seed` from the CI job log
+   - OR Run `while :; do bin/rspec <spec> || break; done` in a loop to find a `seed`
+1. Reduce the examples by bisecting the spec failure with
+   `bin/rspec --seed <previously found> --require ./config/initializers/macos.rb --bisect <spec>`
+1. Look at the remaining examples and watch for state leakage
+   - For example, updating records created with `let_it_be` is a common source of problems
+1. Once fixed, rerun the specs with `seed`
+1. Run `scripts/rspec_check_order_dependence` to ensure the spec can be run in [random order](best_practices.md#test-order)
+1. Run `while :; do bin/rspec <spec> || break; done` in a loop again (and grab lunch) to verify it's no longer flaky
+
+### Quarantined tests
+
+When a flaky test is blocking development on `master`, it should be quarantined to prevent impacting other developers.
+The [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/)
+provides comprehensive guidance on the quarantine process, including:
+
+- When to use the fast or long-term quarantine process
+- Timeline expectations and ownership responsibilities
+- How to remove tests from quarantine
+- How quarantine ownership and escalation procedures work
+
+For immediate quarantine needs, use
+the [fast quarantine process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/) for rapid
+merging. For implementation details on how to quarantine tests in your codebase, refer to the handbook page.
+
+### Automatic retries and flaky tests detection
+
+On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
+times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
+
+For more information, see [Automatic retry of failing tests in a separate process](../pipelines/_index.md#automatic-retry-of-failing-tests).
+
 ### What are the potential cause for a test to be flaky?
 
-#### State leak
-
-**Label**: `flaky-test::state leak`
+<details>
+<summary><strong>State leak</strong> - <code>flaky-test::state leak</code></summary>
 
 **Description**: Data state has leaked from a previous test. The actual cause is probably not the flaky test here.
 
@@ -52,11 +88,12 @@ it's reset to a pristine test after each test.
 - [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
   A TCP socket used in a test was not closed before the next test, which also used
   the same port with another TCP socket.
-  [Example 8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2324238692): A `let_it_be` depended on a stub defined in a `before` block. `let_it_be` executes during `before(:all)`, so the stub was not yet set. This exposed the tests to the actual method call, which happened to use a method cache.
+- [Example 8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2324238692): A `let_it_be` depended on a stub defined in a `before` block. `let_it_be` executes during `before(:all)`, so the stub was not yet set. This exposed the tests to the actual method call, which happened to use a method cache.
 
-#### Dataset-specific
+</details>
 
-**Label**: `flaky-test::dataset-specific`
+<details>
+<summary><strong>Dataset-specific</strong> - <code>flaky-test::dataset-specific</code></summary>
 
 **Description**: The test assumes the dataset is in a particular (usually limited) state or order, which
 might not be true depending on when the test run during the test suite.
@@ -87,9 +124,10 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
   in the tests.
 - [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
 
-#### Too Many SQL queries
+</details>
 
-**Label**: `flaky-test::too-many-sql-queries`
+<details>
+<summary><strong>Too Many SQL queries</strong> - <code>flaky-test::too-many-sql-queries</code></summary>
 
 **Description**: SQL Query limit has reached triggering `Gitlab::QueryLimiting::Transaction::ThresholdExceededError`.
 
@@ -97,9 +135,10 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
 
 **Resolution**: See [query count limits docs](../database/query_count_limits.md#solving-failing-tests).
 
-#### Random input
+</details>
 
-**Label**: `flaky-test::random input`
+<details>
+<summary><strong>Random input</strong> - <code>flaky-test::random input</code></summary>
 
 **Description**: The test use random values, that sometimes match the expectations, and sometimes not.
 
@@ -113,9 +152,10 @@ or the app.
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20121): The test isn't robust enough to handle a specific data, that only appears sporadically since the data input is random.
 
-#### Unreliable DOM Selector
+</details>
 
-**Label**: `flaky-test::unreliable dom selector`
+<details>
+<summary><strong>Unreliable DOM Selector</strong> - <code>flaky-test::unreliable dom selector</code></summary>
 
 **Description**: The DOM selector used in the test is unreliable.
 
@@ -134,9 +174,10 @@ Adding a delay in API or controller could help reproducing the issue.
 - [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/408215): A false-positive test, Capybara immediately returns true after
   page visit and page is not fully loaded, or if the element is not detectable by webdriver (such as being rendered outside the viewport or behind other elements).
 
-#### Datetime-sensitive
+</details>
 
-**Label**: `flaky-test::datetime-sensitive`
+<details>
+<summary><strong>Datetime-sensitive</strong> - <code>flaky-test::datetime-sensitive</code></summary>
 
 **Description**: The test is assuming a specific date or time.
 
@@ -149,9 +190,10 @@ Adding a delay in API or controller could help reproducing the issue.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/118612): A test that breaks after some time passed.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/403332): A test that breaks in the last day of the month.
 
-#### Unstable infrastructure
+</details>
 
-**Label**: `flaky-test::unstable infrastructure`
+<details>
+<summary><strong>Unstable infrastructure</strong> - <code>flaky-test::unstable infrastructure</code></summary>
 
 **Description**: The test fails from time to time due to infrastructure issues.
 
@@ -166,9 +208,10 @@ usually a good idea.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
 
-#### Improper Synchronization
+</details>
 
-**Label**: `flaky-test::improper synchronization`
+<details>
+<summary><strong>Improper Synchronization</strong> - <code>flaky-test::improper synchronization</code></summary>
 
 **Description**: A flaky test issue arising from timing-related factors, such as delays, eventual consistency, asynchronous operations, or race conditions.
 These issues may stem from shortcomings in the test logic, the system under test, or their interaction.
@@ -184,185 +227,26 @@ element on a page that is not yet rendered, or in unit tests by failing to wait 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/502844): Text was not appearing on a page in time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/496393): Text was not appearing on a page in time.
 
-### How to reproduce a flaky test locally?
+</details>
 
-1. Reproduce the failure locally
-   - Find RSpec `seed` from the CI job log
-   - OR Run `while :; do bin/rspec <spec> || break; done` in a loop to find a `seed`
-1. Reduce the examples by bisecting the spec failure with
-   `bin/rspec --seed <previously found> --require ./config/initializers/macos.rb --bisect <spec>`
-1. Look at the remaining examples and watch for state leakage
-   - For example, updating records created with `let_it_be` is a common source of problems
-1. Once fixed, rerun the specs with `seed`
-1. Run `scripts/rspec_check_order_dependence` to ensure the spec can be run in [random order](best_practices.md#test-order)
-1. Run `while :; do bin/rspec <spec> || break; done` in a loop again (and grab lunch) to verify it's no longer flaky
+### Additional debugging techniques
 
-### Quarantined tests
+#### Split the test file
 
-When we have a flaky test in `master`:
+It could help to split the large RSpec files in multiple files in order to narrow down the context and identify the problematic tests.
 
-1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/new) project with the relevant group label.
-1. Quarantine the test after the first failure.
-   If the test cannot be fixed in a timely fashion, there is an impact on the
-   productivity of all the developers, so it should be quarantined.
+#### Recreate job failure in CI by forcing the job to run the same set of test files
 
-For the complete quarantine process, including when to use fast vs long-term quarantine, timeline expectations, and ownership responsibilities, see the [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
+Reproducing a job failure in CI always helps with troubleshooting why and how a test fails. This require us running the same test files with the same spec order. Since we use Knapsack to distribute tests across parallelized jobs, and files can be distributed differently between two pipelines, we can hardcode this job distribution through the following steps:
 
-#### RSpec
+1. Find a job that you want to reproduce, identify the commit that it ran against, set your local `gitlab-org/gitlab` branch to the same commit to ensure we are running with the same copy of the project.
+1. In the job log, locate the list of spec files that were distributed by Knapsack - you can search for `Running command: bundle exec rspec`, the last argument of this command should contain a list of filenames. Copy this list.
+1. Go to `tooling/lib/tooling/parallel_rspec_runner.rb` where the test file distribution happens. Have a look at [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137924/diffs) as an example, store the file list you copied from step 2 into a `TEST_FILES` constant and have RSpec run this list by updating the `rspec_command` method as done in the example MR.
+1. Skip the tests in `spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb` so it doesn't cause your pipeline to fail early.
+1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.
+1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done in [merge request 128428](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can find the `srand` value in the job log by searching `Randomized with seed` which is followed by this value.
 
-##### Fast quarantine
-
-Fast quarantine is used when a test needs immediate quarantine. The fast quarantine file is stored in a separate repository for rapid merging, while long-term quarantine modifies test metadata directly in the GitLab codebase.
-
-**Fast quarantine process:**
-
-1. **Immediate action**:
-   - Follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/blob/main/.gitlab/merge_request_templates/Default.md#fast-quarantine-process)
-
-1. **Re-running failed jobs with the latest fast quarantine file**:
-   - **RSpec tests (unit/integration/system)**: Re-trigger the `retrieve-tests-metadata` job, then retry the failed RSpec job. Simply restarting the job will NOT pick up new fast quarantine updates.
-   - **E2E tests**: Simply retry the failed E2E job - E2E tests automatically download the latest fast quarantine file.
-   - **Alternative**: Running a new pipeline will pick up the latest fast quarantine for all test types.
-
-For complete guidance on fast quarantine timelines, follow-up requirements, and the weekly fast quarantine clearance process, see the [Fast Quarantine section in the handbook](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/#fast-quarantine).
-
-##### Long-term quarantine
-
-Once a test is fast-quarantined, you can proceed with the long-term quarantining process. This can be done by opening a merge request.
-
-First, ensure the test file has a [`feature_category` metadata](../feature_categorization/_index.md#rspec-examples), to ensure correct attribution of the test file.
-
-Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
-~"failure::flaky-test" issue you created previously.
-
-```ruby
-# Quarantine a single spec
-it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  expect(response).to have_gitlab_http_status(:ok)
-end
-
-# Quarantine a describe/context block
-describe '#flaky-method', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  [...]
-end
-```
-
-This means it will be skipped in CI. By default, the quarantined tests will run locally.
-
-We can skip them in local development as well by running with `--tag ~quarantine`:
-
-```shell
-# Bash
-bin/rspec --tag ~quarantine
-
-# ZSH
-bin/rspec --tag \~quarantine
-```
-
-Also, ensure that:
-
-1. The ~"quarantine" label is present on the merge request.
-1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).
-
-Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
-
-```ruby
-# Will be flagged by Rubocop
-shared_examples 'loads all the users when opened', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  [...]
-end
-
-# Does not work
-it_behaves_like 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
-
-# Does not work
-include_examples 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
-```
-
-After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
-
-For guidance on quarantine ownership, timelines, and removing tests from quarantine, see the [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
-
-##### Find quarantined tests by feature category
-
-To find all quarantined tests for a feature category, use `ripgrep`:
-
-```shell
-rg -l --multiline -w "(?s)feature_category:\s+:global_search.+quarantine:"
-```
-
-#### Jest
-
-For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
-
-```javascript
-// quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/56789
-// eslint-disable-next-line jest/no-disabled-tests
-it.skip('should throw an error', () => {
-  expect(response).toThrowError(expected_error)
-});
-```
-
-This means it is skipped unless the test suit is run with `--runInBand` Jest command line option:
-
-```shell
-jest --runInBand
-```
-
-A list of files with quarantined specs in them can be found with the command:
-
-```shell
-yarn jest:quarantine
-```
-
-For both test frameworks, make sure to add the `~"quarantined test"` label to the issue.
-
-Once a test is in quarantine, there are 3 choices:
-
-- Fix the test (that is, get rid of its flakiness).
-- Move the test to a lower level of testing.
-- Remove the test entirely (for example, because there's already a
-  lower-level test, or it's duplicating another same-level test, or it's testing
-  too much etc.).
-
-### Automatic retries and flaky tests detection
-
-On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
-times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
-
-We also use a custom [`Gitlab::RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-rspec_flaky/lib/gitlab/rspec_flaky/listener.rb).
-This listener runs in the `update-tests-metadata` job in `maintenance` scheduled pipelines
-on the `master` branch, and saves flaky examples to `rspec/flaky/report-suite.json`.
-The report file is then retrieved by the `retrieve-tests-metadata` job in all pipelines.
-
-This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.
-
-If you want to enable retries locally, you can use the `RETRIES` environment variable.
-For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
-
-To generate the reports locally, use the `FLAKY_RSPEC_GENERATE_REPORT` environment variable.
-For example, `FLAKY_RSPEC_GENERATE_REPORT=1 bin/rspec ...`.
-
-#### Usage of the `rspec/flaky/report-suite.json` report
-
-The `rspec/flaky/report-suite.json` report is
-[imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/7085bea51bb2f8f823e073393934ba5f97259459/extract/gitlab_flaky_tests/upload.py#L19)
-once per day, for monitoring with the
-[internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
-
-### Problems we had in the past at GitLab
-
-- [`rspec-retry` is biting us when some API specs fail](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29242): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9825>
-- [Sporadic RSpec failures due to `PG::UniqueViolation`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28307#note_24958837): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9846>
-  - Follow-up: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10688>
-  - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12224>
-- ffaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
-  - [Make `spec/mailers/notify_spec.rb` more robust](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20121): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10015>
-  - [Transient failure in `spec/requests/api/commits_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9944>
-  - [Replace ffaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10184>
-  - [Transient failure in spec/finders/issues_finder_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30211#note_26707685): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10404>
-
-#### Order-dependent flaky tests
+#### Reproduce order-dependent flaky tests
 
 To identify ordering issues in a single file read about
 [how to reproduce a flaky test locally](#how-to-reproduce-a-flaky-test-locally).
@@ -385,108 +269,10 @@ which would give us the minimal test combination to reproduce the failure:
 If there is an order-dependency issue, the script above will print the minimal
 reproduction.
 
-#### Time-sensitive flaky tests
-
-- <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10046>
-- <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10306>
-
-#### Array order expectation
-
-- <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10148>
-
-#### Feature tests
-
-- [Be sure to create all the data the test need before starting exercise](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/32622#note_31128195): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12059>
-- [Bis](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34609#note_34048715): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12604>
-- [Bis](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34698#note_34276286): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12664>
-- [Assert against the underlying database state instead of against a page's content](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/31437): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10934>
-- In JS tests, shifting elements can cause Capybara to mis-click when the element moves at the exact time Capybara sends the click
-  - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17660)
-  - [Lazy loaded images can cause Capybara to mis-click](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18713)
-- [Triggering JS events before the event handlers are set up](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18742)
-- [Wait for the image to be lazy-loaded when asserting on a Markdown image's `src` attribute](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408)
-- [Avoid asserting against flash notice banners](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79432)
-
-##### Capybara viewport size related issues
-
-- [Transient failure of spec/features/issues/filtered_search/filter_issues_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29241#note_26743936): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10411>
-
-##### Capybara JS driver related issues
-
-- [Don't wait for AJAX when no AJAX request is fired](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30461): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10454>
-- [Bis](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34647): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12626>
-
-##### Capybara expectation times out
-
-- [Test imports a project (via Sidekiq) that is growing over time, leading to timeouts when the import takes longer than 60 seconds](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22599)
-
-#### Hanging specs
-
-If a spec hangs, or times out in CI, it might be caused by a
-[LoadInterlockAwareMonitor deadlock bug in Rails](https://github.com/rails/rails/issues/45994).
-
-To diagnose, you can use
-[sigdump](https://github.com/fluent/sigdump/blob/master/README.md#usage)
-to print the Ruby thread dump :
-
-1. Run the hanging spec locally.
-1. Trigger the Ruby thread dump by running this command:
-
-   ```shell
-   kill -CONT <pid>
-   ```
-
-1. The thread dump will be saved to the `/tmp/sigdump-<pid>.log` file.
-
-If you see lines with `load_interlock_aware_monitor.rb`, this is likely related:
-
-```shell
-/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:17:in `mon_enter'
-/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:22:in `block in synchronize'
-/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
-/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
-```
-
-See examples where we worked around by creating the factories before making
-requests:
-
-- <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81112>
-- <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158890>
-- <https://gitlab.com/gitlab-org/gitlab/-/issues/337039>
-
-### Suggestions
-
-#### Split the test file
-
-It could help to split the large RSpec files in multiple files in order to narrow down the context and identify the problematic tests.
-
-#### Recreate job failure in CI by forcing the job to run the same set of test files
-
-Reproducing a job failure in CI always helps with troubleshooting why and how a test fails. This require us running the same test files with the same spec order. Since we use Knapsack to distribute tests across parallelized jobs, and files can be distributed differently between two pipelines, we can hardcode this job distribution through the following steps:
-
-1. Find a job that you want to reproduce, identify the commit that it ran against, set your local `gitlab-org/gitlab` branch to the same commit to ensure we are running with the same copy of the project.
-1. In the job log, locate the list of spec files that were distributed by Knapsack - you can search for `Running command: bundle exec rspec`, the last argument of this command should contain a list of filenames. Copy this list.
-1. Go to `tooling/lib/tooling/parallel_rspec_runner.rb` where the test file distribution happens. Have a look at [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137924/diffs) as an example, store the file list you copied from step 2 into a `TEST_FILES` constant and have RSpec run this list by updating the `rspec_command` method as done in the example MR.
-1. Skip the tests in `spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb` so it doesn't cause your pipeline to fail early.
-1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.
-1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done in [merge request 128428](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can find the `srand` value in the job log by searching `Randomized with seed` which is followed by this value.
-
 ### Metrics & Tracking
 
-- [(Snowflake) Flaky tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/flaky-tests-dcwtdvVO6) (internal)
-- [(Snowflake) Unhealthy tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/dx-unhealthy-tests-d9MEFZz14) (internal)
-- [(GitLab) GitLab.org Group Flaky Test Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/1487067?label_name%5B%5D=failure::flaky-test)
-- [(GitLab) "Most flaky tests" Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/7518854?label_name%5B%5D=flakiness::1)
-- [(Grafana) End-to-end test flakiness Dashboard](https://dashboards.quality.gitlab.net/d/tR_SmBDVk/main-runs?orgId=1) (internal)
-- [(Tableau) Flaky test issues](https://10az.online.tableau.com/#/site/gitlab/workbooks/2283052/views) (internal)
-
-### Resources
-
-- [Flaky Tests: Are You Sure You Want to Rerun Them?](https://semaphoreci.com/blog/2017/04/20/flaky-tests.html)
-- [How to Deal With and Eliminate Flaky Tests](https://semaphoreci.com/community/tutorials/how-to-deal-with-and-eliminate-flaky-tests)
-- [Tips on Treating Flakiness in your Rails Test Suite](https://semaphoreci.com/blog/2017/08/03/tips-on-treating-flakiness-in-your-test-suite.html)
-- ['Flaky' tests: a short story](https://www.ombulabs.com/blog/rspec/continuous-integration/how-to-track-down-a-flaky-test.html)
-- [Test Insights](https://circleci.com/docs/insights-tests/)
+- [Flaky Tests Failure Overview](https://dashboards.devex.gitlab.net/d/ddjwrqc/flaky-tests-overview?orgId=1&from=now-14d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=merge_request_pipeline) (internal)
+- [Test File Failure Overview](https://dashboards.devex.gitlab.net/d/63bbf393-7426-403b-a4ec-1ej4280efb6b/test-file-failure-overview?orgId=1&from=now-14d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=merge_request_pipeline&var-file_path=qa%2Fspecs%2Ffeatures%2Fbrowser_ui%2F3_create%2Fmerge_request%2Fcherry_pick%2Fcherry_pick_commit_spec.rb&var-test_location=$__all&var-exception_class=$__all) (internal)
 
 ## Slow tests
 
@@ -504,13 +290,6 @@ For tests that are slow for a legitimate reason and to skip issue creation, add 
 |:----------:|:-------------:|:------------------------------:|:-----:|:-------------:|:------:|
 | 2023-02-15 | 67.42 seconds |         44.66 seconds          |   -   | 76.86 seconds | Top slow test eliminating the maximum |
 | 2023-06-15 | 50.13 seconds |         19.20 seconds          | 27.12 | 45.40 seconds | Avg for top 100 slow tests |
-
-## Handling issues for flaky or slow tests
-
-The process around these issues is very lightweight. Feel free to close them or not, they're [managed automatically](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling/-/blob/main/lib/gitlab_quality/test_tooling/report/flaky_test_issue.rb):
-
-- If a flaky or slow test is fixed and the associated `[Test]` issue isn't closed manually, it will be closed automatically after [30 days of inactivity](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/master/policies/stages/hygiene/close-stale-unhealthy-test-issues.yml).
-- If the problem reoccurs, the closed issue is reopened automatically. This means, it is also okay to close an issue when you think you fixed it.
 
 ---
 

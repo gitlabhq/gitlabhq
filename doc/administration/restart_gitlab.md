@@ -15,11 +15,8 @@ title: How to restart GitLab
 Depending on how you installed GitLab, there are different methods to restart
 its services.
 
-{{< alert type="note" >}}
-
-A short downtime is expected for all methods.
-
-{{< /alert >}}
+> [!note]
+> A short downtime is expected for all methods.
 
 ## Linux package installations
 

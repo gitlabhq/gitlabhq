@@ -63,13 +63,10 @@ language:
 For the requirements of other languages and frameworks, read the
 [Heroku buildpacks documentation](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
 
-{{< alert type="note" >}}
-
-Auto Test still uses Herokuish, as test suite detection is not
-yet part of the Cloud Native Buildpack specification. For more information, see
-[issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
-
-{{< /alert >}}
+> [!note]
+> Auto Test still uses Herokuish, as test suite detection is not
+> yet part of the Cloud Native Buildpack specification. For more information, see
+> [issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
 #### Mount volumes into the build container
 
@@ -122,14 +119,11 @@ tests, it's up to you to add them.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-{{< alert type="note" >}}
-
-Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
-Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
-Cloud Native Buildpacks, and only buildpacks that implement the
-[Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
-
-{{< /alert >}}
+> [!note]
+> Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
+> Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
+> Cloud Native Buildpacks, and only buildpacks that implement the
+> [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -267,15 +261,12 @@ for the environment.
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
-{{< alert type="warning" >}}
-
-Your apps should not be manipulated outside of Helm (using Kubernetes directly).
-This can cause confusion with Helm not detecting the change and subsequent
-deploys with Auto DevOps can undo your changes. Also, if you change something
-and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old configuration.
-
-{{< /alert >}}
+> [!warning]
+> Your apps should not be manipulated outside of Helm (using Kubernetes directly).
+> This can cause confusion with Helm not detecting the change and subsequent
+> deploys with Auto DevOps can undo your changes. Also, if you change something
+> and want to undo it by deploying again, Helm may not detect that anything changed
+> in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ## Auto DAST
 
@@ -308,15 +299,12 @@ For more information, see
 To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
-{{< alert type="warning" >}}
-
-If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
-enabled, GitLab strongly advises **not**
-to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
-actively attacks the target, which can take down your application and lead to
-data loss or corruption.
-
-{{< /alert >}}
+> [!warning]
+> If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
+> enabled, GitLab strongly advises **not**
+> to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
+> actively attacks the target, which can take down your application and lead to
+> data loss or corruption.
 
 ### Skipping Auto DAST
 
@@ -405,15 +393,12 @@ for the environment.
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
-{{< alert type="warning" >}}
-
-Your apps should not be manipulated outside of Helm (using Kubernetes directly).
-This can cause confusion with Helm not detecting the change and subsequent
-deploys with Auto DevOps can undo your changes. Also, if you change something
-and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old configuration.
-
-{{< /alert >}}
+> [!warning]
+> Your apps should not be manipulated outside of Helm (using Kubernetes directly).
+> This can cause confusion with Helm not detecting the change and subsequent
+> deploys with Auto DevOps can undo your changes. Also, if you change something
+> and want to undo it by deploying again, Helm may not detect that anything changed
+> in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ### GitLab deploy tokens
 
@@ -426,23 +411,17 @@ automatically created.
 If the GitLab Deploy Token can't be found, `CI_REGISTRY_PASSWORD` is
 used.
 
-{{< alert type="note" >}}
-
-`CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes can
-successfully pull the container image during deployment, but if the image must
-be pulled again, such as after pod eviction, Kubernetes cannot do so
-as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
-
-{{< /alert >}}
+> [!note]
+> `CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes can
+> successfully pull the container image during deployment, but if the image must
+> be pulled again, such as after pod eviction, Kubernetes cannot do so
+> as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 ### Kubernetes 1.16+
 
-{{< alert type="warning" >}}
-
-The default value for the `deploymentApiVersion` setting was changed from
-`extensions/v1beta` to `apps/v1`.
-
-{{< /alert >}}
+> [!warning]
+> The default value for the `deploymentApiVersion` setting was changed from
+> `extensions/v1beta` to `apps/v1`.
 
 In Kubernetes 1.16 and later, a number of
 [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
@@ -457,12 +436,9 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
    `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
    [guide to upgrade PostgreSQL](upgrading_postgresql.md).
 
-{{< alert type="warning" >}}
-
-Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
-to back up and restore your database before opting into version `2`.
-
-{{< /alert >}}
+> [!warning]
+> Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
+> to back up and restore your database before opting into version `2`.
 
 ### Migrations
 

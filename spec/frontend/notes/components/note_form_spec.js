@@ -384,4 +384,68 @@ describe('issue_note_form component', () => {
     createComponentWrapper();
     expect(findMarkdownField().props('supportsTableOfContents')).toBe(false);
   });
+
+  describe('markdownPreviewPath', () => {
+    const diffFile = {
+      file_path: 'app/models/user.rb',
+      diff_refs: {
+        base_sha: 'abc123',
+        start_sha: 'def456',
+        head_sha: 'ghi789',
+      },
+    };
+
+    const line = {
+      new_line: 42,
+      can_receive_suggestion: true,
+      text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
+      rich_text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
+    };
+
+    it('returns base preview path when no line or diffParams are present', () => {
+      createComponentWrapper();
+
+      expect(wrapper.vm.markdownPreviewPath).toBe(noteableDataMock.preview_note_path);
+    });
+
+    it('includes preview_suggestions as boolean when line and diffParams are present', () => {
+      createComponentWrapper({
+        diffFile,
+        line,
+      });
+
+      const previewPath = wrapper.vm.markdownPreviewPath;
+
+      expect(previewPath).toContain('preview_suggestions=true');
+      expect(previewPath).toContain('line=42');
+      expect(previewPath).toContain('file_path=app%2Fmodels%2Fuser.rb');
+      expect(previewPath).toContain('base_sha=abc123');
+      expect(previewPath).toContain('start_sha=def456');
+      expect(previewPath).toContain('head_sha=ghi789');
+    });
+
+    it('does not include preview_suggestions when line is missing', () => {
+      createComponentWrapper({
+        diffFile,
+        line: null,
+      });
+
+      const previewPath = wrapper.vm.markdownPreviewPath;
+
+      expect(previewPath).not.toContain('preview_suggestions');
+      expect(previewPath).toBe(noteableDataMock.preview_note_path);
+    });
+
+    it('does not include preview_suggestions when diffParams is missing', () => {
+      createComponentWrapper({
+        diffFile: null,
+        line,
+      });
+
+      const previewPath = wrapper.vm.markdownPreviewPath;
+
+      expect(previewPath).not.toContain('preview_suggestions');
+      expect(previewPath).toBe(noteableDataMock.preview_note_path);
+    });
+  });
 });

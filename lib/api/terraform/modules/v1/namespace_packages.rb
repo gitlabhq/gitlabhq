@@ -107,8 +107,10 @@ module API
                 { code: 403, message: 'Forbidden' }
               ]
               is_array true
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
+            route_setting :authorization, permissions: :read_terraform_module,
+              boundary_type: :group, boundary_param: :module_namespace
             get 'versions' do
               presenter = ::Terraform::ModulesPresenter.new(packages, params[:module_system])
               present presenter, with: ::API::Entities::Terraform::ModuleVersions
@@ -121,8 +123,10 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not found' }
               ]
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
+            route_setting :authorization, permissions: :download_terraform_module,
+              boundary_type: :group, boundary_param: :module_namespace
             get 'download' do
               latest_version = latest_package&.version
 
@@ -150,8 +154,10 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not found' }
               ]
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
+            route_setting :authorization, permissions: :read_terraform_module,
+              boundary_type: :group, boundary_param: :module_namespace
             get do
               if latest_package&.version.nil?
                 render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found)
@@ -177,8 +183,10 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
+              route_setting :authorization, permissions: :download_terraform_module,
+                boundary_type: :group, boundary_param: :module_namespace
               get 'download' do
                 module_file_path = api_v4_packages_terraform_modules_v1_module_version_file_path(
                   module_namespace: params[:module_namespace],
@@ -212,8 +220,10 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not found' }
                   ]
-                  tags %w[terraform_registry]
+                  tags %w[terraform]
                 end
+                route_setting :authorization, permissions: :download_terraform_module,
+                  boundary_type: :group, boundary_param: :module_namespace
                 get do
                   track_package_event(
                     'pull_package',
@@ -238,8 +248,10 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
+              route_setting :authorization, permissions: :read_terraform_module,
+                boundary_type: :group, boundary_param: :module_namespace
               get format: false do
                 presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
                 present presenter, with: ::API::Entities::Terraform::ModuleVersion

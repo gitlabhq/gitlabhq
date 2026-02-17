@@ -30,7 +30,6 @@ module API
       desc 'Start a new offline transfer export'
       params do
         requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
-        requires :source_hostname, type: String, desc: 'Hostname or alias of the instance exposed on import'
         optional :aws_s3_configuration, type: Hash, desc: 'AWS S3 object storage configuration' do
           requires :aws_access_key_id, type: String, desc: 'AWS S3 access key ID'
           requires :aws_secret_access_key, type: String, desc: 'AWS S3 secret access key'
@@ -38,7 +37,9 @@ module API
           optional :path_style, type: Boolean, default: false,
             desc: 'Use path-style URLs instead of virtual hosted-style URLs'
         end
-        optional :minio_configuration, type: Hash, desc: 'MinIO or other S3-compatible object storage configuration' do
+        optional :s3_compatible_configuration,
+          type: Hash,
+          desc: 'MinIO or other S3-compatible object storage configuration' do
           requires :aws_access_key_id, type: String, desc: 'S3-compatible access key ID'
           requires :aws_secret_access_key, type: String, desc: 'S3-compatible secret access key'
           requires :region, type: String, desc: 'S3-compatible object storage region'
@@ -53,7 +54,7 @@ module API
             documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
         end
 
-        exactly_one_of :aws_s3_configuration, :minio_configuration
+        exactly_one_of :aws_s3_configuration, :s3_compatible_configuration
       end
       post do
         check_rate_limit!(:offline_export, scope: current_user)
@@ -61,14 +62,17 @@ module API
         storage_config = { bucket: declared_params[:bucket] }
         if params[:aws_s3_configuration]
           storage_config.merge!(provider: :aws, credentials: declared_params[:aws_s3_configuration])
-        elsif params[:minio_configuration]
-          storage_config.merge!(provider: :minio, credentials: declared_params[:minio_configuration])
+        end
+        # We've previously validated that only one of :aws_s3_configuration, :s3_compatible_configuration
+        # should be set, but having two individual 'if' statements eliminates the need to introduce and
+        # test the unnecessary 'then' case.
+        if params[:s3_compatible_configuration]
+          storage_config.merge!(provider: :s3_compatible, credentials: declared_params[:s3_compatible_configuration])
         end
 
         set_current_organization
         response = ::Import::Offline::Exports::CreateService.new(
           current_user,
-          declared_params[:source_hostname],
           declared_params[:entities],
           storage_config,
           Current.organization.id

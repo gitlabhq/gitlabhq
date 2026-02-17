@@ -28,7 +28,8 @@ class LinkedIssueEntity < Grape::Entity
   expose :issue_type,
     as: :type,
     format_with: :upcase,
-    documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
+    documentation: { type: "String",
+                     desc: "One of #{::WorkItems::TypesFramework::Provider.new.unfiltered_base_types_for_issue_type}" }
 
   expose :relation_path
 

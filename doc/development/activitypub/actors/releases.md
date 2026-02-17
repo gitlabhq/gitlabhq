@@ -17,15 +17,12 @@ title: Activities for following releases actor
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available,
-an administrator can [enable the feature flags](../../../administration/feature_flags/_index.md)
-named `activity_pub` and `activity_pub_project`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available,
+> an administrator can [enable the feature flags](../../../administration/feature_flags/_index.md)
+> named `activity_pub` and `activity_pub_project`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 This feature requires two feature flags:
 

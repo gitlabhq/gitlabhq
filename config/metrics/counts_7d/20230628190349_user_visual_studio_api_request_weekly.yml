@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_user_visual_studio_api_request_weekly
 description: Count of unique users per week who use the GitLab extension for Visual Studio
 product_group: code_review
+product_categories:
+- editor_extensions
 value_type: number
 status: active
 milestone: '16.2'

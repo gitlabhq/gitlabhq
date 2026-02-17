@@ -1,0 +1,5 @@
+---
+name: move_issue
+description: Grants the ability to move issues to another project
+boundaries:
+  - project

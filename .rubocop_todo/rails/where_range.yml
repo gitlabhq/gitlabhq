@@ -45,7 +45,6 @@ Rails/WhereRange:
     - 'app/models/user.rb'
     - 'app/services/boards/lists/move_service.rb'
     - 'app/workers/repository_check/batch_worker.rb'
-    - 'ee/app/finders/ai/code_suggestion_events_finder.rb'
     - 'ee/app/models/analytics/value_stream_dashboard/aggregation.rb'
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/ee/description_version.rb'

@@ -11,24 +11,26 @@ import (
 	"path/filepath"
 	"sync"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 const (
-	// We have to use a negative transfer.hideRefs since this is the only way
-	// to undo an already set parameter: https://www.spinics.net/lists/git/msg256772.html
+	// GitConfigShowAllRefs is a negative transfer.hideRefs value used to undo an already set parameter.
+	// See https://www.spinics.net/lists/git/msg256772.html
 	GitConfigShowAllRefs = "transfer.hideRefs=!refs"
 	// XGitalyCorrelationID is the header name for Git operation correlation IDs
 	XGitalyCorrelationID = "X-Gitaly-Correlation-Id"
 )
 
+// ReceivePack returns an HTTP handler for git-receive-pack requests
 func ReceivePack(a *api.API) http.Handler {
 	return postRPCHandler(a, "handleReceivePack", handleReceivePack, sendGitAuditEvent("git-receive-pack"), writeReceivePackError)
 }
 
+// UploadPack returns an HTTP handler for git-upload-pack requests
 func UploadPack(a *api.API) http.Handler {
 	return postRPCHandler(a, "handleUploadPack", handleUploadPack, sendGitAuditEvent("git-upload-pack"), writeUploadPackError)
 }
@@ -62,7 +64,7 @@ func postRPCHandler(
 
 		stats, err := handler(w, r, ar)
 		if err != nil {
-			handleLimitErr(err, w, r.Context(), errWriter)
+			handleLimitErr(r.Context(), err, w, errWriter)
 			// If the handler, or handleLimitErr already wrote a response this WriteHeader call is a
 			// no-op. It never reaches net/http because GitHttpResponseWriter calls
 			// WriteHeader on its underlying ResponseWriter at most once.

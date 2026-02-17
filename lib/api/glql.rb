@@ -83,6 +83,7 @@ module API
 
         variables = get_variables(compiled_glql['variables'])
         variables['limit'] = get_limit(config['limit'])
+        variables['after'] = params[:after] if params[:after].present?
 
         query_service.execute(query: compiled_glql['output'], variables: variables)
       end
@@ -118,7 +119,7 @@ module API
     resource :glql do
       desc 'Execute GLQL query' do
         detail 'Execute a GLQL (GitLab Query Language) query'
-        success code: 200
+        success code: 200, model: ::API::Entities::Glql::Result
         failure [
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
@@ -131,24 +132,28 @@ module API
       params do
         requires :glql_yaml, type: String, desc: 'The full GLQL code block containing YAML configuration and query',
           allow_blank: false
+
+        optional :after, type: String,
+          desc: 'Cursor for forward pagination. Use the `endCursor` from previous response to fetch the next page'
       end
       post do
         parsed_glql = parse_glql_yaml(params[:glql_yaml])
 
         compiled_glql = compile_glql(parsed_glql)
-        bad_request!(compiled_glql['output']) unless compiled_glql['success']
+        error!(compiled_glql['output'], 400) unless compiled_glql['success']
 
         glql_result = execute_glql_query(compiled_glql, parsed_glql[:config])
         log_glql_execution(params[:glql_yaml], compiled_glql, parsed_glql[:config], glql_result)
         error!(glql_result[:errors].first[:message], 429) if glql_result[:rate_limited]
+        error!(glql_result[:errors].first[:message], 400) if glql_result[:errors]
 
         transformed_result = transform_glql_result(glql_result, parsed_glql[:config]['fields'])
-        bad_request!(transformed_result['error']) unless transformed_result['success']
+        error!(transformed_result['error'], 400) unless transformed_result['success']
 
         status 200
-        transformed_result
+        present transformed_result.deep_symbolize_keys, with: ::API::Entities::Glql::Result
       rescue ArgumentError => e
-        bad_request!(e.message)
+        error!(e.message, 400)
       end
     end
   end

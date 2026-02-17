@@ -154,13 +154,50 @@ module Gitlab
         end
       end
 
+      # Count commits in the repository.
+      #
+      # @param ref [String] The revision to count commits from (soft deprecated, use revisions instead)
+      # @param options [Hash] Options for counting commits
+      # @option options [Array<String>] :revisions Multiple revisions to count commits from.
+      #   Supports pseudo-revisions like --all, --branches, --tags, --not, --glob.
+      #   Takes precedence over :all and ref parameters.
+      # @option options [Boolean] :all Count commits from all refs (soft deprecated, use revisions: ['--all'])
+      # @option options [Boolean] :first_parent Only follow first parent on merge commits
+      # @option options [Time] :after Only count commits after this time
+      # @option options [Time] :before Only count commits before this time
+      # @option options [String] :path Only count commits that touch this path
+      # @option options [Integer] :max_count Maximum number of commits to count
+      #
+      # @return [Integer] The number of commits
+      #
+      # @example Count commits in a single branch
+      #   commit_count('master')
+      #
+      # @example Count commits across multiple branches using revisions
+      #   commit_count(nil, revisions: ['feature-a', 'feature-b'])
+      #
+      # @example Count commits in all branches using revisions
+      #   commit_count(nil, revisions: ['--all'])
+      #
+      # @example Count commits in branch-2 but not in branch-1
+      #   commit_count(nil, revisions: ['branch-2', '--not', 'branch-1'])
+      #
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: encode_binary(ref),
-          all: !!options[:all],
           first_parent: !!options[:first_parent]
         )
+
+        revisions = if options[:revisions].present?
+                      Array.wrap(options[:revisions])
+                    elsif options[:all]
+                      ['--all']
+                    elsif ref
+                      [ref]
+                    end
+
+        request.revisions = encode_repeated(revisions) if revisions.present?
+
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
         request.path = encode_binary(options[:path]) if options[:path].present?
@@ -317,7 +354,7 @@ module Gitlab
           timeout: GitalyClient.medium_timeout
         )
 
-        consume_commits_response(response)
+        CommitCollectionWithNextCursor.new(response, @repository)
       end
 
       # List all commits which are new in the repository. If commits have been pushed into the repo

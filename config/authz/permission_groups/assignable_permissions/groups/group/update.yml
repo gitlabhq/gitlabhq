@@ -1,0 +1,8 @@
+---
+name: update_group
+description: Grants the ability to update a group
+boundaries:
+  - group
+permissions:
+  - update_group
+  - restore_group

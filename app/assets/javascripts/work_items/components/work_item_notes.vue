@@ -26,7 +26,7 @@ import {
   WORK_ITEM_NOTES_SORT_ORDER_KEY,
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
-import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM, ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import { autocompleteDataSources, findNotesWidget } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
@@ -164,6 +164,9 @@ export default {
     shouldLoadPreviewNote() {
       return this.previewNoteId && !this.isDrawer && !this.isModal;
     },
+    shouldScrollToTargetNote() {
+      return this.targetNoteHash?.startsWith('note_') && !this.isDrawer && !this.isModal;
+    },
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
@@ -284,7 +287,7 @@ export default {
     },
   },
   mounted() {
-    if (this.shouldLoadPreviewNote) {
+    if (this.shouldScrollToTargetNote) {
       this.cleanupScrollListener = scrollToTargetOnResize();
     }
     if (this.canCreateNote) {
@@ -310,6 +313,13 @@ export default {
         };
       },
       update(data) {
+        if (
+          data?.note?.noteableType !== ISSUE_NOTEABLE_TYPE ||
+          data?.note?.noteableId !== getIdFromGraphQLId(this.workItemId)
+        ) {
+          return null;
+        }
+
         return data?.note?.discussion;
       },
       result(result) {
@@ -617,8 +627,8 @@ export default {
             :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
             :discussions-sort-order="initialSortOrder"
-            @startEditing="$emit('startEditing')"
-            @stopEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @stop-editing="$emit('stop-editing')"
             @error="$emit('error', $event)"
             @updateCount="updateDiscussionsCount"
           />
@@ -652,11 +662,11 @@ export default {
             :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :uploads-path="uploadsPath"
-            @deleteNote="showDeleteNoteModal($event, discussion)"
-            @reportAbuse="reportAbuse(true, $event)"
+            @delete-note="showDeleteNoteModal($event, discussion)"
+            @report-abuse="reportAbuse(true, $event)"
             @error="$emit('error', $event)"
-            @startEditing="$emit('startEditing')"
-            @cancelEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @cancel-editing="$emit('stop-editing')"
           />
         </template>
 
@@ -671,8 +681,8 @@ export default {
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
-            @startEditing="$emit('startEditing')"
-            @stopEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @stop-editing="$emit('stop-editing')"
             @error="$emit('error', $event)"
             @focus="$emit('focus')"
             @blur="$emit('blur')"

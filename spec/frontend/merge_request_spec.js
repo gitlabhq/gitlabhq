@@ -37,8 +37,7 @@ describe('MergeRequest', () => {
 
     it('modifies the Markdown field', async () => {
       jest.spyOn($, 'ajax').mockImplementation();
-      const changeEvent = document.createEvent('HTMLEvents');
-      changeEvent.initEvent('change', true, true);
+      const changeEvent = new Event('change', { bubbles: true, cancelable: true });
       $('input[type=checkbox]').first().attr('checked', true)[0].dispatchEvent(changeEvent);
 
       await waitForPromises();
@@ -50,8 +49,7 @@ describe('MergeRequest', () => {
 
     it('ensure that task with only spaces does not get checked incorrectly', async () => {
       jest.spyOn($, 'ajax').mockImplementation();
-      const changeEvent = document.createEvent('HTMLEvents');
-      changeEvent.initEvent('change', true, true);
+      const changeEvent = new Event('change', { bubbles: true, cancelable: true });
       $('input[type=checkbox]').last().attr('checked', true)[0].dispatchEvent(changeEvent);
 
       await waitForPromises();
@@ -62,16 +60,12 @@ describe('MergeRequest', () => {
     });
 
     describe('tasklist', () => {
-      const lineNumber = 8;
-      const lineSource = '- [ ] item 8';
-      const index = 3;
+      const lineSourcepos = '1:4-1:4';
       const checked = true;
 
-      it('submits an ajax request on tasklist:changed', async () => {
-        $('.js-task-list-field').trigger({
-          type: 'tasklist:changed',
-          detail: { lineNumber, lineSource, index, checked },
-        });
+      it('submits an ajax request on task item change', async () => {
+        const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+        $('input[type=checkbox]').first().attr('checked', true)[0].dispatchEvent(changeEvent);
 
         await waitForPromises();
 
@@ -79,9 +73,13 @@ describe('MergeRequest', () => {
           `${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`,
           {
             merge_request: {
-              description: '- [ ] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
+              description: '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
               lock_version: 0,
-              update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
+              update_task: {
+                line_source: '- [ ] Task List Item',
+                line_sourcepos: lineSourcepos,
+                checked,
+              },
             },
           },
         );
@@ -92,10 +90,8 @@ describe('MergeRequest', () => {
           .onPatch(`${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`)
           .reply(HTTP_STATUS_CONFLICT, {});
 
-        $('.js-task-list-field').trigger({
-          type: 'tasklist:changed',
-          detail: { lineNumber, lineSource, index, checked },
-        });
+        const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+        $('input[type=checkbox]').first().attr('checked', true)[0].dispatchEvent(changeEvent);
 
         await waitForPromises();
 

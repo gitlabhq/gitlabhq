@@ -1,9 +1,9 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
-import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_ENUM_ISSUE } from '~/work_items/constants';
-import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, NAMESPACE_PROJECT } from '~/issues/constants';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
@@ -145,6 +145,12 @@ describe('Board list component', () => {
                 .mockResolvedValue(mockGroupIssuesResponse('gid://gitlab/List/1', mockIssuesMore)),
             ],
           ],
+          stubs: {
+            Draggable,
+            DraggableCompat: {
+              template: '<div><slot /><slot name="footer"></slot></div>',
+            },
+          },
         });
         await waitForPromises();
       });
@@ -173,7 +179,7 @@ describe('Board list component', () => {
 
         expect(block.exists()).toBe(true);
         expect(block.attributes('class').split(' ')).toEqual(
-          expect.arrayContaining(['gl-rounded-bl-base', 'gl-rounded-br-base']),
+          expect.arrayContaining(['gl-rounded-bl-lg', 'gl-rounded-br-lg']),
         );
       });
       it('shows cut line', () => {
@@ -406,7 +412,7 @@ describe('Board list component', () => {
     wrapper = createComponent({
       componentProps: { showNewForm: true },
       provide: {
-        boardType: WORKSPACE_PROJECT,
+        boardType: NAMESPACE_PROJECT,
         issuableType: TYPE_ISSUE,
         isProjectBoard: true,
         isGroupBoard: false,

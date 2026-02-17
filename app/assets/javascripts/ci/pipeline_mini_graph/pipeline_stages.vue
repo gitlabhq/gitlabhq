@@ -19,7 +19,7 @@ export default {
       required: true,
     },
   },
-  emits: ['jobActionExecuted', 'miniGraphStageClick'],
+  emits: ['job-action-executed', 'mini-graph-stage-click'],
 };
 </script>
 <template>
@@ -32,8 +32,8 @@ export default {
       <pipeline-stage-dropdown
         :stage="stage"
         :is-merge-train="isMergeTrain"
-        @jobActionExecuted="$emit('jobActionExecuted')"
-        @miniGraphStageClick="$emit('miniGraphStageClick')"
+        @job-action-executed="$emit('job-action-executed')"
+        @mini-graph-stage-click="$emit('mini-graph-stage-click')"
       />
     </div>
   </div>

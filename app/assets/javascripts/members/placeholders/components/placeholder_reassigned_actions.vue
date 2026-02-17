@@ -76,7 +76,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3" data-testid="placeholder-reassigned">
+  <div data-testid="placeholder-reassigned">
     <gl-avatar-labeled
       :size="32"
       :src="reassignedUser().avatarUrl"
@@ -84,10 +84,16 @@ export default {
       :sub-label="`@${reassignedUser().username}`"
     />
 
-    <template v-if="statusIsKeepAsPlaceholder">
-      <gl-button :loading="isUndoLoading" data-testid="undo-button" @click="onUndo">{{
-        __('Undo')
-      }}</gl-button>
-    </template>
+    <div v-if="statusIsKeepAsPlaceholder" class="gl-mt-4">
+      <gl-button
+        size="small"
+        category="secondary"
+        icon="clear"
+        :loading="isUndoLoading"
+        data-testid="undo-button"
+        @click="onUndo"
+        >{{ __('Undo') }}</gl-button
+      >
+    </div>
   </div>
 </template>

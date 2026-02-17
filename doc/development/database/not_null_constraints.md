@@ -74,12 +74,9 @@ The steps required are:
          examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
-     {{< alert type="note" >}}
-
-     Depending on the size of the table, a background migration for cleanup could be required in the next release.
-     See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
-
-     {{< /alert >}}
+     > [!note]
+     > Depending on the size of the table, a background migration for cleanup could be required in the next release.
+     > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
 
 1. Release `N.M+1` (next release)
 
@@ -97,12 +94,9 @@ Considering a given release milestone, such as 13.0.
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
 so we cannot add and validate the constraint in one step.
 
-{{< alert type="note" >}}
-
-Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
-such records, so we would follow the same process either way.
-
-{{< /alert >}}
+> [!note]
+> Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
+> such records, so we would follow the same process either way.
 
 #### Prevent new invalid records (current release)
 
@@ -294,13 +288,13 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-   - Add the `NOT NULL` constraint:
+   - Then, **after the finalization**, add the `NOT NULL` constraint:
 
      ```ruby
      # db/post_migrate/
      class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
        disable_ddl_transaction!
-       milestone '16.7'
+       milestone '16.10'
 
        def up
          add_not_null_constraint :merge_request_diffs, :project_id
@@ -318,7 +312,7 @@ scheduled after the background migration has completed, which could be several r
      # db/post_migrate/
      class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
        disable_ddl_transaction!
-       milestone '16.7'
+       milestone '16.10'
 
        def up
          add_not_null_constraint :merge_request_diffs, :project_id, validate: false
@@ -365,12 +359,9 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-     {{< alert type="note" >}}
-
-     `prepare_partitioned_async_check_constraint_validation` only validates the existing `NOT VALID` check constraint asynchronously for all the partitions.
-     It doesn't create or validate the check constraint for the partitioned table.
-
-     {{< /alert >}}
+     > [!note]
+     > `prepare_partitioned_async_check_constraint_validation` only validates the existing `NOT VALID` check constraint asynchronously for all the partitions.
+     > It doesn't create or validate the check constraint for the partitioned table.
 
 1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
    - Use [Database Lab](database_lab.md) to check if the validation was successful.
@@ -491,11 +482,8 @@ CREATE TABLE labels (
 
 #### Example
 
-{{< alert type="note" >}}
-
-The milestone number is just an example. Use the correct version.
-
-{{< /alert >}}
+> [!note]
+> The milestone number is just an example. Use the correct version.
 
 ```ruby
 # frozen_string_literal: true
@@ -558,11 +546,8 @@ CREATE TABLE labels (
 
 #### Example
 
-{{< alert type="note" >}}
-
-The milestone number is just an example. Use the correct version.
-
-{{< /alert >}}
+> [!note]
+> The milestone number is just an example. Use the correct version.
 
 ```ruby
 # frozen_string_literal: true

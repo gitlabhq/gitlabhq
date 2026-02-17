@@ -1,0 +1,7 @@
+---
+name: download_project_export
+description: Grants the ability to download project exports
+permissions:
+  - download_project_export
+boundaries:
+  - project

@@ -29,21 +29,24 @@ Depending on your [subscription tier](_index.md#availability) and configuration 
 
 To change how the analyzer behaves, define variables using the [`variables`](../../../../ci/yaml/_index.md#variables) parameter in `.gitlab-ci.yml`.
 
-{{< alert type="warning" >}}
-
-All configuration of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All configuration of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results,
+> including a large number of false positives.
 
 ### Add new patterns
 
 To search for other types of secrets in your repositories, you can [customize analyzer rulesets](#customize-analyzer-rulesets).
 
-To propose a new detection rule for all users of pipeline secret detection, see the GitLab rules [single source of truth](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
+### Propose new detection rules
 
-If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about the GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
+You can propose new detection rules for all pipeline secret detection users in two ways:
+
+- Request a new rule: Create an issue using the [Secret Detection Pattern Change issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Secret_Detection_Pattern_Change). The GitLab team will review the request, and get in touch with you to decide how and when the new rule will be implemented.
+
+- Contribute a new rule: If you want to contribute the rule yourself, follow the [contribution guidelines](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md#adding-new-rules) in the Secret Detection Rules repository.
+
+If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, see GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
 
 ### Pin to specific analyzer version
 
@@ -248,12 +251,9 @@ variables:
 
 Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI/CD variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as previously outlined.
 
-{{< alert type="note" >}}
-
-A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default because `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
-If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
-
-{{< /alert >}}
+> [!note]
+> A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default because `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
+> If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
 
 The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses a format similar to [Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a URI, optional authentication, and optional Git SHA. The variable uses the following format:
 
@@ -273,7 +273,7 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/remote-ruleset-project"
 ```
 
-The group access token must have the `read_repository` scope and at least the Reporter role. For details, see [Repository permissions](../../../permissions.md#project-repositories).
+The group access token must have the `read_repository` scope and the Reporter, Developer, Maintainer, or Owner role. For details, see [Repository permissions](../../../permissions.md#project-repositories).
 
 See [bot users for groups](../../../group/settings/group_access_tokens.md#bot-users-for-groups) to learn how to find the username associated with a group access token.
 
@@ -516,12 +516,9 @@ in a test suite.
 In that case, you can use the [Gitleaks' native `[allowlist]`](https://github.com/gitleaks/gitleaks#configuration)
 directive to ignore specific patterns or paths.
 
-{{< alert type="note" >}}
-
-This feature works regardless of whether you're using a local or a remote ruleset configuration
-file. The examples below use a local ruleset using `file` passthrough though.
-
-{{< /alert >}}
+> [!note]
+> This feature works regardless of whether you're using a local or a remote ruleset configuration
+> file. The examples below use a local ruleset using `file` passthrough though.
 
 To ignore a pattern, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository, and adjust the `value` as appropriate to point to the path of the extended configuration file:
 
@@ -680,13 +677,10 @@ path = "/gitleaks.toml"
   keywords = ["pwd", "passwd", "password"]
 ```
 
-{{< alert type="note" >}}
-
-This example configuration is provided only for convenience, and might not work
-for all use cases. If you configure your ruleset to detect complex strings, you might
-create a large number of false positives, or fail to capture certain patterns.
-
-{{< /alert >}}
+> [!note]
+> This example configuration is provided only for convenience, and might not work
+> for all use cases. If you configure your ruleset to detect complex strings, you might
+> create a large number of false positives, or fail to capture certain patterns.
 
 ### Demonstrations
 
@@ -741,7 +735,7 @@ However, if no network connectivity is available, you must change the default Gi
 `pull_policy` variable.
 
 Configure the GitLab Runner CI/CD variable `pull_policy` to
-[`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 
 ### Use local pipeline secret detection analyzer image
 

@@ -14,18 +14,17 @@ export default {
       type: Number,
       required: true,
     },
-    // Temporary prop to avoid using 100 page size on vulnerability report
-    // when some feature flags are enabled to avoid GraphQL complexity issues
-    // See https://gitlab.com/gitlab-org/gitlab/-/issues/580593
-    excludeLargePageSize: {
-      type: Boolean,
+    excludePageSizes: {
+      type: Array,
       required: false,
-      default: false,
+      default: () => [],
     },
   },
   computed: {
     availablePageSizes() {
-      return this.excludeLargePageSize ? PAGE_SIZES.filter(({ value }) => value < 100) : PAGE_SIZES;
+      return this.excludePageSizes.length > 0
+        ? PAGE_SIZES.filter(({ value }) => !this.excludePageSizes.includes(value))
+        : PAGE_SIZES;
     },
     selectedItem() {
       return this.availablePageSizes.find(({ value }) => value === this.value);

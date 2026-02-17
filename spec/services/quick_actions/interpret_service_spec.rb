@@ -451,7 +451,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with invalid date' do
-      it 'will not create any note and timelog' do
+      it 'does not create any note and timelog' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})
@@ -459,7 +459,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with future date' do
-      it 'will not create any note and timelog' do
+      it 'does not create any note and timelog' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})
@@ -3473,51 +3473,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
-    describe 'ship command' do
-      let_it_be(:merge_request) do
-        create(:merge_request, source_project: project)
-      end
-
-      let(:content) { '/ship' }
-
-      before do
-        allow(::MergeRequests::ShipMergeRequestWorker)
-          .to receive(:allowed?)
-          .with(merge_request: merge_request, current_user: current_user)
-          .and_return(is_allowed)
-      end
-
-      context 'when action is not allowed' do
-        let(:is_allowed) { false }
-
-        it 'does not run the command' do
-          expect(::MergeRequests::ShipMergeRequestWorker)
-            .not_to receive(:perform_async)
-
-          result = service.execute(content, merge_request)
-          expect(result).to eq(
-            ['', {}, 'Could not apply ship command.', ['ship']]
-          )
-        end
-      end
-
-      context 'when action is allowed' do
-        let(:is_allowed) { true }
-
-        it 'runs the pipeline async' do
-          expect(::MergeRequests::ShipMergeRequestWorker)
-            .to receive(:perform_async)
-            .with(current_user.id, merge_request.id)
-
-          result = service.execute(content, merge_request)
-
-          expect(result).to eq(
-            ['', {}, 'Actions to ship this merge request have been scheduled.', ['ship']]
-          )
-        end
-      end
-    end
-
     describe 'run_pipeline command' do
       let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -4539,8 +4494,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe '/add_child command' do
-      let_it_be(:child) { create(:work_item, :issue, project: project) }
-      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:child_ref) { child.to_reference(project) }
 
       let(:command) { "/add_child #{child_ref}" }
@@ -4576,7 +4531,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'command is available'
 
         context 'when work item type does not support children' do
-          let_it_be(:work_item) { build(:work_item, :key_result, project: project) }
+          # Task type does not have children.
+          let_it_be(:work_item) { build(:work_item, :task, project: project) }
 
           it_behaves_like 'command is not available'
         end
@@ -4590,8 +4546,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe '/remove child command' do
-      let_it_be(:child) { create(:work_item, :objective, project: project) }
-      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:child_ref) { child.to_reference(project) }
 
       let(:command) { "/remove_child #{child_ref}" }

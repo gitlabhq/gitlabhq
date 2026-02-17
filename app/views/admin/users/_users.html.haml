@@ -1,12 +1,5 @@
 - add_page_specific_style 'page_bundles/search'
 
-- if registration_features_can_be_prompted?
-  = render Pajamas::AlertComponent.new(variant: :tip,
-    alert_options: { class: 'gl-my-5' },
-    dismissible: false) do |c|
-    - c.with_body do
-      = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
-
 .gl-flex.gl-items-start.gl-flex-wrap.gl-gap-4.gl-py-4.gl-border-0{ class: "@md/panel:gl-flex-nowrap", data: { testid: "filtered-search-block" } }
   #js-admin-users-filter-app
   .gl-shrink-0

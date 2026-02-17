@@ -707,16 +707,113 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   end
 
   describe '#commit_count' do
-    before do
+    let(:response) { double(count: 42) }
+
+    it 'converts ref parameter to revisions' do
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:count_commits)
-        .with(gitaly_request_with_path(storage_name, relative_path),
-          kind_of(Hash))
-        .and_return([])
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: [revision.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
+
+      expect(client.commit_count(revision)).to eq(42)
     end
 
-    it 'sends a commit_count message' do
-      client.commit_count(revision)
+    it 'converts all: true to revisions with --all' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: ['--all'.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
+
+      expect(client.commit_count(nil, all: true)).to eq(42)
+    end
+
+    it 'passes through revisions parameter unchanged' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          revisions: ['master'.b, 'feature'.b],
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
+
+      expect(client.commit_count(nil, revisions: %w[master feature])).to eq(42)
+    end
+
+    it 'does not set revisions when nothing is provided' do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_params(
+          repository: repository_message,
+          first_parent: false
+        ), kind_of(Hash))
+        .and_return(response)
+
+      expect(client.commit_count(nil)).to eq(42)
+    end
+
+    context 'with revisions parameter' do
+      let(:response) { double(count: 42) }
+
+      it 'sends revisions field for single revision' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['master'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, revisions: ['master'])).to eq(42)
+      end
+
+      it 'sends revisions field for multiple revisions' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-1'.b, 'branch-2'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, revisions: %w[branch-1 branch-2])).to eq(42)
+      end
+
+      it 'takes precedence over revision parameter' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-2'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count('branch-1', revisions: ['branch-2'])).to eq(42)
+      end
+
+      it 'takes precedence over all parameter' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-1'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, all: true, revisions: ['branch-1'])).to eq(42)
+      end
     end
 
     context 'with UTF-8 params strings' do
@@ -724,6 +821,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       let(:path) { "foo/\u011F.txt" }
 
       it 'handles string encodings correctly' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_return(double(count: 0))
+
         client.commit_count(revision, path: path)
       end
     end
@@ -860,6 +962,21 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       let(:pagination_params) { { limit: 1, page_token: 'foo' } }
 
       it_behaves_like 'a ListCommits request'
+    end
+
+    describe 'pagination' do
+      it 'returns next_cursor and accepts it in the following request', :aggregate_failures do
+        response_1 = client.list_commits('master', { pagination_params: { limit: 1 } })
+        expect(response_1).to be_a Gitlab::GitalyClient::CommitCollectionWithNextCursor
+        expect(response_1.next_cursor).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        expect(response_1.count).to eq 1
+        expect(response_1.first.id).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        response_2 = client.list_commits('master', { pagination_params: { limit: 1, page_token: response_1.next_cursor } })
+        expect(response_2).to be_a Gitlab::GitalyClient::CommitCollectionWithNextCursor
+        expect(response_2.next_cursor).to eq '498214de67004b1da3d820901307bed2a68a8ef6'
+        expect(response_2.count).to eq 1
+        expect(response_2.first.id).to eq '498214de67004b1da3d820901307bed2a68a8ef6'
+      end
     end
   end
 

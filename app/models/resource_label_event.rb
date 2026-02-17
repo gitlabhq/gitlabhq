@@ -5,7 +5,7 @@ class ResourceLabelEvent < ResourceEvent
   include Import::HasImportSource
   include FromUnion
 
-  belongs_to :label
+  belongs_to :label, inverse_of: :resource_label_events
   belongs_to :namespace
 
   scope :inc_relations, -> { includes(:label, :user) }

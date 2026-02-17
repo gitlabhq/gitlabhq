@@ -23,14 +23,11 @@ Use this information in combination with the
 
 ## Plan your database connections
 
-{{< alert type="note" >}}
-
-GitLab versions 16.0 and later use
-[two sets of database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections)
-for the `main` and `ci` tables. This doubles connection usage, even when the same PostgreSQL database
-serves both sets of tables.
-
-{{< /alert >}}
+> [!note]
+> GitLab versions 16.0 and later use
+> [two sets of database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections)
+> for the `main` and `ci` tables. This doubles connection usage, even when the same PostgreSQL database
+> serves both sets of tables.
 
 GitLab uses database connections from multiple components. Proper connection planning prevents
 database connection exhaustion and performance issues.

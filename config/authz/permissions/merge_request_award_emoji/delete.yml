@@ -1,0 +1,5 @@
+---
+name: delete_merge_request_award_emoji
+description: Grants the ability to delete award emoji reactions on merge requests
+boundaries:
+  - project

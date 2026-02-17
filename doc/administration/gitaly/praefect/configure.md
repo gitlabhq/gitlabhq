@@ -18,12 +18,9 @@ Configure Gitaly Cluster (Praefect) using either:
 
 Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
-{{< alert type="note" >}}
-
-Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
-[epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
-
-{{< /alert >}}
+> [!note]
+> Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
+> [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
 ## Requirements
 
@@ -43,12 +40,9 @@ Gitaly nodes fails in a mutating RPC call.
 See the [design document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
 for implementation details.
 
-{{< alert type="note" >}}
-
-If not set in GitLab, feature flags are read as false from the console and Praefect uses their
-default value. The default value depends on the GitLab version.
-
-{{< /alert >}}
+> [!note]
+> If not set in GitLab, feature flags are read as false from the console and Praefect uses their
+> default value. The default value depends on the GitLab version.
 
 ### Network latency and connectivity
 
@@ -82,13 +76,10 @@ allow the following for Gitaly Cluster (Praefect) to function properly:
 | Gitaly                 | Praefect               | `2305`       | `3305`   |
 | Gitaly                 | Gitaly                 | `8075`       | `9999`   |
 
-{{< alert type="note" >}}
-
-Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
-load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
-the Gitaly nodes.
-
-{{< /alert >}}
+> [!note]
+> Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
+> load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
+> the Gitaly nodes.
 
 ### Praefect database storage
 
@@ -184,14 +175,11 @@ following to `gitlab.rb` on each node:
 
 ### PostgreSQL
 
-{{< alert type="note" >}}
-
-Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
-
-- Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
-- Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
-
-{{< /alert >}}
+> [!note]
+> Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
+>
+> - Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
+> - Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
 PostgreSQL.
@@ -475,14 +463,11 @@ praefect['configuration'] = {
 
 With this configuration, Praefect uses PgBouncer for both connection types.
 
-{{< alert type="note" >}}
-
-Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
-your databases manually and configuring an external PgBouncer, you must include `praefect` user and
-its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
-configuration option is set. For more details, consult the PgBouncer documentation.
-
-{{< /alert >}}
+> [!note]
+> Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
+> your databases manually and configuring an external PgBouncer, you must include `praefect` user and
+> its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
+> configuration option is set. For more details, consult the PgBouncer documentation.
 
 ##### Configure Praefect to connect directly to PostgreSQL
 
@@ -530,12 +515,9 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-{{< alert type="warning" >}}
-
-Praefect should be run on a dedicated node. Do not run Praefect on the
-application server, or a Gitaly node.
-
-{{< /alert >}}
+> [!warning]
+> Praefect should be run on a dedicated node. Do not run Praefect on the
+> application server, or a Gitaly node.
 
 On the Praefect node:
 
@@ -653,14 +635,11 @@ Updates to example must be made at:
    so we use `default` here as well. This cluster has three Gitaly nodes `gitaly-1`,
    `gitaly-2`, and `gitaly-3`, which are intended to be replicas of each other.
 
-   {{< alert type="warning" >}}
-
-   If you have data on an already existing storage called
-   `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
-   afterwards.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you have data on an already existing storage called
+   > `default`, you should configure the virtual storage with another name and
+   > [migrate the data to the Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
+   > afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
    Praefect when communicating with Gitaly nodes in the cluster. This token is
@@ -671,13 +650,10 @@ Updates to example must be made at:
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
 
-   {{< alert type="note" >}}
-
-   When adding additional Gitaly nodes to a virtual storage, all storage names
-   in that virtual storage must be unique. Additionally, all Gitaly node
-   addresses referenced in the Praefect configuration must be unique.
-
-   {{< /alert >}}
+   > [!note]
+   > When adding additional Gitaly nodes to a virtual storage, all storage names
+   > in that virtual storage must be unique. Additionally, all Gitaly node
+   > addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
    # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on GitLab
@@ -1244,12 +1220,9 @@ internal traffic from the GitLab application to the Praefect nodes. The
 specifics on which load balancer to use or the exact configuration is beyond the
 scope of the GitLab documentation.
 
-{{< alert type="note" >}}
-
-The load balancer must be configured to accept traffic from the Gitaly nodes in
-addition to the GitLab nodes.
-
-{{< /alert >}}
+> [!note]
+> The load balancer must be configured to accept traffic from the Gitaly nodes in
+> addition to the GitLab nodes.
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
@@ -1359,13 +1332,10 @@ Particular attention should be shown to:
 1. Disable the default Gitaly service running on the GitLab host. It isn't needed
    because GitLab connects to the configured cluster.
 
-   {{< alert type="warning" >}}
-
-   If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
-   first.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you have existing data stored on the default Gitaly storage,
+   > you should [migrate the data to your Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
+   > first.
 
    ```ruby
    gitaly['enable'] = false
@@ -1723,14 +1693,11 @@ cluster.
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
 
-{{< alert type="warning" >}}
-
-Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
-
-Do not reduce the replication factor of object pools. This can cause linked repositories to break.
-Object pools have relative paths that begin with `@pools/`.
-
-{{< /alert >}}
+> [!warning]
+> Do not reduce the replication factor of object pools, any repository that has been forked, or the forks
+> themselves. This can cause the entire fork network to become corrupted.
+> Object pools have relative paths that begin with `@pools/`. You can check if a repository has been forked
+> through the GitLab UI.
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
@@ -1743,12 +1710,9 @@ You can configure either:
 
 ### Configure default replication factor
 
-{{< alert type="warning" >}}
-
-Reducing the default replication when there are object pools can cause some linked repositories to break.
-Object pools have relative paths that begin with `@pools/`.
-
-{{< /alert >}}
+> [!warning]
+> Reducing the default replication when there are object pools can cause some linked repositories to break.
+> Object pools have relative paths that begin with `@pools/`.
 
 If `default_replication_factor` is unset, the repositories are always replicated on every storage node defined in
 `virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are
@@ -1780,11 +1744,11 @@ necessary to reach the desired replication factor. The repository's primary node
 always assigned first and is never unassigned.
 
 ```shell
-sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -relative-path <relative-path> -replication-factor <replication-factor>
 ```
 
 - `-virtual-storage` is the virtual storage the repository is located in.
-- `-repository` is the repository's relative path in the storage.
+- `-relative-path` is the repository's relative path in the storage.
 - `-replication-factor` is the desired replication factor of the repository. The minimum value is
   `1` because the primary needs a copy of the repository. The maximum replication factor is the number of
   storages in the virtual storage.
@@ -1792,7 +1756,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 On success, the assigned host storages are printed. For example:
 
 ```shell
-$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
 
 current assignments: gitaly-1, gitaly-2
 ```
@@ -1888,14 +1852,11 @@ praefect['configuration'] = {
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
-that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the
-[`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
-
-{{< /alert >}}
+> [!warning]
+> Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
+> that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
+> than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the
+> [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.
@@ -1942,7 +1903,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 The output includes the number of replicas that were marked unverified.
 
-## Automatic failover and primary election strategies
+## Automatic failover and primary election
 
 Praefect regularly checks the health of each Gitaly node, which is used to automatically fail over
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.

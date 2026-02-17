@@ -22,6 +22,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ReleaseEditNewAppRoot',
     store,
     render: (h) => h(ReleaseEditNewApp),
   });

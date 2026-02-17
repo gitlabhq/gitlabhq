@@ -46,6 +46,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
+  Ci::PipelineArtifact.file_types.each_key do |file_type|
+    it { is_expected.to have_one(:"pipeline_artifacts_#{file_type}").class_name('Ci::PipelineArtifact').inverse_of(:pipeline) }
+  end
+
   it { is_expected.to have_many(:job_environments).class_name('Environments::Job').inverse_of(:pipeline) }
 
   it do
@@ -182,9 +186,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         _old_build = create(:ci_build, :retried, pipeline: pipeline)
         _expired_build = create(:ci_build, :expired, pipeline: pipeline)
         _failed_jobs = [create(:ci_build, :failed, pipeline: pipeline),
-                        create(:ci_bridge, :failed, pipeline: pipeline)]
+          create(:ci_bridge, :failed, pipeline: pipeline)]
         successful_jobs = [create(:ci_build, :success, pipeline: pipeline),
-                           create(:ci_bridge, :success, pipeline: pipeline)]
+          create(:ci_bridge, :success, pipeline: pipeline)]
 
         expect(pipeline.latest_successful_jobs).to contain_exactly(successful_jobs.first, successful_jobs.second)
       end
@@ -933,7 +937,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat
-            merge_request_event external_pull_request_event])
+          merge_request_event external_pull_request_event])
     end
   end
 
@@ -954,7 +958,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_branch_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat
-            external_pull_request_event])
+          external_pull_request_event])
     end
   end
 
@@ -976,7 +980,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
-            external_pull_request_event security_orchestration_policy])
+          external_pull_request_event security_orchestration_policy])
     end
   end
 
@@ -2076,6 +2080,102 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#variables' do
+    let(:variables_attributes) do
+      [
+        { key: 'ENV_VAR', value: 'env var value', variable_type: 'env_var', raw: false },
+        { key: 'FILE_VAR', value: 'file var value', variable_type: 'file', raw: true }
+      ]
+    end
+
+    shared_examples 'when pipeline has pipeline variables' do
+      it 'returns an array of Ci::PipelineVariableItem objects' do
+        expect(pipeline.variables).to match_array([
+          have_attributes(class: Ci::PipelineVariableItem, **variables_attributes.first),
+          have_attributes(class: Ci::PipelineVariableItem, **variables_attributes.last)
+        ])
+      end
+
+      context 'when pipeline does not have a pipeline variables artifact' do
+        before do
+          pipeline.pipeline_artifacts_pipeline_variables&.destroy!
+          pipeline.association(:pipeline_artifacts_pipeline_variables).reset
+        end
+
+        it 'returns an array of Ci::PipelineVariable objects' do
+          expect(pipeline.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+
+      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
+        before do
+          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
+        end
+
+        it 'returns an array of Ci::PipelineVariable objects' do
+          expect(pipeline.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+    end
+
+    shared_examples 'when pipeline does not have pipeline variables' do
+      it 'returns an empty result' do
+        expect(pipeline.variables).to be_empty
+      end
+
+      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
+        before do
+          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
+        end
+
+        it 'returns an empty result' do
+          expect(pipeline.variables).to be_empty
+        end
+      end
+    end
+
+    context 'when pipeline variables are not persisted' do
+      let(:pipeline) { build(:ci_pipeline, project: project) }
+
+      it_behaves_like 'when pipeline has pipeline variables' do
+        before do
+          variables_attributes.each do |var_attrs|
+            pipeline.association(:variables).target <<
+              FactoryBot.build(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(pipeline, variables_attributes).run
+        end
+      end
+
+      it_behaves_like 'when pipeline does not have pipeline variables'
+    end
+
+    context 'when pipeline variables are persisted' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it_behaves_like 'when pipeline has pipeline variables' do
+        before do
+          variables_attributes.each do |var_attrs|
+            pipeline.association(:variables).target <<
+              FactoryBot.create(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(pipeline, variables_attributes).run
+          pipeline.pipeline_artifacts_pipeline_variables.save!
+        end
+      end
+
+      it_behaves_like 'when pipeline does not have pipeline variables'
+    end
+  end
+
   describe '#auto_canceled?' do
     subject { pipeline.auto_canceled? }
 
@@ -3014,6 +3114,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#ref_status_name' do
+    context 'when ci_ref exists' do
+      let(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        pipeline.ci_ref.succeed
+      end
+
+      it 'returns ci_ref status name' do
+        expect(pipeline.ref_status_name).to eq('success')
+      end
+    end
+
+    context 'when ci_ref does not exist' do
+      let(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
+
+      it 'returns nil' do
+        expect(pipeline.ref_status_name).to be_nil
+      end
+    end
+  end
+
   context 'with non-empty project' do
     let(:pipeline) do
       create(
@@ -3085,7 +3207,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'with a branch name as the ref' do
         it 'looks up a commit for a branch' do
-          expect(pipeline.ref).to eq 'master'
+          expect(pipeline.ref).to eq project.default_branch
           expect(pipeline).to be_latest
         end
       end
@@ -4429,13 +4551,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it 'returns all merge requests having the same source branch and the pipeline sha' do
-        create(:merge_request_diff_commit, merge_request_diff: merge_request.merge_request_diff, sha: pipeline.sha)
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: merge_request.merge_request_diff,
+          sha: pipeline.sha
+        )
+
+        expect(pipeline.all_merge_requests).to eq([merge_request])
+      end
+
+      it 'returns merge requests when sha is in merge_request_commits_metadata' do
+        commit_metadata = create(:merge_request_commits_metadata, project: project, sha: pipeline.sha)
+        create(:merge_request_diff_commit,
+          merge_request_diff: merge_request.merge_request_diff,
+          merge_request_commits_metadata: commit_metadata)
 
         expect(pipeline.all_merge_requests).to eq([merge_request])
       end
 
       it "doesn't return merge requests having the same source branch without the pipeline sha" do
-        create(:merge_request_diff_commit, merge_request_diff: merge_request.merge_request_diff, sha: 'unrelated')
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: merge_request.merge_request_diff,
+          sha: 'unrelated'
+        )
 
         expect(pipeline.all_merge_requests).to be_empty
       end
@@ -7067,6 +7206,117 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'return the default initial value' do
         expect(subject).to eq(100)
       end
+    end
+  end
+
+  describe '.projects_with_variables' do
+    let_it_be(:project_with_ci_pipeline_variable1) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create_list(:ci_pipeline_variable, 2, pipeline: pipeline) # To ensure only unique project_ids returned
+      end
+    end
+
+    let_it_be(:project_with_ci_pipeline_variable2) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_variable, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_ci_pipeline_variable_and_pipeline_variables_artifact) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_variable, pipeline: pipeline)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_pipeline_variables_artifact1) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_pipeline_variables_artifact2) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+      end
+    end
+
+    let_it_be(:project_with_code_coverage_artifact) do
+      create(:project).tap do |project|
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files, pipeline: pipeline)
+      end
+    end
+
+    let(:limit) { 100 }
+    let(:project_ids) do
+      [
+        project.id,
+        project_with_ci_pipeline_variable1.id,
+        project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id,
+        project_with_pipeline_variables_artifact1.id,
+        project_with_code_coverage_artifact.id
+      ]
+    end
+
+    subject(:projects_with_variables) { described_class.projects_with_variables(project_ids, limit) }
+
+    it 'returns project IDs within the given project_ids list that have pipeline variables' do
+      expect(projects_with_variables).to contain_exactly(
+        project_with_ci_pipeline_variable1.id,
+        project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id,
+        project_with_pipeline_variables_artifact1.id
+      )
+    end
+
+    shared_examples 'when no projects have variables' do
+      let(:project_ids) { [project.id, project_with_code_coverage_artifact.id] }
+
+      it 'returns an empty result' do
+        expect(projects_with_variables).to be_empty
+      end
+    end
+
+    shared_examples 'when project_ids contain non-existent project IDs' do
+      let(:project_ids) { [project_with_ci_pipeline_variable1.id, non_existing_record_id] }
+
+      it 'returns existing project IDs that have pipeline variables' do
+        expect(projects_with_variables).to contain_exactly(project_with_ci_pipeline_variable1.id)
+      end
+    end
+
+    shared_examples 'when there are more projects with pipeline variables than the limit' do
+      let(:limit) { 1 }
+
+      it 'returns project IDs that have pipeline variables up to the limit' do
+        expect(projects_with_variables.size).to eq(1)
+      end
+    end
+
+    it_behaves_like 'when no projects have variables'
+    it_behaves_like 'when project_ids contain non-existent project IDs'
+    it_behaves_like 'when there are more projects with pipeline variables than the limit'
+
+    context 'when FF `query_projects_with_variables_from_ci_pipeline_artifacts` is disabled' do
+      before do
+        stub_feature_flags(query_projects_with_variables_from_ci_pipeline_artifacts: false)
+      end
+
+      it 'returns project IDs within the given project_ids list that have ci_pipeline_variables records' do
+        expect(projects_with_variables).to contain_exactly(
+          project_with_ci_pipeline_variable1.id,
+          project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id
+        )
+      end
+
+      it_behaves_like 'when no projects have variables'
+      it_behaves_like 'when project_ids contain non-existent project IDs'
+      it_behaves_like 'when there are more projects with pipeline variables than the limit'
     end
   end
 

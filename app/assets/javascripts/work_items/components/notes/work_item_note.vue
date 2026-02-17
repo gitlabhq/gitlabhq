@@ -5,7 +5,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -261,13 +261,18 @@ export default {
   },
   methods: {
     showReplyForm() {
-      this.$emit('startReplying');
-      this.$emit('startEditing');
+      this.$emit('start-replying');
+      this.$emit('start-editing');
     },
     startEditing() {
-      this.$emit('startEditing');
+      this.$emit('start-editing');
       this.isEditing = true;
-      updateDraft(this.autosaveKey, this.note.body);
+      const currentDraft = getDraft(this.autosaveKey);
+      // Prevent accidental overwriting of
+      // draft in case it is already present.
+      if (!currentDraft) {
+        updateDraft(this.autosaveKey, this.note.body);
+      }
     },
     handleEditNote({ note }) {
       if (this.hasAdminPermission && note.id === this.note.id) {
@@ -374,7 +379,7 @@ export default {
     },
     cancelEditing() {
       this.isEditing = false;
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
     },
   },
 };
@@ -431,14 +436,14 @@ export default {
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
               :resolved-by="resolvedBy"
-              @startReplying="showReplyForm"
-              @startEditing="startEditing"
+              @start-replying="showReplyForm"
+              @start-editing="startEditing"
               @resolve="$emit('resolve')"
               @error="($event) => $emit('error', $event)"
-              @notifyCopyDone="notifyCopyDone"
-              @deleteNote="$emit('deleteNote')"
-              @assignUser="assignUserAction"
-              @reportAbuse="$emit('reportAbuse')"
+              @notify-copy-done="notifyCopyDone"
+              @delete-note="$emit('delete-note')"
+              @assign-user="assignUserAction"
+              @report-abuse="$emit('report-abuse')"
             />
           </div>
         </div>
@@ -464,9 +469,9 @@ export default {
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :uploads-path="uploadsPath"
             class="gl-mt-3"
-            @cancelEditing="cancelEditing"
-            @toggleResolveDiscussion="$emit('resolve')"
-            @submitForm="updateNote"
+            @cancel-editing="cancelEditing"
+            @toggle-resolve-discussion="$emit('resolve')"
+            @submit-form="updateNote"
           />
           <div v-else class="timeline-discussion-body">
             <note-body
@@ -474,7 +479,7 @@ export default {
               :note="note"
               :has-admin-note-permission="hasAdminPermission"
               :is-updating="isUpdating"
-              @updateNote="updateNote"
+              @update-note="updateNote"
             />
           </div>
           <edited-at

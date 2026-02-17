@@ -53,11 +53,8 @@ for your client.
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                      |
 
-{{< alert type="note" >}}
-
-The `<name>` field must be named to match the token you chose.
-
-{{< /alert >}}
+> [!note]
+> The `<name>` field must be named to match the token you chose.
 
 Add the following section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file.
@@ -90,11 +87,8 @@ Add the following section to your
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `System.getenv("CI_JOB_TOKEN")`                                        |
 
-{{< alert type="note" >}}
-
-The `<name>` field must be named to match the token you chose.
-
-{{< /alert >}}
+> [!note]
+> The `<name>` field must be named to match the token you chose.
 
 In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
 create a file `gradle.properties` with the following content:
@@ -252,11 +246,8 @@ Authentication for [SBT](https://www.scala-sbt.org/index.html) is based on
 [basic HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
 You must to provide a name and a password.
 
-{{< alert type="note" >}}
-
-The name field must be named to match the token you chose.
-
-{{< /alert >}}
+> [!note]
+> The name field must be named to match the token you chose.
 
 To install a package from the Maven GitLab package registry by using `sbt`, you must configure
 a [Maven resolver](https://www.scala-sbt.org/1.x/docs/Resolvers.html#Maven+resolvers).
@@ -439,12 +430,9 @@ To publish a package by using Gradle:
 
 ## Publish a package
 
-{{< alert type="warning" >}}
-
-Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
-see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
-
-{{< /alert >}}
+> [!warning]
+> Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
+> see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
 
 After you have set up the [authentication](#authenticate-to-the-package-registry)
 and [chosen an endpoint for publishing](#naming-convention),
@@ -521,13 +509,10 @@ correct location:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message.
-Ensure the Maven package is not protected when publishing.
-For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
-
-{{< /alert >}}
+> [!note]
+> If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message.
+> Ensure the Maven package is not protected when publishing.
+> For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 ## Install a package
 
@@ -579,11 +564,8 @@ You can also install packages by using the Maven [`dependency:get` command](http
    - `<gitlab endpoint url>` is the URL of the GitLab [endpoint](#endpoint-urls).
    - `<path to settings.xml>` is the path to the `settings.xml` file that contains the [authentication details](#edit-the-client-configuration).
 
-{{< alert type="note" >}}
-
-The repository IDs in the command(`gitlab-maven`) and the `settings.xml` file must match.
-
-{{< /alert >}}
+> [!note]
+> The repository IDs in the `gitlab-maven` command and the `settings.xml` file must match.
 
 The message should show that the package is downloading from the package registry:
 
@@ -664,11 +646,8 @@ Due to technical constraints, when you use object storage, the Maven package reg
 setting in the object storage configuration for `packages`.
 Instead, proxy download is always enabled for Maven package registry downloads.
 
-{{< alert type="note" >}}
-
-If you don't use object storage, this behavior has no impact on your instance.
-
-{{< /alert >}}
+> [!note]
+> If you don't use object storage, this behavior has no impact on your instance.
 
 ## CI/CD integration for Maven packages
 
@@ -933,11 +912,8 @@ In the UI:
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
-{{< alert type="note" >}}
-
-If **Allow duplicates** is turned on, you can specify package names and versions that should not have duplicates in the **Exceptions** text box.
-
-{{< /alert >}}
+> [!note]
+> If **Allow duplicates** is turned on, you can specify package names and versions that should not have duplicates in the **Exceptions** text box.
 
 Your changes are automatically saved.
 
@@ -950,12 +926,9 @@ Your changes are automatically saved.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).
@@ -1229,11 +1202,8 @@ mvn deploy \
 -Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient.wire=trace
 ```
 
-{{< alert type="warning" >}}
-
-When you set these options, all network requests are logged and a large amount of output is generated.
-
-{{< /alert >}}
+> [!warning]
+> When you set these options, all network requests are logged and a large amount of output is generated.
 
 ### Verify your Maven settings
 

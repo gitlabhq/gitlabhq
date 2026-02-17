@@ -124,14 +124,15 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
         params do
           use :package_download
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, skip_job_token_policies: true
+        route_setting :authorization, permissions: :download_pypi_package, boundary_type: :group,
+          skip_job_token_policies: true
         get 'files/:sha256/*file_identifier' do
           group = find_authorized_group!
           authorize_read_package!(group)
@@ -153,13 +154,14 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns a list of packages as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, skip_job_token_policies: true
+        route_setting :authorization, permissions: :read_pypi_package, boundary_type: :group,
+          skip_job_token_policies: true
         get 'simple', format: :txt do
           present_simple_index(find_authorized_group!)
         end
@@ -172,7 +174,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         params do
@@ -182,7 +184,8 @@ module API
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, skip_job_token_policies: true
+        route_setting :authorization, permissions: :read_pypi_package, boundary_type: :group,
+          skip_job_token_policies: true
         get 'simple/*package_name', format: :txt do
           present_simple_package(find_authorized_group!)
         end
@@ -203,7 +206,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         params do
@@ -211,7 +214,8 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages,
+        route_setting :authorization, permissions: :download_pypi_package, boundary_type: :project,
+          job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
         get 'files/:sha256/*file_identifier' do
           project = project!
@@ -234,13 +238,14 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns a list of packages as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages,
+        route_setting :authorization, permissions: :read_pypi_package, boundary_type: :project,
+          job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
         get 'simple', format: :txt do
           project = project!
@@ -256,7 +261,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         params do
@@ -266,7 +271,8 @@ module API
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages,
+        route_setting :authorization, permissions: :read_pypi_package, boundary_type: :project,
+          job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
         get 'simple/*package_name', format: :txt do
           project = project!
@@ -284,7 +290,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 422, message: 'Unprocessable Entity' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         params do
@@ -304,7 +310,8 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :admin_packages
+        route_setting :authorization, permissions: :upload_pypi_package, boundary_type: :project,
+          job_token_policies: :admin_packages
         post do
           project = project!(action: :read_project)
           authorize_upload!(project)
@@ -343,11 +350,12 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages]
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :admin_packages
+        route_setting :authorization, permissions: :authorize_pypi_package, boundary_type: :project,
+          job_token_policies: :admin_packages
         post 'authorize' do
           project = project!(action: :read_project)
           authorize_job_token_policies!(project)

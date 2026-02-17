@@ -189,7 +189,11 @@ may affect users with [Auditor level access](../../auditor_users.md). When
 downgrading from Premium/Ultimate, Auditor users who try to sign in
 may see the following message: `Access denied for your LDAP account`.
 
-We have a workaround, based on toggling the access level of affected users:
+The workaround is to change the access level of affected users.
+
+Prerequisites:
+
+- Administrator access.
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -443,7 +447,7 @@ the rails console.
 
 When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
 
-To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-member-to-a-group).
+To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-group-member).
 
 #### Administrator privileges not granted
 
@@ -522,12 +526,9 @@ that the GitLab node can connect to LDAP.
 
 #### Sync all groups
 
-{{< alert type="note" >}}
-
-To sync all groups manually when debugging is unnecessary,
-[use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
-
-{{< /alert >}}
+> [!note]
+> To sync all groups manually when debugging is unnecessary,
+> [use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
 The output from a manual [group sync](ldap_synchronization.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP. Enter the [rails console](#rails-console)
@@ -576,12 +577,9 @@ and more DNs may be added, or existing entries modified, based on additional
 LDAP group lookups. The very last occurrence of this entry should indicate
 exactly which users GitLab believes should be added to the group.
 
-{{< alert type="note" >}}
-
-10 is `Guest`, 20 is `Reporter`, 30 is `Developer`, 40 is `Maintainer`
-and 50 is `Owner`.
-
-{{< /alert >}}
+> [!note]
+> 10 is `Guest`, 20 is `Reporter`, 30 is `Developer`, 40 is `Maintainer`
+> and 50 is `Owner`.
 
 ```shell
 Resolved 'my_group' group member access: {"uid=john0,ou=people,dc=example,dc=com"=>30,
@@ -692,12 +690,9 @@ at least either:
 
 The following script updates the emails for all provided users so they aren't blocked or unable to access their accounts.
 
-{{< alert type="note" >}}
-
-The following script requires that any new accounts with the new
-email address are removed first. Email addresses must be unique in GitLab.
-
-{{< /alert >}}
+> [!note]
+> The following script requires that any new accounts with the new
+> email address are removed first. Email addresses must be unique in GitLab.
 
 Go to the [rails console](#rails-console) and then run:
 
@@ -969,12 +964,9 @@ adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -u
 
 ### Rails console
 
-{{< alert type="warning" >}}
-
-It is very easy to create, read, modify, and destroy data with the rails
-console. Be sure to run commands exactly as listed.
-
-{{< /alert >}}
+> [!warning]
+> It is very easy to create, read, modify, and destroy data with the rails
+> console. Be sure to run commands exactly as listed.
 
 The rails console is a valuable tool to help debug LDAP problems. It allows you to
 directly interact with the application by running commands and seeing how GitLab

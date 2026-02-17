@@ -21,15 +21,7 @@
               "type": "string"
             },
             "unique": {
-              "type": "string",
-              "enum": [
-                "user.id",
-                "project.id",
-                "namespace.id",
-                "label",
-                "property",
-                "value"
-              ]
+              "type": "string"
             },
             "filter": {
               "type": "object",

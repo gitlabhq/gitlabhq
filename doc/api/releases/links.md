@@ -29,9 +29,9 @@ GitLab supports asset links with the following protocols:
 > [!note]
 > To interact with project releases directly, see the [project release API](_index.md).
 
-## List links of a release
+## List all release links
 
-Get assets as links from a release.
+Lists all assets as links from a release.
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links
@@ -67,9 +67,9 @@ Example response:
 ]
 ```
 
-## Get a release link
+## Retrieve a release link
 
-Get an asset as a link from a release.
+Retrieves a specified asset as a link from a release.
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -100,7 +100,7 @@ Example response:
 
 ## Create a release link
 
-Creates an asset as a link from a release.
+Creates an asset link for a specified release.
 
 ```plaintext
 POST /projects/:id/releases/:tag_name/assets/links
@@ -140,7 +140,7 @@ Example response:
 
 ## Update a release link
 
-Updates an asset as a link from a release.
+Updates a specified asset link for a release.
 
 ```plaintext
 PUT /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -180,7 +180,7 @@ Example response:
 
 ## Delete a release link
 
-Deletes an asset as a link from a release.
+Deletes a specified asset link from a release.
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name/assets/links/:link_id

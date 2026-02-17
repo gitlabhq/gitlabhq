@@ -10,26 +10,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'web_hook_logs_daily', # temporary copy of web_hook_logs
-      'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-      'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
-    ]
-  end
-
-  # The following tables have a `desired_sharding_key` but are missing a `sharding_key_issue_url`.
-  # This list serves as a temporary exemption for existing tables to prevent spec failures.
-  # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
-  let(:allowed_to_be_missing_sharding_key_issue_url) do
-    %w[
-      merge_request_context_commit_diff_files
-      merge_request_diff_commits
-      merge_request_diff_files
-      merge_request_diff_files_99208b8fac
-      p_ci_build_trace_metadata
-      security_findings
-      spam_logs
+      'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
+      'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
+      'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
+      'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
+      'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
+      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
+      'supply_chain_attestation_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
+      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
     ]
   end
 
@@ -42,11 +34,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         bulk_import_batch_trackers.namespace_id
         bulk_import_batch_trackers.project_id
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
-      'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
-      'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
-      'group_secrets_managers.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
-      'project_secrets_managers.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
+      *%w[
+        web_hook_logs_daily.organization_id
+        web_hook_logs_daily.group_id
+        web_hook_logs_daily.project_id
+      ] # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
     ]
   end
 
@@ -55,6 +49,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
+      'web_hook_logs_daily.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+      'web_hook_logs_daily.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+      'web_hook_logs_daily.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
@@ -63,11 +60,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # LFK already present on ci_pipeline_schedules and cascade delete all ci resources.
       'ci_pipeline_schedule_variables.project_id',
       'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'ci_secure_file_states.project_id', # LFK already present on ci_secure_files and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_build_pending_states.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_resources.project_id', # LFK already present on ci_resource_groups and cascade delete all ci resources
       'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
+      'ci_job_artifact_states.project_id',
+      # LFK already present on p_ci_job_artifacts and cascade delete all ci resources
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
       'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
       'vulnerability_finding_links.project_id', # LFK already present on vulnerability_occurrence with cascade delete
@@ -100,6 +100,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'packages_package_files.project_id',
       'merge_request_commits_metadata.project_id',
       'sbom_vulnerability_scans.project_id',
+      'sbom_vulnerability_scan_results.project_id',
       'p_duo_workflows_checkpoints.project_id',
       'p_duo_workflows_checkpoints.namespace_id'
     ]
@@ -239,6 +240,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # Step 3: Check foreign keys using Rails schema introspection
     work_in_progress = {
       "authentication_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/561359",
+      "cluster_platforms_kubernetes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/582113",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_batch_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
@@ -285,6 +287,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "clusters" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553452",
+      "cluster_providers_gcp" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584432",
+      "clusters_kubernetes_namespaces" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584433",
+      "cluster_providers_aws" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584431",
       "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
@@ -298,18 +303,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
       "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
-      "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
       "suggestions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550696",
       "commit_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550692",
       "note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550695",
-      "slack_integrations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524680",
       "diff_note_positions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550693",
-      'award_emoji' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/514604',
-      "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291",
-      "slack_integrations_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/583011",
-      "slack_api_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/583701"
+      "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291"
     }
 
     columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }
@@ -390,7 +390,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   end
 
   it 'does not allow invalid follow-up issue URLs', :aggregate_failures do
-    issue_url_regex = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/issues/\d+\z}
+    issue_url_regex = %r{\Ahttps://gitlab\.com/(gitlab-org/gitlab|groups/gitlab-org)/-/(issues|work_items)/\d+\z}
 
     ::Gitlab::Database::Dictionary.entries.each do |entry|
       if entry.sharding_key.present?
@@ -398,15 +398,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
           "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it " \
             "has a valid sharding key."
       elsif entry.desired_sharding_key.present?
-        if allowed_to_be_missing_sharding_key_issue_url.include?(entry.table_name)
-          expect(entry.sharding_key_issue_url).to be_blank,
-            "The table #{entry.table_name} has a `sharding_key_issue_url` but is listed in " \
-              "`allowed_to_be_missing_sharding_key_issue_url`. Please remove it from the exemption list."
-        else
-          expect(entry.sharding_key_issue_url).to match(issue_url_regex),
-            "The table #{entry.table_name} has a `desired_sharding_key` which indicates work is in progress. " \
-              "Please add a valid `sharding_key_issue_url` (https://gitlab.com/gitlab-org/gitlab/-/issues/XXX)."
-        end
+        expect(entry.sharding_key_issue_url).to match(issue_url_regex),
+          "The table #{entry.table_name} has a `desired_sharding_key` which indicates work is in progress. " \
+            "Please add a valid `sharding_key_issue_url` (https://gitlab.com/gitlab-org/gitlab/-/issues/XXX)."
       elsif entry.sharding_key_issue_url.present?
         expect(entry.sharding_key_issue_url).to match(issue_url_regex),
           "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \

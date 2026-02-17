@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use Cube to query the GitLab Product analytics API. Send queries, generate access tokens, and retrieve analytics metadata.
 title: Product analytics API
 ---
 
@@ -24,13 +25,10 @@ title: Product analytics API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is not ready for production use.
 
 Use this API to track user behavior and application usage.
 

@@ -95,7 +95,7 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
 
       context 'when the length is within the byte size limit' do
         it 'is valid' do
-          # package_reference is set correclty in the factory
+          # package_reference is set correctly in the factory
           expect(package_reference).to be_valid
         end
       end

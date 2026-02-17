@@ -94,6 +94,17 @@ RSpec.shared_examples 'an email with X-GitLab headers containing project details
   end
 end
 
+RSpec.shared_examples 'an email with X-GitLab headers containing group details' do
+  it 'has X-GitLab-Group headers' do
+    aggregate_failures do
+      is_expected.to have_header('X-GitLab-Group', /#{group.name}/)
+      is_expected.to have_header('X-GitLab-Group-Id', /#{group.id}/)
+      is_expected.to have_header('X-GitLab-Group-Path', /#{group.full_path}/)
+      is_expected.to have_header('List-Id', "#{group.full_path} <#{group.id}.#{group.path}.#{Gitlab.config.gitlab.host}>")
+    end
+  end
+end
+
 RSpec.shared_examples 'a new thread email with reply-by-email enabled' do
   it 'has the characteristics of a threaded email' do
     host = Gitlab.config.gitlab.host
@@ -108,6 +119,7 @@ end
 
 RSpec.shared_examples 'a thread answer email with reply-by-email enabled' do |group_level = false|
   include_examples 'an email with X-GitLab headers containing project details' unless group_level
+  include_examples 'an email with X-GitLab headers containing group details' if group_level
   include_examples 'an email with X-GitLab headers containing IDs'
 
   it 'has the characteristics of a threaded reply' do
@@ -125,6 +137,7 @@ end
 
 RSpec.shared_examples 'an email starting a new thread with reply-by-email enabled' do |group_level = false|
   include_examples 'an email with X-GitLab headers containing project details' unless group_level
+  include_examples 'an email with X-GitLab headers containing group details' if group_level
   include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a new thread email with reply-by-email enabled'
 
@@ -194,11 +207,27 @@ end
 RSpec.shared_examples 'it should show Gmail Actions View Issue link' do |group_level = false|
   it_behaves_like 'it should have Gmail Actions links'
 
-  it 'show the correct view action text' do
-    if group_level
+  context 'when work_item_planning_view: false' do
+    before do
+      stub_feature_flags(work_item_planning_view: false)
+    end
+
+    it 'show the correct view action text' do
+      if group_level
+        is_expected.to have_body_text('View Work item')
+      else
+        is_expected.to have_body_text('View Issue')
+      end
+    end
+  end
+
+  context 'when work_item_planning_view: true' do
+    before do
+      stub_feature_flags(work_item_planning_view: true)
+    end
+
+    it 'show the correct view action text' do
       is_expected.to have_body_text('View Work item')
-    else
-      is_expected.to have_body_text('View Issue')
     end
   end
 end

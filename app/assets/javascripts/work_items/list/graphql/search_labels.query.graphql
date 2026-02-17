@@ -1,5 +1,6 @@
 #import "./label.fragment.graphql"
 
+# @feature_category: portfolio_management
 query searchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) @persist {
     id

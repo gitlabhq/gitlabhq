@@ -36,6 +36,7 @@ export default {
       default: '',
     },
   },
+  emits: ['update-variables'],
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
@@ -91,7 +92,7 @@ export default {
           class="gl-py-4"
           :rest-job="job"
           :job-id="job.id"
-          @updateVariables="$emit('updateVariables')"
+          @update-variables="$emit('update-variables')"
         />
 
         <job-sidebar-details-container class="gl-border-b gl-border-subtle gl-py-4" />
@@ -128,7 +129,7 @@ export default {
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
           :stages="stages"
-          @requestSidebarStageDropdown="fetchJobsForStage"
+          @request-sidebar-stage-dropdown="fetchJobsForStage"
         />
 
         <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />

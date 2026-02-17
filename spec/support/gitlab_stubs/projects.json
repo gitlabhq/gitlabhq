@@ -1,7 +1,7 @@
 [
   {
     "id": 3,
-    "description": "GitLab is open source software to collaborate on code. Create projects and repositories, manage access and do code reviews.",
+    "description": "GitLab is the most comprehensive DevSecOps platform, built for intelligent orchestration.",
     "default_branch": "master",
     "visibility": "public",
     "ssh_url_to_repo": "git@demo.gitlab.com:gitlab/gitlabhq.git",

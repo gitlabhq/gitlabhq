@@ -37,7 +37,10 @@ export default {
   apollo: {
     failedJobsCount: {
       context() {
-        return getQueryHeaders(this.graphqlResourceEtag);
+        return {
+          ...getQueryHeaders(this.graphqlResourceEtag),
+          featureCategory: 'continuous_integration',
+        };
       },
       query: getPipelineFailedJobsCount,
       variables() {

@@ -17,8 +17,10 @@ module BatchedGitRefUpdates
       total_deletes = 0
 
       in_lock("#{self.class}/#{@project_id}", retries: 0, ttl: LOCK_TIMEOUT) do
-        project = Project.find_by_id(@project_id)
-        break unless project
+        # use primary so we don't incorrectly drop Deletion records due to replication delay
+        project = ::Gitlab::Database::LoadBalancing::SessionMap.with_sessions.use_primary do
+          Project.find_by_id(@project_id)
+        end
 
         Deletion
           .status_pending
@@ -27,8 +29,14 @@ module BatchedGitRefUpdates
           .each_batch(of: QUERY_BATCH_SIZE) do |batch|
           refs = batch.map(&:ref)
 
-          refs.each_slice(GITALY_BATCH_SIZE) do |refs_to_delete|
-            project.repository.delete_refs(*refs_to_delete.uniq)
+          if project
+            begin
+              refs.each_slice(GITALY_BATCH_SIZE) do |refs_to_delete|
+                project.repository.delete_refs(*refs_to_delete.uniq)
+              end
+            rescue Gitlab::Git::Repository::NoRepository
+              # Repository is gone, refs are effectively deleted
+            end
           end
 
           total_deletes += refs.count

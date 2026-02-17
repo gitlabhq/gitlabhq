@@ -2,9 +2,12 @@
 - content_for :table_content do
   - if rate_limits
     %li= link_to _('Rate Limits'), '#rate-limits'
+    %li= link_to _('Files API rate limits'), '#files-api-rate-limits'
     %li= link_to _('Users API rate limits'), '#users-api-rate-limits'
     %li= link_to _('Groups API rate limits'), '#groups-api-rate-limits'
     %li= link_to _('Projects API rate limits'), '#projects-api-rate-limits'
+    - if Feature.enabled?(:organization_switching, current_user)
+      %li= link_to _('Organizations API rate limits'), '#organizations-api-rate-limits'
 
 - content_for :settings_content do
   - if rate_limits
@@ -38,11 +41,27 @@
           = render 'help/instance_configuration/rate_limit_row', title: _('Group import requests'), rate_limit: rate_limits[:group_import]
           = render 'help/instance_configuration/rate_limit_row', title: _('Raw blob requests'), rate_limit: rate_limits[:raw_blob]
           = render 'help/instance_configuration/rate_limit_row', title: _('Pipeline creation requests per project, commit, and user'), rate_limit: rate_limits[:pipeline_creation]
+          = render 'help/instance_configuration/rate_limit_row', title: _('Git SSH operations'), rate_limit: rate_limits[:git_ssh_operations]
+
+    %h2#files-api-rate-limits= _('Files API rate limits')
+    %p
+      = _('Rate limits for Repository files API endpoints.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/files_api_rate_limits.md')
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Rate limit')
+            %th= _('Requests per period')
+            %th= _('Period in seconds')
+        %tbody
+          = render 'help/instance_configuration/rate_limit_row', title: _('Repository files API (Unauthenticated)'), rate_limit: rate_limits[:files_api_unauthenticated], public_visible: true
+          = render 'help/instance_configuration/rate_limit_row', title: _('Repository files API (Authenticated)'), rate_limit: rate_limits[:files_api_authenticated]
 
     %h2#users-api-rate-limits= _('Users API rate limits')
     %p
       = _('Rate limits for specific Users API endpoints.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md')
     .table-responsive
       %table
         %thead
@@ -62,7 +81,7 @@
     %h2#groups-api-rate-limits= _('Groups API rate limits')
     %p
       = _('Rate limits for specific Groups API endpoints.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_groups_api.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_groups_api.md')
     .table-responsive
       %table
         %thead
@@ -81,7 +100,7 @@
     %h2#projects-api-rate-limits= _('Projects API rate limits')
     %p
       = _('Rate limits for specific Projects API endpoints.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api.md')
     .table-responsive
       %table
         %thead
@@ -97,4 +116,19 @@
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/contributed_projects', rate_limit: rate_limits[:user_contributed_projects_api]
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/starred_projects', rate_limit: rate_limits[:user_starred_projects_api]
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects/:id/members/all', rate_limit: rate_limits[:project_members_api]
+
+    - if Feature.enabled?(:organization_switching, current_user)
+      %h2#organizations-api-rate-limits= _('Organizations API rate limits')
+      %p
+        = _('Rate limits for specific Organizations API endpoints.')
+        = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_organizations_api.md')
+      .table-responsive
+        %table
+          %thead
+            %tr
+              %th= _('Rate limit')
+              %th= _('Requests per period')
+              %th= _('Period in seconds')
+          %tbody
+            = render 'help/instance_configuration/rate_limit_row', title: 'POST /organizations', rate_limit: rate_limits[:organizations_api]
     %br

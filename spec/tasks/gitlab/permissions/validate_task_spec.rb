@@ -304,6 +304,52 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         end
       end
     end
+
+    describe 'empty resource directory validation' do
+      context 'when a resource directory contains only _metadata.yml' do
+        before do
+          allow(Dir).to receive(:glob).and_call_original
+          allow(Dir).to receive(:glob)
+            .with('config/authz/permissions/*/')
+            .and_return(['config/authz/permissions/empty_resource/'])
+          allow(Dir).to receive(:glob)
+            .with('config/authz/permissions/empty_resource/*.yml')
+            .and_return(['config/authz/permissions/empty_resource/_metadata.yml'])
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following resource directories contain only a _metadata.yml file with no permission definitions.
+            #  Either add permission definitions or remove the directory.
+            #
+            #    - config/authz/permissions/empty_resource/
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when a resource directory contains _metadata.yml and permission files' do
+        before do
+          allow(Dir).to receive(:glob).and_call_original
+          allow(Dir).to receive(:glob)
+            .with('config/authz/permissions/*/')
+            .and_return(['config/authz/permissions/valid_resource/'])
+          allow(Dir).to receive(:glob)
+            .with('config/authz/permissions/valid_resource/*.yml')
+            .and_return([
+              'config/authz/permissions/valid_resource/_metadata.yml',
+              'config/authz/permissions/valid_resource/read.yml'
+            ])
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
+        end
+      end
+    end
   end
 
   describe '#validate_name' do

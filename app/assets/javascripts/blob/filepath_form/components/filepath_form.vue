@@ -32,7 +32,9 @@ export default {
   beforeMount() {
     const navLinksElement = document.querySelector('.file-editor .nav-links');
     navLinksElement?.addEventListener('click', (e) => {
-      this.showTemplateSelector = e.target.href.split('#')[1] !== 'preview';
+      if (e.target.tagName === 'A' && e.target.href) {
+        this.showTemplateSelector = e.target.href.split('#')[1] !== 'preview';
+      }
     });
   },
   methods: {

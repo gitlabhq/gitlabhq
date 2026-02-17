@@ -4,11 +4,13 @@ import InviteGroupTrigger from '~/invite_members/components/invite_group_trigger
 import eventHub from '~/invite_members/event_hub';
 
 const displayText = 'Invite a group';
+const triggerSource = '_invite_source_';
 
 const createComponent = (props = {}) => {
   return mount(InviteGroupTrigger, {
     propsData: {
       displayText,
+      triggerSource,
       ...props,
     },
   });
@@ -39,7 +41,9 @@ describe('InviteGroupTrigger', () => {
     });
 
     it('emits event that triggers opening the modal', () => {
-      expect(eventHub.$emit).toHaveBeenLastCalledWith('openGroupModal');
+      expect(eventHub.$emit).toHaveBeenLastCalledWith('open-group-modal', {
+        source: triggerSource,
+      });
     });
   });
 });

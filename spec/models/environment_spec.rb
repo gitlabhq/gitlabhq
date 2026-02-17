@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :continuous_delivery do
+RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :environment_management do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
@@ -1200,10 +1200,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '#actions_for' do
-    let(:deployment) { create(:deployment, :success, environment: environment) }
-    let(:pipeline) { deployment.deployable.pipeline }
-    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_COMMIT_REF_NAME') }
-    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production') }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+    let!(:deployment) { create(:deployment, :success, environment: environment, deployable: create(:ci_build, pipeline: pipeline, ref: 'master')) }
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, ref: 'master', environment: 'review/master') }
+    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, ref: 'master', environment: 'production') }
 
     it 'returns a list of actions with matching environment' do
       expect(environment.actions_for('review/master')).to contain_exactly(review_action)
@@ -1769,35 +1769,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       end
 
       subject.prometheus_adapter
-    end
-  end
-
-  describe '#knative_services_finder' do
-    let(:environment) { create(:environment) }
-
-    subject { environment.knative_services_finder }
-
-    context 'environment has no deployments' do
-      it { is_expected.to be_nil }
-    end
-
-    context 'environment has a deployment' do
-      context 'with no cluster associated' do
-        let!(:deployment) { create(:deployment, :success, environment: environment) }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'with a cluster associated' do
-        let!(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
-
-        it 'calls the service finder' do
-          expect(Clusters::KnativeServicesFinder).to receive(:new)
-            .with(deployment.cluster, environment).and_return(:finder)
-
-          is_expected.to eq :finder
-        end
-      end
     end
   end
 

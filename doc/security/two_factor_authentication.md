@@ -62,7 +62,7 @@ Use the [application settings API](../api/settings.md) to modify the following s
 
 For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#available-settings).
 
-## Enforce 2FA for Administrator users
+## Enforce 2FA for administrators
 
 {{< details >}}
 
@@ -86,7 +86,7 @@ Administrators can enforce 2FA for both:
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section:
-   1. Select **Require administrators to enable 2FA**.
+   1. Select **Enforce two-factor authentication for administrators**.
    1. In **Two-factor grace period**, enter a number of hours. If you want to
      enforce 2FA on the next sign-in attempt, enter `0`.
 1. Select **Save changes**.
@@ -105,15 +105,12 @@ Administrators can enforce 2FA for both:
 
 You can enforce 2FA for all users in a group or subgroup.
 
-{{< alert type="note" >}}
+2FA enforcement applies to both [direct and inherited members](../user/project/members/_index.md#membership-types)
+group members. If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
+Inherited members are members of the ancestor groups.
 
-- 2FA enforcement applies to both
-  [direct and inherited members](../user/project/members/_index.md#membership-types) group members.
-- If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
-  Inherited members are members of the ancestor groups.
-- Email OTP does not satisfy the 2FA requirement. Members must configure either an app-based TOTP or WebAuthn.
-
-{{< /alert >}}
+> [!note]
+> Email OTP does not satisfy the 2FA requirement. Members must configure either an app-based TOTP or WebAuthn.
 
 Prerequisites:
 
@@ -158,12 +155,9 @@ When 2FA is not enforced in a top-level group:
 - If **Allow more restrictive 2FA enforcement for subgroups** is disabled, subgroups
   cannot enforce a 2FA requirement independently. 2FA is not required for any members in the hierarchy.
 
-{{< alert type="note" >}}
-
-When **All users in this group must set up two-factor authentication** is enabled, it always
-takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
-
-{{< /alert >}}
+> [!note]
+> When **All users in this group must set up two-factor authentication** is enabled, it always
+> takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
 
 To prevent subgroups from setting individual 2FA requirements:
 
@@ -184,12 +178,9 @@ without using 2FA. For example:
 To ensure this does not occur, [prevent sharing of projects](../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
 for the 2FA group.
 
-{{< alert type="warning" >}}
-
-If you add members to a project in a group or subgroup that has 2FA
-enabled, 2FA is **not** required for those individually added members.
-
-{{< /alert >}}
+> [!warning]
+> If you add members to a project in a group or subgroup that has 2FA
+> enabled, 2FA is **not** required for those individually added members.
 
 ## Disable 2FA
 
@@ -204,14 +195,11 @@ You can disable 2FA for a single user or all users.
 
 This action is permanent and irreversible. Users must reactivate 2FA to use it again.
 
-{{< alert type="warning" >}}
-
-Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
-or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
-settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
-when they next sign in to GitLab.
-
-{{< /alert >}}
+> [!warning]
+> Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
+> or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
+> settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
+> when they next sign in to GitLab.
 
 ### For all users
 

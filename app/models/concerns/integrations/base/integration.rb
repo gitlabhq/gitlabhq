@@ -49,8 +49,12 @@ module Integrations
 
       SNOWPLOW_EVENT_ACTION = 'perform_integrations_action'
       SNOWPLOW_EVENT_LABEL = 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly'
+      ENCRYPTED_PROPERTIES_MAX_SIZE = 1.megabyte
 
       class_methods do
+        def encrypted_properties_max_size
+          ENCRYPTED_PROPERTIES_MAX_SIZE
+        end
         extend Gitlab::Utils::Override
 
         def supported_events
@@ -524,6 +528,7 @@ module Integrations
         validates :type, uniqueness: { scope: :project_id }, if: :project_level?
         validates :type, uniqueness: { scope: :group_id }, if: :group_level?
         validates_with ExactlyOnePresentValidator, fields: [:project_id, :group_id, :organization_id]
+        validate :validate_encrypted_properties_size_limit, if: :encrypted_properties_changed?
 
         scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
         scope :third_party_wikis, -> { where(category: 'third_party_wiki').active }
@@ -822,6 +827,21 @@ module Integrations
 
       def toggle!
         active? ? deactivate! : activate!
+      end
+
+      def validate_encrypted_properties_size_limit
+        return if properties.blank?
+
+        Gitlab::Json::LimitedEncoder.encode(properties, limit: self.class.encrypted_properties_max_size)
+      rescue Gitlab::Json::LimitedEncoder::LimitExceeded
+        max_size = self.class.encrypted_properties_max_size
+        errors.add(
+          :base,
+          format(
+            s_("Integrations|Integration properties exceed maximum size of %{max_size}"),
+            max_size: ActiveSupport::NumberHelper.number_to_human_size(max_size)
+          )
+        )
       end
 
       private

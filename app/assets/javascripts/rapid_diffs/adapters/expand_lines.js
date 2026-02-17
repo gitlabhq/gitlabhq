@@ -2,6 +2,7 @@ import { getLines } from '~/rapid_diffs/adapters/expand_lines/get_lines';
 import { DiffLineRow } from '~/rapid_diffs/adapters/expand_lines/diff_line_row';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import { EXPANDED_LINES } from '~/rapid_diffs/adapter_events';
 
 const getSurroundingLines = (hunkHeaderRow) => {
   const wrapperElements = Array.from(hunkHeaderRow.parentElement.children);
@@ -70,6 +71,7 @@ export const expandLinesAdapter = {
       hunkHeaderRow.remove();
       const totalRows = this.diffElement.querySelectorAll('[data-file-body] tbody tr').length;
       this.diffElement.style.setProperty('--virtual-total-rows', totalRows);
+      this.trigger(EXPANDED_LINES);
     },
   },
 };

@@ -76,13 +76,7 @@ class GroupChildEntity < Grape::Entity
     leave_group_members_path(instance)
   end
 
-  expose :can_leave, unless: ->(_instance, _options) { project? } do |instance|
-    if membership
-      can?(request.current_user, :destroy_group_member, membership)
-    else
-      false
-    end
-  end
+  expose :can_leave?, as: :can_leave
 
   expose :can_remove?, as: :can_remove
 
@@ -161,6 +155,16 @@ class GroupChildEntity < Grape::Entity
       can?(request.current_user, :remove_project, object)
     else
       can?(request.current_user, :admin_group, object)
+    end
+  end
+
+  def can_leave?
+    return false unless request.current_user
+
+    if project?
+      request.current_user.can_leave_project?(object)
+    else
+      request.current_user.can_leave_group?(object)
     end
   end
 

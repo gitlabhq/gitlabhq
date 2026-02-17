@@ -15,6 +15,7 @@ export const initDependencyProxyApp = () => {
     el.dataset;
   return new Vue({
     el,
+    name: 'ContainerRegistryRouterViewRoot',
     apolloProvider,
     router: createRouter(endpoint),
     provide: {

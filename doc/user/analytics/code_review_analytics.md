@@ -40,7 +40,7 @@ For a video explanation, see [Code review analytics: Faster code review](https:/
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 To view code review analytics:
 

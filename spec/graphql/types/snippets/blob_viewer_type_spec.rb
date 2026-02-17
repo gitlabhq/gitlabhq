@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'], :with_current_organizati
 
   it 'has the correct fields' do
     expected_fields = [:type, :load_async, :too_large, :collapsed,
-                       :render_error, :file_type, :loading_partial_name]
+      :render_error, :file_type, :loading_partial_name]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

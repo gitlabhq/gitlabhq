@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SensitiveSerializableHash, feature_category: :shared do
+RSpec.describe Gitlab::SensitiveSerializableHash, feature_category: :system_access do
   describe '.prevent_from_serialization' do
     let(:base_class) do
       Class.new do

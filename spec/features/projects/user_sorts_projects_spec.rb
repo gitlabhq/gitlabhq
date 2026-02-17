@@ -24,9 +24,6 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     end
 
     it "is set on the explore_projects_path" do
-      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
-      stub_feature_flags(explore_projects_vue: false)
-
       visit(explore_projects_path)
 
       within '[data-testid=groups-projects-sort]' do
@@ -53,9 +50,6 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
 
   context "from explore projects", :js do
     before do
-      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
-      stub_feature_flags(explore_projects_vue: false)
-
       sign_in(user)
       visit(explore_projects_path)
       within '[data-testid=groups-projects-sort]' do

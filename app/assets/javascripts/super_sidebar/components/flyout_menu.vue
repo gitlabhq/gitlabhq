@@ -159,6 +159,22 @@ export default {
     target.removeEventListener('mousemove', this.onMouseMove);
   },
   methods: {
+    handlePinAdd(itemId, itemTitle) {
+      this.$emit('pin-add', itemId, itemTitle);
+      // Emit mouseleave after pin action to close flyout in Safari when DOM changes
+      // Use nextTick to ensure the pin action completes first
+      this.$nextTick(() => {
+        this.$emit('mouseleave');
+      });
+    },
+    handlePinRemove(itemId, itemTitle) {
+      this.$emit('pin-remove', itemId, itemTitle);
+      // Emit mouseleave after pin action to close flyout in Safari when DOM changes
+      // Use nextTick to ensure the pin action completes first
+      this.$nextTick(() => {
+        this.$emit('mouseleave');
+      });
+    },
     startHoverTimeout() {
       this.hoverTimeoutId = setTimeout(() => {
         this.showSVG = false;
@@ -204,9 +220,11 @@ export default {
           :item="item"
           :is-flyout="true"
           :async-count="asyncCount"
-          @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
-          @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
+          @pin-add="handlePinAdd"
+          @pin-remove="handlePinRemove"
           @nav-link-click="$emit('nav-link-click')"
+          @nav-item-keydown-esc="$emit('nav-item-keydown-esc', targetId)"
+          @nav-pin-keydown-esc="$emit('nav-pin-keydown-esc', targetId)"
         />
       </ul>
     </div>
@@ -242,7 +260,6 @@ export default {
 <style scoped>
 svg {
   pointer-events: none;
-
   position: fixed;
   right: 0;
 }

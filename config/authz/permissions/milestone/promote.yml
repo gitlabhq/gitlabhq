@@ -1,0 +1,5 @@
+---
+name: promote_milestone
+description: Grants the ability to promote milestones
+boundaries:
+  - project

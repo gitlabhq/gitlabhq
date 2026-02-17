@@ -203,7 +203,7 @@
   min-width: 0;
   border: 1px solid var(--gl-control-border-color-default);
   @apply gl-bg-default;
-  border-radius: $gl-border-radius-base;
+  border-radius: var(--gl-control-border-radius);
 
   &.focus,
   &.focus:hover {
@@ -247,7 +247,7 @@
   min-width: 0;
   height: #{$input-height - 2px};
   background-color: var(--gl-control-background-color-default);
-  border-radius: $gl-border-radius-base;
+  border-radius: var(--gl-control-border-radius);
 }
 
 .filtered-search-input-dropdown-menu {
@@ -271,7 +271,8 @@
 }
 
 .filtered-search-history-dropdown-toggle-button.gl-button {
-  border-radius: $gl-border-radius-base-inner 0 0 $gl-border-radius-base-inner;
+  $filtered-search-inner-border-radius: calc(var(--gl-control-border-radius) - 1px);
+  border-radius: $filtered-search-inner-border-radius 0 0 $filtered-search-inner-border-radius;
   margin: -1px 0 -1px -1px;
   flex: 1;
   transition: color 0.1s linear;

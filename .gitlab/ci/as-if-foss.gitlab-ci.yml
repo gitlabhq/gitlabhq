@@ -146,7 +146,7 @@ delete-as-if-foss-branch:
 # We can only delete the environment after it's stopped, therefore
 # we need to use another job to delete the environment, not in the
 # job where it's stopping the environment. See:
-# https://docs.gitlab.com/ee/ci/environments/#delete-an-environment
+# https://docs.gitlab.com/ci/environments/#delete-an-environment
 delete-as-if-foss-environment:
   extends:
     - .as-if-foss:rules:start-as-if-foss

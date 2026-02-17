@@ -1,0 +1,5 @@
+---
+name: delete_container_repository_protection_rule
+description: Grants the ability to delete container repository protection rules
+boundaries:
+  - project

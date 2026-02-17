@@ -22,13 +22,10 @@ For example, you can create and assign the topics `python` and `hackathon` to al
 
 Topics assigned to a project are displayed in the **Project overview** and [**Projects**](working_with_projects.md#view-projects) lists, below the project information description.
 
-{{< alert type="note" >}}
-
-Only users with access to the project can see the topics assigned to that project,
-but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
-Do not include sensitive information in the name of a topic.
-
-{{< /alert >}}
+> [!note]
+> Only users with access to the project can see the topics assigned to that project,
+> but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
+> Do not include sensitive information in the name of a topic.
 
 ## Explore topics
 

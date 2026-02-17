@@ -29,17 +29,17 @@ The vision is for the AI Catalog to provide:
 - **Extensibility**: Developers can register new agents or flows with metadata, inputs/outputs, and
   performance metrics.
 
-### AI gateway
+### AI Gateway
 
-Standalone service used to give access to AI features to non-SaaS GitLab users. This logic will be moved to Cloud Connector when that service is ready. Eventually, the AI gateway will be used to host endpoints that proxy requests to AI providers, removing the need for the GitLab Rails monolith to integrate and communicate directly with third-party Large Language Models (LLMs). [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
+Standalone service used to give access to AI features to non-SaaS GitLab users. This logic will be moved to Cloud Connector when that service is ready. Eventually, the AI Gateway will be used to host endpoints that proxy requests to AI providers, removing the need for the GitLab Rails monolith to integrate and communicate directly with third-party Large Language Models (LLMs). [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
-### AI gateway prompt
+### AI Gateway prompt
 
-An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
+An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
 
-### AI gateway prompt registry
+### AI Gateway prompt registry
 
-A component responsible for maintaining a list of AI gateway Prompts available to perform specific actions. Currently, we use a [`LocalPromptRegistry`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/874e05281cab50012a53685e051583e620dac8c4/ai_gateway/prompts/registry.py#L18) that reads definitions from YAML files in the AI gateway.
+A component responsible for maintaining a list of AI Gateway Prompts available to perform specific actions. Currently, we use a [`LocalPromptRegistry`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/874e05281cab50012a53685e051583e620dac8c4/ai_gateway/prompts/registry.py#L18) that reads definitions from YAML files in the AI Gateway.
 
 ### air-gapped model
 
@@ -95,7 +95,7 @@ AI-assisted features across the GitLab DevSecOps platform. These features aim to
 
 ### GitLab-managed model
 
-A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI gateway. GitLab-owned API keys are used to access the models.
+A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI Gateway. GitLab-owned API keys are used to access the models.
 
 ### Golden questions
 

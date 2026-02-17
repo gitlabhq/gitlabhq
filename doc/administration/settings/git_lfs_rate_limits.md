@@ -30,13 +30,10 @@ These limits are set to 1000 requests per minute per user.
 Each Git LFS object uploaded or downloaded generates an HTTP request that counts toward
 this limit.
 
-{{< alert type="note" >}}
-
-Projects with multiple large files may encounter an HTTP rate limit error.
-This error occurs during cloning or pulling, when performed from a single IP address in automated
-environments like CI/CD pipelines.
-
-{{< /alert >}}
+> [!note]
+> Projects with multiple large files may encounter an HTTP rate limit error.
+> This error occurs during cloning or pulling, when performed from a single IP address in automated
+> environments like CI/CD pipelines.
 
 ## On GitLab Self-Managed
 

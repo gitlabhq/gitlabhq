@@ -377,8 +377,8 @@ RSpec.shared_examples 'create environment for job' do
           expect { subject }.to change { Environment.count }.by(1)
 
           expect(environment).to be_present
-          expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.expanded_environment_name).to eq('review/master')
+          expect(job.persisted_environment.name).to eq("review/#{pipeline.ref}")
+          expect(job.expanded_environment_name).to eq("review/#{pipeline.ref}")
         end
 
         context 'and the pipeline is for a merge request' do
@@ -394,15 +394,15 @@ RSpec.shared_examples 'create environment for job' do
 
       context 'when an environment already exists' do
         before do
-          create(:environment, project: project, name: 'review/master')
+          create(:environment, project: project, name: "review/#{pipeline.ref}")
         end
 
         it 'ensures environment existence for the job' do
           expect { subject }.not_to change { Environment.count }
 
           expect(environment).to be_present
-          expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.expanded_environment_name).to eq('review/master')
+          expect(job.persisted_environment.name).to eq("review/#{pipeline.ref}")
+          expect(job.expanded_environment_name).to eq("review/#{pipeline.ref}")
         end
 
         context 'and the pipeline is for a merge request' do
@@ -443,14 +443,14 @@ RSpec.shared_examples 'create environment for job' do
         SQL
       end
 
-      let!(:job) { build(factory_type, :stop_review_app, project: project) }
+      let!(:job) { build(factory_type, :stop_review_app, project: project, pipeline: pipeline) }
 
       it 'ensures environment existence for the job' do
         expect { subject }.to change { Environment.count }.by(1)
 
         expect(environment).to be_present
-        expect(job.persisted_environment.name).to eq('review/master')
-        expect(job.expanded_environment_name).to eq('review/master')
+        expect(job.persisted_environment.name).to eq("review/#{pipeline.ref}")
+        expect(job.expanded_environment_name).to eq("review/#{pipeline.ref}")
       end
 
       context 'when job metadata exists' do
@@ -473,7 +473,7 @@ RSpec.shared_examples 'create environment for job' do
     end
 
     def environment
-      project.environments.find_by_name('review/master')
+      project.environments.find_by_name("review/#{pipeline.ref}")
     end
   end
 end

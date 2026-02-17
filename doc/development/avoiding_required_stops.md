@@ -38,16 +38,13 @@ release just prior to a `major` version release in order to accommodate multiple
 Additionally, as of GitLab 16, we have introduced
 [_scheduled_ `major`.`minor` required stops](../update/upgrade_paths.md):
 
-{{< alert type="note" >}}
-
-During GitLab 16.x, we are scheduling two or three required upgrade stops.
-
-We will give at least two milestones of notice when we schedule a required
-upgrade stop. The first planned required upgrade stop is scheduled for GitLab
-16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be
-treated as a regular upgrade.
-
-{{< /alert >}}
+> [!note]
+> During GitLab 16.x, we are scheduling two or three required upgrade stops.
+> 
+> We will give at least two milestones of notice when we schedule a required
+> upgrade stop. The first planned required upgrade stop is scheduled for GitLab
+> 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be
+> treated as a regular upgrade.
 
 ## Retroactively adding required stops
 
@@ -73,13 +70,10 @@ zero-downtime upgrades. However, the **contract** phase will likely introduce
 a required stop when a migration/code change is introduced that requires
 that background migrations have completed before running or loading.
 
-{{< alert type="warning" >}}
-
-If you're considering adding or removing a migration, or introducing code that
-assumes that migrations have completed in a given release, first review
-the database-related documentation on [required stops](database/required_stops.md).
-
-{{< /alert >}}
+> [!warning]
+> If you're considering adding or removing a migration, or introducing code that
+> assumes that migrations have completed in a given release, first review
+> the database-related documentation on [required stops](database/required_stops.md).
 
 #### Examples
 
@@ -143,7 +137,7 @@ Examples of deprecations are too numerous to be listed here, but can found in th
   - [GitLab 17](../update/versions/gitlab_17_changes.md)
   - [GitLab 16](../update/versions/gitlab_16_changes.md)
   - [GitLab 15](../update/versions/gitlab_15_changes.md)
-- [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade.html).
+- [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade/).
 
 ## Adding required stops
 
@@ -184,7 +178,7 @@ is identified after release, the following steps must still be completed:
 ### In the release following the required stop
 
 1. In the `charts` project, update the
-   [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop.html)
+   [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop/)
    to the required stop version.
 
 ## GitLab-maintained projects which depend on `upgrade_path.yml`
@@ -205,7 +199,7 @@ it might affect one of the following projects:
 - [Documentation: Upgrade GitLab](../update/_index.md)
   - [Package (Omnibus) upgrade](../update/package/_index.md)
   - [Docker upgrade](../update/docker/_index.md)
-  - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)
+  - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade/)
 - [Example of required stop planning issue (17.3)](https://gitlab.com/gitlab-org/gitlab/-/issues/457453)
 - [Issue: Put in place measures to avoid addition/proliferation of GitLab upgrade path stops](https://gitlab.com/gitlab-org/gitlab/-/issues/375553)
 - [Issue: Brainstorm ways for background migrations to be finalized without introducing a required upgrade step](https://gitlab.com/gitlab-org/gitlab/-/issues/357561)

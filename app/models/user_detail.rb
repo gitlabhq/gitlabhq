@@ -96,11 +96,12 @@ class UserDetail < ApplicationRecord
   private
 
   def sanitize_attrs
-    %i[bluesky discord linkedin mastodon orcid twitter website_url github].each do |attr|
+    %i[bluesky discord linkedin mastodon orcid twitter github].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
-    %i[location organization].each do |attr|
+    # location, organization, website_url: preserve & (Sanitize.clean encodes & as &amp; which breaks URLs)
+    %i[location organization website_url].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
     end

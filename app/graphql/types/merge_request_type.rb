@@ -59,6 +59,7 @@ module Types
     field :source_project_id, GraphQL::Types::Int, null: true,
       description: 'ID of the merge request source project.'
     field :state, MergeRequestStateEnum, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'State of the merge request.'
     field :target_branch, GraphQL::Types::String, null: false,
       description: 'Target branch of the merge request.'
@@ -167,6 +168,7 @@ module Types
       description: 'Web path of the merge request.'
 
     field :web_url, GraphQL::Types::String, null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Web URL of the merge request.'
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :diff_head_pipeline,
@@ -387,11 +389,7 @@ module Types
     # and calling it again with a certain GraphQL query can cause the Rails to to throw
     # a ActiveRecord::UnmodifiableRelation error
     def committers
-      if Feature.enabled?(:load_commits_from_gitaly_in_graphql, object.project)
-        object.commits(load_from_gitaly: true).committers
-      else
-        object.commits.committers
-      end
+      object.commits(load_from_gitaly: true).committers
     end
 
     def web_path
@@ -407,7 +405,7 @@ module Types
     end
 
     def notes_count_for_collection(key)
-      BatchLoader::GraphQL.for(object.id).batch(key: key) do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch(key: key) do |ids, loader, _args|
         counts = Note.count_for_collection(
           ids,
           'MergeRequest',

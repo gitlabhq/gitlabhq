@@ -1,7 +1,0 @@
----
-name: create_container_registry_protection_rule
-description: Grants the ability to create container registry protection rules
-boundaries:
-  - project
-permissions:
- - create_container_registry_protection_rule

@@ -26,6 +26,7 @@ export const initBackgroundMigrationsApp = () => {
 
   return new Vue({
     el,
+    name: 'BackgroundMigrationsDatabaseListboxRoot',
     render(createElement) {
       return createElement(BackgroundMigrationsDatabaseListbox, {
         props: {

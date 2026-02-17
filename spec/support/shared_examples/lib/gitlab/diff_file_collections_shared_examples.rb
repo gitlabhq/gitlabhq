@@ -137,6 +137,8 @@ RSpec.shared_examples 'cacheable diff collection' do
         expect(diffable.project.repository)
           .to receive(:diff_stats)
           .with(diffable.diff_refs.base_sha, diffable.diff_refs.head_sha)
+          .at_least(:once)
+          .and_call_original
 
         subject.diff_files
       end

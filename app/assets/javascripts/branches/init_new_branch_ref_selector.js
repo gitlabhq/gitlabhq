@@ -12,6 +12,7 @@ export default function initNewBranchRefSelector() {
 
   return new Vue({
     el,
+    name: 'RefSelectorRoot',
     render(createComponent) {
       return createComponent(RefSelector, {
         props: {

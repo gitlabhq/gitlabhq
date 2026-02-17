@@ -10,7 +10,7 @@ pipeline by using input fields. The type of input fields and the form of the fin
 pipeline is configured by a YAML template.
 
 The Pipeline Wizard expects a single template file that configures the user
-flow. The wizard is agnostic with regards to the contents of the file,
+flow. The wizard is independent of the contents of the file,
 so you can use the wizard to display a range of different flows. For example, there
 could be one template file for static sites,
 one for Docker images, one for mobile apps, and so on. As a first iteration,

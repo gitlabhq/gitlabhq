@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def self.json_schema
-        @json_schema ||= Gitlab::Json.parse(File.read(File.join(__dir__, 'json_schema_draft07.json')))
+        @json_schema ||= Gitlab::Json.safe_parse(File.read(File.join(__dir__, 'json_schema_draft07.json')))
       end
     end
   end

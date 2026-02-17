@@ -142,13 +142,13 @@ Alternatively, review [caching the CDB](#caching-a-cdb).
 ### Optimization: Parallel execution for efficiency
 
 You can run the analyzer in parallel by splitting the CDB into multiple fragments.
-The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/security-products/analyzers/clangsa/-/blob/main/templates/scripts.yml) provides helper scripts for this.
+The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates/-/blob/main/templates/scripts.yml) provides helper scripts for this.
 
 1. Include the scripts:
 
    ```yaml
    include:
-     - project: "gitlab-org/security-products/analyzers/clangsa"
+     - project: "gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates"
        file: "templates/scripts.yml"
    ```
 
@@ -158,17 +158,16 @@ The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/securi
    <YOUR-BUILD-JOB-NAME>:
      script:
        - <your-script to generate the CDB>
-       - !reference [.clangsa-scripts]
+       - !reference [.gitlab-advanced-sast-cpp-scripts]
        - split_cdb "${BUILD_DIR}" 1 4 # Split into 4 fragments
      artifacts:
        paths:
          - ${BUILD_DIR} # Pass the split CDB files to the parallelized gitlab-advanced-sast-cpp jobs
    ```
 
-   {{< alert type="note" >}}
-   `split_cdb` is hardcoded to read `${BUILD_DIR}/compile_commands.json`.
-   Make sure your build generates the CDB at this exact location before calling `split_cdb`.
-   {{< /alert >}}
+   > [!note]
+   > `split_cdb` is hardcoded to read `${BUILD_DIR}/compile_commands.json`.
+   > Make sure your build generates the CDB at this exact location before calling `split_cdb`.
 
 1. Run parallel analyzer jobs:
 
@@ -182,9 +181,9 @@ The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/securi
          artifacts: true
    ```
 
-    - `parallel: 4` shards execution across 4 jobs.
-    - `${CI_NODE_INDEX}` (1, 2, 3, 4) selects the correct CDB fragment.
-    - `needs` ensures the analyzer jobs receive the artifacts produced by your build job.
+   - `parallel: 4` shards execution across 4 jobs.
+   - `${CI_NODE_INDEX}` (1, 2, 3, 4) selects the correct CDB fragment.
+   - `needs` ensures the analyzer jobs receive the artifacts produced by your build job.
 
 With this setup, your build job produces a single `compile_commands.json`.
 The `split_cdb` script creates multiple partitions, and the analyzer jobs run in parallel, with each job processing one partition.
@@ -269,7 +268,7 @@ cdb-rebase compile_commands.json /host/path /container/path > rebased_compile_co
 
 If the build environment differs from the scan environment, the generated CDB might require adjustments.
 You can modify it with [jq](https://jqlang.org),
-or use `cdb_append`, a shell function from the [predefined helper script](https://gitlab.com/gitlab-org/security-products/analyzers/clangsa/-/blob/main/templates/scripts.yml).
+or use `cdb_append`, a shell function from the [predefined helper script](https://gitlab.com/gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates/-/blob/main/templates/scripts.yml).
 
 `cdb_append` appends compiler options to an existing CDB.
 It accepts:
@@ -281,12 +280,12 @@ Example in CI/CD:
 
 ```yaml
 include:
-  - project: "gitlab-org/security-products/analyzers/clangsa"
+  - project: "gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates"
     file: "templates/scripts.yml"
 
 <YOUR-BUILD-JOB-NAME>:
   script:
-    - !reference [.clangsa-scripts]
+    - !reference [.gitlab-advanced-sast-cpp-scripts]
     - <your-script to generate the CDB>
     - cdb_append "${BUILD_DIR}" "-I'$PWD/include-cache'" "-Wno-error=register"
 ```
@@ -374,3 +373,24 @@ cdb-rebase -i compile_commands_abs.json -o compile_commands.json -s "$PWD" -d .
 ```
 
 Note: the `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
+
+### Partial scan coverage due to missing header files
+
+Partial scan coverage can occur when required system or third-party header files are not available in the scan job.
+Headers installed during the build job must be explicitly forwarded to the scan job and made resolvable through
+the include paths recorded in the compilation database.
+
+One common approach is to cache the required headers and update the compilation database to reference them:
+
+```shell
+# Create and populate an include cache
+mkdir -p include-cache
+dpkg -L <build-dependency-packages> | sed -n 's:^/usr/include/::p' > headers.txt
+rsync -a --files-from=headers.txt /usr/include/ include-cache/
+
+# Add cached headers to compile flags
+cdb_append . "-I'$PWD/include-cache'"
+```
+
+For a full demonstration, see the
+[example](https://gitlab.com/gitlab-org/security-products/demos/experiments/advanced-sast-cpp/OpenSceneGraph/-/merge_requests/4).

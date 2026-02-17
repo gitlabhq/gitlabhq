@@ -1,0 +1,5 @@
+---
+name: cancel_merge_merge_request
+description: Grants the ability to cancel merge when pipeline succeeds
+boundaries:
+  - project

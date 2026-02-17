@@ -28,8 +28,35 @@ RSpec.describe Bitbucket::Connection, feature_category: :integrations do
         }
       end
 
-      it 'uses App Password connection' do
-        expect(bitbucket_connection.connection).to be_an_instance_of(Bitbucket::AppPasswordConnection)
+      it 'uses API connection' do
+        expect(bitbucket_connection.connection).to be_an_instance_of(Bitbucket::ApiConnection)
+      end
+
+      it 'stores username and app_password' do
+        connection = bitbucket_connection.connection
+
+        expect(connection.username).to eq('foo')
+        expect(connection.app_password).to eq('bar')
+      end
+    end
+
+    context 'when api token' do
+      let(:options) do
+        {
+          email: 'user@example.com',
+          api_token: 'token123'
+        }
+      end
+
+      it 'uses API connection' do
+        expect(bitbucket_connection.connection).to be_an_instance_of(Bitbucket::ApiConnection)
+      end
+
+      it 'stores email and api_token' do
+        connection = bitbucket_connection.connection
+
+        expect(connection.email).to eq('user@example.com')
+        expect(connection.api_token).to eq('token123')
       end
     end
   end

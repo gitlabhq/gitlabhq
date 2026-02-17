@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::UrlHelpers, feature_category: :shared do
+RSpec.describe Gitlab::UrlHelpers, feature_category: :navigation do
   using RSpec::Parameterized::TableSyntax
 
   describe '.normalized_base_url' do

@@ -1,0 +1,7 @@
+---
+name: delete_oauth_application
+description: Grants the ability to delete OAuth applications
+boundaries:
+  - instance
+permissions:
+  - delete_oauth_application

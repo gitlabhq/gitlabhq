@@ -16,6 +16,7 @@ function mountNamespaceSelect() {
 
   return new Vue({
     el,
+    name: 'NamespaceSelectRoot',
     render(createComponent) {
       return createComponent(NamespaceSelect, {
         props: {

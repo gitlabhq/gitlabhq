@@ -824,8 +824,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         <<~MARKDOWN
           cd existing_repo
           git remote add origin #{project.http_url_to_repo}
-          git branch -M master
-          git push -uf origin master
+          git branch -M main
+          git push -uf origin main
         MARKDOWN
       end
     end
@@ -864,6 +864,27 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     context 'and the default branch setting is configured' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('example_branch')
+      end
+
+      it 'creates the correct branch' do
+        expect(project.repository.branch_names).to contain_exactly('example_branch')
+      end
+
+      it_behaves_like 'a repo with a README.md' do
+        let(:expected_content) do
+          <<~MARKDOWN
+            cd existing_repo
+            git remote add origin #{project.http_url_to_repo}
+            git branch -M example_branch
+            git push -uf origin example_branch
+          MARKDOWN
+        end
+      end
+    end
+
+    context 'when default branch is a fully qualified ref' do
+      before do
+        opts[:default_branch] = 'refs/heads/example_branch'
       end
 
       it 'creates the correct branch' do

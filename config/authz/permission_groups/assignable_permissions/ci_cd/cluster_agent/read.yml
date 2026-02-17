@@ -1,0 +1,7 @@
+---
+name: read_cluster_agent
+description: Grants the ability to read cluster agents
+boundaries:
+  - project
+permissions:
+  - read_cluster_agent

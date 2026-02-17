@@ -414,6 +414,7 @@ module API
     mount ::API::Internal::AutoFlow
     mount ::API::Internal::Base
     mount ::API::Internal::Coverage if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
+    mount ::API::Internal::Ci::JobRouter
     mount ::API::Internal::Lfs
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes

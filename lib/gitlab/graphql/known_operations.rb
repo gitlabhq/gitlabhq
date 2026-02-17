@@ -3,28 +3,35 @@
 module Gitlab
   module Graphql
     class KnownOperations
-      Operation = Struct.new(:name) do
+      Operation = Struct.new(:name, :metadata) do
         def to_caller_id
           "graphql:#{name}"
         end
 
+        def feature_category
+          metadata&.dig('feature_category')
+        end
+
         def query_urgency
-          # We'll be able to actually correlate query_urgency with https://gitlab.com/gitlab-org/gitlab/-/issues/345141
-          ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
+          urgency_name = metadata&.dig('urgency')
+          return ::Gitlab::EndpointAttributes::DEFAULT_URGENCY unless urgency_name
+
+          ::Gitlab::EndpointAttributes::Config::REQUEST_URGENCIES[urgency_name.to_sym] ||
+            ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
         end
       end
 
-      UNKNOWN = Operation.new("unknown").freeze
+      UNKNOWN = Operation.new("unknown", {}).freeze
 
       def self.default
         @default ||= self.new(Gitlab::Webpack::GraphqlKnownOperations.load)
       end
 
-      def initialize(operation_names)
-        @operation_hash = operation_names
-          .map { |name| Operation.new(name).freeze }
-          .concat([UNKNOWN])
-          .index_by(&:name)
+      def initialize(operation_data)
+        @operation_hash = operation_data
+                            .map { |name, metadata| Operation.new(name, metadata).freeze }
+                            .concat([UNKNOWN])
+                            .index_by(&:name)
       end
 
       # Returns the known operation from the given ::GraphQL::Query object

@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -9,7 +10,6 @@ import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import getBlobSearchCountQuery from '~/search/graphql/blob_search_zoekt_count_only.query.graphql';
 import { DEFAULT_FETCH_CHUNKS } from '~/search/results/constants';
-// eslint-disable-next-line no-restricted-imports
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES, SCOPE_BLOB } from '../constants';
 
@@ -50,6 +50,7 @@ export default {
       },
     },
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       // eslint-disable-next-line vue/no-unused-properties -- used in apollo query()
@@ -67,6 +68,14 @@ export default {
 
       if (!this.zoektAvailable) {
         // skip this if no multimatch feature is available
+        return true;
+      }
+
+      if (
+        !this.glFeatures.zoektCrossNamespaceSearch &&
+        !(this.query?.group_id || this.query?.project_id)
+      ) {
+        // skip this if we have no group or project ID or crossNamespaceSearch is enabled
         return true;
       }
 

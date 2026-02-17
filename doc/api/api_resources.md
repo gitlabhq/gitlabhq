@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: REST API resources
 description: "GitLab REST API resources organized by context (project, group, standalone, and templates) with endpoint paths."
@@ -45,6 +45,7 @@ The following API resources are available in the project context:
 | [Commits](commits.md)                                                          | `/projects/:id/repository/commits`, `/projects/:id/statuses` |
 | [Container registry](container_registry.md)                                    | `/projects/:id/registry/repositories` |
 | [Container repository protection rules](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
+| [Container registry protection tag rules](container_registry_protection_tag_rules.md) | `/projects/:id/registry/protection/tag/rules` |
 | [Custom attributes](custom_attributes.md)                                      | `/projects/:id/custom_attributes` (also available for groups and users) |
 | [Composer distributions](packages/composer.md)                                 | `/projects/:id/packages/composer` (also available for groups) |
 | [Conan v1 distributions](packages/conan_v1.md)                                       | `/projects/:id/packages/conan` (also available standalone) |
@@ -185,6 +186,7 @@ The following API resources are available outside of project and group contexts 
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                                 | `/features` |
 | [Geo Nodes](geo_nodes.md)                                                                    | `/geo_nodes` |
+| [GLQL](glql.md)                                                                              | `/glql` |
 | [Group Activity Analytics](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
 | [Group repository storage moves](group_repository_storage_moves.md)                          | `/group_repository_storage_moves` |
 | [Import repository from GitHub](import.md#import-repository-from-github)                     | `/import/github` |

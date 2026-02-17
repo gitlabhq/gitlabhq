@@ -61,7 +61,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
 
     describe 'disabled' do
       context 'with defaults (false)' do
-        it 'does not have  disabled styling and behavior' do
+        it 'does not have disabled styling and behavior' do
           expect(page).not_to have_css ".disabled[disabled][aria-disabled]"
         end
       end

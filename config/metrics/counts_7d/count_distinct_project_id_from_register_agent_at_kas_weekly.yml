@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.count_distinct_project_id_from_register_agent_at_kas_weekly
 description: Weekly count of unique projects where GitLab agent was registered to KAS
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

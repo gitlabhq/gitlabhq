@@ -14,10 +14,10 @@ title: Repository submodules API
 
 Use this API to update [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
-## Update existing submodule reference in repository
+## Update a submodule reference
 
-In some workflows, especially automated ones, you can update a
-submodule's reference to keep up to date other projects that use it.
+Updates a submodule's reference. Used for some workflows, especially automated ones, 
+to keep up to date other projects that use it.
 
 ```plaintext
 PUT /projects/:id/repository/submodules/:submodule
@@ -35,7 +35,7 @@ PUT /projects/:id/repository/submodules/:submodule
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/submodules/lib%2Fmodules%2Fexample" \
---data "branch=main&commit_sha=3ddec28ea23acc5caa5d8331a6ecb2a65fc03e88&commit_message=Update submodule reference"
+  --data "branch=main&commit_sha=3ddec28ea23acc5caa5d8331a6ecb2a65fc03e88&commit_message=Update submodule reference"
 ```
 
 Example response:

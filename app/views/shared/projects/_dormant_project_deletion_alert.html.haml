@@ -1,0 +1,6 @@
+- if show_dormant_project_deletion_banner?(@project)
+  - deletion_date = dormant_project_deletion_date(@project)
+  - link = link_to('', help_page_path('administration/dormant_project_deletion.md'), target: '_blank', rel: 'noopener noreferrer')
+  - title = safe_format(_('Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}'), tag_pair(link, :link_start, :link_end), deletion_date: deletion_date)
+
+  = render Pajamas::AlertComponent.new(title: title, variant: :warning, dismissible: false)

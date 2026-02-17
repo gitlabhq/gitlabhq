@@ -66,6 +66,7 @@ import {
   WIDGET_TYPE_STATUS,
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -134,6 +135,9 @@ export default {
     },
     hasEpicsFeature: {
       default: false,
+    },
+    getWorkItemTypeConfiguration: {
+      default: () => {},
     },
   },
   i18n: {
@@ -322,9 +326,16 @@ export default {
 
         const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
 
-        const selectedWorkItemType = persistedTypeId
-          ? this.findWorkItemTypeById(persistedTypeId)
-          : this.findWorkItemType(this.preselectedWorkItemType);
+        /**
+         * Override to use the preselected work item type when using creation context descriptiion checklist
+         * https://gitlab.com/gitlab-org/gitlab/-/work_items/585444
+         * We do not want the last work item type/ draft work item type overriding the valid
+         * child work item item in the task list
+         */
+        const selectedWorkItemType =
+          persistedTypeId && this.creationContext !== CREATION_CONTEXT_DESCRIPTION_CHECKLIST
+            ? this.findWorkItemTypeById(persistedTypeId)
+            : this.findWorkItemType(this.preselectedWorkItemType);
 
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
@@ -357,6 +368,9 @@ export default {
     },
   },
   computed: {
+    workItemTypeConfiguration() {
+      return this.getWorkItemTypeConfiguration?.(this.selectedWorkItemTypeName);
+    },
     workItemTypes() {
       return this.namespace?.workItemTypes?.nodes ?? [];
     },
@@ -424,7 +438,10 @@ export default {
       // detail view instead. Since the legacy view doesn't support setting a parent
       // we need to hide this attribute here until the migration has been finished.
       // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT) {
+      if (
+        this.workItemTypeConfiguration?.isIncidentManagement ||
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT
+      ) {
         return false;
       }
 
@@ -610,7 +627,10 @@ export default {
       );
     },
     shouldDatesRollup() {
-      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
+      const canRollUp = this.workItemTypeConfiguration?.widgetDefinitions?.find(
+        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
+      )?.canRollUp;
+      return canRollUp || this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
@@ -647,6 +667,13 @@ export default {
       }
       return false;
     },
+    workItemWidgetsAutoSaveKey() {
+      return getNewWorkItemWidgetsAutoSaveKey({
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
+        relatedItemId: this.relatedItemId,
+      });
+    },
   },
   watch: {
     shouldDiscardDraft: {
@@ -654,7 +681,7 @@ export default {
       handler(shouldDiscardDraft) {
         // If this component is rendered in the create modal and user added data,
         // we need to track the button clicked on the confirmation modal (another modal)
-        if (shouldDiscardDraft) {
+        if (shouldDiscardDraft && this.selectedWorkItemTypeId) {
           this.handleDiscardDraft();
         }
       },
@@ -740,13 +767,7 @@ export default {
         relatedItemId: this.relatedItemId,
       });
       clearDraft(fullDraftAutosaveKey);
-
-      const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
-        fullPath: this.selectedProjectFullPath,
-        context: this.creationContext,
-        relatedItemId: this.relatedItemId,
-      });
-      clearDraft(widgetsAutosaveKey);
+      clearDraft(this.workItemWidgetsAutoSaveKey);
     },
     handleChangeType() {
       setNewWorkItemCache({
@@ -1118,6 +1139,7 @@ export default {
                 :new-work-item-type="selectedWorkItemTypeName"
                 :work-item-id="workItemId"
                 :work-item-iid="workItemIid"
+                :work-item-widgets-auto-save-key="workItemWidgetsAutoSaveKey"
                 @error="updateError = $event"
                 @cancelCreate="handleCancelClick"
                 @updateDraft="updateDraftData('description', $event)"

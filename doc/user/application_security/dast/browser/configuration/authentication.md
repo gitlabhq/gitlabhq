@@ -78,12 +78,9 @@ sequenceDiagram
 
 ## Getting started
 
-{{< alert type="note" >}}
-
-You should periodically confirming that the analyzer's authentication is still working, as this tends to break over
-time due to changes to the application.
-
-{{< /alert >}}
+> [!note]
+> You should periodically confirming that the analyzer's authentication is still working, as this tends to break over
+> time due to changes to the application.
 
 To run a DAST authenticated scan:
 

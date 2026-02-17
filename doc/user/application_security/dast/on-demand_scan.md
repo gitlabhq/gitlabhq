@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Create, view, edit, delete, and run on-demand DAST scans.
 title: DAST on-demand scan
 ---
 
@@ -12,13 +13,10 @@ title: DAST on-demand scan
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Do not run DAST scans against a production server. Not only can it perform any function that a user can, such
-as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data.
-Only run DAST scans against a test server.
-
-{{< /alert >}}
+> [!warning]
+> Do not run DAST scans against a production server. Not only can it perform any function that a user can, such
+> as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data.
+> Only run DAST scans against a test server.
 
 ## On-demand scans
 

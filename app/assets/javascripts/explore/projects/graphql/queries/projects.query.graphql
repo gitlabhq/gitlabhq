@@ -1,0 +1,36 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
+
+# @feature_category: groups_and_projects
+query exploreProjects(
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: String
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
+  $trending: Boolean
+  $active: Boolean
+) {
+  projects(
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    sort: $sort
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+    trending: $trending
+    active: $active
+  ) {
+    nodes {
+      ...Project
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

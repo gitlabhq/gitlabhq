@@ -140,21 +140,17 @@ RSpec.describe Issue, feature_category: :team_planning do
       where(:old_type, :new_type, :is_valid) do
         :issue     | :incident  | true
         :incident  | :issue     | true
-        :test_case | :issue     | true
-        :issue     | :test_case | true
         :issue     | :task      | false
-        :test_case | :task      | false
         :incident  | :task      | false
         :task      | :issue     | false
         :task      | :incident  | false
-        :task      | :test_case | false
       end
 
       with_them do
         it 'is possible to change type only between selected types' do
           issue = create(:issue, old_type, project: reusable_project)
 
-          issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(new_type))
+          issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, new_type).id)
 
           expect(issue.valid?).to eq(is_valid)
         end
@@ -250,20 +246,25 @@ RSpec.describe Issue, feature_category: :team_planning do
       let_it_be(:issue_type) { create(:work_item_type, :issue) }
       let_it_be(:incident_type) { create(:work_item_type, :incident) }
       let_it_be(:project) { create(:project) }
+      let(:provider) { ::WorkItems::TypesFramework::Provider.new(issue.namespace) }
+
+      before do
+        allow(::WorkItems::TypesFramework::Provider).to receive(:new).and_return(provider)
+      end
 
       context 'when a type was already set' do
         let_it_be(:issue, refind: true) { create(:issue, project: project) }
 
-        it 'does not fetch a work item type from the DB' do
+        it 'does not fetch a work item type from the provider' do
           expect(issue.work_item_type_id).to eq(issue_type.id)
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           expect(issue).to be_valid
         end
 
-        it 'does not fetch a work item type from the DB when updating the type' do
+        it 'does not fetch a work item type from the provider when updating the type' do
           expect(issue.work_item_type_id).to eq(issue_type.id)
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           issue.update!(work_item_type: incident_type)
 
@@ -274,8 +275,8 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to eq(issue_type.id)
 
           expect do
-            issue.update!(work_item_type: nil)
-          end.to not_change(issue, :work_item_type).from(issue_type)
+            issue.update!(work_item_type_id: nil)
+          end.to not_change(issue, :work_item_type_id).from(issue_type.id)
         end
       end
 
@@ -290,9 +291,9 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to eq(issue_type.id)
         end
 
-        it 'does not fetch type from DB if provided during update' do
+        it 'does not fetch type from the provider if provided during update' do
           expect(issue.work_item_type_id).to be_nil
-          expect(WorkItems::Type).not_to receive(:default_by_type)
+          expect(provider).not_to receive(:default_issue_type)
 
           issue.update!(work_item_type: incident_type)
 
@@ -397,6 +398,46 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     it 'can be used with other scopes' do
       expect(in_namespaces_with_cte.with_work_item_type).to match_array(issue)
+    end
+  end
+
+  describe '.within_namespace_hierarchy' do
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: root_group) }
+    let_it_be(:other_group) { create(:group) }
+
+    let_it_be(:root_group_project) { create(:project, group: root_group) }
+    let_it_be(:subgroup_project) { create(:project, group: subgroup) }
+    let_it_be(:other_group_project) { create(:project, group: other_group) }
+
+    let_it_be(:root_group_issue) { create(:issue, project: root_group_project) }
+    let_it_be(:subgroup_issue) { create(:issue, project: subgroup_project) }
+    let_it_be(:other_group_issue) { create(:issue, project: other_group_project) }
+
+    context 'when filtering by root group' do
+      it 'returns issues within the hierarchy' do
+        result = described_class.within_namespace_hierarchy(root_group)
+
+        expect(result).to contain_exactly(root_group_issue, subgroup_issue)
+        expect(result).not_to include(other_group_issue)
+      end
+    end
+
+    context 'when filtering by subgroup' do
+      it 'returns issues within the subgroup hierarchy only' do
+        result = described_class.within_namespace_hierarchy(subgroup)
+
+        expect(result).to contain_exactly(subgroup_issue)
+        expect(result).not_to include(root_group_issue, other_group_issue)
+      end
+    end
+
+    context 'when namespace is nil' do
+      it 'returns no issues' do
+        result = described_class.within_namespace_hierarchy(nil)
+
+        expect(result).to be_empty
+      end
     end
   end
 
@@ -1687,6 +1728,8 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue = build(:issue, base_type)
         supports_assignee = widgets.include?(:assignees)
 
+        skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
         expect(issue.supports_assignee?).to eq(supports_assignee)
       end
     end
@@ -1703,7 +1746,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.update!(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
       end
 
       specify do
@@ -1742,7 +1785,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.update!(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
       end
 
       specify do
@@ -1860,7 +1903,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#work_item_type_with_default' do
     subject { described_class.new.work_item_type_with_default }
 
-    it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
+    it { is_expected.to eq(WorkItems::TypesFramework::Provider.new.default_issue_type) }
   end
 
   describe '#update_search_data!' do
@@ -1900,6 +1943,8 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'uses the issue type as the reference name' do
         issue = create(:issue, issue_type, project: reusable_project)
 
+        skip if !Gitlab.ee? && issue_type == :test_case
+
         expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
       end
     end
@@ -1927,12 +1972,12 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#has_widget?' do
-    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
+    let(:work_item_type) { create(:work_item_type, :task) }
+    let(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
 
     # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.
     # Using const_get in the implementation will make sure the widget exists in CE (no licenses)
-    let(:widget_type) { :assignees }
+    let(:widget_type) { :designs }
 
     subject { issue.has_widget?(widget_type) }
 
@@ -1945,13 +1990,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when the work item has the widget' do
-      before do
-        create(
-          :widget_definition,
-          widget_type: widget_type,
-          work_item_type: work_item_type
-        )
-      end
+      let(:work_item_type) { create(:work_item_type, :issue) }
 
       it { is_expected.to be_truthy }
     end
@@ -2116,34 +2155,94 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#show_as_work_item?' do
     subject(:issue_as_work_item) { issue.show_as_work_item? }
 
-    context 'with a service desk issue' do
-      let(:issue) { build_stubbed(:issue, project: reusable_project, author: support_bot) }
-
-      it { is_expected.to be false }
+    where(:factory, :work_item_planning_view, :result) do
+      :issue                  | false | false
+      [:issue, :task]         | false | true
+      [:issue, :group_level]  | false | true
+      [:issue, :incident]     | false | false
+      [:issue, :service_desk] | false | false
+      :issue                  | true | true
+      [:issue, :task]         | true | true
+      [:issue, :group_level]  | true | true
+      [:issue, :incident]     | true | false
+      [:issue, :service_desk] | true | false
     end
 
-    context 'with an incident' do
-      let(:issue) { build_stubbed(:incident, project: reusable_project) }
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
 
-      it { is_expected.to be false }
+      before do
+        stub_feature_flags(work_item_planning_view: work_item_planning_view)
+      end
+
+      it { is_expected.to be result }
     end
 
-    context 'when work_item_type is not set' do
-      let(:issue) { build_stubbed(:issue, work_item_type: nil) }
+    context 'when work_item_type is nil' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: true)
+      end
+
+      it 'returns true when planning view is enabled' do
+        expect(issue_as_work_item).to be true
+      end
+    end
+  end
+
+  describe '#use_work_item_url?' do
+    subject(:use_work_item_url) { issue.use_work_item_url? }
+
+    where(:factory, :work_item_planning_view, :result) do
+      :issue                  | false | false
+      [:issue, :task]         | false | true
+      [:issue, :incident]     | false | false
+      [:issue, :service_desk] | false | false
+      :issue                  | true  | true
+      [:issue, :task]         | true  | true
+      [:issue, :incident]     | true  | false
+      [:issue, :service_desk] | true  | false
     end
 
-    context 'with a regular issue' do
-      let(:issue) { build_stubbed(:issue, project: reusable_project) }
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: work_item_planning_view)
+      end
+
+      it { is_expected.to be result }
     end
 
-    context 'with a task' do
-      let(:issue) { build_stubbed(:issue, :task, project: reusable_project) }
+    context 'when work_item_type is nil' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: true)
+      end
+
+      it 'returns true when planning view is enabled' do
+        expect(use_work_item_url).to be true
+      end
+    end
+  end
+
+  describe '#require_legacy_views?' do
+    subject(:require_legacy_views) { issue.require_legacy_views? }
+
+    where(:factory, :result) do
+      :issue                  | false
+      [:issue, :task]         | false
+      [:issue, :group_level]  | false
+      [:issue, :incident]     | true
+      [:issue, :service_desk] | true
+    end
+
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
+
+      it { is_expected.to be result }
     end
   end
 

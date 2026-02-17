@@ -20,6 +20,11 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a(Array)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_variable do
+        let(:boundary_object) { project }
+        let(:request) { get api("/projects/#{project.id}/variables", personal_access_token: pat) }
+      end
     end
 
     context 'authorized user with invalid permissions' do
@@ -85,6 +90,11 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['description']).to be_nil
           expect(json_response['hidden']).to eq(false)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_variable do
+          let(:boundary_object) { project }
+          let(:request) { get api("/projects/#{project.id}/variables/#{variable.key}", personal_access_token: pat) }
         end
       end
 
@@ -251,6 +261,11 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['value']).to eq('VALUE_2')
           expect(json_response['environment_scope']).to eq('review/*')
         end
+
+        it_behaves_like 'authorizing granular token permissions', :create_variable do
+          let(:boundary_object) { project }
+          let(:request) { post api("/projects/#{project.id}/variables", personal_access_token: pat), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true, raw: true } }
+        end
       end
 
       context 'when the project is at the plan limit for variables' do
@@ -345,6 +360,11 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(response).to have_gitlab_http_status(:ok)
           expect(updated_variable).to be_masked
         end
+
+        it_behaves_like 'authorizing granular token permissions', :update_variable do
+          let(:boundary_object) { project }
+          let(:request) { put api("/projects/#{project.id}/variables/#{variable.key}", personal_access_token: pat), params: { variable_type: 'file', value: 'VALUE_1_UP', protected: true } }
+        end
       end
 
       it 'masks the new value when logging' do
@@ -437,6 +457,11 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         delete api("/projects/#{project.id}/variables/non_existing_variable", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_variable do
+        let(:boundary_object) { project }
+        let(:request) { delete api("/projects/#{project.id}/variables/#{variable.key}", personal_access_token: pat) }
       end
 
       context 'when there are two variables with the same key on different env' do

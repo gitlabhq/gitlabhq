@@ -17,6 +17,7 @@ RSpec.describe Types::Ci::Catalog::Resources::VersionType, feature_category: :pi
       readme
       readme_html
       released_at
+      semver
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

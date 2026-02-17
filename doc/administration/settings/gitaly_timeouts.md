@@ -19,8 +19,13 @@ title: Gitaly timeouts
 
 ## Configure the call timeouts
 
-Configure the following call timeouts to make sure that long-running Gitaly calls don't needlessly take up resources. To
-configure the call timeouts:
+Configure the following call timeouts to make sure that long-running Gitaly calls don't needlessly take up resources.
+
+Prerequisites:
+
+- Administrator access.
+
+To configure the call timeouts:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.

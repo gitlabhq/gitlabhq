@@ -11,7 +11,7 @@ RSpec.describe 'user_settings/personal_access_tokens/granular_new.html.haml', fe
     sign_in(user)
   end
 
-  it 'shows the personal access tokens' do
+  it 'shows the granular personal access token form' do
     render
 
     expect(rendered).to have_selector('div#js-create-granular-token-app')

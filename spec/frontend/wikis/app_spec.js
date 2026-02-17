@@ -4,7 +4,7 @@ import WikiApp from '~/wikis/app.vue';
 import WikiAlert from '~/wikis/components/wiki_alert.vue';
 import WikiHeader from '~/wikis/components/wiki_header.vue';
 import WikiContent from '~/wikis/components/wiki_content.vue';
-import WikiEditForm from '~/wikis/components/wiki_form.vue';
+import WikiForm from '~/wikis/components/wiki_form.vue';
 import WikiNotesApp from '~/wikis/wiki_notes/components/wiki_notes_app.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -16,8 +16,23 @@ describe('WikiApp', () => {
       provide: {
         wikiUrl: 'foo/bar',
         historyUrl: 'foo/history',
+        glFeatures: { wikiImmersiveEditor: true },
         ...provide,
       },
+    });
+  };
+
+  const expectEditingInterface = () => {
+    it('does not show the wiki content', () => {
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+
+    it('does show the wiki edit form', () => {
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
+    });
+
+    it('does not show the wiki header', () => {
+      expect(wrapper.findComponent(WikiHeader).exists()).toBe(false);
     });
   };
 
@@ -44,43 +59,61 @@ describe('WikiApp', () => {
     });
 
     it('does not show the wiki edit form', () => {
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(false);
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(false);
     });
 
     it('does show the wiki notes', () => {
       expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(true);
     });
 
-    it(`toggles editing state`, async () => {
+    it('toggles editing state', async () => {
       expect(wrapper.findComponent(WikiContent).exists()).toBe(true);
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(false);
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(false);
 
       wrapper.getComponent(WikiHeader).vm.$emit('is-editing', true);
       await nextTick();
 
       expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
 
-      wrapper.getComponent(WikiEditForm).vm.$emit('is-editing', false);
+      wrapper.getComponent(WikiForm).vm.$emit('is-editing', false);
       await nextTick();
 
       expect(wrapper.findComponent(WikiContent).exists()).toBe(true);
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(false);
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(false);
     });
   });
 
-  describe('when editing', () => {
+  describe('when creating a new page', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true });
+      createComponent({ isEditingPath: true, pagePersisted: false });
     });
 
-    it('does not show the wiki content', () => {
-      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    expectEditingInterface();
+
+    it('does not show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(false);
+    });
+  });
+
+  describe('when opening an edit URL on an existing page', () => {
+    beforeEach(() => {
+      createComponent({ isEditingPath: true, pagePersisted: true });
     });
 
-    it('does show the wiki edit form', () => {
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(true);
+    expectEditingInterface();
+
+    it('does show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(true);
     });
+  });
+
+  describe('when editing the custom sidebar', () => {
+    beforeEach(() => {
+      createComponent({ isEditingPath: true, pagePersisted: true, wikiUrl: '_sidebar' });
+    });
+
+    expectEditingInterface();
 
     it('does not show the wiki notes', () => {
       expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(false);

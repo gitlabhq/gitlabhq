@@ -19,6 +19,7 @@ module API
         success code: 200, model: Entities::ProjectJobTokenScope
         tags %w[projects_job_token_scope]
       end
+      route_setting :authorization, permissions: :read_job_token_scope, boundary_type: :project
       get ':id/job_token_scope' do
         authorize_admin_project
 
@@ -43,6 +44,7 @@ module API
           desc: "Indicates CI/CD job tokens generated in other projects have restricted access to this project."
       end
 
+      route_setting :authorization, permissions: :update_job_token_scope, boundary_type: :project
       patch ':id/job_token_scope' do
         authorize_admin_project
 
@@ -66,6 +68,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project
       get ':id/job_token_scope/allowlist' do
         authorize_admin_project
 
@@ -86,6 +89,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project
       get ':id/job_token_scope/groups_allowlist' do
         authorize_admin_project
 
@@ -118,6 +122,7 @@ module API
           documentation: { example: 2 },
           type: Integer
       end
+      route_setting :authorization, permissions: :create_job_token_scope_allowlist, boundary_type: :project
       post ':id/job_token_scope/allowlist' do
         authorize_admin_project
 
@@ -158,6 +163,7 @@ module API
           documentation: { example: 2 },
           type: Integer
       end
+      route_setting :authorization, permissions: :create_job_token_scope_allowlist, boundary_type: :project
       post ':id/job_token_scope/groups_allowlist' do
         authorize_admin_project
 
@@ -197,6 +203,7 @@ module API
           documentation: { example: 2 },
           type: Integer
       end
+      route_setting :authorization, permissions: :delete_job_token_scope_allowlist, boundary_type: :project
       delete ':id/job_token_scope/groups_allowlist/:target_group_id' do
         target_group_id = declared_params(include_missing: false).fetch(:target_group_id)
         target_group = Group.find_by_id(target_group_id)
@@ -238,6 +245,7 @@ module API
           documentation: { example: 2 },
           type: Integer
       end
+      route_setting :authorization, permissions: :delete_job_token_scope_allowlist, boundary_type: :project
       delete ':id/job_token_scope/allowlist/:target_project_id' do
         target_project = find_project!(params[:target_project_id])
 

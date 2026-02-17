@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Programmatic interaction with GitLab.
 title: GraphQL API
@@ -226,14 +226,11 @@ time without notice.
 Fields behind a feature flag and disabled by default do not follow the
 deprecation and removal process. These fields can be removed at any time without notice.
 
-{{< alert type="warning" >}}
-
-GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
-GitLab might make immediate breaking changes to the GraphQL
-API to patch critical security or performance concerns if the deprecation
-process would pose significant risk.
-
-{{< /alert >}}
+> [!warning]
+> GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
+> GitLab might make immediate breaking changes to the GraphQL
+> API to patch critical security or performance concerns if the deprecation
+> process would pose significant risk.
 
 ### Verify against the future breaking-change schema
 
@@ -403,13 +400,10 @@ GraphQL mutations can be detected as spam. If a mutation is detected as spam and
   Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
 - Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
 
-{{< alert type="note" >}}
-
-The GitLab GraphiQL implementation doesn't permit passing of headers, so the request must be
-a cURL query. `--data-binary` is used to properly handle escaped double quotes
-in the JSON-embedded query.
-
-{{< /alert >}}
+> [!note]
+> The GitLab GraphiQL implementation doesn't permit passing of headers, so the request must be
+> a cURL query. `--data-binary` is used to properly handle escaped double quotes
+> in the JSON-embedded query.
 
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"

@@ -24,12 +24,9 @@ in GitLab 14.5. To connect your clusters, use the [GitLab agent for Kubernetes](
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The [concept of cluster levels was deprecated](../_index.md#cluster-levels)
-in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> The [concept of cluster levels was deprecated](../_index.md#cluster-levels)
+> in GitLab 14.5.
 
 Choose your cluster's level according to its purpose:
 
@@ -57,6 +54,10 @@ your cluster's level.
 
 **Instance-level clusters**:
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Kubernetes**.
 
@@ -68,12 +69,9 @@ your cluster's level.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The whole cluster security is based on a model where [developers](../../../permissions.md)
-are trusted, so **only trusted users should be allowed to control your clusters**.
-
-{{< /alert >}}
+> [!warning]
+> The whole cluster security is based on a model where [developers](../../../permissions.md)
+> are trusted, so **only trusted users should be allowed to control your clusters**.
 
 The use of cluster certificates to connect your cluster grants
 access to a wide set of functionalities needed to successfully

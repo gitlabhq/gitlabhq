@@ -7,6 +7,7 @@ import { clearDraft, getDraft } from '~/lib/utils/autosave';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
@@ -70,6 +71,7 @@ export default {
       isEditing: false,
       isUpdating: false,
       isDeleting: false,
+      currentHash: getLocationHash(),
     };
   },
   computed: {
@@ -121,8 +123,26 @@ export default {
     noteAnchorId() {
       return `note_${this.noteId}`;
     },
+    isTarget() {
+      return this.currentHash?.trim() === this.noteAnchorId?.trim();
+    },
     canAwardEmoji() {
       return this.note.userPermissions?.awardEmoji;
+    },
+    noteBackgroundClasses() {
+      if (this.note.internal) {
+        return { 'internal-note-bg': true };
+      }
+
+      if (this.isTarget) {
+        return { 'gl-bg-feedback-info': true };
+      }
+
+      if (!this.replyNote) {
+        return { 'gl-bg-section': true };
+      }
+
+      return {};
     },
     dynamicClasses() {
       return {
@@ -133,10 +153,9 @@ export default {
           'internal-note': this.note.internal,
         },
         noteParent: {
-          'gl-rounded-lg gl-border gl-border-section': !this.replyNote,
+          'gl-rounded-lg gl-border gl-border-section gl-ml-8': !this.replyNote,
           'gl-pl-8 gl-pr-5 -gl-mx-5': this.replyNote,
-          'gl-bg-section gl-ml-8': !this.replyNote,
-          'internal-note-bg': this.note.internal,
+          ...this.noteBackgroundClasses,
         },
       };
     },
@@ -149,8 +168,15 @@ export default {
   mounted() {
     if (getDraft(this.autosaveKey)?.trim()) this.isEditing = true;
     this.updatedNote = { ...this.note };
+    window.addEventListener('hashchange', this.updateHash);
+  },
+  beforeDestroy() {
+    window.removeEventListener('hashchange', this.updateHash);
   },
   methods: {
+    updateHash() {
+      this.currentHash = getLocationHash();
+    },
     toggleDeleting(value) {
       this.isDeleting = value;
     },
@@ -300,7 +326,7 @@ export default {
         <slot name="avatar-badge"></slot>
       </gl-avatar-link>
     </div>
-    <div :class="dynamicClasses.noteParent">
+    <div :class="dynamicClasses.noteParent" data-testid="wiki-note-parent">
       <div class="note-content gl-px-3 gl-py-2">
         <div class="note-header">
           <note-header

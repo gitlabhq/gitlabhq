@@ -12,12 +12,9 @@ title: Working with the bundled PgBouncer service
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
-For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
-
-{{< /alert >}}
+> [!note]
+> PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
+> For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
 
 [PgBouncer](https://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used
@@ -48,11 +45,8 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 1. Run `gitlab-ctl reconfigure`
 
-   {{< alert type="note" >}}
-
-   If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
-
-   {{< /alert >}}
+   > [!note]
+   > If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running PgBouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 

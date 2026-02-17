@@ -34,7 +34,7 @@ All three examples run the same three commands in order, in three different stag
 
 These examples use a single, persistent Jenkins agent, which requires Maven to be
 pre-installed on the agent. This method of execution is similar to a GitLab Runner
-using the [shell executor](https://docs.gitlab.com/runner/executors/shell.html).
+using the [shell executor](https://docs.gitlab.com/runner/executors/shell/).
 
 ### Freestyle with shell execution
 

@@ -7,7 +7,7 @@ FactoryBot.define do
     package_type { :npm }
     minimum_access_level_for_delete { :owner }
     minimum_access_level_for_push { :maintainer }
-    pattern { '@my_scope/my_package' }
+    pattern { package_name_pattern }
     pattern_type { :wildcard }
     target_field { :package_name }
   end

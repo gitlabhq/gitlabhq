@@ -192,6 +192,7 @@ GitLab documentation uses the following shortcodes:
 - [Feature tables](#feature-tables)
   - Yes
   - No
+- [Glossary tooltip](#glossary-tooltip)
 
 ## Language
 
@@ -559,7 +560,7 @@ Include punctuation in the bold tag when it's part of the UI element itself.
 
 For example:
 
-- `**Start a review**: This a description of the button that starts a review.`
+- `**Start a review**: This is a description of the button that starts a review.`
 - `Select **Overview** > **Users**.`
 
 ### Inline code
@@ -670,7 +671,7 @@ Use lists to present information in a format that is easier to scan.
 
 - Do not use [bold](#bold) formatting to define keywords or concepts in a list. Use bold for UI element labels only. For example:
 
-  - `**Start a review**: This a description of the button that starts a review.`
+  - `**Start a review**: This is a description of the button that starts a review.`
   - `Offline environments: This is a description of offline environments.`
 
   For keywords and concepts, consider a [reference topic](../topic_types/reference.md) or
@@ -882,6 +883,7 @@ To make tables easier to maintain:
 
 You can use [Hugo class attributes](https://gohugo.io/content-management/markdown-attributes/) to make a table condensed or expandable.
 To use a Hugo attribute with a table, you must [disable Markdown rules](../testing/markdownlint.md#disable-markdownlint-tests) `055` and `056`.
+Add a space between the Markdown comment and the top of the table so the table renders correctly.
 To avoid introducing linting errors in a table, test the table locally with all rules enabled.
 
 Hugo class attributes only render on the GitLab documentation site (`https://docs.gitlab.com`).
@@ -893,6 +895,9 @@ By default, wide tables that do not fit on the page are condensed. Long tables a
 the `condensed` class attribute to reduce the space the table takes up on a page.
 
 ```markdown
+<!-- markdownlint-disable MD055 -->
+<!-- markdownlint-disable MD056 -->
+
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
 | `param1`  | `true`       | A and B.     |
@@ -903,6 +908,9 @@ the `condensed` class attribute to reduce the space the table takes up on a page
 or
 
 ```markdown
+<!-- markdownlint-disable MD055 -->
+<!-- markdownlint-disable MD056 -->
+
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
 | `param1`  | `true`       | A and B.     |
@@ -1265,7 +1273,7 @@ When documenting how to navigate the GitLab UI:
 
 ### Names for UI elements
 
-In the [redesigned](../../../user/interface_redesign.md) GitLab UI, use the following names:
+In the GitLab UI, use the following names:
 
 ![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
 
@@ -1295,7 +1303,7 @@ use these steps instead.
 To open project settings:
 
 ```markdown
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1303,7 +1311,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1311,7 +1319,7 @@ To open group settings:
 To open settings for a top-level group:
 
 ```markdown
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
@@ -1320,7 +1328,7 @@ To open settings for a top-level group:
 To open either project or group settings:
 
 ```markdown
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1344,12 +1352,12 @@ To open the **Admin** area:
 1. Select **Settings** > **CI/CD**.
 ```
 
-You do not have to repeat `On the left sidebar` in your second step.
+You do not have to repeat `In the left sidebar` in your second step.
 
 To open the **Your work** menu item:
 
 ```markdown
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Your work**.
 ```
 
@@ -1363,7 +1371,7 @@ To save the selection in some dropdown lists:
 
 ```markdown
 1. Go to your issue.
-1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. In the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
 1. Select any area outside the dropdown list.
 ```
@@ -1371,14 +1379,14 @@ To save the selection in some dropdown lists:
 To view all your projects:
 
 ```markdown
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my projects**.
 ```
 
 To view all your groups:
 
 ```markdown
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 ```
 
@@ -1418,7 +1426,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
@@ -1534,7 +1542,7 @@ instructions for your OS.
 You can compress images automatically or manually:
 
 - For automatic compression on macOS, see
-  [One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/2020/01/30/simple-trick-for-smaller-screenshots/).
+  [One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/simple-trick-for-smaller-screenshots/).
 - For manual compression, use the [`pngquant` script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant).
 
 To use the `pngquant` script, in the root directory of your local copy of `https://gitlab.com/gitlab-org/gitlab`,
@@ -1728,7 +1736,10 @@ Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your
 Use a diagram to illustrate a process or the relationship between entities, if the information is too
 complex to be understood from text only.
 
-To create a diagram, use either [Mermaid](https://mermaid.js.org/#/) (recommended) or [Draw.io](https://draw.io).
+To create a diagram, use either:
+
+- [Mermaid](https://mermaid.js.org/#/) (recommended). Mermaid version 11 is supported in documentation.
+- [Draw.io](https://draw.io).
 
 Mermaid is the recommended diagramming tool, but it is not suitable for all situations. For example,
 complex diagram requirements might result in a layout that is difficult to understand.
@@ -1784,13 +1795,6 @@ To create a diagram for GitLab documentation with Mermaid:
 1. In the [Mermaid Live Editor](https://mermaid.live/), create the diagram.
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
-1. To add GitLab font styling to your diagram, between the Mermaid code block declaration
-   and the type of diagram, add the following line:
-
-   ```plaintext
-   %%{init: { "fontFamily": "GitLab Sans" }}%%
-   ```
-
 1. On the next line after declaring the type of diagram
   (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
 
@@ -1801,11 +1805,10 @@ To create a diagram for GitLab documentation with Mermaid:
 
    Make sure the title and description follow the [alternative text guidelines](#alternative-text).
 
-For example, this flowchart contains both accessibility and font information:
+For example, this flowchart contains accessibility information:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
     accTitle: Example diagram title
     accDescr: A description of your diagram
@@ -2210,6 +2213,45 @@ maintained GitLab versions as specified by the
 Maintained versions render only on the pre-release version of the GitLab
 documentation site (`https://docs.gitlab.com`). In all other cases and in
 `/help`, a link to the documentation site is shown instead.
+
+## Glossary tooltip
+
+Use the `glossary-tooltip` shortcode to provide a short definition that appears as a tooltip on hover. For example:
+
+```markdown
+To do this thing, use {{</* glossary-tooltip text="my term" */>}}.
+```
+
+When the user hovers on `my term`, a tooltip is displayed.
+
+If the user selects the tooltip, a related glossary page opens.
+
+### Create a glossary term
+
+A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary-tooltips/glossary.yaml)
+exists in the `docs-gitlab-com` repo.
+
+- Add definitions to this file. Each definition should be short and not contain links.
+- If the term specified in the `text` field matches a value in `glossary.yaml`,
+  the definition is displayed on hover.
+- If no value matches, no definition or underline is displayed.
+  Values are case insensitive.
+- If a related glossary page is not specified, the tooltip is displayed but does not change when selected.
+
+### Usage guidance
+
+Do not use more than five to ten tooltips on a page. Each tooltip slows down the reader. Be careful not to overload users with definitions.
+
+Use glossary tooltips in these cases:
+
+- For the first occurrence of a GitLab-specific term on a page.
+- For terms readers might not know, like `artifact` or `analyzer`.
+
+Do not use glossary tooltips in these cases:
+
+- For common terms like repository, branch, or commit.
+- For every instance of a term.
+- As a replacement for acronyms. If you can spell out the acronym on first use, and it's an industry standard, do not use a glossary tooltip.
 
 ## Plagiarism
 

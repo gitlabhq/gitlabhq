@@ -2,7 +2,7 @@
 stage: Data Stores
 group: Database
 title: Batched Background Migration Spec Helpers
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 ---
 
 The versioned spec helper library for batched background migrations
@@ -153,8 +153,7 @@ To convert an existing spec to use the helpers:
 
 ```ruby
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20240501044347 do
+  feature_category: :code_review_workflow do
 
   let!(:projects) { table(:projects) }
   let!(:merge_requests) { table(:merge_requests) }
@@ -174,8 +173,7 @@ end
 
 ```ruby
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20240501044347 do
+  feature_category: :code_review_workflow do
 
   include Gitlab::BackgroundMigration::SpecHelpers::V1
 

@@ -31,7 +31,7 @@ module ActiveContext
       end
 
       def migrations_path
-        current.migrations_path || Rails.root.join('ee/db/active_context/migrate')
+        current.migrations_path || Rails.root.join('ee/active_context/migrate')
       end
 
       def connection_model

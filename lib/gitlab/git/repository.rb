@@ -183,6 +183,12 @@ module Gitlab
         end
       end
 
+      def fork_repository(source_repository, branch = nil)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fork_repository(source_repository, branch)
+        end
+      end
+
       def expire_has_local_branches_cache
         clear_memoization(:has_local_branches)
       end
@@ -438,23 +444,20 @@ module Gitlab
         end
       end
 
+      # Returns a hash mapping file paths to their object types (:blob, :tree, or :commit).
+      #
+      # revision_paths - Array of [revision, path] tuples
+      # limit - Maximum bytes to fetch per blob (default: -1 for no limit)
+      #
+      def get_blob_types(revision_paths, limit = -1)
+        gitaly_blob_client.get_blob_types(revision_paths, limit)
+      end
+
       def count_commits(options)
         options = process_count_commits_options(options.dup)
 
         wrapped_gitaly_errors do
-          if options[:left_right]
-            from = options[:from]
-            to = options[:to]
-
-            right_count = gitaly_commit_client
-              .commit_count("#{from}..#{to}", options)
-            left_count = gitaly_commit_client
-              .commit_count("#{to}..#{from}", options)
-
-            [left_count, right_count]
-          else
-            gitaly_commit_client.commit_count(options[:ref], options)
-          end
+          gitaly_commit_client.commit_count(options[:ref], options)
         end
       end
 
@@ -609,13 +612,6 @@ module Gitlab
       def submodule_urls_for(ref)
         wrapped_gitaly_errors do
           gitaly_submodule_urls_for(ref)
-        end
-      end
-
-      # Return total commits count accessible from passed ref
-      def commit_count(ref)
-        wrapped_gitaly_errors do
-          gitaly_commit_client.commit_count(ref)
         end
       end
 
@@ -1323,19 +1319,9 @@ module Gitlab
 
       def process_count_commits_options(options)
         if options[:from] || options[:to]
-          ref =
-            if options[:left_right] # Compare with merge-base for left-right
-              "#{options[:from]}...#{options[:to]}"
-            else
-              "#{options[:from]}..#{options[:to]}"
-            end
+          ref = "#{options[:from]}..#{options[:to]}"
 
           options.merge(ref: ref)
-
-        elsif options[:ref] && options[:left_right]
-          from, to = options[:ref].match(/\A([^\.]*)\.{2,3}([^\.]*)\z/)[1..2]
-
-          options.merge(from: from, to: to)
         else
           options
         end

@@ -3,13 +3,15 @@
 module Keeps
   module Helpers
     class ReviewerRoulette
+      include Singleton
+
       STATS_JSON_URL = "https://gitlab-org.gitlab.io/gitlab-roulette/stats.json"
       GITLAB_PROJECT = 'gitlab'
       Error = Class.new(StandardError)
 
-      def random_reviewer_for(role)
+      def random_reviewer_for(role, identifiers: [])
         reviewers = available_reviewers_for_role(role)
-        random_reviewer = reviewers.sample
+        random_reviewer = random_reviewer(reviewers, identifiers)
         return if random_reviewer.nil?
 
         random_reviewer.dig(:user, :username).delete("@")
@@ -20,6 +22,13 @@ module Keeps
       end
 
       private
+
+      def random_reviewer(reviewers, identifiers)
+        # Use the change identifiers as a stable way to pick the same reviewer. Otherwise, we'd assign a new reviewer
+        # every time we re-ran housekeeper.
+        seed = identifiers.empty? ? Random.new_seed : Digest::SHA256.hexdigest(identifiers.join).to_i(16)
+        reviewers.sample(random: Random.new(seed))
+      end
 
       def available_reviewers_for_role(role)
         available_reviewers.select { |person| reviewer_has_matching_role?(person, role) }

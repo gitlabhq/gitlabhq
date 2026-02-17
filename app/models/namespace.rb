@@ -27,7 +27,7 @@ class Namespace < ApplicationRecord
 
   extend Gitlab::Utils::Override
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS, feature_flag: :cells_claims_namespaces
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :id
 
@@ -70,7 +70,7 @@ class Namespace < ApplicationRecord
     inverse_of: :namespace, class_name: 'NamespaceSetting', primary_key: :id, foreign_key: :namespace_id
 
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
-  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
+  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: true
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_one :catalog_verified_namespace, class_name: 'Namespaces::VerifiedNamespace', inverse_of: :namespace
@@ -180,7 +180,7 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
 
-  delegate :add_creator, :deleted_at, :deleted_at=, :description, :description=, :description_html,
+  delegate :creator, :creator=, :description, :description=, :description_html,
     :state_metadata, :state_metadata=,
     to: :namespace_details, allow_nil: true
 
@@ -211,17 +211,15 @@ class Namespace < ApplicationRecord
   end
 
   before_create :sync_share_with_group_lock_with_parent
+  after_create :create_namespace_details!, unless: -> { namespace_details.persisted? }
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
-
-  after_save :save_namespace_details_changes
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
-  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :project_namespaces, -> { where(type: Namespaces::ProjectNamespace.sti_name) }
@@ -241,11 +239,9 @@ class Namespace < ApplicationRecord
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { self_or_ancestors_archived }
-  scope :self_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
-  scope :self_non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
   scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do
@@ -501,12 +497,6 @@ class Namespace < ApplicationRecord
       ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
     else
       all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)
-    end
-  end
-
-  def send_update_instructions
-    projects.each do |project|
-      project.send_move_instructions("#{full_path_before_last_save}/#{project.path}")
     end
   end
 
@@ -847,12 +837,6 @@ class Namespace < ApplicationRecord
     Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
-  # Overriding of Namespaces::AdjournedDeletable method
-  override :self_deletion_in_progress?
-  def self_deletion_in_progress?
-    !!deleted_at
-  end
-
   def uploads_sharding_key
     { namespace_id: id }
   end
@@ -1019,16 +1003,6 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def save_namespace_details_changes
-    attribute_names_to_sync = Namespace::Detail.attribute_names - ['namespace_id']
-    attributes_to_sync = namespace_details.changes.slice(*attribute_names_to_sync)
-                                          .transform_values { |val| val[1] }
-
-    self.namespace_details = Namespace::Detail.find_by_namespace_id(id) || build_namespace_details
-    namespace_details.assign_attributes(attributes_to_sync)
-    namespace_details.save!
-  end
-
   def sync_share_with_group_lock_with_parent
     if parent&.share_with_group_lock?
       self.share_with_group_lock = true
@@ -1068,8 +1042,8 @@ class Namespace < ApplicationRecord
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end
 
-  def unique_attribute
-    :path
+  def unique_attributes
+    [:path]
   end
 end
 

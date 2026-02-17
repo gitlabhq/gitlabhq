@@ -38,17 +38,14 @@ When a file or directory is locked by a user:
 - Direct changes to locked files or directories on the default branch are blocked.
 - Merge requests that modify locked files or directories cannot be merged to the default branch.
 
-{{< alert type="note" >}}
-
-On non-default branches, all users can still modify locked files and directories.
-A **Lock** status is visible on these files and directories. This helps team members
-to be aware of in-flight work without restricting their workflow on other branches.
-
-File locking is also bypassed during fork synchronization.
-When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
-project, locked files in the fork can be overwritten with changes from the upstream project.
-
-{{< /alert >}}
+> [!note]
+> On non-default branches, all users can still modify locked files and directories.
+> A **Lock** status is visible on these files and directories. This helps team members
+> to be aware of in-flight work without restricting their workflow on other branches.
+> 
+> File locking is also bypassed during fork synchronization.
+> When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
+> project, locked files in the fork can be overwritten with changes from the upstream project.
 
 ### Permissions
 
@@ -97,7 +94,7 @@ If the lock option is not available or is disabled, you don't have the required 
 To view locked files:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Locked files**.
+1. In the left sidebar, select **Code** > **Locked files**.
 
 The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
 
@@ -125,7 +122,7 @@ To remove a lock:
 {{< tab title="From the Locked file page" >}}
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Locked files**.
+1. In the left sidebar, select **Code** > **Locked files**.
 1. To the right of the file you want to unlock, select **Unlock**.
 1. On the confirmation dialog, select **OK**.
 
@@ -148,13 +145,10 @@ For example:
   request can be merged.
 - If the merge request author is different from the lock owner, the merge request is blocked.
 
-{{< alert type="note" >}}
-
-Users other than the merge request author can push changes to the merge request branch that
-update or change locked files or directories. The lock check only considers the merge request
-author, so the merge request is not blocked.
-
-{{< /alert >}}
+> [!note]
+> Users other than the merge request author can push changes to the merge request branch that
+> update or change locked files or directories. The lock check only considers the merge request
+> author, so the merge request is not blocked.
 
 To prevent unauthorized changes to locked files:
 

@@ -88,18 +88,20 @@ module Cells
     end
 
     def before_committed!
+      return if create_records.empty? && destroy_records.empty?
+
       raise Error, 'Already done' if done
       raise Error, 'Already created lease' if outstanding_lease
       raise Error, 'Attributes can now only be claimed on main DB' if Cells::OutstandingLease.connection != @connection
 
       @outstanding_lease = Cells::OutstandingLease.create_from_request!(
-        create_records: create_records,
-        destroy_records: destroy_records,
+        create_records: sanitize_records_for_grpc(create_records),
+        destroy_records: sanitize_records_for_grpc(destroy_records),
         deadline: deadline
       )
     rescue GRPC::BadStatus => e
       raise_committing_error!(e)
-      raise ActiveRecord::Rollback
+      raise Error, 'Failed to create lease'
     end
 
     def rolledback!(force_restore_state: false, should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface
@@ -115,6 +117,8 @@ module Cells
     end
 
     def committed!(should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface
+      return if create_records.empty? && destroy_records.empty?
+
       raise Error, 'Already done' if done
       raise Error, 'No lease created' unless outstanding_lease
 
@@ -127,14 +131,17 @@ module Cells
 
     attr_reader :create_records, :destroy_records, :done, :outstanding_lease
 
+    def sanitize_records_for_grpc(records)
+      records.map { |record| record.except(:record) }
+    end
+
     def deadline
       GRPC::Core::TimeConsts.from_relative_time(TIMEOUT_IN_SECONDS)
     end
 
     def raise_committing_error!(error)
       create_records.map do |record|
-        value = record.dig(:bucket, :value)
-        record[:record].handle_grpc_error(error, value)
+        record[:record].handle_grpc_error(error)
       end
     end
   end

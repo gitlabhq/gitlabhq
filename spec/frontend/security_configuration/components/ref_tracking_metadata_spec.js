@@ -22,6 +22,7 @@ describe('RefTrackingMetadata component', () => {
   const findProtectedBadge = () => wrapper.findComponent(ProtectedBadge);
   const findRefTypeIcon = () => wrapper.findByTestId('ref-type').findComponent(GlIcon);
   const findRefTypeText = () => wrapper.findByTestId('ref-type').find('span');
+  const findCommitInfo = () => wrapper.findByTestId('commit-info');
   const findCommitShortId = () => wrapper.findByTestId('commit-short-id');
   const findCommitIcon = () => findCommitShortId().findComponent(GlIcon);
   const findCommitLink = () => findCommitShortId().findComponent(GlLink);
@@ -86,22 +87,34 @@ describe('RefTrackingMetadata component', () => {
   });
 
   describe('rendering commit information', () => {
-    beforeEach(() => {
-      createComponent({ trackedRef: createTrackedRef({ refType: 'HEAD' }) });
+    describe('when commit is present', () => {
+      beforeEach(() => {
+        createComponent({ trackedRef: createTrackedRef({ refType: 'HEAD' }) });
+      });
+
+      it('displays commit icon with correct size', () => {
+        expect(findCommitIcon().props('name')).toBe('commit');
+        expect(findCommitIcon().props('size')).toBe(12);
+      });
+
+      it('renders commit link with correct href and text', () => {
+        expect(findCommitLink().attributes('href')).toBe(createTrackedRef().commit.webPath);
+        expect(findCommitLink().text()).toBe(createTrackedRef().commit.shortId);
+      });
+
+      it('displays commit title', () => {
+        expect(findCommitTitle().text()).toBe(createTrackedRef().commit.title);
+      });
     });
 
-    it('displays commit icon with correct size', () => {
-      expect(findCommitIcon().props('name')).toBe('commit');
-      expect(findCommitIcon().props('size')).toBe(12);
-    });
+    describe('when commit is null', () => {
+      beforeEach(() => {
+        createComponent({ trackedRef: createTrackedRef({ commit: null }) });
+      });
 
-    it('renders commit link with correct href and text', () => {
-      expect(findCommitLink().attributes('href')).toBe(createTrackedRef().commit.webPath);
-      expect(findCommitLink().text()).toBe(createTrackedRef().commit.shortId);
-    });
-
-    it('displays commit title', () => {
-      expect(findCommitTitle().text()).toBe(createTrackedRef().commit.title);
+      it('does not render commit section', () => {
+        expect(findCommitInfo().exists()).toBe(false);
+      });
     });
   });
 
@@ -118,6 +131,12 @@ describe('RefTrackingMetadata component', () => {
           commit: { ...createTrackedRef().commit, authoredDate: 'invalid' },
         }),
       });
+
+      expect(findTimeAgoTooltip().exists()).toBe(false);
+    });
+
+    it('does not display TimeAgoTooltip when commit is null', () => {
+      createComponent({ trackedRef: createTrackedRef({ commit: null }) });
 
       expect(findTimeAgoTooltip().exists()).toBe(false);
     });

@@ -76,6 +76,7 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
 
     it 'changes target branch on edit' do
       within_testid('rule-target-card') do
+        expect(page).to have_button('Edit', wait: 10)
         click_button 'Edit'
       end
 
@@ -96,6 +97,7 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
     end
 
     it 'deletes rule' do
+      expect(page).to have_button('Delete', wait: 10)
       click_button 'Delete'
 
       within_modal do

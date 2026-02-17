@@ -20,13 +20,10 @@ GitLab.
 <i class="fa-youtube-play" aria-hidden="true"></i>
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
-{{< alert type="note" >}}
-
-Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
-[GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
-cannot be used to authenticate with GitHub as an external CI/CD repository.
-
-{{< /alert >}}
+> [!note]
+> Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
+> [GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
+> cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 ## Connect with personal access token
 
@@ -77,7 +74,7 @@ To manually enable GitLab CI/CD for your repository:
    1. Fill in all the other fields and select **Create project**.
       GitLab automatically configures polling-based pull mirroring.
 1. In GitLab, enable [GitHub project integration](../../user/project/integrations/github.md):
-   1. On the left sidebar, select **Settings** > **Integrations**.
+   1. In the left sidebar, select **Settings** > **Integrations**.
    1. Select the **Active** checkbox.
    1. Paste your personal access token and HTTPS repository URL into the form and select **Save**.
 1. In GitLab, create a personal access token with `API` scope to

@@ -652,12 +652,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   .plaintext_token
                 end
 
-                let(:application) do
-                  Authn::OauthApplication.create!(
-                    name: "MyApp",
-                    redirect_uri: "https://app.com",
-                    owner: user)
-                end
+                let(:application) { create(:oauth_application, owner: user) }
 
                 let(:scopes) { 'api' }
                 let(:path) { "#{project.full_path}.git" }
@@ -858,6 +853,78 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                           expect(response).to have_gitlab_http_status(:ok)
                         end
                       end
+                    end
+                  end
+                end
+              end
+
+              context 'when authenticating with a granular personal access token' do
+                let(:boundary) { ::Authz::Boundary.for(project) }
+                let(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: permissions) }
+                let(:env) { { user: user.username, password: granular_pat.token } }
+
+                context 'without any code permissions' do
+                  let(:permissions) { [] }
+
+                  it 'denies pulls' do
+                    download(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [download_code] for \"#{project.full_path}\".")
+                    end
+                  end
+
+                  it 'denies pushes' do
+                    upload(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [push_code] for \"#{project.full_path}\".")
+                    end
+                  end
+                end
+
+                context 'with download_code permission' do
+                  let(:permissions) { :download_code }
+
+                  it_behaves_like 'pulls are allowed'
+
+                  it 'denies pushes' do
+                    upload(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [push_code] for \"#{project.full_path}\".")
+                    end
+                  end
+                end
+
+                context 'with push_code permission' do
+                  let(:permissions) { :push_code }
+
+                  it_behaves_like 'pushes are allowed'
+
+                  it 'denies pulls' do
+                    download(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [download_code] for \"#{project.full_path}\".")
+                    end
+                  end
+                end
+
+                context 'when granular_personal_access_tokens feature flag is disabled' do
+                  let(:permissions) { [:download_code, :push_code] }
+
+                  before do
+                    stub_feature_flags(granular_personal_access_tokens: false)
+                  end
+
+                  it 'denies pulls' do
+                    download(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq('Granular tokens are not yet supported')
+                    end
+                  end
+
+                  it 'denies pushes' do
+                    upload(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq('Granular tokens are not yet supported')
                     end
                   end
                 end
@@ -1431,12 +1498,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   .plaintext_token
                 end
 
-                let(:application) do
-                  Authn::OauthApplication.create!(
-                    name: "MyApp",
-                    redirect_uri: "https://app.com",
-                    owner: user)
-                end
+                let(:application) { create(:oauth_application, owner: user) }
 
                 let(:path) { "#{project.full_path}.git" }
                 let(:env) { { user: 'oauth2', password: token } }

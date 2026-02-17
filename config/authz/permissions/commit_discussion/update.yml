@@ -1,0 +1,5 @@
+---
+name: update_commit_discussion
+description: Grants the ability to resolve/unresolve commit discussions
+boundaries:
+  - project

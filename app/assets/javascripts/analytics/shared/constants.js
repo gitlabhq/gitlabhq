@@ -173,12 +173,14 @@ export const VULNERABILITY_METRICS = {
 export const PIPELINE_ANALYTICS_TYPE_COUNT = 'pipeline_count';
 export const PIPELINE_ANALYTICS_TYPE_SUCCESS_RATE = 'pipeline_success_rate';
 export const PIPELINE_ANALYTICS_TYPE_FAILURE_RATE = 'pipeline_failed_rate';
+export const PIPELINE_ANALYTICS_TYPE_OTHER_RATE = 'pipeline_other_rate';
 export const PIPELINE_ANALYTICS_TYPE_MEDIAN = 'pipeline_duration_median';
 
 export const PIPELINE_ANALYTICS_METRICS = {
   COUNT: PIPELINE_ANALYTICS_TYPE_COUNT,
   SUCCESS_RATE: PIPELINE_ANALYTICS_TYPE_SUCCESS_RATE,
   FAILURE_RATE: PIPELINE_ANALYTICS_TYPE_FAILURE_RATE,
+  OTHER_RATE: PIPELINE_ANALYTICS_TYPE_OTHER_RATE,
   MEDIAN: PIPELINE_ANALYTICS_TYPE_MEDIAN,
 };
 
@@ -320,6 +322,12 @@ export const PIPELINE_ANALYTICS_METRIC_METADATA = {
   },
   [PIPELINE_ANALYTICS_METRICS.FAILURE_RATE]: {
     description: s__('CICDAnalytics|The percentage of pipelines that failed.'),
+    groupLink: '',
+    projectLink: '-/pipelines/charts',
+    docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
+  },
+  [PIPELINE_ANALYTICS_METRICS.OTHER_RATE]: {
+    description: s__('CICDAnalytics|The percentage of pipelines that were skipped or canceled.'),
     groupLink: '',
     projectLink: '-/pipelines/charts',
     docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
@@ -507,3 +515,10 @@ export const CHART_TOOLTIP_TITLE_FORMATTERS = {
   TITLE_CASE: 'TITLE_CASE',
   VALUE_ONLY: 'VALUE_ONLY',
 };
+
+export const IDE_DIMENSION_KEY = 'ideNames';
+export const LANGUAGE_DIMENSION_KEY = 'languages';
+export const SUPPORTED_CODE_SUGGESTIONS_DIMENSION_KEYS = [
+  IDE_DIMENSION_KEY,
+  LANGUAGE_DIMENSION_KEY,
+];

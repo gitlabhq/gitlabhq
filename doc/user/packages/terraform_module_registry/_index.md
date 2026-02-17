@@ -235,11 +235,8 @@ To allow publishing duplicate module names:
 
 Your changes are automatically saved.
 
-{{< alert type="note" >}}
-
-If **Allow duplicates** is turned on, you can specify module names that should not have duplicates in the **Exceptions** text box.
-
-{{< /alert >}}
+> [!note]
+> If **Allow duplicates** is turned on, you can specify module names that should not have duplicates in the **Exceptions** text box.
 
 You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 

@@ -104,11 +104,8 @@ Most of the data is written once however, we cannot say that the table is append
 
 ### Example queries
 
-{{< alert type="note" >}}
-
-These queries have been significantly simplified from the actual queries from production.
-
-{{< /alert >}}
+> [!note]
+> These queries have been significantly simplified from the actual queries from production.
 
 Database query for the user's contribution graph:
 

@@ -27,9 +27,8 @@
             = _('Password')
 
       - if @user.new_record?
-        = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-          - c.with_body do
-            = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
+        %p
+          = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
       - else
         .form-group.gl-form-group.gl-form-input-lg{ role: 'group' }
           = f.label :password, _('Password'), class: 'gl-block col-form-label'

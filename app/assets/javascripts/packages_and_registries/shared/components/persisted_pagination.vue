@@ -15,6 +15,11 @@ export default {
       default: () => ({}),
       required: false,
     },
+    useRouter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     attrs() {
@@ -44,7 +49,7 @@ export default {
 </script>
 
 <template>
-  <url-sync>
+  <url-sync :use-router="useRouter">
     <template #default="{ updateQuery }">
       <gl-keyset-pagination
         v-bind="attrs"

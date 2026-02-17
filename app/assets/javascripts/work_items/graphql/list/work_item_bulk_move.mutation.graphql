@@ -1,6 +1,0 @@
-mutation workItemBulkMove($input: WorkItemBulkMoveInput!) {
-  workItemBulkMove(input: $input) {
-    movedWorkItemCount
-    errors
-  }
-}

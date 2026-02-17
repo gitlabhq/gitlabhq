@@ -43,6 +43,7 @@ describe('useAccessTokens store', () => {
       expect(store.page).toBe(1);
       expect(store.perPage).toBe(null);
       expect(store.showCreateForm).toBe(false);
+      expect(store.showCreateFormInline).toBe(true);
       expect(store.token).toEqual(null);
       expect(store.tokens).toEqual([]);
       expect(store.total).toBe(0);
@@ -75,6 +76,8 @@ describe('useAccessTokens store', () => {
       'X-Total': 1,
     };
 
+    const showCreateFormInline = true;
+
     beforeEach(() => {
       mockAxios.reset();
     });
@@ -86,7 +89,7 @@ describe('useAccessTokens store', () => {
       const scopes = ['dummy-scope'];
 
       beforeEach(() => {
-        store.setup({ filters, id, page, sorting, urlCreate, urlShow });
+        store.setup({ filters, id, page, sorting, urlCreate, urlShow, showCreateFormInline });
       });
 
       it('dismisses any existing alert', () => {
@@ -163,23 +166,38 @@ describe('useAccessTokens store', () => {
         expect(store.busy).toBe(false);
       });
 
-      it('uses correct params in the fetch', async () => {
-        mockAxios.onPost().replyOnce(HTTP_STATUS_OK, { token: 'new-token' });
-        mockAxios.onGet().replyOnce(HTTP_STATUS_OK, [{ active: true, name: 'Token' }], headers);
-        store.setPage(2);
-        store.setFilters(['my token']);
-        await store.createToken({ name, description, expiresAt, scopes });
+      describe('when `showCreateFormInline` is true', () => {
+        it('uses correct params to refetch tokens', async () => {
+          mockAxios.onPost().replyOnce(HTTP_STATUS_OK, { token: 'new-token' });
+          mockAxios.onGet().replyOnce(HTTP_STATUS_OK, [{ active: true, name: 'Token' }], headers);
+          store.setPage(2);
+          store.setFilters(['my token']);
+          await store.createToken({ name, description, expiresAt, scopes });
 
-        expect(mockAxios.history.get).toHaveLength(1);
-        expect(mockAxios.history.get[0]).toEqual(
-          expect.objectContaining({
-            params: {
-              page: 1,
-              sort: 'expires_asc',
-              search: 'my token',
-            },
-          }),
-        );
+          expect(mockAxios.history.get).toHaveLength(1);
+          expect(mockAxios.history.get[0]).toEqual(
+            expect.objectContaining({
+              params: {
+                page: 1,
+                sort: 'expires_asc',
+                search: 'my token',
+              },
+            }),
+          );
+        });
+      });
+
+      describe('when `showCreateFormInline` is false', () => {
+        beforeEach(() => {
+          store.showCreateFormInline = false;
+        });
+
+        it('does not refetch tokens', async () => {
+          mockAxios.onPost().replyOnce(HTTP_STATUS_OK, { token: 'new-token' });
+          await store.createToken({ name, description, expiresAt, scopes });
+
+          expect(mockAxios.history.get).toHaveLength(0);
+        });
       });
     });
 

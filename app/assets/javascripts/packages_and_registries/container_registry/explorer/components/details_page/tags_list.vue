@@ -232,6 +232,7 @@ export default {
 <template>
   <div>
     <persisted-search
+      use-router
       :sortable-fields="sortableFields"
       :default-order="sortableFields[0].orderBy"
       :default-sort="defaultSort"
@@ -280,6 +281,7 @@ export default {
 
     <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-center">
       <persisted-pagination
+        use-router
         class="gl-mt-3"
         :pagination="tagsPageInfo"
         @prev="fetchPreviousPage"

@@ -2,7 +2,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 import { pipelineEditorTrackingOptions } from '../../../constants';
 import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 

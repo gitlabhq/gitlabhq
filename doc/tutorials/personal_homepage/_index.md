@@ -37,8 +37,8 @@ as the default homepage in your preferences.
 
 You can access your personal homepage from anywhere in GitLab:
 
-- On the left sidebar, at the top, select **Homepage**.
-- On the top bar, select **Search or go to**, select **Your work**, then select **Home**.
+- In the left sidebar, at the top, select **Homepage**.
+- In the top bar, select **Search or go to**, select **Your work**, then select **Home**.
 
 ## Layout of the homepage
 
@@ -69,7 +69,8 @@ You can also keep track of what you have been working on, for example:
    Select the links to go directly to the issue or merge request, and pick up where you left off.
 1. In the **Quick access** widget on the right:
    - Select **Recently viewed** to see issues, merge requests, and epics you recently visited.
-   - Select **Projects** to see projects you frequently visit.
+   - Select **Projects** to see projects you frequently visit and starred projects.
+     - To filter by project type, select **Display options** ({{< icon name="preferences" >}}).
    - Select any link to quickly return to items you were working on.
 
 ## Stay connected with team activity
@@ -79,16 +80,16 @@ Then, use the homepage to get an overview of what's happening in that project.
 
 To add a star to a project and view its activity on the homepage:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star** ({{< icon name="star" >}}).
-1. On the left sidebar, at the top, select **Homepage**.
+1. In the left sidebar, at the top, select **Homepage**.
 1. In the **Follow the latest updates** section, select **Starred projects** from the dropdown list.
 
 To collaborate more effectively with your team, you can follow other GitLab users and see what they're working on:
 
 1. Go to the user's profile in GitLab, for example, `https://gitlab.example.com/username`, and select **Follow**.
    Alternatively, select **Follow** in the small popover that appears when you hover over their name anywhere in GitLab.
-1. On the left sidebar, at the top, select **Homepage**.
+1. In the left sidebar, at the top, select **Homepage**.
 1. In the **Follow the latest updates** section, select **Followed users** from the dropdown list.
 
 ## Related topics

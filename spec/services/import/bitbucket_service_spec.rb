@@ -30,23 +30,13 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
     )
   end
 
-  let(:params) do
-    {
-      bitbucket_username: 'username',
-      bitbucket_app_password: 'password',
-      repo_path: repo_path,
-      target_namespace: target_namespace,
-      new_name: new_name
-    }
-  end
-
   subject(:service) { described_class.new(user, params) }
 
   before_all do
     group.add_owner(user)
   end
 
-  describe '#execute' do
+  shared_examples 'bitbucket import service' do
     before do
       stub_application_setting(import_sources: %w[bitbucket])
 
@@ -165,6 +155,25 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
       end
     end
 
+    context 'when repo does not have clone links' do
+      it 'returns an error' do
+        allow_next_instance_of(Bitbucket::Client) do |client|
+          allow(client).to receive(:user).and_return(bitbucket_user)
+          allow(client).to receive(:repo).and_return(
+            Bitbucket::Representation::Repo.new('name' => 'foo', 'is_private' => false)
+          )
+        end
+
+        result = service.execute
+
+        expect(result).to include(
+          message: 'Project path/to/project could not be found or is invalid',
+          status: :error,
+          http_status: :unprocessable_entity
+        )
+      end
+    end
+
     context 'when import source is disabled' do
       it 'returns an error' do
         stub_application_setting(import_sources: %w[])
@@ -215,6 +224,36 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
           http_status: :unprocessable_entity
         )
       end
+    end
+  end
+
+  describe '#execute' do
+    context 'when using app password authentication' do
+      let(:params) do
+        {
+          bitbucket_username: 'username',
+          bitbucket_app_password: 'password',
+          repo_path: repo_path,
+          target_namespace: target_namespace,
+          new_name: new_name
+        }
+      end
+
+      it_behaves_like 'bitbucket import service'
+    end
+
+    context 'when using API token authentication' do
+      let(:params) do
+        {
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
+          repo_path: repo_path,
+          target_namespace: target_namespace,
+          new_name: new_name
+        }
+      end
+
+      it_behaves_like 'bitbucket import service'
     end
   end
 end

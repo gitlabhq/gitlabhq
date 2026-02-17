@@ -1,0 +1,5 @@
+---
+name: read_commit
+description: Grants the ability to read commits
+boundaries:
+  - project

@@ -201,4 +201,18 @@ describe('Persisted Search', () => {
       sorting: defaultQueryParamsMock.sorting,
     });
   });
+
+  describe('with useRouter prop', () => {
+    it('passes useRouter prop to UrlSync', () => {
+      mountComponent({ ...defaultProps, useRouter: true });
+
+      expect(findUrlSync().props('useRouter')).toBe(true);
+    });
+
+    it('does not pass useRouter to UrlSync when not set', () => {
+      mountComponent();
+
+      expect(findUrlSync().props('useRouter')).toBe(false);
+    });
+  });
 });

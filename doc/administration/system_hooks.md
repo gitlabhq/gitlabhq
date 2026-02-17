@@ -57,13 +57,10 @@ group changes, and repository pushes from any project.
 | `tag_push`                                | A tag is added or deleted. |
 | `merge_request`                           | A merge request is created, updated, merged, or closed. |
 
-{{< alert type="note" >}}
-
-For push and tag events, the same structure and deprecations are followed as
-[project and group webhooks](../user/project/integrations/webhooks.md).
-However, commits are never displayed.
-
-{{< /alert >}}
+> [!note]
+> For push and tag events, the same structure and deprecations are followed as
+> [project and group webhooks](../user/project/integrations/webhooks.md).
+> However, commits are never displayed.
 
 ## Create a system hook
 
@@ -72,6 +69,10 @@ However, commits are never displayed.
 - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
 
 {{< /history >}}
+
+Prerequisites:
+
+- Administrator access.
 
 To create a system hook:
 

@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+class AddFkFromDeploymentApprovalToDeployments < Gitlab::Database::Migration[2.3]
+  milestone '18.9'
+  disable_ddl_transaction!
+
+  TARGET_TABLE = "deployments"
+  BIGINT_COLUMN = "id_convert_to_bigint"
+  FK_NAME = "fk_2d060dfc73_tmp"
+
+  TABLE_NAME = "deployment_approvals"
+
+  def up
+    return unless column_exists?(TARGET_TABLE, BIGINT_COLUMN)
+
+    add_concurrent_foreign_key TABLE_NAME,
+      TARGET_TABLE,
+      column: :deployment_id,
+      target_column: BIGINT_COLUMN,
+      on_delete: :cascade,
+      validate: false,
+      reverse_lock_order: true,
+      name: FK_NAME
+  end
+
+  def down
+    remove_foreign_key_if_exists TABLE_NAME,
+      TARGET_TABLE,
+      column: :deployment_id,
+      reverse_lock_order: true,
+      name: FK_NAME
+  end
+end

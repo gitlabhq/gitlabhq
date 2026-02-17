@@ -19,32 +19,22 @@ title: Conan v2 API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-For Conan v1 operations, see [Conan v1 API](conan_v1.md).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Use this API to interact with the [Conan v2 package manager](../../user/packages/conan_2_repository/_index.md).
+For Conan v1 operations, see [Conan v1 API](conan_v1.md).
+
+> [!note]
+> These endpoints do not adhere to the standard API authentication methods.
+> See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
 Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
 and are not meant for manual consumption.
 
-{{< alert type="note" >}}
-
-- These endpoints do not adhere to the standard API authentication methods.
-  See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
-
-- The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-  These endpoints all return `404 Not Found`.
-
-{{< /alert >}}
+> [!warning]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
+> These endpoints all return `404 Not Found`.
 
 ## Create an authentication token
 
@@ -86,7 +76,7 @@ eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQ
 
 ## Verify authentication credentials
 
-Verifies the validity of Basic Auth credentials or a Conan JWT generated from the Conan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token) endpoint.
+Verifies the validity of Basic Auth credentials or a specified Conan JWT generated from the Conan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token) endpoint.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/users/check_credentials
@@ -110,7 +100,7 @@ ok
 
 ## Search for a Conan package
 
-Searches the project for a Conan package with a specified name.
+Searches the project for a specified Conan package.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/search?q=:query
@@ -143,9 +133,9 @@ Example response:
 }
 ```
 
-## Get latest recipe revision
+## Retrieve latest recipe revision
 
-Gets the revision hash and creation date of the latest package recipe.
+Retrieves the revision hash and creation date of the latest package recipe.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest
@@ -214,7 +204,7 @@ Example response:
 
 ## Delete a recipe revision
 
-Delete the recipe revision from the registry. If the package has only one recipe revision, the package is deleted as well.
+Deletes a specified recipe revision from the registry. If the package has only one recipe revision, the package is deleted as well.
 
 ```plaintext
 DELETE /projects/:id/packages/conan/conans/:package_name/package_version/:package_username/:package_channel/revisions/:recipe_revision
@@ -269,9 +259,9 @@ Example response:
 }
 ```
 
-## Get a recipe file
+## Retrieve a recipe file
 
-Gets a recipe file from the package registry.
+Retrieves a specified recipe file from the package registry.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
@@ -304,7 +294,7 @@ This example writes to `conanfile.py` in the current directory.
 
 ## Upload a recipe file
 
-Uploads a recipe file to the package registry.
+Uploads a specified recipe file to the package registry.
 
 ```plaintext
 PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
@@ -399,9 +389,9 @@ Example response:
 }
 ```
 
-## Get latest package revision
+## Retrieve latest package revision
 
-Gets the revision hash and creation date of the latest package revision for a specific recipe revision and package reference.
+Retrieves the revision hash and creation date of the latest package revision for a specified recipe revision and package reference.
 
 ```plaintext
 GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest
@@ -433,7 +423,7 @@ Example response:
 
 ## Delete a package revision
 
-Deletes the package revision from the registry. If the package reference has only one package revision, the package reference is deleted as well.
+Deletes a specified package revision from the registry. If the package reference has only one package revision, the package reference is deleted as well.
 
 ```plaintext
 DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision
@@ -456,9 +446,9 @@ curl --request DELETE \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c"
 ```
 
-## Get a package file
+## Retrieve a package file
 
-Gets a package file from the package registry.
+Retrieves a specified package file from the package registry.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
@@ -493,7 +483,7 @@ This example writes to `conaninfo.txt` in the current directory.
 
 ## Upload a package file
 
-Uploads a package file to the package registry.
+Uploads a specified package file to the package registry.
 
 ```plaintext
 PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
@@ -551,9 +541,9 @@ Example response:
 }
 ```
 
-## Get package references metadata
+## Retrieve package references metadata
 
-Gets the metadata for all package references of a package.
+Retrieves the metadata for all package references of a specified package.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/search
@@ -603,9 +593,9 @@ The response includes the following metadata for each package reference:
 - `requires`: The required dependencies for the package.
 - `recipe_hash`: The hash of the recipe.
 
-## Get package references metadata by recipe revision
+## Retrieve package references metadata by recipe revision
 
-Gets the metadata for all package references associated with a specific recipe revision.
+Retrieves the metadata for all package references associated with a specified recipe revision.
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search

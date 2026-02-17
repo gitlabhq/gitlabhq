@@ -113,14 +113,14 @@ Prerequisites:
    values:
 
    - `<your_google_cloud_project_id>` with your
-  [Google Cloud project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects).
-  To improve security, use a dedicated project for identity management,
-  separate from resources and CI/CD projects.
+     [Google Cloud project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects).
+     To improve security, use a dedicated project for identity management,
+     separate from resources and CI/CD projects.
    - `<your_identity_pool_id>` with the ID to use for the pool, which must
-  be 4 to 32 lowercase letters, digits, or hyphens. To avoid collisions, use a
-  unique ID. You should include the GitLab project ID or project path
-  as it facilitates IAM policy management. For example,
-  `gitlab-my-project-name`.
+     be 4 to 32 lowercase letters, digits, or hyphens. To avoid collisions, use a
+     unique ID. You should include the GitLab project ID or project path
+     as it facilitates IAM policy management. For example,
+     `gitlab-my-project-name`.
 
    ```shell
    gcloud iam workload-identity-pools create <your_identity_pool_id> \
@@ -170,11 +170,11 @@ Prerequisites:
    google.subject=assertion.sub"
    ```
 
-- The `attribute-mapping` parameter must include the mapping between OIDC custom
-  claims included in the JWT ID token to the corresponding identity attributes
-  that are used in Identity and Access Management (IAM) policies to grant access.
-  For more information, see the [supported OIDC custom claims](google_cloud_iam.md#oidc-custom-claims) that you can use
-  to [control access to Google Cloud](https://cloud.google.com/docs/gitlab#control-access-google).
+   The `attribute-mapping` parameter must include the mapping between OIDC custom
+   claims included in the JWT ID token to the corresponding identity attributes
+   that are used in Identity and Access Management (IAM) policies to grant access.
+   For more information, see the [supported OIDC custom claims](google_cloud_iam.md#oidc-custom-claims) that you can use
+   to [control access to Google Cloud](https://cloud.google.com/docs/gitlab#control-access-google).
 
 To restrict [identity token access](https://cloud.google.com/iam/docs/workload-identity-federation#mapping) to a specific GitLab project or group, use an attribute condition. Use the attribute `assertion.project_id` for a project and the attribute `assertion.namespace_id` for a group.
 For more information, see the Google Cloud documentation about how to [define an attribute condition](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gitlab-saas_2). After you define the attribute condition, you can [update the workload identity provider](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#update_attribute_condition_on_a_workload_identity_provider).

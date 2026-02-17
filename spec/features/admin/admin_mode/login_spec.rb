@@ -16,104 +16,106 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
     context 'with valid username/password' do
       let(:user) { create(:admin, :two_factor) }
 
-      context 'using one-time code' do
-        it 'blocks login if we reuse the same code immediately' do
-          gitlab_sign_in(user, remember: true)
-
-          expect(page).to have_content(_('Enter verification code'))
-
-          repeated_otp = user.current_otp
-          enter_code(repeated_otp)
-          enable_admin_mode!(user, use_ui: true)
-
-          expect(page).to have_content(_('Enter verification code'))
-
-          enter_code(repeated_otp)
-
-          expect(page).to have_current_path admin_session_path, ignore_query: true
-          expect(page).to have_content('Invalid two-factor code')
-        end
-
-        context 'not re-using codes' do
-          before do
+      with_and_without_sign_in_form_vue do
+        context 'using one-time code' do
+          it 'blocks login if we reuse the same code immediately' do
             gitlab_sign_in(user, remember: true)
 
-            expect(page).to have_content('Enter verification code')
+            expect(page).to have_content(_('Enter verification code'))
 
-            enter_code(user.current_otp)
+            repeated_otp = user.current_otp
+            enter_code(repeated_otp)
             enable_admin_mode!(user, use_ui: true)
 
             expect(page).to have_content(_('Enter verification code'))
+
+            enter_code(repeated_otp)
+
+            expect(page).to have_current_path admin_session_path, ignore_query: true
+            expect(page).to have_content('Invalid two-factor code')
           end
 
-          it 'allows login with valid code' do
-            # Cannot reuse the TOTP
-            travel_to(30.seconds.from_now) do
-              enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
-            end
-          end
-
-          it 'blocks login with invalid code' do
-            # Cannot reuse the TOTP
-            travel_to(30.seconds.from_now) do
-              enter_code('foo')
-
-              expect(page).to have_content('Invalid two-factor code')
-            end
-          end
-
-          it 'allows login with invalid code, then valid code' do
-            # Cannot reuse the TOTP
-            travel_to(30.seconds.from_now) do
-              enter_code('foo')
-
-              expect(page).to have_content('Invalid two-factor code')
-
-              enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
-            end
-          end
-
-          context 'using backup code' do
-            let(:codes) { user.generate_otp_backup_codes! }
-
+          context 'not re-using codes' do
             before do
-              expect(codes.size).to eq 10
+              gitlab_sign_in(user, remember: true)
 
-              # Ensure the generated codes get saved
-              user.save!
+              expect(page).to have_content('Enter verification code')
+
+              enter_code(user.current_otp)
+              enable_admin_mode!(user, use_ui: true)
+
+              expect(page).to have_content(_('Enter verification code'))
             end
 
-            context 'with valid code' do
-              it 'allows login' do
-                enter_code(codes.sample)
+            it 'allows login with valid code' do
+              # Cannot reuse the TOTP
+              travel_to(30.seconds.from_now) do
+                enter_code(user.current_otp)
 
                 expect(page).to have_current_path admin_root_path, ignore_query: true
                 expect(page).to have_content('Admin mode enabled')
               end
+            end
 
-              it 'invalidates the used code', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/10589' do
-                expect { enter_code(codes.sample) }
-                  .to change { user.reload.otp_backup_codes.size }.by(-1)
+            it 'blocks login with invalid code' do
+              # Cannot reuse the TOTP
+              travel_to(30.seconds.from_now) do
+                enter_code('foo')
+
+                expect(page).to have_content('Invalid two-factor code')
               end
             end
 
-            context 'with invalid code' do
-              it 'blocks login' do
-                code = codes.sample
-                expect(user.invalidate_otp_backup_code!(code)).to eq true
+            it 'allows login with invalid code, then valid code' do
+              # Cannot reuse the TOTP
+              travel_to(30.seconds.from_now) do
+                enter_code('foo')
 
+                expect(page).to have_content('Invalid two-factor code')
+
+                enter_code(user.current_otp)
+
+                expect(page).to have_current_path admin_root_path, ignore_query: true
+                expect(page).to have_content('Admin mode enabled')
+              end
+            end
+
+            context 'using backup code' do
+              let(:codes) { user.generate_otp_backup_codes! }
+
+              before do
+                expect(codes.size).to eq 10
+
+                # Ensure the generated codes get saved
                 user.save!
-                expect(user.reload.otp_backup_codes.size).to eq 9
+              end
 
-                enter_code(code)
+              context 'with valid code' do
+                it 'allows login' do
+                  enter_code(codes.sample)
 
-                expect(page).to have_content('Invalid two-factor code.')
+                  expect(page).to have_current_path admin_root_path, ignore_query: true
+                  expect(page).to have_content('Admin mode enabled')
+                end
+
+                it 'invalidates the used code', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/10589' do
+                  expect { enter_code(codes.sample) }
+                    .to change { user.reload.otp_backup_codes.size }.by(-1)
+                end
+              end
+
+              context 'with invalid code' do
+                it 'blocks login' do
+                  code = codes.sample
+                  expect(user.invalidate_otp_backup_code!(code)).to eq true
+
+                  user.save!
+                  expect(user.reload.otp_backup_codes.size).to eq 9
+
+                  enter_code(code)
+
+                  expect(page).to have_content('Invalid two-factor code.')
+                end
               end
             end
           end

@@ -1,0 +1,5 @@
+---
+name: read_starring_user
+description: Grants the ability to view project starrers
+boundaries:
+  - project

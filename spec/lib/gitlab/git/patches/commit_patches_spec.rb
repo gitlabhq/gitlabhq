@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::Patches::CommitPatches, feature_category: :source_code_management do

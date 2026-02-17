@@ -623,6 +623,7 @@
             "local": true,
             "project": true,
             "ref": true,
+            "remote": true,
             "rules": true,
             "template": true
           }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Releases (JavaScript fixtures)' do
+RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orchestration do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 

@@ -216,6 +216,7 @@ Naming/FileName:
     - 'ee/config/**/*'
     - 'jh/config/**/*'
     - 'db/**/*'
+    - 'ee/active_context/migrate/*'
     - 'ee/db/**/*'
     - 'ee/elastic/migrate/*'
     - 'lib/tasks/**/*.rake'
@@ -435,6 +436,8 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+    # EE extensions for controllers are allowed to set instance variables to be used in the views
+    - ee/app/controllers/**/*.rb
 
 Gitlab/ConstGetInheritFalse:
   Enabled: true
@@ -849,6 +852,12 @@ API/ClassLevelAllowAccessWithScope:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/DeprecatedInDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/DescriptionDetail:
   Enabled: true
   Include:
@@ -882,6 +891,12 @@ API/EntityFieldType:
     - 'ee/lib/**/api/entities/**/*.rb'
 
 API/ParameterDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/ParameterDocumentation:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'
@@ -1141,6 +1156,12 @@ Gitlab/RailsLogger:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Gitlab/AvoidRailsCacheDeleteMatched:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 RSpec/FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
@@ -1152,6 +1173,7 @@ Gitlab/NamespacedClass:
     - 'config/**/*.rb'
     - 'db/**/*.rb'
     - 'ee/bin/**/*'
+    - 'ee/active_context/migrate/*.rb'
     - 'ee/db/**/*.rb'
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
@@ -1516,4 +1538,8 @@ Gitlab/AvoidDefaultOrganization:
   Enabled: true
 
 Gitlab/AvoidConstDefaultOrganizationId:
+  Enabled: true
+
+Gitlab/UsersInternalOrganization:
+  Description: 'Enforce using Users::Internal.in_organization(organization) for bot methods'
   Enabled: true

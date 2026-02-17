@@ -8,7 +8,7 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
   let_it_be(:token_owner) { create(:user) }
   let_it_be(:current_user) { token_owner }
 
-  let_it_be(:token) { create(:personal_access_token, user: token_owner) }
+  let_it_be(:token) { create(:personal_access_token, user: token_owner, expires_at: 1.week.from_now) }
   let_it_be(:request_token) { create(:personal_access_token, user: current_user) }
 
   let(:input) { { 'id' => token.to_global_id.to_s } }
@@ -20,6 +20,7 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
   it 'rotates the specified personal access token', :aggregate_failures do
     expect { mutation_request }.to change { token_owner.reload.personal_access_tokens.count }.by(1)
     expect(token.reload).to be_revoked
+    expect(token.expires_at).to eq token_owner.personal_access_tokens.last.expires_at
     expect(graphql_data_at(:personalAccessTokenRotate, :token)).to be_present
     expect(graphql_data_at(:personalAccessTokenRotate, :errors)).to be_empty
   end
@@ -75,6 +76,18 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
       expect { mutation_request }.not_to change { token_owner.reload.personal_access_tokens.count }
       expect(token.reload).not_to be_revoked
       expect_graphql_errors_to_include("`granular_personal_access_tokens` feature flag is disabled.")
+    end
+  end
+
+  context 'when expires_at is provided', :freeze_time do
+    let(:new_expires_at) { 2.weeks.from_now.to_date }
+    let(:input) { super().merge('expiresAt' => new_expires_at) }
+
+    it 'creates the new token with the provided expiration date' do
+      mutation_request
+
+      new_token = token_owner.reload.personal_access_tokens.last
+      expect(new_token.expires_at).to eq new_expires_at
     end
   end
 end

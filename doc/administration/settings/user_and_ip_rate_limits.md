@@ -23,18 +23,16 @@ The following limits are disabled by default:
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
 
-{{< alert type="note" >}}
-
-By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
-may trigger the rate limits configured for unauthenticated requests.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!note]
+> By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
+> may trigger the rate limits configured for unauthenticated requests.
 
 The rate limits for API requests don't affect requests made by the frontend, as these are always
 counted as web traffic.
-{{< /alert >}}
+
+## Prerequisites
+
+You must have administrator access.
 
 ## Enable unauthenticated API request rate limit
 
@@ -137,11 +135,8 @@ Rate limits are enforced through two independent systems:
 A single request can count toward both types of rate limits simultaneously.
 Response headers only show the most restrictive `Rack::Attack` rate limit status.
 
-{{< alert type="note" >}}
-
-Application rate limits are not included in response headers.
-
-{{< /alert >}}
+> [!note]
+> Application rate limits are not included in response headers.
 
 #### Example
 
@@ -190,7 +185,7 @@ GitLab. For example:
    - Set `Gitlab-Bypass-Rate-Limiting` to a value other than `1` on all requests that
      should be affected by rate limiting.
 1. Set the environment variable `GITLAB_THROTTLE_BYPASS_HEADER`.
-   - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+   - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables/),
      set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
    - For self-compiled installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
      in `/etc/default/gitlab`.
@@ -220,7 +215,7 @@ the `GITLAB_THROTTLE_USER_ALLOWLIST` environment variable. If you want
 users 1, 53 and 217 to bypass the authenticated request rate limiter,
 the allowlist configuration would be `1,53,217`.
 
-- For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+- For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables/),
   set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
 - For self-compiled installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
   in `/etc/default/gitlab`.

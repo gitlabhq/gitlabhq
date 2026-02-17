@@ -1,0 +1,8 @@
+---
+name: delete_variable
+description: Grants the ability to delete variables
+permissions:
+  - delete_variable
+boundaries:
+  - project
+  - group

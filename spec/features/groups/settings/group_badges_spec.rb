@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Badges', feature_category: :groups_and_projects, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/430713' do
+RSpec.describe 'Group Badges', feature_category: :groups_and_projects,
+  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25601' do
   include WaitForRequests
 
   let(:user) { create(:user) }

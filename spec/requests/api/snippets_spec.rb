@@ -272,7 +272,7 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
     end
   end
 
-  describe 'POST /snippets/', :with_current_organization do
+  describe 'POST /snippets/' do
     let(:base_params) do
       {
         title: 'Test Title',

@@ -1,0 +1,7 @@
+---
+name: read_merge_request_label_event
+description: Grants the ability to read merge request label events
+boundaries:
+  - project
+permissions:
+  - read_merge_request_label_event

@@ -8,8 +8,7 @@ module API
       authorize_packages_access!(user_project)
     end
 
-    PACKAGE_FILES_TAGS = %w[package_files].freeze
-
+    PACKAGE_FILES_TAGS = %w[packages].freeze
     feature_category :package_registry
     urgency :low
 

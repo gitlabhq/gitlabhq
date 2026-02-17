@@ -67,5 +67,11 @@ RSpec.describe API::GroupContainerRepositories, feature_category: :container_reg
       it_behaves_like 'rejected container repository access', :anonymous, :not_found
       it_behaves_like 'returns repositories for allowed users', :reporter
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_container_repository do
+      let(:user) { reporter }
+      let(:boundary_object) { group }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
   end
 end

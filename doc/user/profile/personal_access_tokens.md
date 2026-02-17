@@ -30,15 +30,12 @@ Personal access tokens are:
 - Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
   to a user rather than a project or group.
 
-{{< alert type="note" >}}
+> [!note]
+> Though required, GitLab usernames are ignored when authenticating with a personal access token.
+> There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
+> use the username.
 
-Though required, GitLab usernames are ignored when authenticating with a personal access token.
-There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
-use the username.
-
-{{< /alert >}}
-
-For examples of how you can use a personal access token to authenticate with the API, see the API documentation.
+For examples of how you can use a personal access token to authenticate with the API, see [REST API authentication](../../api/rest/authentication.md#personal-project-and-group-access-tokens).
 
 Alternately, GitLab administrators can use the API to create impersonation tokens.
 Use impersonation tokens to automate authentication as a specific user.
@@ -48,24 +45,15 @@ Use impersonation tokens to automate authentication as a specific user.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
-- Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring personal access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 You can create as many personal access tokens as you like.
 
@@ -95,12 +83,9 @@ list of scopes to the URL. For example:
 https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
 
-{{< alert type="warning" >}}
-
-Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
-for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
-
-{{< /alert >}}
+> [!warning]
+> Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
+> for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ## Rotate a personal access token
 
@@ -121,7 +106,7 @@ To rotate a personal access token:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
-1. Select  **Rotate** ({{< icon name="retry" >}}).
+1. Select **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Rotate**.
 
 ## Revoke a personal access token
@@ -145,13 +130,10 @@ To revoke a personal access token:
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
 
-   {{< alert type="warning" >}}
+   > [!warning]
+   > These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
 
-   These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
-
-   {{< /alert >}}
-
-## Disable personal access tokens
+## Disable access tokens
 
 {{< details >}}
 
@@ -160,46 +142,46 @@ To revoke a personal access token:
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436991) `Disable access tokens` setting in GitLab 17.3.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must be an administrator.
 
-Depending on your GitLab version, you can use either the application settings API
-or the Admin UI to disable personal access tokens.
+You can prevent users from authenticating with access tokens across your entire GitLab
+instance. This setting affects personal access tokens, group access tokens, project
+access tokens, and impersonation tokens. This setting also applies to personal access
+tokens for service accounts.
 
-### Use the application settings API
+When you disable access tokens, the following rules apply:
 
-{{< history >}}
+- Users cannot sign in to GitLab with personal access tokens.
+- The personal access tokens page returns a 404 error.
+- Feed tokens for RSS, Atom, and calendar feeds stop working.
+- API requests authenticated with personal access tokens are rejected.
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384201) in GitLab 15.7.
-
-{{< /history >}}
-
-In GitLab 15.7 and later, you can use the [`disable_personal_access_tokens` attribute in the application settings API](../../api/settings.md#available-settings) to disable personal access tokens.
-
-{{< alert type="note" >}}
-
-After you have used the API to disable personal access tokens, those tokens cannot be used in subsequent API calls to manage this setting. To re-enable personal access tokens, you must use the [GitLab Rails console](../../administration/operations/rails_console.md). You can also upgrade to GitLab 17.3 or later so you can use the Admin UI instead.
-
-{{< /alert >}}
-
-### Use the Admin UI
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436991) in GitLab 17.3.
-
-{{< /history >}}
-
-In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
+To disable access tokens for the instance:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Visibility and access controls**.
-1. Select the **Disable personal access tokens** checkbox.
+1. Expand **Account and limit**.
+1. Select the **Disable access tokens** checkbox.
 1. Select **Save changes**.
 
-### Disable personal access tokens for enterprise users
+You can also use the [`disable_personal_access_tokens` attribute](../../api/settings.md#available-settings) in the application settings API.
+
+## Disable personal access tokens for enterprise users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -219,18 +201,15 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
 
-{{< alert type="warning" >}}
-
-Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
-
-{{< /alert >}}
+> [!warning]
+> Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
 
 To disable the enterprise users' personal access tokens:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
-1. Under **Personal access tokens**, select **Disable personal access tokens**.
+1. Under **Enterprise users**, select **Disable personal access tokens**.
 1. Select **Save changes**.
 
 When you delete or block an enterprise user account, their personal access tokens are automatically revoked.
@@ -294,11 +273,8 @@ A personal access token can perform actions based on the assigned scopes.
 | `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
-{{< alert type="warning" >}}
-
-If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
-
-{{< /alert >}}
+> [!warning]
+> If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
 ## Access token expiration
 
@@ -308,12 +284,9 @@ If you enabled [external authorization](../../administration/settings/external_a
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
 
@@ -380,11 +353,8 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
-{{< alert type="note" >}}
-
-Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
-
-{{< /alert >}}
+> [!note]
+> Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
 
 #### GitLab.com
 
@@ -426,26 +396,20 @@ You can now create personal access tokens for a service account user with no exp
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Demonstrating Proof of Possession (DPoP) enhances the security of your personal access tokens,
 and minimizes the effects of unintended token leaks. When you enable this feature on your
 account, all REST and GraphQL API requests containing a PAT must also provide a signed DPoP header. Creating a
 signed DPoP header requires your corresponding private SSH key.
 
-{{< alert type="note" >}}
-
-If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
-
-DPoP header is not required for Git operations over HTTPS that include an access token.
-
-{{< /alert >}}
+> [!note]
+> If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
+>
+> DPoP header is not required for Git operations over HTTPS that include an access token.
 
 Prerequisites:
 
@@ -625,11 +589,8 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 
-{{< alert type="warning" >}}
-
-Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
 
 1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Unrevoke the token:

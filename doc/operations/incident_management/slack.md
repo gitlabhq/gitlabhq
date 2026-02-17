@@ -21,13 +21,10 @@ title: Incident management for Slack
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.
 Use the GitLab for Slack app to:

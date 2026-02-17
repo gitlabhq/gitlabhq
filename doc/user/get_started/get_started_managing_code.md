@@ -60,7 +60,7 @@ For details, see:
 - [Open a file in the Web IDE](../project/web_ide/_index.md#from-a-file)
 - [Create a remote development environment with workspaces](../workspace/_index.md)
 - [Available editor extensions](../../editor_extensions/_index.md)
-- [Use Code Suggestions to write code more quickly](../project/repository/code_suggestions/_index.md)
+- Use [Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) to write code more quickly
 
 ## Step 3: Save changes and push to GitLab
 

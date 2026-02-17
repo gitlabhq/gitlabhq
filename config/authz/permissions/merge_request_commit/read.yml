@@ -1,0 +1,5 @@
+---
+name: read_merge_request_commit
+description: Grants the ability to read merge request commits
+boundaries:
+  - project

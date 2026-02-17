@@ -5,7 +5,7 @@ module MergeRequests
     BATCH_SIZE = 100
 
     def execute(merge_request, oldrev: merge_request.diff_base_sha, newrev: merge_request.diff_head_sha)
-      return if merge_request.source_project == project
+      return unless merge_request.for_fork? && project.lfs_enabled?
       return if no_changes?(oldrev, newrev)
 
       new_lfs_oids = lfs_oids(merge_request.source_project.repository, oldrev, newrev)
@@ -14,9 +14,7 @@ module MergeRequests
       valid_lfs_oids = filter_valid_lfs_oids(merge_request.source_project, new_lfs_oids)
       return if valid_lfs_oids.empty?
 
-      Projects::LfsPointers::LfsLinkService
-        .new(project)
-        .execute(valid_lfs_oids)
+      Projects::LfsPointers::LfsLinkService.new(project).execute(valid_lfs_oids)
     end
 
     private

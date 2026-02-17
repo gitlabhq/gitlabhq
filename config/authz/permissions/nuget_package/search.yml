@@ -1,0 +1,6 @@
+---
+name: search_nuget_package
+description: Grants the ability to search NuGet packages
+boundaries:
+  - group
+  - project

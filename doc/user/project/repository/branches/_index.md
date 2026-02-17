@@ -65,12 +65,12 @@ On this page, you can:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a new branch from the GitLab UI:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
@@ -84,7 +84,7 @@ you can add one.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - If you don't have the Maintainer or Owner role, the
   [default branch protection](../../../group/manage.md#change-the-default-branch-protection-of-a-group)
   must be set to `Partially protected` or `Not protected` for you to push a commit
@@ -109,7 +109,7 @@ including variables.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a branch from an issue:
 
@@ -134,7 +134,7 @@ the issue and related merge request.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a branch directly from a task:
 
@@ -207,7 +207,7 @@ an issue, but you can change this pattern.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To change the default pattern for branches created from issues:
 
@@ -317,23 +317,20 @@ Merged branches can be deleted in bulk if they meet all of these criteria:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
-{{< alert type="note" >}}
-
-Deleting a branch does not completely erase all related data.
-Some information persists to maintain project history and to support recovery processes.
-For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
-
-{{< /alert >}}
+> [!note]
+> Deleting a branch does not completely erase all related data.
+> Some information persists to maintain project history and to support recovery processes.
+> For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
 
 ## Configure workflows for target branches
 
@@ -364,7 +361,7 @@ Rules are processed on a "first-match" basis - if two rules match the same branc
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To create a target branch workflow:
 
@@ -403,7 +400,7 @@ When you remove a target branch workflow, existing merge requests remain unchang
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To do this:
 
@@ -474,7 +471,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 To fix this problem:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.
 1. Select **Delete branch**, then **Yes, delete branch**.

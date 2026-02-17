@@ -1,0 +1,5 @@
+---
+name: create_issue_discussion_note
+description: Grants the ability to create notes in issue discussions
+boundaries:
+  - project

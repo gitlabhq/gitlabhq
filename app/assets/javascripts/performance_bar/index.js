@@ -34,6 +34,7 @@ const initPerformanceBar = (el) => {
         requestMethod: performanceBarData.requestMethod,
         peekUrl: performanceBarData.peekUrl,
         statsUrl: performanceBarData.statsUrl,
+        simulateSaas: performanceBarData.simulateSaas,
       };
     },
     mounted() {
@@ -152,6 +153,7 @@ const initPerformanceBar = (el) => {
           env: this.env,
           requestId: this.requestId,
           statsUrl: this.statsUrl,
+          simulateSaas: this.simulateSaas,
         },
         on: {
           'add-request': this.addRequestManually,

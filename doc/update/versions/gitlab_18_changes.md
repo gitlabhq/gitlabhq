@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
+[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0/).
 
 ## Required upgrade stops
 
@@ -37,13 +37,10 @@ required upgrade stops occur at versions:
   Upgrade PostgreSQL to at least version 16.5 before upgrading to GitLab 18.0 or later. For more information, see
   [installation requirements](../../install/requirements.md#postgresql).
 
-  {{< alert type="warning" >}}
-
-  Automatic database version upgrades only apply to single node instances when using the Linux package.
-  In all other cases, like Geo instances, PostgreSQL with high availability using the
-  Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance) for detailed steps.
-
-  {{< /alert >}}
+  > [!warning]
+  > Automatic database version upgrades only apply to single node instances when using the Linux package.
+  > In all other cases, like Geo instances, PostgreSQL with high availability using the
+  > Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-geo-instance) for detailed steps.
 
 - From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
   GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
@@ -65,6 +62,43 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.8.2
+
+### Deploy keys and personal access tokens for blocked users are invalidated
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+If you have deploy keys associated with blocked users, these no longer work after upgrading to the aforementioned versions.
+This is a security fix to prevent blocked users from accessing GitLab resources through their keys and tokens.
+
+You must:
+
+1. Identify any deploy keys or PATs owned by blocked users.
+1. Reassign them to billable users, or delete them and
+   create new keys/tokens with billable users or service accounts.
+
+The following query can be used to identify all deploy keys associated with blocked accounts and have been used at least once in the past 365 days:
+
+```sql
+SELECT
+  k.id,
+  k.user_id,
+  u.username,
+  u.state as user_state,
+  k.title,
+  k.fingerprint,
+  k.fingerprint_sha256,
+  k.usage_type,
+  k.last_used_at,
+  k.created_at,
+  k.updated_at
+FROM keys k
+INNER JOIN users u ON k.user_id = u.id
+WHERE u.state IN ('blocked', 'ldap_blocked', 'blocked_pending_approval', 'banned')
+  AND k.type = 'DeployKey'
+  AND k.last_used_at >= NOW() - INTERVAL '365 days'
+ORDER BY u.state, u.username, k.last_used_at DESC;
+```
+
 ## 18.8.0
 
 ### Batched background migration for merge request merge data
@@ -85,6 +119,16 @@ encounter a ClickHouse database migration error during the upgrade process due t
 permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this error, see the
 [database dictionary read support troubleshooting documentation](../../integration/clickhouse.md#database-dictionary-read-support).
 
+### Batched background migration for CI data
+
+The [batched background migrations](../background_migrations.md) introduced in [18.7.0](#1870) had
+to be reintroduced to handle an edge case in the data structure and ensure that they would complete.
+
+## 18.7.2
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+For more information, see [Deploy keys and personal access tokens for blocked users are invalidated](#deploy-keys-and-personal-access-tokens-for-blocked-users-are-invalidated).
+
 ## 18.7.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)
@@ -102,13 +146,22 @@ permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this err
   - [Geo documentation for the Linux package](../../administration/geo/replication/configuration.md#add-primary-and-secondary-urls-as-allowed-actioncable-origins)
   - [Geo documentation for the Helm chart](https://docs.gitlab.com/charts/advanced/geo/#configure-primary-database)
 
+### Geo installations 18.6.5
+
+- Fixed the Geo [issue 587407](https://gitlab.com/gitlab-org/gitlab/-/work_items/587407) where `Geo::VerificationStateBackfillWorker` generated large slow queries for the `merge_request_diff_details` table.
+
+## 18.6.4
+
+GitLab 18.8.2, 18.7.2, and 18.6.4 now reject API requests that use Deploy keys associated with blocked users.
+For more information, see [Deploy keys and personal access tokens for blocked users are invalidated](#deploy-keys-and-personal-access-tokens-for-blocked-users-are-invalidated).
+
 ## 18.6.2
 
 GitLab 18.6.2, 18.5.4, and 18.4.6 introduced size and rate limits on requests made to the following endpoints:
 
 - `POST /projects/:id/repository/commits` - [Create a commit](../../api/commits.md#create-a-commit)
-- `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../../api/repository_files.md#create-new-file-in-repository)
-- `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../../api/repository_files.md#update-existing-file-in-repository)
+- `POST /projects/:id/repository/files/:file_path` - [Create a file in a repository](../../api/repository_files.md#create-a-file-in-a-repository)
+- `PUT /projects/:id/repository/files/:file_path` - [Update a file in a repository](../../api/repository_files.md#update-a-file-in-a-repository)
 
 GitLab responds to requests that exceed the size limit with a `413 Entity Too large` status, and requests that exceed the rate limit with a `429 Too Many Requests` status. For more information, see [Commits and Files API limits](../../administration/instance_limits.md#commits-and-files-api-limits)
 
@@ -427,7 +480,7 @@ This migration only copies existing data that has not been created or touched af
 
 No data is deleted from the `merge_requests` table during this migration.
 
-The migration is planned to be finalized in GitLab 18.9. For more information, see 
+The migration is planned to be finalized in GitLab 18.9. For more information, see
 [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/584459).
 
 ### Estimating migration duration

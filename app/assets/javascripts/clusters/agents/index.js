@@ -24,6 +24,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'AgentShowPageRoot',
     apolloProvider,
     router: createRouter(),
     provide: {

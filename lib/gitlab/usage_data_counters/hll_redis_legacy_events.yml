@@ -195,6 +195,8 @@
 - i_package_composer_user
 - i_package_conan_deploy_token
 - i_package_conan_user
+- i_package_debian_deploy_token
+- i_package_debian_user
 - i_package_generic_deploy_token
 - i_package_generic_user
 - i_package_helm_deploy_token
@@ -348,7 +350,6 @@
 - p_analytics_valuestream
 - p_terraform_state_api_unique_users
 - project_action
-- project_action_human_users
 - project_created_analytics_dashboard
 - project_initialized_product_analytics
 - source_code_pushed

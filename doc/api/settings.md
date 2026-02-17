@@ -204,6 +204,8 @@ these parameters:
 - `unconfirmed_users_delete_after_days`
 - `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
+- `project_secrets_limit`
+- `group_secrets_limit`
 
 ```json
 {
@@ -226,6 +228,8 @@ these parameters:
   "lock_duo_features_enabled": false,
   "signup_enabled": true,
   "virtual_registries_endpoints_api_limit": 1000,
+  "project_secrets_limit": 100,
+  "group_secrets_limit": 500
   ...
 }
 ```
@@ -474,7 +478,6 @@ to configure other related settings. These requirements are
 | `allowed_integrations`                   | array of strings | no                                   | When `allow_all_integrations` is `false`, only integrations in this list are allowed on the instance. Ultimate only. |
 | `allow_account_deletion`                 | boolean          | no                                   | Set to `true` to allow users to delete their accounts. Premium and Ultimate only. |
 | `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | Set to `true` to allow group owners to manage LDAP. Premium and Ultimate only. |
-| `allow_immediate_namespaces_deletion`    | boolean           | no                                   | Immediately delete groups and projects scheduled for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5. Behind a [feature flag](../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Disabled by default. |
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |
 | `allow_local_requests_from_system_hooks` | boolean          | no                                   | Allow requests to the local network from system hooks. |
 | `allow_local_requests_from_web_hooks_and_services` | boolean | no                                  | Allow requests to the local network from webhooks and integrations. |
@@ -495,6 +498,7 @@ to configure other related settings. These requirements are
 | `bulk_import_enabled`                    | boolean          | no                                   | Enable migrating GitLab groups by direct transfer. Setting also [available](../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) in the **Admin** area. |
 | `bulk_import_max_download_file_size`     | integer          | no                                   | Maximum download file size when importing from source GitLab instances by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `allow_bypass_placeholder_confirmation`  | boolean          | no                                   | Skip confirmation when administrators reassign placeholder users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0. |
+| `allow_s3_compatible_storage_for_offline_transfer` | boolean | no                                   | Allow S3-compatible object storage for offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705) in GitLab 18.9. |
 | `can_create_group`                       | boolean          | no                                   | Indicates whether users can create top-level groups. Defaults to `true`. |
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
 | `ci_delete_pipelines_in_seconds_limit_human_readable` | string | no                                | Maximum value that is allowed for configuring pipeline retention. Defaults to `1 year`. |
@@ -721,6 +725,8 @@ to configure other related settings. These requirements are
 | `users_api_limit_gpg_keys`  | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10. |
 | `users_api_limit_gpg_key`   | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10. |
 | `virtual_registries_endpoints_api_limit`          | integer          | no                                   | Max number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 1000. To disable limits, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11. |
+| `project_secrets_limit`                           | integer          | no                                   | Maximum number of secrets allowed per project in Secrets Manager. Default: 100. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9. |
+| `group_secrets_limit`                             | integer          | no                                   | Maximum number of secrets allowed per group in Secrets Manager. Default: 500. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |
@@ -829,6 +835,8 @@ to configure other related settings. These requirements are
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP is counted towards the limit. |
 | `update_runner_versions_enabled`         | boolean          | no                                   | Fetch GitLab Runner release version data from GitLab.com. For more information, see how to [determine which runners need to be upgraded](../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded). |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab reports license usage back to GitLab, Inc. |
+| `gitlab_product_usage_data_enabled`      | boolean          | no                                   | Indicates if product usage data collection is enabled. When the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, the API returns the effective value from the environment variable. |
+| `gitlab_product_usage_data_source`       | string           | no                                   | Read-only. Indicates the source of the `gitlab_product_usage_data_enabled` setting. Returns `environment` if the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, otherwise returns `database`. |
 | `use_clickhouse_for_analytics`           | boolean          | no                                   | Enables ClickHouse as a data source for analytics reports. ClickHouse must be configured for this setting to take effect. Available on Premium and Ultimate only. |
 | `include_optional_metrics_in_service_ping`| boolean         | no                                   | Whether or not optional metrics are enabled in Service Ping. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141540) in GitLab 16.10. |
 | `user_deactivation_emails_enabled`       | boolean          | no                                   | Send an email to users upon account deactivation. |

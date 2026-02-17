@@ -1,4 +1,11 @@
-import { GlButton, GlIcon, GlCollapse, GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlCollapse,
+  GlFormCheckboxGroup,
+  GlFormCheckbox,
+  GlPopover,
+} from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PersonalAccessTokenResourcesList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resources_list.vue';
@@ -24,6 +31,8 @@ describe('PersonalAccessTokenResourcesList', () => {
   const findIcon = (index) => findCategoryButtons().at(index).findComponent(GlIcon);
   const findCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findCheckbox = (index) => findCheckboxes().at(index);
+  const findPopovers = () => wrapper.findAllComponents(GlPopover);
+  const findPopover = (index) => findPopovers().at(index);
 
   beforeEach(() => {
     createComponent();
@@ -37,8 +46,8 @@ describe('PersonalAccessTokenResourcesList', () => {
     it('renders category buttons', () => {
       expect(findCategoryButtons()).toHaveLength(2);
 
-      expect(findCategoryButton(0).text()).toBe('groups and projects');
-      expect(findCategoryButton(1).text()).toBe('merge request');
+      expect(findCategoryButton(0).text()).toBe('Groups and projects');
+      expect(findCategoryButton(1).text()).toBe('Merge request');
     });
 
     it('renders collapse components for each category', () => {
@@ -78,11 +87,23 @@ describe('PersonalAccessTokenResourcesList', () => {
     it('renders checkboxes for each resource', () => {
       expect(findCheckboxes()).toHaveLength(2);
 
-      expect(findCheckbox(0).text()).toBe('project');
+      expect(findCheckbox(0).text()).toBe('Project');
       expect(findCheckbox(0).attributes('value')).toBe('project');
 
-      expect(findCheckbox(1).text()).toBe('repository');
+      expect(findCheckbox(1).text()).toBe('Repository');
       expect(findCheckbox(1).attributes('value')).toBe('repository');
+    });
+  });
+
+  describe('resource description', () => {
+    it('renders popover with description for each resource', () => {
+      expect(findPopovers()).toHaveLength(2);
+
+      expect(findPopover(0).text()).toBe('Project resource description');
+      expect(findPopover(0).attributes('target')).toBe('project');
+
+      expect(findPopover(1).text()).toBe('Repository resource description');
+      expect(findPopover(1).attributes('target')).toBe('repository');
     });
   });
 
@@ -91,12 +112,6 @@ describe('PersonalAccessTokenResourcesList', () => {
       await findCheckboxGroup().vm.$emit('input', mockGroupResources);
 
       expect(wrapper.emitted('input')).toEqual([[mockGroupResources]]);
-    });
-
-    it('emits `change` event when checkbox is checked or un-checked', async () => {
-      await findCheckbox(0).vm.$emit('change', 'project');
-
-      expect(wrapper.emitted('change')).toEqual([['project']]);
     });
   });
 });

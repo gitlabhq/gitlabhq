@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Rails/FindEach:
   Exclude:
-    - 'app/finders/projects/members/effective_access_level_finder.rb'
     - 'app/services/ci/expire_pipeline_cache_service.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'lib/banzai/reference_parser/base_parser.rb'

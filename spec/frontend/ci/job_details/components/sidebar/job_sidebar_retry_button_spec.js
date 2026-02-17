@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import JobsSidebarRetryButton from '~/ci/job_details/components/sidebar/job_sidebar_retry_button.vue';
 import createStore from '~/ci/job_details/store';
@@ -22,6 +23,7 @@ describe('Job Sidebar Retry Button', () => {
   const findRetryLink = () => wrapper.findByTestId('retry-job-link');
   const findManualRetryButton = () => wrapper.findByTestId('manual-run-again-btn');
   const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
+  const findActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   const createWrapper = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
     store = createStore();
@@ -114,11 +116,11 @@ describe('Job Sidebar Retry Button', () => {
       );
     });
 
-    it('emit `updateVariablesClicked` when update button is clicked', async () => {
+    it('emit `update-variables-clicked` when update button is clicked', async () => {
       createWrapperWithConfirmation();
 
-      await findManualRunEditButton().trigger('click');
-      expect(wrapper.emitted('updateVariablesClicked')).toEqual([[]]);
+      await findManualRunEditButton().vm.$emit('action');
+      expect(wrapper.emitted('update-variables-clicked')).toEqual([[]]);
     });
 
     it('should retry job if click on confirm', async () => {
@@ -133,20 +135,36 @@ describe('Job Sidebar Retry Button', () => {
     });
   });
 
-  describe('manual job retry with update variables button', () => {
-    it('is rendered if user is allowed to view pipeline variables', async () => {
+  describe('retry with modified values dropdown visibility', () => {
+    it('is rendered with correct text and attributes', async () => {
       createWrapper({ props: { isManualJob: true } });
       await waitForPromises();
-      expect(findManualRunEditButton().exists()).toBe(true);
+      expect(findActionsDropdown().attributes('aria-label')).toBe('Retry job with modified value');
+      expect(findManualRunEditButton().text()).toBe('Retry job with modified value');
     });
 
-    it('is not rendered if user is not allowed to view pipeline variables', async () => {
-      createWrapper({
-        props: { isManualJob: true },
-        provide: { canSetPipelineVariables: false },
-      });
-      await waitForPromises();
-      expect(findManualRunEditButton().exists()).toBe(false);
-    });
+    it.each`
+      isManualJob | ciJobInputsFlag | canSetPipelineVariables | shouldShowDropdown | description
+      ${true}     | ${false}        | ${true}                 | ${true}            | ${'shows dropdown for manual job with pipeline variables permission'}
+      ${true}     | ${false}        | ${false}                | ${false}           | ${'does not show dropdown for manual job without pipeline variables permission'}
+      ${true}     | ${true}         | ${true}                 | ${true}            | ${'shows dropdown for manual job with feature flag enabled'}
+      ${true}     | ${true}         | ${false}                | ${true}            | ${'shows dropdown for manual job with feature flag enabled (ignores permission)'}
+      ${false}    | ${true}         | ${true}                 | ${true}            | ${'shows dropdown for retryable job with feature flag enabled'}
+      ${false}    | ${false}        | ${true}                 | ${false}           | ${'does not show retryable job without feature flag'}
+    `(
+      '$description',
+      async ({ isManualJob, ciJobInputsFlag, canSetPipelineVariables, shouldShowDropdown }) => {
+        createWrapper({
+          props: { isManualJob },
+          provide: {
+            glFeatures: { ciJobInputs: ciJobInputsFlag },
+            canSetPipelineVariables,
+          },
+        });
+        await waitForPromises();
+
+        expect(findActionsDropdown().exists()).toBe(shouldShowDropdown);
+      },
+    );
   });
 });

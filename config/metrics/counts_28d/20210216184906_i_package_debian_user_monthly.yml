@@ -6,7 +6,7 @@ product_group: package_registry
 product_categories:
 - package_registry
 value_type: number
-status: removed
+status: active
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

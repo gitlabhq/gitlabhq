@@ -20,8 +20,9 @@ export default () => {
   } = el.dataset;
 
   return new Vue({
-    store: createStore({ endpoint, projectId, path: featureFlagsPath }),
     el,
+    name: 'EditFeatureFlagRoot',
+    store: createStore({ endpoint, projectId, path: featureFlagsPath }),
     provide: {
       environmentsScopeDocsPath,
       strategyTypeDocsPagePath,

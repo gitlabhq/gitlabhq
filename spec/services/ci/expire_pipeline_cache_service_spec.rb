@@ -18,6 +18,7 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       graphql_pipeline_path = "/api/graphql:pipelines/id/#{pipeline.id}"
       graphql_pipeline_sha_path = "/api/graphql:pipelines/sha/#{pipeline.sha}"
       graphql_project_on_demand_scan_counts_path = "/api/graphql:on_demand_scan/counts/#{project.full_path}"
+      graphql_project_pipelines_path = "/api/graphql:project_pipelines/#{project.id}"
 
       expect_touched_etag_caching_paths(
         pipelines_path,
@@ -25,7 +26,8 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
         pipeline_path,
         graphql_pipeline_path,
         graphql_pipeline_sha_path,
-        graphql_project_on_demand_scan_counts_path
+        graphql_project_on_demand_scan_counts_path,
+        graphql_project_pipelines_path
       )
 
       subject.execute(pipeline)

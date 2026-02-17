@@ -4,10 +4,11 @@ module Search
   # This class has the same interface as SearchResults except
   # it is empty and does not do any work.
   class EmptySearchResults
-    attr_reader :error
+    attr_reader :error, :error_type
 
-    def initialize(error: nil)
+    def initialize(error: nil, error_type: nil)
       @error = error
+      @error_type = error_type
     end
 
     def objects(*)

@@ -123,6 +123,57 @@ func (m *mockWorkflowStream) CloseSend() error {
 	return nil
 }
 
+type mockSelfHostedWorkflowStream struct {
+	sendEvents  []*pb.TrackSelfHostedClientEvent
+	sendMu      sync.Mutex
+	recvActions []*pb.TrackSelfHostedAction
+	recvIndex   int
+	sendError   error
+	recvError   error
+	blockCh     chan bool
+}
+
+func (m *mockSelfHostedWorkflowStream) getSendEvents() []*pb.TrackSelfHostedClientEvent {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
+	return m.sendEvents
+}
+
+func (m *mockSelfHostedWorkflowStream) Send(event *pb.TrackSelfHostedClientEvent) error {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
+	if m.sendError != nil {
+		return m.sendError
+	}
+	m.sendEvents = append(m.sendEvents, event)
+	return nil
+}
+
+func (m *mockSelfHostedWorkflowStream) Recv() (*pb.TrackSelfHostedAction, error) {
+	if m.blockCh != nil {
+		<-m.blockCh
+	}
+
+	if m.recvError != nil {
+		return nil, m.recvError
+	}
+	if m.recvIndex >= len(m.recvActions) {
+		return nil, io.EOF
+	}
+	action := m.recvActions[m.recvIndex]
+	m.recvIndex++
+	return action, nil
+}
+
+func (m *mockSelfHostedWorkflowStream) CloseSend() error {
+	if m == nil {
+		return nil
+	}
+	return nil
+}
+
 type mockMcpManager struct {
 	tools               []*pb.McpTool
 	preApprovedTools    []string
@@ -199,12 +250,14 @@ func Test_newRunner(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/duo", nil)
 	cfg := &api.DuoWorkflow{
-		ServiceURI: server.Addr,
-		Headers: map[string]string{
-			"Authorization":        "Bearer test-token",
-			"x-gitlab-oauth-token": "oauth-token-123",
+		Service: &api.DuoWorkflowServiceConfig{
+			URI: server.Addr,
+			Headers: map[string]string{
+				"Authorization":        "Bearer test-token",
+				"x-gitlab-oauth-token": "oauth-token-123",
+			},
+			Secure: false,
 		},
-		Secure:             false,
 		LockConcurrentFlow: true,
 	}
 
@@ -220,6 +273,58 @@ func Test_newRunner(t *testing.T) {
 	require.Equal(t, apiClient, runner.rails)
 
 	runner.Close()
+}
+
+func Test_newRunner_WithServerCapabilities(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	tests := []struct {
+		name               string
+		serverCapabilities []string
+	}{
+		{
+			name:               "with capabilities",
+			serverCapabilities: []string{"advanced_search"},
+		},
+		{
+			name:               "without capabilities",
+			serverCapabilities: []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", "/duo", nil)
+			cfg := &api.DuoWorkflow{
+				Service: &api.DuoWorkflowServiceConfig{
+					URI:     server.Addr,
+					Headers: map[string]string{},
+					Secure:  false,
+				},
+				ServerCapabilities: tt.serverCapabilities,
+				LockConcurrentFlow: false,
+			}
+
+			runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
+
+			require.NoError(t, err)
+			require.Equal(t, tt.serverCapabilities, runner.serverCapabilities)
+
+			runner.Close()
+		})
+	}
 }
 
 func Test_newRunner_WithoutRedis(t *testing.T) {
@@ -239,8 +344,11 @@ func Test_newRunner_WithoutRedis(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/duo", nil)
 	cfg := &api.DuoWorkflow{
-		ServiceURI:         server.Addr,
-		Headers:            map[string]string{},
+		Service: &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		},
 		LockConcurrentFlow: true,
 	}
 
@@ -249,6 +357,80 @@ func Test_newRunner_WithoutRedis(t *testing.T) {
 	require.NoError(t, err)
 	require.False(t, runner.lockFlow)
 	require.Nil(t, runner.lockManager)
+
+	runner.Close()
+}
+
+func Test_newRunner_WithCloudConnector(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	cfg := &api.DuoWorkflow{
+		Service: &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		},
+		CloudServiceForSelfHosted: &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{"Authorization": "Bearer cloud-token"},
+			Secure:  false,
+		},
+		LockConcurrentFlow: false,
+	}
+
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
+
+	require.NoError(t, err)
+	require.NotNil(t, runner.cloudServiceClient)
+	require.NotNil(t, runner.cloudServiceStream)
+
+	runner.Close()
+}
+
+func Test_newRunner_WithoutCloudConnector(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	cfg := &api.DuoWorkflow{
+		Service: &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		},
+		CloudServiceForSelfHosted: nil,
+		LockConcurrentFlow:        false,
+	}
+
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
+
+	require.NoError(t, err)
+	require.Nil(t, runner.cloudServiceClient)
+	require.Nil(t, runner.cloudServiceStream)
 
 	runner.Close()
 }
@@ -357,6 +539,12 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			wsBlockCh:      make(chan bool),
 			expectedErrMsg: "",
 		},
+		{
+			name:           "workflow usage quota exceeded error",
+			wfRecvError:    status.Error(codes.ResourceExhausted, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			wsBlockCh:      make(chan bool),
+			expectedErrMsg: "handleAgentMessages: usage quota exceeded",
+		},
 	}
 
 	for _, tt := range tests {
@@ -440,6 +628,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		name               string
 		message            []byte
 		clientCapabilities []string
+		serverCapabilities []string
 		sendError          error
 		mcpManager         *mockMcpManager
 		expectedErrMsg     string
@@ -493,6 +682,20 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			clientCapabilities: []string{"shell_command", "incremental_streaming"},
 			expectedErrMsg:     "",
 		},
+		{
+			name:               "start request with server capabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
+			clientCapabilities: []string{"shell_command", "advanced_search"},
+			serverCapabilities: []string{"advanced_search"},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request without server capabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
+			clientCapabilities: []string{"shell_command"},
+			serverCapabilities: []string{},
+			expectedErrMsg:     "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -509,12 +712,13 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					Client: &http.Client{},
 					URL:    testURL,
 				},
-				token:       "test-token",
-				originalReq: &http.Request{},
-				conn:        &mockWebSocketConn{},
-				wf:          mockWf,
-				mcpManager:  tt.mcpManager,
-				lockManager: newWorkflowLockManager(rdb),
+				token:              "test-token",
+				originalReq:        &http.Request{},
+				conn:               &mockWebSocketConn{},
+				wf:                 mockWf,
+				mcpManager:         tt.mcpManager,
+				lockManager:        newWorkflowLockManager(rdb),
+				serverCapabilities: tt.serverCapabilities,
 			}
 
 			err := r.handleWebSocketMessage(tt.message)
@@ -539,7 +743,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					require.Len(t, mockWf.sendEvents, 1)
 					startReq := mockWf.sendEvents[0].GetStartRequest()
 					require.NotNil(t, startReq)
-					assert.Equal(t, tt.clientCapabilities, startReq.ClientCapabilities)
+					assert.ElementsMatch(t, tt.clientCapabilities, startReq.ClientCapabilities)
 				}
 			}
 		})
@@ -780,6 +984,96 @@ func TestRunner_handleAgentAction(t *testing.T) {
 	}
 }
 
+func TestRunner_Close_WithCloudConnector(t *testing.T) {
+	t.Run("successful close with cloud service", func(t *testing.T) {
+		server := setupTestServer(t)
+
+		// Create real clients to test the full close flow
+		mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent")
+		require.NoError(t, err)
+
+		cloudClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent")
+		require.NoError(t, err)
+
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+		mockCloudStream := &mockSelfHostedWorkflowStream{}
+
+		r := &runner{
+			conn:               mockConn,
+			wf:                 mockWf,
+			client:             mainClient,
+			cloudServiceStream: mockCloudStream,
+			cloudServiceClient: cloudClient,
+			mcpManager:         &mockMcpManager{},
+		}
+
+		err = r.Close()
+		require.NoError(t, err)
+	})
+
+	t.Run("close without cloud service", func(t *testing.T) {
+		server := setupTestServer(t)
+
+		mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent")
+		require.NoError(t, err)
+
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+
+		r := &runner{
+			conn:               mockConn,
+			wf:                 mockWf,
+			client:             mainClient,
+			cloudServiceStream: nil,
+			cloudServiceClient: nil,
+			mcpManager:         &mockMcpManager{},
+		}
+
+		err = r.Close()
+		require.NoError(t, err)
+	})
+
+	t.Run("close with only cloud service stream", func(t *testing.T) {
+		server := setupTestServer(t)
+
+		mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent")
+		require.NoError(t, err)
+
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+		mockCloudStream := &mockSelfHostedWorkflowStream{}
+
+		r := &runner{
+			conn:               mockConn,
+			wf:                 mockWf,
+			client:             mainClient,
+			cloudServiceStream: mockCloudStream,
+			cloudServiceClient: nil,
+			mcpManager:         &mockMcpManager{},
+		}
+
+		err = r.Close()
+		require.NoError(t, err)
+	})
+}
+
 func TestRunner_closeWebSocketConnection(t *testing.T) {
 	tests := []struct {
 		name              string
@@ -920,8 +1214,54 @@ func TestRunner_sendActionToWs(t *testing.T) {
 	}
 }
 
+func Test_intersectServerCapabilities(t *testing.T) {
+	tests := []struct {
+		name       string
+		fromServer []string
+		expected   []string
+	}{
+		{
+			name:       "filters to whitelisted capabilities",
+			fromServer: []string{"advanced_search", "unknown_capability"},
+			expected:   []string{"advanced_search"},
+		},
+		{
+			name:       "returns empty when no matches",
+			fromServer: []string{"unknown_capability", "another_unknown"},
+			expected:   []string{},
+		},
+		{
+			name:       "empty input returns empty",
+			fromServer: []string{},
+			expected:   []string{},
+		},
+		{
+			name:       "nil input returns empty",
+			fromServer: nil,
+			expected:   []string{},
+		},
+		{
+			name:       "all whitelisted capabilities pass through",
+			fromServer: []string{"advanced_search"},
+			expected:   []string{"advanced_search"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := intersectServerCapabilities(tt.fromServer)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestRunner_Shutdown(t *testing.T) {
 	t.Run("shutdown with canceled request context", func(t *testing.T) {
+		rdb := initRdb(t)
+		mockWf := &mockWorkflowStream{
+			blockCh: make(chan bool),
+		}
+
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel()
 
@@ -930,16 +1270,34 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
+			lockFlow:    true,
+			wf:          mockWf,
+			lockManager: newWorkflowLockManager(rdb),
+			workflowID:  "shutdown-lock-test-123",
 		}
+
+		// Acquire lock first
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		require.NoError(t, err)
+		r.mutex = mutex
+
+		// Verify lock is held before shutdown
+		lockExists := rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
+		require.Equal(t, int64(1), lockExists)
 
 		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 1*time.Second)
 		defer shutdownCancel()
 
-		err := r.Shutdown(shutdownCtx)
+		err = r.Shutdown(shutdownCtx)
 		require.NoError(t, err)
+
+		// Verify lock is released after shutdown
+		lockExists = rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
+		require.Equal(t, int64(0), lockExists)
 	})
 
 	t.Run("shutdown sends stop workflow", func(t *testing.T) {
+		rdb := initRdb(t)
 		mockWf := &mockWorkflowStream{}
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -948,8 +1306,20 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
+			lockFlow:    true,
 			wf:          mockWf,
+			lockManager: newWorkflowLockManager(rdb),
+			workflowID:  "shutdown-lock-test-234",
 		}
+
+		// Acquire lock first
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		require.NoError(t, err)
+		r.mutex = mutex
+
+		// Verify lock is held before shutdown
+		lockExists := rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
+		require.Equal(t, int64(1), lockExists)
 
 		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
 		defer shutdownCancel()
@@ -959,6 +1329,9 @@ func TestRunner_Shutdown(t *testing.T) {
 			shutdownDone <- r.Shutdown(shutdownCtx)
 		}()
 
+		// give time for lock to be cleaned
+		time.Sleep(100 * time.Millisecond)
+
 		shutdownCancel()
 
 		require.Eventually(t, func() bool {
@@ -967,8 +1340,12 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		cancel()
 
-		err := <-shutdownDone
+		err = <-shutdownDone
 		require.NoError(t, err)
+
+		// Verify lock is released after shutdown
+		lockExists = rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
+		require.Equal(t, int64(0), lockExists)
 
 		sendEvents := mockWf.getSendEvents()
 		require.Len(t, sendEvents, 1)
@@ -1196,4 +1573,172 @@ func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "misconfigured-redis-test", r.workflowID)
 	require.Nil(t, r.mutex)
+}
+
+func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
+	t.Run("successful tracking of LLM call", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+		mockCloudStream := &mockSelfHostedWorkflowStream{
+			recvActions: []*pb.TrackSelfHostedAction{
+				{
+					RequestID: "req-123",
+				},
+			},
+		}
+
+		testURL, _ := url.Parse("http://example.com")
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq:        &http.Request{},
+			conn:               mockConn,
+			wf:                 mockWf,
+			cloudServiceStream: mockCloudStream,
+		}
+
+		action := &pb.Action{
+			RequestID: "req-123",
+			Action: &pb.Action_TrackLlmCallForSelfHosted{
+				TrackLlmCallForSelfHosted: &pb.TrackLlmCallForSelfHosted{
+					WorkflowID:           "wf-456",
+					FeatureQualifiedName: "duo_workflow",
+					FeatureAiCatalogItem: true,
+				},
+			},
+		}
+
+		ctx := context.Background()
+		err := r.handleAgentAction(ctx, action)
+
+		require.NoError(t, err)
+
+		// Verify cloud service stream received the correct event
+		sentEvents := mockCloudStream.getSendEvents()
+		require.Len(t, sentEvents, 1)
+		require.Equal(t, "req-123", sentEvents[0].RequestID)
+		require.Equal(t, "wf-456", sentEvents[0].WorkflowID)
+		require.Equal(t, "duo_workflow", sentEvents[0].FeatureQualifiedName)
+		require.True(t, sentEvents[0].FeatureAiCatalogItem)
+
+		// Verify workflow stream received the acknowledgment
+		wfEvents := mockWf.getSendEvents()
+		require.Len(t, wfEvents, 1)
+		actionResponse := wfEvents[0].GetActionResponse()
+		require.NotNil(t, actionResponse)
+		require.Equal(t, "req-123", actionResponse.RequestID)
+		plainTextResp := actionResponse.GetPlainTextResponse()
+		require.NotNil(t, plainTextResp)
+		require.Equal(t, "authenticated", plainTextResp.Response)
+	})
+
+	t.Run("error when cloud service stream not initialized", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+
+		testURL, _ := url.Parse("http://example.com")
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq:        &http.Request{},
+			conn:               mockConn,
+			wf:                 mockWf,
+			cloudServiceStream: nil,
+		}
+
+		action := &pb.Action{
+			RequestID: "req-456",
+			Action: &pb.Action_TrackLlmCallForSelfHosted{
+				TrackLlmCallForSelfHosted: &pb.TrackLlmCallForSelfHosted{
+					WorkflowID:           "wf-789",
+					FeatureQualifiedName: "duo_workflow",
+					FeatureAiCatalogItem: false,
+				},
+			},
+		}
+
+		ctx := context.Background()
+		err := r.handleAgentAction(ctx, action)
+
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "cloud service stream not initialized")
+	})
+
+	t.Run("error when sending to cloud service fails", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+		mockCloudStream := &mockSelfHostedWorkflowStream{
+			sendError: errors.New("send failed"),
+		}
+
+		testURL, _ := url.Parse("http://example.com")
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq:        &http.Request{},
+			conn:               mockConn,
+			wf:                 mockWf,
+			cloudServiceStream: mockCloudStream,
+		}
+
+		action := &pb.Action{
+			RequestID: "req-789",
+			Action: &pb.Action_TrackLlmCallForSelfHosted{
+				TrackLlmCallForSelfHosted: &pb.TrackLlmCallForSelfHosted{
+					WorkflowID:           "wf-101",
+					FeatureQualifiedName: "duo_workflow",
+					FeatureAiCatalogItem: true,
+				},
+			},
+		}
+
+		ctx := context.Background()
+		err := r.handleAgentAction(ctx, action)
+
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "failed to send to cloud service")
+	})
+
+	t.Run("error when receiving from cloud service fails", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		mockWf := &mockWorkflowStream{}
+		mockCloudStream := &mockSelfHostedWorkflowStream{
+			recvError: errors.New("recv failed"),
+		}
+
+		testURL, _ := url.Parse("http://example.com")
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq:        &http.Request{},
+			conn:               mockConn,
+			wf:                 mockWf,
+			cloudServiceStream: mockCloudStream,
+		}
+
+		action := &pb.Action{
+			RequestID: "req-012",
+			Action: &pb.Action_TrackLlmCallForSelfHosted{
+				TrackLlmCallForSelfHosted: &pb.TrackLlmCallForSelfHosted{
+					WorkflowID:           "wf-112",
+					FeatureQualifiedName: "duo_workflow",
+					FeatureAiCatalogItem: false,
+				},
+			},
+		}
+
+		ctx := context.Background()
+		err := r.handleAgentAction(ctx, action)
+
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "failed to receive from cloud service")
+	})
 }

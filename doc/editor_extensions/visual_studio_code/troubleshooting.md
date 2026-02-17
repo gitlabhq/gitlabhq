@@ -13,8 +13,7 @@ If you encounter any issues with the GitLab Workflow extension for VS Code, or h
    [`gitlab-vscode-extension` issue tracker](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
    Provide the [required information for Support](#required-information-for-support).
 
-For troubleshooting VS Code for GitLab Duo Code Suggestions,
-see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
+For additional support, see troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting) or [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
 
 ## Enable debug logs
 
@@ -105,17 +104,29 @@ For more information about simplifying this process, see
 [issue 577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)
 in the `gitlab-vscode-extension` project.
 
-## GitLab Duo features do not appear
+## GitLab Duo features are unavailable
 
-If GitLab Duo Chat or GitLab Duo Code Suggestions aren't available in VS Code:
+To troubleshoot GitLab Duo errors in VS Code:
 
-- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- For GitLab Duo Chat (Agentic) and GitLab Duo Chat (Classic), ensure the feature is enabled:
-  1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
-  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-  1. Under **GitLab** > **Duo Chat** or **GitLab** > **Duo Agent Platform**, select the checkbox to
-     enable the feature.
-- For GitLab Duo Code Suggestions, see [troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
+1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+1. Review diagnostics output:
+      1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
+         <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+      1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
+1. If the diagnostics indicate that the feature is not enabled:
+      1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
+      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+      1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
+1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
+   default GitLab Duo namespace in the extension:
+      1. Select **Extensions** > **GitLab**.
+      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+      1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
+
+For additional support:
+
+- [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
+- Troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting) and [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
 
 ## Known issue: GitLab Duo Chat fails to initialize in remote environments
 

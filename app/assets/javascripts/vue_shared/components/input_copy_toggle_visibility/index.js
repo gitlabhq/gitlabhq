@@ -27,6 +27,7 @@ export function initInputCopyToggleVisibility() {
 
     return new Vue({
       el,
+      name: 'InputCopyToggleVisibilityRoot',
       data() {
         return {
           value,

@@ -71,7 +71,7 @@ documentation:
 ### Docker
 
 Update the
-[volume mounts](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section)
+[volume mounts](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section)
 to include the file.
 
 ```toml
@@ -118,7 +118,7 @@ defined, you can use the variable and save it in
 
 You can define this authentication in several ways:
 
-- In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+- In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
   in the runner configuration file.
 - In [`before_script`](../yaml/_index.md#before_script).
 - In [`script`](../yaml/_index.md#script).

@@ -44,6 +44,7 @@ const initApp = (el, component, userPropKey, props = {}, provide = {}) => {
 export const initAdminUsersFilterApp = () => {
   return new Vue({
     el: document.querySelector('#js-admin-users-filter-app'),
+    name: 'AdminUsersFilterAppRoot',
     apolloProvider,
     render: (createElement) => createElement(AdminUsersFilterApp),
   });
@@ -65,7 +66,7 @@ export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-a
 
 export const initDeleteUserModals = () => {
   return new Vue({
-    functional: true,
+    name: 'DeleteUserModalRoot',
     render: (createElement) =>
       createElement(DeleteUserModal, {
         props: {

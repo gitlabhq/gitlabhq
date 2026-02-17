@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'diff_match_patch'
 
-RSpec.describe Gitlab::Diff::CharDiff, feature_category: :product_planning do
+RSpec.describe Gitlab::Diff::CharDiff, feature_category: :portfolio_management do
   let(:old_string) { "Helo \n Worlld" }
   let(:new_string) { "Hello \n World" }
 

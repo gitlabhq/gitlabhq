@@ -1,8 +1,14 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlSprintf,
+  GlLink,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import validation from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 const feedbackMap = {
   valueMissing: {
@@ -24,7 +30,7 @@ export default {
     GlFormInput,
     GlSprintf,
     GlLink,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   directives: {
     validation: validation(feedbackMap),
@@ -79,12 +85,12 @@ export default {
   <form ref="form" method="post" :action="formPath" @submit.prevent="onSubmit">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
     <input type="hidden" name="namespace_id" autocomplete="off" :value="namespaceId" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('ProjectsNew|Import projects from Gitea')"
       :current-step="3"
       :steps-total="4"
     >
-      <template #form>
+      <template #default>
         <gl-form-group
           :label="s__('ProjectsNew|Gitea host URL')"
           label-for="gitea_host_url"
@@ -161,6 +167,6 @@ export default {
           {{ __('Next step') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

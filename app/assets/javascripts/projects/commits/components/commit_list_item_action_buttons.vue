@@ -52,10 +52,10 @@ export default {
       icon="folder-open"
       :href="commit.webUrl"
       :aria-label="__('Browse commit files')"
-      class="gl-ml-5 gl-mr-4"
+      class="gl-ml-5"
       data-testid="browse-files-button"
     />
-    <div class="gl-border-l gl-border-l-section">
+    <div v-if="commit.description" class="gl-border-l gl-ml-4 gl-border-l-section">
       <expand-collapse-button
         :is-collapsed="isCollapsed"
         :anchor-id="anchorId"

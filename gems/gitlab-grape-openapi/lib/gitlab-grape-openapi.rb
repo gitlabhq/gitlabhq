@@ -6,6 +6,9 @@ require_relative "gitlab/grape_openapi/generator"
 require_relative "gitlab/grape_openapi/schema_registry"
 require_relative "gitlab/grape_openapi/tag_registry"
 
+# Serializers
+require_relative "gitlab/grape_openapi/serializers/time"
+
 # Converters
 require_relative "gitlab/grape_openapi/converters/entity_converter"
 require_relative "gitlab/grape_openapi/converters/type_resolver"

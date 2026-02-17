@@ -4,4 +4,4 @@ description: Grants the ability to create projects
 permissions:
   - create_project
 boundaries:
-  - instance
+  - user

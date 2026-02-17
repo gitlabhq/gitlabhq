@@ -1,12 +1,17 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlAnimatedUploadIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlAnimatedUploadIcon,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import { START_RULE, CONTAINS_RULE } from '~/projects/project_name_rules';
 import NewProjectDestinationSelect from '~/projects/new_v2/components/project_destination_select.vue';
 
@@ -39,7 +44,7 @@ export default {
     GlFormInput,
     GlAnimatedUploadIcon,
     FileIcon,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     NewProjectDestinationSelect,
   },
   directives: {
@@ -148,12 +153,12 @@ export default {
     @submit.prevent="onSubmit"
   >
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="__('Import an exported GitLab project')"
       :current-step="3"
       :steps-total="3"
     >
-      <template #form>
+      <template #default>
         <gl-form-group
           :label="__('Project name')"
           label-for="name"
@@ -288,6 +293,6 @@ export default {
           {{ __('Import project') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

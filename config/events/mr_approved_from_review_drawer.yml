@@ -1,0 +1,25 @@
+---
+description: Merge request approved via the review drawer using the approve radio button
+internal_events: true
+status: active
+action: mr_approved_from_review_drawer
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  reviewer:
+    description: Whether the user approving the MR is also assigned as a reviewer
+  drafts:
+    description: The number of pending review comments in this submission
+  summary:
+    description: Whether the review was submitted including a summary comment
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214789
+tiers:
+- free
+- premium
+- ultimate

@@ -1,0 +1,5 @@
+---
+name: create_container_virtual_registry
+description: Grants the ability to create container virtual registries
+boundaries:
+  - group

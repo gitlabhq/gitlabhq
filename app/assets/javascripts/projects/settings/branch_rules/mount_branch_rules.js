@@ -35,6 +35,7 @@ export default function mountBranchRules(el, store, allowEditSquashSetting = fal
 
   return new Vue({
     el,
+    name: 'ViewRoot',
     store,
     apolloProvider,
     provide: {

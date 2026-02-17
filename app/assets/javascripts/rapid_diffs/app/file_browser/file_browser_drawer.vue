@@ -22,6 +22,11 @@ export default {
       required: false,
       default: true,
     },
+    linkedFilePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -74,6 +79,7 @@ export default {
           :loaded-files="loadedFiles"
           :total-files-count="totalFilesCount"
           :group-blobs-list-items="groupBlobsListItems"
+          :linked-file-path="linkedFilePath"
           @clickFile="clickFile"
           @toggleFolder="toggleFolder"
         />

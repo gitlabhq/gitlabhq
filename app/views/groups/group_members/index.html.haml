@@ -13,7 +13,9 @@
           = brand_member_guidelines
     - c.with_actions do
       - if can?(current_user, :create_group_link, @group)
-        .js-invite-group-trigger{ data: { classes: '@md/panel:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
+        .js-invite-group-trigger{ data: { classes: '@md/panel:gl-w-auto gl-w-full',
+          display_text: _('Invite a group'),
+          trigger_source: 'group_members_page' } }
 
       - if can_invite_group_member?(@group)
         .js-invite-members-trigger{ data: { variant: 'confirm',
@@ -31,8 +33,8 @@
                                                                           access_requests: @requesters,
                                                                           banned: @banned || [],
                                                                           include_relations: @include_relations,
-                                                                          search: params[:search_groups],
                                                                           pending_members_count: @pending_promotion_members_count,
-                                                                          placeholder_users: @placeholder_users_count
+                                                                          placeholder_users: @placeholder_users_count,
+                                                                          params: params
                                                                         ).to_json } }
   = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

@@ -76,7 +76,7 @@ export default {
         :cancel-path="path"
         :submit-text="$options.i18n.submit"
         :active="active"
-        @handleSubmit="(data) => updateFeatureFlag(data)"
+        @handle-submit="(data) => updateFeatureFlag(data)"
       />
     </template>
   </div>

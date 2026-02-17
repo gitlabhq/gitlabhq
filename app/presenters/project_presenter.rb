@@ -26,7 +26,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     sprite_icon(icon_name, css_class: 'gl-mr-3', variant: variant)
   end
 
-  def statistics_anchors(show_auto_devops_callout:)
+  def statistics_anchors
     [
       commits_anchor_data,
       branches_anchor_data,
@@ -38,13 +38,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     ].compact.select(&:is_link)
   end
 
-  def statistics_buttons(show_auto_devops_callout:)
+  def statistics_buttons
     [
       readme_anchor_data,
       license_anchor_data,
       changelog_anchor_data,
       contribution_guide_anchor_data,
-      autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
+      autodevops_anchor_data,
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data,
       wiki_anchor_data,
@@ -358,10 +358,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def autodevops_anchor_data(show_auto_devops_callout: false)
+  def autodevops_anchor_data
     return unless project.feature_available?(:builds, current_user)
 
-    if current_user && can?(current_user, :admin_pipeline, project) && !project.has_ci_config_file? && !show_auto_devops_callout
+    if current_user && can?(current_user, :admin_pipeline, project) && !project.has_ci_config_file?
       if auto_devops_enabled?
         AnchorData.new(
           false,

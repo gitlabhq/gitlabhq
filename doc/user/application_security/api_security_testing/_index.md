@@ -23,13 +23,10 @@ Use API security testing in addition to other security scanners and your own tes
 run API security testing tests either as part your CI/CD workflow,
 [on-demand](../dast/on-demand_scan.md), or both.
 
-{{< alert type="warning" >}}
-
-Do not run API security testing against a production server. Not only can it perform any function that
-the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-data. Only run API security testing against a test server.
-
-{{< /alert >}}
+> [!warning]
+> Do not run API security testing against a production server. Not only can it perform any function that
+> the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+> data. Only run API security testing against a test server.
 
 ## Getting started
 
@@ -50,7 +47,7 @@ Prerequisites:
 
   Each scan supports exactly one specification. To scan more than one specification, use multiple scans.
 - You have a [GitLab Runner](../../../ci/runners/_index.md) available, with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker/) on Linux/amd64.
 - You have a deployed target application. For more details, see the [deployment options](#application-deployment-options).
 - The `dast` stage is added to your CI/CD pipeline definition, after the `deploy` stage. For example:
 
@@ -101,7 +98,7 @@ For more details, see the [pipeline security report](../detect/security_scanning
 
 To get the most out of API security testing, follow these recommendations:
 
-- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
+- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker/#using-the-always-pull-policy) to run the latest versions of the analyzers.
 - By default, API security testing downloads all artifacts defined by previous jobs in the pipeline.
   If your DAST job does not rely on `environment_url.txt` to define the URL under test or any other
   files created in previous jobs, you should not download artifacts. To avoid downloading artifacts,
@@ -196,7 +193,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
 
 ```yaml
 variables:

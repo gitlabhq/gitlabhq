@@ -35,14 +35,15 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_catego
         described_class.new(projects_arg, user).execute
       end
 
-      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
+      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25432' do
         expect { query }.not_to make_queries
       end
 
       context 'when projects is an array of IDs' do
         let(:projects_arg) { projects.map(&:id) }
 
-        it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
+        it 'avoids N+1 queries',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25432' do
           expect { query }.not_to make_queries
         end
       end
@@ -53,7 +54,8 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_catego
           Project.where(id: ProjectAuthorization.where(project_id: projects).select(:project_id))
         end
 
-        it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
+        it 'avoids N+1 queries',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25432' do
           expect { query }.not_to make_queries
         end
       end

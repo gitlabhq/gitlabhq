@@ -41,6 +41,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'CrmOrganizationsAppRoot',
     router,
     apolloProvider,
     provide: {

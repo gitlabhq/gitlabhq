@@ -6,4 +6,5 @@ Labkit::UserExperienceSli.configure do |config|
   # otherwise it will be tmp/config/user_experience_slis.
   config.registry_path = Rails.root.join("config/user_experience_slis")
   config.logger = Labkit::Logging::JsonLogger.new(Rails.root.join("log/user_experience_slis.log"))
+  config.feature_category_schema_path = Rails.root.join('config/feature_categories/schema.json')
 end

@@ -1,0 +1,7 @@
+---
+name: update_compliance_policy_setting
+description: Grants the ability to update compliance policy settings
+boundaries:
+  - instance
+permissions:
+  - update_compliance_policy_setting

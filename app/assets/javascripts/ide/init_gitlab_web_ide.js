@@ -36,12 +36,14 @@ export const initGitlabWebIDE = async (el) => {
     signOutPath,
     extensionHostDomain,
     extensionHostDomainChanged,
+    workbenchSecret,
   } = el.dataset;
 
   try {
     const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig({
       extensionHostDomain,
       extensionHostDomainChanged: parseBoolean(extensionHostDomainChanged),
+      workbenchSecret,
     });
     const container = setupIdeContainer(el);
     const editorFont = editorFontJSON

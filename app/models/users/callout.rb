@@ -9,7 +9,7 @@ module Users
     # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
       gke_cluster_integration: 1,
-      gcp_signup_offer: 2,
+      # 2 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221007
       cluster_security_warning: 3,
       ultimate_trial: 4,                         # EE-only
       geo_enable_hashed_storage: 5,              # EE-only
@@ -19,7 +19,7 @@ module Users
       suggest_popover_dismissed: 9,
       tabs_position_highlight: 10,
       threat_monitoring_info: 11,                # EE-only
-      two_factor_auth_recovery_settings_check: 12, # EE-only
+      # 12 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222714
       web_ide_alert_dismissed: 16,               # no longer in use
       active_user_count_threshold: 18,           # EE-only
       buy_pipeline_minutes_notification_dot: 19, # EE-only
@@ -39,11 +39,11 @@ module Users
       trial_status_reminder_d3: 35,              # EE-only
       security_configuration_devops_alert: 36,   # EE-only
       profile_personal_access_token_expiry: 37,  # EE-only
-      terraform_notification_dismissed: 38,
-      security_newsletter_callout: 39,
+      # 38 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221338
+      # 39 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222259
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
-      security_training_feature_promotion: 42, # EE-only
+      # 42 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221211
       namespace_storage_pre_enforcement_banner: 43, # EE-only
       ci_minutes_limit_alert_warning_stage: 44,  # EE-only
       ci_minutes_limit_alert_danger_stage: 45,   # EE-only
@@ -62,10 +62,10 @@ module Users
       namespace_storage_limit_alert_alert_threshold: 57, # EE-only
       namespace_storage_limit_alert_error_threshold: 58, # EE-only
       # 60 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154140
-      new_top_level_group_alert: 61,
+      # 61 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221324
       # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
-      branch_rules_info_callout: 65,
+      # 65 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221274
       # 66 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135470/
       # 67 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
       project_repository_limit_alert_warning_threshold: 68, # EE-only
@@ -87,42 +87,48 @@ module Users
       transition_to_jihu_callout: 84,
       # 85 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169248
       # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
-      deployment_details_feedback: 87,
+      # 87 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221380
       # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
       # 89 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152981
-      deployment_approvals_empty_state: 90,
+      # 90 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221387
       period_in_terraform_state_name_alert: 91,
       work_item_epic_feedback: 92, # EE-only
       branch_rules_tip_callout: 93,
       openssl_callout: 94,
       # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
-      new_mr_dashboard_banner: 96,
+      # 96 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222230,
       # 97 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196130
       # EE-only
       pipl_compliance_alert: 98,
-      new_merge_request_dashboard_welcome: 99,
-      pipeline_inputs_announcement_banner: 100,
+      # 99 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
+      # 100 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220975
       pipeline_new_inputs_adoption_banner: 101,
       pipeline_schedules_inputs_adoption_banner: 102,
-      product_usage_data_collection_changes: 103,
-      dora_dashboard_migration_group: 104,
-      dora_dashboard_migration_project: 105,
+      # 103 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222229
+      # 104 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
+      # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       # 107 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
-      explore_duo_core_banner: 108, # EE-only
+      # 108 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221367
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110, # EE-only
       duo_amazon_q_alert: 111, # EE-only
-      personal_homepage_preferences_banner: 112,
+      # 112 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
       # 113 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210564
       email_otp_enrollment_callout: 114,
       merge_request_dashboard_show_drafts: 115,
       focused_vulnerability_reporting: 116,
       expired_trial_status_widget: 117, # EE-only
       work_item_consolidated_list_feedback: 118,
-      ai_experiment_sast_fp_detection: 119, # EE-only
+      # 119 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221219
       vulnerability_report_limited_experience: 120, # EE-only
-      file_tree_browser_popover: 121
+      file_tree_browser_popover: 121,
+      virtual_registry_permission_change_alert: 122, # EE-only
+      security_scanner_profiles_announcement: 123, # EE-only
+      # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
+      duo_panel_auto_expanded: 125, # EE-only
+      work_items_nav_badge: 126,
+      work_items_onboarding_modal: 127
     }
 
     validates :feature_name,

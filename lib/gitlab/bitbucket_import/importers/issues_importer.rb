@@ -52,7 +52,7 @@ module Gitlab
         end
 
         def default_issue_type_id
-          ::WorkItems::Type.default_issue_type.id
+          ::WorkItems::TypesFramework::Provider.new(project).default_issue_type.id
         end
 
         def allocate_issues_internal_id!

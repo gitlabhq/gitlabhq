@@ -22,8 +22,7 @@ import eventHub from '~/diffs/event_hub';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 import { clearDraft } from '~/lib/utils/autosave';
-import { isElementStuck } from '~/lib/utils/common_utils';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
@@ -36,8 +35,7 @@ import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-jest.mock('~/lib/utils/common_utils');
-jest.mock('~/lib/utils/scroll_utils');
+jest.mock('~/lib/utils/sticky');
 jest.mock('~/lib/utils/autosave');
 jest.mock('~/alert');
 jest.mock('~/notes/mixins/diff_line_note_form', () => ({
@@ -487,30 +485,29 @@ describe('DiffFile', () => {
         });
       });
 
-      describe('scoll-to-top of file after collapse', () => {
+      describe('scroll file into view after collapse', () => {
+        let scrollIntoViewSpy;
+
         beforeEach(() => {
-          isElementStuck.mockReturnValueOnce(true);
+          scrollPastCoveringElements.mockResolvedValue();
+          scrollIntoViewSpy = jest
+            .spyOn(HTMLElement.prototype, 'scrollIntoView')
+            .mockImplementation();
         });
 
-        it("scrolls to the top when the file is open, the users initiates the collapse, and there's a content block to scroll to", async () => {
+        it('scrolls the file into view when the file is open and user initiates collapse', async () => {
           createComponent();
           makeFileOpenByDefault();
           await nextTick();
 
           toggleFile(wrapper);
-
-          expect(scrollToElement).toHaveBeenCalled();
-        });
-
-        it('does not scroll when the content block is missing', async () => {
-          createComponent();
-          makeFileOpenByDefault();
           await nextTick();
-          findDiffContentArea(wrapper).element.remove();
 
-          toggleFile(wrapper);
-
-          expect(scrollToElement).not.toHaveBeenCalled();
+          expect(scrollIntoViewSpy).toHaveBeenCalledWith({
+            block: 'nearest',
+            inline: 'nearest',
+          });
+          expect(scrollPastCoveringElements).toHaveBeenCalledWith(wrapper.vm.$el);
         });
 
         it("does not scroll if the user doesn't initiate the file collapse", async () => {
@@ -519,8 +516,10 @@ describe('DiffFile', () => {
           await nextTick();
 
           wrapper.vm.handleToggle();
+          await nextTick();
 
-          expect(scrollToElement).not.toHaveBeenCalled();
+          expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+          expect(scrollPastCoveringElements).not.toHaveBeenCalled();
         });
 
         it('does not scroll if the file is already collapsed', async () => {
@@ -529,8 +528,10 @@ describe('DiffFile', () => {
           await nextTick();
 
           toggleFile(wrapper);
+          await nextTick();
 
-          expect(scrollToElement).not.toHaveBeenCalled();
+          expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+          expect(scrollPastCoveringElements).not.toHaveBeenCalled();
         });
       });
 

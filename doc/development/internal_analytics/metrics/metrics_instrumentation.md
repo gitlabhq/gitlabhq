@@ -35,12 +35,9 @@ Using an instrumentation class ensures that metrics can fail safe individually, 
 
 ## Database metrics
 
-{{< alert type="note" >}}
-
-Whenever possible we recommend using [internal event tracking](../internal_event_instrumentation/quick_start.md) instead of database metrics.
-Database metrics can create unnecessary load on the database of bigger GitLab instances and potential optimisations can affect instance performance.
-
-{{< /alert >}}
+> [!note]
+> Whenever possible we recommend using [internal event tracking](../internal_event_instrumentation/quick_start.md) instead of database metrics.
+> Database metrics can create unnecessary load on the database of bigger GitLab instances and potential optimisations can affect instance performance.
 
 You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
 
@@ -177,14 +174,11 @@ Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` e
 when used through the provided `estimate_batch_distinct_count` method.
 Errors return a value of `-1`.
 
-{{< alert type="warning" >}}
-
-This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
-which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
-As the HyperLogLog algorithm is probabilistic, the **results always include error**.
-The highest encountered error rate is 4.9%.
-
-{{< /alert >}}
+> [!warning]
+> This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
+> which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
+> As the HyperLogLog algorithm is probabilistic, the **results always include error**.
+> The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
 columns that contain non-unique values, which cannot be assured by other counters.

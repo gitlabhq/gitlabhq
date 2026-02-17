@@ -15,8 +15,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   let(:instance) { test_klass.create!(path: 'gitlab') }
 
   before do
-    test_klass.cells_claims_attribute :path,
-      type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+    test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+      feature_flag: :cells_claims_organizations
     test_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
       subject_key: subject_key
   end
@@ -26,7 +26,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_subject_type).to eq(Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION)
       expect(test_klass.cells_claims_source_type).to eq(Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       expect(test_klass.cells_claims_attributes).to eq(
-        path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH }
+        path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+                feature_flag: :cells_claims_organizations }
       )
     end
 
@@ -56,8 +57,9 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
               {
                 bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath' },
                 source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
-                          rails_primary_key_id: be_a(Integer) },
-                subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) }
+                          rails_primary_key_id: be_a(String) },
+                subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) },
+                record: instance
               }
             )
 
@@ -99,6 +101,19 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         end
       end
 
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(cells_claims_organizations: false)
+        end
+
+        it 'does not create or destroy claims' do
+          expect(transaction_record).not_to receive(:create_record)
+          expect(transaction_record).not_to receive(:destroy_record)
+
+          instance.update!(path: 'new-path')
+        end
+      end
+
       context 'when transaction record does not exist' do
         before do
           allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
@@ -126,6 +141,18 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         end
       end
 
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(cells_claims_organizations: false)
+        end
+
+        it 'does not destroy claims' do
+          expect(transaction_record).not_to receive(:destroy_record)
+
+          instance.destroy!
+        end
+      end
+
       context 'when transaction record does not exist' do
         before do
           allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
@@ -141,15 +168,96 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '#cells_claims_default_metadata' do
-    it 'returns metadata with subject and source information' do
-      metadata = instance.send(:cells_claims_default_metadata)
+    context 'when instance ID is integer' do
+      it 'returns metadata with subject and source information' do
+        metadata = instance.send(:cells_claims_default_metadata)
 
-      expect(metadata).to eq({
-        subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
-        source: {
-          type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS, rails_primary_key_id: instance.id
-        }
-      })
+        expect(metadata).to include({
+          subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+          source: {
+            type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+            rails_primary_key_id: be_a(String)
+          },
+          record: instance
+        })
+
+        rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+        expect(rails_pk_bytes.encoding).to eq(Encoding::ASCII_8BIT)
+        expect(rails_pk_bytes.bytesize).to eq(8)
+        expect(rails_pk_bytes.unpack1("Q>")).to eq(instance.id)
+      end
+    end
+
+    context 'when instance ID is a string' do
+      before do
+        allow(instance).to receive(:id).and_return(instance_id)
+        allow(instance).to receive(:read_attribute).with("id").and_return(instance_id)
+        allow(instance).to receive(:read_attribute).with(:id).and_return(instance_id)
+      end
+
+      context 'when instance ID is UUID' do
+        let(:instance_id) { SecureRandom.uuid }
+
+        it 'returns metadata with subject and source information' do
+          metadata = instance.send(:cells_claims_default_metadata)
+
+          expect(metadata).to include({
+            subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+            source: {
+              type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+              rails_primary_key_id: be_a(String)
+            },
+            record: instance
+          })
+
+          rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+          expect(rails_pk_bytes.encoding).to eq(Encoding::ASCII_8BIT)
+          expect(rails_pk_bytes.bytesize).to eq(16)
+          expect(rails_pk_bytes.unpack1('H*')).to eq(instance_id.delete('-'))
+        end
+      end
+
+      context 'when instance ID is a string (not uuid)' do
+        let(:instance_id) { 'foo/bar' }
+
+        it 'returns metadata with subject and source information' do
+          metadata = instance.send(:cells_claims_default_metadata)
+
+          expect(metadata).to include({
+            subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+            source: a_hash_including(
+              type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+              rails_primary_key_id: be_a(String)
+            ),
+            record: instance
+          })
+
+          rails_pk_bytes = metadata[:source][:rails_primary_key_id]
+          expect(rails_pk_bytes.encoding).to eq(Encoding::UTF_8)
+          expect(rails_pk_bytes.bytesize).to eq(7)
+          expect(rails_pk_bytes).to eq(instance_id)
+        end
+      end
+
+      context 'when instance ID is of unsupported type' do
+        let(:instance_id) { %w[foo bar] }
+
+        it 'raises error' do
+          expect { instance.send(:cells_claims_default_metadata) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    context 'when primary key is missing' do
+      before do
+        allow(instance).to receive(:read_attribute).with(instance.class.primary_key).and_return(nil)
+      end
+
+      it 'raises MissingPrimaryKeyError' do
+        expect { instance.send(:cells_claims_default_metadata) }.to raise_error(
+          Cells::Claimable::MissingPrimaryKeyError
+        )
+      end
     end
   end
 
@@ -185,14 +293,13 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
   describe "#handle_grpc_error" do
     let(:model) { build(:organization) }
-    let(:attribute) { :path }
 
     context "when error is ALREADY_EXISTS" do
       let(:grpc_error) { GRPC::AlreadyExists.new("conflict") }
 
       it "assigns attribute-specific message" do
-        model.handle_grpc_error(grpc_error, attribute)
-        expect(model.errors[attribute]).to include("has already been taken")
+        model.handle_grpc_error(grpc_error)
+        expect(model.errors[:base]).to include("path has already been taken")
       end
     end
 
@@ -200,7 +307,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       let(:grpc_error) { GRPC::DeadlineExceeded.new("timeout") }
 
       it "assigns timeout message" do
-        model.handle_grpc_error(grpc_error, attribute)
+        model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("Request timed out. Please try again.")
       end
     end
@@ -209,7 +316,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       let(:grpc_error) { GRPC::Internal.new("something bad") }
 
       it "assigns generic message" do
-        model.handle_grpc_error(grpc_error, attribute)
+        model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("An error occurred while processing your request")
       end
     end

@@ -1,0 +1,5 @@
+---
+name: delete_fork_relationship
+description: Grants the ability to delete a fork relationship between projects
+boundaries:
+  - project

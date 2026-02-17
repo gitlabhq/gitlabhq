@@ -27,23 +27,17 @@ For token-based authentication methods, the minimum required scope:
 - For read (pull) access, must be `read_registry`
 - For write (push) access, must be `write_registry` and `read_registry`
 
-{{< alert type="note" >}}
-
-Admin Mode does not apply during authentication with the container registry. If you are an administrator
-with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope,
-that token works even though Admin Mode is enabled. For more information, see
-[Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode).
-
-{{< /alert >}}
+> [!note]
+> Admin Mode does not apply during authentication with the container registry. If you are an administrator
+> with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope,
+> that token works even though Admin Mode is enabled. For more information, see
+> [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode).
 
 ## Authenticate with username and password
 
-{{< alert type="note" >}}
-
-If you have enabled [two-factor authentication (2FA)](../../profile/account/two_factor_authentication.md)
-(including email OTP) on your account, you must [authenticate with a token](#authenticate-with-a-token).
-
-{{< /alert >}}
+> [!note]
+> If you have enabled [two-factor authentication (2FA)](../../profile/account/two_factor_authentication.md)
+> (including email OTP) on your account, you must [authenticate with a token](#authenticate-with-a-token).
 
 To authenticate with your username and password, run the `docker login` command:
 

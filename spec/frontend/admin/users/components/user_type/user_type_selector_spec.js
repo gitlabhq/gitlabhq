@@ -13,6 +13,7 @@ describe('UserTypeSelector component', () => {
       propsData: { userType, isCurrentUser },
       scopedSlots,
       stubs: {
+        GlCard,
         GlSprintf,
         GlFormRadio: stubComponent(GlFormRadio, {
           template: `<div>

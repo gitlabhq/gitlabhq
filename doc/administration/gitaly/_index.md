@@ -23,12 +23,9 @@ storage and retrieval. Gitaly can be:
 - Separated onto its own instance and configured in a full cluster configuration,
   depending on scaling and availability requirements.
 
-{{< alert type="note" >}}
-
-Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
-using Gitaly.
-
-{{< /alert >}}
+> [!note]
+> Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
+> using Gitaly.
 
 GitLab accesses [repositories](../../user/project/repository/_index.md) through the configured
 [repository storages](../repository_storage_paths.md). Each new repository is stored on one of the

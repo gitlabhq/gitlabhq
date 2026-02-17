@@ -3,6 +3,8 @@ key_path: schema_inconsistencies_metric
 name: "schema_inconsistencies"
 description: "List the schema inconsistencies in the database"
 product_group: database_frameworks
+product_categories:
+- database
 value_type: boolean
 status: active
 milestone: "16.2"

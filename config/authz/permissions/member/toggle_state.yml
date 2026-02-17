@@ -1,0 +1,5 @@
+---
+name: toggle_state_member
+description: Grants the ability to toggle member state
+boundaries:
+  - group

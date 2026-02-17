@@ -8,22 +8,22 @@ title: 外部エージェント
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Core、Pro、またはEnterprise、GitLab Duo with Amazon Q
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: 実験的機能
 
 {{< /details >}}
 
 {{< collapsible title="モデル情報" >}}
 
-- セルフホストモデルでは利用できません。
+- セルフホストモデル対応のGitLab Duoでは利用不可
 
 {{< /collapsible >}}
 
 {{< history >}}
 
-- `ai_flow_triggers`[フラグ](../../../administration/feature_flags/_index.md)とともにGitLab 18.3で導入されました。デフォルトでは有効になっています。
-- GitLab 18.6でコマンドラインインターフェースエージェントから名称が変更されました。
+- GitLab 18.3で`ai_flow_triggers`[フラグ](../../../administration/feature_flags/_index.md)とともに導入されました。デフォルトでは有効になっています。
+- GitLab 18.6でCLIエージェントから名称が変更されました。
+- GitLab 18.7でグループでの有効化が`ai_catalog_agents`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/578318)されました。GitLab.comで有効になりました。
 
 {{< /history >}}
 
@@ -33,45 +33,60 @@ title: 外部エージェント
 
 {{< /alert >}}
 
-GitLab Duoエージェントは、コードの作成、調査結果の収集、タスクの実行を同時に行うのに役立ちます。
+GitLab Duo Agentは並行して動作し、コードの作成、調査結果の生成、複数タスクの同時実行を支援します。
 
-エージェントを作成し、外部AIモデルプロバイダーとインテグレーションして、組織のニーズに合わせてカスタマイズできます。独自のAPIキーを使用して、モデルプロバイダーとインテグレーションします。
+エージェントを作成し、外部AIモデルプロバイダーと連携させることで、組織のニーズに合わせてカスタマイズできます。その後、プロジェクトのイシュー、エピック、またはマージリクエストにおいて、コメントやディスカッションでその外部エージェントにメンションし、タスクの完了を依頼できます。
 
-次に、プロジェクトのイシュー、エピック、またはマージリクエストで、コメントまたはディスカッションでその外部エージェントに言及し、エージェントにタスクの完了を依頼できます。
+外部エージェントは次のことを行います:
 
-外部エージェント:
+- 周辺のコンテキストとリポジトリ内のコードを読み取り、分析する。
+- プロジェクトの権限を遵守し、監査証跡を保持しながら、実行すべき適切なアクションを判断する。
+- CI/CDパイプラインを実行し、すぐにマージ可能な変更またはインラインコメントのいずれかの形でGitLab上で応答する。
 
-- 周囲のコンテキストとリポジトリコードを読み取り、分析します。
-- プロジェクトの権限を遵守し、監査証跡を保持しながら、実行する適切なアクションを決定します。
-- CI/CDパイプラインを実行し、すぐにマージできる変更またはインラインコメントのいずれかでGitLab内で応答します。
+## GitLab管理の外部エージェントのクイックスタート {#quickstart-for-gitlab-managed-external-agents}
 
-GitLabでテスト済みの次のインテグレーションが利用可能です:
+{{< details >}}
 
-- [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
+- プラン: Premium、Ultimate
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
+- 提供形態: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 18.8のGitLab.comで導入されました。
+
+{{< /history >}}
+
+次のインテグレーションはGitLabによってテストされており、利用可能です:
+
+- [Claude Code](https://code.claude.com/docs/en/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
-- [Opencode](https://opencode.ai/docs/gitlab/)
-- [Amazon Q](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html)
-- [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)
 
-クリック可能なデモについては、[GitLab Duo Agent Platform with Amazon Q](https://gitlab.navattic.com/dap-with-q)を参照してください。
-<!-- Demo published on 2025-11-03 -->
+エージェントを作成して外部AIモデルプロバイダーと統合する前に、[GitLab Duo Agent Platformの前提条件](../_index.md#prerequisites)を満たす必要があります。
 
-## 前提要件 {#prerequisites}
+管理対象の外部エージェントは、GitLabで管理された認証情報を使用し、追加のエージェント設定なしでグループで有効にできます。
 
-エージェントを作成し、外部AIモデルプロバイダーとインテグレーションする前に、[prerequisites](../_index.md#prerequisites)を満たす必要があります。
+次のエージェントは、AIカタログで利用できます:
 
-## AIモデルプロバイダーの認証情報 {#ai-model-provider-credentials}
+- [GitLabのClaude Code Agent](https://gitlab.com/explore/ai-catalog/agents/499/)
+- [GitLabのCodex Agent](https://gitlab.com/explore/ai-catalog/agents/513/)
 
-エージェントを外部AIモデルプロバイダーとインテグレーションするには、アクセス認証情報が必要です。そのモデルプロバイダーのAPIキー、またはGitLab管理の認証情報を使用できます。
+ClaudeまたはCodexを有効にして使用するために必要な手順:
 
-### APIキー {#api-keys}
+1. AIカタログでエージェントにアクセスします。`claude`または`codex`を検索するか、直接URLを使用します。
+1. [トップレベルグループでエージェントを有効にする](#enable-the-agent-in-a-top-level-group)。
+1. [プロジェクトでエージェントを有効にする](#enable-in-a-project)。
+1. イシュー、エピック、またはマージリクエストで[外部エージェントを使用する](#use-an-external-agent)。
 
-エージェントを外部AIモデルプロバイダーとインテグレーションするには、そのモデルプロバイダーのAPIキーを使用できます:
+## 前提条件 {#prerequisites}
 
-- Anthropic ClaudeおよびOpencodeの場合は、[Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key)を使用します。
-- OpenAI Codexの場合は、[OpenAI API key](https://platform.openai.com/docs/api-reference/authentication)を使用します。
+エージェントを作成して外部AIモデルプロバイダーと統合する前に、[GitLab Duo Agent Platformの前提条件](../_index.md#prerequisites)を満たす必要があります。
 
-### GitLab管理の認証情報 {#gitlab-managed-credentials}
+エージェントを外部AIモデルプロバイダーと統合するには、GitLabが提供および管理するアクセス認証情報も必要です。
+
+### アクセス認証情報 {#access-credentials}
 
 {{< history >}}
 
@@ -79,95 +94,88 @@ GitLabでテスト済みの次のインテグレーションが利用可能で�
 
 {{< /history >}}
 
-外部AIモデルプロバイダーに独自のAPIキーを使用する代わりに、AIゲートウェイを介してGitLab管理の認証情報を使用するように外部エージェントを設定できます。これにより、APIキーを自分で管理およびローテーションする必要がなくなります。
+外部エージェントは、AIゲートウェイを介してGitLabで管理された認証情報を使用します。
 
 GitLab管理の認証情報を使用する場合:
 
-- フロー設定ファイルで`injectGatewayToken: true`を設定します。
-- CI/CD変数からAPIキーの変数（`ANTHROPIC_API_KEY`など）を削除します。
-- GitLab AIゲートウェイプロキシーエンドポイントを使用するように外部エージェントを設定します。
+- 外部エージェント設定で`injectGatewayToken: true`を設定します。
+- GitLab AIゲートウェイのプロキシエンドポイントを使用するように外部エージェントを設定します。
 
-次の環境変数は、`injectGatewayToken`が`true`の場合に自動的に入力されたされます:
+`injectGatewayToken`が`true`の場合、次の環境変数が自動的に挿入されます:
 
-- `AI_FLOW_AI_GATEWAY_TOKEN`：AIゲートウェイの認証トークン
-- `AI_FLOW_AI_GATEWAY_HEADERS`：APIリクエスト用にフォーマットされたヘッダー
+- `AI_FLOW_AI_GATEWAY_TOKEN`: AIゲートウェイの認証トークン
+- `AI_FLOW_AI_GATEWAY_HEADERS`: APIリクエスト用に整形されたヘッダー
 
-GitLab管理の認証情報は、Anthropic ClaudeおよびCodexでのみ使用できます。
+GitLab管理の認証情報は、Anthropic ClaudeとOpenAI Codexでのみ使用できます。
 
-## サービスアカウントを作成する {#create-a-service-account}
+### サポートされているモデル {#supported-models}
 
-前提要件:
+次のAIモデルがサポートされています:
 
-- GitLab.comでは、プロジェクトが属するトップレベルグループのオーナーロールが必要です。
-- GitLab Self-ManagedおよびGitLab GitLab Dedicatedでは、次のいずれかが必要です:
-  - インスタンスの管理者権限。
-  - トップレベルグループのオーナーロールと、[サービスアカウントを作成する権限](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts)。
+Anthropic Claude:
 
-外部エージェントに言及する各プロジェクトには、一意の[グループサービスアカウント](../../../user/profile/service_accounts.md)が必要です。外部エージェントにタスクを割り当てるときは、サービスアカウントのユーザー名に言及してください。
+- `claude-3-haiku-20240307`
+- `claude-haiku-4-5-20251001`
+- `claude-sonnet-4-20250514`
+- `claude-sonnet-4-5-20250929`
 
-{{< alert type="warning" >}}
+OpenAI Codex:
 
-複数のプロジェクトで同じサービスアカウントを使用すると、そのサービスアカウントに接続されている外部エージェントに、それらのすべてのプロジェクトへのアクセス権が付与されます。
-
-{{< /alert >}}
-
-サービスアカウントをセットアップするには、次のアクションを実行します。十分な権限がない場合は、インスタンス管理者またはトップレベルグループのオーナーに支援を求めてください。
-
-1. トップレベルグループの場合は、[サービスアカウントを作成](../../../user/profile/service_accounts.md#create-a-service-account)します。インスタンス用に作成されたサービスアカウントはサポートされていません。
-1. 次の[スコープ](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes)で、[サービスアカウントのパーソナルアクセストークンを作成](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account)します:
-   - `write_repository`
-   - `api`
-   - `ai_features`
-1. [サービスアカウントをプロジェクトに追加](../../../user/project/members/_index.md#add-users-to-a-project)し、デベロッパーロールを付与します。これにより、サービスアカウントに必要な最小限の権限が付与されます。
-
-サービスアカウントをプロジェクトに追加するときは、サービスアカウントの正確な名前を入力する必要があります。間違った名前を入力すると、外部エージェントは機能しません。
+- `gpt-5`
+- `gpt-5-codex`
 
 ## CI/CD変数を設定する {#configure-cicd-variables}
 
-前提要件:
+まず、変数をプロジェクトに追加します。これらの変数は、GitLabがサードパーティプロバイダーに接続する方法を決定します。
+
+前提条件: 
 
 - プロジェクトのメンテナーロール以上が必要です。
 
-次のCI/CD変数をプロジェクトの設定に追加します:
+プロジェクト設定で変数を追加または更新するには、次の手順に従います:
 
-| インテグレーション                | 環境変数         | 説明 |
-|----------------------------|------------------------------|-------------|
-| すべて                        | `GITLAB_TOKEN_<integration>` | サービスアカウントユーザーのパーソナルアクセストークン。 |
-| すべて                        | `GITLAB_HOST`                | GitLabインスタンスのホスト名（`gitlab.com`など）。 |
-| Anthropic Claude、Opencode | `ANTHROPIC_API_KEY`          | Anthropic APIキー（`injectGatewayToken: true`が設定されている場合はオプション）。 |
-| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI APIキー。 |
-| Amazon Q                   | `AWS_SECRET_NAME`            | AWSシークレットマネージャーのシークレット名。 |
-| Amazon Q                   | `AWS_REGION_NAME`            | AWSリージョン名。 |
-| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4認証情報。 |
-| Google Geminiコマンドラインインターフェース          | `GOOGLE_CREDENTIALS`         | JSON認証情報ファイルの内容。 |
-| Google Geminiコマンドラインインターフェース          | `GOOGLE_CLOUD_PROJECT`       | Google CloudプロジェクトID。 |
-| Google Geminiコマンドラインインターフェース          | `GOOGLE_CLOUD_LOCATION`      | Google Cloudプロジェクトの場所。 |
-
-プロジェクト設定で変数を追加または更新するには、次の手順を実行します:
-
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定** > **CI/CD**を選択します。
 1. **変数**を展開します。
-1. **変数を追加する**を選択し、フィールドに入力します:
-   - **種類**: **変数 (デフォルト)**を選択します。
-   - **環境**: **すべて (デフォルト)**を選択します。
+1. **変数を追加**を選択し、フィールドに入力します:
+   - **タイプ**: **変数（デフォルト）**を選択します。
+   - **環境**: **すべて（デフォルト）**を選択します。
    - **表示レベル**: 目的の表示レベルを選択します。
 
-     APIキーとパーソナルアクセストークンの変数の場合は、**マスクする**または**マスクして非表示**を選択します。
+     パーソナルアクセストークン変数の場合は、**マスクする**または**マスクして非表示**を選択します。
    - **変数の保護**チェックボックスをオフにします。
    - **変数参照を展開**チェックボックスをオフにします。
-   - **説明(オプション)**: 変数の説明を入力します。
-   - **キー**: CI/CD変数の環境変数名（`GITLAB_HOST`など）を入力します。
-   - **値**: APIキー、パーソナルアクセストークン、またはホストの値。
-1. **変数を追加する**を選択します。
+   - **説明（オプション）**: 変数の説明を入力します。
+   - **キー**: CI/CD変数の環境変数名（例: `GITLAB_HOST`）を入力します。
+   - **値**: パーソナルアクセストークンまたはホストの値。
+1. **変数を追加**を選択します。
 
 詳細については、[プロジェクトの設定にCI/CD変数を追加する方法](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui)を参照してください。
 
+### 外部エージェントのCI/CD変数 {#cicd-variables-for-external-agents}
+
+次のCI/CD変数を使用できます:
+
+| 環境変数         | 説明 |
+|------------------------------|-------------|
+| `GITLAB_TOKEN_<integration>` | サービスアカウントユーザーのパーソナルアクセストークン。 |
+| `GITLAB_HOST`                | GitLabインスタンスのホスト名（例: `gitlab.com`）。 |
+
 ## 外部エージェントを作成する {#create-an-external-agent}
 
-外部エージェントを作成し、フロー設定で環境で実行するように設定します。
+次に、外部エージェントを作成し、お使いの環境で実行するように設定します。
 
-### UIを使用する {#by-using-the-ui}
+推奨されるワークフローは次のとおりです:
+
+1. AIカタログでエージェントを作成します。
+1. トップレベルグループのエージェントを有効にします。
+1. エージェントをプロジェクトに追加し、エージェントの呼び出す方法を決定するトリガーを指定します。
+
+この場合、サービスアカウントが作成されます。エージェントの実行時には、ユーザーのメンバーシップとサービスアカウントのメンバーシップの組み合わせが使用されます。この組み合わせは、[複合ID](../composite_identity.md)と呼ばれます。
+
+必要に応じて、[外部エージェントを手動で作成](#create-an-external-agent-manually)できます。
+
+### AIカタログでエージェントを作成する {#create-the-agent-in-the-ai-catalog}
 
 {{< details >}}
 
@@ -177,7 +185,9 @@ GitLab管理の認証情報は、Anthropic ClaudeおよびCodexでのみ使用�
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610)フラグとともにGitLab 18.6で`ai_catalog_third_party_flows`導入されました。GitLab.comで有効になりました。
+- `ai_catalog_third_party_flows`フラグとともにGitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610)されました。GitLab.comで有効になりました。
+- GitLab 18.8の[GitLab Self-ManagedおよびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218840)になりました。
+- GitLab 18.8で追加の`ai_catalog_create_third_party_flows`[フラグ](../../../administration/feature_flags/_index.md)が必要になるように[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217634)されました。デフォルトでは無効になっています。
 
 {{< /history >}}
 
@@ -187,74 +197,142 @@ GitLab管理の認証情報は、Anthropic ClaudeおよびCodexでのみ使用�
 
 {{< /alert >}}
 
-前提要件:
+まず、AIカタログで外部エージェントを作成します。
+
+前提条件: 
 
 - プロジェクトのメンテナーロール以上が必要です。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
-1. **自動化** > **フロー**を選択します。
-1. **新しいフロー**を選択します。
-1. **基本情報**の下:
-   1. **表示名**に名前を入力します。
-   1. **説明**に説明を入力します。
-1. **表示レベルとアクセス**の**表示レベル**で、**プライベート**または**公開**を選択します。
-1. **設定**の下:
+外部エージェントを作成するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **自動化** > **エージェント**を選択します。
+1. **新しいエージェント**を選択します。
+1. **基本情報**で、次の操作を行います:
+   1. **表示名**に、名前を入力します。
+   1. **説明**に、説明を入力します。
+1. **表示レベルとアクセス**の下にある**表示レベル**で、**非公開**または**公開**を選択します。
+1. **設定**で、次の操作を行います:
    1. **外部**を選択します。
-   1. フロー設定を入力します。独自の設定を作成するか、以下のテンプレートの1つを編集できます。
-1. **フローを作成**を選択します。
+   1. 外部エージェント設定を入力します。独自のYAMLを作成するか、サンプル設定を編集できます。
+1. **エージェントを作成**を選択します。
 
 外部エージェントがAIカタログに表示されます。
 
-### フロー設定ファイルを使用する {#by-using-a-flow-configuration-file}
+### トップレベルグループでエージェントを有効にする {#enable-the-agent-in-a-top-level-group}
 
-フロー設定ファイルを手動で追加して外部エージェントを作成する場合は、外部エージェントごとに異なるAIフロー設定ファイルを作成する必要があります。
+次に、トップレベルグループでエージェントを有効にします。
 
-前提要件:
+前提条件: 
 
-- プロジェクトのデベロッパーロール以上を持っている必要があります。
+- グループのオーナーロールが必要です。
 
-フロー設定ファイルを作成するには:
+トップレベルグループで外部エージェントを有効にするには:
 
-1. プロジェクトで、YAMLファイル（例：`.gitlab/duo/flows/claude.yaml`）を作成します。
-1. [フロー設定ファイルの例](flow_examples.md)の1つを使用して、ファイルに入力されたします。
+1. 上部のバーで、**検索または移動先** > **検索**を選択します。
+1. **AIカタログ**を選択し、次に**エージェント**タブを選択します。
+1. 有効にする外部エージェントを選択します。
+1. 右上隅で、**グループで有効にする**を選択します。
+1. ドロップダウンリストから、外部エージェントを有効にするグループを選択します。
+1. **有効化**を選択します。
 
-## 外部エージェントを有効にする {#enable-an-external-agent}
+外部エージェントがグループの**自動化** > **agent**ページに表示されます。
 
-AIカタログから外部エージェントを作成した場合は、それを使用するためにプロジェクトで有効にする必要があります。
+グループ内にサービスアカウントが作成されます。アカウントの名前は、次の命名規則に従います: `ai-<agent>-<group>`。
 
-前提要件:
+### プロジェクトで有効にする {#enable-in-a-project}
+
+前提条件: 
 
 - プロジェクトのメンテナーロール以上が必要です。
+- エージェントは、プロジェクトのトップレベルグループで有効になっている必要があります。
 
 プロジェクトで外部エージェントを有効にするには:
 
-1. 左側のサイドバーで、**検索または移動先** > **検索**を選択します。
-1. **AIカタログ**を選択し、次に**フロー**タブを選択します。
-1. 外部エージェントを選択し、次に**プロジェクトで有効にする**を選択します。
-1. ドロップダウンリストから、外部エージェントを有効にするプロジェクトを選択します。
-1. **有効**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **自動化** > **エージェント**を選択します。
+1. 右上隅で、**グループからのエージェントを有効にする**を選択します。
+1. ドロップダウンリストから、有効にする外部エージェントを選択します。
+1. **トリガーを追加**で、外部エージェントをトリガーするイベントタイプを選択します:
+   - **メンション**: イシューまたはマージリクエストのコメントでサービスアカウントユーザーがメンションされたとき。
+   - **アサイン**: サービスアカウントユーザーがイシューまたはマージリクエストにアサインされたとき。
+   - **レビュアーをアサインする**: サービスアカウントユーザーがレビュアーとしてマージリクエストにアサインされたとき。
+1. **有効化**を選択します。
 
-外部エージェントがプロジェクトの**フロー**リストに表示されます。
+外部エージェントがプロジェクトの**自動化** > **agent**リストに表示されます。
 
-## トリガーを作成する {#create-a-trigger}
-
-外部エージェントがいつ実行されるかを決定する[トリガーを作成](../triggers/_index.md)する必要があります。
-
-たとえば、ディスカッションでサービスアカウントに言及したとき、またはサービスアカウントをレビュアーとして割り当てたときに、エージェントがトリガーされるように指定できます。
+トップレベルグループのサービスアカウントがプロジェクトに追加されます。このアカウントには、デベロッパーロールが割り当てられます。
 
 ## 外部エージェントを使用する {#use-an-external-agent}
 
-前提要件:
+前提条件: 
 
-- プロジェクトのデベロッパーロール以上を持っている必要があります。
-- AIカタログから外部エージェントを作成した場合、エージェントはプロジェクトで有効にする必要があります。
-- エージェントがワークロードブランチ（`workloads/*`）にプッシュできるようにするには、[ブランチルール](../../project/repository/branches/branch_rules.md)を作成する必要がある場合があります。
+- プロジェクトのデベロッパーロール以上が必要です。
+- AIカタログから外部エージェントを作成した場合、プロジェクトでそのエージェントを有効にする必要があります。
+- エージェントがワークロードブランチ（`workloads/*`）にプッシュできるようにするには、[ブランチルール](../../project/repository/branches/branch_rules.md)の作成が必要になる場合があります。
 
 1. プロジェクトで、イシュー、マージリクエスト、またはエピックを開きます。
-1. フローサービスアカウントユーザー名に言及、割り当て、またはレビューをリクエストします。例: 
+1. サービスアカウントユーザーにメンション、割り当て、またはレビューをリクエストします。例: 
 
-   ```markdown
-   @service-account-username can you help analyze this code change?
+   ```plaintext
+   @service-account-username Can you help analyze this code change?
    ```
 
-1. 外部エージェントがタスクを完了すると、確認が表示され、すぐにマージできる変更またはインラインコメントが表示されます。
+1. 外部エージェントがタスクを完了すると、確認メッセージが表示され、すぐにマージ可能な変更またはインラインコメントが表示されます。
+
+## 外部エージェントを手動で作成する {#create-an-external-agent-manually}
+
+{{< history >}}
+
+- GitLab 18.8で追加の`ai_catalog_create_third_party_flows`[フラグ](../../../administration/feature_flags/_index.md)が必要になるように変更されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+{{< /alert >}}
+
+UIのワークフローに従わない場合は、外部エージェントを手動で作成できます:
+
+1. プロジェクトに設定ファイルを作成します。
+1. サービスアカウントを作成します。
+1. エージェントの呼び出す方法を決定するトリガーを作成します。
+1. エージェントを使用します。
+
+この場合、エージェントの実行に使用されるサービスアカウントを手動で作成します。
+
+### 設定ファイルを作成する {#create-a-configuration-file}
+
+手動で設定ファイルを追加して外部エージェントを作成する場合は、外部エージェントごとに異なる設定ファイルを作成する必要があります。
+
+前提条件: 
+
+- プロジェクトのデベロッパーロール以上が必要です。
+
+設定ファイルを作成するには:
+
+1. プロジェクトで、YAMLファイルを作成します。例: `.gitlab/duo/flows/claude.yaml`
+1. [いずれかの設定ファイルの例](external_examples.md)を使用してファイルにデータを入力します。
+
+### サービスアカウントを作成する {#create-a-service-account}
+
+外部エージェントを使用するプロジェクトへのアクセス権を持つ[サービスアカウント](../../../user/profile/service_accounts.md)を作成する必要があります。
+
+エージェントの実行時には、ユーザーのメンバーシップとサービスアカウントのメンバーシップの組み合わせが使用されます。この組み合わせは、[複合ID](../composite_identity.md)と呼ばれます。
+
+前提条件: 
+
+- GitLab.comでは、プロジェクトが属するトップレベルグループのオーナーロールが必要です。
+- GitLab Self-ManagedおよびGitLab Dedicatedでは、次のいずれかが必要です:
+  - インスタンスへの管理者アクセス権。
+  - トップレベルグループのオーナーロールおよび[サービスアカウントを作成する権限](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts)。
+
+サービスアカウントを作成して割り当てるには:
+
+### トリガーを作成する {#create-a-trigger}
+
+次に、外部エージェントがいつ実行されるかを定義する[トリガーを作成](../triggers/_index.md)する必要があります。
+
+たとえば、ディスカッションでサービスアカウントにメンションしたとき、またはサービスアカウントをレビュアーとしてアサインしたときに、エージェントがトリガーされるよう指定できます。

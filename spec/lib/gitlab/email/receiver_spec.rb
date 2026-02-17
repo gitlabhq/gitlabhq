@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
+RSpec.describe Gitlab::Email::Receiver, feature_category: :service_desk do
   include_context 'email shared context'
 
   let_it_be_with_reload(:project) { create(:project) }

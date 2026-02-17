@@ -63,8 +63,7 @@ module Limitable
 
     errors.add(
       :base,
-      _("Maximum number of %{name} (%{count}) exceeded") %
-        { name: limit_name.humanize(capitalize: false), count: limits.public_send(limit_name) } # rubocop:disable GitlabSecurity/PublicSend
+      format(_("Maximum number of %{name} (%{count}) exceeded"), name: limit_name.humanize(capitalize: false), count: limits.public_send(limit_name)) # rubocop:disable GitlabSecurity/PublicSend
     )
   end
 end

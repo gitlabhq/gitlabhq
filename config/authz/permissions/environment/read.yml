@@ -1,0 +1,5 @@
+---
+name: read_environment
+description: Grants the ability to view environments in a project
+boundaries:
+  - project

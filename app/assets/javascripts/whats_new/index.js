@@ -14,6 +14,7 @@ export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
     document.body.append(el);
     whatsNewApp = new Vue({
       el,
+      name: 'WhatsNewAppRoot',
       store,
       render(createElement) {
         return createElement(WhatsNewApp, {

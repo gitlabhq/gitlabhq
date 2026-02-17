@@ -139,17 +139,45 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
 
     context 'when transitioning from current to active' do
-      let!(:next_ci_partition) { create(:ci_partition, :ready) }
+      let(:current_from) { nil }
+      let!(:next_ci_partition) { create(:ci_partition, :ready, current_from: current_from) }
 
       before do
         ci_partition.update!(status: described_class.statuses[:current])
         allow(next_ci_partition).to receive(:all_partitions_exist?).and_return(true)
-        next_ci_partition.switch_writes!
       end
 
       it 'updates statuses for current and next partition' do
-        expect(ci_partition.reload).to be_active
-        expect(next_ci_partition.reload).to be_current
+        expect do
+          next_ci_partition.switch_writes!
+        end
+        .to change { ci_partition.reload.status_name }.from(:current).to(:active)
+        .and change { next_ci_partition.reload.status_name }.from(:ready).to(:current)
+      end
+
+      it 'sets current_from on the new current partition' do
+        expect do
+          next_ci_partition.switch_writes!
+        end
+        .to change { next_ci_partition.reload.current_from }.from(nil).to(be_present)
+      end
+
+      it 'sets current_until on the previous current partition' do
+        expect do
+          next_ci_partition.switch_writes!
+        end
+        .to change { ci_partition.reload.current_until }.from(nil).to(be_present)
+      end
+
+      context 'when current_from exists' do
+        let(:current_from) { Time.current - 8.days }
+
+        it 'does not change current_from' do
+          expect do
+            next_ci_partition.switch_writes!
+          end
+          .not_to change { ci_partition.reload.current_from }
+        end
       end
     end
   end
@@ -209,7 +237,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
 
     context 'when all partitions are below the threshold' do
-      let(:threshold) { 1.megabyte }
+      let(:threshold) { 100.megabytes }
 
       it { is_expected.to eq(false) }
     end

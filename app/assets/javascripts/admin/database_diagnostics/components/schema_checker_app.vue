@@ -121,17 +121,16 @@ export default {
       <h2 data-testid="title">
         {{ s__('DatabaseDiagnostics|Schema health check') }}
       </h2>
-      <p class="gl-text-gray-500">
+      <p>
         {{
-          s__('DatabaseDiagnostics|Detect database schema inconsistencies and structural issues')
+          s__('DatabaseDiagnostics|Detect database schema inconsistencies and structural issues.')
         }}
       </p>
-      <p v-if="formattedLastRunAt" class="gl-text-sm gl-text-gray-500" data-testid="last-run">
+      <p v-if="formattedLastRunAt" class="gl-text-sm gl-text-subtle" data-testid="last-run">
         {{ formattedLastRunAt }}
       </p>
 
       <gl-button
-        variant="confirm"
         :disabled="isLoading"
         data-testid="run-diagnostics-button"
         @click="runSchemaDiagnostics"
@@ -160,13 +159,5 @@ export default {
     <template v-else-if="hasSchemaDiagnostics">
       <schema-results-container :schema-diagnostics="schemaDiagnostics" />
     </template>
-
-    <gl-alert v-else variant="info" data-testid="no-results-message" :dismissible="false">
-      {{
-        s__(
-          'DatabaseDiagnostics|Select "Run Schema Check" to analyze your database schema for potential issues.',
-        )
-      }}
-    </gl-alert>
   </main>
 </template>

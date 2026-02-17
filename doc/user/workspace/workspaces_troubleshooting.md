@@ -24,6 +24,21 @@ To resolve this issue:
 1. Restart the agent instance.
 1. If the issue persists, check your Kubernetes cluster's health and connectivity.
 
+## Error: `Workspace create failed: Expiration date must be before <date>`
+
+When creating a workspace, you might encounter this error in the UI:
+
+```plaintext
+Workspace create failed: Expiration date must be before <date>
+```
+
+This error happens when the [personal access token created for authentication](_index.md#personal-access-token)
+to the newly created workspace has an expiry date that exceeds the instance setting for token expiry.
+
+To resolve this issue, disable the [access token expiry limit for the instance](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
+[Issue 579331)](https://gitlab.com/gitlab-org/gitlab/-/work_items/579331) proposes
+a configurable limit for workspace-related tokens to address this limitation.
+
 ## Error: `No agents available to create workspaces`
 
 When you create a workspace in a project, you might get the following error:
@@ -36,7 +51,7 @@ This error can occur for several reasons. Work through the following troubleshoo
 
 ### Check permissions
 
-1. Ensure you have at least the Developer role for both the workspace project and agent project.
+1. Ensure you have the Developer, Maintainer, or Owner role for both the workspace project and agent project.
 1. Verify the agent is allowed in an ancestor group of your workspace project.
 
 For more information, see [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group).
@@ -93,12 +108,9 @@ workspace-example-abc123-def456   0/1   Init:ImagePullBackOff   0
 This error occurs when the workspace cannot pull init container images from `registry.gitlab.com`.
 In offline environments, the init container image is hardcoded and cannot be overridden from your devfile.
 
-{{< alert type="warning" >}}
-
-The following workaround is unsupported and temporary. Use at your own risk until
-[issue 509983](https://gitlab.com/gitlab-org/gitlab/-/issues/509983) provides a supported solution.
-
-{{< /alert >}}
+> [!warning]
+> The following workaround is unsupported and temporary. Use at your own risk until
+> [issue 509983](https://gitlab.com/gitlab-org/gitlab/-/issues/509983) provides a supported solution.
 
 The workaround is:
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # TODO use shared examples to merge this spec with discussion_lock_spec.rb
 # https://gitlab.com/gitlab-org/gitlab/-/issues/255910
 

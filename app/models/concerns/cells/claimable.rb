@@ -29,17 +29,21 @@ module Cells
             .const_get("RAILS_TABLE_#{table_name.upcase}", false)
       end
 
-      def cells_claims_attribute(name, type:)
+      def cells_claims_attribute(name, type:, feature_flag: nil)
         self.cells_claims_attributes = cells_claims_attributes
-          .merge(name => { type: type })
+          .merge(name => { type: type, feature_flag: feature_flag })
           .freeze
       end
     end
 
-    def handle_grpc_error(error, value)
+    def handle_grpc_error(error)
       case error.code
       when GRPC::Core::StatusCodes::ALREADY_EXISTS
-        errors.add(unique_attribute, :taken, value: value)
+        unique_attribute = unique_attributes.to_sentence(two_words_connector: ' or ')
+        error_key = :"#{unique_attribute.parameterize(separator: '_')}_taken"
+        return if errors.added?(:base, error_key)
+
+        errors.add(:base, error_key, message: "#{unique_attribute} has already been taken")
       when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
         errors.add(:base, "Request timed out. Please try again.")
       when GRPC::Core::StatusCodes::NOT_FOUND
@@ -51,11 +55,20 @@ module Cells
 
     private
 
+    # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against feature flag name dynamically
+    def cells_claims_enabled_for_attribute?(attribute_config)
+      return true if attribute_config[:feature_flag].nil?
+
+      Feature.enabled?(attribute_config[:feature_flag], :current_request)
+    end
+    # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+
     def cells_claims_save_changes
       transaction_record = ::Cells::TransactionRecord.current_transaction(connection)
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
+        next unless cells_claims_enabled_for_attribute?(config)
         next unless saved_change_to_attribute?(attribute)
 
         was, is = saved_change_to_attribute(attribute)
@@ -77,6 +90,8 @@ module Cells
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
+        next unless cells_claims_enabled_for_attribute?(config)
+
         transaction_record.destroy_record(
           cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
       end
@@ -93,9 +108,23 @@ module Cells
 
     def cells_claims_default_metadata
       @cells_claims_default_metadata ||= begin
-        rails_primary_key_id = read_attribute(self.class.primary_key)
+        rails_primary_key = read_attribute(self.class.primary_key)
 
-        raise MissingPrimaryKeyError unless rails_primary_key_id
+        raise MissingPrimaryKeyError unless rails_primary_key
+
+        rails_primary_key_bytes =
+          case rails_primary_key
+          when Integer
+            [rails_primary_key].pack("Q>") # uint64 big-endian
+          when String
+            if Gitlab::UUID.uuid?(rails_primary_key)
+              [rails_primary_key.delete("-")].pack("H*") # UUID: remove dashes and encode as hex
+            else
+              rails_primary_key # Raw string, pass as is
+            end
+          else
+            raise ArgumentError, "Unsupported primary key type: #{rails_primary_key.class}"
+          end
 
         {
           subject: {
@@ -104,8 +133,9 @@ module Cells
           },
           source: {
             type: self.class.cells_claims_source_type,
-            rails_primary_key_id: rails_primary_key_id
-          }
+            rails_primary_key_id: rails_primary_key_bytes
+          },
+          record: self
         }
       end
     end

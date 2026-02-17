@@ -6,7 +6,7 @@ query projectUsersSearchWithMRPermissions(
   $fullPath: ID!
   $mergeRequestId: MergeRequestID!
 ) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     users: projectMembers(
       search: $search

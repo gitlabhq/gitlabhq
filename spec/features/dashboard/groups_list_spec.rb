@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
+  include GlFilteredSearchHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:current_organization) { user.organization }
@@ -31,15 +32,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_groups_path, :groups
-
-  it 'pushes `archive_group` feature flag' do
-    stub_feature_flags(archive_group: true)
-
-    sign_in(user)
-    visit dashboard_groups_path
-
-    expect(page).to have_pushed_frontend_feature_flags(archiveGroup: true)
-  end
 
   context 'when `Member` tab is selected' do
     before do
@@ -359,9 +351,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

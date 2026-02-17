@@ -9,7 +9,7 @@ import {
   GlAnimatedNotificationIcon,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { TYPE_ISSUE, TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_EPIC, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -81,16 +81,16 @@ export default {
         return !this.iid;
       },
       update(data) {
-        return data.workspace?.issuable?.subscribed || false;
+        return data.namespace?.issuable?.subscribed || false;
       },
       result({ data }) {
         if (!data) {
           return;
         }
         this.emailsDisabled = this.parentIsGroup
-          ? data.workspace?.emailsDisabled
-          : data.workspace?.issuable?.emailsDisabled;
-        this.$emit('subscribedUpdated', data.workspace?.issuable?.subscribed);
+          ? data.namespace?.emailsDisabled
+          : data.namespace?.issuable?.emailsDisabled;
+        this.$emit('subscribedUpdated', data.namespace?.issuable?.subscribed);
       },
       error() {
         createAlert({
@@ -128,7 +128,7 @@ export default {
     },
     subscribeDisabledDescription() {
       return sprintf(__('Disabled by %{parent} owner'), {
-        parent: this.parentIsGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT,
+        parent: this.parentIsGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT,
       });
     },
     isLoggedIn() {

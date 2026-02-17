@@ -1,6 +1,7 @@
 #import "./fragments/version.fragment.graphql"
 #import "./fragments/diff_refs.fragment.graphql"
 
+# @feature_category: design_management
 query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersionID) {
   workItem(id: $id) {
     id

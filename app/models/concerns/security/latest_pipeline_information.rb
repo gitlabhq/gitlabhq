@@ -13,7 +13,7 @@ module Security
         builds = latest_security_builds
         builds = builds.select { |build| build.status == 'success' } if only_successful_builds
         reports = builds.flat_map do |build|
-          build.options[:artifacts][:reports].keys
+          build_reports(build)
         end
 
         normalize_for_sast_reports(reports, builds)
@@ -43,6 +43,10 @@ module Security
           r.push(:sast)
         end
       end.uniq
+    end
+
+    def build_reports(build)
+      build.options.dig(:artifacts, :reports)&.keys
     end
 
     def latest_security_builds

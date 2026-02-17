@@ -2,7 +2,6 @@ import '~/webpack';
 import '~/commons';
 import {
   initSuperSidebar,
-  initSuperSidebarToggle,
   initPageBreadcrumbs,
   getSuperSidebarData,
   initSuperTopbar,
@@ -11,6 +10,5 @@ import {
 const superSidebarData = getSuperSidebarData();
 
 initSuperSidebar(superSidebarData);
-initSuperSidebarToggle();
 initSuperTopbar(superSidebarData);
 initPageBreadcrumbs();

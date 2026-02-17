@@ -206,7 +206,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
                 expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
-                                                           { provider: 'saml', extern_uid: uid }])
+                  { provider: 'saml', extern_uid: uid }])
               end
             end
 
@@ -297,7 +297,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
                 expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
-                                                           { provider: 'saml', extern_uid: uid }])
+                  { provider: 'saml', extern_uid: uid }])
               end
 
               it 'saves successfully on subsequent tries, when both identities are present' do
@@ -326,7 +326,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
                 expect(local_gl_user.identities.length).to be 2
                 identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
-                                                           { provider: 'saml', extern_uid: dn }])
+                  { provider: 'saml', extern_uid: dn }])
               end
             end
           end

@@ -97,5 +97,47 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::LocationExpander, feature_c
         is_expected.to eq(locations)
       end
     end
+
+    context 'when expandset contains files with same paths from different projects' do
+      let_it_be(:project1) { create(:project, :repository) }
+      let_it_be(:project2) { create(:project, :repository) }
+
+      let(:locations) do
+        [{ local: 'helpers/*.yml' }]
+      end
+
+      let(:project_files) do
+        { 'helpers/file1.yml' => 'content from project2' }
+      end
+
+      let(:context) do
+        Gitlab::Ci::Config::External::Context.new(project: project2, user: user, sha: project2.commit.sha)
+      end
+
+      around do |example|
+        create_and_delete_files(project2, project_files) do
+          example.run
+        end
+      end
+
+      before do
+        context1 = Gitlab::Ci::Config::External::Context.new(
+          project: project1,
+          user: user,
+          sha: project1.commit.sha
+        )
+
+        existing_file = Gitlab::Ci::Config::External::File::Local.new(
+          { local: 'helpers/file1.yml' },
+          context1
+        )
+
+        context.expandset << existing_file
+      end
+
+      it 'does not skip files with same path from different projects' do
+        expect(process).to eq([{ local: 'helpers/file1.yml' }])
+      end
+    end
   end
 end

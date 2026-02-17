@@ -17,7 +17,7 @@ module ExploreHelper
 
     exist_opts[:language] = params[:language]
 
-    options = exist_opts.merge(options).delete_if { |key, value| value.blank? }
+    options = exist_opts.merge(options).delete_if { |_key, value| value.blank? }
     request_path_with_options(options)
   end
 
@@ -40,6 +40,22 @@ module ExploreHelper
 
   def projects_filter_selected(visibility_level)
     visibility_level.present? ? visibility_level_label(visibility_level.to_i) : _('Any')
+  end
+
+  def explore_projects_app_data
+    {
+      initial_sort: group_project_list_sort_by,
+      programming_languages: programming_languages.to_json,
+      base_path: explore_projects_path
+    }
+  end
+
+  def explore_groups_app_data
+    {
+      endpoint: explore_groups_path(format: :json),
+      initial_sort: group_project_list_sort_by,
+      base_path: explore_groups_path
+    }
   end
 
   private

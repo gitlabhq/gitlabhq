@@ -31,7 +31,12 @@ class MergeRequestDiffEntity < Grape::Entity
 
     next unless project
 
-    merge_request_version_path(project, merge_request, merge_request_diff)
+    merge_request_version_path(
+      project,
+      merge_request,
+      merge_request_diff,
+      path_extra_options
+    )
   end
 
   expose :head_version_path do |merge_request_diff|
@@ -39,7 +44,11 @@ class MergeRequestDiffEntity < Grape::Entity
 
     next unless project && merge_request.diffable_merge_ref?
 
-    diffs_project_merge_request_path(project, merge_request, diff_head: true)
+    diffs_project_merge_request_path(
+      project,
+      merge_request,
+      path_extra_options.merge(diff_head: true)
+    )
   end
 
   expose :version_path do |merge_request_diff|
@@ -48,7 +57,12 @@ class MergeRequestDiffEntity < Grape::Entity
 
     next unless project
 
-    merge_request_version_path(project, merge_request, merge_request_diff, start_sha)
+    merge_request_version_path(
+      project,
+      merge_request,
+      merge_request_diff,
+      path_extra_options.merge(start_sha: start_sha)
+    )
   end
 
   expose :compare_path do |merge_request_diff|
@@ -56,11 +70,20 @@ class MergeRequestDiffEntity < Grape::Entity
     diff = options[:merge_request_diff]
 
     if project && diff
-      merge_request_version_path(project, merge_request, diff, merge_request_diff.head_commit_sha)
+      merge_request_version_path(
+        project,
+        merge_request,
+        diff,
+        path_extra_options.merge(start_sha: merge_request_diff.head_commit_sha)
+      )
     end
   end
 
   def merge_request
     options[:merge_request]
+  end
+
+  def path_extra_options
+    options[:path_extra_options] || {}
   end
 end

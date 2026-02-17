@@ -83,7 +83,7 @@ module API
         # params is used to update the label so we need to remove this field here
         params.delete(:label_id)
         params.delete(:name)
-        params.delete(:archived) unless Feature.enabled?(:labels_archive, :instance)
+        params.delete(:archived) unless Feature.enabled?(:labels_archive, label.group || label.project.group)
 
         update_params = declared_params(include_missing: false)
 

@@ -2,13 +2,13 @@ import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import TreeList from '~/diffs/components/tree_list.vue';
-import DiffFileRow from '~/diffs/components//diff_file_row.vue';
+import FileRow from '~/vue_shared/components/file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { isElementClipped } from '~/lib/utils/common_utils';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useCodeReview } from '~/diffs/stores/code_review';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { isElementClipped } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -18,10 +18,9 @@ describe('Diffs tree list component', () => {
   let wrapper;
   let pinia;
   const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
-  const getFileRow = () => wrapper.findComponent(DiffFileRow);
   const findDiffTreeSearch = () => wrapper.findByTestId('diff-tree-search');
 
-  const createComponent = ({ hideFileStats = false, ...rest } = {}) => {
+  const createComponent = ({ hideFileStats = false, ...rest } = {}, { stubs } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
       pinia,
       propsData: { hideFileStats, rowHeight: 30, ...rest },
@@ -39,6 +38,7 @@ describe('Diffs tree list component', () => {
               '<div><template v-for="item in items"><slot :item="item"></slot></template></div>',
           },
         ),
+        ...stubs,
       },
     });
   };
@@ -99,6 +99,7 @@ describe('Diffs tree list component', () => {
         tree: [],
         file_path: 'app/index.js',
         file_hash: 'app-index',
+        codeReviewId: 12345,
       },
       'unordered.rb': {
         addedLines: 0,
@@ -231,19 +232,24 @@ describe('Diffs tree list component', () => {
     });
 
     it('re-emits clickFile event', () => {
-      const obj = {};
-      wrapper.findComponent(DiffFileRow).vm.$emit('clickFile', obj);
-      expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+      const row = wrapper.findComponent(FileRow);
+      const item = row.props('file');
+      row.vm.$emit('clickFile', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('clickFile')).toMatchObject([[item]]);
     });
 
-    it('hides file stats', () => {
-      createComponent({ hideFileStats: true });
-      expect(getFileRow().props('hideFileStats')).toBe(true);
+    it('re-emits clickSubmodule as clickFile event', () => {
+      const row = wrapper.findComponent(FileRow);
+      const item = row.props('file');
+      row.vm.$emit('clickSubmodule', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('clickFile')).toMatchObject([[item]]);
     });
 
-    it('re-emits toggleTreeOpen event as toggleFolder', () => {
-      getFileRow().vm.$emit('toggleTreeOpen', 'app');
-      expect(wrapper.emitted('toggleFolder')).toStrictEqual([['app']]);
+    it('re-emits clickTree event as toggleFolder', () => {
+      const row = wrapper.findComponent(FileRow);
+      const item = row.props('file');
+      row.vm.$emit('clickTree', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('toggleFolder')).toMatchObject([[item.path]]);
     });
 
     describe('when renderTreeList is false', () => {
@@ -297,15 +303,17 @@ describe('Diffs tree list component', () => {
       useCodeReview().reviewedIds = reviewedIds;
     });
 
-    it('passes the reviewedIds to the FileTree', async () => {
+    it('sets viewed property based on reviewedIds', async () => {
       createComponent();
 
       await nextTick();
-      expect(getFileRow().props('viewedFiles')).toBe(reviewedIds);
+      const items = getScroller().props('items');
+      const viewedFile = items.find((item) => item.codeReviewId === 12345);
+      expect(viewedFile?.viewed).toBe(true);
     });
   });
 
-  describe('diff tree set current file auto scoll', () => {
+  describe('diff tree active file scroll', () => {
     const filePaths = [];
 
     for (let i = 1; i <= 10; i += 1) {
@@ -325,19 +333,27 @@ describe('Diffs tree list component', () => {
     };
 
     beforeEach(() => {
-      createComponent();
       setupFiles(filePaths.map(([name, path]) => createFile(name, path)));
     });
 
-    it('auto scroll', async () => {
-      wrapper.element.insertAdjacentHTML('afterbegin', `<div data-file-row="05.txt"><div>`);
-      isElementClipped.mockReturnValueOnce(true);
-      wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
-      await wrapper.setProps({ currentDiffFileId: '05.txt' });
+    it('scrolls to selected item when item is virtualized', async () => {
+      const scrollToItem = jest.fn();
+      createComponent(
+        { currentDiffFileId: '05.txt' },
+        { stubs: { RecycleScroller: { render() {}, methods: { scrollToItem } } } },
+      );
+      await nextTick();
       jest.runAllTimers();
+      expect(scrollToItem).toHaveBeenCalledWith(5);
+    });
 
-      expect(wrapper.vm.currentDiffFileId).toBe('05.txt');
-      expect(wrapper.vm.$refs.scroller.scrollToItem).toHaveBeenCalledWith(5);
+    it('scrolls clipped item into view', async () => {
+      isElementClipped.mockReturnValueOnce(true);
+      const spy = jest.spyOn(HTMLElement.prototype, 'scrollIntoView');
+      createComponent({ currentDiffFileId: '05.txt' });
+      await nextTick();
+      jest.runAllTimers();
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -450,16 +466,16 @@ describe('Diffs tree list component', () => {
       const loadedFile = getLoadingFile();
       createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
       const loadingItemIndex = getScroller().props('items').indexOf(findLoadingItem(loadedFile));
-      expect(
-        wrapper.findAllComponents(DiffFileRow).at(loadingItemIndex).attributes('tabindex'),
-      ).toBe('-1');
+      expect(wrapper.findAllComponents(FileRow).at(loadingItemIndex).attributes('tabindex')).toBe(
+        '-1',
+      );
     });
 
     it('ignores clicks on loading files', () => {
       const loadedFile = getLoadingFile();
       createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
       const loadingItemIndex = getScroller().props('items').indexOf(findLoadingItem(loadedFile));
-      wrapper.findAllComponents(DiffFileRow).at(loadingItemIndex).vm.$emit('clickFile', {});
+      wrapper.findAllComponents(FileRow).at(loadingItemIndex).vm.$emit('clickFile', {});
       expect(wrapper.emitted('clickFile')).toBe(undefined);
     });
   });

@@ -7,11 +7,7 @@ import ProtectionToggle from '~/projects/settings/branch_rules/components/view/p
 describe('ProtectionToggle', () => {
   let wrapper;
 
-  const createComponent = ({
-    props = {},
-    provided = {},
-    glFeatures = { editBranchRules: true },
-  } = {}) => {
+  const createComponent = ({ props = {}, provided = {} } = {}) => {
     wrapper = shallowMountExtended(ProtectionToggle, {
       stubs: {
         GlToggle,
@@ -20,7 +16,6 @@ describe('ProtectionToggle', () => {
         GlSprintf,
       },
       provide: {
-        glFeatures,
         ...provided,
       },
       propsData: {
@@ -87,7 +82,7 @@ describe('ProtectionToggle', () => {
       });
     });
 
-    describe('when protected by security policies', () => {
+    describe('when protected by enforced security policies', () => {
       beforeEach(() => {
         createComponent({
           props: { isProtected: true, isProtectedByPolicy: true },
@@ -98,6 +93,24 @@ describe('ProtectionToggle', () => {
       it('renders disabled by policy popover and disabled toggle, when protection is on', () => {
         expect(findToggle().props('disabled')).toBe(true);
         expect(findDisabledByPolicyPopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when protected by warn mode security policies', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isProtected: true, isProtectedByWarnPolicy: true },
+          provided: { canAdminProtectedBranches: true },
+        });
+      });
+
+      it('renders disabled by policy popover with warn mode', () => {
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
+        expect(findDisabledByPolicyPopover().props('isProtectedByPolicy')).toBe(false);
+      });
+
+      it('does not disable the toggle', () => {
+        expect(findToggle().props('disabled')).toBe(false);
       });
     });
   });
@@ -122,23 +135,6 @@ describe('ProtectionToggle', () => {
       });
 
       expect(wrapper.text()).toContain('Some description');
-    });
-  });
-
-  describe('when glFeatures.editBranchRules is false', () => {
-    beforeEach(() => {
-      createComponent({
-        glFeatures: { editBranchRules: false },
-        provided: { canAdminProtectedBranches: true },
-      });
-    });
-
-    it('does not render the toggle even for users with edit privileges', () => {
-      expect(findToggle().exists()).toBe(false);
-    });
-
-    it('does not render the toggle description when not provided', () => {
-      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
     });
   });
 });

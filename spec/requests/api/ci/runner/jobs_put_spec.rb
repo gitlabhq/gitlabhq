@@ -314,6 +314,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
+      context 'when job token JWT has expired' do
+        let!(:jwt_token) { ::Ci::JobToken::Jwt.encode(job) }
+
+        it 'returns 403 Forbidden' do
+          travel_to(3.hours.from_now) do
+            update_job(job.id, jwt_token, state: 'success')
+          end
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'fails the job with job_token_expired reason' do
+          travel_to(3.hours.from_now) do
+            expect { update_job(job.id, jwt_token, state: 'success') }
+              .to change { job.reload.status }.from('running').to('failed')
+
+            expect(response.header['Job-Status']).to eq('failed')
+            expect(job.failure_reason).to eq('job_token_expired')
+          end
+        end
+
+        it 'logs the job failure' do
+          expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including(
+            job_id: job.id,
+            job_user_id: job.user_id,
+            job_project_id: job.project_id,
+            message: "Job failed due to expired JWT"
+          ))
+
+          travel_to(3.hours.from_now) do
+            update_job(job.id, jwt_token, state: 'success')
+          end
+        end
+      end
+
       def update_job(job_id = job.id, token = job.token, **params)
         put api("/jobs/#{job_id}"), params: params.merge(token: token)
       end

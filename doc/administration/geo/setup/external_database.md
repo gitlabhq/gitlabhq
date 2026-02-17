@@ -22,14 +22,11 @@ the [Linux package ships with](../../package_information/postgresql_versions.md)
 to [avoid version mismatches](../_index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
-{{< alert type="note" >}}
-
-If you're using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
-[validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
-as we actively develop and test based on those.
-We cannot guarantee compatibility with other external databases.
-
-{{< /alert >}}
+> [!note]
+> If you're using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
+> [validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
+> as we actively develop and test based on those.
+> We cannot guarantee compatibility with other external databases.
 
 ## **Primary** site
 
@@ -50,7 +47,7 @@ We cannot guarantee compatibility with other external databases.
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -91,13 +88,10 @@ cloud providers:
 
 When your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
 
-{{< alert type="warning" >}}
-
-The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/)
-or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance,
-replicate from an on-premise primary database to an RDS secondary are not supported.
-
-{{< /alert >}}
+> [!warning]
+> The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/)
+> or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance,
+> replicate from an on-premise primary database to an RDS secondary are not supported.
 
 #### Manually configure the primary database for replication
 
@@ -230,15 +224,12 @@ to grant additional roles to your tracking database user (by default, this is
 This is for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-{{< alert type="note" >}}
-
-If you want to use Amazon RDS as a tracking database, make sure it has access to
-the secondary database. Unfortunately, just assigning the same security group is not enough as
-outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
-rule to the read-replica's security group allowing any TCP traffic from
-the tracking database on port 5432.
-
-{{< /alert >}}
+> [!note]
+> If you want to use Amazon RDS as a tracking database, make sure it has access to
+> the secondary database. Unfortunately, just assigning the same security group is not enough as
+> outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
+> rule to the read-replica's security group allowing any TCP traffic from
+> the tracking database on port 5432.
 
 #### Create the tracking database
 

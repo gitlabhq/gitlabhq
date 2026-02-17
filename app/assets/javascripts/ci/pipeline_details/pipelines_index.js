@@ -55,6 +55,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
 
   return new Vue({
     el,
+    name: 'PipelinesRoot',
     apolloProvider,
     provide: {
       artifactsEndpoint,
@@ -128,10 +129,13 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     usesExternalConfig,
     emptyStateIllustrationPath,
     pipelineEditorPath,
+    projectPipelinesEtagPath,
+    hasGitlabCi,
   } = el.dataset;
 
   return new Vue({
     el,
+    name: 'PipelinesGraphqlRoot',
     apolloProvider,
     provide: {
       artifactsEndpoint,
@@ -150,8 +154,10 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       canCreatePipeline: parseBoolean(canCreatePipeline),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
       usesExternalConfig: parseBoolean(usesExternalConfig),
+      hasGitlabCi: parseBoolean(hasGitlabCi),
       emptyStateIllustrationPath,
       pipelineEditorPath,
+      projectPipelinesEtagPath,
     },
     created() {
       if (doesHashExistInUrl('delete_success')) {

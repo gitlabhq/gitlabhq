@@ -260,7 +260,7 @@ Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do
 
 ## AI Gateway
 
-Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI Gateway** (lowercase), and do not hyphenate.
 
 ## AI-powered, AI-native
 
@@ -550,6 +550,18 @@ You can omit **CI/CD** when the context is clear, especially after the first use
 
 Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
 
+## classic
+
+Some GitLab Duo features are non-agentic. These features should be described in the documentation
+with **(Classic)** after the feature name. For example:
+
+- GitLab Duo Chat (Classic)
+- GitLab Duo Vulnerability Resolution (Classic)
+
+You can also use a phrase that includes **classic** as lowercase. For example:
+
+- This new agentic feature is different from the classic version.
+
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
@@ -724,7 +736,7 @@ Use:
 
 ## create
 
-Use **create** when an object does not exist and you are creating it for the first time.  **Create** is the opposite of [delete](#delete).
+Use **create** when an object does not exist and you are creating it for the first time. **Create** is the opposite of [delete](#delete).
 
 For example:
 
@@ -733,6 +745,16 @@ For example:
 Do not confuse **create** with [**add**](#add).
 
 Do not use **create new**. The word **create** implies that the object is new, and the extra word is not necessary.
+
+## credits, GitLab Credits
+
+Use **GitLab Credits** (uppercase) to refer to the usage-based billing feature.
+Use **credits** (lowercase) to refer to the unit of measurement.
+
+For example:
+
+- GitLab Credits are the standardized consumption unit used for usage-based billing.
+- You can view your credit usage in the GitLab Credits dashboard.
 
 ## currently
 
@@ -953,7 +975,7 @@ Use:
 
 - Configure GitLab editor extensions in your IDE.
 - Code Suggestions is available in the following editor extensions.
-- On the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
+- In the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
 
 ## e.g.
 
@@ -1107,7 +1129,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1223,7 +1245,7 @@ This guidance follows the [Use of Third-party Trademarks](https://handbook.gitla
 
 Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
 that is hosted by a third-party provider, and that customers access by using the GitLab
-[AI gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
+[AI Gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
 
 Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
 or when the customer uses the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)
@@ -1251,8 +1273,8 @@ Do not use **Dedicated for Government** by itself. Always use **GitLab Dedicated
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.
 
-On first use on a page, use **GitLab Duo `<featurename>`**. As of Aug, 2024,
-the following are the names of GitLab Duo features:
+On first use on a page, use **GitLab Duo `<featurename>`**. As of Jan, 2026,
+the following are the names of classic GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
@@ -1275,11 +1297,20 @@ the following are the names of GitLab Duo features:
 Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
 without **GitLab Duo**.
 
+You can add **(Classic)** after the feature name when comparing it to an agentic version.
+For more information, see [classic](#classic).
+
 ## GitLab Duo Agent Platform
 
 Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
 
-Do not use **Duo Agent Platform** by itself.
+Do not use **Duo Agent Platform** or **DAP**.
+
+## GitLab Duo Agent Platform Self-Hosted
+
+Use **GitLab Duo Agent Platform Self-Hosted**. After first use, use **Agent Platform Self-Hosted**.
+
+Do not use **Duo Agent Platform Self-Hosted** or **DAP Self-Hosted**.
 
 ## GitLab Duo Core
 
@@ -2125,7 +2156,7 @@ The docs should match the case in the UI, and the page name should be bold. For 
 
 ## panel
 
-Use **panel** to refer to a main area of the [redesigned](../../../user/interface_redesign.md) GitLab UI
+Use **panel** to refer to a main area of the GitLab UI
 that is not fixed on the side of the screen. The content of a panel changes depending on the context.
 
 See also: [names for UI elements](_index.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
@@ -2321,9 +2352,20 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 ## repository, project
 
-A GitLab project contains, among other things, a Git repository. Use **repository** when referring to the
-Git repository. Use **project** to refer to the GitLab user interface for managing and configuring the
-Git repository, wiki, and other features.
+A GitLab project contains, among other things, a Git repository.
+
+Use **repository** when referring to the Git data and Git-specific operations, such as commits,
+branches, tags, and actions like cloning, fetching, pushing, or pulling.
+
+Use **project** when referring to the GitLab user interface for managing the repository, wikis,
+issues, [forks](#fork), settings, and other features.
+
+For example:
+
+- Push your changes to the upstream repository.
+- Create a fork of the upstream project.
+- Rename the default branch in the repository.
+- Transfer the project to a different group.
 
 ## Repository Mirroring
 
@@ -2580,7 +2622,7 @@ Do not confuse **set up** with [**configure**](#configure).
 
 ## sidebar, top bar
 
-Use **sidebar** to refer to the fixed areas on the left and right of the [redesigned](../../../user/interface_redesign.md) GitLab UI.
+Use **sidebar** to refer to the fixed areas on the left and right of the GitLab UI.
 Use **top bar** to refer to the top fixed area that contains the search box and a user's avatar.
 
 For the main areas that change depending on the context, use [**panel**](#panel).

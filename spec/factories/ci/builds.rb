@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'deployable'
-require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
+require_relative '../../support/helpers/ci/job_factory_helpers'
 
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
@@ -529,8 +529,8 @@ FactoryBot.define do
         {
           image: { name: 'image:1.0', entrypoint: '/bin/sh' },
           services: ['postgres',
-                     { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' },
-                     { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
+            { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' },
+            { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
           script: %w[echo],
           after_script: %w[ls date],
           hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] },

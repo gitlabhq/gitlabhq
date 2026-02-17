@@ -8,14 +8,13 @@ title: GitLab Duo Chat (Agentic)
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
 
-- Default LLM: Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5)
+- [Default LLM](../duo_agent_platform/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -37,15 +36,13 @@ title: GitLab Duo Chat (Agentic)
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Updated default LLM](https://gitlab.com/groups/gitlab-org/-/epics/19998) to Claude Haiku 4.5 in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/581872) in GitLab 18.8 with [flags](../../administration/feature_flags/_index.md) named `agentic_chat_ga` and `ai_duo_agent_platform_ga_rollout_self_managed`. Both flags are enabled by default. Feature flag `duo_agentic_chat` removed.
+- Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
 
 GitLab Duo Chat (Agentic) is an enhanced version of GitLab Duo Chat (Classic). This new Chat can autonomously
 perform actions on your behalf, to help you answer complex questions more comprehensively.
@@ -92,7 +89,8 @@ You can use GitLab Duo Chat in:
 
 Prerequisites:
 
-- Ensure you meet the [prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To use Chat in the GitLab UI:
 
@@ -103,7 +101,7 @@ To use Chat in the GitLab UI:
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, ensure the **Agentic** toggle is turned on.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
    - Ask a follow-up question.
@@ -117,7 +115,8 @@ most recent conversation, and that conversation is still active in the Chat draw
 Prerequisites:
 
 - [Install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
-- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 Turn on GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
@@ -139,7 +138,8 @@ Then, to use GitLab Duo Chat:
 Prerequisites:
 
 - [Install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
-- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 Turn on GitLab Duo Chat:
 
@@ -158,7 +158,8 @@ Then, to use GitLab Duo Chat:
 Prerequisites:
 
 - [Install and configure the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
-- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 Turn on GitLab Duo Chat:
 
@@ -197,6 +198,7 @@ In your IDE, the last 20 conversations are visible. [Issue 1308](https://gitlab.
 {{< history >}}
 
 - Multiple conversations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556875) in GitLab 18.3.
+- Search capability for chat history in the GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582513) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -209,19 +211,22 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 1. Create a new Chat conversation:
 
    - In the GitLab UI, you can do either of the following:
+
      - On the GitLab Duo sidebar, select **New GitLab Duo Chat**
        ({{< icon name="pencil-square" >}}).
      - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-       A new Chat conversation replaces the previous one.
-       Under the Chat text box, ensure the **Agentic** toggle is turned on.
+
+     A new Chat conversation replaces the previous one.
+   - Under the Chat text box, ensure the **Agentic** toggle is turned on.
    - In your IDE, in the upper-right corner of the message box, select **New chat**
      ({{< icon name="plus" >}}).
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 1. To view all of your conversations, look at your [chat history](#view-the-chat-history).
 1. To switch between conversations, in your chat history, select the
    appropriate conversation.
-1. IDE only: To search for a specific conversation in the chat history, in the
-   **Search chats** text box, enter your search term.
+1. To search for a specific conversation in the chat history:
+   - GitLab UI: In the **Search for a thread** text box, enter your search term.
+   - IDE: In the **Search chats** text box, enter your search term.
 
 Because of LLM context window limits, conversations are truncated to 200,000 tokens
 (roughly 800,000 characters) each.
@@ -300,7 +305,7 @@ Prerequisites:
 
 - The administrator has not selected a model for the instance. If a model has been selected for the instance,
   you cannot change the model for Chat.
-- Your instance must be connected to the GitLab AI gateway.
+- Your instance must be connected to the GitLab AI Gateway.
 
 {{< /tab >}}
 
@@ -367,7 +372,7 @@ re-processing of cached prompt and input data.
 
 ### Turn off prompt caching
 
-You can [turn off prompt caching](../project/repository/code_suggestions/_index.md#turn-off-prompt-caching)
+You can [turn off prompt caching](../duo_agent_platform/code_suggestions/_index.md#turn-off-prompt-caching)
 for top-level groups in the GitLab Duo settings.
 This also turns off prompt caching for Code Suggestions.
 
@@ -404,4 +409,4 @@ Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.
 
 ## Related topics
 
-- [Blog: GitLab Duo Chat gets agentic AI makeover](https://about.gitlab.com/blog/2025/05/29/gitlab-duo-chat-gets-agentic-ai-makeover/)
+- [Blog: GitLab Duo Chat gets agentic AI makeover](https://about.gitlab.com/blog/gitlab-duo-chat-gets-agentic-ai-makeover/)

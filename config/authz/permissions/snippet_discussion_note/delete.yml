@@ -1,0 +1,5 @@
+---
+name: delete_snippet_discussion_note
+description: Grants the ability to delete notes in snippet discussions
+boundaries:
+  - project

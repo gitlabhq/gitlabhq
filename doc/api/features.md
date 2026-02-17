@@ -19,9 +19,9 @@ All methods require administrator authorization.
 Notice that the API only supports boolean and percentage-of-time gate
 values.
 
-## List all features
+## List all feature flags
 
-Get a list of all persisted features, with its gate values.
+List all persisted feature flags, with their gate values.
 
 ```plaintext
 GET /features
@@ -80,9 +80,9 @@ Example response:
 ]
 ```
 
-## List all feature definitions
+## List all feature flag definitions
 
-Get a list of all feature definitions.
+List all feature flag definitions.
 
 ```plaintext
 GET /features/definitions
@@ -111,9 +111,9 @@ Example response:
 ]
 ```
 
-## Set or create a feature
+## Create or update a feature flag
 
-Set a feature's gate value. If a feature with the given name doesn't exist yet,
+Create or update a feature flag's gate value. If a feature flag with the given name doesn't exist yet,
 it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
@@ -135,10 +135,11 @@ POST /features/:name
 | `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
 | `project`       | string         | no       | A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths                                                                                                 |
 | `repository`    | string         | no       | A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, , `snippets/21.git`, to name a few. Use comma to separate multiple repository paths              |
+| `runner`        | string         | no       | A runner ID, or comma-separated list of runner IDs                                                                                                                                               |
 | `force`         | boolean        | no       | Skip feature flag validation checks, such as a YAML definition                                                                                                                                   |
 
 You can enable or disable a feature for a `feature_group`, a `user`,
-a `group`, a `namespace`, a `project`, and a `repository` in a single API call.
+a `group`, a `namespace`, a `project`, a `repository`, and a `runner` in a single API call.
 
 ```shell
 curl --request POST \
@@ -215,7 +216,7 @@ Rolls out the `my_user_feature` to `42%` of actors.
 
 ## Delete a feature
 
-Removes a feature gate. Response is equal when the gate exists, or doesn't.
+Delete a feature flag gate. Returns the same response whether the feature flag exists or not.
 
 ```plaintext
 DELETE /features/:name

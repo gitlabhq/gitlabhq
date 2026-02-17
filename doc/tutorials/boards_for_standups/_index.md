@@ -42,8 +42,8 @@ To set up an issue board for team stand-ups:
 
 ## Before you begin
 
-- If you're using an existing group for this tutorial, make sure you have at least the Planner role for the group.
-- If you're using an existing project for this tutorial, make sure you have at least the Planner role for the project.
+- If you're using an existing group for this tutorial, make sure you have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
+- If you're using an existing project for this tutorial, make sure you have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 ## Create a group
 
@@ -84,7 +84,7 @@ workflows across teams.
 
 To create a workflow label:
 
-1. On the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the label name.
@@ -108,7 +108,7 @@ Create your board in the group so you can manage issues from any project in the 
 
 To create a group issue board:
 
-1. On the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -167,7 +167,7 @@ The issue is created with the `workflow::ready for development` label because yo
 ### Add metadata to the issue
 
 1. On the issue card, select anywhere except the title.
-1. On the right sidebar, in the field you want to update, select **Edit**.
+1. In the right sidebar, in the field you want to update, select **Edit**.
 1. Select your changes.
 1. Select any area outside the field to save.
 

@@ -87,13 +87,10 @@ export default {
 To fetch data when the widget is mounted, pass the `:fetch-collapsed-data` property a function
 that performs an API call.
 
-{{< alert type="warning" >}}
-
-The function must return a `Promise` that resolves to the `response` object.
-The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
-important not to alter the status code and headers.
-
-{{< /alert >}}
+> [!warning]
+> The function must return a `Promise` that resolves to the `response` object.
+> The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
+> important not to alter the status code and headers.
 
 ```vue
 <script>
@@ -190,11 +187,8 @@ Each widget reports:
 When adding new widgets, the above events must be marked as `known`, and have metrics
 created, to be reportable.
 
-{{< alert type="note" >}}
-
-Events that are only for EE should include `--ee` at the end of both shell commands below.
-
-{{< /alert >}}
+> [!note]
+> Events that are only for EE should include `--ee` at the end of both shell commands below.
 
 To generate these known events for a single widget:
 

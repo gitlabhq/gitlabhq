@@ -19,11 +19,9 @@ export default {
 </script>
 
 <template>
-  <gl-form-checkbox-group
-    :checked="checked"
-    class="multiple-choice-selector gl-border gl-block gl-rounded-base"
-    @input="$emit('input', $event)"
-  >
-    <slot></slot>
-  </gl-form-checkbox-group>
+  <div class="multiple-choice-selector gl-border gl-block gl-rounded-base">
+    <gl-form-checkbox-group :checked="checked" @input="$emit('input', $event)">
+      <slot></slot>
+    </gl-form-checkbox-group>
+  </div>
 </template>

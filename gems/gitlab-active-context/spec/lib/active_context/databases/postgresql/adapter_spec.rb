@@ -7,7 +7,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Adapter do
       host: 'localhost',
       port: 5432,
       database: 'test_db',
-      username: 'user',
+      user: 'user',
       password: 'pass'
     }
   end
@@ -29,6 +29,26 @@ RSpec.describe ActiveContext::Databases::Postgresql::Adapter do
     it 'returns configured prefix' do
       adapter = described_class.new(connection, options: options.merge(prefix: 'custom'))
       expect(adapter.prefix).to eq('custom')
+    end
+  end
+
+  describe '#indexer_connection_options' do
+    it 'returns connection options for indexer' do
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(
+        host: 'localhost',
+        port: 5432,
+        database: 'test_db',
+        user: 'user',
+        password: 'pass'
+      )
+    end
+
+    it 'includes only essential connection keys' do
+      result = adapter.indexer_connection_options
+
+      expect(result.keys).to contain_exactly(:host, :port, :user, :password, :database)
     end
   end
 end

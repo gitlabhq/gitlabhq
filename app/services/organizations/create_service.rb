@@ -7,18 +7,22 @@ module Organizations
       return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
 
       add_organization_owner_attributes
-      organization = Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification
+      organization = Organization.new(params)
+
+      saved = Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification
                        .allow_cross_database_modification_within_transaction(
                          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438757'
                        ) do
-        Organization.create(params)
+        organization.save
       end
 
-      if organization.persisted?
+      if saved
         ServiceResponse.success(payload: { organization: organization })
       else
         error_creating(organization)
       end
+    rescue Cells::TransactionRecord::Error
+      error_creating(organization)
     end
 
     private

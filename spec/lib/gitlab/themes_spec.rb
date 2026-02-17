@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Themes, :lib, feature_category: :design_system do
   describe '.each' do
     it 'passes the block to the THEMES Array' do
       ids = []
-      described_class.each { |theme| ids << theme.id }
+      described_class.each { |theme| ids << theme.id } # rubocop:disable Style/MapIntoArray -- each is a custom method for Themes
       expect(ids).not_to be_empty
     end
   end

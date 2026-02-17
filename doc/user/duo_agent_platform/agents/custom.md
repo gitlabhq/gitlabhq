@@ -8,7 +8,6 @@ title: Custom agents
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -25,15 +24,13 @@ title: Custom agents
 - Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580307) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568176) to beta in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Feature flag `ai_catalog_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217802) in GitLab 18.9.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Agents use AI to perform tasks and answer complex questions. Create
 custom agents to accomplish specific tasks, like creating merge
@@ -42,6 +39,10 @@ created by GitLab.
 
 When you're ready to interact with an agent, you can enable it to
 start using it with GitLab Duo Chat.
+
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
 ## Agent visibility
 
@@ -53,16 +54,16 @@ Public agents:
 
 Private agents:
 
-- Can be viewed only by members of the managing project who have at least the Developer role.
+- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role.
 - Cannot be enabled in projects other than the managing project.
 
-You cannot make a private agent public if the agent is currently enabled.
+You cannot make a public agent private if the agent is currently enabled.
 
 ## View the agents for your project
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To view a list of agents associated with your project:
 
@@ -79,7 +80,7 @@ You can create an agent from a project, or by using the AI Catalog.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 {{< tabs >}}
 
@@ -100,7 +101,7 @@ To create an agent:
    select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
 
-   For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+   For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
 {{< /tab >}}
@@ -161,7 +162,7 @@ The agent appears in the group's **Automate** > **Agents** page.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The agent must be enabled in a top-level group.
 
 To enable an agent in a project:
@@ -176,12 +177,12 @@ The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
-### Disable an agent
+## Disable an agent
 
 Prerequisites:
 
 - For groups, you must have the Owner role.
-- For projects, you must have at least the Maintainer role.
+- For projects, you must have the Maintainer or Owner role.
 
 To disable an agent:
 
@@ -198,7 +199,7 @@ To make changes to an agent without overwriting the original, create a copy of a
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To duplicate an agent:
 
@@ -209,22 +210,46 @@ To duplicate an agent:
 1. Optional. Edit any fields you want to change.
 1. Select **Create agent**.
 
-## Manage agents
+## Edit an agent
 
-Edit an agent to change its configuration, or delete it to remove it from the AI Catalog.
+Edit an agent to change its configuration.
 
 Prerequisites:
 
-- You must be a member of the managing project and have at least the Maintainer role.
+- You must be a member of the managing project and have the Maintainer or Owner role.
 
-To manage an agent:
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Select the agent you want to edit.
+1. In the upper-right corner, select **Edit**.
+1. Edit any fields you want to change, then select **Save changes**.
 
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the agent you want to manage.
-   - To edit an agent:
-     1. In the upper-right corner, select **Edit**.
-     1. Edit any fields you want to change, then select **Save changes**.
-   - To delete an agent:
-     1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
-     1. On the confirmation dialog, select **Delete**.
+## Hide an agent
+
+Hide an agent to remove it from the AI Catalog.
+
+After you hide an agent, users can't enable it. However, they can still interact with the agent in the groups and projects it is already enabled in.
+
+Prerequisites:
+
+- You must be a member of the managing project and have the Maintainer or Owner role.
+
+To hide an agent:
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Find the agent you want to hide and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Hide**.
+1. In the confirmation dialog, select **Confirm**.
+
+## Delete an agent
+
+Delete an agent to permanently remove it from the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Automate** > **Agents**.
+1. Find the agent you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. In the confirmation dialog, select **Delete**.

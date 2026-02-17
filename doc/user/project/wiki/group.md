@@ -84,21 +84,15 @@ To open group settings:
 
 {{< /details >}}
 
+> [!warning]
+> This operation deletes all data in the wiki.
+
 You can delete the contents of a group wiki with the Rails console. You can then populate the wiki with new content.
 
-{{< alert type="warning" >}}
-
-This operation deletes all data in the wiki.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-This command changes data directly and could be damaging if not run correctly.
-You should run these instructions in a test environment first. Keep a backup of the
-instance ready so you can restore the instance, if necessary.
-
-{{< /alert >}}
+> [!warning]
+> This command changes data directly and could be damaging if not run correctly.
+> You should run these instructions in a test environment first. Keep a backup of the
+> instance ready so you can restore the instance, if necessary.
 
 Prerequisites:
 

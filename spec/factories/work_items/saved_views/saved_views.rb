@@ -8,5 +8,7 @@ FactoryBot.define do
     author { association(:user) }
     private { false }
     version { 1 }
+    filter_data { { state: 'opened', confidential: true } }
+    display_settings { {} }
   end
 end

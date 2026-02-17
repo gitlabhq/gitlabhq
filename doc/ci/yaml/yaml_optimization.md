@@ -400,6 +400,10 @@ sections and reuse it in the current section. Unlike [YAML anchors](#anchors), y
 use `!reference` tags to reuse configuration from [included](_index.md#include) configuration
 files as well.
 
+If you are using `!reference` tags to override configuration from included files, consider using
+[CI/CD inputs](../inputs/_index.md) instead. You cannot use CI/CD inputs in `!reference` tags,
+because `!reference` tags are evaluated before input interpolation.
+
 In the following example, a `script` and an `after_script` from two different locations are
 reused in the `test` job:
 
@@ -450,9 +454,26 @@ test-vars-2:
     - printenv
 ```
 
-There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using `!reference` tags with the [`parallel:matrix` keyword](_index.md#parallelmatrix).
+You can use multiple `!reference` tags to build up an array with `rules`, `script`, or stages.
+For example:
 
-You cannot use [CI/CD inputs](../inputs/_index.md) in `!reference` tags, because `!reference` tags are evaluated before input interpolation.
+```yaml
+.rules_prod:
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+
+.rules_staging:
+  - if: $CI_COMMIT_BRANCH =~ /^wip-.*/
+  - if: $CI_PIPELINE_SOURCE == "push"
+
+deploy_job:
+  script: echo test
+  rules:
+    - !reference [.rules_prod]
+    - !reference [.rules_staging]
+```
+
+With all other keywords, you get a [`config should be an array of` validation error](../debugging.md#config-should-be-an-array-of-hashes-error-message).
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 

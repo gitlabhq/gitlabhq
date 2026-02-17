@@ -169,10 +169,8 @@ module Projects
       pages_access_level = resolve_pages_access_level
       return if pages_access_level.nil?
 
-      return unless project.pages_access_control_forced_by_ancestor?
-
       validate_public_pages_restriction(pages_access_level)
-      validate_private_project_pages_restriction(pages_access_level)
+      validate_project_pages_restriction(pages_access_level)
     end
 
     def resolve_pages_access_level
@@ -184,16 +182,16 @@ module Projects
     end
 
     def validate_public_pages_restriction(pages_access_level)
+      return unless project.pages_access_control_forced_by_ancestor?
       return unless pages_access_level == ProjectFeature::PUBLIC
 
       raise_api_error(s_('UpdateProject|Pages access level cannot be public when public access is disabled'))
     end
 
-    def validate_private_project_pages_restriction(pages_access_level)
+    def validate_project_pages_restriction(pages_access_level)
       visibility = params[:visibility_level]&.to_i || project.visibility_level
-      return unless visibility == Gitlab::VisibilityLevel::PRIVATE
+      allowed_levels = ProjectFeature::PAGES_ACCESS_LEVELS_BY_PROJECT_VISIBILITY.fetch(visibility, [])
 
-      allowed_levels = [ProjectFeature::DISABLED, ProjectFeature::PRIVATE]
       return if allowed_levels.include?(pages_access_level)
 
       raise_api_error(s_('UpdateProject|Pages access level is not allowed for the project visibility level'))

@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.version = '0.0.0'
 
   spec.add_runtime_dependency 'devise', '~> 4.0'
-  spec.add_runtime_dependency 'devise-two-factor', '~> 4.1.1'
+  spec.add_runtime_dependency 'devise-two-factor', '~> 5.1.0'
 
   spec.add_development_dependency 'activemodel', '~> 7.0', '< 8'
   spec.add_development_dependency 'rspec', '~> 3.10.0'

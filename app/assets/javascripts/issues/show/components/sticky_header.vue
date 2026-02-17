@@ -2,13 +2,13 @@
 import { GlBadge, GlIntersectionObserver, GlLink, GlSprintf } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { STATUS_OPEN, STATUS_REOPENED, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
+import { STATUS_OPEN, STATUS_REOPENED, STATUS_CLOSED, NAMESPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { __, s__ } from '~/locale';
 
 export default {
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
   components: {
     ConfidentialityBadge,
     GlBadge,
@@ -136,7 +136,7 @@ export default {
           <confidentiality-badge
             v-if="isConfidential"
             :issuable-type="issuableType"
-            :workspace-type="$options.WORKSPACE_PROJECT"
+            :workspace-type="$options.NAMESPACE_PROJECT"
           />
           <locked-badge v-if="isLocked" :issuable-type="issuableType" />
           <hidden-badge v-if="isHidden" />

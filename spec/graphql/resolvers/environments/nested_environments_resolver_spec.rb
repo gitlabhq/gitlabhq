@@ -21,8 +21,8 @@ RSpec.describe Resolvers::Environments::NestedEnvironmentsResolver, feature_cate
       expect(resolve_nested_environments(status: :created).to_a.pluck(:name, :size))
         .to match_array([
           ['test', 1],
-                          ['folder1', 2],
-                          ['folder2', 1]
+          ['folder1', 2],
+          ['folder2', 1]
         ])
     end
 

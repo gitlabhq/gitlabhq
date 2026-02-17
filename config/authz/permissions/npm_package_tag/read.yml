@@ -1,0 +1,6 @@
+---
+name: read_npm_package_tag
+description: Grants the ability to read NPM package tags
+boundaries:
+  - group
+  - project

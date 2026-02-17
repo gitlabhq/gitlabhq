@@ -8,6 +8,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
+import JobRunForm from '~/ci/job_details/components/job_run_form.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
@@ -85,6 +86,7 @@ describe('Job App', () => {
   const findEnvironmentsBlockComponent = () => wrapper.findComponent(EnvironmentsBlock);
   const findErasedBlock = () => wrapper.findComponent(ErasedBlock);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
+  const findJobForm = () => wrapper.findComponent(JobRunForm);
   const findJobLog = () => wrapper.findComponent(JobLog);
   const findJobLogTopBar = () => wrapper.findComponent(JobLogTopBar);
 
@@ -146,36 +148,6 @@ describe('Job App', () => {
       triggerResize();
 
       expect(store.dispatch).toHaveBeenCalledWith('hideSidebar');
-    });
-  });
-
-  describe('while scrolling', () => {
-    beforeEach(async () => {
-      await setupAndMount({
-        directives: {
-          GlResizeObserver: createMockDirective('gl-resize-observer'),
-        },
-      });
-
-      jest.spyOn(store, 'dispatch');
-    });
-
-    it('should update scrolling when window scrolls', async () => {
-      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
-
-      window.dispatchEvent(new Event('scroll'));
-      await waitForPromises();
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
-    });
-
-    it('should update scrolling when resized', async () => {
-      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
-
-      getBinding(wrapper.element, 'gl-resize-observer').value();
-      await waitForPromises();
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 
@@ -389,6 +361,77 @@ describe('Job App', () => {
         }).then(() => {
           expect(findErasedBlock().exists()).toBe(false);
         }));
+    });
+
+    describe('job form block', () => {
+      it('renders job form block when job is playable and not scheduled', async () => {
+        await setupAndMount({
+          jobData: {
+            has_trace: false,
+            playable: true,
+            scheduled: false,
+            status: {
+              group: 'pending',
+              icon: 'status_pending',
+              label: 'pending',
+              text: 'pending',
+              details_path: 'path',
+              illustration: {
+                image: 'path',
+                size: '340',
+                title: 'Empty State',
+                content: 'This is an empty state',
+              },
+              action: {
+                confirmation_message: 'Confirm',
+                button_title: 'Retry job',
+                method: 'post',
+                path: '/path',
+              },
+            },
+          },
+        });
+        expect(findJobForm().props()).toMatchObject({
+          isRetryable: true,
+          jobId: job.id,
+          jobName: job.name,
+          confirmationMessage: 'Confirm',
+        });
+      });
+
+      it('renders job form block when sidebar emits update variables', async () => {
+        await setupAndMount({
+          jobData: {
+            has_trace: false,
+            status: {
+              group: 'pending',
+              icon: 'status_pending',
+              label: 'pending',
+              text: 'pending',
+              details_path: 'path',
+              illustration: {
+                image: 'path',
+                size: '340',
+                title: 'Empty State',
+                content: 'This is an empty state',
+              },
+              action: {
+                button_title: 'Retry job',
+                method: 'post',
+                path: '/path',
+              },
+            },
+          },
+        });
+        findSidebar().vm.$emit('update-variables');
+        await nextTick();
+        expect(findJobForm().exists()).toBe(true);
+      });
+
+      it('does not render job form block when job has log but it is not running', async () => {
+        await setupAndMount({ jobData: { has_trace: true } });
+        expect(findJobForm().exists()).toBe(false);
+      });
     });
 
     describe('empty states block', () => {

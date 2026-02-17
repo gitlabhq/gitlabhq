@@ -219,11 +219,8 @@ of these methods:
       - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
 
-    {{< alert type="note" >}}
-
-    The `UPDATE` statement always returns 0 records. To identify the rows it updates, we need to check the following lines below.
-
-    {{< /alert >}}
+    > [!note]
+    > The `UPDATE` statement always returns 0 records. To identify the rows it updates, we need to check the following lines below.
 
     For example, the `UPDATE` statement returns 0 records, but we can see that it updates 1 row from the line starting with `-> Index scan`.:
 
@@ -283,6 +280,7 @@ of these methods:
 - Follow the [guidelines on dropping columns](database/avoiding_downtime_in_migrations.md#dropping-columns).
 - Generally it's best practice (but not a hard rule) to remove indexes and foreign keys in a post-deployment migration.
   - Exceptions include removing indexes and foreign keys for small tables.
+- When dropping indexes, verify that composite indexes can serve as replacements by checking [composite index column order requirements](database/adding_database_indexes.md#composite-index-column-order).
 - If you're adding a composite index, another index might become redundant, so remove that in the same migration.
   For example adding `index(column_A, column_B, column_C)` makes the indexes `index(column_A, column_B)` and `index(column_A)` redundant.
 
@@ -362,5 +360,5 @@ to add the raw SQL query and query plan to the merge request description, and re
 - Check for any overly complex queries and queries the author specifically points out for review (if any)
 - Verify all new and modified queries include both SQL statements and query plans from [Database Lab](database/database_lab.md) in the merge request description
 - For given queries, review parameters regarding data distribution
-- [Check query plans](database/understanding_explain_plans.md) and suggest necessary improvements to queries (eg: restructing the query, adding/removing indexes, etc). If there are open questions reach out to the #database_maintainers channel.
+- [Check query plans](database/understanding_explain_plans.md) and suggest necessary improvements to queries (eg: restructuring the query, adding/removing indexes, etc). If there are open questions reach out to the #database_maintainers channel.
 - Avoid N+1 problems and minimize the [query count](merge_request_concepts/performance.md#query-counts)

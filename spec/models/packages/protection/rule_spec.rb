@@ -121,8 +121,13 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
 
     describe '#pattern' do
-      it { is_expected.to validate_presence_of(:pattern).allow_blank }
+      it { is_expected.to validate_presence_of(:pattern) }
       it { is_expected.to validate_length_of(:pattern).is_at_most(255) }
+
+      it do
+        is_expected.to validate_uniqueness_of(:pattern)
+          .scoped_to(:project_id, :package_type, :target_field, :pattern_type)
+      end
 
       it_behaves_like 'validates package_name formats', :pattern
     end
@@ -294,6 +299,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_for_developer) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-stage*',
+        pattern: '@my-scope/my-package-stage*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: :owner,
@@ -306,6 +312,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_2_for_developer) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-*',
+        pattern: '@my-scope/my-package-*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: :owner,
@@ -316,6 +323,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_for_maintainer) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-prod*',
+        pattern: '@my-scope/my-package-prod*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: :owner,
@@ -326,6 +334,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_for_owner) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-release*',
+        pattern: '@my-scope/my-package-release*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: :admin,
@@ -336,6 +345,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_only_deletion_protection) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/only_delete-protected-package*',
+        pattern: '@my-scope/only_delete-protected-package*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: :admin,
@@ -346,6 +356,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:ppr_only_push_protection) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/only-push-protected-package*',
+        pattern: '@my-scope/only-push-protected-package*',
         project: project_with_ppr,
         package_type: :npm,
         minimum_access_level_for_delete: nil,
@@ -450,6 +461,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     let_it_be(:project1_ppr) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-prod*',
+        pattern: '@my-scope/my-package-prod*',
         project: project1,
         package_type: :npm
       )

@@ -17,7 +17,7 @@ You can run your CI/CD jobs in Docker containers hosted on dedicated CI/CD build
 
 To run CI/CD jobs in a Docker container, you need to:
 
-1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/).
 1. Specify the container image where you want to run the CI/CD jobs in the `.gitlab-ci.yml` file.
 1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/_index.md)
    in your `.gitlab-ci.yml` file.
@@ -63,7 +63,7 @@ uses to run CI/CD jobs.
 
 By default, the executor pulls images from [Docker Hub](https://hub.docker.com/).
 However, you can configure the registry location in the `gitlab-runner/config.toml` file.
-For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work)
+For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner/executors/docker/#how-pull-policies-work)
 to use local images.
 
 For more information about images and Docker Hub, see
@@ -166,7 +166,7 @@ CI/CD jobs:
 1. The runner sends the script to the container's shell `stdin` and receives the
    output.
 
-To override the [entrypoint](https://docs.gitlab.com/runner/executors/docker.html#configure-a-docker-entrypoint) of a Docker image,
+To override the [entrypoint](https://docs.gitlab.com/runner/executors/docker/#configure-a-docker-entrypoint) of a Docker image,
 in the `.gitlab-ci.yml` file:
 
 - For Docker 17.06 and later, set `entrypoint` to an empty value.
@@ -235,7 +235,7 @@ To access private container registries, the GitLab Runner process can use:
 
 When you use the [GitLab Container Registry](../../user/packages/container_registry/_index.md) on the same GitLab instance,
 GitLab provides default credentials for this registry. With these credentials, the `CI_JOB_TOKEN` is used for authentication.
-To use the job token, the user starting the job must have at least the Developer role for the project where the private image is hosted.
+To use the job token, the user starting the job must have the Developer, Maintainer, or Owner role for the project where the private image is hosted.
 The project hosting the private image must also allow the other project to authenticate with the job token. This access is disabled by default.
 For more details, see [CI/CD job token](../jobs/ci_job_token.md#control-job-token-access-to-your-project).
 
@@ -313,11 +313,8 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
 
-  {{< alert type="note" >}}
-
-  If your username includes special characters like `@`, you must escape them with a backslash (` \ `) to prevent authentication problems.
-
-  {{< /alert >}}
+  > [!note]
+  > If your username includes special characters like `@`, you must escape them with a backslash (` \ `) to prevent authentication problems.
 
   Create the Docker JSON configuration content as follows:
 
@@ -461,11 +458,8 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      }
      ```
 
-     {{< alert type="note" >}}
-
-     If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
-
-     {{< /alert >}}
+     > [!note]
+     > If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
 
    - Or, if you're running self-managed runners,
      add the previous JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.

@@ -319,4 +319,47 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#work_item_path' do
+    context 'with project-level work item' do
+      let_it_be(:project) { build_stubbed(:project) }
+      let_it_be(:work_item) { build_stubbed(:work_item, project: project, iid: 123) }
+
+      before do
+        allow(work_item).to receive(:use_work_item_url?).and_return(false)
+      end
+
+      it 'delegates to Gitlab::UrlBuilder and returns the path' do
+        expect(Gitlab::UrlBuilder).to receive(:build).with(work_item, only_path: true).and_call_original
+
+        result = helper.work_item_path(work_item)
+
+        expect(result).to eq(project_issue_path(project, work_item))
+      end
+
+      it 'passes options through to Gitlab::UrlBuilder' do
+        expect(Gitlab::UrlBuilder).to receive(:build)
+          .with(work_item, only_path: true, anchor: 'note_456').and_call_original
+
+        result = helper.work_item_path(work_item, anchor: 'note_456')
+
+        expect(result).to eq(project_issue_path(project, work_item, anchor: 'note_456'))
+      end
+    end
+  end
+
+  describe '#work_item_reference' do
+    context 'with project-level work item' do
+      let_it_be(:project) { build_stubbed(:project) }
+      let_it_be(:work_item) { build_stubbed(:work_item, project: project, iid: 123) }
+
+      it 'delegates to work_item.to_reference with full: true and returns the result' do
+        expect(work_item).to receive(:to_reference).with(full: true).and_return('Foo / Bar #123')
+
+        result = helper.work_item_reference(work_item)
+
+        expect(result).to eq('Foo / Bar #123')
+      end
+    end
+  end
 end

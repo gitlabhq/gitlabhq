@@ -8,7 +8,6 @@ title: Sessions
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -35,7 +34,7 @@ Prerequisites:
 
 To view sessions for your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Sessions**.
 1. Select any session to view more details.
 
@@ -43,7 +42,7 @@ To view sessions for your project:
 
 To view sessions you've triggered:
 
-1. On the right sidebar, select **GitLab Duo sessions**.
+1. In the right sidebar, select **GitLab Duo sessions**.
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
 

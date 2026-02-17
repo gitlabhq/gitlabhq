@@ -5,7 +5,11 @@ require_relative 'reviewer_roulette'
 module Keeps
   module Helpers
     class Groups
+      include Singleton
+
       GROUPS_JSON_URL = "https://about.gitlab.com/groups.json"
+      DEFAULT_REVIEWER_TYPES = ['backend_engineers'].freeze
+
       Error = Class.new(StandardError)
 
       def group_for_feature_category(category)
@@ -22,10 +26,10 @@ module Keeps
         end&.last
       end
 
-      def pick_reviewer(group, identifiers)
+      def pick_reviewer(group, identifiers, reviewer_types: DEFAULT_REVIEWER_TYPES)
         return unless group
 
-        available_reviewers = available_reviewers_for_group(group)
+        available_reviewers = available_reviewers_for_group(group, reviewer_types: reviewer_types)
         return if available_reviewers.empty?
 
         # Use the change identifiers as a stable way to pick the same reviewer. Otherwise we'd assign a new reviewer
@@ -35,13 +39,15 @@ module Keeps
         available_reviewers[random_engineer]
       end
 
-      def pick_reviewer_for_feature_category(category, identifiers, fallback_feature_category: nil)
+      def pick_reviewer_for_feature_category(
+        category, identifiers, fallback_feature_category: nil,
+        reviewer_types: DEFAULT_REVIEWER_TYPES)
         pick_reviewer(
           group_for_feature_category(category),
-          identifiers
+          identifiers, reviewer_types: reviewer_types
         ) || pick_reviewer(
           group_for_feature_category(fallback_feature_category),
-          identifiers
+          identifiers, reviewer_types: reviewer_types
         )
       end
 
@@ -51,16 +57,24 @@ module Keeps
         )
       end
 
-      private
+      def available_reviewers_for_group(group, reviewer_types: DEFAULT_REVIEWER_TYPES)
+        return [] unless group
 
-      def available_reviewers_for_group(group)
-        group['backend_engineers'].select do |username|
+        reviewers_for_group(group, reviewer_types).select do |username|
           roulette.reviewer_available?(username)
         end
       end
 
+      private
+
+      def reviewers_for_group(group, reviewer_types)
+        return [] unless group
+
+        reviewer_types.flat_map { |type| group[type] || [] }.uniq
+      end
+
       def roulette
-        @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+        Keeps::Helpers::ReviewerRoulette.instance
       end
 
       def groups

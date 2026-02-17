@@ -11,15 +11,22 @@ import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
 import Chunk from './components/chunk.vue';
-import Blame from './components/blame_info.vue';
-import { calculateBlameOffset, shouldRender, toggleBlameClasses } from './utils';
+import BlameInfo from './components/blame_info.vue';
+import {
+  calculateBlameOffset,
+  shouldRender,
+  toggleBlameLineBorders,
+  hasBlameDataForChunk,
+} from './utils';
 import blameDataQuery from './queries/blame_data.query.graphql';
+import BlameSkeletonLoader from './components/blame_skeleton_loader.vue';
 
 export default {
   name: 'SourceViewer',
   components: {
     Chunk,
-    Blame,
+    BlameInfo,
+    BlameSkeletonLoader,
     CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
   },
   directives: {
@@ -64,6 +71,8 @@ export default {
       blameData: [],
       renderedChunks: [],
       isBlameLoading: false,
+      loadingChunks: [], // Which chunks are currently fetching blame data (e.g., [0, 1, 2])
+      chunkOffsets: {}, // Vertical position of each chunk (e.g., { 0: 0, 1: 450, 2: 900 })
     };
   },
   computed: {
@@ -82,6 +91,18 @@ export default {
     isCodeownersFile() {
       return this.blob.name === CODEOWNERS_FILE_NAME;
     },
+    /**
+     * Filters out chunks that already have blame data loaded,
+     * so skeleton loaders only show for chunks still fetching.
+     */
+    activeLoadingChunks() {
+      if (!this.showBlame) return [];
+
+      return this.loadingChunks.filter((chunkIndex) => {
+        const chunk = this.chunks[chunkIndex];
+        return chunk && !hasBlameDataForChunk(this.blameData, chunk);
+      });
+    },
   },
   watch: {
     shouldPreloadBlame: {
@@ -91,27 +112,35 @@ export default {
       },
     },
     showBlame: {
-      handler(isVisible) {
-        toggleBlameClasses(this.blameData, isVisible);
+      async handler(isVisible) {
+        toggleBlameLineBorders(this.blameData, isVisible);
 
         if (isVisible) {
           this.isBlameLoading = true;
+          this.renderedChunks.forEach((chunkIndex) => {
+            if (!this.loadingChunks.includes(chunkIndex)) this.loadingChunks.push(chunkIndex);
+          });
+          await this.updateChunkOffsets(this.renderedChunks);
         } else {
           this.isBlameLoading = false;
+          this.loadingChunks = [];
+          this.blameData = [];
         }
-        if (!isVisible) this.blameData = [];
 
         this.requestBlameInfo(this.renderedChunks[0]);
       },
       immediate: true,
     },
     blameData: {
-      handler(blameData) {
+      async handler(blameData) {
         if (!this.showBlame) return;
-        toggleBlameClasses(blameData, true);
+        toggleBlameLineBorders(blameData, true);
 
         if (blameData.length > 0) {
           this.isBlameLoading = false;
+
+          // Reposition skeleton loaders after new blame data affects layout
+          await this.updateChunkOffsets(this.activeLoadingChunks);
         }
       },
       immediate: true,
@@ -126,21 +155,32 @@ export default {
     this.selectLine();
   },
   created() {
-    this.handleAppear = debounce(this.handleChunkAppear, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.pendingChunks = new Set();
+    this.processPendingChunks = debounce(() => {
+      this.pendingChunks.forEach((index) => this.handleChunkAppear(index));
+      this.pendingChunks.clear();
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
   },
+  beforeDestroy() {
+    this.pendingChunks.clear();
+    this.processPendingChunks.cancel?.();
+  },
   methods: {
     async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
-      if (!this.renderedChunks.includes(chunkIndex)) {
-        this.renderedChunks.push(chunkIndex);
-        await this.requestBlameInfo(chunkIndex);
+      if (this.renderedChunks.includes(chunkIndex)) return;
 
-        if (chunkIndex > 0 && handleOverlappingChunk) {
-          // request the blame information for overlapping chunk incase it is visible in the DOM
-          this.handleChunkAppear(chunkIndex - 1, false);
-        }
+      if (chunkIndex > 0 && handleOverlappingChunk) {
+        // request the blame information for overlapping chunk incase it is visible in the DOM
+        this.handleChunkAppear(chunkIndex - 1, false);
       }
+
+      this.renderedChunks.push(chunkIndex);
+      this.loadingChunks.push(chunkIndex);
+      await this.updateChunkOffsets([chunkIndex]);
+      await this.requestBlameInfo(chunkIndex);
+      this.loadingChunks = this.loadingChunks.filter((id) => id !== chunkIndex);
     },
     async requestBlameInfo(chunkIndex) {
       const chunk = this.chunks[chunkIndex];
@@ -157,6 +197,7 @@ export default {
             toLine: chunk.startingFrom + chunk.totalLines,
             ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
           },
+          context: { batchKey: 'blameData' },
         });
 
         const blob = data?.project?.repository?.blobs?.nodes[0];
@@ -168,6 +209,8 @@ export default {
           error.graphQLErrors?.[0]?.message || this.$options.i18n.blameErrorMessage;
         createAlert({
           message: errorMessage,
+          parent: this.$refs.fileContent?.parentElement,
+          dismissible: false,
           captureError: true,
           error,
         });
@@ -177,39 +220,72 @@ export default {
       await this.$nextTick();
       this.lineHighlighter.highlightHash(this.$route.hash);
     },
+    async updateChunkOffsets(chunkIndices) {
+      await this.$nextTick();
+      const newOffsets = { ...this.chunkOffsets };
+      chunkIndices.forEach((chunkIndex) => {
+        const chunkEl = this.$refs[`chunk-${chunkIndex}`]?.[0]?.$el;
+        if (chunkEl) newOffsets[chunkIndex] = chunkEl.offsetTop;
+      });
+
+      this.chunkOffsets = newOffsets;
+    },
+
+    handleAppear(chunkIndex) {
+      // Queue visible chunks to prevent skipping during rapid scrolling
+      this.pendingChunks.add(chunkIndex);
+      this.processPendingChunks();
+    },
+    handleDisappear(chunkIndex) {
+      // Prevent chunk from processing if it's not visible in the DOM
+      this.pendingChunks.delete(chunkIndex);
+    },
   },
 };
 </script>
 
 <template>
-  <div class="gl-flex">
-    <blame v-if="showBlame" :blame-info="blameInfo" :is-blame-loading="isBlameLoading" />
+  <div>
+    <div class="flash-container gl-mb-3"></div>
+    <div ref="fileContent" class="gl-relative gl-flex">
+      <blame-info v-if="showBlame" :blame-info="blameInfo" :project-path="projectPath" />
 
-    <div
-      class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
-      data-type="simple"
-      :data-path="blob.path"
-      data-testid="blob-viewer-file-content"
-    >
-      <codeowners-validation
-        v-if="isCodeownersFile"
-        class="gl-text-default"
-        :current-ref="currentRef"
-        :project-path="projectPath"
-        :file-path="blob.path"
+      <blame-skeleton-loader
+        v-for="chunkIndex in activeLoadingChunks"
+        :key="`loading-${chunkIndex}`"
+        :total-lines="1"
+        class="gl-absolute gl-left-0"
+        :style="{ transform: `translateY(${chunkOffsets[chunkIndex] || 0}px)` }"
       />
-      <chunk
-        v-for="(chunk, index) in chunks"
-        :key="index"
-        :is-highlighted="Boolean(chunk.isHighlighted)"
-        :raw-content="chunk.rawContent"
-        :highlighted-content="chunk.highlightedContent"
-        :total-lines="chunk.totalLines"
-        :starting-from="chunk.startingFrom"
-        :blame-path="blob.blamePath"
-        :blob-path="blob.path"
-        @appear="() => handleAppear(index)"
-      />
+
+      <div
+        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
+        data-type="simple"
+        :data-path="blob.path"
+        data-testid="blob-viewer-file-content"
+      >
+        <codeowners-validation
+          v-if="isCodeownersFile"
+          class="gl-text-default"
+          :current-ref="currentRef"
+          :project-path="projectPath"
+          :file-path="blob.path"
+        />
+        <chunk
+          v-for="(chunk, index) in chunks"
+          :key="index"
+          :ref="`chunk-${index}`"
+          :is-highlighted="Boolean(chunk.isHighlighted)"
+          :raw-content="chunk.rawContent"
+          :highlighted-content="chunk.highlightedContent"
+          :total-lines="chunk.totalLines"
+          :starting-from="chunk.startingFrom"
+          :blame-path="blob.blamePath"
+          :blob-path="blob.path"
+          @appear="() => handleAppear(index)"
+          @disappear="() => handleDisappear(index)"
+        />
+      </div>
     </div>
   </div>
 </template>

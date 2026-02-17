@@ -39,9 +39,15 @@ To give a user access to specific features:
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**. 
+1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
-1. Select the features that group members can access.
+
+   >>> [!note]
+   You can select only direct subgroups of the top-level group for access control.
+   You cannot use nested subgroups in this configuration.
+   >>>
+
+1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
 The user now has access to these features anywhere in the instance
@@ -58,18 +64,24 @@ Prerequisites:
 
 To give a user access to specific features:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**. 
+1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
-1. Select the features that group members can access.
+1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
 These settings apply to:
 
-- Users who have the top-level group as the [default GitLab Duo namespace](../../gitlab_duo/model_selection.md).
-- Users that don't have access through their default namespace, but the current top-level group gives them ability to use the feature.
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- Users who execute actions in the top-level group and are direct members of that group.
+- Users who are [inherited members](../../../user/project/members/_index.md#membership-types) of the top-level group.
+
+> [!note]
+> When you configure group-based access controls, you can select only groups
+> that are direct subgroups of the top-level group.
+> You cannot use nested subgroups in access control rules.
 
 {{< /tab >}}
 

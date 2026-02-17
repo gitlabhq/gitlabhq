@@ -49,6 +49,14 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
         expect { perform_request(guest_user) }.not_to exceed_query_limit(control)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_link do
+        let(:boundary_object) { project }
+        let(:user) { guest_user }
+        let(:request) do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/links", personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -145,6 +153,16 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           expect(response).to match_response_schema('public_api/v4/issue_link')
           expect(json_response['link_type']).to eq(link_type)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :create_issue_link do
+          let(:boundary_object) { project }
+          let(:user) { guest_user }
+          let(:request) do
+            post api("/projects/#{project.id}/issues/#{issue.iid}/links", personal_access_token: pat), params: {
+              target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to'
+            }
+          end
+        end
       end
     end
   end
@@ -205,6 +223,14 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/issue_link')
             expect(json_response['id']).to eq(issue_link.id)
+          end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_issue_link do
+          let(:boundary_object) { project }
+          let(:user) { guest_user }
+          let(:request) do
+            get api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", personal_access_token: pat)
           end
         end
       end
@@ -299,6 +325,14 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :delete_issue_link do
+          let(:boundary_object) { project }
+          let(:user) { guest_user }
+          let(:request) do
+            delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", personal_access_token: pat)
+          end
         end
       end
     end

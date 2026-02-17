@@ -21,7 +21,7 @@ RSpec.describe 'Projects > Snippets > Project snippet', :js, feature_category: :
   before do
     # rubocop: disable RSpec/AnyInstanceOf -- TODO: The usage of let_it_be forces us
     allow_any_instance_of(Snippet).to receive(:blobs)
-      .and_return([snippet.repository.blob_at('master', file_path)])
+      .and_return([snippet.repository.blob_at(snippet.default_branch, file_path)])
     # rubocop: enable RSpec/AnyInstanceOf
   end
 

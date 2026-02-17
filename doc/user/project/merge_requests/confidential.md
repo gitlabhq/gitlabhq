@@ -37,12 +37,9 @@ Users with the Developer role for the upstream public repository inherit those u
 permissions in your downstream private fork without action by you. These users can
 immediately push code to branches in your private fork to help fix the confidential issue.
 
-{{< alert type="warning" >}}
-
-Your private fork might expose confidential information if you create it in a different
-namespace than the upstream repository. The two namespaces might not contain the same users.
-
-{{< /alert >}}
+> [!warning]
+> Your private fork might expose confidential information if you create it in a different
+> namespace than the upstream repository. The two namespaces might not contain the same users.
 
 Prerequisites:
 

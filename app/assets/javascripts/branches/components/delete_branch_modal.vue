@@ -60,10 +60,10 @@ export default {
     },
   },
   mounted() {
-    eventHub.$on('openModal', this.openModal);
+    eventHub.$on('open-modal', this.openModal);
   },
   destroyed() {
-    eventHub.$off('openModal', this.openModal);
+    eventHub.$off('open-modal', this.openModal);
   },
   methods: {
     openModal({ isProtectedBranch, branchName, defaultBranchName, deletePath, merged }) {

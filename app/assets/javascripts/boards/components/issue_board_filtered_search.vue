@@ -83,13 +83,11 @@ export default {
         });
       }
 
-      if (this.glFeatures.serviceDeskTicket) {
-        typeOptions.push({
-          icon: 'work-item-ticket',
-          value: WORK_ITEM_TYPE_ENUM_TICKET,
-          title: s__('WorkItem|Ticket'),
-        });
-      }
+      typeOptions.push({
+        icon: 'work-item-ticket',
+        value: WORK_ITEM_TYPE_ENUM_TICKET,
+        title: s__('WorkItem|Ticket'),
+      });
 
       const tokens = [
         {

@@ -162,15 +162,30 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def render_draft_note(note)
+    markdown_params = { issuable_reference_expansion_enabled: true, no_header_anchors: true }
     params = { target_id: merge_request.iid, target_type: 'MergeRequest', text: note.note }
+
+    if note.position.complete? && note.position.on_text?
+      markdown_params[:suggestions_filter_enabled] = true
+
+      params.merge!({
+        preview_suggestions: true,
+        file_path: note.position.new_path,
+        line: note.position.new_line,
+        base_sha: note.position.base_sha,
+        head_sha: note.position.head_sha,
+        start_sha: note.position.start_sha
+      })
+    end
+
     result = PreviewMarkdownService.new(container: @project, current_user: current_user, params: params)
       .execute do |text|
-      markdown_params = { issuable_reference_expansion_enabled: true, no_header_anchors: true }
       view_context.markdown(text, markdown_params)
     end
 
     note.rendered_note = result[:rendered_html]
     note.users_referenced = result[:users]
+    note.suggestions = SuggestionSerializer.new.represent_diff(result[:suggestions])
     note.commands_changes = view_context.markdown(result[:commands])
 
     note

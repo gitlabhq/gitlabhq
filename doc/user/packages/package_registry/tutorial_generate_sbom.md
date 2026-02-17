@@ -63,14 +63,11 @@ Here's an overview of what you'll do:
 1. [Configure the `publish` stage](#configure-the-publish-stage).
 1. [Access the generated SBOM and statistics files](#access-the-generated-files).
 
-{{< alert type="note" >}}
-
-Before implementing this solution, be aware that:
-
-- Package dependencies are not resolved (only direct packages are listed).
-- Package versions are included, but not analyzed for vulnerabilities.
-
-{{< /alert >}}
+> [!note]
+> Before implementing this solution, be aware that:
+>
+> - Package dependencies are not resolved (only direct packages are listed).
+> - Package versions are included, but not analyzed for vulnerabilities.
 
 ### Add the base pipeline configuration
 

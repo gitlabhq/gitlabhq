@@ -110,6 +110,12 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    it_behaves_like 'authorizing granular token permissions', :read_container_repository do
+      let(:user) { reporter }
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
   end
 
   describe 'DELETE /projects/:id/registry/repositories/:repository_id' do
@@ -147,6 +153,12 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_container_repository do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { delete api(url, personal_access_token: pat) }
+    end
 
     context 'with delete protection rule', :enable_admin_mode do
       using RSpec::Parameterized::TableSyntax
@@ -329,6 +341,12 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
               context 'when the Gitlab API returns a tag' do
                 it_behaves_like 'returning values correctly'
                 it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
+
+                it_behaves_like 'authorizing granular token permissions', :read_container_repository_tag do
+                  let(:user) { reporter }
+                  let(:boundary_object) { project }
+                  let(:request) { get api(url, personal_access_token: pat) }
+                end
 
                 it 'returns the correct link to the next page' do
                   subject
@@ -531,6 +549,13 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_container_repository_tag do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:params_with_regex) { { name_regex_delete: 'v10.*' } }
+      let(:request) { delete api(url, personal_access_token: pat), params: params_with_regex }
+    end
   end
 
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
@@ -650,6 +675,36 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    it_behaves_like 'authorizing granular token permissions', :read_container_repository_tag do
+      let_it_be(:tags_response) do
+        [
+          {
+            name: 'rootA',
+            digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+            config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+            size_bytes: 2319870,
+            created_at: 1.minute.ago
+          }
+        ]
+      end
+
+      let(:user) { reporter }
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
+      let(:response_body) do
+        {
+          pagination: {},
+          response_body: ::Gitlab::Json.parse(tags_response.to_json)
+        }
+      end
+
+      before do
+        stub_container_registry_gitlab_api_support(supported: true) do |client|
+          allow(client).to receive(:tags).and_return(response_body)
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
@@ -732,6 +787,16 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_container_repository_tag do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) { delete api(url, personal_access_token: pat) }
+
+      before do
+        stub_delete_tags_service(status: :success)
+      end
+    end
 
     def stub_delete_tags_service(status:, message: '')
       allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |instance|

@@ -27,6 +27,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'PackagesAppRoot',
     store,
     provide: {
       canDelete,

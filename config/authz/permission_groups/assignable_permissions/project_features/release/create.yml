@@ -1,0 +1,8 @@
+---
+name: create_release
+description: Grants the ability to create releases
+permissions:
+  - create_release
+  - create_release_evidence
+boundaries:
+  - project

@@ -386,12 +386,9 @@ class PausedWorker
 end
 ```
 
-{{< alert type="warning" >}}
-
-In case you want to remove the middleware for a worker, set the strategy to `:deprecated` to disable it and wait until
-a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
-
-{{< /alert >}}
+> [!warning]
+> In case you want to remove the middleware for a worker, set the strategy to `:deprecated` to disable it and wait until
+> a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
 
 ## Concurrency limit
 
@@ -399,14 +396,11 @@ With the `concurrency_limit` property, you can limit the worker's concurrency. I
 a separate `LIST` and re-enqueued when it falls under the limit. `ConcurrencyLimit::ResumeWorker` is a cron
 worker that checks if any throttled jobs should be re-enqueued.
 
-{{< alert type="note" >}}
-
-The `ops` feature flag `concurrency_limit_eager_resume_processing` can be enabled to increase the jobs resumption
-throughput of `ConcurrencyLimit::ResumeWorker`. However, this comes with a risk whereby resumed jobs could surpass
-the concurrency limit when the Sidekiq queue is also backlogged.
-See [issue 579350](https://gitlab.com/gitlab-org/gitlab/-/issues/579350) for more details.
-
-{{< /alert >}}
+> [!note]
+> The `ops` feature flag `concurrency_limit_eager_resume_processing` can be enabled to increase the jobs resumption
+> throughput of `ConcurrencyLimit::ResumeWorker`. However, this comes with a risk whereby resumed jobs could surpass
+> the concurrency limit when the Sidekiq queue is also backlogged.
+> See [issue 579350](https://gitlab.com/gitlab-org/gitlab/-/issues/579350) for more details.
 
 The first job that crosses the defined concurrency limit initiates the throttling process for all other jobs of this class.
 Until this happens, jobs are scheduled and executed as usual.
@@ -422,12 +416,9 @@ Prometheus metrics are exposed to monitor workers using concurrency limit middle
 - `sidekiq_concurrency_limit_max_concurrent_jobs`
 - `sidekiq_concurrency_limit_current_concurrent_jobs_total`
 
-{{< alert type="warning" >}}
-
-If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
-the workload drops under the limit.
-
-{{< /alert >}}
+> [!warning]
+> If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
+> the workload drops under the limit.
 
 You should use a lambda to define the limit. If it returns `nil` or `0`, the limit won't be applied.
 Negative numbers pause the execution.
@@ -461,11 +452,8 @@ calculated based on the Sidekiq shard's capacity (`threads * maxReplicas * maxPe
 - `maxReplicas`: Number of max replicas configured for the shard. [Example for `catchall` shard](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L709-710).
 - `maxPercentage`: A percentage based on the worker's urgency. The [configuration](https://gitlab.com/gitlab-org/gitlab/blob/69deb38d99685f72d7e8494fe503d80b93b650ed/app/workers/concerns/worker_attributes.rb#L44-48).
 
-{{< alert type="note" >}}
-
-This only applies if the static `concurrency_limit` attribute has not been set.
-
-{{< /alert >}}
+> [!note]
+> This only applies if the static `concurrency_limit` attribute has not been set.
 
 To override the default `maxPercentage`, you can define the `max_concurrency_limit_percentage` attribute:
 
@@ -479,13 +467,10 @@ class LimitedWorker
 end
 ```
 
-{{< alert type="warning" >}}
-
-Setting `max_concurrency_limit_percentage` only sets the concurrency limit for GitLab.com.
-The default concurrency limit on Dedicated and self-managed instances is currently not supported.
-This work is tracked in [this issue](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/237).
-
-{{< /alert >}}
+> [!warning]
+> Setting `max_concurrency_limit_percentage` only sets the concurrency limit for GitLab.com.
+> The default concurrency limit on Dedicated and self-managed instances is currently not supported.
+> This work is tracked in [this issue](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/237).
 
 ## Skip execution of workers in Geo secondary
 

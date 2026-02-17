@@ -128,12 +128,9 @@ To request a bug fix:
 
 If approved, the fix is included in your next scheduled maintenance window.
 
-{{< alert type="note" >}}
-
-Not all fixes can be backported due to dependencies, complexity, or compatibility
-considerations. Each request is evaluated individually.
-
-{{< /alert >}}
+> [!note]
+> Not all fixes can be backported due to dependencies, complexity, or compatibility
+> considerations. Each request is evaluated individually.
 
 ## Related topics
 

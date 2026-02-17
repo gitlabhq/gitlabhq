@@ -1,12 +1,9 @@
-import { identity, isFunction } from 'lodash';
-import { htmlEncode } from '~/lib/utils/html';
+import { escape } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
   th: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
 };
-
-const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey', 'sourceTagName'];
 
 const ignoreAttrs = {
   dd: ['isTerm'],
@@ -40,7 +37,7 @@ export function placeholder(state) {
   };
 }
 
-export function containsOnlyText(node) {
+function containsOnlyText(node) {
   if (node.childCount === 1) {
     const child = node.child(0);
     return child.isText && child.marks.length === 0;
@@ -70,18 +67,16 @@ export function containsParagraphWithOnlyText(node) {
 }
 
 const shouldIgnoreAttr = (tagName, attrKey, attrValue) =>
-  ignoreAttrs[tagName]?.includes(attrKey) ||
-  defaultIgnoreAttrs.includes(attrKey) ||
-  defaultAttrs[tagName]?.[attrKey] === attrValue;
+  ignoreAttrs[tagName]?.includes(attrKey) || defaultAttrs[tagName]?.[attrKey] === attrValue;
 
 export function openTag(tagName, attrs) {
   let str = `<${tagName}`;
 
   str += Object.entries(attrs || {})
     .map(([key, value]) => {
-      if (shouldIgnoreAttr(tagName, key, value)) return '';
-
-      return ` ${key}="${htmlEncode(value?.toString())}"`;
+      if (value === false || shouldIgnoreAttr(tagName, key, value)) return '';
+      if (value === true) return ` ${key}`;
+      return ` ${key}="${escape(value?.toString())}"`;
     })
     .join('');
 
@@ -99,7 +94,7 @@ const reMarks = /(^|\s)(\*|\*\*|_|__|`|~~)$/;
 
 const regexes = [reSpace, reBrackets, rePunctuation, reMarks];
 
-export function ensureSpace(state) {
+function ensureSpace(state) {
   state.flushClose();
   if (!state.atBlank() && !regexes.some((regex) => regex.test(state.out))) state.write(' ');
 }
@@ -152,96 +147,6 @@ export function renderTextInline(text, state, node) {
   }
 }
 
-let inBlockquote = false;
-
-export const isInBlockquote = () => inBlockquote;
-export const setIsInBlockquote = (value) => {
-  inBlockquote = value;
-};
-
-const expandPreserveUnchangedConfig = (configOrRender) =>
-  isFunction(configOrRender)
-    ? { render: configOrRender, overwriteSourcePreservationStrategy: false, inline: false }
-    : configOrRender;
-
-export function preserveUnchanged(configOrRender) {
-  // eslint-disable-next-line max-params
-  return (state, node, parent, index) => {
-    const { render, overwriteSourcePreservationStrategy, inline } =
-      expandPreserveUnchangedConfig(configOrRender);
-
-    const { sourceMarkdown } = node.attrs;
-    const same = state.options.changeTracker.get(node);
-
-    // sourcemaps for elements in blockquotes are not accurate
-    if (same && !overwriteSourcePreservationStrategy && !isInBlockquote()) {
-      state.write(sourceMarkdown);
-
-      if (!inline) {
-        state.closeBlock(node);
-      }
-    } else {
-      render(state, node, parent, index, same, sourceMarkdown);
-    }
-  };
-}
-
-export function preserveUnchangedMark({ open, close, escape = true, ...restConfig }) {
-  // use a buffer to replace the content of the serialized mark with the sourceMarkdown
-  // when the mark is unchanged
-  let bufferStartPos = -1;
-  let esc;
-
-  function startBuffer(state) {
-    bufferStartPos = state.out.length;
-  }
-
-  function bufferStarted() {
-    return bufferStartPos !== -1;
-  }
-
-  function endBuffer(state, replace) {
-    const whitespace = state.out.substring(bufferStartPos).match(/^\s+/m)?.[0] || '';
-    state.out = state.out.substring(0, bufferStartPos) + whitespace + replace;
-    bufferStartPos = -1;
-  }
-
-  return {
-    ...restConfig,
-    // eslint-disable-next-line max-params
-    open: (state, mark, parent, index) => {
-      if (!escape) {
-        esc = state.esc;
-        state.esc = identity;
-      }
-
-      const same = state.options.changeTracker.get(mark);
-
-      if (same) {
-        startBuffer(state);
-        return '';
-      }
-
-      return open(state, mark, parent, index);
-    },
-    // eslint-disable-next-line max-params
-    close: (state, mark, parent, index) => {
-      if (!escape) {
-        state.esc = esc;
-      }
-
-      const { sourceMarkdown } = mark.attrs;
-
-      if (bufferStarted()) {
-        endBuffer(state, sourceMarkdown);
-        return '';
-      }
-
-      return close(state, mark, parent, index);
-    },
-  };
-}
-
 export const findChildWithMark = (mark, parent) => {
   let child;
   let offset;
@@ -260,4 +165,26 @@ export const findChildWithMark = (mark, parent) => {
 
 export function getMarkText(mark, parent) {
   return findChildWithMark(mark, parent).child?.text || '';
+}
+
+// Given a table cell (TableCell or TableHeader), if it's a valid table task item ---
+// that is, it contains *only* a single task item, with no other content --- returns the
+// TaskItem cell within.
+//
+// Returns null otherwise.
+export function tableCellAsTaskTableItem(cell) {
+  if (cell.childCount !== 1) return null;
+
+  const child = cell.child(0);
+  if (child.type.name === 'taskList') {
+    const taskItem = child.child(0);
+    // The editor always has a paragraph beside a task item (so there's somewhere for the
+    // cursor to sit if you want to enter content), so we permit it if the task item contains
+    // just an empty paragraph. We also permit no child at all for completeness.
+    if (taskItem.childCount === 0 || containsEmptyParagraph(taskItem)) {
+      return child.child(0);
+    }
+  }
+
+  return null;
 }

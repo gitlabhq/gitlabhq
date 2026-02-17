@@ -23,6 +23,7 @@ module API
         detail 'This feature was added in GitLab 17.10'
         success code: 200
       end
+      route_setting :authorization, permissions: :read_placeholder_reassignment, boundary_type: :group
       get ':id/placeholder_reassignments' do
         csv_response = Import::SourceUsers::GenerateCsvService.new(user_group, current_user: current_user).execute
 
@@ -42,6 +43,7 @@ module API
       desc 'Workhorse authorization for the reassignment CSV file' do
         detail 'This feature was introduced in GitLab 17.10'
       end
+      route_setting :authorization, permissions: :authorize_placeholder_reassignment, boundary_type: :group
       post ':id/placeholder_reassignments/authorize' do
         require_gitlab_workhorse!
 
@@ -60,6 +62,7 @@ module API
           desc: 'The CSV file containing the reassignments',
           documentation: { type: 'file' }
       end
+      route_setting :authorization, permissions: :create_placeholder_reassignment, boundary_type: :group
       post ':id/placeholder_reassignments' do
         require_gitlab_workhorse!
 

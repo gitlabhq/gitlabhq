@@ -175,4 +175,117 @@ RSpec.describe Ci::Inputs::RulesEvaluator, feature_category: :pipeline_compositi
       expect(evaluator.resolved_default).to eq('a')
     end
   end
+
+  context 'with boolean input values' do
+    let(:current_inputs) { { 'publish' => true } }
+
+    context 'when comparing with string literals' do
+      let(:rules) do
+        [
+          { if: '$[[ inputs.publish ]] == "true"', default: 'publish' },
+          { if: '$[[ inputs.publish ]] == "false"', default: 'test' },
+          { default: 'default' }
+        ]
+      end
+
+      it 'matches boolean true with string "true"' do
+        expect(evaluator.resolved_default).to eq('publish')
+      end
+
+      context 'when boolean is false' do
+        let(:current_inputs) { { 'publish' => false } }
+
+        it 'matches boolean false with string "false"' do
+          expect(evaluator.resolved_default).to eq('test')
+        end
+      end
+    end
+
+    context 'when comparing with boolean literals' do
+      let(:rules) do
+        [
+          { if: '$[[ inputs.publish ]] == true', default: 'publish' },
+          { if: '$[[ inputs.publish ]] == false', default: 'test' },
+          { default: 'default' }
+        ]
+      end
+
+      it 'matches boolean true with boolean literal true' do
+        expect(evaluator.resolved_default).to eq('publish')
+      end
+
+      context 'when boolean is false' do
+        let(:current_inputs) { { 'publish' => false } }
+
+        it 'matches boolean false with boolean literal false' do
+          expect(evaluator.resolved_default).to eq('test')
+        end
+      end
+    end
+
+    context 'when comparing with != and string literals' do
+      let(:rules) do
+        [
+          { if: '$[[ inputs.publish ]] != "false"', default: 'publish' },
+          { if: '$[[ inputs.publish ]] != "true"', default: 'test' },
+          { default: 'default' }
+        ]
+      end
+
+      it 'matches boolean true with != "false"' do
+        expect(evaluator.resolved_default).to eq('publish')
+      end
+
+      context 'when boolean is false' do
+        let(:current_inputs) { { 'publish' => false } }
+
+        it 'matches boolean false with != "true"' do
+          expect(evaluator.resolved_default).to eq('test')
+        end
+      end
+    end
+
+    context 'when comparing with != and boolean literals' do
+      let(:rules) do
+        [
+          { if: '$[[ inputs.publish ]] != false', default: 'publish' },
+          { if: '$[[ inputs.publish ]] != true', default: 'test' },
+          { default: 'default' }
+        ]
+      end
+
+      it 'matches boolean true with != false' do
+        expect(evaluator.resolved_default).to eq('publish')
+      end
+
+      context 'when boolean is false' do
+        let(:current_inputs) { { 'publish' => false } }
+
+        it 'matches boolean false with != true' do
+          expect(evaluator.resolved_default).to eq('test')
+        end
+      end
+    end
+
+    context 'when using boolean input directly without comparison' do
+      let(:rules) do
+        [
+          { if: '$[[ inputs.publish ]]', default: 'enabled' },
+          { default: 'disabled' }
+        ]
+      end
+
+      it 'treats true as truthy' do
+        expect(evaluator.resolved_default).to eq('enabled')
+      end
+
+      context 'when boolean is false' do
+        let(:current_inputs) { { 'publish' => false } }
+
+        it 'treats false as falsy and uses fallback' do
+          expect(evaluator.resolved_default).to eq('disabled')
+        end
+      end
+    end
+  end
 end

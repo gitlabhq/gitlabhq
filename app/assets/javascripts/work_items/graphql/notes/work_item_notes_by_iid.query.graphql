@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/notes/work_item_note.fragment.graphql"
 
+# @feature_category: team_planning
 query workItemNotesByIid(
   $fullPath: ID!
   $iid: String!

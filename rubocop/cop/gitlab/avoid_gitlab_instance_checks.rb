@@ -25,6 +25,7 @@ module RuboCop
       #
       class AvoidGitlabInstanceChecks < RuboCop::Cop::Base
         MSG = 'Avoid the use of `%{name}`. Use Gitlab::Saas.feature_available?. ' \
+              'Instance checks create untested code paths since they are false by default in tests. ' \
               'See https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature'
         RESTRICT_ON_SEND = %i[
           com? com_except_jh? com_and_canary? com_but_not_canary? org_or_com? should_check_namespace_plan? enabled?

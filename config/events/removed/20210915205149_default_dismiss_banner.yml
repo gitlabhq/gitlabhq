@@ -1,0 +1,18 @@
+description: "Dismiss Terraform banner"
+category: default
+action: dismiss_banner
+extra_properties:
+identifiers:
+product_group: environments
+milestone: "14.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68467
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: "`terraform_banner`"
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221338
+milestone_removed: '18.9'

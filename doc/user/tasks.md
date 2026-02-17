@@ -22,12 +22,9 @@ description: Task labels, confidential tasks, linked items, and task weights.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 A task in GitLab is a planning item that can be created in an issue.
 Use tasks to break down user stories captured in [issues](project/issues/_index.md) into
@@ -219,11 +216,8 @@ Convert a task into another item type, such as:
 - Objective
 - Key result
 
-{{< alert type="warning" >}}
-
-Changing the type might result in data loss if the target type does not support all fields from the original type.
-
-{{< /alert >}}
+> [!warning]
+> Changing the type might result in data loss if the target type does not support all fields from the original type.
 
 Prerequisites:
 
@@ -336,7 +330,7 @@ To change the status of a task:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your task to view it.
-1. On the right sidebar, in the **Status** section, select **Edit**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
 The task's status updates immediately.
@@ -789,13 +783,10 @@ system note in the task's comments, for example:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can prevent public comments in a task.
 When you do, only project members can add and edit comments.

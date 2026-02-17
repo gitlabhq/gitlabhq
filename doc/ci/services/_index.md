@@ -35,7 +35,7 @@ Use an existing image and run it as an additional container
 instead of installing `mysql` every time you build a project.
 
 You're not limited to only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
@@ -230,7 +230,7 @@ end-to-end-tests:
 ```
 
 For this solution to work, you must use
-[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker/#create-a-network-for-each-job).
 
 ## Passing CI/CD variables to services
 
@@ -269,14 +269,7 @@ test:
 
 ## Available settings for `services`
 
-| Setting       | Required                             | GitLab version | Description |
-| ------------- | ------------------------------------ | -------------- | ----------- |
-| `name`        | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
-| `entrypoint`  | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to the [Dockerfile `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
-| `command`     | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to the [Dockerfile `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
-| `alias`       | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). Using alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor). |
-| `variables`   | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
-| `pull_policy` | no                                   | 15.1           | Specify how the runner pulls Docker images when it executes a job. Valid values are `always`, `if-not-present`, and `never`. Default is `always`. For more information, see [`services:pull_policy`](../yaml/_index.md#servicespull_policy). |
+For detailed information about `services:` subkeys, see the [CI/CD YAML reference](../yaml/_index.md#services).
 
 ## Starting multiple services from the same image
 
@@ -464,7 +457,7 @@ In addition to the `build` and `helper` containers, six more containers are crea
     alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
     case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
     'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
-    Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
+    Check https://docs.gitlab.com/runner/shells/index/#shell-profile-loading for more information.
     ```
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
@@ -494,7 +487,7 @@ access-service:
 
 For this solution to work, you must:
 
-- Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+- Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker/#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-docker-socket-binding).
   If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
 
@@ -530,6 +523,12 @@ in the container.
 `CI_DEBUG_SERVICES` should only be enabled when service containers are being actively debugged as there are both storage
 and performance consequences to capturing service container logs.
 
+> [!warning]
+> Enabling `CI_DEBUG_SERVICES` might reveal masked variables. When `CI_DEBUG_SERVICES` is enabled,
+> service container logs and the CI job's logs are streamed to the job's trace log concurrently. This means that the
+> service container logs might get inserted into a job's masked log. This would thwart the variable masking mechanism
+> and result in the masked variable being revealed.
+
 To enable service logging, add the `CI_DEBUG_SERVICES` variable to the project's
 `.gitlab-ci.yml` file:
 
@@ -548,21 +547,9 @@ Any other values result in an error message and effectively disable the feature.
 When enabled, logs for all service containers are captured and streamed into the jobs trace log concurrently with
 other logs. Logs from each container are prefixed with the container's aliases, and displayed in a different color.
 
-{{< alert type="note" >}}
-
-To diagnose job failures, you can adjust the logging level in your service container for which you want to capture logs.
-The default logging level might not provide sufficient troubleshooting information.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Enabling `CI_DEBUG_SERVICES` might reveal masked variables. When `CI_DEBUG_SERVICES` is enabled,
-service container logs and the CI job's logs are streamed to the job's trace log concurrently. This means that the
-service container logs might get inserted into a job's masked log. This would thwart the variable masking mechanism
-and result in the masked variable being revealed.
-
-{{< /alert >}}
+> [!note]
+> To diagnose job failures, you can adjust the logging level in your service container for which you want to capture logs.
+> The default logging level might not provide sufficient troubleshooting information.
 
 See [Mask a CI/CD Variable](../variables/_index.md#mask-a-cicd-variable)
 
@@ -638,4 +625,4 @@ is already populated with data. The service that tries to write the `CI_PROJECT_
 immediately after it started might fail with a `No such file or directory` error.
 
 In scenarios where services that interact with job data are not controlled by the job itself, consider the
-[Docker executor workflow](https://docs.gitlab.com/runner/executors/docker.html#docker-executor-workflow).
+[Docker executor workflow](https://docs.gitlab.com/runner/executors/docker/#docker-executor-workflow).

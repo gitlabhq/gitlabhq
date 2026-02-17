@@ -33,7 +33,7 @@
 .fe-islands-parallel:
   parallel:
     matrix:
-      - FE_APP_DIR: ["duo_next", "visual_ci_editor"]
+      - FE_APP_DIR: ["duo_next"]
 
 compile-production-assets:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
@@ -166,7 +166,7 @@ compile-fe-islands:
 # Builds FOSS fixtures in the FOSS project.
 rspec-all frontend_fixture:
   extends:
-    - .use-pg16
+    - .use-pg17
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
   script:
@@ -176,7 +176,7 @@ rspec-all frontend_fixture:
 
 rspec-all frontend_fixture clickhouse:
   extends:
-    - .use-pg16-clickhouse25
+    - .use-pg17-clickhouse25
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
   script:

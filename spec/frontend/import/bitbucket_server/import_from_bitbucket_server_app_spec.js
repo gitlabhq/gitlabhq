@@ -1,8 +1,7 @@
 import { nextTick } from 'vue';
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import importFromBitbucketServerApp from '~/import/bitbucket_server/import_from_bitbucket_server_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -25,7 +24,7 @@ describe('Import from Bitbucket Server app', () => {
     createComponent();
   });
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findForm = () => wrapper.find('form');
   const findUrlInput = () => wrapper.findByTestId('url-input');
   const findUsernameInput = () => wrapper.findByTestId('username-input');

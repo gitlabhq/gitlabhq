@@ -24,6 +24,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
+    name: 'ErrorTrackingListRoot',
     components: {
       ErrorTrackingList,
     },

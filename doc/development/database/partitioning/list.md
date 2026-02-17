@@ -162,11 +162,8 @@ class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
-
-{{< /alert >}}
+> [!note]
+> Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
 
 ```ruby
 class Model < ApplicationRecord
@@ -212,13 +209,10 @@ class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2
 end
 ```
 
-{{< alert type="note" >}}
-
-`initial_partitioning_value` could be an array of values. It must contain all of the
-values for the existing partitions. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/465859)
-for more details.
-
-{{< /alert >}}
+> [!note]
+> `initial_partitioning_value` could be an array of values. It must contain all of the
+> values for the existing partitions. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/465859)
+> for more details.
 
 ```ruby
 class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
@@ -251,13 +245,10 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-Do not forget to set the sequence name explicitly in your model because it will
-be owned by the routing table and `ActiveRecord` can't determine it. This can
-be cleaned up after the `table_name` is changed to the routing table.
-
-{{< /alert >}}
+> [!note]
+> Do not forget to set the sequence name explicitly in your model because it will
+> be owned by the routing table and `ActiveRecord` can't determine it. This can
+> be cleaned up after the `table_name` is changed to the routing table.
 
 ```ruby
 class Model < ApplicationRecord

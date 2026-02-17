@@ -213,13 +213,13 @@ module QA
         raise NotImplementedError
       end
 
-      def visit!(skip_spinner_check: true)
+      def visit!(skip_spinner_check: true, reload_page: false)
         Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
 
         # Just in case an async action is not yet complete
         Support::WaitForRequests.wait_for_requests(skip_spinner_check: skip_spinner_check)
 
-        Support::Retrier.retry_until do
+        Support::Retrier.retry_until(reload_page: reload_page) do
           visit(web_url)
           wait_until { current_url.include?(URI.parse(web_url).path.split('/').last || web_url) }
         end

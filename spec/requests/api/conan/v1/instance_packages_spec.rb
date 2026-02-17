@@ -21,6 +21,13 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   describe 'GET /api/v4/packages/conan/v1/conans/search' do
     let_it_be(:url) { '/packages/conan/v1/conans/search' }
 
+    it_behaves_like 'authorizing granular token permissions', :search_conan_package do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        get api(url), params: { q: package.conan_recipe }, headers: basic_auth_header(user.username, pat.token)
+      end
+    end
+
     it_behaves_like 'conan search endpoint', scope: :instance
 
     it_behaves_like 'conan FIPS mode' do
@@ -39,11 +46,21 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   describe 'GET /api/v4/packages/conan/v1/users/authenticate' do
     let_it_be(:url) { '/packages/conan/v1/users/authenticate' }
 
+    it_behaves_like 'authorizing granular token permissions', :authenticate_conan_package do
+      let(:boundary_object) { :instance }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it_behaves_like 'conan authenticate endpoint'
   end
 
   describe 'GET /api/v4/packages/conan/v1/users/check_credentials' do
     let_it_be(:url) { "/packages/conan/v1/users/check_credentials" }
+
+    it_behaves_like 'authorizing granular token permissions', :authenticate_conan_package do
+      let(:boundary_object) { :instance }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
 
     it_behaves_like 'conan check_credentials endpoint'
   end
@@ -178,6 +195,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
         put api("/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"), headers: headers_with_token
       end
 
+      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"),
+            headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
+        end
+      end
+
       it_behaves_like 'workhorse authorize endpoint'
     end
 
@@ -189,6 +214,15 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
         put api("/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}" \
           "/authorize"),
           headers: headers_with_token
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(
+            "/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}/authorize"
+          ), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
+        end
       end
 
       it_behaves_like 'workhorse authorize endpoint'

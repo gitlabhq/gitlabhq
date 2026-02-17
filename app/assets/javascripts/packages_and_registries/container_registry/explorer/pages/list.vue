@@ -11,12 +11,11 @@ import {
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
-import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getPageParams,
@@ -70,7 +69,6 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
-    MetadataDatabaseBanner,
     PersistedPagination,
     PersistedSearch,
   },
@@ -165,7 +163,7 @@ export default {
       return this.itemToDelete?.id ? [this.itemToDelete] : [];
     },
     graphqlResource() {
-      return this.config.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.config.isGroupPage ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     pageSize() {
       return this.config.isMetadataDatabaseEnabled
@@ -271,7 +269,6 @@ export default {
 
 <template>
   <div>
-    <metadata-database-banner v-if="!config.isMetadataDatabaseEnabled" />
     <gl-alert
       v-if="showDeleteAlert"
       :variant="deleteAlertType"
@@ -341,6 +338,7 @@ export default {
         </template>
       </registry-header>
       <persisted-search
+        use-router
         :sortable-fields="$options.searchConfig"
         :default-order="$options.searchConfig[0].orderBy"
         default-sort="desc"
@@ -390,6 +388,7 @@ export default {
 
       <div v-if="!mutationLoading" class="gl-flex gl-justify-center">
         <persisted-pagination
+          use-router
           class="gl-mt-3"
           :pagination="pageInfo"
           @prev="fetchPreviousPage"

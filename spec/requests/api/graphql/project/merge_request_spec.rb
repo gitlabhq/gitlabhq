@@ -108,18 +108,6 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
   end
 
-  context 'with the load_commits_from_gitaly_in_graphql feature flag' do
-    context "when the flag is enabled" do
-      it_behaves_like 'when the merge_request has committers'
-    end
-
-    context "when the flag is disabled" do
-      stub_feature_flags(load_commits_from_gitaly_in_graphql: false)
-
-      it_behaves_like 'when the merge_request has committers'
-    end
-  end
-
   describe 'diffStats' do
     let(:mr_fields) do
       <<~FIELDS

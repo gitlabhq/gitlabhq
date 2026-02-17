@@ -41,13 +41,9 @@ export default {
             text: this.$options.i18n.enableFeature,
           };
 
-      button.category = this.feature.category || 'secondary';
       button.text = sprintf(button.text, { feature: this.shortName });
 
       return button;
-    },
-    manageViaMrButtonCategory() {
-      return this.feature.category || 'secondary';
     },
     showManageViaMr() {
       return ManageViaMr.canRender(this.feature);
@@ -101,7 +97,7 @@ export default {
 </script>
 
 <template>
-  <gl-card :class="cardClasses">
+  <gl-card :class="cardClasses" body-class="gl-flex gl-flex-col gl-grow">
     <template #header>
       <div class="gl-flex gl-items-baseline" :class="{ 'gl-flex-col-reverse': hasBadge }">
         <h3 class="gl-m-0 gl-mr-3 gl-text-base" :class="textClasses">
@@ -136,7 +132,7 @@ export default {
       </div>
     </template>
 
-    <p class="gl-mb-0" :class="textClasses">
+    <p class="gl-mb-0 gl-grow" :class="textClasses">
       {{ feature.description }}
       <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}.</gl-link>
     </p>
@@ -146,8 +142,6 @@ export default {
         <gl-button
           v-if="feature.configurationPath"
           :href="feature.configurationPath"
-          variant="confirm"
-          :category="configurationButton.category"
           :data-testid="`${hyphenatedFeature}-enable-button`"
         >
           {{ configurationButton.text }}
@@ -156,8 +150,6 @@ export default {
         <manage-via-mr
           v-else-if="showManageViaMr"
           :feature="feature"
-          variant="confirm"
-          :category="manageViaMrButtonCategory"
           :data-testid="`${hyphenatedFeature}-mr-button`"
           @error="onError"
         />
@@ -175,7 +167,6 @@ export default {
           v-if="available && feature.secondary.configurationPath"
           v-gl-tooltip.left.viewport="feature.secondary.configurationText"
           icon="settings"
-          category="secondary"
           :href="feature.secondary.configurationPath"
           :aria-label="feature.secondary.configurationText"
         />

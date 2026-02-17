@@ -20,7 +20,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
   end
 
   issuable_types.each do |issuable_type|
-    it "avoids N+1 database queries for #{issuable_type.to_s.humanize.pluralize}", quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/231426' } do
+    it "avoids N+1 database queries for #{issuable_type.to_s.humanize.pluralize}", quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9332' } do
       control = ActiveRecord::QueryRecorder.new { visit_issuable_list(issuable_type) }
 
       create_issuables(issuable_type)

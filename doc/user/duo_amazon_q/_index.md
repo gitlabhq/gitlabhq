@@ -149,7 +149,6 @@ Amazon Q updates the merge request with the suggested tests.
 ## Related topics
 
 - [Set up GitLab Duo with Amazon Q](setup.md)
-- [View the full list of GitLab Duo with Amazon Q features](../gitlab_duo/feature_summary.md).
 - [GitLab Duo authentication and authorization](../gitlab_duo/security.md)
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Upgrade Java](https://www.youtube.com/watch?v=qGyzG9wTsEo) <!-- Video published on 2025-10-16 -->

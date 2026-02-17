@@ -7,7 +7,7 @@
 # You should add this template to an existing `.gitlab-ci.yml` file by using the `include:`
 # keyword.
 # The template should work without modifications but you can customize the template settings if
-# needed: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# needed: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
 #
 # Requirements:
 # - A `test` stage to be present in the pipeline.

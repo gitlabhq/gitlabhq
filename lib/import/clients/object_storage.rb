@@ -9,7 +9,7 @@ module Import
 
       FOG_PROVIDER_MAP = {
         aws: 'AWS',
-        minio: 'AWS'
+        s3_compatible: 'AWS'
       }.with_indifferent_access.freeze
 
       def initialize(provider:, bucket:, credentials:)

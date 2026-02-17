@@ -10,6 +10,7 @@ export const initGroupSettingsReadme = () => {
 
   return new Vue({
     el,
+    name: 'GroupSettingsReadmeRoot',
     render(createElement) {
       return createElement(GroupSettingsReadme, {
         props: {

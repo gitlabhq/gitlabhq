@@ -1,7 +1,0 @@
----
-name: read_merge_train_merge_request
-description: Grants the ability to read merge train status for a specific merge request
-boundaries:
-  - project
-permissions:
-  - read_merge_train_merge_request

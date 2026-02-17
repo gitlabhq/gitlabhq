@@ -32,6 +32,10 @@ the site more time before scheduling a planned failover.
 
 ## Repository verification
 
+Prerequisites:
+
+- Administrator access.
+
 On the **primary** site:
 
 1. In the upper-right corner, select **Admin**.

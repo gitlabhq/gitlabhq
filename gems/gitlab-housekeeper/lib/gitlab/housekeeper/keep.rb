@@ -63,6 +63,21 @@ module Gitlab
         raise NotImplementedError, "A Keep must implement make_change method"
       end
 
+      # Determines whether code should be pushed for a given change.
+      # By default, we do not push code if the MR already has approvals (to avoid resetting them)
+      # unless push_when_approved is enabled. We also skip pushing if someone else has added commits.
+      #
+      # Keeps can override this method to implement custom push logic.
+      #
+      # @param [Gitlab::Housekeeper::Change] change The change object
+      # @param [Boolean] push_when_approved Global flag to allow pushing even when approved
+      # @return [Boolean] Whether to push code
+      def should_push_code?(change, push_when_approved)
+        return false if change.already_approved? && !push_when_approved
+
+        change.update_required?(:code)
+      end
+
       private
 
       attr_reader :logger

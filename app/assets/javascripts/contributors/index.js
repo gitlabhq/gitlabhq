@@ -12,6 +12,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ContributorsGraphsRoot',
     store,
     render(createElement) {
       return createElement(ContributorsGraphs, {

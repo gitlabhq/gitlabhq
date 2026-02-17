@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Troubleshooting tips for common problems in Code Suggestions.
-title: Troubleshooting Code Suggestions
+description: Troubleshooting tips for common problems in Code Suggestions (Classic).
+title: Troubleshooting Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -21,7 +21,7 @@ title: Troubleshooting Code Suggestions
 
 {{< /history >}}
 
-When working with GitLab Duo Code Suggestions, you might encounter the following issues.
+When working with GitLab Duo Code Suggestions (Classic), you might encounter the following issues.
 
 You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your instance meets the requirements to run Code Suggestions.
 
@@ -266,3 +266,12 @@ For non-Code Suggestions troubleshooting for Neovim, see [Neovim troubleshooting
    ```lua
    :lua =vim.cmd('view ' .. vim.lsp.get_log_path())
    ```
+
+## Latency issues with code completion
+
+If you are assigned a seat in a project that has a specific model selected for code completion:
+
+- Your IDE extension disables the [direct connection to the AI Gateway](../../../../administration/gitlab_duo/gateway.md#region-support)
+- Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
+
+This might cause increased latency with code completion requests.

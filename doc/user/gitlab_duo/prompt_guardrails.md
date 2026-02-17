@@ -16,12 +16,9 @@ enforced context boundaries, and filtering tools, which help:
 These safeguards support compliance with common regulatory standards,
 like GDPR, by helping to minimize risks associated with AI-driven workflows.
 
-{{< alert type="note" >}}
-
-While these guardrails may reduce risks, they do not eliminate all vulnerabilities.
-No system can guarantee complete protection against all misuse or sophisticated attacks.
-
-{{< /alert >}}
+> [!note]
+> While these guardrails may reduce risks, they do not eliminate all vulnerabilities.
+> No system can guarantee complete protection against all misuse or sophisticated attacks.
 
 ## General guardrails
 

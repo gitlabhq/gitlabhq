@@ -15,35 +15,31 @@ title: GitLab Duo with Amazon Q
 
 {{< history >}}
 
-- GitLab 17.7で`amazon_q_integration`[フラグ](../../administration/feature_flags/_index.md)とともに[ベータ](../../policy/development_stages_support.md#beta)として導入されました。デフォルトでは無効になっています。
+- GitLab 17.7で[ベータ](../../policy/development_stages_support.md#beta)として、`amazon_q_integration`という名前の[フラグ](../../administration/feature_flags/_index.md)付きで導入されました。デフォルトでは無効になっています。
 - 機能フラグ`amazon_q_integration`は、GitLab 17.8で削除されました。
-- GitLab 17.11で、GitLab Duoの追加機能サポートとともに一般提供になりました。
+- GitLab 17.11で、追加のGitLab Duo機能のサポートとともに一般提供されました。
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-GitLab Duo with Amazon Qは、他のGitLab Duoアドオンと組み合わせることはできません。
-
-{{< /alert >}}
+> [!note] GitLab Duo with Amazon Qは、他のGitLab Duoアドオンと組み合わせることはできません。
 
 re:Invent 2024で、AmazonはGitLab Duo with Amazon Qインテグレーションを発表しました。このインテグレーションにより、タスクを自動化し、生産性を向上させることができます。
 
 GitLab Duo with Amazon Q:
 
 - イシューとマージリクエストでさまざまなタスクを実行できます。
-- [他の多くのGitLab Duo機能を搭載](../gitlab_duo/feature_summary.md)。
+- [他の多くのGitLab Duo機能が含まれています](../gitlab_duo/feature_summary.md)。
 
-クリック操作のデモについては、[GitLab Duo with Amazon Q製品ツアー](https://gitlab.navattic.com/duo-with-q)をご覧ください。
+クリック操作のデモについては、[GitLab Duo with Amazon Qプロダクトツアー](https://gitlab.navattic.com/duo-with-q)をご覧ください。
 <!-- Demo published on 2025-04-23 -->
 
 GitLab Duo with Amazon Qのサブスクリプションを入手するには、アカウントエグゼクティブにお問い合わせください。
 
-または、トライアルをリクエストするには、[こちらのフォームにご記入ください](https://about.gitlab.com/partners/technology-partners/aws/#form)。
+または、トライアルをリクエストするには、[このフォームに記入してください](https://about.gitlab.com/partners/technology-partners/aws/#form)。
 
-## GitLab Duo with Amazon Qを設定する {#set-up-gitlab-duo-with-amazon-q}
+## GitLab Duo with Amazon Qのセットアップ {#set-up-gitlab-duo-with-amazon-q}
 
-GitLab Duo with Amazon QサブスクリプションとGitLab 17.11バージョン以降をお持ちの場合は、[インスタンスにGitLab Duo with Amazon Qをセットアップ](setup.md)できます。
+GitLab Duo with Amazon QのサブスクリプションとGitLab 17.11以降をお持ちの場合は、[インスタンスにGitLab Duo with Amazon Qをセットアップ](setup.md)できます。
 
 ## イシューでGitLab Duo with Amazon Qを使用する {#use-gitlab-duo-with-amazon-q-in-an-issue}
 
@@ -72,22 +68,22 @@ Amazon Qは、Java 8または11のコードを分析し、コードをJava 17に
 
 [チュートリアルを見る](https://gitlab.navattic.com/duo-q-transform)。
 
-前提要件: 
+前提条件: 
 
-- プロジェクト用に[RunnerとCI/CDパイプラインが構成されている](../../ci/_index.md)必要があります。
-- `pom.xml`ファイルに[ソースとターゲット](https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-source-and-target.html)が必要です。
+- [プロジェクト用に設定されたランナーとCI/CDパイプラインがなければなりません](../../ci/_index.md)。
+- `pom.xml`ファイルには、[ソースとターゲット](https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-source-and-target.html)が必要です。
 
 Javaをアップグレードするには:
 
 1. イシューを作成します。
-1. イシューのタイトルと説明で、Javaをアップグレードしたい理由を説明します。バージョンの詳細を入力する必要はありません。Amazon Qがバージョンを判断できます。
+1. イシューのタイトルと説明で、Javaをアップグレードしたいことを説明します。バージョンの詳細を入力する必要はありません。Amazon Qはバージョンを判断できます。
 1. イシューを保存します。次に、コメントで、`/q transform`と入力します。
 1. **コメント**を選択します。
 
-CI/CDパイプラインジョブが開始されます。コメントには、詳細とジョブへのリンクが表示されます。
+CI/CDジョブが開始されます。詳細とジョブへのリンクがコメントに表示されます。
 
 - ジョブが成功すると、アップグレードに必要なコード変更を含むマージリクエストが作成されます。
-- ジョブが失敗した場合、コメントには潜在的な修正に関する詳細が表示されます。
+- ジョブが失敗した場合、コメントは潜在的な修正に関する詳細を提供します。
 
 ## マージリクエストでGitLab Duo with Amazon Qを使用する {#use-gitlab-duo-with-amazon-q-in-a-merge-request}
 
@@ -95,9 +91,9 @@ CI/CDパイプラインジョブが開始されます。コメントには、詳
 
 ### マージリクエストをレビューする {#review-a-merge-request}
 
-Amazon Qは、マージリクエストを分析し、コードを改善するための提案をすることができます。セキュリティの問題、品質の問題、非効率性、その他のエラーなどを見つけることができます。
+Amazon Qは、マージリクエストを分析し、コードの改善点を提案できます。セキュリティ上の問題、品質上の問題、非効率性、その他のエラーなどを見つけることができます。
 
-[Amazon Qにマージリクエストを開くか再度開くと自動的にレビューさせる](setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q)か、手動でレビューを開始できます。
+[Amazon Qにマージリクエストを自動的にレビューさせる](setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q)ことも、手動でレビューを開始することもできます。
 
 手動で開始するには:
 
@@ -105,11 +101,11 @@ Amazon Qは、マージリクエストを分析し、コードを改善するた
 1. **概要**タブのコメントで、`/q review`と入力します。
 1. **コメント**を選択します。
 
-Amazon Qは、マージリクエストの変更をレビューし、コメントで結果を表示します。
+Amazon Qは、マージリクエストの変更のレビューを実行し、コメントで結果を表示します。
 
 ### フィードバックに基づいてコードを変更する {#make-code-changes-based-on-feedback}
 
-Amazon Qは、レビュアーのフィードバックに基づいてコードを変更できます。
+Amazon Qは、レビュアーのフィードバックに基づいてコード変更を行うことができます。
 
 1. レビュアーのフィードバックがあるマージリクエストを開きます。
 1. **概要**タブで、対処するコメントに移動します。
@@ -118,15 +114,15 @@ Amazon Qは、レビュアーのフィードバックに基づいてコードを
 
 Amazon Qは、レビュアーのコメントとフィードバックに基づいて、マージリクエストへの変更を提案します。
 
-### 単体テストの生成 {#generate-unit-tests}
+### 単体テストを生成する {#generate-unit-tests}
 
 Amazon Qを使用して、コードの新しい単体テストを生成します。
 
 #### イシューから作成する {#from-an-issue}
 
 1. イシューを作成します。
-1. 次のいずれかのオプションを使用して、コードのテストが生成されるようにリクエストします:
-   - イシューの説明で、リクエストを記述し、**変更を保存**を選択します。
+1. 次のいずれかのオプションを使用して、コードのテスト生成をリクエストします:
+   - イシューの説明で、リクエストを説明し、**変更を保存**を選択します。
    - コメントで、`/q dev`と入力し、**コメント**を選択します。
 
 Amazon Qは、提案されたテストを含むマージリクエストを作成します。
@@ -141,9 +137,10 @@ Amazon Qは、提案されたテストでマージリクエストを更新しま
 
 ## 関連トピック {#related-topics}
 
-- [GitLab Duo with Amazon Q](setup.md)を設定する
-- [GitLab Duo with Amazon Q機能の完全なリストを表示](../gitlab_duo/feature_summary.md)。
-- [GitLab Duo authentication and authorization](../gitlab_duo/security.md)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[GitLab Duo with Amazon Q - アイデアからマージリクエストまで](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL)<!-- Video published on 2025-04-17 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[GitLab Duo with Amazon Q - コードレビューの最適化](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_)<!-- Video published on 2025-05-20 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[GitLab Duo with Amazon Q - フィードバックに基づいてコードを変更する](https://youtu.be/31E9X9BrK5s?si=v232hBDmlGpv6fqC)<!-- Video published on 2025-05-30 -->
+- [GitLab Duo with Amazon Qをセットアップ](setup.md)
+- [GitLab Duo with Amazon Q機能の完全なリストを見る](../gitlab_duo/feature_summary.md#gitlab-duo-classic-features)。
+- [GitLab Duoの認証と認可](../gitlab_duo/security.md)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - アイデアからマージリクエストまで](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL)<!-- Video published on 2025-04-17 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Javaのアップグレード](https://www.youtube.com/watch?v=qGyzG9wTsEo)<!-- Video published on 2025-10-16 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - コードレビューの最適化](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_)<!-- Video published on 2025-05-20 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - フィードバックに基づいてコードを変更する](https://youtu.be/31E9X9BrK5s?si=v232hBDmlGpv6fqC)<!-- Video published on 2025-05-30 -->

@@ -4,24 +4,15 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
-import UserBar from '~/super_sidebar/components/user_bar.vue';
-import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavior.vue';
-import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
-import {
-  sidebarState,
-  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
-  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
-  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
-  SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
-} from '~/super_sidebar/constants';
+import { sidebarState } from '~/super_sidebar/constants';
 import {
   toggleSuperSidebarCollapsed,
+  toggleSuperSidebarIconOnly,
   isCollapsed,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trackContextAccess } from '~/super_sidebar/utils';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
@@ -37,30 +28,21 @@ jest.mock('~/super_sidebar/utils', () => ({
 
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
-const UserBarStub = {
+const SidebarMenuStub = {
   template: `<div><a href="#">link</a></div>`,
 };
-const peekClass = 'super-sidebar-peek';
-const hasPeekedClass = 'super-sidebar-has-peeked';
-const peekHintClass = 'super-sidebar-peek-hint';
 
 describe('SuperSidebar component', () => {
   let wrapper;
 
-  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
-  const findUserBar = () => wrapper.findComponent(UserBar);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
-  const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
-  const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
   const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
-  const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
   const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
-  let trackingSpy = null;
 
   const createWrapper = ({
     provide = {},
@@ -72,7 +54,6 @@ describe('SuperSidebar component', () => {
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
         showTrialWidget: false,
-        projectStudioEnabled: false,
         ...provide,
       },
       propsData: {
@@ -80,7 +61,7 @@ describe('SuperSidebar component', () => {
       },
       stubs: {
         TrialWidget: TrialWidgetStub,
-        UserBar: stubComponent(UserBar, UserBarStub),
+        SidebarMenu: stubComponent(SidebarMenu, SidebarMenuStub),
       },
       attachTo: document.body,
     });
@@ -88,29 +69,9 @@ describe('SuperSidebar component', () => {
 
   beforeEach(() => {
     Object.assign(sidebarState, initialSidebarState);
-    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
-  });
-
-  afterEach(() => {
-    unmockTracking();
   });
 
   describe('default', () => {
-    it('renders skip to main content link when logged in', () => {
-      createWrapper();
-      expect(findSkipToLink().attributes('href')).toBe('#content-body');
-    });
-
-    it('does not render skip to main content link when logged out', () => {
-      createWrapper({ sidebarData: { is_logged_in: false } });
-      expect(findSkipToLink().exists()).toBe(false);
-    });
-
-    it('does not render skip to main content link when project studio is enabled', () => {
-      createWrapper({ provide: { projectStudioEnabled: true } });
-      expect(findSkipToLink().exists()).toBe(false);
-    });
-
     it('has accessible role and name', () => {
       createWrapper();
       const nav = wrapper.findByRole('navigation');
@@ -127,11 +88,6 @@ describe('SuperSidebar component', () => {
     it('does not add inert attribute when expanded', () => {
       createWrapper();
       expect(findSidebar().attributes('inert')).toBe(undefined);
-    });
-
-    it('renders UserBar with sidebarData', () => {
-      createWrapper();
-      expect(findUserBar().props('sidebarData')).toBe(mockSidebarData);
     });
 
     it('renders HelpCenter with sidebarData', () => {
@@ -167,25 +123,13 @@ describe('SuperSidebar component', () => {
     it('sets up the sidebar toggle shortcut', () => {
       createWrapper();
 
-      isCollapsed.mockReturnValue(false);
       Mousetrap.trigger('mod+\\');
 
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
-        label: 'nav_toggle_keyboard_shortcut',
-        property: 'nav_sidebar',
-      });
+      expect(toggleSuperSidebarIconOnly).toHaveBeenCalledTimes(1);
 
-      isCollapsed.mockReturnValue(true);
       Mousetrap.trigger('mod+\\');
 
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(2);
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
-        label: 'nav_toggle_keyboard_shortcut',
-        property: 'nav_sidebar',
-      });
+      expect(toggleSuperSidebarIconOnly).toHaveBeenCalledTimes(2);
 
       jest.spyOn(Mousetrap, 'unbind');
 
@@ -200,16 +144,9 @@ describe('SuperSidebar component', () => {
       expect(findTrialWidget().exists()).toBe(false);
     });
 
-    it('does not render icon-only toggle', () => {
+    it('renders icon-only toggle', () => {
       createWrapper();
-      expect(findIconOnlyToggle().exists()).toBe(false);
-    });
-
-    it('does not have peek behaviors', () => {
-      createWrapper();
-
-      expect(findPeekBehavior().exists()).toBe(false);
-      expect(findHoverPeekBehavior().exists()).toBe(false);
+      expect(findIconOnlyToggle().exists()).toBe(true);
     });
 
     it('renders the context header', () => {
@@ -251,73 +188,12 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('peek behavior', () => {
-    it(`initially makes sidebar inert and peekable (${STATE_CLOSED})`, () => {
-      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
-
-      expect(findSidebar().attributes('inert')).toBeDefined();
-      expect(findSidebar().classes()).not.toContain(peekHintClass);
-      expect(findSidebar().classes()).not.toContain(hasPeekedClass);
-      expect(findSidebar().classes()).not.toContain(peekClass);
-    });
-
-    it(`makes sidebar inert and shows peek hint when peek state is ${STATE_WILL_OPEN}`, async () => {
-      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
-
-      findPeekBehavior().vm.$emit('change', STATE_WILL_OPEN);
-      await nextTick();
-
-      expect(findSidebar().attributes('inert')).toBeDefined();
-      expect(findSidebar().classes()).toContain(peekHintClass);
-      expect(findSidebar().classes()).toContain(hasPeekedClass);
-      expect(findSidebar().classes()).not.toContain(peekClass);
-    });
-
-    it.each([STATE_OPEN, STATE_WILL_CLOSE])(
-      'makes sidebar interactive and visible when peek state is %s',
-      async (state) => {
-        createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
-
-        findPeekBehavior().vm.$emit('change', state);
-        await nextTick();
-
-        expect(findSidebar().attributes('inert')).toBe(undefined);
-        expect(findSidebar().classes()).toContain(peekClass);
-        expect(findSidebar().classes()).not.toContain(peekHintClass);
-        expect(findHoverPeekBehavior().exists()).toBe(false);
-      },
-    );
-
-    it(`makes sidebar interactive and visible when hover peek state is ${STATE_OPEN}`, async () => {
-      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
-
-      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
-      await nextTick();
-
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().classes()).toContain(hasPeekedClass);
-      expect(findSidebar().classes()).not.toContain(peekHintClass);
-      expect(findPeekBehavior().exists()).toBe(false);
-    });
-
-    it('keeps track of if sidebar has mouseover or not', async () => {
-      createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });
-      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(false);
-      await findSidebar().trigger('mouseenter');
-      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(true);
-      await findSidebar().trigger('mouseleave');
-      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(false);
-    });
-  });
-
   describe('in the panel-based layout', () => {
     describe('on desktop', () => {
       describe('in icon-only mode', () => {
         beforeEach(() => {
           createWrapper({
             provide: {
-              projectStudioEnabled: true,
               showTrialWidget: true,
             },
             sidebarState: { isMobile: false, isIconOnly: true },
@@ -341,7 +217,6 @@ describe('SuperSidebar component', () => {
         beforeEach(() => {
           createWrapper({
             provide: {
-              projectStudioEnabled: true,
               showTrialWidget: true,
             },
             sidebarState: { isMobile: false, isIconOnly: false },
@@ -361,7 +236,6 @@ describe('SuperSidebar component', () => {
     describe('on mobile', () => {
       beforeEach(() => {
         createWrapper({
-          provide: { projectStudioEnabled: true },
           sidebarState: { isMobile: true },
         });
       });
@@ -377,9 +251,7 @@ describe('SuperSidebar component', () => {
 
     describe('when toggling between modes', () => {
       beforeEach(() => {
-        createWrapper({
-          provide: { projectStudioEnabled: true },
-        });
+        createWrapper();
       });
 
       it('does not have the `.super-sidebar-toggled-manually` class by default', () => {
@@ -405,7 +277,6 @@ describe('SuperSidebar component', () => {
 
     it('does not render when items are empty', () => {
       createWrapper({
-        provide: { projectStudioEnabled: true },
         sidebarData: { ...mockSidebarData, current_menu_items: [] },
       });
       expect(findSidebar().exists()).toBe(false);
@@ -453,27 +324,6 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('link to Admin area', () => {
-    describe('when user is admin', () => {
-      it('renders', () => {
-        createWrapper({
-          sidebarData: {
-            ...mockSidebarData,
-            admin_mode: { user_is_admin: true },
-          },
-        });
-        expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
-      });
-    });
-
-    describe('when user is not admin', () => {
-      it('renders', () => {
-        createWrapper();
-        expect(findAdminLink().exists()).toBe(false);
-      });
-    });
-  });
-
   describe('showTierBadge computed property', () => {
     it('returns false when tier_badge_href is omitted', () => {
       createWrapper({ sidebarData: mockSidebarData });
@@ -483,15 +333,15 @@ describe('SuperSidebar component', () => {
   });
 
   describe('focusing first focusable element', () => {
-    const findFirstFocusableElement = () => findUserBar().find('a');
+    const findFirstFocusableElement = () => findSidebarMenu().find('a');
     let focusSpy;
 
     beforeEach(() => {
-      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
+      createWrapper({ sidebarState: { isCollapsed: true } });
       focusSpy = jest.spyOn(findFirstFocusableElement().element, 'focus');
     });
 
-    it('focuses the first focusable element when sidebar is not peeking', async () => {
+    it('focuses the first focusable element', async () => {
       jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
 
       wrapper.vm.sidebarState.isCollapsed = false;
@@ -499,15 +349,6 @@ describe('SuperSidebar component', () => {
       await nextTick();
 
       expect(focusSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it("doesn't focus the first focusable element when sidebar is peeking", async () => {
-      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
-
-      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
-      await nextTick();
-
-      expect(focusSpy).not.toHaveBeenCalled();
     });
 
     it("doesn't focus the first focusable element when sidebar is collapsed", async () => {
@@ -528,7 +369,7 @@ describe('SuperSidebar component', () => {
 
   describe('pressing ESC key', () => {
     beforeEach(() => {
-      createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });
+      createWrapper({ sidebarState: { isCollapsed: false } });
     });
 
     const ESC_KEY = 27;
@@ -537,13 +378,6 @@ describe('SuperSidebar component', () => {
       await findSidebar().trigger('keydown.esc', { keyCode: ESC_KEY });
 
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalled();
-    });
-
-    it('does nothing when sidebar is in peek mode', () => {
-      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
-
-      findSidebar().trigger('keydown', { keyCode: ESC_KEY });
-      expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
     });
 
     it('does nothing when sidebar is not overlapping', () => {

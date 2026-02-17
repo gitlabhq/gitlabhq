@@ -83,7 +83,7 @@ module QA
           end
 
           def archive_project
-            click_element feature_flag_controlled_element(:archive_group, 'archive-button', 'archive-project-link')
+            click_element 'archive-button'
             click_confirmation_ok_button_if_present
           end
 

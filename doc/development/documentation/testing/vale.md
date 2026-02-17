@@ -28,12 +28,10 @@ You can use Vale:
 
 Install [`vale`](https://github.com/errata-ai/vale/releases) using either:
 
-- If using [`asdf`](https://asdf-vm.com), the [`asdf-vale` plugin](https://github.com/pdemagny/asdf-vale). In a checkout
-  of a GitLab project with a `.tool-versions` file ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions)),
-  run:
+- [`mise`](https://mise.jdx.dev). For example:
 
   ```shell
-  asdf plugin add vale && asdf install vale
+  mise use -g vale
   ```
 
 - A package manager:

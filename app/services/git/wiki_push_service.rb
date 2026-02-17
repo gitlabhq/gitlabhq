@@ -40,7 +40,7 @@ module Git
     end
 
     def raw_changes(change)
-      wiki.repository.raw.raw_changes_between(change[:oldrev], change[:newrev])
+      wiki.repository.raw_changes_between(change[:oldrev], change[:newrev])
     end
 
     def create_event_for(change)

@@ -45,6 +45,10 @@ The app host returned HTTP response code 401 when we tried to contact it during 
 
 To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
+Prerequisites:
+
+- Administrator access.
+
 - In GitLab 15.7:
 
   1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
@@ -86,7 +90,7 @@ To resolve this issue:
   ```
 
 - If your instance has [SSL configured](https://docs.gitlab.com/omnibus/settings/ssl/), check your
-  [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#useful-openssl-debugging-commands).
+  [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#useful-openssl-debugging-commands).
 
 Depending on how you installed the app, you might want to check the following:
 
@@ -211,11 +215,8 @@ GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 
-{{< alert type="note" >}}
-
-These steps can only be completed by GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> These steps can only be completed by GitLab Support.
 
 Each `GET` request made to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
 
@@ -266,7 +267,7 @@ For the second log, you might have one of the following scenarios:
       ```json
       {
         "host":"gitlab.mycompany.com:443", // The host should match the reverse proxy FQDN entered into the GitLab for Jira Cloud app
-        "remote_ip":"34.74.226.3", // This IP should be within the GitLab.com IP range https://docs.gitlab.com/ee/user/gitlab_com/#ip-range
+        "remote_ip":"34.74.226.3", // This IP should be within the GitLab.com IP range https://docs.gitlab.com/user/gitlab_com/#ip-range
         "status":401,
         "uri":"/-/jira_connect/events/installed"
       }

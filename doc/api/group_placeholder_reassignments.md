@@ -21,24 +21,19 @@ description: "Reassign placeholder users in bulk with the REST API."
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to [reassign placeholder users in bulk](../user/import/mapping.md#request-reassignment-by-using-a-csv-file).
 
 Prerequisites:
 
 - You must have the Owner role for the group.
-{{< alert type="note" >}}
 
-User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-
-{{< /alert >}}
+> [!note]
+> User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
+> When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
 
 ## Download the CSV file
 

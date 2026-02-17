@@ -12,6 +12,8 @@ module QA
       #
       class AllureMetadataFormatter < ::RSpec::Core::Formatters::BaseFormatter
         ISSUE_PROJECT = "gitlab-org/quality/test-failure-issues"
+        MAX_LINE_LENGTH = 500
+        MAX_QUOTED_LINE_LENGTH = 300
 
         ::RSpec::Core::Formatters.register(self, :example_finished)
 
@@ -46,6 +48,27 @@ module QA
           log(:error, "Failed to add quarantine issue link for example '#{example.description}', error: #{e}")
         end
 
+        # Filter out verbose page content and navigation elements from error message lines
+        # Removes lines containing page navigation, overly long content, and truncates remaining lines
+        #
+        # @param [Array<String>] lines array of error message lines to filter
+        # @return [Array<String>] filtered and truncated lines suitable for URL generation
+        def filter_meaningful_content(lines)
+          lines.reject do |line|
+            # Filter out page content that adds no value to issue searches
+            # GitLab page navigation and UI elements
+            line.include?('Skip to main content') ||
+              line.include?('Primary navigation') ||
+              line.include?('Homepage Next Create new') ||
+              line.include?('GitLab Duo Chat') ||
+              # Non-searchable content
+              line.include?('Correlation Id:') ||
+              # Length-based filtering
+              line.length > MAX_LINE_LENGTH ||
+              (line.start_with?('"') && line.end_with?('"') && line.length > MAX_QUOTED_LINE_LENGTH)
+          end
+        end
+
         # Add failure issues link
         #
         # @param [RSpec::Core::Example] example
@@ -61,7 +84,7 @@ module QA
 
           exception_message = example.exception.message || ""
           message_lines = strip_ansi_codes(example_notification.message_lines) || []
-          exception_message_lines = message_lines.first(20)
+          exception_message_lines = filter_meaningful_content(message_lines.first(20))
           search_terms = {
             test_file_path: example.file_path.gsub('./qa/specs/features/', '').to_s,
             exception_message: exception_message_lines.empty? ? exception_message : exception_message_lines.join("\n")

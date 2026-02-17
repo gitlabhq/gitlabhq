@@ -71,8 +71,8 @@ pre-push:
     openapi_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{doc/api/openapi/openapi_v2.yaml,lib/api/*.rb,ee/lib/api/*.rb}'
-      run: bundle exec rake gitlab:openapi:check_docs
+      glob: '{doc/api/openapi/openapi_v2.yaml,doc/api/openapi/openapi_v3.yaml,*.rb}'
+      run: bundle exec rake gitlab:openapi:v3:check_docs gitlab:openapi:v2:check_docs
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -159,7 +159,7 @@ pre-push:
     permissions_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
+      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
     check-deprecated-files:
       tags: backend frontend view haml
@@ -169,6 +169,11 @@ pre-push:
       files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
       glob: '{spec,ee/spec}/**/*_spec.rb'
       run: scripts/lint/validate_fast_spec_helper_usage.rb
+    secrets-detection-clickhouse:
+      tags: backend database
+      files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
+      glob: 'db/click_house/main.sql'
+      run: scripts/lint-clickhouse-migrations.sh
 
   scripts:
     'merge_conflicts':
@@ -246,6 +251,10 @@ pre-commit:
       root: ee/frontend_islands
       glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
       run: 'yarn run lint:types'
+    secrets-detection-clickhouse:
+      tags: backend database
+      glob: 'db/click_house/main.sql'
+      run: scripts/lint-clickhouse-migrations.sh
 
 auto-fix:
   parallel: true

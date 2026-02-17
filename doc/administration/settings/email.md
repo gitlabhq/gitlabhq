@@ -32,6 +32,10 @@ By default, GitLab overrides the email address in notification emails with the e
 of the issue, merge request, or comment author. Enable this setting to include the author's email
 address in the body of the email instead.
 
+Prerequisites:
+
+- Administrator access.
+
 To include the author's email address in the email body:
 
 1. In the upper-right corner, select **Admin**.
@@ -79,13 +83,10 @@ To change the hostname used in private commit emails:
 1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-After the hostname is configured, every private commit email using the previous hostname is not
-recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
-`Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
-
-{{< /alert >}}
+> [!note]
+> After the hostname is configured, every private commit email using the previous hostname is not
+> recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
+> `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
 ## Custom additional text
 

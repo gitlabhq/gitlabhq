@@ -83,7 +83,7 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
   end
 
   describe '#to_h' do
-    it 'returns tool metadata' do
+    it 'returns tool metadata without annotations when empty' do
       result = test_service.to_h
 
       expect(result).to eq({
@@ -96,8 +96,76 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
             optional_field: { type: 'integer' }
           },
           required: ['required_field']
-        }
+        },
+        icons: [Mcp::Tools::IconConfig.gitlab_icons.first]
       })
+
+      expect(result).not_to have_key(:annotations)
+    end
+
+    context 'when tool has annotations' do
+      let(:test_service_with_annotations_class) do
+        Class.new(described_class) do
+          def description
+            'Test tool with annotations'
+          end
+
+          def input_schema
+            { type: 'object', properties: {} }
+          end
+
+          def version
+            '1.0.0'
+          end
+
+          def annotations
+            { readOnlyHint: true }
+          end
+
+          protected
+
+          def perform(_arguments, _query = {})
+            Mcp::Tools::Response.success([], {})
+          end
+        end
+      end
+
+      let(:test_service_with_annotations) do
+        test_service_with_annotations_class.new(name: service_name)
+      end
+
+      it 'includes annotations in tool metadata while preserving icons' do
+        result = test_service_with_annotations.to_h
+
+        expect(result).to eq({
+          name: service_name,
+          description: 'Test tool with annotations',
+          inputSchema: { type: 'object', properties: {} },
+          icons: [Mcp::Tools::IconConfig.gitlab_icons.first],
+          annotations: { readOnlyHint: true }
+        })
+      end
+    end
+
+    context 'when icons returns empty array' do
+      before do
+        allow(test_service).to receive(:icons).and_return([])
+      end
+
+      it 'does not include icons key' do
+        result = test_service.to_h
+
+        expect(result).not_to have_key(:icons)
+      end
+    end
+  end
+
+  describe '#icons' do
+    it 'returns icons array' do
+      icons = test_service.icons
+
+      expect(icons).to be_an(Array)
+      expect(icons.first).to include(:mimeType, :src, :theme)
     end
   end
 

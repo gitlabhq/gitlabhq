@@ -74,7 +74,7 @@ describe('Pipeline header', () => {
   const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
   const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
   const findPipelineId = () => wrapper.findByTestId('pipeline-id');
-  const findPipelineTitle = () => wrapper.findByTestId('pipeline-title');
+  const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findCommitTitle = () => wrapper.findByTestId('commit-title');
@@ -144,7 +144,7 @@ describe('Pipeline header', () => {
     });
 
     it('displays pipeline name', () => {
-      expect(findPipelineTitle().text()).toBe('Build pipeline');
+      expect(findPipelineName().text()).toBe('Build pipeline');
     });
 
     it('displays total jobs', () => {
@@ -162,30 +162,16 @@ describe('Pipeline header', () => {
       expect(findCommitLink().text()).toBe(pipeline.commit.shortId);
     });
 
-    describe('when ci_show_pipeline_name_instead_of_commit_title is disabled', () => {
-      it('displays commit title', () => {
-        expect(findCommitTitle().exists()).toBe(false);
-      });
-    });
+    it('displays commit title', async () => {
+      await createComponent();
 
-    describe('when ci_show_pipeline_name_instead_of_commit_title is enabled', () => {
-      it('displays commit title', async () => {
-        await createComponent({
-          provide: {
-            glFeatures: {
-              ciShowPipelineNameInsteadOfCommitTitle: true,
-            },
-          },
-        });
+      const {
+        data: {
+          project: { pipeline },
+        },
+      } = pipelineHeaderSuccess;
 
-        const {
-          data: {
-            project: { pipeline },
-          },
-        } = pipelineHeaderSuccess;
-
-        expect(findCommitTitle().text()).toBe(pipeline.commit.title);
-      });
+      expect(findCommitTitle().text()).toBe(pipeline.commit.title);
     });
 
     it('copies the full commit ID', () => {
@@ -225,40 +211,19 @@ describe('Pipeline header', () => {
   });
 
   describe('without pipeline name (from workflow:name)', () => {
-    describe('when ci_show_pipeline_name_instead_of_commit_title is disabled', () => {
-      it('displays commit title', async () => {
-        await createComponent({
-          handlers: [
-            [getPipelineDetailsQuery, runningHandler],
-            [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
-          ],
-        });
-
-        const commitTitle = pipelineHeaderRunning.data.project.pipeline.commit.title;
-
-        expect(findPipelineId().exists()).toBe(false);
-        expect(findPipelineTitle().text()).toBe(commitTitle);
+    it('shows a pipeline id', async () => {
+      await createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, runningHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+        ],
       });
-    });
 
-    describe('when ci_show_pipeline_name_instead_of_commit_title is enabled', () => {
-      it('shows a pipeline id', async () => {
-        await createComponent({
-          provide: {
-            glFeatures: { ciShowPipelineNameInsteadOfCommitTitle: true },
-          },
-          handlers: [
-            [getPipelineDetailsQuery, runningHandler],
-            [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
-          ],
-        });
+      const id = getIdFromGraphQLId(pipelineHeaderRunning.data.project.pipeline.id);
 
-        const id = getIdFromGraphQLId(pipelineHeaderRunning.data.project.pipeline.id);
-
-        // only id is shown
-        expect(findPipelineId().text()).toBe(`#${id}`);
-        expect(findPipelineTitle().exists()).toBe(false);
-      });
+      // only id is shown
+      expect(findPipelineId().text()).toBe(`#${id}`);
+      expect(findPipelineName().exists()).toBe(false);
     });
   });
 

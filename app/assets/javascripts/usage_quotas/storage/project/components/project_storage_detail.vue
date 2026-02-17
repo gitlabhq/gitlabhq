@@ -35,6 +35,11 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      expandedDetails: {},
+    };
+  },
   computed: {
     storageTypesWithDetails() {
       return this.storageTypes.map((type) => {
@@ -46,7 +51,7 @@ export default {
             ...type,
             detailsComponent: STATISTICS_DETAILS_COMPONENTS[type.id],
             project: this.project,
-            _showDetails: false, // GlTableLite uses _showDetails attribute to show #row-details slot
+            _showDetails: Boolean(this.expandedDetails[type.id]), // GlTableLite uses _showDetails attribute to show #row-details slot
           };
         }
 
@@ -70,7 +75,16 @@ export default {
       ];
     },
   },
+  created() {
+    this.initializeExpandableSections();
+  },
   methods: {
+    initializeExpandableSections() {
+      this.expandedDetails = Object.keys(STATISTICS_DETAILS_COMPONENTS).reduce((acc, key) => {
+        acc[key] = false;
+        return acc;
+      }, {});
+    },
     expandDetailsIcon(show) {
       return show ? 'chevron-down' : 'chevron-right';
     },
@@ -78,6 +92,9 @@ export default {
       // GlTableLite uses _showDetails attribute to show #row-details slot
       // eslint-disable-next-line no-underscore-dangle
       return item._showDetails ? '!gl-border-b-0' : '';
+    },
+    toggleRowDetails(item) {
+      this.expandedDetails[item.id] = !this.expandedDetails[item.id];
     },
   },
   projectTableFields: [
@@ -124,7 +141,7 @@ export default {
               :icon="expandDetailsIcon(item._showDetails)"
               category="tertiary"
               :data-testid="`${item.id}-show-details-button`"
-              @click="item._showDetails = !item._showDetails"
+              @click="toggleRowDetails(item)"
             />
           </h3>
           <p class="gl-mb-0 gl-text-subtle" :data-testid="`${item.id}-description`">

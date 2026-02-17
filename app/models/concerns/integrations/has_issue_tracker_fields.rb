@@ -18,11 +18,9 @@ module Integrations
         title: -> { s_('IssueTracker|Issue URL') },
         description: -> { s_('URL of the issue.') },
         help: -> do
-          ERB::Util.html_escape(
+          format(ERB::Util.html_escape(
             s_('IssueTracker|URL to view an issue in the external issue tracker. Must contain %{colon_id}.')
-          ) % {
-            colon_id: '<code>:id</code>'.html_safe
-          }
+          ), colon_id: '<code>:id</code>'.html_safe)
         end
 
       field :new_issue_url,

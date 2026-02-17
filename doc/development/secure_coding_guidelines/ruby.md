@@ -52,7 +52,7 @@ class PingController < ApplicationController
 end
 ```
 
-Here `params[:ip]` should not contain anything else but numbers and dots. However this restriction can be easily bypassed as the Regex anchors `^` and `$` are being used. Ultimately this leads to a shell command injection in `ping -c 4 #{params[:ip]}` by using newlines in `params[:ip]`.
+Here `params[:ip]` should not contain anything else but numbers and dots. However this restriction can be bypassed as the Regex anchors `^` and `$` are being used. Ultimately this leads to a shell command injection in `ping -c 4 #{params[:ip]}` by using newlines in `params[:ip]`.
 
 #### Mitigation
 
@@ -807,11 +807,8 @@ In our Rails Controllers you must use `ActionController::StrongParameters`. This
 
 Using `params[:key]` can lead to vulnerabilities when one part of the codebase expects a type like `String`, but gets passed (and handles unsafely and without error) an `Array`.
 
-{{< alert type="note" >}}
-
-This only applies to Rails Controllers. Our API and GraphQL endpoints enforce strong typing, and Go is statically typed.
-
-{{< /alert >}}
+> [!note]
+> This only applies to Rails Controllers. Our API and GraphQL endpoints enforce strong typing, and Go is statically typed.
 
 ### Example
 

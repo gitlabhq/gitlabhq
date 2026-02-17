@@ -8,6 +8,10 @@ RSpec.describe ProjectRepository, feature_category: :source_code_management do
     it { is_expected.to belong_to(:project) }
   end
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :project_repository }
+  end
+
   it_behaves_like 'shardable scopes' do
     let_it_be(:record_1) { create(:project_repository) }
     let_it_be(:record_2, reload: true) { create(:project_repository) }

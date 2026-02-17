@@ -2,6 +2,7 @@
 import IssuableForm from './issuable_form.vue';
 
 export default {
+  name: 'IssuableCreate',
   components: {
     IssuableForm,
   },
@@ -40,8 +41,8 @@ export default {
       :labels-manage-path="labelsManagePath"
       :issuable-type="issuableType"
     >
-      <template #actions="issuableMeta">
-        <slot name="actions" v-bind="issuableMeta"></slot>
+      <template #actions="{ issuableMeta }">
+        <slot name="actions" v-bind="{ issuableMeta }"></slot>
       </template>
     </issuable-form>
   </div>

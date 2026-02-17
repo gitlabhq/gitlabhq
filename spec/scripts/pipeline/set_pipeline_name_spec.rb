@@ -9,7 +9,7 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
   include StubENV
 
   let(:instance)               { described_class.new(api_endpoint: 'gitlab.test', gitlab_access_token: 'xxx') }
-  let(:original_pipeline_name) { "Ruby 3.2 MR" }
+  let(:original_pipeline_name) { "Ruby 3.3 MR" }
   let(:project_id)             { '123' }
   let(:merge_request_iid)      { '1234' }
   let(:pipeline_id)            { '5678' }

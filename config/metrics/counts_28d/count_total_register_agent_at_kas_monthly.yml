@@ -1,7 +1,9 @@
 ---
 key_path: counts.count_total_register_agent_at_kas_monthly
 description: Monthly count of GitLab agents registered with KAS
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

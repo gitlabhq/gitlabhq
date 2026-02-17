@@ -16,6 +16,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @sort = pagination_params[:sort].presence || sort_value_name
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
+    @group_member_links = group_member_links
+
     if can?(current_user, :admin_project_member, @project)
       @invited_members = present_members(invited_members)
       @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
@@ -43,8 +45,35 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     members.non_invite
   end
 
+  def group_member_links
+    paginator = Gitlab::MultiCollectionPaginator.new(project_group_links, group_group_links)
+    result = paginator.paginate(pagination_params[:page])
+
+    Members::GroupLinksCollection.new(
+      result,
+      page: pagination_params[:page].to_i,
+      total_count: paginator.total_count
+    )
+  end
+
+  def project_group_links
+    return ::ProjectGroupLink.none unless @include_relations.include?(:direct)
+
+    ::Projects::ProjectGroupLinksFinder.new(@project, { max_access: true, search: search_groups }).execute
+  end
+
+  def group_group_links
+    return ::GroupGroupLink.none unless @include_relations.include?(:inherited)
+
+    ::Projects::GroupGroupLinksFinder.new(@project, { max_access: true, search: search_groups }).execute
+  end
+
   def filter_params
     params.permit(:search, :max_role).merge(sort: @sort)
+  end
+
+  def group_filter_params
+    params.permit(:search_groups)
   end
 
   def membershipable_members
@@ -77,6 +106,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def requesters
     project.namespace_requesters
+  end
+
+  def search_groups
+    group_filter_params[:search_groups]
   end
 end
 

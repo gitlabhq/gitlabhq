@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::BoardsResolver do
+RSpec.describe Resolvers::BoardsResolver, feature_category: :portfolio_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

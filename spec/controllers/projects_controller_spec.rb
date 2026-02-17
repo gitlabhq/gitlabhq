@@ -403,9 +403,10 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when the project is pending deletions' do
+    context 'when the project is in deletion_in_progress state' do
       it 'renders a 404 error' do
-        project = create(:project, pending_delete: true)
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: user)
         sign_in(user)
 
         get :show, params: { namespace_id: project.namespace, id: project }
@@ -537,7 +538,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
 
       let(:ancestor_notice_regex) do
-        /This project will be deleted on .* because its parent group is scheduled for deletion\./
+        %r{The parent group is pending deletion\. This project will be <strong>permanently deleted</strong> on <strong>.*</strong>\.}
       end
 
       context 'when the parent group has not been scheduled for deletion' do
@@ -572,7 +573,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
             expect(response.body).not_to match(ancestor_notice_regex)
             # However, shows the notice that the project has been marked for deletion.
             expect(response.body).to match(
-              /This project is pending deletion, and will be deleted on .*. Repository and other project resources are read-only./
+              %r{This project and all its data will be <strong>permanently deleted</strong> on <strong>.*</strong>\.}
             )
           end
         end
@@ -1279,29 +1280,13 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
-      describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-        before do
-          stub_application_setting(allow_immediate_namespaces_deletion: false)
-        end
-
-        subject(:request) { delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true } }
-
-        it 'returns error' do
-          Sidekiq::Testing.fake! do
-            expect { request }.not_to change { ProjectDestroyWorker.jobs.size }
-          end
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'when permanently_delete param is set' do
         it 'deletes project right away' do
           expect(ProjectDestroyWorker).to receive(:perform_async)
 
           delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
 
-          expect(project.reload.pending_delete).to eq(true)
+          expect(project.reload.deletion_in_progress?).to eq(true)
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(dashboard_projects_path)
         end
@@ -1313,7 +1298,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.reload.pending_delete).to eq(false)
+          expect(project.reload.deletion_in_progress?).to eq(false)
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:edit)
           expect(flash[:alert]).to include('Project has already been marked for deletion')

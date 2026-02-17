@@ -28,6 +28,7 @@ RSpec.shared_context "with diff file component tests" do
     expect(page).to have_selector(web_component_selector)
     expect(page).to have_selector("#{web_component_selector}-mounted")
     expect(page).to have_selector("details[data-file-body]")
+    expect(page).to have_selector(".flash-container")
   end
 
   it "renders rich diff" do

@@ -25,6 +25,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
+  inject: {
+    getWorkItemTypeConfiguration: {
+      default: null,
+    },
+  },
   props: {
     workItemIid: {
       type: String,
@@ -60,6 +65,12 @@ export default {
     };
   },
   computed: {
+    workItemTypeConfiguration() {
+      // Legacy applications may not have access to the metadata provider
+      return this.getWorkItemTypeConfiguration
+        ? this.getWorkItemTypeConfiguration(this.workItemType)
+        : {};
+    },
     tooltipText() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
     },
@@ -76,7 +87,13 @@ export default {
       };
     },
     shouldShowViewRoadmapAction() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC && this.showViewRoadmapAction;
+      if (this.showViewRoadmapAction) {
+        return (
+          this.workItemTypeConfiguration?.supportsRoadmapView ||
+          this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
+        );
+      }
+      return false;
     },
   },
   methods: {

@@ -15,7 +15,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -262,4 +262,20 @@ func Test_passResponseBack(t *testing.T) {
 		require.Empty(t, w.Header().Get("gitlab-lb"))
 		require.Equal(t, safeData, w.Header().Get("Safe-Header"))
 	})
+}
+
+func TestDuoWorkflowWithServerCapabilities(t *testing.T) {
+	duoWorkflow := &DuoWorkflow{
+		Service: &DuoWorkflowServiceConfig{
+			URI:     "grpc://localhost:50051",
+			Headers: map[string]string{"Authorization": "Bearer token"},
+			Secure:  false,
+		},
+		ServerCapabilities: []string{"advanced_search"},
+		LockConcurrentFlow: true,
+	}
+
+	require.Equal(t, []string{"advanced_search"}, duoWorkflow.ServerCapabilities)
+	require.True(t, duoWorkflow.LockConcurrentFlow)
+	require.NotNil(t, duoWorkflow.Service)
 }

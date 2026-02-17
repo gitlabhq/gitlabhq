@@ -1,0 +1,3 @@
+---
+name: read_security_project_tracked_ref
+description: Grants ability to read a tracked ref

@@ -1,12 +1,12 @@
 <script>
-import { GlAlert, GlIcon, GlBadge, GlTableLite, GlLink } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlTableLite, GlLink } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 
 export default {
   name: 'DbSkippedIndexes',
-  components: { GlAlert, GlIcon, GlBadge, GlTableLite, GlLink, NumberToHumanSize },
+  components: { GlIcon, GlBadge, GlTableLite, GlLink, NumberToHumanSize },
   skippedIndexesFields: [
     { key: 'table_name', label: __('Table') },
     { key: 'index_name', label: __('Index name') },
@@ -34,31 +34,20 @@ export default {
 </script>
 
 <template>
-  <section v-if="hasSkippedIndexes" data-testid="skipped-indexes-section">
-    <div class="gl-mb-4 gl-flex gl-items-center gl-gap-3">
+  <section v-if="hasSkippedIndexes" class="gl-mt-8" data-testid="skipped-indexes-section">
+    <h4 class="gl-heading-5 gl-flex gl-items-center gl-gap-3">
       <gl-icon name="information-o" variant="info" />
-      <h3 class="gl-m-0 gl-text-lg">
-        {{ __('Skipped indexes') }}
-      </h3>
-      <gl-badge variant="info">
+      {{ __('Skipped indexes') }}
+      <gl-badge>
         {{ skippedIndexes.length }}
       </gl-badge>
-    </div>
-
-    <gl-alert variant="info" :dismissible="false">
-      <p class="gl-mb-2">
-        {{
-          __(
-            'Large table corruption checks were skipped to avoid long-running queries. Administrators can manually check them with a higher table size limit.',
-          )
-        }}
-      </p>
-
-      <gl-link :href="collationCheckerHelpPath">
-        {{ __('Learn how to run the check with higher limits') }}
-        <gl-icon name="external-link" :size="12" />
+    </h4>
+    <p class="gl-text-sm gl-text-subtle" data-testid="skipped-indexes-info">
+      {{ __('To avoid long-running queries, large tables were skipped.') }}
+      <gl-link variant="inline" target="_blank" :href="collationCheckerHelpPath">
+        {{ __('How can I check them?') }}
       </gl-link>
-    </gl-alert>
+    </p>
 
     <gl-table-lite :items="skippedIndexes" :fields="$options.skippedIndexesFields" class="gl-mt-3">
       <template #cell(table_size)="{ item }">

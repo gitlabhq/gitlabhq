@@ -1,0 +1,4 @@
+name: create_maven_virtual_registry_upstream
+description: Grants the ability to create Maven virtual registry upstreams
+boundaries:
+  - instance

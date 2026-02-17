@@ -19,7 +19,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/bodylimit"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/circuitbreaker"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
@@ -31,6 +30,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/ratelimitcache"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendfile"
@@ -222,6 +222,22 @@ func (u *upstream) wsRoute(metadata routeMetadata, handler http.Handler, matcher
 	}
 }
 
+// wsRouteStrict creates a WebSocket route that will match requests even if websocket headers are missing.
+// The request is rejected if it is not a valid WebSocket upgrade request.
+// Use wsRouteStrict if you want invalid WebSocket upgrade requests to fail early with a 400 Bad Request.
+func (u *upstream) wsRouteStrict(metadata routeMetadata, handler http.Handler, matchers ...matcherFunc) routeEntry {
+	method := "GET"
+	handler = u.observabilityMiddlewares(handler, method, metadata, nil)
+	handler = requireWebsocket(handler)
+
+	return routeEntry{
+		method:   method,
+		regex:    compileRegexp(metadata.regexpStr),
+		handler:  handler,
+		matchers: matchers,
+	}
+}
+
 // Creates matcherFuncs for a particular content type.
 func isContentType(contentType string) func(*http.Request) bool {
 	return func(r *http.Request) bool {
@@ -369,7 +385,7 @@ func configureRoutes(u *upstream) {
 			contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer, &u.Config))),
 
 		// ActionCable websocket
-		u.wsRoute(newRoute(`^/-/cable\z`, "action_cable", railsBackend),
+		u.wsRouteStrict(newRoute(`^/-/cable\z`, "action_cable", railsBackend),
 			cableProxy),
 
 		// Terminal websocket
@@ -690,11 +706,22 @@ func denyWebsocket(next http.Handler) http.Handler {
 	})
 }
 
+func requireWebsocket(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !websocket.IsWebSocketUpgrade(r) {
+			httpError(w, r, "websocket upgrade required", http.StatusBadRequest)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
 	if u.CircuitBreakerConfig.Enabled {
-		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.rdb)
+		roundTripperRateLimitCache := ratelimitcache.NewRoundTripper(u.RoundTripper, u.rdb)
 
-		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
+		return buildProxy(u.Backend, u.Version, roundTripperRateLimitCache, u.Config, dependencyProxyInjector)
 	}
 
 	return proxy

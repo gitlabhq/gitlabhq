@@ -40,10 +40,10 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
 
     context 'when asset proxy is configured' do
       before do
-        stub_asset_proxy_setting(
-          enabled: true,
+        stub_asset_proxy_enabled(
+          url: 'https://assets.example.com',
           secret_key: 'shared-secret',
-          url: 'https://assets.example.com'
+          allowlist: []
         )
       end
 

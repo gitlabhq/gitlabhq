@@ -22,7 +22,7 @@ RSpec.describe Resolvers::WorkItems::TypesResolver, feature_category: :team_plan
       it_behaves_like 'lists all work item type values'
 
       it_behaves_like 'filtering work item types by existing name' do
-        let(:name) { 'epic' }
+        let(:name) { 'issue' }
         let(:args) { { name: name } }
       end
 

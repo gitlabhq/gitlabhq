@@ -12,6 +12,7 @@ module API
       desc 'Download a (possibly inconsistent) snapshot of a repository' do
         detail 'This feature was introduced in GitLab 10.7'
         success File
+        tags ['project_snapshots']
         produces 'application/x-tar'
         failure [
           { code: 401, message: 'Unauthorized' }

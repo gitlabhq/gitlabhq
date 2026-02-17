@@ -56,7 +56,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
           glql_request
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include('Input exceeds maximum size')
+          expect(json_response['error']).to include('Input exceeds maximum size')
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
           post api(endpoint, user), params: { glql_yaml: glql_yaml }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include(error_message)
+          expect(json_response['error']).to include(error_message)
         end
       end
     end
@@ -202,7 +202,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         post api(endpoint), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to include('Error: Project does not exist or you do not have access to it')
+        expect(json_response['error']).to include('Error: Project does not exist or you do not have access to it')
       end
     end
 
@@ -215,6 +215,20 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
 
       expect(response).to have_gitlab_http_status(:too_many_requests)
       expect(json_response['error']).to include('Query temporarily blocked')
+    end
+
+    context 'with query execution errors' do
+      it 'returns 400 when GraphQL query execution fails' do
+        yaml = <<~YAML
+          fields: nonExistentField
+          query: group = "test-group" AND state = opened
+        YAML
+
+        post api(endpoint, user), params: { glql_yaml: yaml }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include("Field 'nonExistentField' doesn't exist")
+      end
     end
 
     context 'with limit parameter processing' do
@@ -277,6 +291,52 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['data']['pageInfo']).to include('hasNextPage' => true, 'endCursor' => be_present)
         expect(json_response['data']['nodes'].size).to eq(2)
+      end
+    end
+
+    context 'with pagination' do
+      before do
+        create_list(:issue, 10, :opened, project: project)
+      end
+
+      it 'returns first page with pageInfo' do
+        post api(endpoint, user), params: { glql_yaml: "limit: 3\nquery: group = \"test-group\" AND state = opened" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['data']['nodes'].size).to eq(3)
+        expect(json_response['data']['pageInfo']).to include(
+          'hasNextPage' => true,
+          'endCursor' => be_present
+        )
+      end
+
+      it 'returns subsequent page using after cursor' do
+        # Get first page
+        post api(endpoint, user), params: { glql_yaml: "limit: 3\nquery: group = \"test-group\" AND state = opened" }
+        first_page_cursor = json_response['data']['pageInfo']['endCursor']
+        first_page_titles = get_issue_titles(json_response)
+
+        # Get second page
+        post api(endpoint, user), params: {
+          glql_yaml: "limit: 3\nquery: group = \"test-group\" AND state = opened",
+          after: first_page_cursor
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['data']['nodes'].size).to eq(3)
+        expect(json_response['data']['pageInfo']).to include(
+          'hasNextPage' => true,
+          'endCursor' => be_present
+        )
+        second_page_titles = get_issue_titles(json_response)
+        expect(second_page_titles).not_to eq(first_page_titles)
+      end
+
+      it 'returns hasNextPage as false on last page' do
+        post api(endpoint, user), params: { glql_yaml: "limit: 20\nquery: group = \"test-group\" AND state = opened" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['data']['pageInfo']).to include('hasNextPage' => false)
       end
 
       it 'handles empty variables hash' do

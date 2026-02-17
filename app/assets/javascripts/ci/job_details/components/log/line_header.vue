@@ -41,6 +41,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggle-line'],
   data() {
     return {
       applyHashHighlight: false,
@@ -61,7 +62,7 @@ export default {
   },
   methods: {
     handleOnClick() {
-      this.$emit('toggleLine');
+      this.$emit('toggle-line');
     },
   },
 };

@@ -76,21 +76,6 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
       subject
     end
 
-    context 'when rename_post_receive_worker feature flag is disabled' do
-      before do
-        stub_feature_flags(rename_post_receive_worker: false)
-      end
-
-      it 'enqueues a PostReceive worker job with gitaly_context' do
-        expect(PostReceive).to receive(:perform_async)
-          .with(gl_repository, identifier, changes, {
-            'secret_push_protection' => { 'skip_all' => true }
-          }, { 'gitaly_context' => gitaly_context })
-
-        subject
-      end
-    end
-
     context 'when gitaly_context includes skip-ci' do
       let(:gitaly_context) { { 'skip-ci' => 'true' } }
 

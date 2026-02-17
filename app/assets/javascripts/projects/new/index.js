@@ -43,6 +43,7 @@ export function initNewProjectCreation() {
 
   return new Vue({
     el,
+    name: 'NewProjectCreationAppRoot',
     provide,
     render(h) {
       return h(NewProjectCreationApp, { props });
@@ -63,6 +64,7 @@ export function initNewProjectUrlSelect() {
     (el) =>
       new Vue({
         el,
+        name: 'NewProjectUrlSelectRoot',
         apolloProvider: new VueApollo({
           defaultClient: createDefaultClient(),
         }),
@@ -89,6 +91,7 @@ export function initDeploymentTargetSelect() {
 
   return new Vue({
     el,
+    name: 'DeploymentTargetSelectRoot',
     render: (createElement) => createElement(DeploymentTargetSelect),
   });
 }

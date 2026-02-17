@@ -35,14 +35,14 @@ describe('PipelineStages', () => {
       });
     });
 
-    it('emits jobActionExecuted', () => {
-      findStages().at(0).vm.$emit('jobActionExecuted');
-      expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
+    it('emits job-action-executed', () => {
+      findStages().at(0).vm.$emit('job-action-executed');
+      expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
     });
 
-    it('emits miniGraphStageClick', () => {
-      findStages().at(0).vm.$emit('miniGraphStageClick');
-      expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
+    it('emits mini-graph-stage-click', () => {
+      findStages().at(0).vm.$emit('mini-graph-stage-click');
+      expect(wrapper.emitted('mini-graph-stage-click')).toHaveLength(1);
     });
   });
 });

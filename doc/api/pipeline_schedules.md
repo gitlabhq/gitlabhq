@@ -14,9 +14,9 @@ title: Pipeline schedules API
 
 Use this API to interact with [pipeline schedules](../ci/pipelines/schedules.md).
 
-## Get all pipeline schedules
+## List all pipeline schedules
 
-Get a list of the pipeline schedules of a project.
+Lists all pipeline schedules for a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules
@@ -71,9 +71,9 @@ curl --request GET \
 > The `inputs` field is only included in the response for users with the Maintainer or Owner roles,
 > or for the schedule owner.
 
-## Get a single pipeline schedule
+## Retrieve a pipeline schedule
 
-Get the pipeline schedule of a project.
+Retrieves a pipeline schedule for a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -140,9 +140,9 @@ curl --request GET \
 > The `inputs` and `variables` fields are only included in the response for users with the Maintainer or Owner roles,
 > or for the schedule owner.
 
-## Get all pipelines triggered by a pipeline schedule
+## List all pipelines triggered by a pipeline schedule
 
-Get all pipelines triggered by a pipeline schedule in a project.
+Lists all pipelines triggered by a pipeline schedule in a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines
@@ -279,9 +279,9 @@ curl --request POST \
   --form "inputs[][value]=blue-green"
 ```
 
-## Edit a pipeline schedule
+## Update a pipeline schedule
 
-Updates the pipeline schedule of a project. After the update is done, it is rescheduled automatically.
+Updates a pipeline schedule for a project. After the update is done, it is rescheduled automatically.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -347,12 +347,12 @@ curl --request PUT \
   --form "inputs[][name]=deploy_strategy" \
   --form "inputs[][value]=rolling" \
   --form "inputs[][name]=existing_input" \
-  --form "inputs[][_destroy]=true"
+  --form "inputs[][destroy]=true"
 ```
 
-## Take ownership of a pipeline schedule
+## Update ownership of a pipeline schedule
 
-Update the owner of the pipeline schedule of a project.
+Updates the owner of a pipeline schedule for a project.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
@@ -399,7 +399,7 @@ curl --request POST \
 
 ## Delete a pipeline schedule
 
-Delete the pipeline schedule of a project.
+Deletes a pipeline schedule for a project.
 
 ```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -444,9 +444,9 @@ curl --request DELETE \
 }
 ```
 
-## Run a scheduled pipeline immediately
+## Run a pipeline schedule immediately
 
-Trigger a new scheduled pipeline, which runs immediately. The next scheduled run
+Runs a pipeline schedule immediately. The next scheduled run
 of this pipeline is not affected.
 
 ```plaintext
@@ -474,9 +474,9 @@ Example response:
 }
 ```
 
-## Create a new pipeline schedule variable
+## Create a variable for a pipeline schedule
 
-Create a new variable of a pipeline schedule.
+Creates a new variable for a pipeline schedule.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
@@ -506,7 +506,7 @@ curl --request POST \
 }
 ```
 
-## Get a pipeline schedule variable
+## Retrieve a variable for a pipeline schedule
 
 {{< history >}}
 
@@ -514,7 +514,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Get a single variable of a pipeline schedule.
+Retrieves a variable for a pipeline schedule.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -553,9 +553,9 @@ Example response:
 }
 ```
 
-## Edit a pipeline schedule variable
+## Update a variable for a pipeline schedule
 
-Updates the variable of a pipeline schedule.
+Updates a variable for a pipeline schedule.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -584,9 +584,9 @@ curl --request PUT \
 }
 ```
 
-## Delete a pipeline schedule variable
+## Delete a variable for a pipeline schedule
 
-Delete the variable of a pipeline schedule.
+Deletes a variable for a pipeline schedule.
 
 ```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key

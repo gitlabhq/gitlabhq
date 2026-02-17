@@ -75,7 +75,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
         'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16793'
       ]
     } do
-      it_behaves_like 'work items comments', :issue
+      it_behaves_like 'work items comments'
     end
 
     it_behaves_like 'work items toggle status button'

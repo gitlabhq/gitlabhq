@@ -2,6 +2,8 @@
 key_path: settings.clickhouse_configured
 description: Tracks whether ClickHouse databases are configured
 product_group: database_frameworks
+product_categories:
+- database
 value_type: boolean
 status: active
 milestone: "17.11"

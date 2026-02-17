@@ -13,13 +13,10 @@ title: Configure a new **secondary** site
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This is the final step in setting up a **secondary** Geo site. Stages of the
-setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
-
-{{< /alert >}}
+> [!note]
+> This is the final step in setting up a **secondary** Geo site. Stages of the
+> setup process must be completed in the documented order.
+> If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -36,13 +33,10 @@ Prerequisites for **both primary and secondary sites**:
 - [Set up the database replication](../setup/database.md)
 - [Configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md)
 
-{{< alert type="note" >}}
-
-**Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
-Any change that requires access to the **Admin** area needs to be done in the
-**primary** site because the **secondary** site is a read-only replica.
-
-{{< /alert >}}
+> [!note]
+> **Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
+> Any change that requires access to the **Admin** area needs to be done in the
+> **primary** site because the **secondary** site is a read-only replica.
 
 ## Step 1. Manually replicate secret GitLab values
 
@@ -180,11 +174,8 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    for file in <ssh_host_key_path>/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
-   {{< alert type="note" >}}
-
-   The output for private keys and public keys command should generate the same fingerprint.
-
-   {{< /alert >}}
+   > [!note]
+   > The output for private keys and public keys command should generate the same fingerprint.
 
 1. Restart either `sshd` for OpenSSH or the `gitlab-sshd` service on **each Rails node on your secondary** site:
 
@@ -222,7 +213,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -360,24 +351,7 @@ If your **primary** site is using a [custom or self-signed certificate for inbou
    sudo gitlab-ctl reconfigure
    ```
 
-## Step 5. Enable Git access over HTTP/HTTPS and SSH
-
-Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. This is enabled by default, but if converting an existing site to Geo it should be checked:
-
-On the **primary** site:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **Visibility and access controls**.
-1. If using Git over SSH, then:
-   1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
-   1. Follow the steps to configure
-      [fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on
-      **all primary and secondary** sites.
-1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
-
-## Step 6. Verify proper functioning of the **secondary** site
+## Step 5. Verify proper functioning of the **secondary** site
 
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:

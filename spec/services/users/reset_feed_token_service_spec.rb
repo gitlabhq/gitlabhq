@@ -90,7 +90,6 @@ RSpec.describe Users::ResetFeedTokenService, feature_category: :system_access do
 
       where(:source) do
         [
-          :group_token_revocation_service,
           :api_admin_token
         ]
       end

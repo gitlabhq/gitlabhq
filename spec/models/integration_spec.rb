@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integration, feature_category: :integrations do
   using RSpec::Parameterized::TableSyntax
 
-  subject(:integration) { build(:integration) }
+  subject(:integration) { build_stubbed(:integration) }
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -75,6 +75,103 @@ RSpec.describe Integration, feature_category: :integrations do
             instance: instance
           ).valid?
         ).to eq(valid)
+      end
+    end
+
+    context 'when encrypted_properties is changed' do
+      before do
+        allow(described_class).to receive(:encrypted_properties_max_size).and_return(10.bytes)
+      end
+
+      context 'when properties are within the limit' do
+        it 'allows the integration to be saved' do
+          integration.properties = { a: 1 }
+          expect(integration).to be_valid
+        end
+      end
+
+      context 'when properties exceed the limit' do
+        it 'adds an error to the integration' do
+          large_value = 'x' * (integration.class.encrypted_properties_max_size + 1)
+          integration.properties = { large_field: large_value }
+
+          expect(integration).not_to be_valid
+          expect(integration.errors[:base]).to include(
+            match(/Integration properties exceed maximum size of 10 B/)
+          )
+        end
+      end
+
+      context 'when properties are nil' do
+        it 'allows the integration to be saved' do
+          integration.properties = nil
+          expect(integration).to be_valid
+        end
+      end
+
+      context 'when properties are empty' do
+        it 'allows the integration to be saved' do
+          integration.properties = {}
+          expect(integration).to be_valid
+        end
+      end
+    end
+
+    context 'when encrypted_properties is over the limit but unchanged' do
+      before do
+        allow(described_class).to receive(:encrypted_properties_max_size).and_return(10.bytes)
+      end
+
+      let(:oversized_integration) { create(:integration) }
+
+      it 'does not invalidate the record' do
+        oversized_integration.properties = { foo: 'x' * described_class.encrypted_properties_max_size }
+        oversized_integration.save!(validate: false)
+
+        expect(oversized_integration.reload).to be_valid
+      end
+    end
+
+    describe 'ENCRYPTED_PROPERTIES_MAX_SIZE constant' do
+      it 'is set to 1 MB' do
+        expect(described_class::ENCRYPTED_PROPERTIES_MAX_SIZE).to eq(1.megabyte)
+      end
+    end
+
+    describe '.encrypted_properties_max_size class method' do
+      it 'returns the max size' do
+        expect(described_class.encrypted_properties_max_size).to eq(1.megabyte)
+      end
+
+      context 'when overridden in a subclass' do
+        before do
+          allow(described_class).to receive(:encrypted_properties_max_size).and_return(10.bytes)
+
+          stub_const('CustomIntegration', Class.new(described_class) do
+            def self.encrypted_properties_max_size
+              25.bytes
+            end
+          end)
+        end
+
+        it 'respects the overridden limit in validation' do
+          custom_integration = CustomIntegration.new(project: project)
+
+          large_value = 'x' * described_class.encrypted_properties_max_size
+          custom_integration.properties = { foo: large_value }
+
+          # This expectation is mainly just to confirm that the test setup itself
+          # is never invalidated by changes to the class. We want to demonstrate
+          # that the size of the integration field is greater than the default
+          # limit but within the limit defined on the subclass.
+          expect(Gitlab::Json.dump(custom_integration.properties).bytesize)
+            .to be_between(
+              described_class.encrypted_properties_max_size,
+              custom_integration.class.encrypted_properties_max_size
+            ).exclusive
+
+          expect(custom_integration).to be_valid
+        end
       end
     end
 
@@ -173,13 +270,13 @@ RSpec.describe Integration, feature_category: :integrations do
         it "includes services where #{hook_type}_events is true" do
           create(:integration, active: true, "#{hook_type}_events": true)
 
-          expect(described_class.send("#{hook_type}_hooks").count).to eq 1
+          expect(described_class.send(:"#{hook_type}_hooks").count).to eq 1
         end
 
         it "excludes services where #{hook_type}_events is false" do
           create(:integration, active: true, "#{hook_type}_events": false)
 
-          expect(described_class.send("#{hook_type}_hooks").count).to eq 0
+          expect(described_class.send(:"#{hook_type}_hooks").count).to eq 0
         end
       end
     end

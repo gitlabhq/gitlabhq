@@ -1,6 +1,4 @@
-import { preserveUnchanged } from '../serialization_helpers';
-
-const frontmatter = preserveUnchanged((state, node) => {
+function frontmatter(state, node) {
   const { language } = node.attrs;
   const syntax = {
     toml: '+++',
@@ -13,6 +11,6 @@ const frontmatter = preserveUnchanged((state, node) => {
   state.ensureNewLine();
   state.write(syntax);
   state.closeBlock(node);
-});
+}
 
 export default frontmatter;

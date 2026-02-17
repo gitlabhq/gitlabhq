@@ -41,9 +41,9 @@ describe('PackageTitle', () => {
     count        | exist    | text
     ${null}      | ${false} | ${''}
     ${undefined} | ${false} | ${''}
-    ${0}         | ${true}  | ${'0 Packages'}
-    ${1}         | ${true}  | ${'1 Package'}
-    ${2}         | ${true}  | ${'2 Packages'}
+    ${0}         | ${true}  | ${'0 packages'}
+    ${1}         | ${true}  | ${'1 package'}
+    ${2}         | ${true}  | ${'2 packages'}
   `('when count is $count metadata item', ({ count, exist, text }) => {
     beforeEach(() => {
       mountComponent({ count, helpUrl: 'foo' });

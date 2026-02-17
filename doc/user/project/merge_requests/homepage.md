@@ -50,12 +50,9 @@ The **Role** view sorts your merge requests by your role in the merge request.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab shows the total number of **Active** merge requests in the upper-right corner on all pages.
 For example, this user has:

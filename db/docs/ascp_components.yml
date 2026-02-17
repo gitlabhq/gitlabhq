@@ -1,0 +1,16 @@
+---
+table_name: ascp_components
+classes:
+  - Security::Ascp::Component
+feature_categories:
+  - static_application_security_testing
+description: >
+  Stores business/code components discovered during ASCP security scans.
+  Each component represents a logical unit within a project (e.g., authentication
+  module, API layer) with its path, description, and expected user behavior.
+  Components are versioned via scan_id for point-in-time queries.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219888
+milestone: '18.9'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

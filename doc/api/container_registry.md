@@ -21,7 +21,7 @@ of the project that created the pipeline.
 
 ## Change the visibility of the container registry
 
-This controls who can view the container registry.
+Changes the visibility of the container registry for a specified project.
 
 ```plaintext
 PUT /projects/:id/
@@ -65,11 +65,11 @@ Example response:
 }
 ```
 
-## List registry repositories
+## List all registry repositories
 
 ### Within a project
 
-Get a list of registry repositories in a project.
+Lists all registry repositories for a specified project.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
@@ -123,7 +123,7 @@ Example response:
 
 {{< /history >}}
 
-Get a list of registry repositories in a group.
+Lists all registry repositories for a specified group.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
@@ -165,9 +165,9 @@ Example response:
 ]
 ```
 
-## Get details of a single repository
+## Retrieve details of a single repository
 
-Get details of a registry repository.
+Retrieves details of a specified registry repository.
 
 ```plaintext
 GET /registry/repositories/:id
@@ -211,7 +211,7 @@ Example response:
 
 ## Delete registry repository
 
-Delete a repository in registry.
+Deletes a specified repository in the registry.
 
 This operation is executed asynchronously and might take some time to get executed.
 
@@ -230,7 +230,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
-## List registry repository tags
+## List all registry repository tags
 
 ### Within a project
 
@@ -240,7 +240,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Get a list of tags for given registry repository.
+Lists all tags for a specified registry repository.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
@@ -278,9 +278,9 @@ Example response:
 ]
 ```
 
-## Get details of a registry repository tag
+## Retrieve details of a registry repository tag
 
-Get details of a registry repository tag.
+Retrieves details of a specified registry repository tag.
 
 ```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
@@ -314,7 +314,7 @@ Example response:
 
 ## Delete a registry repository tag
 
-Delete a container registry repository tag.
+Deletes a specified container registry repository tag.
 
 The endpoint returns a [`403 Forbidden`](rest/troubleshooting.md#status-codes) error if the tag matches any protection rules in the project.
 For more information about tag protection rules, see
@@ -340,7 +340,7 @@ This operation does not delete blobs. To reclaim disk space, [run garbage collec
 
 ## Delete registry repository tags in bulk
 
-Delete registry repository tags in bulk based on given criteria.
+Deletes registry repository tags in bulk based on specified criteria.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Use the container registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
@@ -379,16 +379,13 @@ You can run this at most once an hour for a given container repository.
 This operation does not delete blobs. To reclaim disk space,
 [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
-{{< alert type="warning" >}}
-
-The number of tags deleted by this API is limited on GitLab.com
-because of the scale of the container registry there.
-If your container registry has a large number of tags to delete,
-only some of them are deleted, and you might need to call this API multiple times.
-To schedule tags for automatic deletion, use a
-[cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
-
-{{< /alert >}}
+> [!warning]
+> The number of tags deleted by this API is limited on GitLab.com
+> because of the scale of the container registry there.
+> If your container registry has a large number of tags to delete,
+> only some of them are deleted, and you might need to call this API multiple times.
+> To schedule tags for automatic deletion, use a
+> [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
 Examples:
 

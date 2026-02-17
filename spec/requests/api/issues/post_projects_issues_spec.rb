@@ -487,6 +487,11 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         let(:failed_status_code) { 400 }
       end
 
+      it_behaves_like 'authorizing granular token permissions', :move_issue do
+        let(:boundary_object) { project }
+        let(:request) { post api(path, personal_access_token: pat), params: { to_project_id: target_project.id } }
+      end
+
       it 'moves an issue' do
         post api(path, user), params: { to_project_id: target_project.id }
 
@@ -665,6 +670,13 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['id']).to eq(cloned_issue.id)
         expect(json_response['project_id']).to eq(valid_target_project.id)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :clone_issue do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/issues/#{issue.iid}/clone", personal_access_token: pat), params: { to_project_id: valid_target_project.id }
+        end
       end
     end
 

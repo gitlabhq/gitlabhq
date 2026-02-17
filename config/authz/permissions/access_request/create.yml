@@ -1,0 +1,5 @@
+---
+name: create_access_request
+description: Grants ability to create access requests
+boundaries:
+  - user

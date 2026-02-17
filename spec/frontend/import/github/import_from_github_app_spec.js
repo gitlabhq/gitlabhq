@@ -1,7 +1,6 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportFromGithubApp from '~/import/github/import_from_github_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 describe('Import from GitHub app', () => {
   let wrapper;
@@ -21,7 +20,7 @@ describe('Import from GitHub app', () => {
     });
   };
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findGithubAuthButton = () => wrapper.findByTestId('github-auth-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
 

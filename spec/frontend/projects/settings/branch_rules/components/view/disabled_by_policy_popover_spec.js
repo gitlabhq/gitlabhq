@@ -8,8 +8,9 @@ describe('DisabledByPolicyPopover', () => {
 
   const securityPoliciesPath = '/test-group/test-project/-/security/policies';
 
-  const createComponent = () => {
+  const createComponent = (isProtectedByPolicy = true) => {
     wrapper = shallowMountExtended(DisabledByPolicyPopover, {
+      propsData: { isProtectedByPolicy },
       provide: { securityPoliciesPath },
       stubs: { GlSprintf },
     });
@@ -50,7 +51,27 @@ describe('DisabledByPolicyPopover', () => {
 
   it('renders the trigger button with correct attributes', () => {
     expect(findTriggerButton().attributes('aria-label')).toBe(
-      'This setting is blocked by a security policy. To make changes, go to the security policies. Learn more.',
+      'This setting is blocked by a security policy. To make changes, go to the security policies.',
     );
+  });
+
+  describe('when warn mode security policies are enabled', () => {
+    beforeEach(() => {
+      createComponent(false);
+    });
+
+    it('renders the popover with warn mode title', () => {
+      expect(findPopover().props('title')).toBe('Setting may be blocked by security policy');
+    });
+
+    it('renders the lock icon as warning icon', () => {
+      expect(wrapper.findComponent({ name: 'GlIcon' }).props('name')).toBe('warning');
+    });
+
+    it('shows the warn mode description message', () => {
+      expect(trimText(findPopover().text())).toBe(
+        'This setting will be blocked if the security policy becomes enforced. To make changes, go to the security policies. Learn more.',
+      );
+    });
   });
 });

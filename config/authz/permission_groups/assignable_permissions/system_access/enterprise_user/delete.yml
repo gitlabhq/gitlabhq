@@ -1,0 +1,7 @@
+---
+name: delete_enterprise_user
+description: Grants the ability to delete enterprise users
+boundaries:
+  - group
+permissions:
+  - delete_enterprise_user

@@ -313,11 +313,8 @@ adopt_cf_ray_header = true
 
 It will also respect the trusted CIDR configuration.
 
-{{< alert type="note" >}}
-
-The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` and `adopt_cf_ray_header` options to work.
-
-{{< /alert >}}
+> [!note]
+> The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` and `adopt_cf_ray_header` options to work.
 
 ### Trusted proxies
 

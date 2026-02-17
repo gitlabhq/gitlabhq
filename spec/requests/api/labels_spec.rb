@@ -327,6 +327,14 @@ RSpec.describe API::Labels, feature_category: :team_planning do
           it_behaves_like 'fetches labels'
         end
       end
+
+      context 'when authenticated with a token that has the ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+        let(:request) { get api("/projects/#{project.id}/labels", oauth_access_token: oauth_token), params: { include_ancestor_groups: false } }
+        let(:expected_labels) { [subgroup_label.name, priority_label.name, label1.name] }
+
+        it_behaves_like 'fetches labels'
+      end
     end
   end
 

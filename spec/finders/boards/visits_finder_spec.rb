@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::VisitsFinder do
+RSpec.describe Boards::VisitsFinder, feature_category: :portfolio_management do
   describe '#latest' do
     let(:user) { create(:user) }
 

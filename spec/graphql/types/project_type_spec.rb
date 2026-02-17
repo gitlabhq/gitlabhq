@@ -51,14 +51,14 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
       merge_request_title_regex merge_request_title_regex_description
-      webhook
+      webhook custom_attributes
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
   describe 'count' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
 
     let(:query) do
       %(
@@ -507,6 +507,13 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     it { is_expected.to have_graphql_resolver(Resolvers::ReleasesResolver) }
   end
 
+  describe 'pipelineScheduleStatusCount field' do
+    subject { described_class.fields['pipelineScheduleStatusCounts'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::PipelineScheduleStatusCountType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::ProjectPipelineScheduleStatusCountsResolver) }
+  end
+
   describe 'container tags expiration policy field' do
     subject { described_class.fields['containerTagsExpirationPolicy'] }
 
@@ -600,7 +607,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
     it do
       is_expected.to have_graphql_arguments(:statuses, :with_artifacts, :name, :sources,
-        :after, :before, :first, :last, :kind)
+        :after, :before, :first, :last, :kind, :pipeline_iid)
     end
   end
 
@@ -977,7 +984,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'timeline_event_tags' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:project) do
       create(
         :project,
@@ -1037,7 +1044,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'languages' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:project) do
       create(
         :project,
@@ -1082,9 +1089,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     context 'when the languages were detected before' do
       let(:mock_languages) do
         [{ share: 66.69, name: "Ruby", color: "#701516" },
-         { share: 22.98, name: "JavaScript", color: "#f1e05a" },
-         { share: 7.91, name: "HTML", color: "#e34c26" },
-         { share: 2.42, name: "CoffeeScript", color: "#244776" }]
+          { share: 22.98, name: "JavaScript", color: "#f1e05a" },
+          { share: 7.91, name: "HTML", color: "#e34c26" },
+          { share: 2.42, name: "CoffeeScript", color: "#244776" }]
       end
 
       it 'returns the repository languages' do
@@ -1972,6 +1979,106 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
           it_behaves_like 'calls service with expected fail_on_cache_miss value', true
         end
+      end
+    end
+  end
+
+  describe 'ci_pipeline_creation_inputs field' do
+    include ReactiveCachingHelpers
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let(:ref) { project.default_branch }
+    let(:fail_on_cache_miss) { nil }
+
+    let(:query) do
+      fail_on_cache_miss_arg = fail_on_cache_miss.nil? ? '' : ", failOnCacheMiss: #{fail_on_cache_miss}"
+      %(
+      query {
+        project(fullPath: "#{project.full_path}") {
+          ciPipelineCreationInputs(ref: "#{ref}"#{fail_on_cache_miss_arg}) {
+            name
+            default
+            required
+          }
+        }
+      }
+    )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    def mock_service_response(return_value)
+      allow_next_instance_of(::Ci::PipelineCreation::FindPipelineInputsService) do |service|
+        allow(service).to receive(:execute).and_return(return_value)
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is true' do
+      let(:fail_on_cache_miss) { true }
+
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns GraphQL error with expected message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Failed to retrieve pipeline inputs from cache.')
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is false' do
+      let(:fail_on_cache_miss) { false }
+
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns nil without error' do
+        expect(subject['errors']).to be_nil
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is not specified' do
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns nil without error (default behavior)' do
+        expect(subject['errors']).to be_nil
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns an error response' do
+      before do
+        mock_service_response(ServiceResponse.error(message: 'Some error'))
+      end
+
+      it 'returns GraphQL error with the service error message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Some error')
+      end
+    end
+
+    context 'when service returns success with inputs' do
+      let(:inputs_builder) do
+        Ci::Inputs::Builder.new({
+          'environment' => { type: 'string', default: 'production' }
+        })
+      end
+
+      before do
+        mock_service_response(ServiceResponse.success(payload: { inputs: inputs_builder }))
+      end
+
+      it 'returns the inputs' do
+        inputs = subject.dig('data', 'project', 'ciPipelineCreationInputs')
+        expect(inputs).to be_present
+        expect(inputs.first['name']).to eq('environment')
+        expect(inputs.first['default']).to eq('production')
       end
     end
   end

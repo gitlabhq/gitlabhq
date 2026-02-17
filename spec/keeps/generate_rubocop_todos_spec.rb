@@ -13,6 +13,10 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
 
   before do
     allow(Rake::Task).to receive(:[]).with('rubocop:todo:generate').and_return(rake_task)
+
+    # Reset singleton to create a fresh instance
+    Singleton.__init__(Keeps::Helpers::ReviewerRoulette)
+    allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(roulette)
   end
 
   describe '#each_identified_change' do
@@ -21,8 +25,6 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
                                                  .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
                                                  .and_return('M .rubocop_todo/some_cop.yml')
-
-        allow(Keeps::Helpers::ReviewerRoulette).to receive(:new).and_return(roulette)
 
         allow(roulette).to receive(:random_reviewer_for).with('trainee maintainer::backend').and_return(nil)
         allow(roulette).to receive(:random_reviewer_for).with('reviewer::backend').and_return(backend_reviewer)

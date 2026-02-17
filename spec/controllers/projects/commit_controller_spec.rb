@@ -36,7 +36,25 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         go(id: commit.id)
 
         expect(response).to be_ok
-        expect(assigns(:ref)).to eq commit.id
+      end
+
+      context 'with legacy diffs' do
+        before do
+          stub_feature_flags(rapid_diffs_on_commit_show: false)
+        end
+
+        it 'assigns ref' do
+          go(id: commit.id)
+
+          expect(response).to be_ok
+          expect(assigns(:ref)).to eq commit.id
+        end
+
+        it 'defines commit vars' do
+          go(id: commit.id)
+
+          expect(assigns(:diffs)).to be_present
+        end
       end
 
       context 'when a pipeline job is running' do
@@ -148,6 +166,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     context 'in the context of a merge_request' do
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:commit) { merge_request.commits.first }
+
+      before do
+        stub_feature_flags(rapid_diffs_on_commit_show: false)
+      end
 
       it 'prepare diff notes in the context of the merge request' do
         go(id: commit.id, merge_request_iid: merge_request.iid)
@@ -512,6 +534,12 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
             diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
           end
+
+          it 'defines commit vars' do
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
+
+            expect(assigns(:diffs)).to be_present
+          end
         end
 
         context 'when the path does not exist in the diff' do
@@ -577,6 +605,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
             expect(assigns(:last_pipeline)).to have_attributes(id: pipeline.id, status: 'running')
             expect(assigns(:last_pipeline_stages)).not_to be_empty
           end
+
+          it 'defines commit vars' do
+            expect(assigns(:diffs)).to be_present
+          end
         end
 
         context 'when rendering a JSON format' do
@@ -640,22 +672,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       it 'returns a 404' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
-    end
-  end
-
-  describe '#append_info_to_payload' do
-    it 'appends diffs_files_count for logging' do
-      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
-        method.call(payload)
-
-        expect(payload[:metadata]['meta.diffs_files_count']).to eq(commit.diffs.size)
-      end
-
-      get :show, params: {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: commit.id
-      }
     end
   end
 end

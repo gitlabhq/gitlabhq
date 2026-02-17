@@ -1,0 +1,7 @@
+---
+name: update_external_status_check_service
+description: Grants the ability to update external status check services
+boundaries:
+  - project
+permissions:
+  - update_external_status_check_service

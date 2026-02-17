@@ -14,24 +14,17 @@ title: Maven API
 
 Use this API to interact with the [Maven package manager client](../../user/packages/maven_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [Maven package manager client](https://maven.apache.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [Maven package manager client](https://maven.apache.org/)
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See [Maven package registry documentation](../../user/packages/maven_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
+## Download a package file for an instance
 
-## Download a package file at the instance-level
-
-Download a Maven package file:
+Downloads a specified Maven package file for the instance.
 
 ```plaintext
 GET packages/maven/*path/:file_name
@@ -56,9 +49,9 @@ curl --header "PRIVATE-TOKEN: <personal_access_token>" \
 
 This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
-## Download a package file at the group-level
+## Download a package file for a group-level
 
-Download a Maven package file:
+Downloads a specified Maven package file for a group.
 
 ```plaintext
 GET groups/:id/-/packages/maven/*path/:file_name
@@ -83,9 +76,9 @@ curl --header "PRIVATE-TOKEN: <personal_access_token>" \
 
 This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
-## Download a package file at the project-level
+## Download a package file for a project
 
-Download a Maven package file:
+Downloads a specified Maven package file for a project.
 
 ```plaintext
 GET projects/:id/packages/maven/*path/:file_name
@@ -112,7 +105,7 @@ This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current direc
 
 ## Upload a package file
 
-Upload a Maven package file:
+Uploads a specified Maven package file for a project.
 
 ```plaintext
 PUT projects/:id/packages/maven/*path/:file_name

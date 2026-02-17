@@ -314,8 +314,8 @@ describe('Work item comment form component', () => {
       expect(confirmViaGlModal.confirmAction).toHaveBeenCalled();
     });
 
-    it('emits `cancelEditing` and clears draft from the local storage', () => {
-      expect(wrapper.emitted('cancelEditing')).toHaveLength(1);
+    it('emits `cancel-editing` and clears draft from the local storage', () => {
+      expect(wrapper.emitted('cancel-editing')).toHaveLength(1);
       expect(autosave.clearDraft).toHaveBeenCalledWith(mockAutosaveKey);
     });
   });
@@ -360,18 +360,18 @@ describe('Work item comment form component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.emitted('cancelEditing')).toHaveLength(1);
+    expect(wrapper.emitted('cancel-editing')).toHaveLength(1);
     expect(autosave.clearDraft).toHaveBeenCalledWith(mockAutosaveKey);
   });
 
-  it('emits `submitForm` event on confirm button click', async () => {
+  it('emits `submit-form` event on confirm button click', async () => {
     createComponent();
     findConfirmButton().vm.$emit('click');
 
     await waitForPromises();
 
     expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
-    expect(wrapper.emitted('submitForm')).toEqual([
+    expect(wrapper.emitted('submit-form')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
   });
@@ -387,7 +387,7 @@ describe('Work item comment form component', () => {
     });
   });
 
-  it('emits `submitForm` event on pressing enter with meta key on markdown editor', async () => {
+  it('emits `submit-form` event on pressing enter with meta key on markdown editor', async () => {
     createComponent();
     findMarkdownEditor().vm.$emit(
       'keydown',
@@ -397,12 +397,12 @@ describe('Work item comment form component', () => {
     await waitForPromises();
 
     expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
-    expect(wrapper.emitted('submitForm')).toEqual([
+    expect(wrapper.emitted('submit-form')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
   });
 
-  it('emits `submitForm` event on pressing ctrl+enter on markdown editor', async () => {
+  it('emits `submit-form` event on pressing ctrl+enter on markdown editor', async () => {
     createComponent();
     findMarkdownEditor().vm.$emit(
       'keydown',
@@ -412,12 +412,12 @@ describe('Work item comment form component', () => {
     await waitForPromises();
 
     expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
-    expect(wrapper.emitted('submitForm')).toEqual([
+    expect(wrapper.emitted('submit-form')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
   });
 
-  it('does not emit `submitForm` when detectAndConfirmSensitiveTokens returns false', async () => {
+  it('does not emit `submit-form` when detectAndConfirmSensitiveTokens returns false', async () => {
     detectAndConfirmSensitiveTokens.mockReturnValue(false);
 
     createComponent();
@@ -427,7 +427,7 @@ describe('Work item comment form component', () => {
 
     expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
 
-    expect(wrapper.emitted('submitForm')).toBeUndefined();
+    expect(wrapper.emitted('submit-form')).toBeUndefined();
   });
 
   describe('when used as a top level/is a new discussion', () => {
@@ -449,7 +449,7 @@ describe('Work item comment form component', () => {
       ]);
     });
 
-    it('emits `submitForm` event on closing of work item', async () => {
+    it('emits `submit-form` event on closing of work item', async () => {
       createComponent({
         isNewDiscussion: true,
       });
@@ -460,7 +460,7 @@ describe('Work item comment form component', () => {
       await waitForPromises();
 
       expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
-      expect(wrapper.emitted('submitForm')).toEqual([
+      expect(wrapper.emitted('submit-form')).toEqual([
         [{ commentText: draftComment, isNoteInternal: false }],
       ]);
     });
@@ -519,7 +519,7 @@ describe('Work item comment form component', () => {
         expect(autosave.updateDraft).toHaveBeenCalledWith(mockAutosaveKeyInternalNote, true);
       });
 
-      it('emits `submitForm` event on closing of work item', async () => {
+      it('emits `submit-form` event on closing of work item', async () => {
         findInternalNoteCheckbox().vm.$emit('input', true);
 
         findWorkItemToggleStateButton().vm.$emit('submit-comment');
@@ -527,7 +527,7 @@ describe('Work item comment form component', () => {
         await waitForPromises();
 
         expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
-        expect(wrapper.emitted('submitForm')).toEqual([
+        expect(wrapper.emitted('submit-form')).toEqual([
           [{ commentText: draftComment, isNoteInternal: true }],
         ]);
       });
@@ -550,7 +550,7 @@ describe('Work item comment form component', () => {
       expect(findToggleResolveCheckbox().exists()).toBe(true);
     });
 
-    it('emits the `toggleResolve` event on submitForm when resolved', async () => {
+    it('emits the `toggle-resolve-discussion` event on submit-form when resolved', async () => {
       createComponent({
         hasReplies: true,
         isDiscussionResolvable: true,
@@ -565,11 +565,11 @@ describe('Work item comment form component', () => {
       await waitForPromises();
 
       expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: 'new comment' });
-      expect(wrapper.emitted('submitForm')).toEqual([
+      expect(wrapper.emitted('submit-form')).toEqual([
         [{ commentText: 'new comment', isNoteInternal: false }],
       ]);
 
-      expect(wrapper.emitted('toggleResolveDiscussion')).toEqual([[]]);
+      expect(wrapper.emitted('toggle-resolve-discussion')).toEqual([[]]);
     });
   });
 

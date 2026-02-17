@@ -1,0 +1,5 @@
+---
+name: download_generic_package
+description: Grants the ability to download generic packages
+boundaries:
+  - project

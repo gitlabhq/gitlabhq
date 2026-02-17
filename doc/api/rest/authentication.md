@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Authenticate with the GitLab REST API by using OAuth 2.0, access, and job tokens."
 title: REST API authentication
@@ -8,7 +8,7 @@ title: REST API authentication
 
 Most API requests require authentication, or return only public data when authentication isn't
 provided. When authentication is not required, the documentation for each endpoint specifies this.
-For example, the [`/projects/:id` endpoint](../projects.md#get-a-single-project) does not require
+For example, the [`/projects/:id` endpoint](../projects.md#retrieve-a-project) does not require
 authentication.
 
 You can authenticate with the GitLab REST API in several ways:
@@ -40,12 +40,9 @@ status code of `401`:
 }
 ```
 
-{{< alert type="note" >}}
-
-Deploy tokens can't be used with the GitLab public API. For details, see
-[Deploy Tokens](../../user/project/deploy_tokens/_index.md).
-
-{{< /alert >}}
+> [!note]
+> Deploy tokens can't be used with the GitLab public API. For details, see
+> [Deploy Tokens](../../user/project/deploy_tokens/_index.md).
 
 ## OAuth 2.0 tokens
 
@@ -69,13 +66,10 @@ curl --request GET \
 
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
-{{< alert type="note" >}}
-
-All OAuth access tokens are valid for two hours after they are created. You can use the
-`refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
-how to request a new access token using a refresh token.
-
-{{< /alert >}}
+> [!note]
+> All OAuth access tokens are valid for two hours after they are created. You can use the
+> `refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
+> how to request a new access token using a refresh token.
 
 ## Personal, project, and group access tokens
 

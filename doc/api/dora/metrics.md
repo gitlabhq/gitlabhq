@@ -19,11 +19,11 @@ Additional endpoints are available with the [GraphQL API](../graphql/reference/_
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
-## Get project-level DORA metrics
+## Retrieve project-level DORA metrics
 
-Get project-level DORA metrics.
+Retrieves DORA metrics for a specified project.
 
 ```plaintext
 GET /projects/:id/dora/metrics
@@ -59,9 +59,9 @@ Example response:
 ]
 ```
 
-## Get group-level DORA metrics
+## Retrieve group-level DORA metrics
 
-Get group-level DORA metrics.
+Retrieves DORA metrics for a specified group.
 
 ```plaintext
 GET /groups/:id/dora/metrics

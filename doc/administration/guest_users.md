@@ -34,23 +34,20 @@ Users with the Guest role:
 - In GitLab Free and Premium, users with the Guest role count as a billable user and consume a license seat.
 - In GitLab Ultimate, users with the Guest role do not count as a billable user or consume a license seat.
 
-{{< alert type="note" >}}
-
-While the Guest role generally provides limited access, creating a [custom role](../user/custom_roles/_index.md) with the [`View repository code`](../user/custom_roles/abilities.md#source-code-management) permission allows you to provide access to code in your repositories without consuming a license seat. Adding any other permissions causes the role to occupy a billable seat.
-
-{{< /alert >}}
+> [!note]
+> While the Guest role generally provides limited access, creating a [custom role](../user/custom_roles/_index.md) with the [`View repository code`](../user/custom_roles/abilities.md#source-code-management) permission allows you to provide access to code in your repositories without consuming a license seat. Adding any other permissions causes the role to occupy a billable seat.
 
 ## Assign Guest role to users
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
-You can assign the Guest role to a current member of a group or project, or assign this role when creating a new member. You can do this through the API (for [groups](../api/group_members.md#add-a-member-to-a-group) or [projects](../api/project_members.md#add-a-member-to-a-project)) or the GitLab UI.
+You can assign the Guest role to a current member of a group or project, or assign this role when creating a new member. You can do this through the API (for [groups](../api/group_members.md#add-a-group-member) or [projects](../api/project_members.md#add-a-member-to-a-project)) or the GitLab UI.
 
 To assign the Guest role to a current group or project member:
 
-1. On the top bar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **Manage** > **Members**.
 1. In the **Role** column of the group or project member you want to assign the Guest role to, select their current role (for example, **Developer**).
 1. In the **Role details** drawer, change the Role to **Guest**.
@@ -59,7 +56,7 @@ To assign the Guest role to a current group or project member:
 If the user you want to assign the Guest role to is not yet a
 member of the group or project:
 
-1. On the top bar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. In **Username, name or email address**, select the relevant user.

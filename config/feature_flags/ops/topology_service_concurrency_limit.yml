@@ -1,0 +1,8 @@
+---
+name: topology_service_concurrency_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218443
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/517
+milestone: '18.9'
+type: ops
+group: group::cells infrastructure
+default_enabled: false

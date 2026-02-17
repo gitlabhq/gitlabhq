@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0.html).
+[the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0/).
 
 ## Issues to be aware of when upgrading
 
@@ -112,7 +112,7 @@ Specific information applies to Linux package installations:
 - The binaries for PostgreSQL 13 have been removed.
 
   Prior to upgrading, you must ensure your installation is using
-  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 - Packages are no longer built for Ubuntu 18.04
 
@@ -453,12 +453,9 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
 ### OpenSSL 3 upgrade
 
-{{< alert type="note" >}}
-
-Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
-to identify and assess the compatibility of your external integrations.
-
-{{< /alert >}}
+> [!note]
+> Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/)
+> to identify and assess the compatibility of your external integrations.
 
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
@@ -488,7 +485,7 @@ information, see the [certificate requirements](../../security/tls_support.md#ce
 
 All components that are shipped with the Linux package are compatible with
 OpenSSL 3. Therefore, you only need to verify the services and integrations that
-are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html#identifying-external-integrations).
+are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/#identifying-external-integrations).
 
 SSH keys are not affected by this upgrade. OpenSSL sets
 security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
@@ -506,7 +503,7 @@ for more details.
 - S3 object storage access for the GitLab Runner distributed cache is now handled by the
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
   You can enable the MinIO client again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER`
-  [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
+  [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/) to `true`.
 - The token used by Gitaly to authenticate with GitLab is now [its own setting](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8688).
   This means Gitaly doesn't need GitLab Rails and Shell recipes to run and populate the default secret file inside the shell directory,
   and can have its own secret file. Some customized environments may need to
@@ -922,7 +919,7 @@ application automatically generates the missing secrets at startup.
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
-you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
+you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0/).
 
 {{< /tab >}}
 

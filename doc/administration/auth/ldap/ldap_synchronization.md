@@ -200,12 +200,9 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 
 **All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
-{{< alert type="note" >}}
-
-If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
-a subsequent LDAP user synchronization does not automatically unblock those users.
-
-{{< /alert >}}
+> [!note]
+> If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
+> a subsequent LDAP user synchronization does not automatically unblock those users.
 
 ## Group sync
 
@@ -330,12 +327,9 @@ following.
 To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
 [create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
-{{< alert type="note" >}}
-
-If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
-setting the group sync worker interval to be greater than the 1 hour default.
-
-{{< /alert >}}
+> [!note]
+> If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
+> setting the group sync worker interval to be greater than the 1 hour default.
 
 ### Add group links
 
@@ -354,15 +348,12 @@ administrators. Specify a group CN for `admin_group` and all members of the
 LDAP group are given administrator privileges. The configuration looks
 like the following.
 
-{{< alert type="note" >}}
-
-Administrators are not synced unless `group_base` is also
-specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
-as opposed to the full DN.
-Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
-group, GitLab revokes their `admin` role when syncing.
-
-{{< /alert >}}
+> [!note]
+> Administrators are not synced unless `group_base` is also
+> specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
+> as opposed to the full DN.
+> Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
+> group, GitLab revokes their `admin` role when syncing.
 
 {{< tabs >}}
 
@@ -736,10 +727,23 @@ For example, if a user has the Owner role in a group and the
 next group sync reveals they should only have the Developer role, their
 access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
-administrative duties. When seat control is set to restricted access and no
-subscription seats remain available, users are automatically assigned the Minimal
-Access role during group synchronization. This way, users can be synchronized
-without consuming a seat.
+administrative duties.
+
+#### Minimal Access role assignment with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When [Restricted Access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../user/group/manage.md#provisioning-behavior-with-saml-scim-and-ldap).
 
 #### Supported LDAP group types/attributes
 

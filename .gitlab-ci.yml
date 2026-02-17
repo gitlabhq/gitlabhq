@@ -32,8 +32,7 @@ default:
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
-  FF_TIMESTAMPS: "true"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
@@ -63,6 +62,9 @@ default:
 .if-rails-next-schedule: &if-rails-next-schedule
   if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-triggered-by-aigw-project: &if-triggered-by-aigw-project
+  if: '$CI_PIPELINE_SOURCE == "pipeline" && $TRIGGERED_BY_AI_GATEWAY_PROJECT == "true"'
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
@@ -73,6 +75,10 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
+    - <<: *if-triggered-by-aigw-project
+      variables:
+        <<: *default-ruby-variables
+        PIPELINE_NAME: 'AIGW Rails Test Pipeline'
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
       variables:
@@ -89,7 +95,7 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_3/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
@@ -187,7 +193,6 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
-        FF_TIMESTAMPS: "true"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables
@@ -208,7 +213,7 @@ workflow:
 
 variables:
   PG_VERSION: "16"
-  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-node-${NODE_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-node-${NODE_VERSION}-python-${PYTHON_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-poetry-${POETRY_VERSION}"
   DEFAULT_JOB_TAG: "gitlab-org"
   GITLAB_LARGE_RUNNER_OPTIONAL: "gitlab-org"  # overridden just in gitlab-org/gitlab
   GLCI_MEDIUM_RUNNER_REQUIRED: "" # This should be a tag pointing to a valid "medium" runner. Newer versions of Chrome (133+) require at least medium runners (4 core / 16G RAM), otherwise system test jobs are unpredictably instable due to insufficient resources (postgres DB and Rails application will have random failures). Therefore, the default is an empty string, which will cause system test jobs to never run. See https://issues.chromium.org/issues/447192720
@@ -300,7 +305,6 @@ variables:
 
   # Runner features
   FF_NETWORK_PER_BUILD: "true"
-  FF_TIMESTAMPS: "true"
   FF_USE_FASTZIP: "true"
 
 include:

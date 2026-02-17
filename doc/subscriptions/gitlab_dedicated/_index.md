@@ -150,13 +150,10 @@ You can configure custom domains for:
 
 For more information, see [custom domains](../../administration/dedicated/configure_instance/network_security.md#custom-domains).
 
-{{< alert type="note" >}}
-
-GitLab Pages does not support custom domains. Pages sites are accessible only at
-`tenant_name.gitlab-dedicated.site`, regardless of any custom domain configured for your
-GitLab Dedicated instance.
-
-{{< /alert >}}
+> [!note]
+> GitLab Pages does not support custom domains. Pages sites are accessible only at
+> `tenant_name.gitlab-dedicated.site`, regardless of any custom domain configured for your
+> GitLab Dedicated instance.
 
 ### Object storage downloads
 
@@ -211,12 +208,9 @@ You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicat
 
 Your website uses the domain `tenant_name.gitlab-dedicated.site`, where `tenant_name` matches your instance URL.
 
-{{< alert type="note" >}}
-
-Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
-you still access your website at `tenant_name.gitlab-dedicated.site`.
-
-{{< /alert >}}
+> [!note]
+> Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
+> you still access your website at `tenant_name.gitlab-dedicated.site`.
 
 Control access to your website with:
 
@@ -352,13 +346,10 @@ The following features require direct server access and cannot be configured:
 | [Mattermost](../../integration/mattermost/_index.md)          | Integrated team chat and collaboration platform.                   | Use external chat solutions.                                                                                              |
 | [Server-side Git hooks](../../administration/server_hooks.md) | Custom scripts that run on Git events (pre-receive, post-receive). | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md). |
 
-{{< alert type="note" >}}
-
-Server-side Git hooks are not supported for security and performance reasons.
-Instead, use [push rules](../../user/project/repository/push_rules.md) to enforce repository policies
-or [webhooks](../../user/project/integrations/webhooks.md) to trigger external actions on Git events.
-
-{{< /alert >}}
+> [!note]
+> Server-side Git hooks are not supported for security and performance reasons.
+> Instead, use [push rules](../../user/project/repository/push_rules.md) to enforce repository policies
+> or [webhooks](../../user/project/integrations/webhooks.md) to trigger external actions on Git events.
 
 ## Service level availability
 

@@ -89,10 +89,9 @@ to create a new schedule rule.
 > [!note]
 > The Kubernetes agent must be running in your cluster to scan running container images
 
-{{< alert type="note" >}}
-
-Operational container scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
-{{< /alert >}}
+Operational container scanning operates independently of GitLab pipelines. It is fully automated and
+managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy.
+The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
 
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
 
@@ -119,7 +118,7 @@ The keys for a schedule rule are:
 
 > [!note]
 > Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
-> 
+>
 > The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).
@@ -164,12 +163,10 @@ container_scanning:
 
 When using a fractional value for CPU, format the value as a string.
 
-{{< alert type="note" >}}
-
-- Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
-- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
-
-{{< /alert >}}
+> [!note]
+>
+> - Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
+> - When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
 
 ## Custom repository for Trivy K8s Wrapper
 
@@ -318,7 +315,7 @@ To view vulnerability information in GitLab:
 This information can also be found under [operational vulnerabilities](../../application_security/vulnerability_report/_index.md#operational-vulnerabilities).
 
 > [!note]
-> You must have at least the Developer role.
+> You must have the Developer, Maintainer, or Owner role.
 
 ## Scanning private images
 

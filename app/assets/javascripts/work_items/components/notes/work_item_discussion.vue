@@ -194,7 +194,7 @@ export default {
       this.showForm = false;
       this.isExpanded = this.hasReplies;
       this.autofocus = false;
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
     },
     toggleDiscussion() {
       this.isExpanded = !this.isExpanded;
@@ -287,11 +287,11 @@ export default {
                   :resolved-by="discussion.resolvedBy"
                   :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                   :uploads-path="uploadsPath"
-                  @startReplying="showReplyForm"
-                  @startEditing="$emit('startEditing')"
-                  @deleteNote="$emit('deleteNote', firstNote)"
-                  @reportAbuse="$emit('reportAbuse', firstNote)"
-                  @cancelEditing="$emit('cancelEditing')"
+                  @start-replying="showReplyForm"
+                  @start-editing="$emit('start-editing')"
+                  @delete-note="$emit('delete-note', firstNote)"
+                  @report-abuse="$emit('report-abuse', firstNote)"
+                  @cancel-editing="$emit('cancel-editing')"
                   @resolve="resolveDiscussion"
                   @error="$emit('error', $event)"
                 />
@@ -324,11 +324,11 @@ export default {
                       :resolved-by="discussion.resolvedBy"
                       :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                       :uploads-path="uploadsPath"
-                      @startReplying="showReplyForm"
-                      @deleteNote="$emit('deleteNote', reply)"
-                      @reportAbuse="$emit('reportAbuse', reply)"
-                      @startEditing="$emit('startEditing')"
-                      @cancelEditing="$emit('cancelEditing')"
+                      @start-replying="showReplyForm"
+                      @delete-note="$emit('delete-note', reply)"
+                      @report-abuse="$emit('report-abuse', reply)"
+                      @start-editing="$emit('start-editing')"
+                      @cancel-editing="$emit('cancel-editing')"
                       @error="$emit('error', $event)"
                     />
                     <work-item-note-replying
@@ -360,13 +360,13 @@ export default {
                       :has-replies="hasReplies"
                       :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                       :uploads-path="uploadsPath"
-                      @startReplying="showReplyForm"
-                      @cancelEditing="hideReplyForm"
+                      @start-replying="showReplyForm"
+                      @cancel-editing="hideReplyForm"
                       @replied="onReplied"
                       @replying="onReplying"
                       @resolve="resolveDiscussion"
                       @error="$emit('error', $event)"
-                      @startEditing="$emit('startEditing')"
+                      @start-editing="$emit('start-editing')"
                     />
                   </template>
                 </discussion-notes-replies-wrapper>

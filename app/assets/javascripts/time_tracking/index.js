@@ -20,6 +20,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TimelogsAppRoot',
     apolloProvider,
     render(createElement) {
       return createElement(TimelogsApp, {

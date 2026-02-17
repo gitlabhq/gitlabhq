@@ -1,5 +1,6 @@
 - wiki_page_title @page, _('History')
 - add_page_specific_style 'page_bundles/wiki'
+- page_offset = @commits.offset_value
 
 = render 'shared/wikis/layout' do
   .wiki-page-header
@@ -34,8 +35,8 @@
             - @commits.each_with_index do |commit, i|
               %tr
                 %td{ data: { label: _('Version') } }
-                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id, version_number: @commits_count - i) do
-                    v#{@commits_count - i}
+                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id, version_number: @commits_count - (page_offset + i)) do
+                    v#{@commits_count - (page_offset + i)}
                 %td{ data: { label: _('Author') } }
                   = commit.author_name
                 %td{ data: { label: _('Diff') } }

@@ -1,0 +1,5 @@
+---
+name: read_merge_request_approval_state
+description: Grants the ability to read merge request approval states
+boundaries:
+  - project

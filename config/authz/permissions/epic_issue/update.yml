@@ -1,0 +1,5 @@
+---
+name: update_epic_issue
+description: Grants the ability to reorder issues in an epic
+boundaries:
+  - group

@@ -754,7 +754,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       )
     end
 
-    it 'avoids N+1 database queries', :use_sql_query_cache do
+    it 'avoids N+1 database queries', :without_current_organization, :use_sql_query_cache do
       first_user = create(:user, developer_of: project)
       second_user = create(:user, developer_of: project)
 

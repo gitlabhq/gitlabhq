@@ -14,7 +14,7 @@ import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import PipelineSecretDetectionFeatureCard from '~/security_configuration/components/pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
 import RefTrackingList from '~/security_configuration/components/ref_tracking_list.vue';
-import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import TrainingSection from '~/security_configuration/components/training_section.vue';
 import {
   securityFeaturesMock,
   provideMock,
@@ -23,7 +23,7 @@ import {
 } from '../mock_data';
 
 const gitlabCiHistoryPath = 'test/historyPath';
-const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
+const { projectFullPath } = provideMock;
 
 useLocalStorageSpy();
 Vue.use(VueApollo);
@@ -37,6 +37,7 @@ describe('~/security_configuration/components/app', () => {
   const createComponent = ({
     shouldShowCallout = true,
     vulnerabilitiesAcrossContexts = true,
+    glFeatures = {},
     ...propsData
   } = {}) => {
     userCalloutDismissSpy = jest.fn();
@@ -51,6 +52,7 @@ describe('~/security_configuration/components/app', () => {
         ...provideMock,
         glFeatures: {
           vulnerabilitiesAcrossContexts,
+          ...glFeatures,
         },
       },
       stubs: {
@@ -78,8 +80,7 @@ describe('~/security_configuration/components/app', () => {
   const findPipelineSecretDetectionCard = () =>
     wrapper.findComponent(PipelineSecretDetectionFeatureCard);
   const findRefsTrackingSection = () => wrapper.findByTestId('refs-tracking-section');
-  const findSecurityTrainingSection = () => wrapper.findByTestId('security-training-section');
-  const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
+  const findTrainingSection = () => wrapper.findComponent(TrainingSection);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findSecurityViewHistoryLink = () => wrapper.findByTestId('security-view-history-link');
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
@@ -351,11 +352,9 @@ describe('~/security_configuration/components/app', () => {
   });
 
   describe('Vulnerability management', () => {
-    const props = { securityTrainingEnabled: true };
-
     beforeEach(() => {
       createComponent({
-        ...props,
+        securityTrainingEnabled: true,
       });
     });
 
@@ -370,7 +369,7 @@ describe('~/security_configuration/components/app', () => {
 
       it('renders description with correct text', () => {
         expect(findRefsTrackingSection().text()).toContain(
-          'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+          `Track vulnerabilities in up to ${provideMock.maxTrackedRefs} refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.`,
         );
       });
 
@@ -391,23 +390,9 @@ describe('~/security_configuration/components/app', () => {
     });
 
     describe('security training section', () => {
-      it('renders the section with correct heading', () => {
-        expect(findSecurityTrainingSection().props('heading')).toBe('Security training');
-      });
-
-      it('renders TrainingProviderList component', () => {
-        expect(findTrainingProviderList().props()).toMatchObject(props);
-      });
-
-      it('renders security training description', () => {
-        expect(findSecurityTrainingSection().text()).toContain(i18n.securityTrainingDescription);
-      });
-
-      it('renders link to help docs', () => {
-        const trainingLink = findSecurityTrainingSection().findComponent(GlLink);
-
-        expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-        expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+      it('renders TrainingSection with correct props', () => {
+        expect(findTrainingSection().exists()).toBe(true);
+        expect(findTrainingSection().props('isFeatureAvailableOnCurrentTier')).toBe(true);
       });
     });
   });

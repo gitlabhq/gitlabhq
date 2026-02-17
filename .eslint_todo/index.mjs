@@ -12,10 +12,12 @@ export { default as vueNoDeprecatedVOnNativeModifier } from './vue-no-deprecated
 
 export { default as vueNoDeprecatedVBindSync } from './vue-no-deprecated-v-bind-sync.mjs';
 
-export { default as noRestrictedImports } from './no-restricted-imports.mjs';
-
 export { default as gitlabNoHardcodedUrls } from './gitlab-no-hardcoded-urls.mjs';
 
 export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-urls.mjs';
 
 export { default as localRulesGraphqlRequireFeatureCategory } from './local-rules-graphql-require-feature-category.mjs';
+
+export { default as localRulesVueRequireVueConstructorName } from './local-rules-vue-require-vue-constructor-name.mjs';
+
+export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-rules-no-orphaned-feature-flag-references.mjs';

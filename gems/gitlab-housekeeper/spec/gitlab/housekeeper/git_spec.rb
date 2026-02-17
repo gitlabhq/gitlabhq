@@ -47,6 +47,38 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
     FileUtils.rm_rf(repository_path)
   end
 
+  describe '.branch_name' do
+    it 'converts identifiers to hyphen-case branch name' do
+      identifiers = %w[GitlabHousekeeper::SomeClass Test/Branch_123]
+
+      expect(described_class.branch_name(identifiers)).to eq('gitlab-housekeeper--some-class--test--branch_123')
+    end
+
+    it 'handles single identifier' do
+      identifiers = ['SimpleIdentifier']
+
+      expect(described_class.branch_name(identifiers)).to eq('simple-identifier')
+    end
+
+    it 'removes leading hyphens from uppercase conversion' do
+      identifiers = ['LeadingUppercase']
+
+      expect(described_class.branch_name(identifiers)).to eq('leading-uppercase')
+    end
+
+    context 'when branch name exceeds 240 characters' do
+      it 'truncates and adds a digest' do
+        long_identifier = 'A' * 250
+        identifiers = [long_identifier]
+
+        result = described_class.branch_name(identifiers)
+
+        expect(result.length).to be <= 215 # 200 + 15 character digest
+        expect(result.length).to be > 200
+      end
+    end
+  end
+
   describe '#with_clean_state and #commit_in_branch' do
     let(:file_not_to_commit) { repository_path.join('test_file_not_to_commit.txt') }
     let(:test_file1) { 'test_file1.txt' }
@@ -175,6 +207,100 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
         push_options.ci_skip = true
 
         git.push('the-branch-name', push_options)
+      end
+    end
+  end
+
+  describe '#remote_branch_changed_files' do
+    let(:branch_name) { 'feature-branch' }
+    let(:remote) { 'origin' }
+    let(:merge_base) { 'abc123' }
+
+    before do
+      allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+                                               .with('git', 'config', anything)
+                                               .and_call_original
+    end
+
+    it 'fetches the remote branch and returns changed files' do
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'fetch', remote, branch_name)
+
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'merge-base', 'master', "#{remote}/#{branch_name}")
+        .and_return("#{merge_base}\n")
+
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'diff', '--name-only', merge_base, "#{remote}/#{branch_name}")
+        .and_return("file1.rb\nfile2.rb\ndir/file3.rb\n")
+
+      result = git.remote_branch_changed_files(branch_name)
+
+      expect(result).to eq(%w[file1.rb file2.rb dir/file3.rb])
+    end
+
+    context 'with a path filter' do
+      it 'includes the path in the diff command' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+                                                  .with('git', 'fetch', remote, branch_name)
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'merge-base', 'master', "#{remote}/#{branch_name}")
+          .and_return("#{merge_base}\n")
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'diff', '--name-only', merge_base, "#{remote}/#{branch_name}", '--', 'db/schema_migrations/')
+          .and_return("db/schema_migrations/20250918232145\n")
+
+        result = git.remote_branch_changed_files(branch_name, 'db/schema_migrations/')
+
+        expect(result).to eq(['db/schema_migrations/20250918232145'])
+      end
+    end
+
+    context 'when there is a housekeeper remote' do
+      before do
+        allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+                                                 .with('git', 'remote', 'add', anything, anything)
+                                                 .and_call_original
+
+        ::Gitlab::Housekeeper::Shell.execute('git', 'remote', 'add', 'housekeeper', 'https://git.example.com/fake-project.git')
+      end
+
+      it 'uses the housekeeper remote' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'fetch', 'housekeeper', branch_name)
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'merge-base', 'master', "housekeeper/#{branch_name}")
+          .and_return("#{merge_base}\n")
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'diff', '--name-only', merge_base, "housekeeper/#{branch_name}")
+          .and_return("file1.rb\n")
+
+        result = git.remote_branch_changed_files(branch_name)
+
+        expect(result).to eq(['file1.rb'])
+      end
+    end
+
+    context 'when no files are changed' do
+      it 'returns an empty array' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'fetch', remote, branch_name)
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'merge-base', 'master', "#{remote}/#{branch_name}")
+          .and_return("#{merge_base}\n")
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'diff', '--name-only', merge_base, "#{remote}/#{branch_name}")
+          .and_return("")
+
+        result = git.remote_branch_changed_files(branch_name)
+
+        expect(result).to eq([])
       end
     end
   end

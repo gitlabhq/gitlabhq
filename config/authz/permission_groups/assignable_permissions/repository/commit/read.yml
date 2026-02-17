@@ -1,0 +1,16 @@
+---
+name: read_commit
+description: Grants the ability to read commits and related information
+permissions:
+  - read_commit
+  - read_commit_comment
+  - read_commit_diff
+  - read_commit_merge_request
+  - read_commit_ref
+  - read_commit_sequence
+  - read_commit_signature
+  - read_commit_status
+  - read_commit_discussion
+  - read_commit_discussion_note
+boundaries:
+  - project

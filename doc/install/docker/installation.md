@@ -69,12 +69,9 @@ To change the server's SSH port:
 
 ## Create a directory for the volumes
 
-{{< alert type="warning" >}}
-
-Specific recommendations exist for volumes hosting Gitaly data. NFS-based filesystems can
-cause performance issues and so [EFS is not recommended](../aws/_index.md#elastic-file-system-efs).
-
-{{< /alert >}}
+> [!warning]
+> Specific recommendations exist for volumes hosting Gitaly data. NFS-based filesystems can
+> cause performance issues and so [EFS is not recommended](../aws/_index.md#elastic-file-system-efs).
 
 Create a directory for the configuration files, logs,
 and data files. The directory can be in your user's home directory (for example
@@ -175,12 +172,9 @@ install, and upgrade your Docker-based GitLab installation:
        shm_size: '256m'
    ```
 
-   {{< alert type="note" >}}
-
-   Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
-   to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
-
-   {{< /alert >}}
+   > [!note]
+   > Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
+   > to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
 
    Here is another `docker-compose.yml` example with GitLab running on a custom
    HTTP and SSH port. Notice that the `GITLAB_OMNIBUS_CONFIG` variables match the

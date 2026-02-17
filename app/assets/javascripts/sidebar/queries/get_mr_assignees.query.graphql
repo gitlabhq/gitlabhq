@@ -2,7 +2,7 @@
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query getMrAssignees($fullPath: ID!, $iid: String!) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
       id

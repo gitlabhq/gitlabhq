@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::UsersController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Admin::UsersController, '(JavaScript fixtures)', type: :controller, feature_category: :user_management do
   include StubENV
   include JavaScriptFixturesHelpers
   include AdminModeHelper

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EncryptedAttribute, feature_category: :shared do
+RSpec.describe Gitlab::EncryptedAttribute, feature_category: :system_access do
   %i[db_key_base db_key_base_32 db_key_base_truncated].each do |key_method|
     describe "##{key_method}" do
       let(:test_class) do

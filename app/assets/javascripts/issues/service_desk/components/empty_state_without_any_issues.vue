@@ -1,6 +1,7 @@
 <script>
 import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-service-desk-md.svg';
 import { GlEmptyState, GlLink } from '@gitlab/ui';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   noIssuesSignedOutButtonText,
   infoBannerTitle,
@@ -23,13 +24,17 @@ export default {
     GlLink,
   },
   inject: [
-    'isSignedIn',
     'signInPath',
     'canAdminIssue',
     'isServiceDeskEnabled',
     'serviceDeskEmailAddress',
     'serviceDeskHelpPath',
   ],
+  data() {
+    return {
+      isLoggedIn: isLoggedIn(),
+    };
+  },
   computed: {
     canSeeEmailAddress() {
       return this.canAdminIssue && this.isServiceDeskEnabled;
@@ -39,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isSignedIn">
+  <div v-if="isLoggedIn">
     <gl-empty-state
       :title="$options.i18n.infoBannerTitle"
       :svg-path="$options.emptyStateSvg"

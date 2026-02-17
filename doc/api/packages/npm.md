@@ -14,24 +14,17 @@ title: npm API
 
 Use this API to interact with the [npm package manager client](../../user/packages/npm_registry/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [npm package manager client](https://docs.npmjs.com/)
-and is not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [npm package manager client](https://docs.npmjs.com/)
+> and is not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [npm package registry documentation](../../user/packages/npm_registry/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
-
 ## Download a package
 
-Downloads the npm package. This URL is provided by the [metadata endpoint](#metadata).
+Downloads a specified npm package for a project. This URL is provided by the [metadata endpoint](#retrieve-package-metadata).
 
 ```plaintext
 GET projects/:id/packages/npm/:package_name/-/:file_name
@@ -59,7 +52,7 @@ This writes the downloaded file to `@myscope/my-pkg-0.0.1.tgz` in the current di
 
 ## Upload a package file
 
-Upload a package.
+Uploads a package for a specified project.
 
 ```plaintext
 PUT projects/:id/packages/npm/:package_name
@@ -172,9 +165,9 @@ The examples in this document all use the project-level prefix.
 | --------- | ------ | -------- | ----------- |
 | `id`      | string | yes      | The group ID or full group path. |
 
-## Metadata
+## Retrieve package metadata
 
-Returns the metadata for a given package.
+Retrieves the metadata for a specified package.
 
 ```plaintext
 GET <route-prefix>/:package_name
@@ -215,9 +208,9 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ## Dist-Tags
 
-### List tags
+### List all dist-tags
 
-Lists the dist-tags for the package.
+Lists all dist-tags for a specified package.
 
 ```plaintext
 GET <route-prefix>/-/package/:package_name/dist-tags
@@ -244,9 +237,9 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
-### Create or update a tag
+### Create or update a dist-tag
 
-Create or update a dist-tag.
+Creates or updates a specified dist-tag for a package.
 
 ```plaintext
 PUT <route-prefix>/-/package/:package_name/dist-tags/:tag
@@ -265,9 +258,9 @@ curl --request PUT --header "Authorization: Bearer <personal_access_token>" \
 
 This endpoint responds successfully with `204 No Content`.
 
-### Delete a tag
+### Delete a dist-tag
 
-Delete a dist-tag.
+Deletes a specified dist-tag for a package.
 
 ```plaintext
 DELETE <route-prefix>/-/package/:package_name/dist-tags/:tag

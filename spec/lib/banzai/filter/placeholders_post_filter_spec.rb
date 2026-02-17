@@ -388,10 +388,11 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
 
     context 'when asset proxy is enabled' do
       before do
-        stub_asset_proxy_setting(enabled: true)
-        stub_asset_proxy_setting(secret_key: 'shared-secret')
-        stub_asset_proxy_setting(url: 'https://assets.example.com')
-        stub_asset_proxy_setting(allowlist: %w[gitlab.com *.mydomain.com])
+        stub_asset_proxy_enabled(
+          url: 'https://assets.example.com',
+          secret_key: 'shared-secret',
+          allowlist: %w[gitlab.com *.mydomain.com]
+        )
       end
 
       it 'generates the correct attributes' do

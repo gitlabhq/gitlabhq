@@ -1316,12 +1316,19 @@ export const notesFilters = [
   },
 ];
 
-export const singleNoteResponseFactory = ({ urlHash, authorId = 1 } = {}) => {
+export const singleNoteResponseFactory = ({
+  urlHash,
+  authorId = 1,
+  noteableType = noteableDataMock.noteableType,
+  noteableId = noteableDataMock.id,
+} = {}) => {
   const id = urlHash?.replace('note_', '') || '5678';
   return {
     data: {
       note: {
         id: `gid://gitlab/Note/${id}`,
+        noteableType,
+        noteableId,
         discussion: {
           id: 'gid://gitlab/Discussion/1',
           userPermissions: {

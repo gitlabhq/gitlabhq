@@ -51,13 +51,10 @@ Policies enforced on an existing group or subgroup are automatically enforced in
 - The new subgroups and projects are included in the scope definition of the policy (for example, the scope includes all projects in this group).
 - The existing group or subgroup is already linked to the security policy project.
 
-{{< alert type="note" >}}
-
-GitLab.com users can enforce policies against their top-level group or across subgroups, but cannot
-enforce policies across GitLab.com top-level groups. GitLab Self-Managed administrators can enforce policies
-across multiple top-level groups in their instance.
-
-{{< /alert >}}
+> [!note]
+> GitLab.com users can enforce policies against their top-level group or across subgroups, but cannot
+> enforce policies across GitLab.com top-level groups. GitLab Self-Managed administrators can enforce policies
+> across multiple top-level groups in their instance.
 
 The following example illustrates two groups and their structure:
 

@@ -121,7 +121,7 @@ RSpec.shared_examples 'prevents access to project-level {issues|work_items} with
     let_it_be(:with_epic_type) do
       create(
         factory,
-        work_item_type: WorkItems::Type.default_by_type(:epic),
+        :epic,
         project: project,
         assignees: [assignee],
         author: author

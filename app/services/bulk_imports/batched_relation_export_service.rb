@@ -16,16 +16,19 @@ module BulkImports
       Kernel.format(BATCH_SIZE_CACHE_KEY, export_id: export_id)
     end
 
-    def initialize(user, portable, relation, jid)
+    def initialize(user, portable, relation, jid, offline_export_id: nil)
       @user = user
       @portable = portable
       @relation = relation
       @resolved_relation = portable.public_send(relation) # rubocop:disable GitlabSecurity/PublicSend
       @jid = jid
+      @offline_export_id = offline_export_id
     end
 
     def execute
       return finish_export! if batches_count == 0
+
+      log_export_restart if export.started? && export.batches.in_progress.present?
 
       start_export!
       export.batches.destroy_all # rubocop: disable Cop/DestroyAll
@@ -36,7 +39,7 @@ module BulkImports
 
     private
 
-    attr_reader :user, :portable, :relation, :jid, :config, :resolved_relation
+    attr_reader :user, :portable, :relation, :jid, :config, :resolved_relation, :offline_export_id
 
     # Returns the batch size for processing relation exports.
     #
@@ -58,8 +61,15 @@ module BulkImports
     strong_memoize_attr :batch_size
 
     def export
+      # TODO: Once `offline_export_id` is actually supported, we'll only want to supply
+      # the `user` parameter if `offline_export_id` is absent.
+      # Epic link: https://gitlab.com/groups/gitlab-org/-/work_items/8985
       # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- This is only executed from within a worker
-      @export ||= portable.bulk_import_exports.safe_find_or_create_by!(relation: relation, user: user)
+      @export ||= portable.bulk_import_exports.safe_find_or_create_by!(
+        relation: relation,
+        user: user,
+        offline_export_id: nil
+      )
       # rubocop:enable Performance/ActiveRecordSubtransactionMethods
     end
 
@@ -112,5 +122,14 @@ module BulkImports
       export.batches.find_or_create_by!(batch_number: batch_number)
     end
     # rubocop:enable CodeReuse/ActiveRecord
+
+    def log_export_restart
+      Gitlab::Export::Logger.warn(
+        message: 'Restarting batched export relation and deleting existing export batches',
+        relation: relation,
+        export_id: export.id,
+        importer: Import::SOURCE_DIRECT_TRANSFER
+      )
+    end
   end
 end

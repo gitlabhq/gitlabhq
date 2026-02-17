@@ -1,9 +1,10 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import DiscussionFilter from './discussion_filter.vue';
 
 export default {
+  name: 'NotesActivityHeader',
   components: {
     TimelineToggle: () => import('./timeline_toggle.vue'),
     DiscussionFilter,
@@ -11,7 +12,7 @@ export default {
       import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
     MrDiscussionFilter: () => import('./mr_discussion_filter.vue'),
   },
-  mixins: [glAbilitiesMixin(), glFeatureFlagsMixin()],
+  mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
   inject: {
     showTimelineViewToggle: {
       default: false,
@@ -47,7 +48,7 @@ export default {
       return (
         this.resourceGlobalId &&
         this.glAbilities.summarizeComments &&
-        this.glFeatures.summarizeComments
+        this.glLicensedFeatures.summarizeComments
       );
     },
   },

@@ -79,7 +79,6 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
       context 'when source is valid' do
         where(:source) do
           [:secret_detection,
-            :group_token_revocation_service,
             :api_admin_token]
         end
 

@@ -38,6 +38,10 @@
         = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled')
       - else
         = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled'), checkbox_options: { disabled: true }, label_options: { title: s_('AdminSettings|User impersonation is not enabled on the GitLab instance.'), data: { toggle: 'tooltip', container: 'body' } }
+    - if Feature.enabled?(:offline_transfer_exports, current_user)
+      .form-group
+        = f.label :allow_s3_compatible_storage_for_offline_transfer, s_('AdminSettings|Allow S3 compatible object storage for offline transfer'), class: 'gl-font-bold'
+        = f.gitlab_ui_checkbox_component :allow_s3_compatible_storage_for_offline_transfer, s_('AdminSettings|Enabled')
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }

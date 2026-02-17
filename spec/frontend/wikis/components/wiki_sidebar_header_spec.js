@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiSidebarHeader from '~/wikis/components/wiki_sidebar_header.vue';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 
 describe('WikiSidebar', () => {
   let wrapper;
@@ -48,6 +49,11 @@ describe('WikiSidebar', () => {
       wrapper.findByTestId('wiki-sidebar-title').trigger('click');
 
       expect(wrapper.emitted('toggle-pages-list')).toBeUndefined();
+    });
+
+    it('shows the close toggle', () => {
+      expect(wrapper.findComponent(WikiSidebarToggle).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiSidebarToggle).props('action')).toBe('close');
     });
   });
 

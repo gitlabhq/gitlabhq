@@ -14,6 +14,7 @@ require 'elasticsearch'
 require 'logger'
 require 'opensearch'
 require 'redis'
+require 'rspec-parameterized'
 
 Dir[File.join(__dir__, 'support/**/*.rb')].each { |f| require f }
 

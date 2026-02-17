@@ -47,8 +47,11 @@ export const useDiffsList = defineStore('diffsList', {
       this.loadedFiles = Object.fromEntries(DiffFile.getAll().map((file) => [file.id, true]));
     },
     async renderDiffsStream(stream, container, signal) {
+      const loadingIndicator = document.querySelector('[data-rapid-diffs] [data-list-loading]');
       this.status = statuses.streaming;
+      loadingIndicator.hidden = false;
       await renderHtmlStreams([stream], container, { signal });
+      loadingIndicator.hidden = true;
       this.status = statuses.idle;
     },
     streamRemainingDiffs(url, target, preload) {

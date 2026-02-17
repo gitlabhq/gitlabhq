@@ -33,12 +33,9 @@ The `ROOT_PATH` varies per environment:
 
 ## Changing the job logs local location
 
-{{< alert type="note" >}}
-
-For Docker installations, you can change the path where your data is mounted.
-For the Helm chart, use object storage.
-
-{{< /alert >}}
+> [!note]
+> For Docker installations, you can change the path where your data is mounted.
+> For the Helm chart, use object storage.
 
 To change the location where the job logs are stored:
 

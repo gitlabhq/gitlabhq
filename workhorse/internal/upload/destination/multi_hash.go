@@ -1,24 +1,21 @@
 package destination
 
 import (
-	"crypto/md5"
-	"crypto/sha1"
+	"crypto/md5"  //nolint:gosec // G501: MD5 used for content checksums and S3 ETag compatibility, not security
+	"crypto/sha1" //nolint:gosec // G505: SHA1 used for content checksums, not security
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/hex"
 	"hash"
 	"io"
+	"slices"
 )
 
-var hashFactories = map[string](func() hash.Hash){
+var hashFactories = map[string]func() hash.Hash{
 	"md5":    md5.New,
 	"sha1":   sha1.New,
 	"sha256": sha256.New,
 	"sha512": sha512.New,
-}
-
-func factories() map[string](func() hash.Hash) {
-	return hashFactories
 }
 
 type multiHash struct {
@@ -31,33 +28,34 @@ func permittedHashFunction(hashFunctions []string, hash string) bool {
 		return true
 	}
 
-	for _, name := range hashFunctions {
-		if name == hash {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(hashFunctions, hash)
 }
 
-func newMultiHash(hashFunctions []string) (m *multiHash) {
-	m = &multiHash{}
-	m.hashes = make(map[string]hash.Hash)
+func newMultiHash(hashFunctions []string) *multiHash {
+	hashes := make(map[string]hash.Hash)
 
 	var writers []io.Writer
-	for hash, hashFactory := range factories() {
-		if !permittedHashFunction(hashFunctions, hash) {
+	for hashName, hashFactory := range hashFactories {
+		if !permittedHashFunction(hashFunctions, hashName) {
 			continue
 		}
 
 		writer := hashFactory()
 
-		m.hashes[hash] = writer
+		hashes[hashName] = writer
 		writers = append(writers, writer)
 	}
 
-	m.Writer = io.MultiWriter(writers...)
-	return m
+	var w io.Writer
+	if len(writers) == 1 {
+		w = writers[0]
+	} else {
+		w = io.MultiWriter(writers...)
+	}
+	return &multiHash{
+		Writer: w,
+		hashes: hashes,
+	}
 }
 
 func (m *multiHash) finish() map[string]string {

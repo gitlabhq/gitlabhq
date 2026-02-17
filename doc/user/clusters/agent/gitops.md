@@ -117,13 +117,10 @@ but it doesn't guarantee that every `git push` event is received. You should sti
 [`GitRepository.spec.interval`](https://fluxcd.io/flux/components/source/gitrepositories/#interval)
 to an acceptable duration.
 
-{{< alert type="note" >}}
-
-The agent only has access to the agent configuration project and all public projects.
-The agent is not able to immediately reconcile any private projects, except the agent configuration project.
-Allowing the agent to access private projects is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
-
-{{< /alert >}}
+> [!note]
+> The agent only has access to the agent configuration project and all public projects.
+> The agent is not able to immediately reconcile any private projects, except the agent configuration project.
+> Allowing the agent to access private projects is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
 
 ### Custom webhook endpoints
 
@@ -152,14 +149,11 @@ You can use this if you run an agent outside a cluster
 and you haven't [configured an `Ingress`](https://fluxcd.io/flux/guides/webhook-receivers/#expose-the-webhook-receiver)
 for the Flux notification controller.
 
-{{< alert type="warning" >}}
-
-You should configure only trusted service proxy URLs.
-When you provide a service proxy URL,
-the agent for Kubernetes sends typical Kubernetes API requests which include
-the credentials necessary to authenticate with the API service.
-
-{{< /alert >}}
+> [!warning]
+> You should configure only trusted service proxy URLs.
+> When you provide a service proxy URL,
+> the agent for Kubernetes sends typical Kubernetes API requests which include
+> the credentials necessary to authenticate with the API service.
 
 ## Token management
 

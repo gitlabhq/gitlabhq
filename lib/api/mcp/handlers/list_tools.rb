@@ -15,11 +15,18 @@ module API
           tools = tools_hash.filter_map do |name, tool|
             next nil unless tool_available?(tool, current_user)
 
-            {
+            tool_data = {
               name: name,
               description: tool.description,
               inputSchema: tool.input_schema
             }
+
+            tool_data[:icons] = [tool.icons.first] if tool.try(:icons).present?
+
+            annotations = tool.try(:annotations)
+            tool_data[:annotations] = annotations if annotations.present?
+
+            tool_data
           end
 
           { tools: tools }

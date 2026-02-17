@@ -8,6 +8,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'DeleteApplicationRoot',
     render(h) {
       return h(DeleteApplication);
     },

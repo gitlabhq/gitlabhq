@@ -5,3 +5,4 @@ boundaries:
   - project
 permissions:
   - delete_branch
+  - delete_merged_branch

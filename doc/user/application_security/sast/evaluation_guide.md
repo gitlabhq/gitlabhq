@@ -43,7 +43,7 @@ If you're comparing GitLab SAST to another product, you may find that some of it
 - [Secret detection](../secret_detection/_index.md) finds leaked secrets in your code.
 - [Security policies](../policies/_index.md) allow you to force scans to run or require that vulnerabilities are fixed.
 - [Vulnerability management and reporting](../vulnerability_report/_index.md) manages the vulnerabilities that exist in the codebase and integrates with issue trackers.
-- GitLab Duo [vulnerability explanation](../vulnerabilities/_index.md#vulnerability-explanation) and [vulnerability resolution](../vulnerabilities/_index.md#vulnerability-resolution) help you remediate vulnerabilities quickly by using AI.
+- GitLab Duo [vulnerability explanation](../analyze/duo.md) and [vulnerability resolution](../remediate/duo.md) help you remediate vulnerabilities quickly by using AI.
 
 ## Choose a test codebase
 
@@ -93,11 +93,11 @@ GitLab SAST is not designed to report vulnerabilities in these cases.
 After you choose a codebase to test with, you're ready to conduct the test. You can follow these steps:
 
 1. [Enable SAST](_index.md#configuration) by creating a merge request (MR) that adds SAST to the CI/CD configuration.
-   - Be sure to set the CI/CD variable to [enable GitLab Advanced SAST](gitlab_advanced_sast.md#getting-started) for more accurate results.
+   - Be sure to set the CI/CD variable to [turn on GitLab Advanced SAST](gitlab_advanced_sast.md#turn-on-gitlab-advanced-sast) for more accurate results.
 1. Merge the MR to the repository's default branch.
 1. Open the [vulnerability report](../vulnerability_report/_index.md) to see the vulnerabilities found on the default branch.
    - If you're using GitLab Advanced SAST, you can use the [Scanner filter](../vulnerability_report/_index.md#scanner-filter) to show results only from that scanner.
 1. Review vulnerability results.
    - Check the [code flow view](../vulnerabilities/_index.md#vulnerability-code-flow) for GitLab Advanced SAST vulnerabilities that involve tainted user input, like SQL injection or path traversal.
-   - If you have GitLab Duo Enterprise, [explain](../vulnerabilities/_index.md#vulnerability-explanation) or [resolve](../vulnerabilities/_index.md#vulnerability-resolution) a vulnerability.
+   - If you have GitLab Duo Enterprise, [explain](../analyze/duo.md) or [resolve](../remediate/duo.md) a vulnerability.
 1. To see how scanning works as new code is developed, create a new merge request that changes application code and adds a new vulnerability or weakness.

@@ -134,5 +134,47 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Tags::Reference, feature_category: :pip
         it { is_expected.to match(a_hash_including({ a: { b: { e: 1, f: 'f' } } })) }
       end
     end
+
+    context 'with hashes in arrays' do
+      let(:yaml) do
+        <<~YML
+        a: 1
+        b: [{ c: !reference [a] }]
+        d: !reference [b]
+        YML
+      end
+
+      it { is_expected.to match(a_hash_including({ d: [{ c: 1 }] })) }
+    end
+
+    context "when ci_deep_resolve_reference_array_and_hash FF is disabled" do
+      before do
+        stub_feature_flags(ci_deep_resolve_reference_array_and_hash: false)
+      end
+
+      context 'with hashes in arrays' do
+        let(:yaml) do
+          <<~YML
+          a: 1
+          b: [{ c: !reference [a] }]
+          d: !reference [b]
+          YML
+        end
+
+        # With the feature flag disabled, the reference remains unresolved
+        it { is_expected.to match(a_hash_including({ d: [{ c: described_class }] })) }
+      end
+
+      context 'when referencing an entire hash' do
+        let(:yaml) do
+          <<~YML
+          a: { b: { c: 'c', d: 'd' } }
+          e: { f: !reference [a, b] }
+          YML
+        end
+
+        it { is_expected.to match(a_hash_including({ e: { f: { c: 'c', d: 'd' } } })) }
+      end
+    end
   end
 end

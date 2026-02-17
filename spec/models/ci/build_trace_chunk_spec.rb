@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_trace_chunks, feature_category: :pipeline_execution do
+RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_trace_chunks, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }

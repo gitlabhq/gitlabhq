@@ -26,6 +26,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TopicsTokenSelectorRoot',
     apolloProvider,
     render(createElement) {
       return createElement(TopicsTokenSelector, {

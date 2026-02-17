@@ -102,7 +102,7 @@ label {
   @include box-shadow(none);
   background: var(--gl-control-background-color-default);
   @apply gl-text-default;
-  border-radius: $gl-border-radius-base;
+  border-radius: var(--gl-control-border-radius);
   padding: $gl-vert-padding $gl-input-padding;
 
   &.input-short {

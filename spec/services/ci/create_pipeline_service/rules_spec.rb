@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_composition do
   include Ci::PipelineMessageHelpers
+  include Ci::PipelineVariableHelpers
 
   let(:project)     { create(:project, :repository) }
   let(:user)        { project.first_owner }
@@ -1604,7 +1605,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     context 'with trigger variables' do
       let(:response) do
         service.execute(source) do |pipeline|
-          pipeline.variables.build(variables)
+          build_or_replace_pipeline_variables(pipeline, variables_attributes)
         end
       end
 
@@ -1620,7 +1621,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'with matches' do
-        let(:variables) do
+        let(:variables_attributes) do
           [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAR' }]
         end
 
@@ -1661,7 +1662,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'with no matches' do
-        let(:variables) { {} }
+        let(:variables_attributes) { [] }
 
         it 'does not create a pipeline', :aggregate_failures do
           expect(response).to be_error
@@ -1765,13 +1766,13 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     context 'workflow name with rules' do
       let(:ref) { 'refs/heads/feature' }
 
-      let(:variables) do
+      let(:variables_attributes) do
         [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' }]
       end
 
       let(:response) do
         service.execute(source) do |pipeline|
-          pipeline.variables.build(variables)
+          build_or_replace_pipeline_variables(pipeline, variables_attributes)
         end
       end
 

@@ -187,7 +187,7 @@ Some other examples of mixing [variables](../../../ci/variables/_index.md) with 
 
 - `pages.path_prefix: 'mr-$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `mr-`, like `mr-branch-name`.
 - `pages.path_prefix: '_${CI_MERGE_REQUEST_IID}_'`: Merge request number
-  prefixed ans suffixed with `_`, like `_123_`.
+  prefixed and suffixed with `_`, like `_123_`.
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 

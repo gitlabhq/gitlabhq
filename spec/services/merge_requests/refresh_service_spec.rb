@@ -11,7 +11,13 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
   let(:service) { described_class }
 
   describe '#execute' do
+    let(:notify_about_push_ff) { false }
+
     before do
+      stub_feature_flags(
+        split_refresh_worker_notify_about_push: notify_about_push_ff
+      )
+
       @user = create(:user)
       group = create(:group)
       group.add_owner(@user)
@@ -128,12 +134,35 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
       end
 
-      it 'does not execute the web hooks' do
-        allow(refresh_service).to receive(:execute_hooks)
+      context 'when notify_about_push ff is on' do
+        let(:notify_about_push_ff) { true }
 
-        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        it 'calls the notify about push worker async with pre-computed commit data' do
+          expect(MergeRequests::Refresh::NotifyAboutPushWorker).to receive(:perform_async).twice do |*args|
+            merge_request_id, user_id, new_commits_data, total_new, existing_commits_data, total_existing = args
 
-        expect(refresh_service).not_to have_received(:execute_hooks)
+            expect(merge_request_id).to be_a(Integer)
+            expect(user_id).to eq(@user.id)
+            expect(new_commits_data).to be_a(Array)
+            expect(total_new).to be_a(Integer)
+            expect(existing_commits_data).to be_a(Array)
+            expect(total_existing).to be_a(Integer)
+
+            # Verify commit data structure
+            if new_commits_data.any?
+              expect(new_commits_data.first).to have_key('short_id')
+              expect(new_commits_data.first).to have_key('title')
+            end
+          end
+
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        end
+
+        it 'does not notify about push synchronously' do
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+          expect(notification_service).not_to have_received(:push_to_merge_request)
+        end
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do

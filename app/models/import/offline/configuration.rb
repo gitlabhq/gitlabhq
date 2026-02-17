@@ -19,13 +19,13 @@ module Import
         filename: 'import_offline_configuration_aws_s3_credentials', size_limit: 64.kilobytes
       }, if: :aws?
       validates :object_storage_credentials, json_schema: {
-        filename: 'import_offline_configuration_minio_credentials', size_limit: 64.kilobytes
-      }, if: :minio?
-      validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :minio?
+        filename: 'import_offline_configuration_s3_compatible_credentials', size_limit: 64.kilobytes
+      }, if: :s3_compatible?
+      validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :s3_compatible?
 
       enum :provider, {
         aws: 0,
-        minio: 1
+        s3_compatible: 1
       }
 
       after_initialize :generate_export_prefix
@@ -43,10 +43,12 @@ module Import
       end
 
       def supported_providers
-        # MinIO will eventually be enabled by an application setting disabled by default:
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/579705
         providers = self.class.providers
-        providers = providers.except(:minio) unless Rails.env.development?
+
+        unless Gitlab::CurrentSettings.allow_s3_compatible_storage_for_offline_transfer?
+          providers = providers.except(:s3_compatible)
+        end
+
         providers.keys.map(&:to_s)
       end
     end

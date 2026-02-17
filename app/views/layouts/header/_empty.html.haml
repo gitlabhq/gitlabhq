@@ -1,7 +1,2 @@
-- if project_studio_enabled?
-  - navbar_position_class = 'sticky-top'
-- else
-  - navbar_position_class = 'fixed-top'
-
-%header.navbar.navbar-empty{ class: navbar_position_class }
+%header.navbar.navbar-empty.sticky-top
   = brand_header_logo

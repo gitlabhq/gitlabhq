@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatable, feature_category: :shared do
+RSpec.describe TokenAuthenticatable, feature_category: :system_access do
   let(:field) { 'token' }
   let(:digest_field) { "#{field}_digest" }
   let(:encrypted_field) { "#{field}_encrypted" }

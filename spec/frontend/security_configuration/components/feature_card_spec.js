@@ -58,14 +58,14 @@ describe('FeatureCard component', () => {
 
     if (expectEnableAction) {
       expect(enableLinks).toHaveLength(1);
-      expect(enableLinks.at(0).props('category')).toBe('secondary');
+      expect(enableLinks.at(0).props('category')).toBe('primary');
     }
 
     const configureLinks = findConfigureLinks();
 
     if (expectConfigureAction) {
       expect(configureLinks).toHaveLength(1);
-      expect(configureLinks.at(0).props('category')).toBe('secondary');
+      expect(configureLinks.at(0).props('category')).toBe('primary');
     }
 
     const manageViaMr = findManageViaMr();

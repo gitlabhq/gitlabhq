@@ -36,6 +36,16 @@ export default {
     },
   },
 
+  computed: {
+    statsToDisplay() {
+      return Object.keys(this.stats).filter((key) => {
+        const { fetched, imported } = this.stats[key];
+
+        return fetched > 0 || imported > 0;
+      });
+    },
+  },
+
   methods: {
     importedByType(type) {
       return this.stats[type].imported || 0;
@@ -71,7 +81,7 @@ export default {
   <gl-accordion :header-level="3">
     <gl-accordion-item :title="__('View details')">
       <ul class="gl-mb-3 gl-list-none gl-p-0 gl-text-sm">
-        <li v-for="key in Object.keys(stats)" :key="key" data-testid="import-stat-item">
+        <li v-for="key in statsToDisplay" :key="key" data-testid="import-stat-item">
           <div class="gl-flex gl-w-28 gl-items-center">
             <gl-icon :size="12" class="gl-mr-2 gl-shrink-0" v-bind="statsIconProps(key)" />
             <span>{{ statsMapping[key] || key }}</span>

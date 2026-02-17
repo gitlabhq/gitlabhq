@@ -53,11 +53,8 @@ let(:user2) { create(:user, organization: other_organization) }
 let(:user3) { create(:user, organizations: [org1, org2])}
 ```
 
-{{< alert type="note" >}}
-
-Except for some edge cases, there is no need to test user membership of multiple organizations.
-
-{{< /alert >}}
+> [!note]
+> Except for some edge cases, there is no need to test user membership of multiple organizations.
 
 ## Writing tests for code that depends on `Current.organization`
 

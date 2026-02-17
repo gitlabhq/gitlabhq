@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Explain code in a file
 ---
@@ -15,7 +15,7 @@ title: Explain code in a file
 
 {{< collapsible title="Model information" >}}
 
-- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 

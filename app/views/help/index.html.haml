@@ -13,20 +13,11 @@
 
 - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
   %p.gl-mb-4.gl-leading-24
-    = _('GitLab is open source software to collaborate on code.')
-    %br
-    = _('Manage git repositories with fine-grained access controls that keep your code secure.')
-    %br
-    = _('Perform code reviews and enhance collaboration with merge requests.')
-    %br
-    = _('Each project can also have an issue tracker and a wiki.')
-    %br
-    = _('Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.')
-    %br
+    = _('GitLab is the most comprehensive DevSecOps platform, built for intelligent orchestration.')
     - link_to_promo = link_to(::Gitlab.promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
-    = _("Read more about GitLab at %{link_to_promo}.").html_safe % { link_to_promo: link_to_promo }
+    = _("Read more at %{link_to_promo}.").html_safe % { link_to_promo: link_to_promo }
 
-%p= link_to _('Check the current instance configuration '), help_instance_configuration_url
+%p= link_to _('Check the current instance configuration.'), help_instance_configuration_url
 %hr
 
 .row.gl-mt-3

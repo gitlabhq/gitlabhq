@@ -20,8 +20,8 @@ PostgreSQL, and Gitaly instances.
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
-1. [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip) adding the Sidekiq server IP addresses to `postgresql['md5_auth_cidr_addresses']`
-1. [Make the bundled Redis reachable via TCP](https://docs.gitlab.com/omnibus/settings/redis.html#making-the-bundled-redis-reachable-via-tcp)
+1. [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database/#configure-packaged-postgresql-server-to-listen-on-tcpip) adding the Sidekiq server IP addresses to `postgresql['md5_auth_cidr_addresses']`
+1. [Make the bundled Redis reachable via TCP](https://docs.gitlab.com/omnibus/settings/redis/#making-the-bundled-redis-reachable-via-tcp)
 1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance, and add the following:
 
    ```ruby
@@ -33,7 +33,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
       listen_addr: '0.0.0.0:8075',
       auth: {
          ## Set up the Gitaly token as a form of authentication because you are accessing Gitaly over the network
-         ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
+         ## https://docs.gitlab.com/administration/gitaly/configure_gitaly/#about-the-gitaly-token
          token: 'abc123secret',
       },
    }
@@ -226,7 +226,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
    'lowercase_usernames' => false,
 
    # Enterprise Edition only
-   # https://docs.gitlab.com/ee/administration/auth/ldap/ldap_synchronization.html
+   # https://docs.gitlab.com/administration/auth/ldap/ldap_synchronization/
    'group_base' => '',
    'admin_group' => '',
    'external_groups' => [],

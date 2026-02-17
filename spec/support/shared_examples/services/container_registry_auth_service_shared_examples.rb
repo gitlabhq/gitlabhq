@@ -411,6 +411,17 @@ RSpec.shared_examples 'a container registry auth service' do
       end
     end
 
+    context 'for registry background-migrations' do
+      let(:current_params) do
+        { scopes: ["registry:background-migrations:*"] }
+      end
+
+      context 'disallow access for users without GitLab admin rights' do
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+    end
+
     shared_examples 'private project' do
       context 'allow to use scope-less authentication' do
         it_behaves_like 'a valid token'
@@ -915,6 +926,29 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'a browsable'
   end
 
+  context 'registry background-migrations authorized as admin' do
+    let_it_be(:current_user) { create(:user, :admin) }
+    let_it_be(:project) { create(:project, :public) }
+
+    let(:current_params) do
+      { scopes: ["registry:background-migrations:*"] }
+    end
+
+    let(:access) do
+      [
+        {
+          'type' => 'registry',
+          'name' => 'background-migrations',
+          'actions' => ['*']
+        }
+      ]
+    end
+
+    it_behaves_like 'having the correct scope'
+    it_behaves_like 'a valid token'
+    it_behaves_like 'not a container repository factory'
+  end
+
   context 'support for multiple scopes' do
     let_it_be(:internal_project) { create(:project, :internal) }
     let_it_be(:private_project) { create(:project, :private) }
@@ -1097,6 +1131,15 @@ RSpec.shared_examples 'a container registry auth service' do
     context 'for registry catalog' do
       let(:current_params) do
         { scopes: ["registry:catalog:*"] }
+      end
+
+      it_behaves_like 'a forbidden'
+      it_behaves_like 'not a container repository factory'
+    end
+
+    context 'for registry background-migrations' do
+      let(:current_params) do
+        { scopes: ["registry:background-migrations:*"] }
       end
 
       it_behaves_like 'a forbidden'

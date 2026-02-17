@@ -1,0 +1,23 @@
+---
+description: Creation of Personal Access Token
+internal_events: true
+status: active
+action: create_pat
+identifiers:
+  - user
+additional_properties:
+  type:
+    description: Type of the created Personal Access Token ("legacy" or "granular")
+  scopes:
+    description: Scopes (legacy) or Access Levels (granular) of the created Personal Access Token
+  permissions:
+    description: Permissions enabled for each Access Level for granular Personal Access Tokens
+product_group: authorization
+product_categories:
+  - permissions
+milestone: '18.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217754
+tiers:
+  - free
+  - premium
+  - ultimate

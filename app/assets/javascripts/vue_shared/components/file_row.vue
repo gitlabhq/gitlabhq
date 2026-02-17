@@ -1,15 +1,11 @@
 <script>
 import { GlTruncate, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import FileHeader from '~/vue_shared/components/file_row_header.vue';
-import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'FileRow',
   components: {
-    FileHeader,
     FileIcon,
     GlTruncate,
     GlIcon,
@@ -18,30 +14,14 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
   props: {
     file: {
       type: Object,
       required: true,
     },
-    fileUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
     level: {
       type: Number,
       required: true,
-    },
-    fileClasses: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    truncateMiddle: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     showTreeToggle: {
       type: Boolean,
@@ -53,6 +33,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    boldText: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {
@@ -69,16 +54,13 @@ export default {
         'is-active': this.isBlob && this.file.active,
         folder: this.isTree,
         'is-open': this.file.opened,
-        'is-linked': this.file.linked,
+        '!gl-bg-feedback-info': this.file.linked,
         'pl-3': addFilePadding,
       };
     },
     textForTitle() {
       // don't output a title if we don't have the expanded path
       return this.file?.tree?.length ? this.file.tree[0].parentPath : false;
-    },
-    fileRouterUrl() {
-      return this.fileUrl || `/project${this.file.url}`;
     },
     chevronIcon() {
       return this.file.opened ? 'chevron-down' : 'chevron-right';
@@ -92,86 +74,45 @@ export default {
     buttonTabindex() {
       return this.rovingTabindex ? -1 : 0;
     },
-    // this.$router will throw if some of the apps did Vue.use(VueRouter) but your app didn't pass router in new Vue({ router })
-    hasRouter() {
-      try {
-        return Boolean(this.$router);
-      } catch (error) {
-        return false;
-      }
+    fileRowContainerClassList() {
+      // Left position: (1.5rem button / 2) - (1px line / 2)
+      return { 'before:!gl-left-[calc(0.75rem-0.5px)]': this.showTreeToggle };
     },
-  },
-  watch: {
-    'file.active': function fileActiveWatch(active) {
-      if (this.file.type === 'blob' && active) {
-        this.scrollIntoView();
-      }
-    },
-  },
-  mounted() {
-    if (this.hasPathAtCurrentRoute()) {
-      this.scrollIntoView(true);
-    }
   },
   methods: {
-    toggleTreeOpen(path) {
-      this.$emit('toggleTreeOpen', path);
-    },
-    onChevronClick(event) {
-      event.stopPropagation();
-      this.$emit('clickTree');
-    },
-    clickFile() {
-      this.trackEvent('click_file_tree_browser_on_repository_page');
-
-      // Manual Action if a tree is selected/opened
-      if (this.isTree) this.$emit('clickTree', { toggleClose: false });
-      if (this.isTree && this.hasUrlAtCurrentRoute()) {
-        this.toggleTreeOpen(this.file.path);
+    clickFile(event) {
+      // allow opening in new tab with ctrl/cmd and click
+      // without opening in current tab
+      if (this.file.href && (event.ctrlKey || event.metaKey)) {
+        return;
       }
 
-      if (this.file.submodule) this.$emit('clickSubmodule', this.file.webUrl);
+      this.$emit('clickRow', event);
 
-      if (this.hasRouter && !this.hasUrlAtCurrentRoute() && !this.file.submodule) {
-        this.$router.push(this.fileRouterUrl);
+      if (this.isTree) {
+        this.$emit('clickTree', event);
+      } else if (this.file.submodule) {
+        this.$emit('clickSubmodule', event);
+      } else if (this.isBlob) {
+        this.$emit('clickFile', event);
       }
 
-      if (this.isBlob) this.$emit('clickFile', this.file);
-    },
-    scrollIntoView(isInit = false) {
-      const block = isInit && this.isTree ? 'center' : 'nearest';
-
-      this.$el.scrollIntoView({
-        behavior: 'smooth',
-        block,
-      });
-    },
-    hasPathAtCurrentRoute() {
-      if (!this.hasRouter || !this.$router.currentRoute || this.file.isShowMore) {
-        return false;
+      if (this.file.href) {
+        event.preventDefault();
       }
-
-      // - strip route up to "/-/" and ending "/"
-      const routePath = this.$router.currentRoute.path
-        .replace(/^.*?[/]-[/]/g, '')
-        .replace(/[/]$/g, '');
-
-      // - strip ending "/"
-      const filePath = this.file.path.replace(/[/]$/g, '');
-
-      return filePath === routePath;
-    },
-    hasUrlAtCurrentRoute() {
-      if (!this.hasRouter || !this.$router.currentRoute) return true;
-
-      return escapeFileUrl(this.$router.currentRoute.path) === escapeFileUrl(this.fileRouterUrl);
     },
   },
 };
 </script>
 
 <template>
-  <file-header v-if="file.isHeader" :path="file.path" />
+  <div
+    v-if="file.isHeader"
+    class="file-row-header sticky-top js-file-row-header gl-bg-default gl-px-2"
+    :title="file.path"
+  >
+    <gl-truncate :text="file.path" position="middle" class="gl-font-bold" />
+  </div>
   <gl-button
     v-else-if="file.isShowMore"
     category="tertiary"
@@ -183,25 +124,32 @@ export default {
   >
     {{ __('Show more') }}
   </gl-button>
-
-  <div v-else class="gl-flex gl-items-center">
+  <div
+    v-else
+    data-testid="file-row-container"
+    class="gl-flex gl-items-center"
+    :class="fileRowContainerClassList"
+    :style="{ '--level': file.level }"
+  >
     <gl-button
       v-if="isTree && showTreeToggle"
       category="tertiary"
       size="small"
       :icon="chevronIcon"
       data-testid="tree-toggle-button"
-      class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0"
+      class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0 hover:!gl-bg-transparent"
       :aria-label="chevronAriaLabel"
       :tabindex="buttonTabindex"
-      @click="onChevronClick"
+      @click="$emit('toggleTree', $event)"
     />
 
-    <button
+    <component
+      :is="file.href ? 'a' : 'button'"
+      :href="file.href"
       :class="fileClass"
       :title="textForTitle"
       :data-level="level"
-      class="file-row gl-flex-grow-1"
+      class="file-row gl-flex-grow-1 hover:gl-text-inherit hover:gl-no-underline"
       :data-file-row="file.fileHash"
       data-testid="file-row"
       :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
@@ -211,26 +159,23 @@ export default {
     >
       <span
         ref="textOutput"
-        class="file-row-name"
+        class="file-row-name gl-min-w-0"
         :title="file.name"
         :data-qa-file-name="file.name"
         data-testid="file-row-name-container"
-        :class="[
-          fileClasses,
-          {
-            'str-truncated': !truncateMiddle,
-            'gl-min-w-0': truncateMiddle,
-            'file-row-indentation': !(isTree && showTreeToggle),
-          },
-        ]"
+        :class="{
+          'file-row-indentation': !(isTree && showTreeToggle),
+          'gl-font-bold': boldText,
+        }"
       >
         <gl-icon
           v-if="file.linked"
-          v-gl-tooltip="
+          v-gl-tooltip.right="
             __('This file was linked in the page URL and will appear as the first one in the list')
           "
           name="link"
           :size="16"
+          class="gl-flex-none"
         />
         <file-icon
           class="gl-mr-2"
@@ -243,15 +188,13 @@ export default {
           :submodule="file.submodule"
         />
         <gl-truncate
-          v-if="truncateMiddle"
           :text="file.name"
           position="middle"
-          class="gl-items-center gl-pr-7"
+          class="gl-min-w-0 gl-items-center gl-pr-2"
         />
-        <template v-else>{{ file.name }}</template>
       </span>
       <slot></slot>
-    </button>
+    </component>
   </div>
 </template>
 

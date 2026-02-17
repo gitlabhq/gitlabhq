@@ -30,7 +30,7 @@ When you use hosted runners:
 
 ## Hosted runners on Linux
 
-Hosted runners on Linux for GitLab Dedicated use the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler.html) executor. Each job gets a Docker environment in a fully isolated, ephemeral virtual machine (VM), and runs on the latest version of Docker Engine.
+Hosted runners on Linux for GitLab Dedicated use the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler/) executor. Each job gets a Docker environment in a fully isolated, ephemeral virtual machine (VM), and runs on the latest version of Docker Engine.
 
 ### Machine types for Linux - x86-64
 
@@ -63,7 +63,7 @@ Default runner tags are assigned upon creation. Administrators can subsequently 
 
 ### Container images
 
-As runners on Linux are using the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler.html) executor, you can choose any container image by defining the image in your `.gitlab-ci.yml` file. Make sure that the selected Docker image is compatible with the underlying processor architecture. See the [example `.gitlab-ci.yml` file](../../ci/runners/hosted_runners/linux.md#example-gitlab-ciyml-file).
+As runners on Linux are using the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler/) executor, you can choose any container image by defining the image in your `.gitlab-ci.yml` file. Make sure that the selected Docker image is compatible with the underlying processor architecture. See the [example `.gitlab-ci.yml` file](../../ci/runners/hosted_runners/linux.md#example-gitlab-ciyml-file).
 
 If no image is set, the default is `ruby:3.1`.
 

@@ -4,9 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
-  let(:job) { build(:ci_build, project: project) }
+  let(:job) { build(:ci_build, project: project, ref: project.default_branch) }
   let(:stage) { build(:ci_stage, project: project, statuses: [job], position: 1) }
-  let(:pipeline) { create(:ci_pipeline, stages: [stage], status: :created, project: project, builds: [job]) }
+  let(:pipeline) do
+    create(:ci_pipeline, stages: [stage], status: :created, project: project, ref: project.default_branch,
+      builds: [job])
+  end
 
   describe '#perform' do
     include_examples 'an idempotent worker' do
@@ -28,7 +31,7 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
     end
 
     context 'when a pipeline contains a teardown job' do
-      let(:job) { build(:ci_build, :stop_review_app, project: project) }
+      let(:job) { build(:ci_build, :stop_review_app, project: project, ref: project.default_branch) }
 
       before do
         create(:environment, name: job.expanded_environment_name)
@@ -47,8 +50,14 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
         allow(::Ci::PipelineProcessing::AtomicProcessingService).to receive(:new).and_call_original
       end
 
-      let(:job) { build(:ci_build, :created, :start_review_app, project: project, stage_idx: 1) }
-      let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
+      let(:job) do
+        build(:ci_build, :created, :start_review_app, project: project, ref: project.default_branch,
+          stage_idx: 1)
+      end
+
+      let!(:environment) do
+        create(:environment, project: project, name: "review/#{project.default_branch}")
+      end
 
       it 'creates a deployment record' do
         expect { subject }.to change { Deployment.count }.by(1)

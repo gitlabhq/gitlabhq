@@ -64,11 +64,12 @@ module API
                   { code: 401, message: 'Unauthorized' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :authenticate_conan_package, **authorization_boundary_options
 
               get 'authenticate', urgency: :low do
                 unauthorized! unless token
@@ -83,11 +84,12 @@ module API
                   { code: 401, message: 'Unauthorized' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :authenticate_conan_package, **authorization_boundary_options
 
               get 'check_credentials', urgency: :default do
                 :ok
@@ -102,7 +104,7 @@ module API
                   { code: 400, message: 'Bad Request' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[conan_packages]
+                tags %w[packages]
               end
 
               params do
@@ -113,7 +115,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :search_conan_package, **authorization_boundary_options
 
               get 'search', urgency: :low do
                 response = ::Packages::Conan::SearchService.new(
@@ -150,12 +153,13 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization,  job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                route_setting :authorization, job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
 
                 get urgency: :low do
                   check_username_channel

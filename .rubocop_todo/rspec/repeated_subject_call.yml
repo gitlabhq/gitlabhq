@@ -58,4 +58,3 @@ RSpec/RepeatedSubjectCall:
     - 'spec/tasks/gitlab/check_rake_spec.rb'
     - 'spec/workers/analytics/usage_trends/counter_job_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
-    - 'spec/workers/stage_update_worker_spec.rb'

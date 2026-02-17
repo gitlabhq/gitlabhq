@@ -12,7 +12,7 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
     subject(:perform_work) { worker.perform_work }
 
     context 'with no work to do - no container repositories pending deletion' do
-      it 'will not delete any container repository' do
+      it 'does not delete any container repository' do
         expect(::Projects::ContainerRepository::CleanupTagsService).not_to receive(:new)
 
         expect { perform_work }.to not_change { ContainerRepository.count }

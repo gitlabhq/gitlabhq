@@ -1,0 +1,5 @@
+---
+name: create_snippet_award_emoji
+description: Grants the ability to create award emoji reactions on snippets
+boundaries:
+  - project

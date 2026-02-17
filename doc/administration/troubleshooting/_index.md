@@ -20,10 +20,10 @@ for in this list, you should search the documentation.
 
 ## Troubleshooting guides
 
-- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - [Geo](../geo/replication/troubleshooting/_index.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
-- [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](../logs/log_parsing.md)
 - [Diagnostics tools](diagnostics_tools.md)
@@ -43,20 +43,17 @@ information useful for troubleshooting. However, if you are experiencing trouble
 GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
 before referring to these documents.
 
-{{< alert type="warning" >}}
-
-The commands in the following documentation might result in data loss or
-other damage to a GitLab instance. They should be used only by experienced administrators
-who are aware of the risks.
-
-{{< /alert >}}
+> [!warning]
+> The commands in the following documentation might result in data loss or
+> other damage to a GitLab instance. They should be used only by experienced administrators
+> who are aware of the risks.
 
 - [Diagnostics tools](diagnostics_tools.md)
 - [Linux commands](linux_cheat_sheet.md)
-- [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Troubleshooting PostgreSQL](postgresql.md)
 - [Guide to test environments](test_environments.md) (for Support Engineers)
-- [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - Related links:
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)

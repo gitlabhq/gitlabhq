@@ -5,14 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting the GitLab Duo Agent Platform
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 If you are working with the GitLab Duo Agent Platform,
 you might encounter the following issues.
 
@@ -29,8 +21,13 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
-1. Ensure the required feature flags are enabled for the flow you're trying to use.
-   For the latest flag information, check the documentation history for the feature.
+1. Ensure the group you are in has been given permission [to use flows](../../administration/gitlab_duo/configure/access_control.md).
+1. If the top-level group is configured correctly but flows are not visible for an individual project:
+   1. Go to the project.
+   1. Select **Automate** > **Flows**.
+   1. In the upper-right corner, select **Enable flow from group**.
+   1. Select a flow, then select **Enable**.
+
 1. If it still does not work:
    1. Disable the affected flow in the top-level group and save the configuration.
    1. Enable the affected flow in the top-level group and save the configuration.
@@ -45,8 +42,8 @@ If a session for your flow does not start:
 
 ### Allow members to be added to projects
 
-Flows that use a [composite identity](composite_identity.md) must add the `@duo-developer`
-service account to your project. If your group is restricted, you cannot add users directly to projects,
+Flows that execute on runners use [composite identity](composite_identity.md). Every flow adds its own service account to the project.
+If your group is restricted, you cannot add users directly to projects,
 and your flows will not run.
 
 Prior to running a flow in your project, turn off the setting that
@@ -61,12 +58,17 @@ In the GitLab UI, foundational flows use a service account that:
 - Creates commits with its own email address.
 - Creates branches with the `workloads/` prefix (for example, `workloads/a1b2c3d4e5f`).
 
+Prerequisites:
+
+- Administrator access.
+
 To configure push rules for a project:
 
 1. Find the email address associated with the service account:
    1. In the upper-right corner, select **Admin**.
-   1. Select **Overview** > **Users** and search for `duo-developer`.
-   1. Locate the `duo-developer` user and copy the email address.
+   1. Select **Overview** > **Users** and search for the account associated with the flow.
+      The account follows the pattern `duo-[flow-name]-[top-level-group-name]`.
+   1. Locate the service account user and copy the email address.
 
 1. Allow the email address to push to the project:
    1. On the top bar, select **Search or go to** and find your project.
@@ -81,7 +83,7 @@ To configure push rules for a project:
       For example: `^(workloads|duo/feature)/.*$`
    1. Select **Save push rules**.
 
-If you are an administrator, you can create push rules for the instance:
+To create push rules for the instance:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.

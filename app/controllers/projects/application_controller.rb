@@ -39,7 +39,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def auth_proc
-    ->(project) { !project.pending_delete? }
+    ->(project) { !project.deletion_in_progress? }
   end
 
   def build_canonical_path(project)
@@ -102,18 +102,10 @@ class Projects::ApplicationController < ApplicationController
 
   def set_is_ambiguous_ref
     return @is_ambiguous_ref if defined? @is_ambiguous_ref
+    return @is_ambiguous_ref = false if @ref_type.present?
 
-    if Feature.enabled?(:verified_ref_extractor, @project)
-      return @is_ambiguous_ref = false if @ref_type.present?
-
-      @is_ambiguous_ref = ExtractsRef::VerifiedRefExtractor
-        .ambiguous_ref?(@project.repository, ref_type: ref_type, ref: @ref)
-    else
-      @is_ambiguous_ref = ExtractsRef::RequestedRef
-                                                  .new(@project.repository, ref_type: ref_type, ref: @ref)
-                                                  .find
-                                                  .fetch(:ambiguous, false)
-    end
+    @is_ambiguous_ref = ExtractsRef::VerifiedRefExtractor
+      .ambiguous_ref?(@project.repository, ref_type: ref_type, ref: @ref)
   end
 
   def handle_update_result(result)

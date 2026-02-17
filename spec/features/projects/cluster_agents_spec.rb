@@ -15,7 +15,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
       allow(client).to receive(:get_connected_agentks_by_agent_ids).and_return([])
     end
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when user does not have any agents and visits the index page' do
@@ -39,7 +39,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
       end
 
       it 'displays a table with agent', :aggregate_failures,
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514076' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16782' do
         expect(page).to have_content(agent.name)
         expect(page).to have_selector('[data-testid="cluster-agent-list-table"] tbody tr', count: 1)
       end

@@ -10,7 +10,7 @@ This playbook outlines our approach to developing AI features at GitLab, similar
 ## Getting Started
 
 - Start with [an overview of the AI-powered stage](https://about.gitlab.com/direction/ai-powered/).
-- Play around with [existing features](../../user/gitlab_duo/feature_summary.md) in your [local development environment](_index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
+- Play around with [existing features](../../user/gitlab_duo/feature_summary.md) in your [local development environment](_index.md#set-up-your-local-development-environment).
 - When you're ready, proceed with the development flow below.
 
 ## AI Feature Development Flow

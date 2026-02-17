@@ -1,5 +1,5 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 import CodeDropdownDownloadItems from '~/repository/components/code_dropdown/code_dropdown_download_items.vue';
@@ -47,6 +47,7 @@ describe('Compact Code Dropdown component', () => {
     { text: 'tar.bz2', path: `${httpUrl}/archive.tar.bz2` },
     { text: 'tar', path: `${httpUrl}/archive.tar` },
   ];
+  const userSettingsSshKeysPath = '/path/to/user';
   const defaultPropsData = {
     sshUrl,
     httpUrl,
@@ -58,6 +59,8 @@ describe('Compact Code Dropdown component', () => {
     isGitpodEnabledForInstance: true,
     currentPath,
     directoryDownloadLinks,
+    showNoSshKeyMessage: false,
+    userSettingsSshKeysPath,
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -72,12 +75,15 @@ describe('Compact Code Dropdown component', () => {
   const findCodeDropdownDownloadItems = () => wrapper.findAllComponents(CodeDropdownDownloadItems);
   const findCodeDropdownDownloadItemAtIndex = (index) => findCodeDropdownDownloadItems().at(index);
 
+  const findSSHKeyWarning = () => wrapper.findByTestId('ssh-key-warning-text');
+  const findSSHKeyWarningUrl = () => wrapper.findByTestId('ssh-key-warning-url');
+
   const closeDropdown = jest.fn();
 
   const createComponent = (propsData) => {
     trackingSpy = jest.fn();
 
-    wrapper = shallowMount(CompactCodeDropdown, {
+    wrapper = shallowMountExtended(CompactCodeDropdown, {
       propsData: {
         ...defaultPropsData,
         ...propsData,
@@ -192,6 +198,18 @@ describe('Compact Code Dropdown component', () => {
       `('does not close dropdown on $name item click', () => {
         createComponent();
         expect(findDropdown().props('autoClose')).toBe(false);
+      });
+
+      it('shows warning when user has no SSH key set', () => {
+        createComponent({ ...defaultPropsData });
+
+        expect(findSSHKeyWarning().exists()).toBe(false);
+        expect(findSSHKeyWarningUrl().exists()).toBe(false);
+
+        createComponent({ ...defaultPropsData, showNoSshKeyMessage: true });
+
+        expect(findSSHKeyWarning().text()).toBe('Your account does not have an SSH key.');
+        expect(findSSHKeyWarningUrl().attributes('href')).toBe('/path/to/user');
       });
     });
   });

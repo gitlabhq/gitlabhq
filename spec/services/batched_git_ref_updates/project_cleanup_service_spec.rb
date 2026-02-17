@@ -85,10 +85,31 @@ RSpec.describe BatchedGitRefUpdates::ProjectCleanupService, feature_category: :g
       expect { service.execute }.not_to change { BatchedGitRefUpdates::Deletion.status_pending.count }
     end
 
-    it 'does nothing when the project does not exist' do
-      result = described_class.new(non_existing_record_id).execute
+    context 'when the project does not exist' do
+      let!(:deletion_for_deleted_project) do
+        BatchedGitRefUpdates::Deletion.create!(project_id: non_existing_record_id, ref: 'refs/test/deleted-project-ref')
+      end
 
-      expect(result[:total_deletes]).to eq(0)
+      it 'marks records as processed without attempting to delete refs' do
+        result = described_class.new(non_existing_record_id).execute
+
+        expect(result[:total_deletes]).to eq(1)
+        expect(deletion_for_deleted_project.reload.status).to eq('processed')
+      end
+    end
+
+    context 'when the repository does not exist' do
+      let_it_be(:project_without_repo) { create(:project) }
+      let!(:deletion) do
+        BatchedGitRefUpdates::Deletion.create!(project_id: project_without_repo.id, ref: 'refs/test/ref1')
+      end
+
+      it 'marks records as processed' do
+        result = described_class.new(project_without_repo.id).execute
+
+        expect(result[:total_deletes]).to eq(1)
+        expect(deletion.reload.status).to eq('processed')
+      end
     end
 
     it 'stops after it reaches limit of deleted refs' do

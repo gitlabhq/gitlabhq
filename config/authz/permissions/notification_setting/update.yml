@@ -1,0 +1,7 @@
+---
+name: update_notification_setting
+description: Grants the ability to update notification settings
+boundaries:
+  - group
+  - project
+  - user

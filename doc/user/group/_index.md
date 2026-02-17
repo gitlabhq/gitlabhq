@@ -69,18 +69,15 @@ The following table describes the most common models of structuring groups.
 
 <!-- vale gitlab_base.Simplicity = YES -->
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
-For more information about efforts to create an organization view of all groups,
-[see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A top-level group offers insights in your entire organization through a complete
-[Security Dashboard and Center](../application_security/security_dashboard/_index.md),
-[Vulnerability report](../application_security/vulnerability_report/_index.md),
-[compliance center](../compliance/compliance_center/_index.md), and
-[value stream analytics](value_stream_analytics/_index.md).
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
+> For more information about efforts to create an organization view of all groups,
+> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+> A top-level group offers insights in your entire organization through a complete
+> [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
+> [Vulnerability report](../application_security/vulnerability_report/_index.md),
+> [compliance center](../compliance/compliance_center/_index.md), and
+> [value stream analytics](value_stream_analytics/_index.md).
 
 ## Group visibility
 
@@ -97,13 +94,13 @@ empty for anonymous users. The group page has a visibility level icon.
 Users cannot create a subgroup or project with a higher visibility level than that of
 the immediate parent group.
 
-## View groups
+## Explore groups
 
 To explore all public or internal groups:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my groups**.
-1. In the upper right, select **Explore groups**.
+1. From the dropdown, select **Explore**.
+1. On the left sidebar, select **Groups**.
 
 ## View groups you are a member of
 
@@ -117,7 +114,7 @@ To explore all public or internal groups:
 To view groups where you have direct or indirect membership:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my groups**.
+1. From the dropdown, select **View all my groups**.
 
 This page shows groups that you are a member of through:
 
@@ -128,8 +125,9 @@ This page shows groups that you are a member of through:
 
 {{< history >}}
 
-- **Inactive** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
 
 {{< /history >}}
 
@@ -137,8 +135,10 @@ A group is inactive when it is either pending deletion or it has been archived.
 
 To view all inactive groups:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **View all my groups**.
+1. On the top bar, select **Search or go to**.
+1. From the dropdown, select either:
+   - **View all my groups** to filter groups you are a member of.
+   - **Explore** to filter public or internal groups.
 1. Select the **Inactive** tab.
 
 Each inactive group in the list displays a badge to indicate that the group is either
@@ -267,12 +267,12 @@ To leave a group:
 1. On the group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave group**, then **Leave group** again.
 
-## Delete a group
+## Schedule a group for deletion
 
 {{< history >}}
 
-- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -282,7 +282,7 @@ Delete a group again to remove it immediately.
 Prerequisites:
 
 - You must have the Owner role for a group.
-- If the groups contains any project, owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
+- If a group contains any projects, owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
 
 To delete a group and its contents:
 
@@ -290,66 +290,55 @@ To delete a group and its contents:
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Delete group** section, select **Delete**.
-1. On the confirmation dialog, enter the group name and select **Confirm**.
+1. On the confirmation dialog, enter the group path and select **Yes, delete group**.
 
 You can also delete a group from the groups dashboard:
 
 1. On the top bar, select **Search or go to** > **View all my groups**.
 1. Select ({{< icon name="ellipsis_v" >}}) for the group you want to delete.
 1. Select **Delete**.
-1. On the confirmation dialog, enter the group name and select **Confirm**.
+1. On the confirmation dialog, enter the group path and select **Yes, delete group**.
 
-This action adds a background job to mark a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
+This action adds a background job to schedule a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
 you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-When a group is marked for deletion, scheduled CI/CD pipelines stop running.
+When a group is scheduled for deletion, scheduled CI/CD pipelines stop running.
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job instead restores the group, and the group is no longer scheduled for deletion.
 
-{{< alert type="warning" >}}
-
-If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
-
-{{< /alert >}}
+> [!warning]
+> If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
 
 ## Delete a group immediately
 
 {{< history >}}
 
-- Enabled delayed deletion by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561680) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
-- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow immediate deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
-
-{{< alert type="warning" >}}
-
-On GitLab.com and GitLab Dedicated, after a group is deleted, its data is retained for 30 days, and immediate deletion is not available.
-If you must delete a group immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
-
-{{< /alert >}}
 
 If you don't want to wait, you can delete a group immediately.
 
 Prerequisites:
 
 - You must have the Owner role for a group.
-- You have [marked the group for deletion](#delete-a-group).
+- You have [scheduled the group for deletion](#schedule-a-group-for-deletion).
 
-To immediately delete a group marked for deletion:
+To permanently delete a group scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
-1. In the **Delete group** section, select **Delete immediately**.
-1. Confirm the action when asked to.
+1. In the **Delete group** section, select **Delete permanently**.
+1. On the confirmation dialog, enter the group path and select **Yes, delete group**.
 
 This action deletes the group, its subgroups, projects, and all related resources, including issues and merge requests.
 
 ## Restore a group
 
-To restore a group that is marked for deletion:
+To restore a group that is scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
@@ -385,7 +374,7 @@ As a user, you can request to be a member of a group, if an administrator allows
 
 1. On the top bar, select **Search or go to** > **View all my groups**.
 1. In the upper right, select **Explore groups**.
-1. In the **Search by name** text box, enter the name of the group you want to join.
+1. In the **Search** text box, enter the name of the group you want to join.
 1. In the search results, select the name of the group.
 1. On the group page, under the group name, select **Request Access**.
 
@@ -415,12 +404,9 @@ A table displays the member's:
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
 
-{{< alert type="note" >}}
-
-The display of group members' **Source** might be inconsistent.
-For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
-
-{{< /alert >}}
+> [!note]
+> The display of group members' **Source** might be inconsistent.
+> For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage quotas** page](../../subscriptions/manage_users_and_seats.md#view-seat-usage).
 
@@ -499,12 +485,9 @@ Prerequisites:
    If you enter an access expiration date, the group member gets an email notification
    seven days before their access expires.
 
-   {{< alert type="warning" >}}
-
-   Maintainers have full permissions until their role expires, including the ability to
-   extend their own access expiration date.
-
-   {{< /alert >}}
+   > [!warning]
+   > Maintainers have full permissions until their role expires, including the ability to
+   > extend their own access expiration date.
 
 1. Select **Invite**.
    If you invite the user by their:

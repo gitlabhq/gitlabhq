@@ -10,6 +10,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'PreferencesDiffsColorsRoot',
     provide: {
       deletion,
       addition,

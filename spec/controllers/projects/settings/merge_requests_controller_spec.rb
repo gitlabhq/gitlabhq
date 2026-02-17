@@ -72,5 +72,25 @@ RSpec.describe Projects::Settings::MergeRequestsController do
         expect(project.public_send(param)).to eq(value)
       end
     end
+
+    it 'updates automatic_rebase_enabled' do
+      controller.instance_variable_set(:@project, project)
+      expect(project.project_setting.automatic_rebase_enabled).to be(false)
+
+      params = {
+        project_setting_attributes: {
+          automatic_rebase_enabled: true
+        }
+      }
+
+      put :update, params: {
+        namespace_id: project.namespace,
+        project_id: project.id,
+        project: params
+      }
+
+      expect(response).to redirect_to project_settings_merge_requests_path(project)
+      expect(project.project_setting.reload.automatic_rebase_enabled).to be(true)
+    end
   end
 end

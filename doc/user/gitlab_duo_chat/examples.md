@@ -15,17 +15,13 @@ title: Ask GitLab Duo Chat
 
 {{< collapsible title="Model information" >}}
 
-Unless stated otherwise, the default LLM for:
-
-- Chat (Agentic) is Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5).
-- Chat (Classic) is Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5).
+- [Default LLM](../gitlab_duo/model_selection.md#default-models)
 
 {{< /collapsible >}}
 
 {{< history >}}
 
-- Updated default LLM to Claude Sonnet 4.5 for Chat (Classic) and Chat (Agentic) in GitLab 18.6.
-- [Updated default LLM](https://gitlab.com/groups/gitlab-org/-/epics/19998) for Chat (Agentic) to Claude Haiku 4.5 in GitLab 18.7.
+- Updated default LLM to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 
@@ -41,15 +37,13 @@ The examples on this page, including the [slash commands](#gitlab-duo-chat-slash
 You might receive more useful responses from Chat by asking questions that are specific to your current goal.
 For example, `How does the clean_missing_data function in data_cleaning.py decide which rows to drop?`.
 
-For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md)
-and [prompt examples](example_prompts.md).
+For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
 
 ## Ask about GitLab
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -86,8 +80,7 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -124,8 +117,7 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -152,7 +144,7 @@ You can ask about a specific GitLab epic. For example:
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 
 {{< /details >}}
 
@@ -249,8 +241,7 @@ You can ask about a specific GitLab pipeline job. For example:
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -279,7 +270,6 @@ You can ask about a specific GitLab work item. For example:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
 - Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
@@ -316,7 +306,7 @@ You can also add additional instructions to be considered. For example:
 
 For more information, see:
 
-- [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
+- [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
   <!-- Video published on 2025-03-18 -->
 
@@ -335,8 +325,7 @@ In the GitLab UI, you can also explain code in:
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -377,8 +366,7 @@ You can also ask Chat to generate code. For example:
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -411,8 +399,7 @@ A follow-up to the question `How to start a C# project?` could be:
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, the Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, the Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -441,8 +428,7 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -489,7 +475,6 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): VS Code, JetBrains IDEs, and Visual Studio
 - Editors - GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
@@ -538,7 +523,6 @@ For more information, see:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): VS Code, JetBrains IDEs, and Visual Studio
 - Editors - GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
@@ -579,7 +563,6 @@ You can include additional instructions to be considered. For example:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): VS Code, JetBrains IDEs, and Visual Studio
 - Editors - GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
@@ -610,7 +593,7 @@ You can include additional instructions to be considered. For example:
 
 `/tests` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
 
-For more information, see [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 
@@ -624,8 +607,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-g
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -749,40 +731,7 @@ To troubleshoot a failed CI/CD job from the job log:
 
 You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SAST vulnerability report.
 
-For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation).
-
-## Create a new conversation
-
-{{< details >}}
-
-- Add-on: GitLab Duo Pro or Enterprise
-- Offering: GitLab.com
-- Editors: GitLab UI
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190042) in GitLab 18.1. Feature flag `duo_chat_multi_thread` removed.
-
-{{< /history >}}
-
-In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
-
-- In the upper-left corner of the Chat drawer, select **New Chat**.
-- In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-
-## Delete or start a new conversation
-
-To delete a conversation, use the [chat history](_index.md#delete-a-conversation).
-
-To clear the chat window and start a new conversation in the same conversation thread,
-type `/reset` and select **Send**.
-
-In both cases, the conversation history will not be considered when you ask new questions.
-Starting a new conversation might help improve the answers when you switch contexts,
-because GitLab Duo Chat will not get confused by the unrelated conversations.
+For more information, see [Explaining a vulnerability](../application_security/analyze/duo.md).
 
 ## GitLab Duo Chat slash commands
 
@@ -800,8 +749,7 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): GitLab UI, VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -814,8 +762,8 @@ Use the commands to quickly accomplish specific tasks.
 
 | Command | Purpose                                                                                                                       |
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
-| /new    | [Start a new conversation, but keep the previous conversations in the chat history](#delete-or-start-a-new-conversation)      |
-| /reset  | [Clear the chat window and reset the conversation](#delete-or-start-a-new-conversation)                                       |
+| /new    | Start a new conversation, but keep the previous conversations in the chat history      |
+| /reset  | Clear the chat window and reset the conversation                                       |
 | /help   | Learn more about how GitLab Duo Chat works                                                                                           |
 
 > [!note]
@@ -842,7 +790,7 @@ These commands are dynamic and are available only in the GitLab UI when using Gi
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/analyze/duo.md)                                            | Vulnerabilities |
 
 ### IDE
 
@@ -854,8 +802,7 @@ These commands are dynamic and are available only in the GitLab UI when using Gi
 
 {{< collapsible title="Editor information" >}}
 
-- Editors - GitLab Duo Chat (Agentic): VS Code, JetBrains IDEs, and Visual Studio
-- Editors - GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Chat (Classic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 

@@ -6,14 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Security threats in agentic systems
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 Common security threats can affect agentic systems.
 To improve your security posture, you should familiarize yourself with these threats and follow
 security best practices when deploying and using agents and flows.
@@ -149,7 +141,7 @@ To reduce the risk and impact of prompt injection attacks, apply the principle o
 
 #### Turn Off Duo
 
-To prevent GitLab Duo from accessing resources on a specific group or project, you can [turn off flow execution](../gitlab_duo/turn_on_off.md).
+To prevent GitLab Duo from accessing resources on a specific group or project, you can [turn off flow execution](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 #### Scope agents to specific tasks
 
@@ -388,7 +380,7 @@ prompts:
         3. Best practice violations
         4. Positive aspects of the code
 
-        Structure your response so it can be easily converted into a review comment.
+        Structure your response so it can be converted into a review comment.
       placeholder: history
     params:
       timeout: 300

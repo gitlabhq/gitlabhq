@@ -42,7 +42,7 @@ export default {
       required: true,
     },
   },
-  emits: ['jobActionExecuted'],
+  emits: ['job-action-executed'],
   data() {
     return {
       isDropdownOpen: false,
@@ -52,7 +52,10 @@ export default {
   apollo: {
     pipelineJobs: {
       context() {
-        return getQueryHeaders(this.graphqlEtag);
+        return {
+          ...getQueryHeaders(this.graphqlEtag),
+          featureCategory: 'continuous_integration',
+        };
       },
       query: getDownstreamPipelineJobsQuery,
       variables() {
@@ -132,9 +135,10 @@ export default {
     @hidden="onHideDropdown"
     @shown="onShowDropdown"
   >
-    <template #toggle>
+    <template #toggle="{ accessibilityAttributes }">
       <gl-button
         v-gl-tooltip.hover="dropdownTooltipTitle"
+        v-bind="accessibilityAttributes"
         data-testid="pipeline-mini-graph-dropdown-toggle"
         :title="dropdownTooltipTitle"
         class="!gl-rounded-full"
@@ -171,7 +175,7 @@ export default {
         v-for="job in pipelineJobs"
         :key="job.id"
         :job="job"
-        @jobActionExecuted="$emit('jobActionExecuted')"
+        @job-action-executed="$emit('job-action-executed')"
       />
     </ul>
   </gl-disclosure-dropdown>

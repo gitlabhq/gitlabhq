@@ -33,12 +33,18 @@ module Types
         field :filters,
           ::GraphQL::Types::JSON,
           null: true,
-          description: 'Filters associated with the saved view.'
+          description: 'Filters associated with the saved view. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         field :filter_warnings,
           [Types::WorkItems::SavedViews::FilterWarningType],
           null: true,
-          description: 'Warnings associated with the filter values.'
+          description: 'Warnings associated with the filter values. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         field :display_settings,
           ::GraphQL::Types::JSON,
@@ -70,28 +76,69 @@ module Types
           null: true,
           experiment: { milestone: '18.8' },
           resolver: ::Resolvers::WorkItems::SavedViews::WorkItemsResolver,
-          description: 'Work items associated with the saved view.'
+          description: 'Work items associated with the saved view. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         def filters
-          {}
+          filters_data = validated_result[:filters]
+
+          filters_data.deep_transform_keys { |key| key.to_s.camelize(:lower) }
         end
 
         def filter_warnings
-          []
+          validated_result[:warnings]
         end
 
         def subscribed
-          false
+          BatchLoader::GraphQL.for(object.id).batch(key: current_user.id) do |saved_view_ids, loader, args|
+            batch_load_subscriptions(saved_view_ids, loader, args[:key])
+          end
+        end
+
+        def sort
+          object.sort&.to_sym
         end
 
         def share_url
           namespace = object.namespace
 
           if namespace.is_a?(::Group)
-            Gitlab::Routing.url_helpers.subscribe_group_saved_view_url(namespace, object.id)
+            Gitlab::Routing.url_helpers.group_saved_view_url(namespace, object.id)
           else
             project = namespace.project
-            Gitlab::Routing.url_helpers.subscribe_project_saved_view_url(project, object.id)
+            Gitlab::Routing.url_helpers.project_saved_view_url(project, object.id)
+          end
+        end
+
+        private
+
+        def validated_result
+          context["saved_view_sanitized_result_#{object.id}"] ||= begin
+            result = ::WorkItems::SavedViews::FilterSanitizerService.new(
+              filter_data: object.filter_data,
+              namespace: object.namespace,
+              current_user: current_user
+            ).execute
+
+            if result.success?
+              result.payload
+            else
+              { filters: {}, warnings: [{ field: :base, message: result.message }] }
+            end
+          end
+        end
+
+        def batch_load_subscriptions(saved_view_ids, loader, user_id)
+          subscriptions = ::WorkItems::SavedViews::UserSavedView
+                            .for_user(user_id)
+                            .for_saved_view(saved_view_ids)
+                            .pluck(:saved_view_id) # rubocop: disable CodeReuse/ActiveRecord -- Batch loading requires pluck for performance
+                            .to_set
+
+          saved_view_ids.each do |saved_view_id|
+            loader.call(saved_view_id, subscriptions.include?(saved_view_id))
           end
         end
       end

@@ -10,8 +10,6 @@ import sharedProjectsResponse from 'test_fixtures/graphql/projects/shared_projec
 import GroupsShowApp from '~/groups/show/components/app.vue';
 import sharedGroupsQuery from '~/groups/show/graphql/queries/shared_groups.query.graphql';
 import sharedProjectsQuery from '~/groups/show/graphql/queries/shared_projects.query.graphql';
-import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
 import InactiveSubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/inactive_subgroups_and_projects_empty_state.vue';
 import SharedGroupsEmptyState from '~/groups/components/empty_states/shared_groups_empty_state.vue';
@@ -48,10 +46,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
-// We need to globally render components to avoid circular references
-// https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
-Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
 
 describe('GroupsShowApp', () => {
   let wrapper;
@@ -341,7 +335,7 @@ describe('GroupsShowApp', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findByRole('link', { name: mockGroup.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockGroup.fullName }).exists()).toBe(true);
     });
 
     it('correctly renders `Edit` action', async () => {
@@ -515,7 +509,9 @@ describe('GroupsShowApp', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findByRole('link', { name: mockProject.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockProject.nameWithNamespace }).exists()).toBe(
+        true,
+      );
     });
 
     it('correctly renders `Edit` action', async () => {

@@ -29,7 +29,7 @@ In an issue, leave a comment using the `/zoom` quick action followed by a valid 
 /zoom https://zoom.us/j/123456789
 ```
 
-If the Zoom meeting URL is valid and you have at least the Reporter role,
+If the Zoom meeting URL is valid and you have the Reporter, Developer, Maintainer, or Owner role,
 a system alert notifies you of its successful addition.
 The issue's description is automatically edited to include the Zoom link, and a button
 appears right under the issue's title.
@@ -53,5 +53,5 @@ Similarly to adding a Zoom meeting, you can remove it with a quick action:
 
 You can also use the [`/remove_zoom` quick action](../quick_actions.md#remove_zoom).
 
-If you have at least the Reporter role,
+If you have the Reporter, Developer, Maintainer, or Owner role,
 a system alert notifies you that the meeting URL was successfully removed.

@@ -57,11 +57,8 @@ follow the vendoring process to create a working template.
 
 #### Standard template
 
-{{< alert type="note" >}}
-
-See merge request [25318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) for an example.
-
-{{< /alert >}}
+> [!note]
+> See merge request [25318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) for an example.
 
 To contribute a standard template:
 
@@ -76,11 +73,8 @@ To contribute a standard template:
 
 #### Enterprise template
 
-{{< alert type="note" >}}
-
-See merge request [28187](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28187) for an example.
-
-{{< /alert >}}
+> [!note]
+> See merge request [28187](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28187) for an example.
 
 To contribute an Enterprise template:
 

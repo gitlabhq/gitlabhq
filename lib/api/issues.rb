@@ -118,13 +118,14 @@ module API
 
     desc "Get currently authenticated user's issues statistics" do
       success code: 200
-      tags ['issue_statistics']
+      tags ['issues']
     end
     params do
       use :issues_stats_params
       optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
     end
+    route_setting :authorization, permissions: :read_issue_statistic, boundary_type: :user
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
       validate_search_rate_limit! if declared_params[:search].present?
@@ -144,6 +145,7 @@ module API
         optional :non_archived, type: Boolean, default: true,
           desc: 'Return issues from non archived projects'
       end
+      route_setting :authorization, permissions: :read_issue, boundary_type: :user
       get do
         authenticate! unless params[:scope] == 'all'
         validate_search_rate_limit! if declared_params[:search].present?
@@ -172,6 +174,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of the Issue'
       end
+      route_setting :authorization, permissions: :read_issue, boundary_type: :instance
       get ":id" do
         authenticated_as_admin!
         issue = Issue.find(params['id'])
@@ -192,6 +195,7 @@ module API
         use :issues_params
         optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
       end
+      route_setting :authorization, permissions: :read_issue, boundary_type: :group
       get ":id/issues" do
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
@@ -214,6 +218,7 @@ module API
       params do
         use :issues_stats_params
       end
+      route_setting :authorization, permissions: :read_issue_statistic, boundary_type: :group
       get ":id/issues_statistics" do
         validate_search_rate_limit! if declared_params[:search].present?
 
@@ -237,6 +242,8 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization,
+        permissions: :read_issue,
+        boundary_type: :project,
         job_token_policies: :read_work_items,
         allow_public_access_for_enabled_project_features: :issues
       get ":id/issues" do
@@ -267,6 +274,7 @@ module API
       params do
         use :issues_stats_params
       end
+      route_setting :authorization, permissions: :read_issue_statistic, boundary_type: :project
       get ":id/issues_statistics" do
         validate_search_rate_limit! if declared_params[:search].present?
 
@@ -282,9 +290,7 @@ module API
       end
       route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid]
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization,
-        job_token_policies: :read_work_items,
-        allow_public_access_for_enabled_project_features: :issues
+      route_setting :authorization, permissions: :read_issue, boundary_type: :project, job_token_policies: :read_work_items, allow_public_access_for_enabled_project_features: :issues
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do
         issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
@@ -357,6 +363,7 @@ module API
 
         at_least_one_of(*Helpers::IssuesHelpers.update_params_at_least_one_of)
       end
+      route_setting :authorization, permissions: :update_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/issues/:issue_iid' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20775')
@@ -398,6 +405,7 @@ module API
         optional :move_before_id, type: Integer, desc: 'The ID of the issue we want to be before'
         at_least_one_of :move_after_id, :move_before_id
       end
+      route_setting :authorization, permissions: :reorder_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/issues/:issue_iid/reorder' do
         issue = user_project.issues.find_by(iid: params[:issue_iid])
@@ -421,6 +429,7 @@ module API
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
+      route_setting :authorization, permissions: :move_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/move' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 260)
@@ -454,6 +463,7 @@ module API
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
         optional :with_notes, type: Boolean, desc: 'Clone issue with notes', default: false
       end
+      route_setting :authorization, permissions: :clone_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/clone' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/340252')
@@ -486,6 +496,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :authorization, permissions: :delete_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/issues/:issue_iid" do
         issue = user_project.issues.find_by(iid: params[:issue_iid])
@@ -506,6 +517,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :authorization, permissions: :read_issue_merge_request, boundary_type: :project
       get ':id/issues/:issue_iid/related_merge_requests' do
         issue = find_project_issue(params[:issue_iid])
 
@@ -528,6 +540,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :authorization, permissions: :read_issue_closing_merge_request, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/issues/:issue_iid/closed_by' do
         issue = find_project_issue(params[:issue_iid])
@@ -541,11 +554,12 @@ module API
 
       desc 'List participants for an issue' do
         success Entities::UserBasic
-        tags ['issue_participants']
+        tags ['issues']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :authorization, permissions: :read_issue_participant, boundary_type: :project
       get ':id/issues/:issue_iid/participants' do
         issue = find_project_issue(params[:issue_iid])
         participants = ::Kaminari.paginate_array(issue.visible_participants(current_user))
@@ -560,6 +574,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :authorization, permissions: :read_issue_user_agent_detail, boundary_type: :project
       get ":id/issues/:issue_iid/user_agent_detail" do
         authenticated_as_admin!
 

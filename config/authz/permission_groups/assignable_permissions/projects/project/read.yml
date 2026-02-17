@@ -2,7 +2,19 @@
 name: read_project
 description: Grants the ability to read projects
 permissions:
+  - read_ancestor_group
+  - read_contributed_project
+  - read_contributing_user
+  - read_fork
+  - read_language
+  - read_pages_access
   - read_project
+  - read_project_invited_group
+  - read_project_transfer_location
+  - read_share_location
+  - read_starring_user
+  - read_storage
 boundaries:
-  - user
+  - group
   - project
+  - user

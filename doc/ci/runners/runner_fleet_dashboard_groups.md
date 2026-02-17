@@ -20,7 +20,7 @@ title: Runner fleet dashboard for groups
 
 {{< /history >}}
 
-Users with at least the Maintainer role for a group can use the runner fleet dashboard to assess the health of group runners.
+Users with the Maintainer or Owner role for a group can use the runner fleet dashboard to assess the health of group runners.
 
 ![Runner fleet dashboard for groups](img/runner_fleet_dashboard_groups_v17_1.png)
 
@@ -38,8 +38,8 @@ The following metrics are available in the runner fleet dashboard:
 
 **Footnotes**:
 
-  1. For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
-you must configure the [ClickHouse integration](../../integration/clickhouse.md).
+1. For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
+   you must configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 ## View the runner fleet dashboard for groups
 
@@ -51,6 +51,6 @@ configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 To view the runner fleet dashboard for groups:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.

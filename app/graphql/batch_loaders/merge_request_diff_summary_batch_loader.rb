@@ -5,7 +5,7 @@ module BatchLoaders
     NIL_STATS = { additions: 0, deletions: 0, file_count: 0 }.freeze
 
     def self.load_for(merge_request)
-      BatchLoader::GraphQL.for(merge_request).batch(key: :diff_stats_summary) do |merge_requests, loader, args|
+      BatchLoader::GraphQL.for(merge_request).batch(key: :diff_stats_summary) do |merge_requests, loader, _args|
         Preloaders::MergeRequestDiffPreloader.new(merge_requests).preload_all
 
         merge_requests.each do |merge_request|

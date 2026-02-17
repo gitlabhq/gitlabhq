@@ -27,7 +27,9 @@ module Security
           )
 
           return ServiceResponse.error(
-            message: _(format('You must %s before using Security features.', docs_link)).html_safe
+            message: ApplicationController.helpers.safe_format(
+              _('You must %{docs_link} before using Security features.'),
+              docs_link: docs_link)
           )
         end
 

@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { GlAvatarLink } from '@gitlab/ui';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -129,7 +129,7 @@ describe('Work Item Note', () => {
     beforeEach(() => {
       createComponent();
 
-      findNoteActions().vm.$emit('startEditing');
+      findNoteActions().vm.$emit('start-editing');
       return nextTick();
     });
 
@@ -141,11 +141,24 @@ describe('Work Item Note', () => {
       expect(findNoteBody().exists()).toBe(false);
     });
 
-    it('updates saved draft with current note text', () => {
+    it('updates saved draft with current note text when draft is empty', () => {
+      getDraft.mockReturnValue('');
+      createComponent();
+      findNoteActions().vm.$emit('start-editing');
+
       expect(updateDraft).toHaveBeenCalledWith(
         `${mockWorkItemCommentNote.id}-comment`,
         mockWorkItemCommentNote.body,
       );
+    });
+
+    it('does not update draft when existing draft is present', () => {
+      updateDraft.mockClear();
+      getDraft.mockReturnValue('existing draft');
+      createComponent();
+      findNoteActions().vm.$emit('start-editing');
+
+      expect(updateDraft).not.toHaveBeenCalled();
     });
 
     it('passes correct autosave key prop to comment form component', () => {
@@ -153,7 +166,7 @@ describe('Work Item Note', () => {
     });
 
     it('should hide a form and show wrapper when user cancels editing', async () => {
-      findCommentForm().vm.$emit('cancelEditing');
+      findCommentForm().vm.$emit('cancel-editing');
       await nextTick();
 
       expect(findCommentForm().exists()).toBe(false);
@@ -162,7 +175,7 @@ describe('Work Item Note', () => {
 
     it('should show the awards list when in edit mode', async () => {
       createComponent({ note: mockWorkItemCommentNote });
-      findNoteActions().vm.$emit('startEditing');
+      findNoteActions().vm.$emit('start-editing');
       await nextTick();
       expect(findAwardsList().exists()).toBe(true);
     });
@@ -171,10 +184,10 @@ describe('Work Item Note', () => {
   describe('when submitting a form to edit a note', () => {
     it('calls update mutation with correct variables', async () => {
       createComponent();
-      findNoteActions().vm.$emit('startEditing');
+      findNoteActions().vm.$emit('start-editing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
+      findCommentForm().vm.$emit('submit-form', { commentText: updatedNoteText });
 
       expect(successHandler).toHaveBeenCalledWith({
         input: {
@@ -186,10 +199,10 @@ describe('Work Item Note', () => {
 
     it('hides the form after successful mutation', async () => {
       createComponent();
-      findNoteActions().vm.$emit('startEditing');
+      findNoteActions().vm.$emit('start-editing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
+      findCommentForm().vm.$emit('submit-form', { commentText: updatedNoteText });
       await waitForPromises();
 
       expect(findCommentForm().exists()).toBe(false);
@@ -199,10 +212,9 @@ describe('Work Item Note', () => {
     describe('when mutation fails', () => {
       beforeEach(async () => {
         createComponent({ updateNoteMutationHandler: errorHandler });
-        findNoteActions().vm.$emit('startEditing');
+        findNoteActions().vm.$emit('start-editing');
         await nextTick();
-
-        findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
+        findCommentForm().vm.$emit('submit-form', { commentText: updatedNoteText });
         await waitForPromises();
       });
 
@@ -234,7 +246,7 @@ describe('Work Item Note', () => {
 end`;
       createComponent();
 
-      findNoteBody().vm.$emit('updateNote', { commentText });
+      findNoteBody().vm.$emit('update-note', { commentText });
 
       expect(successHandler).toHaveBeenCalledWith({
         input: {
@@ -337,7 +349,7 @@ end`;
       it('calls a mutation with correct variables', async () => {
         createComponent({ assignees: mockAssignees });
         await waitForPromises();
-        findNoteActions().vm.$emit('assignUser');
+        findNoteActions().vm.$emit('assign-user');
 
         await waitForPromises();
 
@@ -361,7 +373,7 @@ end`;
 
         expect(findNoteActions().props('isAuthorAnAssignee')).toEqual(true);
 
-        findNoteActions().vm.$emit('assignUser');
+        findNoteActions().vm.$emit('assign-user');
 
         await waitForPromises();
 
@@ -374,7 +386,7 @@ end`;
         await waitForPromises();
         const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        findNoteActions().vm.$emit('assignUser');
+        findNoteActions().vm.$emit('assign-user');
 
         await waitForPromises();
 
@@ -424,7 +436,7 @@ end`;
 
     it('confidential information on note', async () => {
       createComponent();
-      await findNoteActions().vm.$emit('startEditing');
+      await findNoteActions().vm.$emit('start-editing');
       const { confidential } = workItemByIidResponseFactory().data.namespace.workItem;
       expect(findCommentForm().props('isWorkItemConfidential')).toBe(confidential);
     });
@@ -536,7 +548,7 @@ end`;
     it('enables editing on the note for a matching note when adminNote is true', async () => {
       await setupComponent();
 
-      expect(wrapper.emitted('startEditing')).toHaveLength(1);
+      expect(wrapper.emitted('start-editing')).toHaveLength(1);
       expect(findCommentForm().exists()).toBe(true);
     });
 
@@ -547,7 +559,7 @@ end`;
     `('does not enable editing on the note for $description', async ({ setupProps }) => {
       await setupComponent(setupProps);
 
-      expect(wrapper.emitted('startEditing')).toBeUndefined();
+      expect(wrapper.emitted('start-editing')).toBeUndefined();
       expect(findCommentForm().exists()).toBe(false);
     });
   });

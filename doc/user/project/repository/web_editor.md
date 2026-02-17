@@ -28,12 +28,9 @@ for Web Editor commits.
 
 For changes to multiple files, use the [Web IDE](../web_ide/_index.md).
 
-{{< alert type="note" >}}
-
-To manage files in a [protected branch](branches/protected.md),
-you must have the appropriate [permissions](../../permissions.md).
-
-{{< /alert >}}
+> [!note]
+> To manage files in a [protected branch](branches/protected.md),
+> you must have the appropriate [permissions](../../permissions.md).
 
 ## Manage files
 
@@ -111,14 +108,11 @@ To edit a text file in the Web Editor:
      1. Select **Commit changes**.
      1. Fill out the fields and select **Create merge request**.
 
-{{< alert type="note" >}}
-
-If someone edits and commits changes to the same file while you are editing,
-you can't commit your changes. The following error message is displayed:
-`Someone edited the file the same time you did. Please check out the file and
-make sure your change will not unintentionally remove theirs.`
-
-{{< /alert >}}
+> [!note]
+> If someone edits and commits changes to the same file while you are editing,
+> you can't commit your changes. The following error message is displayed:
+> `Someone edited the file the same time you did. Please check out the file and
+> make sure your change will not unintentionally remove theirs.`
 
 #### Markdown preview
 
@@ -213,14 +207,11 @@ To delete a file in the Web Editor:
      1. Ensure the **Create a merge request for this change** checkbox is selected.
      1. Select **Commit changes**.
 
-{{< alert type="note" >}}
-
-If someone edits and commits changes to the same file while you are editing,
-you can't commit your changes. The following error message is displayed:
-`Someone edited the file the same time you did. Please check out the file and
-make sure your change will not unintentionally remove theirs.`
-
-{{< /alert >}}
+> [!note]
+> If someone edits and commits changes to the same file while you are editing,
+> you can't commit your changes. The following error message is displayed:
+> `Someone edited the file the same time you did. Please check out the file and
+> make sure your change will not unintentionally remove theirs.`
 
 ### Replace a file
 
@@ -325,6 +316,17 @@ production releases and release candidates. To create a tag in the Web Editor:
 1. Next to the repository name, select the plus icon ({{< icon name="plus" >}}) > **New tag**.
 1. Complete the fields.
 1. Select **Create tag**.
+
+## Editor accessibility options
+
+The web editor is based on the [Monaco Editor](https://github.com/microsoft/monaco-editor)
+which has several [accessibility features](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide),
+including:
+
+| Feature                          | Shortcut on Windows or Linux      | Shortcut on macOS                                    | Details |
+|----------------------------------|-----------------------------------|------------------------------------------------------|---------|
+| Keyboard navigation command list | <kbd>F1</kbd>                     | <kbd>F1</kbd>                                        | A [list of commands](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#keyboard-navigation) that make the editor easier to use without a mouse. |
+| Tab trapping                     | <kbd>Control</kbd>+<kbd>m</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>m</kbd> | Enable [tab trapping](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#tab-trapping) to go to the next focusable element on the page instead of inserting a tab character. |
 
 ## Related topics
 

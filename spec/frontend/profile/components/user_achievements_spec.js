@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlBadge, GlAvatar } from '@gitlab/ui';
+import getUserAchievementsWithRelativeRootResponse from 'test_fixtures/graphql/get_user_achievements_with_relative_root_response.json';
 import getUserAchievementsEmptyResponse from 'test_fixtures/graphql/get_user_achievements_empty_response.json';
 import getUserAchievementsLongResponse from 'test_fixtures/graphql/get_user_achievements_long_response.json';
 import getUserAchievementsResponse from 'test_fixtures/graphql/get_user_achievements_with_avatar_and_description_response.json';
 import getUserAchievementsPrivateGroupResponse from 'test_fixtures/graphql/get_user_achievements_from_private_group.json';
 import getUserAchievementsNoAvatarResponse from 'test_fixtures/graphql/get_user_achievements_without_avatar_or_description_response.json';
-import getUserAchievementsWithRelativeRootResponse from 'test_fixtures/graphql/get_user_achievements_with_relative_root_response.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import UserAchievements from '~/profile/components/user_achievements.vue';

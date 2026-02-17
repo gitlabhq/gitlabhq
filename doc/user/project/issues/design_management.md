@@ -14,16 +14,13 @@ title: Design management (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](../../../update/deprecations.md#design-management-deprecated) in GitLab 18.6
-and is planned for removal in 19.0.
-This change is a breaking change.
-In GitLab 19.0 and later, users are no longer able to upload new designs.
-Existing designs remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed.
-GitLab is exploring alternatives that better integrate with the tools designers already use.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](../../../update/deprecations.md#design-management-deprecated) in GitLab 18.6
+> and is planned for removal in 19.0.
+> This change is a breaking change.
+> In GitLab 19.0 and later, users are no longer able to upload new designs.
+> Existing designs remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed.
+> GitLab is exploring alternatives that better integrate with the tools designers already use.
 
 <!--- end_remove -->
 
@@ -59,7 +56,7 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
   Image thumbnails are stored as other uploads, and are not associated with a project but rather
   with a specific design model.
 
-  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin area** > **Projects**
+  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin** > **Projects**
   and then selecting the project in question. The **Relative path** field contains `@hashed` in its value.
 
 If the requirements are not met, you are notified in the **Designs** section.
@@ -85,7 +82,7 @@ The **Designs** section is in the issue description.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To view a design:
 
@@ -133,7 +130,7 @@ To move around the image while zoomed in, drag the image.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - The names of the uploaded files must be no longer than 255 characters.
 
 To add a design to an issue:
@@ -175,7 +172,7 @@ As discussion on a design continues, you might want to upload a new version of a
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To do so, [add a design](#add-a-design-to-an-issue) with the same filename.
 
@@ -208,7 +205,7 @@ URL.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - You can archive only the latest version of a design.
 
 To archive a single design:
@@ -282,7 +279,7 @@ so that everyone involved can participate in the discussion.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To delete a comment from a design:
 

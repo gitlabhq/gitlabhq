@@ -35,7 +35,7 @@ RSpec.describe DependencyProxy::FileUploader do
 
     subject { uploader }
 
-    it 'will change upload file content type to match the model content type', :aggregate_failures do
+    it 'changes upload file content type to match the model content type', :aggregate_failures do
       uploader.cache!(fixture_file)
 
       expect(uploader.file.content_type).to eq(manifest.content_type)

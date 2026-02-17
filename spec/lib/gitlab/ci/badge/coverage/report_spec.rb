@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Report, feature_category: :continuou
   end
 
   let(:badge) do
-    described_class.new(project, 'master', opts: { job: job_name })
+    described_class.new(project, 'main', opts: { job: job_name })
   end
 
   let(:job_name) { nil }

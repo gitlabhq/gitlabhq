@@ -29,12 +29,16 @@ module Gitlab
 
           private
 
+          # rubocop:disable GitlabSecurity/SqlInjection -- no user input
           def create_keyset_iterator(model_class, cursor_columns, batch_min_value)
+            tuple_columns = cursor_columns.map { |col| "#{model_class.table_name}.#{col}" }.join(', ')
+            tuple_values = batch_min_value.map { |v| connection.quote(v) }.join(', ')
+
             Gitlab::Pagination::Keyset::Iterator.new(
-              scope: model_class.order(cursor_columns),
-              cursor: cursor_columns.zip(batch_min_value).to_h
+              scope: model_class.where("(#{tuple_columns}) >= (#{tuple_values})").order(cursor_columns)
             )
           end
+          # rubocop:enable GitlabSecurity/SqlInjection
 
           # rubocop:disable Lint/UnreachableLoop -- we need to use each_batch to pull one batch out
           def extract_batch_bounds(iterator, batch_size, cursor_columns)

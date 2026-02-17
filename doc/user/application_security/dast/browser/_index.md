@@ -19,12 +19,9 @@ title: DAST browser-based analyzer
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The DAST version 4 browser-based analyzer is replaced by DAST version 5 in GitLab 17.0.
-For instructions on how to migrate to DAST version 5, see the [migration guide](../browser_based_4_to_5_migration_guide.md).
-
-{{< /alert >}}
+> [!warning]
+> The DAST version 4 browser-based analyzer is replaced by DAST version 5 in GitLab 17.0.
+> For instructions on how to migrate to DAST version 5, see the [migration guide](../browser_based_4_to_5_migration_guide.md).
 
 Browser-based DAST helps you identify security weaknesses (CWEs) in your web applications. After you
 deploy your web application, it becomes exposed to new types of attacks, many of which cannot be
@@ -38,13 +35,10 @@ deployed environments.
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
-{{< alert type="warning" >}}
-
-Do not run DAST scans against a production server. Not only can it perform any function that a
-user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
-modification or loss of production data. Only run DAST scans against a test server.
-
-{{< /alert >}}
+> [!warning]
+> Do not run DAST scans against a production server. Not only can it perform any function that a
+> user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
+> modification or loss of production data. Only run DAST scans against a test server.
 
 The DAST browser-based analyzer was built by GitLab to scan modern-day web applications for
 vulnerabilities. Scans run in a browser to optimize testing applications heavily dependent on
@@ -59,7 +53,7 @@ If you're new to DAST, follow this guide to set up your first scan.
 
 Prerequisites:
 
-- A [GitLab Runner](../../../../ci/runners/_index.md) with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+- A [GitLab Runner](../../../../ci/runners/_index.md) with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker/) on Linux/amd64.
 - A deployed target application. See [deployment options](application_deployment_options.md).
 - Network connectivity between your GitLab Runner and the target application.
 
@@ -114,7 +108,7 @@ For information about configuring DAST for a specific application or environment
 After you configure DAST for a single project, you can extend the configuration to other projects:
 
 - Take care if your pipeline is configured to deploy to the same web server in each run. Running a DAST scan while a server is being updated leads to inaccurate and non-deterministic results.
-- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
+- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker/#using-the-always-pull-policy) to run the latest versions of the analyzers.
 - By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If
   your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
   in previous jobs, you shouldn't download artifacts. To avoid downloading

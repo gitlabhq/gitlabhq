@@ -13,15 +13,10 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
   end
 
   describe 'class methods' do
-    where(:method_name, :result) do
-      :payment_validation_form_id | 'payment_method_validation'
-      :registration_validation_form_id | 'cc_registration_validation'
-    end
+    describe '.registration_validation_form_id' do
+      subject { described_class.registration_validation_form_id }
 
-    with_them do
-      subject { described_class.send(method_name) }
-
-      it { is_expected.to eq(result) }
+      it { is_expected.to eq('cc_registration_validation') }
     end
   end
 

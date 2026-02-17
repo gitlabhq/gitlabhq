@@ -1,0 +1,5 @@
+---
+name: read_saml_identity
+description: Grants the ability to read SAML user identity
+boundaries:
+  - group

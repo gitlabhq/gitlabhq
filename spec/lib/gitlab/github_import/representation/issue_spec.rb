@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::Issue, feature_category: :importers do
-  let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
+  let_it_be(:work_item_type_id) { build(:work_item_system_defined_type, :issue).id }
 
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }

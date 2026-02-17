@@ -21,7 +21,7 @@ By default, existing users can continue to sign in with a username and password 
 authentication is enabled.
 
 To force existing users to use only smart card authentication,
-[disable username and password authentication](../settings/sign_in_restrictions.md#password-authentication-enabled).
+[disable username and password authentication](../settings/sign_in_restrictions.md#password-and-passkey-authentication).
 
 ## Authentication methods
 
@@ -122,15 +122,13 @@ attribute. As a prerequisite, you must use an LDAP server that:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/514025) `reverse_issuer_and_subject` and `reverse_issuer_and_serial_number` formats in GitLab 17.11.
 - `issuer_and_subject`, `reverse_issuer_and_subject`, and `subject` formats [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208209) in GitLab 18.6 [with a flag](../feature_flags/_index.md) named `smartcard_ad_formats_v2`. Enabled by default. Disable this flag to revert these formats to the previous versions.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/577375) in GitLab 18.9. Feature flag `smartcard_ad_formats_v2` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The functionality of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The functionality of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Active Directory does not support the `certificateExactMatch` rule or the `userCertificate` attribute. Most tools for certificate-based authentication such as smart cards use the `altSecurityIdentities` attribute, which can contain multiple certificates for each user. The data in the field must match [one of the formats Microsoft recommends](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-certificate-based-authentication-certificateuserids#supported-patterns-for-certificate-user-ids).
 
@@ -196,13 +194,10 @@ For Linux package installations:
    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
    ```
 
-   {{< alert type="note" >}}
-
-   Assign a value to at least one of the following variables:
-   `gitlab_rails['smartcard_client_certificate_required_host']` or
-   `gitlab_rails['smartcard_client_certificate_required_port']`.
-
-   {{< /alert >}}
+   > [!note]
+   > Assign a value to at least one of the following variables:
+   > `gitlab_rails['smartcard_client_certificate_required_host']` or
+   > `gitlab_rails['smartcard_client_certificate_required_port']`.
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
@@ -293,12 +288,9 @@ For self-compiled installations:
      client_certificate_required_port: 3443
    ```
 
-   {{< alert type="note" >}}
-
-   Assign a value to at least one of the following variables:
-   `client_certificate_required_host` or `client_certificate_required_port`.
-
-   {{< /alert >}}
+   > [!note]
+   > Assign a value to at least one of the following variables:
+   > `client_certificate_required_host` or `client_certificate_required_port`.
 
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.

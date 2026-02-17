@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { getProjects } from '~/rest_api';
+import { getProjects, getGroupMembers } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
@@ -59,6 +59,20 @@ export const fetchGroupsWithProjectAccess = (projectId, search) => {
         ...convertObjectPropsToCamelCase(group),
       })),
     );
+};
+
+export const fetchGroupMembers = async (groupId, inherited = false, search) => {
+  const response = await getGroupMembers(groupId, inherited, { query: search });
+  const members = response?.data || [];
+
+  return members.map((member) => ({
+    text: member.name,
+    value: member.username,
+    name: member.name,
+    id: member.id,
+    username: member.username,
+    avatarUrl: member.avatar_url,
+  }));
 };
 
 export const fetchProjects = async (search) => {

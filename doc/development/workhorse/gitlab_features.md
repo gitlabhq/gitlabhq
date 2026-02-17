@@ -56,6 +56,27 @@ route and decorate certain requests to and from Web IDE assets.
 Because the Web IDE assets are static frontend assets, it's unnecessary
 overhead to rely on Rails for this effort.
 
+## 6. AI-assisted features (GitLab Duo Workflow)
+
+GitLab AI-assisted features, including GitLab Duo Chat and the GitLab Duo Agent Platform, rely on Workhorse
+to proxy requests to the GitLab Duo Workflow Service. Workhorse acts as a bridge between
+the GitLab Rails application and the GitLab Duo Workflow Service, enabling:
+
+- **WebSocket proxying**: Maintains long-lived WebSocket connections between clients
+  and the GitLab Duo Workflow Service for real-time AI interactions.
+- **HTTP request handling**: Intercepts and processes HTTP requests from the GitLab Duo
+  Workflow Service to the GitLab API, ensuring all requests are authenticated and
+  properly routed through the Rails application.
+- **MCP (Model Context Protocol) tool execution**: Manages communication with MCP
+  servers to provide the AI agent with access to tools and information about the
+  user's environment.
+- **GitLab Self-Managed and restricted network support**: By proxying requests through
+  Workhorse, GitLab Self-Managed instances and instances with network restrictions can
+  use AI features without requiring direct outbound connections from the GitLab Duo
+  Workflow Service.
+
+For detailed architecture information, see [AI-assisted features architecture](ai_assisted_features_architecture.md).
+
 ## Quick facts (how does Workhorse work)
 
 - Workhorse can handle some requests without involving Rails at all:
@@ -78,4 +99,4 @@ overhead to rely on Rails for this effort.
 - Workhorse does not clean up idle client connections.
 - We assume that all requests to Rails pass through Workhorse.
 
-For more information see ['A brief history of GitLab Workhorse'](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/).
+For more information see ['A brief history of GitLab Workhorse'](https://about.gitlab.com/blog/a-brief-history-of-gitlab-workhorse/).

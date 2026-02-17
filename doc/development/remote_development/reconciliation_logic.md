@@ -278,11 +278,8 @@ Failed workspace is terminated by the user which results in an Error actual stat
 
 Error workspace is stopped by the user which results in an Error actual state (for example, failed to apply Kubernetes resources).
 
-{{< alert type="note" >}}
-
-This transition might not be allowed.
-
-{{< /alert >}}
+> [!note]
+> This transition might not be allowed.
 
 |                     `request`                     | include `config_to_apply` in `workspace_rails_info` response? | `desired_state` | `actual_state` | `desired_state_updated_at` | `responded_to_agent_at` |
 |:-----------------------------------------------:|:---------------------------------------------------------:|:-------------:|:------------:|:------------------------:|:---------------------:|
@@ -295,11 +292,8 @@ This transition might not be allowed.
 
 Error workspace is terminated by the user which results in an Error actual state (for example, failed to apply Kubernetes resources).
 
-{{< alert type="note" >}}
-
-This transition might not be allowed. Further evaluation is needed to determine if uncleaned state is left behind if this isn't allowed. Consider what happens if the workspace was never created in the first place, or if the workspace was successfully created but entered the Error state while it was being stopped.
-
-{{< /alert >}}
+> [!note]
+> This transition might not be allowed. Further evaluation is needed to determine if uncleaned state is left behind if this isn't allowed. Consider what happens if the workspace was never created in the first place, or if the workspace was successfully created but entered the Error state while it was being stopped.
 
 |                     `request`                     | include `config_to_apply` in `workspace_rails_info` response? | `desired_state` | `actual_state` | `desired_state_updated_at` | `responded_to_agent_at` |
 |:-----------------------------------------------:|:---------------------------------------------------------:|:-------------:|:------------:|:------------------------:|:---------------------:|
@@ -354,8 +348,5 @@ Since Rails does not information about this workspace in the response to `agentk
 | `CURRENT_DB_STATE` - Workspace is in Running state |                             -                             |    Running    |   Running    |          05:00           |         05:01         |
 |     `AGENT_ACTION` - `agentk` reports no info      |                             N                             |    Running    |   Running    |          05:00           |         05:01         |
 
-{{< alert type="note" >}}
-
-The `Unknown` actual state has not been modeled yet because when that would occur and what would happen is not known. `Unknown` is a fail-safe state which should never occur ideally.
-
-{{< /alert >}}
+> [!note]
+> The `Unknown` actual state has not been modeled yet because when that would occur and what would happen is not known. `Unknown` is a fail-safe state which should never occur ideally.

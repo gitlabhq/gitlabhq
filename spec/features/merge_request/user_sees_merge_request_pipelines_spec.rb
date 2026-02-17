@@ -401,11 +401,12 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         context 'when detached merge request pipeline succeeds' do
           before do
             detached_merge_request_pipeline.reload.succeed!
-
-            wait_for_requests
           end
 
           it 'merges the merge request' do
+            expect(merge_request.reload).to be_merged
+            page.refresh
+
             expect(page).to have_content('Merged by')
             expect(page).to have_button('Revert')
           end

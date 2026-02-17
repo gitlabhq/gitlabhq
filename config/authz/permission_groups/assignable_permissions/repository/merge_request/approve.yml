@@ -1,0 +1,9 @@
+---
+name: approve_merge_request
+description: Grants the ability to approve merge requests
+boundaries:
+  - project
+permissions:
+  - approve_merge_request
+  - unapprove_merge_request
+  - reset_approvals_merge_request

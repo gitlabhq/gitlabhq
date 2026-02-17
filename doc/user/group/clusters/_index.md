@@ -12,12 +12,9 @@ title: Group-level Kubernetes clusters (certificate-based) (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
-use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
+> use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 
 Similar to [project-level](../../project/clusters/_index.md) and
 [instance-level](../../instance/clusters/_index.md) Kubernetes clusters,

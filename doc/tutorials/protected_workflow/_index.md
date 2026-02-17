@@ -34,7 +34,7 @@ example project named "Excelsior", and creates a minimal approval workflow for t
 
 ## Before you begin
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 - You need a list of managers and their email addresses.
 - You need a list of your backend and frontend engineers, and their email addresses.
 - You understand [semantic versioning](https://semver.org/) for branch names.
@@ -76,7 +76,7 @@ First, create the new subgroup:
    ![The engineering group in search results](img/search_engineering_v16_2.png)
 
 1. On the overview page for the `engineering` group, in the upper-right corner,
-   select **New subgroup**.
+   select **Create subgroup**.
 1. For the **Subgroup name**, enter `Managers`.
 1. Set the **Visibility level** to **Private**.
 1. Select **Create subgroup**.
@@ -164,12 +164,9 @@ the right subgroup. This example sets up four rules:
 - Frontend engineers should review changes to frontend files.
 - Backend engineers should review changes to backend files.
 
-{{< alert type="note" >}}
-
-GitLab Free supports only optional reviews. To make reviews required, you need
-GitLab Premium or Ultimate.
-
-{{< /alert >}}
+> [!note]
+> GitLab Free supports only optional reviews. To make reviews required, you need
+> GitLab Premium or Ultimate.
 
 To add a CODEOWNERS file to your `excelsior` project:
 
@@ -288,7 +285,7 @@ Now that all branch protections in place, you're ready to create your 1.0.0 rele
 
 1. On the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 

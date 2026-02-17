@@ -26,5 +26,5 @@ Explore our features to monitor your GitLab instance:
   server status using the health check endpoint.
   - [IP allowlists](ip_allowlist.md): Configure GitLab for monitoring endpoints that
     provide health check information when probed.
-- [`nginx_status`](https://docs.gitlab.com/omnibus/settings/nginx.html#enablingdisabling-nginx_status):
+- [`nginx_status`](https://docs.gitlab.com/omnibus/settings/nginx/#enablingdisabling-nginx_status):
   Monitor your NGINX server status.

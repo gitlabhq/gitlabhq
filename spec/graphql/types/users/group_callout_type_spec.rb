@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['UserGroupCallout'], feature_category: :shared do
+RSpec.describe GitlabSchema.types['UserGroupCallout'], feature_category: :user_management do
   specify { expect(described_class.graphql_name).to eq('UserGroupCallout') }
 
   it 'has all the required fields' do

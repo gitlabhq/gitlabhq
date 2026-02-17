@@ -308,4 +308,26 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
     it_behaves_like 'represents'
   end
+
+  describe '#preloaded_relations' do
+    subject(:preloaded_relations_result) { serializer.send(:preloaded_relations, **options) }
+
+    let(:options) { {} }
+
+    it 'includes manual_actions and scheduled_actions by default' do
+      hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
+
+      expect(hash_relation).to include(:manual_actions, :scheduled_actions)
+    end
+
+    context 'when disable_manual_and_scheduled_actions option is true' do
+      let(:options) { { disable_manual_and_scheduled_actions: true } }
+
+      it 'does not include manual_actions and scheduled_actions metadata' do
+        hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
+
+        expect(hash_relation).to include(manual_actions: [], scheduled_actions: [])
+      end
+    end
+  end
 end

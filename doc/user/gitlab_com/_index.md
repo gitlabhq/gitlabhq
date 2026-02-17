@@ -40,13 +40,10 @@ If you are near or over the repository size limit, you can:
 - [Reduce your repository size with Git](../project/repository/repository_size.md#methods-to-reduce-repository-size).
 - [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
-{{< alert type="note" >}}
-
-`git push` and GitLab project imports are limited to 5 GiB for each request through
-Cloudflare. Imports other than a file upload are not affected by
-this limit. Repository limits apply to both public and private projects.
-
-{{< /alert >}}
+> [!note]
+> `git push` and GitLab project imports are limited to 5 GiB for each request through
+> Cloudflare. Imports other than a file upload are not affected by
+> this limit. Repository limits apply to both public and private projects.
 
 ## Backups
 
@@ -339,12 +336,9 @@ Merge requests enforce these maximums:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -358,12 +352,9 @@ close the affected merge request and create a new merge request.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab limits each merge request to 1,000,000 (one million) diff commits.
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -376,7 +367,7 @@ GitLab.com sets these requirements for passwords on new accounts and password ch
 - Minimum character length 8 characters.
 - Maximum character length 128 characters.
 - All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
-  `[]`, `_`, `+`,  `=`, and `-`.
+  `[]`, `_`, `+`, `=`, and `-`.
 
 ## Group creation
 
@@ -449,12 +440,9 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 
 ## Rate limits on GitLab.com
 
-{{< alert type="note" >}}
-
-See [Rate limits](../../security/rate_limits.md) for administrator
-documentation.
-
-{{< /alert >}}
+> [!note]
+> See [Rate limits](../../security/rate_limits.md) for administrator
+> documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
@@ -622,7 +610,7 @@ see [SSH maximum number of connections](#ssh-maximum-number-of-connections).
 ### Alternative SSH port
 
 GitLab.com can be reached by using a
-[different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
+[different SSH port](https://about.gitlab.com/blog/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
 
 | Setting    | Value               |
 |------------|---------------------|
@@ -680,7 +668,8 @@ The following limits apply for [webhooks](../project/integrations/webhooks.md).
 
 ### Rate limits
 
-For each top-level namespace, the number of times each minute that a webhook can be called.
+The number of times each minute that webhooks in a top-level namespace can be called.
+All project and group webhooks in the namespace share this limit.
 The limit varies depending on your plan and the number of seats in your subscription.
 
 | Plan                                                   | Default for GitLab.com |
@@ -692,6 +681,9 @@ The limit varies depending on your plan and the number of seats in your subscrip
 | GitLab Ultimate and open source, `999` seats or fewer  | `6,000`                |
 | GitLab Ultimate and open source, `1,000-4,999` seats   | `9,000`                |
 | GitLab Ultimate and open source, `5,000` seats or more | `13,000`               |
+
+When the rate limit is reached, all webhooks in the namespace are temporarily disabled and
+automatically re-enabled in the next minute.
 
 ### Security policy limits
 

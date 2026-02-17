@@ -1,0 +1,5 @@
+---
+name: create_merge_request_discussion_note
+description: Grants the ability to create notes in merge request discussions
+boundaries:
+  - project

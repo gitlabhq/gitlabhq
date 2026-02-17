@@ -168,16 +168,15 @@ To access AWS Bedrock models:
    - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
 
 1. Authenticate your AI Gateway instance by exporting the appropriate AWS SDK
-   environment variables such as [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting
-   the Docker container.
+   environment variables when starting the Docker container. You can use either:
+
+   - `AWS_BEARER_TOKEN_BEDROCK` (see [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html))
+   - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION_NAME` (see [IAM credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html))
 
    For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
 
-   {{< alert type="note" >}}
-
-   Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
-
-   {{< /alert >}}
+   > [!note]
+   > Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
 
 1. Optional. To set up a private Bedrock endpoint operating in a virtual private cloud (VPC),
    make sure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured

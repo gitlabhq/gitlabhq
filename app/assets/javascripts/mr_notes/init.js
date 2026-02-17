@@ -65,9 +65,9 @@ export function initMrStateLazyLoad() {
     // this is due to them having a shared controller with the Overview page
     if (['diffs', 'show'].includes(useMrNotes(pinia).activeTab)) {
       eventHub.$once('fetchNotesData', () => useNotes().fetchNotes());
+      eventHub.$once('fetchedNotesData', () => initOverviewTabCounter());
 
       requestIdleCallback(() => {
-        initOverviewTabCounter();
         initDiscussionCounter();
       });
       pageInitialized = true;

@@ -7,6 +7,7 @@ module Profiles
 
     before_action :check_passkeys_available!
     skip_before_action :check_two_factor_requirement
+    before_action :check_passkey_authentication_allowed!, only: [:new, :create]
     before_action :validate_current_password,
       only: [:create, :destroy],
       if: :current_password_required?
@@ -72,6 +73,10 @@ module Profiles
 
     def check_passkeys_available!
       render_404 unless Feature.enabled?(:passkeys, current_user)
+    end
+
+    def check_passkey_authentication_allowed!
+      render_403 unless current_user.allow_passkey_authentication?
     end
 
     def current_password_required?

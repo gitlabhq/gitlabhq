@@ -18,16 +18,16 @@ GitLab Dedicated has two separate authentication contexts:
 - Switchboard authentication: How administrators sign in to manage GitLab Dedicated instances.
 - Instance authentication: How end users sign in to your GitLab Dedicated instance.
 
+Switchboard is the management console for your GitLab Dedicated instance, separate from the instance itself.
+
 ## Switchboard authentication
 
-Administrators use GitLab Dedicated Switchboard to manage instances, users, and configuration.
+Administrators use Switchboard to manage instances, users, and configuration.
 
 Switchboard supports these authentication methods:
 
 - Single sign-on (SSO) with SAML or OIDC
-- Standard GitLab.com accounts
-
-For information about Switchboard user management, see [manage users and notifications](../users_notifications.md).
+- Email and password
 
 ### Configure Switchboard SSO
 
@@ -96,15 +96,6 @@ GitLab provides the following information for you to configure in your identity 
 
 Additional configuration details might be required depending on your OIDC provider.
 
-## Instance authentication
-
-Configure how your organization's users authenticate to your GitLab Dedicated instance.
-
-Your GitLab Dedicated instance supports these authentication methods:
-
-- [Configure SAML SSO](saml.md)
-- [Configure OIDC](openid_connect.md)
-
 ### Troubleshooting
 
 When configuring SAML SSO for Switchboard, you might encounter the following issues.
@@ -120,3 +111,12 @@ Invalid SAML response received: Responses must contain exactly one Encrypted Ass
 
 To resolve this issue, ensure the encryption certificate provided by GitLab
 is imported and enabled in your IdP application settings.
+
+## Instance authentication
+
+Configure how your organization's users authenticate to your GitLab Dedicated instance.
+
+Your GitLab Dedicated instance supports these authentication methods:
+
+- [Configure SAML SSO](saml.md)
+- [Configure OIDC](openid_connect.md)

@@ -202,9 +202,11 @@ export default {
         :file-hash="discussion.diff_file.file_hash"
         :project-path="projectPath"
       >
-        <template #image-overlay="{ renderedWidth, renderedHeight }">
+        <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
           <image-diff-overlay
             v-if="renderedWidth"
+            :width="width"
+            :height="height"
             :rendered-width="renderedWidth"
             :rendered-height="renderedHeight"
             :discussions="discussion"

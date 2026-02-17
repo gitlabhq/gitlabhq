@@ -1,8 +1,7 @@
 <script>
-import { GlButton, GlFormGroup, GlIcon } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlIcon, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
 
@@ -11,7 +10,7 @@ export default {
     GlButton,
     GlFormGroup,
     GlIcon,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
   },
@@ -191,12 +190,12 @@ export default {
 </script>
 
 <template>
-  <multi-step-form-template
+  <gl-multi-step-form-template
     :title="option.title"
     :current-step="2"
     :steps-total="selectedImportStepsTotal"
   >
-    <template #form>
+    <template #default>
       <gl-form-group :label="s__('ProjectsNew|Import project from')">
         <single-choice-selector :checked="selectedImport.name" @change="selectImport">
           <template v-for="item in availableImportOptions">
@@ -243,5 +242,5 @@ export default {
         {{ __('Go back') }}
       </gl-button>
     </template>
-  </multi-step-form-template>
+  </gl-multi-step-form-template>
 </template>

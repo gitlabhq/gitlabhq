@@ -22,6 +22,7 @@ export default ({ el, router }) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'WebIdeButtonRoot',
     router,
     apolloProvider,
     provide: {

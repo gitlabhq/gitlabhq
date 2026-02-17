@@ -1,0 +1,7 @@
+---
+name: create_environment
+description: Grants the ability to create environments in a project
+boundaries:
+  - project
+permissions:
+  - create_environment

@@ -84,6 +84,10 @@ If you are able to sign in to the web interface for the **primary** site, but yo
 when attempting to sign in to a **secondary** web interface, you should verify the Geo
 site's URL matches its external URL.
 
+Prerequisites:
+
+- Administrator access.
+
 On the **primary** site:
 
 1. In the upper-right corner, select **Admin**.

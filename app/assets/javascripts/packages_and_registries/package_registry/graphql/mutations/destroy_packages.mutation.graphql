@@ -1,3 +1,5 @@
+# @feature_category: package_registry
+
 mutation destroyPackages($ids: [PackagesPackageID!]!) {
   destroyPackages(input: { ids: $ids }) {
     errors

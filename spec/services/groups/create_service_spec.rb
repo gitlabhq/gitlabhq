@@ -26,7 +26,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     specify do
       expect { response }.to change { Group.count }
       expect(response).to be_success
-      expect(created_group.namespace_details.creator).to eq(current_user)
+      expect(created_group.creator).to eq(current_user)
     end
   end
 
@@ -136,16 +136,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
       describe 'handling of allow_runner_registration_token default' do
         context 'when on self-managed' do
-          it 'does not disallow runner registration token' do
-            expect(created_group.allow_runner_registration_token?).to eq true
-          end
-        end
-
-        context 'when instance is dedicated' do
-          before do
-            stub_application_setting(gitlab_dedicated_instance: true, allow_immediate_namespaces_deletion: false)
-          end
-
           it 'does not disallow runner registration token' do
             expect(created_group.allow_runner_registration_token?).to eq true
           end

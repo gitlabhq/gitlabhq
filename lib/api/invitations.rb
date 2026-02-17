@@ -39,6 +39,7 @@ module API
 
           use :invitation_params_ee
         end
+        route_setting :authorization, permissions: :create_invitation, boundary_type: source_type.to_sym
         post ":id/invitations", urgency: :low do
           ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/354016')
 
@@ -65,6 +66,7 @@ module API
           optional :query, type: String, desc: 'A query string to search for members'
           use :pagination
         end
+        route_setting :authorization, permissions: :read_invitation, boundary_type: source_type.to_sym
         get ":id/invitations" do
           source = find_source(source_type, params[:id])
           query = params[:query]
@@ -87,6 +89,7 @@ module API
 
           use :invitation_params_ee
         end
+        route_setting :authorization, permissions: :update_invitation, boundary_type: source_type.to_sym
         put ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params.delete(:id))
           invite_email = params[:email]
@@ -125,6 +128,7 @@ module API
         params do
           requires :email, type: String, desc: 'The email address of the invitation'
         end
+        route_setting :authorization, permissions: :delete_invitation, boundary_type: source_type.to_sym
         delete ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params[:id])
           invite_email = params[:email]

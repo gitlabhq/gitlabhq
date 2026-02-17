@@ -82,7 +82,7 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL/OpenSUSE
-- Ruby (MRI) 3.2.5
+- Ruby (MRI) 3.3.10
 - Git 2.33+
 - Redis 6.0+
 - PostgreSQL 16.5+

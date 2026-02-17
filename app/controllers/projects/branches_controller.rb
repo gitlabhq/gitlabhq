@@ -75,7 +75,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def create
     branch_name = strip_tags(sanitize(params[:branch_name]))
-    branch_name = Addressable::URI.unescape(branch_name)
+    branch_name = safe_unescape(branch_name)
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
 
@@ -183,10 +183,20 @@ class Projects::BranchesController < Projects::ApplicationController
   def ref
     if params[:ref]
       ref_escaped = strip_tags(sanitize(params[:ref]))
-      Addressable::URI.unescape(ref_escaped)
+      safe_unescape(ref_escaped)
     else
       @project.default_branch_or_main
     end
+  end
+
+  # Safely unescape URI-encoded branch names.
+  # Handles branch names with slashes (e.g., feature%2Flogin -> feature/login)
+  # while preserving literal percent characters (e.g., test%ab stays test%ab).
+  # If unescaping produces invalid UTF-8, the percent was meant to be literal.
+  # Returns a plain String (not SafeBuffer) for Gitaly compatibility.
+  def safe_unescape(name)
+    unescaped = Addressable::URI.unescape(name)
+    unescaped.valid_encoding? ? unescaped : name.to_str
   end
 
   def url_to_autodeploy_setup(project, branch_name)

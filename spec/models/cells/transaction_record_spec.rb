@@ -75,24 +75,28 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
 
     context "when after lease is created" do
       let(:lease) { instance_double(Cells::OutstandingLease) }
+      let(:metadata) { { bucket: { value: 'meta' }, record: lease } }
 
       before do
+        record.create_record(metadata)
         allow(Cells::OutstandingLease).to receive_messages(create_from_request!: lease, connection: connection)
         record.before_committed!
       end
 
       it "raises if create_record is called" do
-        expect { record.create_record("meta") }.to raise_error(described_class::Error, "Lease already created")
+        expect { record.create_record(metadata) }.to raise_error(described_class::Error, "Lease already created")
       end
 
       it "raises if destroy_record is called" do
-        expect { record.destroy_record("meta") }.to raise_error(described_class::Error, "Lease already created")
+        expect { record.destroy_record(metadata) }.to raise_error(described_class::Error, "Lease already created")
       end
     end
   end
 
   describe "transaction lifecycle callbacks" do
     let(:record) { described_class.new(connection, transaction) }
+    let(:metadata) { { bucket: { value: 'meta' }, record: record } }
+
     let(:lease) do
       instance_double(Cells::OutstandingLease, send_commit_update!: nil, send_rollback_update!: nil, destroy!: nil)
     end
@@ -103,8 +107,10 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
 
     describe "#before_committed!" do
       it "creates a lease" do
+        record.create_record(metadata)
+
         expect(Cells::OutstandingLease).to receive(:create_from_request!).with(
-          create_records: [],
+          create_records: [{ bucket: { value: 'meta' } }],
           destroy_records: [],
           deadline: "fake-deadline"
         ).and_return(lease)
@@ -115,6 +121,7 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
 
       it "raises if already done" do
         allow(Cells::OutstandingLease).to receive(:create_from_request!).and_return(lease)
+        record.create_record(metadata)
         record.before_committed!
         record.committed!
         expect { record.before_committed! }.to raise_error(described_class::Error, "Already done")
@@ -122,11 +129,13 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
 
       it "raises if lease already created" do
         allow(Cells::OutstandingLease).to receive(:create_from_request!).and_return(lease)
+        record.create_record(metadata)
         record.before_committed!
         expect { record.before_committed! }.to raise_error(described_class::Error, "Already created lease")
       end
 
       it "raises if connection mismatch" do
+        record.create_record(metadata)
         allow(Cells::OutstandingLease)
           .to receive(:connection)
           .and_return(instance_double(Gitlab::Database::LoadBalancing::ConnectionProxy))
@@ -153,15 +162,16 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           allow(Cells::OutstandingLease).to receive(:create_from_request!).and_raise(grpc_error)
         end
 
-        it "adds error to created records and raises Rollback" do
-          expect { record.before_committed! }.to raise_error(ActiveRecord::Rollback)
-          expect(model.errors[:path]).to include("has already been taken")
+        it "adds error to created records and raises Error" do
+          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+          expect(model.errors[:base]).to include("path has already been taken")
         end
       end
     end
 
     describe "#committed!" do
       before do
+        record.create_record(metadata)
         allow(Cells::OutstandingLease).to receive(:create_from_request!).and_return(lease)
         record.before_committed!
       end
@@ -180,7 +190,13 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
 
       it "raises if no lease created" do
         new_record = described_class.new(connection, transaction)
+        new_record.create_record(metadata)
         expect { new_record.committed! }.to raise_error(described_class::Error, "No lease created")
+      end
+
+      it "does nothing if no records were added" do
+        new_record = described_class.new(connection, transaction)
+        expect { new_record.committed! }.not_to raise_error
       end
     end
 
@@ -190,9 +206,12 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
       end
 
       it "sends rollback update and destroys lease" do
+        record.create_record(metadata)
         record.before_committed!
+
         expect(lease).to receive(:send_rollback_update!).with(deadline: "fake-deadline")
         expect(lease).to receive(:destroy!)
+
         record.rolledback!
         expect(record.send(:done)).to be true
       end
@@ -203,8 +222,10 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
       end
 
       it "raises if already done" do
+        record.create_record(metadata)
         record.before_committed!
         record.rolledback!
+
         expect { record.rolledback! }.to raise_error(described_class::Error, "Already done")
       end
     end

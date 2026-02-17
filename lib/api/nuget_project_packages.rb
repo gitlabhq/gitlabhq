@@ -200,6 +200,10 @@ module API
       end
     end
 
+    def self.boundary_type
+      :project
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
@@ -239,8 +243,9 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
+            route_setting :authorization, permissions: :read_nuget_package, boundary_type: :project
             get 'index', format: :json, urgency: :low do
               present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages),
                 with: ::API::Entities::Nuget::PackagesVersions
@@ -254,7 +259,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
             params do
               requires :package_version, type: String, desc: 'The NuGet package version',
@@ -262,6 +267,7 @@ module API
               requires :package_filename, type: String, desc: 'The NuGet package filename',
                 regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
             end
+            route_setting :authorization, permissions: :download_nuget_package, boundary_type: :project
             get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
               package = find_package
               filename = format_filename(package)
@@ -306,12 +312,13 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
 
           params do
             use :file_params
           end
+          route_setting :authorization, permissions: :upload_nuget_package, boundary_type: :project
           put urgency: :low do
             publish_package
           end
@@ -324,8 +331,9 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
+          route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
           put 'authorize', urgency: :low do
             authorize_nuget_upload
           end
@@ -340,11 +348,12 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           params do
             use :file_params
           end
+          route_setting :authorization, permissions: :upload_nuget_package, boundary_type: :project
           put 'symbolpackage', urgency: :low do
             publish_package(symbol_package: true)
           end
@@ -357,8 +366,9 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
+          route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
           put 'symbolpackage/authorize', urgency: :low do
             authorize_nuget_upload
           end
@@ -371,7 +381,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           params do
             requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
@@ -379,6 +389,7 @@ module API
             requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
               regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.0.1' }
           end
+          route_setting :authorization, permissions: :delete_nuget_package, boundary_type: :project
           delete '*package_name/*package_version', format: false, urgency: :low do
             authorize_destroy_package!(project_or_group)
 
@@ -405,12 +416,13 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
 
             params do
               use :file_params
             end
+            route_setting :authorization, permissions: :upload_nuget_package, boundary_type: :project
             put do
               publish_package
             end
@@ -423,9 +435,10 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
 
+            route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
             put 'authorize', urgency: :low do
               authorize_nuget_upload
             end
@@ -448,7 +461,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
 
         params do
@@ -456,6 +469,7 @@ module API
             desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
             documentation: { example: 'mynugetpkg' }
         end
+        route_setting :authorization, skip_granular_token_authorization: true
         get 'FindPackagesById\(\)', urgency: :low do
           present_odata_entry
         end
@@ -468,7 +482,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
 
         params do
@@ -477,6 +491,7 @@ module API
             desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
             documentation: { example: 'mynugetpkg' }
         end
+        route_setting :authorization, skip_granular_token_authorization: true
         get 'Packages\(\)', urgency: :low do
           present_odata_entry
         end
@@ -489,7 +504,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
         params do
           requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
@@ -497,6 +512,7 @@ module API
           requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
             regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.3.0.17' }
         end
+        route_setting :authorization, skip_granular_token_authorization: true
         get 'Packages\(Id=\'*package_name\',Version=\'*package_version\'\)', urgency: :low do
           present_odata_entry
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :database do
+RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organization, feature_category: :database do
   let(:admin) { create(:admin) }
 
   describe 'GET /admin/batched_background_migrations/:id' do
@@ -25,6 +25,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
         expect(json_response['status']).to eq('paused')
         expect(json_response['job_class_name']).to eq(migration.job_class_name)
         expect(json_response['progress']).to be_zero
+        expect(json_response['estimated_time_remaining']).to be_nil
       end
     end
 
@@ -51,7 +52,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
         show_migration
       end
 
-      context 'when migration has completed jobs' do
+      context 'when migration has completed jobs', :freeze_time do
         let(:migration) do
           Gitlab::Database::SharedModel.using_connection(ci_model.connection) do
             create(:batched_background_migration, :active, total_tuple_count: 100)
@@ -60,15 +61,21 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
 
         let!(:batched_job) do
           Gitlab::Database::SharedModel.using_connection(ci_model.connection) do
-            create(:batched_background_migration_job, :succeeded, batched_migration: migration, batch_size: 8)
+            create(:batched_background_migration_job, :succeeded,
+              batched_migration: migration,
+              batch_size: 50,
+              started_at: 60.seconds.ago,
+              finished_at: Time.current
+            )
           end
         end
 
-        it 'calculates the progress using the CI database' do
+        it 'calculates the progress and estimated time remaining using the CI database' do
           show_migration
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['progress']).to eq(8)
+          expect(json_response['progress']).to eq(50)
+          expect(json_response['estimated_time_remaining']).to eq('2 minutes')
         end
       end
     end
@@ -103,14 +110,19 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
           expect(json_response.first['column_name']).to eq(migration.column_name)
           expect(json_response.first['status']).to eq(migration.status_name.to_s)
           expect(json_response.first['progress']).to be_zero
+          expect(json_response.first['estimated_time_remaining']).to be_nil
         end
       end
 
-      context 'when multiple database is enabled', :add_ci_connection do
+      context 'when multiple database is enabled' do
         let(:database) { :ci }
         let(:schema) { :gitlab_ci }
         let(:ci_model) { Ci::ApplicationRecord }
         let(:params) { { database: database } }
+
+        before do
+          skip_if_multiple_databases_not_setup
+        end
 
         context 'when CI database is provided' do
           let(:db_config) do
@@ -158,6 +170,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
               expect(json_response.first['column_name']).to eq(ci_database_migration.column_name)
               expect(json_response.first['status']).to eq(ci_database_migration.status_name.to_s)
               expect(json_response.first['progress']).to be_zero
+              expect(json_response.first['estimated_time_remaining']).to be_nil
             end
           end
         end

@@ -12,12 +12,9 @@ title: Connect EKS clusters through cluster certificates (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
-to create new clusters.
-
-{{< /alert >}}
+> [!warning]
+> This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
+> to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
 Kubernetes Service (EKS).
@@ -172,11 +169,8 @@ create another IAM role (**role B**) for GitLab authentication with AWS:
 
 After about 10 minutes, your cluster is ready to go.
 
-{{< alert type="note" >}}
-
-If you have [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl) `kubectl` and you would like to manage your cluster with it, you must add your AWS external ID in the AWS configuration. For more information on how to configure AWS CLI, see [using an IAM role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount).
-
-{{< /alert >}}
+> [!note]
+> If you have [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl) `kubectl` and you would like to manage your cluster with it, you must add your AWS external ID in the AWS configuration. For more information on how to configure AWS CLI, see [using an IAM role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount).
 
 #### Cluster settings
 
@@ -263,6 +257,10 @@ For example, the following policy document allows assuming a role whose name sta
 
 ### Configure Amazon authentication
 
+Prerequisites:
+
+- Administrator access.
+
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
@@ -336,11 +334,8 @@ If the `Cluster` resource failed with the error
 `The provided role doesn't have the Amazon EKS Managed Policies associated with it.`,
 the role specified in **Role name** is not configured correctly.
 
-{{< alert type="note" >}}
-
-This role should be the role you created by following the
-[EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
-In addition to the policies that guide suggests, you must also include the
-`AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.
-
-{{< /alert >}}
+> [!note]
+> This role should be the role you created by following the
+> [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
+> In addition to the policies that guide suggests, you must also include the
+> `AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.

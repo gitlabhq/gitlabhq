@@ -23,6 +23,69 @@ If you notice replication or verification failures in `Admin > Geo > Sites` or t
 
 Before attempting manual retries, you can use these enhanced diagnostic procedures to better understand the scope and nature of synchronization issues.
 
+### Model status check
+
+This procedure provides detailed status information for all [Geo data type Model classes](#geo-data-type-model-classes) and helps identify checksumming failures. These failures happen when the checksum of a replicable object could not be computed. They are also sometimes called "primary verification failures".
+
+You can view the checksum failures either from the UI or the Rails console.
+
+{{< tabs >}}
+
+{{< tab title="UI" >}}
+
+On the **primary** site, use the [Data Management page](../../../admin_area.md#data-management).
+
+{{< /tab >}}
+
+{{< tab title="Rails console" >}}
+
+You can use the following script to output detailed information for each model type, including:
+
+- Total count of records
+- Number of failed, verified, and pending records
+- Sample failed records for investigation
+
+> [!note]
+> The `ModelMapper` class was added in [GitLab 18.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196293).
+> For older versions, you need to manually specify the list of [Geo data type Model classes](#geo-data-type-model-classes).
+
+1. On the **primary** site, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following script to get a comprehensive overview:
+
+   ```ruby
+   def output_geo_verification_failures
+     model_classes = ::Gitlab::Geo::ModelMapper.available_models
+
+     model_classes.each do |klass|
+       total = klass.count
+       state_klass = klass.verification_state_table_class
+       failed_examples = []
+
+       puts "\n=== #{klass.name} ==="
+       puts "Total: #{total}"
+       ::Geo::VerificationState::VERIFICATION_STATE_VALUES.each do |key, value|
+         records = state_klass.where(verification_state: value)
+         failed_examples = records if key == 'verification_failed'
+
+         puts "#{key.gsub('verification_', '').camelize}: #{records.size}"
+       end
+
+       if failed_examples.any?
+         puts "\nSample failed records:"
+         failed_examples.limit(3).each { |record| puts "  ID: #{record.id}, Checksum: #{record.verification_checksum || 'nil'}, Error: #{record.verification_failure}" }
+       end
+     end
+
+     nil
+   end
+
+   output_geo_verification_failures
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Registry status check
 
 This procedure provides detailed status information for all Geo registry types and helps identify patterns in failures.
@@ -90,12 +153,9 @@ replication or verification for individual records synchronously or asynchronous
 
 #### Obtaining a Replicator instance
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
 
 Before you can perform any sync or verify operations, you need to obtain a Replicator instance.
 
@@ -307,13 +367,10 @@ When component resources fail to sync or verify, you can trigger bulk actions to
 These actions reset the retry count and schedule time back to 0, causing the system to process the failed resources
 sooner rather than waiting up to 1 hour.
 
-{{< alert type="note" >}}
-
-These actions don't immediately process the resources. Instead, they re-queue the background jobs that
-handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
-replication process.
-
-{{< /alert >}}
+> [!note]
+> These actions don't immediately process the resources. Instead, they re-queue the background jobs that
+> handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
+> replication process.
 
 #### How resync and reverification works
 
@@ -358,21 +415,15 @@ You can recalculate the primary site's checksum from the UI:
 1. Select the desired component in the dropdown list.
 1. Select **Checksum all**.
 
-{{< alert type="warning" >}}
-
-**Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
-It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
-
-{{< /alert >}}
+> [!warning]
+> **Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
+> It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
 
 #### From the Rails console
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
 
 The following sections describe how to use internal application commands in the
 [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause bulk
@@ -441,12 +492,9 @@ remain and can cause frictions. Geo secondaries might continue to try
 replicating those files as they are still referenced in the database but no
 longer exist.
 
-{{< alert type="note" >}}
-
-In case of a recent migration from local to object storage, see the dedicated
-[object storage troubleshooting section](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
-
-{{< /alert >}}
+> [!note]
+> In case of a recent migration from local to object storage, see the dedicated
+> [object storage troubleshooting section](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
 
 #### Identify inconsistencies
 
@@ -574,7 +622,12 @@ Repeat the steps for all affected resources and Geo data types.
 
 ### Message: `"Error during verification","error":"File is not checksummable"`
 
-The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
+The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Since GitLab 18.9, the error message includes additional details about the cause:
+
+- `File is not checksummable - file does not exist at: <path>`: The file is missing from storage. The path shown helps identify the missing file.
+- `File is not checksummable - <ModelClass> <ID> is excluded from verification`: The record is excluded from the verification scope.
+
+Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
 
 ### Failed verification of Uploads on the primary Geo site
 
@@ -632,6 +685,71 @@ And to actually delete the orphaned upload rows:
 ```ruby
 delete_orphaned_uploads(dry_run: false)
 ```
+
+### Orphaned exclusive lease keys blocking repository sync
+
+Repository synchronization may be blocked when an exclusive lease key is orphaned, preventing sync operations for up to 8 hours.
+
+**Symptoms:**
+
+- Repository sync blocked: the replication state of the affected repository alternates between `pending` and `failed` states.
+- Increased count of log lines with "Cannot obtain an exclusive lease" message in `geo.log`.
+- No active sync job running for the affected repository.
+- Affects a single repository for up to 8 hours until the lease expires.
+
+**Diagnosis:**
+
+1. Confirm the repository is not actively syncing by checking the Geo admin interface.
+1. Check `geo.log` for an increased amount of "Cannot obtain an exclusive lease" messages:
+
+   ```shell
+   grep "Cannot obtain an exclusive lease" /var/log/gitlab/geo/geo.log
+   ```
+
+1. Verify that all these log lines include a `lease_key` field with value
+   `geo_sync_ssf_service:project_repository:<repository id>`, where `<repository id>`
+   is the unique ID of the affected repository.
+1. Verify no active sync jobs are running in Sidekiq for the affected repository.
+
+**Workaround:**
+
+> [!warning]
+> The recommended approach is to wait for the 8-hour lease expiration. Manual lease release should only be used when
+> immediate sync is critical and you have confirmed no sync job is actively running.
+
+To manually release an orphaned lease key:
+
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
+1. Find the project ID of the affected repository (replace `<project-path>` with the actual project path):
+
+   ```ruby
+   project = Project.find_by_full_path('<project-path>')
+   project_id = project.id
+   ```
+
+1. In the same session, release the orphaned lease:
+
+   ```ruby
+   replicator = Geo::ProjectRepositoryRegistry.find_by(project_id: project_id).replicator
+   sync_service = Geo::FrameworkRepositorySyncService.new(replicator)
+   uuid = Gitlab::ExclusiveLease.get_uuid(sync_service.lease_key)
+
+   if uuid
+     Gitlab::ExclusiveLease.cancel(sync_service.lease_key, uuid)
+     puts "Lease released for project ID #{project_id}"
+   else
+     puts "No active lease found for project ID #{project_id}"
+   end
+   ```
+
+1. Verify the lease was released and trigger a new sync:
+
+   ```ruby
+   replicator.sync
+   ```
+
+> [!note]
+> After releasing the lease, the repository sync will be retried according to the normal Geo sync schedule, or you can manually trigger a sync as shown above.
 
 ### Error: `Error syncing repository: 13:fatal: could not read Username`
 
@@ -780,12 +898,9 @@ specific to GitLab Geo or Gitaly. For more information, see
    - Fix the URLs in the `.gitmodules` file
    - Push a commit with valid URLs
 
-{{< alert type="warning" >}}
-
-After the fix, all developers working on the affected projects must remove their current local copies
-and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
-
-{{< /alert >}}
+> [!warning]
+> After the fix, all developers working on the affected projects must remove their current local copies
+> and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
 
 ### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
 
@@ -1261,13 +1376,10 @@ This requires infrastructure team intervention to add the `ListBucket` permissio
 
 ### Message: `Synchronization failed - Error syncing repository`
 
-{{< alert type="warning" >}}
-
-If large repositories are affected by this problem,
-their resync may take a long time and cause significant load on your Geo sites,
-storage and network systems.
-
-{{< /alert >}}
+> [!warning]
+> If large repositories are affected by this problem,
+> their resync may take a long time and cause significant load on your Geo sites,
+> storage and network systems.
 
 The following error message indicates a consistency check error when syncing the repository:
 
@@ -1465,13 +1577,10 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true)
 
 ## Hard delete a repository from Gitaly Cluster and resync
 
-{{< alert type="warning" >}}
-
-This procedure is risky, and heavy-handed. Use it as a last resort only when other
-troubleshooting methods have failed. This procedure causes temporary data loss until the
-repository is resynced.
-
-{{< /alert >}}
+> [!warning]
+> This procedure is risky, and heavy-handed. Use it as a last resort only when other
+> troubleshooting methods have failed. This procedure causes temporary data loss until the
+> repository is resynced.
 
 This procedure deletes the repository from the secondary site's Gitaly cluster, and re-syncs it.
 You should consider using it only if you understand the risks, and if these conditions are all true:
@@ -1680,21 +1789,15 @@ to start again from scratch, there are a few steps that can help you:
 
    {{< /tabs >}}
 
-   {{< alert type="note" >}}
-
-   You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
-   as soon as you confirmed that you don't need it anymore, to save disk space.
-
-   {{< /alert >}}
+   > [!note]
+   > You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+   > as soon as you confirmed that you don't need it anymore, to save disk space.
 
 1. Optional. Rename other data folders and create new ones.
 
-   {{< alert type="warning" >}}
-
-   You may still have files on the **secondary** site that have been removed from the **primary** site, but this
-   removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
-
-   {{< /alert >}}
+   > [!warning]
+   > You may still have files on the **secondary** site that have been removed from the **primary** site, but this
+   > removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
 
    Any uploaded content (like file attachments, avatars, or LFS objects) is stored in a
    subfolder in one of these paths:
@@ -1726,11 +1829,8 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Reset the Tracking Database.
 
-   {{< alert type="warning" >}}
-
-   If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
 
    ```shell
    gitlab-rake db:drop:geo DISABLE_DATABASE_ENVIRONMENT_CHECK=1   # on a secondary app node

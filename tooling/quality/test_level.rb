@@ -16,6 +16,7 @@ module Quality
         frontend/fixtures
       ],
       unit: %w[
+        active_context
         bin
         cells
         channels

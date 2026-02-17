@@ -385,7 +385,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
   end
 
-  context 'jh mainland production ' do
+  context 'jh mainland production' do
     before do
       allow(GitlabEdition).to receive(:jh?).and_return(true)
       QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com/')
@@ -422,7 +422,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
   end
 
-  context 'jh hk production ' do
+  context 'jh hk production' do
     before do
       allow(GitlabEdition).to receive(:jh?).and_return(true)
       QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk/')
@@ -461,7 +461,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
 
   it 'outputs a message for invalid environments' do
     group = describe_successfully do
-      it('will skip', only: :production) {}
+      it('skips', only: :production) {}
     end
 
     expect(group.examples.first.execution_result.pending_message).to match(/[Tt]est.*not compatible.*environment/)

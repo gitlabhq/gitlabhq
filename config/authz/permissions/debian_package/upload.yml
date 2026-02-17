@@ -1,0 +1,5 @@
+---
+name: upload_debian_package
+description: Grants the ability to upload Debian package files
+boundaries:
+  - project

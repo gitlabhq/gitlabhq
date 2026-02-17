@@ -45,7 +45,7 @@ A real scenario:
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     accTitle: Schema dump comparison fails after rollback
-    accDescr: Diagram showing how schema dump comparison failures occur if a working branch is behind the target branch 
+    accDescr: Diagram showing how schema dump comparison failures occur if a working branch is behind the target branch
 
     Main((main<br>commit A)) ===> |remove constraint<br>fk_rails_dbebdaa8fe| MainB((main<br>commit B))
     Main((main<br>commit A)) --> |checkout<br>dev| DevA((dev<br>commit A)):::dev

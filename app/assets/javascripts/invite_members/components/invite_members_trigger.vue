@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', { source: this.triggerSource });
+      eventHub.$emit('open-modal', { source: this.triggerSource });
     },
     handleDisclosureDropdownAction() {
       this.openModal();

@@ -23,6 +23,7 @@ export const TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN = 'dropdown-text';
 export const INVITE_MEMBER_MODAL_TRACKING_CATEGORY = 'invite_members_modal';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY = 'invite_project_members_modal';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL = 'project-members-page';
+export const INVITE_GROUP_MODAL_TRACKING_CATEGORY = 'invite_group_modal';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
 export const MEMBERS_MODAL_ROLE_SELECT_LABEL = s__('InviteMembersModal|Select a role');
 export const MEMBERS_MODAL_CELEBRATE_TITLE = s__(

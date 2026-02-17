@@ -35,15 +35,12 @@ possible, use all the security scanners. For a comparison of these features, see
 
 GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) security scanner to perform vulnerability static analysis in containers.
 
-{{< alert type="warning" >}}
-
-The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
-[statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
-The existing current major version for the Grype analyzer image will continue to be updated with the
-latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
-will stop working.
-
-{{< /alert >}}
+> [!warning]
+> The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
+> [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+> The existing current major version for the Grype analyzer image will continue to be updated with the
+> latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
+> will stop working.
 
 ## Features
 
@@ -96,13 +93,10 @@ To enable the analyzer, either:
 This method automatically prepares a merge request that includes the container scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable container scanning.
 
-{{< alert type="note" >}}
-
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
-If you have a complex GitLab configuration file it might not be parsed successfully, and an error
-might occur. In that case, use the manual method instead.
-
-{{< /alert >}}
+> [!note]
+> This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+> If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+> might occur. In that case, use the manual method instead.
 
 To enable container scanning:
 
@@ -277,13 +271,10 @@ See [Use security scanning tools with merge request pipelines](../detect/securit
 To customize container scanning, use CI/CD variables. The following table lists CI/CD variables
 specific to container scanning. You can also use any of the [predefined CI/CD variables](../../../ci/variables/predefined_variables.md).
 
-{{< alert type="warning" >}}
-
-Test customization of GitLab analyzers in a merge request before merging these changes to the
-default branch. Failure to do so can give unexpected results, including a large number of false
-positives.
-
-{{< /alert >}}
+> [!warning]
+> Test customization of GitLab analyzers in a merge request before merging these changes to the
+> default branch. Failure to do so can give unexpected results, including a large number of false
+> positives.
 
 | CI/CD Variable                           | Default                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                   |
 |------------------------------------------|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -651,7 +642,7 @@ see [getting started](#getting-started).
 
 By default the runner pulls container images from the GitLab container registry even if a local
 copy is available. If you prefer to use only local container images, you can change the
-[`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 However, you should keep the `pull_policy` setting to the default unless you have good reason to
 change it.
 
@@ -670,15 +661,12 @@ temporarily access external resources.
 
 #### Configure CI/CD for each project
 
-{{< alert type="note" >}}
-
-These configuration changes do not apply to container scanning for registry because it does not
-reference the `.gitlab-ci.yml` file. To configure automatic container scanning for registry in an
-offline environment,
-[define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments)
-instead.
-
-{{< /alert >}}
+> [!note]
+> These configuration changes do not apply to container scanning for registry because it does not
+> reference the `.gitlab-ci.yml` file. To configure automatic container scanning for registry in an
+> offline environment,
+> [define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments)
+> instead.
 
 For all projects using container scanning, edit the CI/CD configuration in all locations where it's
 applied. This might include:
@@ -942,21 +930,18 @@ Unlike regular container scanning, the scan results do not include a security re
 
 When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
-> [!note]
-> Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
+Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md).
+Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
-{{< alert type="warning" >}}
-
-Vulnerabilities detected by container scanning for registry cannot be automatically marked as
-resolved when you update or remove vulnerable components. These vulnerabilities remain visible
-indefinitely because this feature only generates SBOMs, not the security reports required for
-vulnerability resolution.
-
-{{< /alert >}}
+> [!warning]
+> Vulnerabilities detected by container scanning for registry cannot be automatically marked as
+> resolved when you update or remove vulnerable components. These vulnerabilities remain visible
+> indefinitely because this feature only generates SBOMs, not the security reports required for
+> vulnerability resolution.
 
 ### Prerequisites
 
-- You must have at least the Maintainer role in a project to enable container scanning for registry.
+- You must have the Maintainer or Owner role in a project to enable container scanning for registry.
 - The project being used must not be empty. If you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
 - By default there is a limit of `50` scans per project per day.
 - You must [configure container registry notifications](../../../administration/packages/container_registry.md#configure-container-registry-notifications).

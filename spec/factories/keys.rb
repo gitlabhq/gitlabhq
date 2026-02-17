@@ -10,6 +10,9 @@ FactoryBot.define do
         ::Gitlab::SSHPublicKey.supported_sizes(:rsa).min, unsafe_allow_small_key: true
       ).public_key.openssh(comment: 'dummy@gitlab.com')
     end
+
+    organization_id { user&.organization_id || create(:common_organization).id }
+
     trait :expired do
       to_create { |key| key.save!(validate: false) }
       expires_at { 2.days.ago }

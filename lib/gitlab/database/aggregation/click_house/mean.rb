@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ClickHouse
-        class Mean < Column
+        class Mean < MetricDefinition
           def initialize(name, type = :float, expression = nil, **kwargs)
             super
           end

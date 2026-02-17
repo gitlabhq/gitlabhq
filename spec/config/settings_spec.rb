@@ -180,7 +180,7 @@ RSpec.describe Settings, feature_category: :system_access do
   describe '.cron_for_service_ping' do
     it 'returns correct crontab for some manually calculated example' do
       allow(Gitlab::CurrentSettings)
-        .to receive(:uuid) { 'd9e2f4e8-db1f-4e51-b03d-f427e1965c4a' }
+        .to receive(:uuid).and_return('d9e2f4e8-db1f-4e51-b03d-f427e1965c4a')
 
       expect(described_class.send(:cron_for_service_ping)).to eq('44 10 * * 4')
     end

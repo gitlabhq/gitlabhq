@@ -33,7 +33,7 @@ Prerequisites:
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
-1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#configuration-types).
+1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#ai-gateway-configurations).
 1. Configure your GitLab instance to access the AI Gateway.
 1. In GitLab 18.4 and later, configure your GitLab instance to access the GitLab Duo Agent Platform service.
 1. Configure the self-hosted model.
@@ -44,7 +44,7 @@ To configure your GitLab instance to access the available self-hosted models in 
 To configure access between your GitLab instance and your local AI Gateway:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
@@ -68,7 +68,7 @@ You can configure a timeout between 60 and 600 seconds (10 minutes). If you don'
 To configure the AI Gateway timeout:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **AI Gateway request timeout**, enter the timeout value in seconds (between 60 and 600).
 1. Select **Save changes**.
@@ -95,27 +95,23 @@ For more information on troubleshooting timeout errors, see [Error A1000](troubl
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558083) from experiment to beta in GitLab 18.5.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19125) in GitLab 18.8.
+- Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 
 - Self-hosted beta models and features are [turned on](#turn-on-self-hosted-beta-models-and-features).
+- If your instance has an offline license, you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on.
 
 To access the Agent Platform service from your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
-   - The URL prefix cannot start with `http://` or `https://`.
+   - The URL is typically the same as the **Local AI Gateway URL** but on gRPC port :50052.
+   - Do not include a URL prefix such as `http://` or `https://`.
 
    - If the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
 
@@ -130,11 +126,11 @@ You must add a self-hosted model to your GitLab instance to use it with GitLab D
 To add a self-hosted model:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
    - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
      subscription after purchase:
-     1. On the left sidebar, select **Subscription**.
+     1. In the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription ({{< icon name="retry" >}}).
 1. Select **Add self-hosted model**.
@@ -151,13 +147,13 @@ To add a self-hosted model:
      | [Amazon Bedrock](#set-the-model-identifier-for-amazon-bedrock-models) | `bedrock/<model ID of the model>`                       | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
 
-1. Select **Create self-hosted model**.
+1. Select **Add self-hosted model**.
 
 ### Set the model identifier for Amazon Bedrock models
 
 To set a model identifier for an Amazon Bedrock model:
 
-1. Set your `AWS_REGION`. Ensure you have access to models in that region in your AI gateway Docker configuration.
+1. Set your `AWS_REGION`. Ensure you have access to models in that region in your AI Gateway Docker configuration.
 1. Add the region prefix to the model's inference profile ID for cross-region inferencing.
 1. Use the `bedrock/` prefix region as the prefix for the model identifier.
 
@@ -180,7 +176,7 @@ Some regions are not supported by cross-region inferencing. For these regions, d
 To enable self-hosted beta models and features:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
@@ -190,11 +186,11 @@ To enable self-hosted beta models and features:
 ### View configured features
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
    - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
      subscription after purchase:
-     1. On the left sidebar, select **Subscription**.
+     1. In the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription ({{< icon name="retry" >}}).
 1. Select the **AI-native features** tab.
@@ -204,7 +200,7 @@ To enable self-hosted beta models and features:
 Configure a GitLab Duo feature and sub-feature to send queries to the self-hosted model:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
@@ -213,43 +209,53 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 
    ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
-{{< alert type="note" >}}
-
-If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
-This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
-
-{{< /alert >}}
+> [!note]
+> If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
+> This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
 
 ### Configure a feature to use a GitLab AI vendor model
-
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
+- Generally available in GitLab 18.9. Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI gateway and models.
+You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI Gateway and models.
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab AI vendor model**.
 
 ![GitLab Duo Self-Hosted feature configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
+
+### Enable extended logging for debugging
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+
+{{< /history >}}
+
+You can enable extended logging to collect detailed AI interaction data from the GitLab Duo Agent Platform.
+
+- On GitLab Self-Managed, the detailed logs are shared with GitLab.
+- When you host your own models and AI Gateway, this data remains on your infrastructure and is not shared with GitLab.
+
+To view which information is logged,
+see [Collecting usage data](../../user/gitlab_duo/data_usage.md#collecting-usage-data).
+
+To enable extended logging:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Select the **Collect usage data** checkbox.
+1. Select **Save changes**.
 
 ### Disable GitLab Duo features
 
@@ -258,7 +264,7 @@ GitLab Duo features remain turned on even if you have not chosen a model for a s
 To disable a GitLab Duo feature or sub-feature:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
@@ -275,4 +281,4 @@ For more information, see [Host the GitLab product documentation](../docs_self_h
 
 - [Supported models](supported_models_and_hardware_requirements.md#supported-models)
 - [Compatible models](supported_models_and_hardware_requirements.md#compatible-models)
-- [GitLab Duo Self-Hosted configuration types](_index.md#configuration-types)
+- [AI Gateway configuration types](_index.md#ai-gateway-configurations)

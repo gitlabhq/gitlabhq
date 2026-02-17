@@ -23,6 +23,7 @@ module Ci
       encrypted: :required,
       expires_at: :compute_token_expiration,
       format_with_prefix: :prefix_for_new_and_legacy_runner,
+      encrypted_token_finder: 'Ci::Runners::PartitionedTokenFinder',
       routable_token: {
         if: ->(token_owner_record) { token_owner_record.owner },
         payload: {

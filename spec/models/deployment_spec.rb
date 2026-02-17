@@ -1509,7 +1509,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
     subject { deployment.tags }
 
-    it 'will return tags related to this deployment' do
+    it 'returns tags related to this deployment' do
       expect(project.repository).to receive(:refs_by_oid).with(
         oid: deployment.sha, limit: 100, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]
       ).and_return(["#{Gitlab::Git::TAG_REF_PREFIX}test"])

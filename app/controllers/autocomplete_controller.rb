@@ -21,15 +21,15 @@ class AutocompleteController < ApplicationController
 
   def users
     group = Autocomplete::GroupFinder
-      .new(current_user, project, params)
+      .new(current_user, project, group_finder_params)
       .execute
 
     users = Autocomplete::UsersFinder
-      .new(params: params, current_user: current_user, project: project, group: group)
+      .new(params: users_finder_params, current_user: current_user, project: project, group: group)
       .execute
 
     presented_users = UserSerializer
-                        .new(params.merge({ current_user: current_user }))
+                        .new(user_serializer_params.merge({ current_user: current_user }))
                         .represent(users, project: project)
 
     extra_users = presented_suggested_users
@@ -45,7 +45,7 @@ class AutocompleteController < ApplicationController
   end
 
   def user
-    user = UserFinder.new(params[:id]).find_by_id!
+    user = UserFinder.new(user_finder_params[:id]).find_by_id!
 
     render json: UserSerializer.new.represent(user)
   end
@@ -54,7 +54,7 @@ class AutocompleteController < ApplicationController
   # project to another.
   def projects
     projects = Autocomplete::MoveToProjectFinder
-      .new(current_user, params)
+      .new(current_user, move_to_project_finder_params)
       .execute
 
     render json: MoveToProjectSerializer.new.represent(projects)
@@ -86,12 +86,50 @@ class AutocompleteController < ApplicationController
 
   def project
     @project ||= Autocomplete::ProjectFinder
-      .new(current_user, params)
+      .new(current_user, project_finder_params)
       .execute
+  end
+
+  def user_finder_params
+    params.permit(:id)
   end
 
   def branch_params
     params.permit(:group_id, :project_id).select { |_, v| v.present? }
+  end
+
+  def users_finder_params
+    params.permit(
+      :search,
+      :active,
+      :author_id,
+      :todo_filter,
+      :states,
+      :push_code,
+      :current_user,
+      todo_state_filter: []
+    )
+  end
+
+  def user_serializer_params
+    params.permit(
+      :approval_rules,
+      :target_branch,
+      :merge_request_iid,
+      :suggested
+    )
+  end
+
+  def group_finder_params
+    params.permit(:group_id)
+  end
+
+  def move_to_project_finder_params
+    params.permit(:search, :project_id)
+  end
+
+  def project_finder_params
+    params.permit(:project_id)
   end
 
   # overridden in EE

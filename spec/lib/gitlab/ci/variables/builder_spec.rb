@@ -445,7 +445,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   end
 
   describe '#scoped_variables_for_pipeline_seed' do
-    let(:environment_name) { 'test/master' }
+    let(:environment_name) { 'test/main' }
     let(:kubernetes_namespace) { nil }
     let(:extra_attributes) { {} }
     let(:trigger) { nil }
@@ -465,7 +465,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           { key: 'CI_NODE_TOTAL',
             value: '1' },
           { key: 'CI_ENVIRONMENT_NAME',
-            value: 'test/master' },
+            value: 'test/main' },
           { key: 'CI_ENVIRONMENT_ACTION',
             value: 'prepare' },
           { key: 'CI_ENVIRONMENT_TIER',
@@ -715,7 +715,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       context 'when there is an existing environment with the same name' do
         let!(:environment) do
-          create(:environment, name: 'test/master', external_url: 'https://hello.test', project: project)
+          create(:environment, name: 'test/main', external_url: 'https://hello.test', project: project)
         end
 
         it 'fetches CI_ENVIRONMENT_TIER and CI_ENVIRONMENT_URL from an old environment' do

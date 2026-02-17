@@ -16,7 +16,7 @@ Use this API to interact with the Error Tracking feature for projects. For more 
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 ## Get Error Tracking settings
 

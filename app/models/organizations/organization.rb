@@ -10,7 +10,7 @@ module Organizations
     include Organizations::Isolatable
     include Cells::Claimable
 
-    cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+    cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: :cells_claims_organizations
 
     cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :id
 
@@ -178,8 +178,8 @@ module Organizations
       raise ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization')
     end
 
-    def unique_attribute
-      :path
+    def unique_attributes
+      [:path]
     end
   end
 end

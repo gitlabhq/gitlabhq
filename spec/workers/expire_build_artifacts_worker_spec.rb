@@ -6,6 +6,10 @@ RSpec.describe ExpireBuildArtifactsWorker, feature_category: :job_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do
+    before do
+      stub_feature_flags(bulk_delete_job_artifacts: false)
+    end
+
     it 'executes a service' do
       expect_next_instance_of(Ci::JobArtifacts::DestroyAllExpiredService) do |instance|
         expect(instance).to receive(:execute).and_call_original

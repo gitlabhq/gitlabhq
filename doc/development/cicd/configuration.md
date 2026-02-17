@@ -22,9 +22,18 @@ For example;
 
 ## Adding New Keywords
 
+> [!note]
+> Experimental CI keywords must be guarded behind a feature flag.
+> Users adding them to their CI configuration does not count as [explicit opt-in](../../policy/development_stages_support.md#experiment),
+> as they could do so without ever seeing that the keyword is experimental. An
+> experimental CI keyword should not be added to the [JSON schema](schema.md) to ensure it
+> does not get auto-suggested to users yet.
+
 CI config keywords are added in the [`lib/gitlab/ci/config/entry`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/config/entry) directory.
 For EE-specific changes, use the [`ee/lib/gitlab/ci/config/entry`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/gitlab/ci/config/entry)
 or [`ee/lib/ee/gitlab/ci/config/entry`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/ee/gitlab/ci/config/entry) directory.
+
+Update the [JSON schema](schema.md) accordingly.
 
 ### Inheritance
 

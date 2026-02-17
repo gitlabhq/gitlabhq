@@ -183,7 +183,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'ee/app/workers/sbom/create_occurrences_vulnerabilities_worker.rb'
     - 'ee/app/workers/sbom/process_vulnerabilities_worker.rb'
     - 'ee/app/workers/search/elastic_default_branch_changed_worker.rb'
-    - 'ee/app/workers/search/elastic_index_embedding_bulk_cron_worker.rb'
     - 'ee/app/workers/search/zoekt/default_branch_changed_worker.rb'
     - 'ee/app/workers/security/policies/report_security_policies_metrics_worker.rb'
     - 'ee/app/workers/security/scan_result_policies/sync_any_merge_request_approval_rules_worker.rb'

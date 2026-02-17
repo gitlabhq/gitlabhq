@@ -377,14 +377,6 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
         end
       end
     end
-
-    it 'has link to next generation container registry docs' do
-      allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
-
-      visit_method
-
-      expect(page).to have_link('Learn more', href: help_page_href)
-    end
   end
 
   describe 'Package registry section', :js do

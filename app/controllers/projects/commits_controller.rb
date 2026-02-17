@@ -32,8 +32,6 @@ class Projects::CommitsController < Projects::ApplicationController
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
 
-    @ref_type = ref_type if Feature.disabled?(:verified_ref_extractor, @project)
-
     respond_to do |format|
       format.html
       format.atom { render layout: 'xml' }

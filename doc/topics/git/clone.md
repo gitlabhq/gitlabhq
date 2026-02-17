@@ -58,14 +58,11 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
 
 1. Authenticate your request.
 
-   {{< alert type="note" >}}
-
-   If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
-
-   - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
-
-   {{< /alert >}}
+   > [!note]
+   > If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
+   >
+   > - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   > - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
 
 1. To view the files, go to the new directory:
 
@@ -73,13 +70,10 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
    cd <new directory>
    ```
 
-{{< alert type="note" >}}
-
-On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
-add your namespace (username or group) to the path:
-`git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
-
-{{< /alert >}}
+> [!note]
+> On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
+> add your namespace (username or group) to the path:
+> `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
 
 ### Clone using a token
 
@@ -286,15 +280,12 @@ Deeper integration between partial clone and sparse checkout is possible through
 `--filter=sparse:oid=<blob-ish>` filter spec. This mode of filtering uses a format similar to a
 `.gitignore` file to specify which files to include when cloning and fetching.
 
-{{< alert type="warning" >}}
-
-Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
-[Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
-[Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
-[`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
-this type of partial clone use and overcomes its limitations.
-
-{{< /alert >}}
+> [!warning]
+> Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
+> [Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
+> [Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
+> [`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
+> this type of partial clone use and overcomes its limitations.
 
 For more details, see the Git documentation for
 [`rev-list-options`](https://git-scm.com/docs/git-rev-list#Documentation/git-rev-list.txt---filterltfilter-specgt).
@@ -332,13 +323,10 @@ For more details, see the Git documentation for
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 
-   {{< alert type="warning" >}}
-
-   Git integrations with `bash`, Zsh, etc and editors that automatically
-   show Git status information often run `git fetch` which fetches the
-   entire repository. Disabling or reconfiguring these integrations might be required.
-
-   {{< /alert >}}
+   > [!warning]
+   > Git integrations with `bash`, Zsh, etc and editors that automatically
+   > show Git status information often run `git fetch` which fetches the
+   > entire repository. Disabling or reconfiguring these integrations might be required.
 
 ### Remove partial clone filtering
 

@@ -7,16 +7,19 @@ import createDefaultClient from '~/lib/graphql';
  * @returns {undefined | VueApollo}
  */
 const getApolloProvider = (apolloProviderOption) => {
-  if (apolloProviderOption === true) {
+  if (apolloProviderOption) {
     Vue.use(VueApollo);
+    if (apolloProviderOption === true) {
+      return new VueApollo({
+        defaultClient: createDefaultClient(),
+      });
+    }
 
-    return new VueApollo({
-      defaultClient: createDefaultClient(),
-    });
-  }
-
-  if (apolloProviderOption instanceof VueApollo) {
-    return apolloProviderOption;
+    // Checking for `instanceof VueApollo` may fail when using aliases in Vue3 compat mode
+    // Check for a configured `defaultClient` instead
+    if (apolloProviderOption.defaultClient) {
+      return apolloProviderOption;
+    }
   }
 
   return undefined;
@@ -62,19 +65,27 @@ const getApolloProvider = (apolloProviderOption) => {
  * This will mount MyApp as root on '#mount-here'. It will receive {'some': 'object'} as it's
  * provide values.
  */
-export const initSimpleApp = (selector, component, { withApolloProvider, name } = {}) => {
+export const initSimpleApp = (
+  selector,
+  component,
+  { withApolloProvider, name, additionalProvide = {} } = {},
+) => {
   const element = document.querySelector(selector);
 
   if (!element) {
     return null;
   }
 
+  const apolloProvider = getApolloProvider(withApolloProvider);
+  const provide = {
+    ...(element.dataset.provide ? JSON.parse(element.dataset.provide) : {}),
+    ...additionalProvide,
+  };
   const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
-  const provide = element.dataset.provide ? JSON.parse(element.dataset.provide) : {};
 
   return new Vue({
     el: element,
-    apolloProvider: getApolloProvider(withApolloProvider),
+    apolloProvider,
     name,
     provide,
     render(h) {

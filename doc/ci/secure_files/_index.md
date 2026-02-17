@@ -36,7 +36,7 @@ by using the [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/d
 
 To add a secure file to a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Secure Files** section.
 1. Select **Upload File**.
@@ -45,13 +45,10 @@ To add a secure file to a project:
 
 ## Use secure files in CI/CD jobs
 
-{{< alert type="warning" >}}
-
-The content of secure files are not [masked](../variables/_index.md#mask-a-cicd-variable)
-in the job log output. Make sure to avoid outputting secure file contents in the job log,
-especially when logging output that could contain sensitive information.
-
-{{< /alert >}}
+> [!warning]
+> The content of secure files are not [masked](../variables/_index.md#mask-a-cicd-variable)
+> in the job log output. Make sure to avoid outputting secure file contents in the job log,
+> especially when logging output that could contain sensitive information.
 
 ### With the `glab` tool
 
@@ -140,7 +137,7 @@ or [show](../../api/secure_files.md#show-secure-file-details) API endpoints. Fil
 with the [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/securefile)
 command. This command automatically verifies the checksum of each file as it is downloaded.
 
-Any project member with at least the Developer role can access Project-level secure files.
+Any project member with the Developer, Maintainer, or Owner role can access Project-level secure files.
 Interactions with Project-level secure files are not included in audit events, but
 [issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117)
 proposes adding this functionality.

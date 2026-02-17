@@ -364,6 +364,68 @@ deploy:
 In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
 `canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
 
+### Allow user-entered values with `default: null`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218804) in GitLab 18.9.
+
+{{< /history >}}
+
+Use `spec:inputs:rules` with `default: null` and without `options` to allow users to enter
+their own value for an input. This is useful for workflow-specific values like environment names
+or test configurations.
+
+For example:
+
+```yaml
+spec:
+  inputs:
+    deployment_type:
+      options: ['standard', 'custom']
+      default: 'standard'
+
+    custom_config:
+      description: 'Custom configuration value'
+      rules:
+        - if: $[[ inputs.deployment_type ]] == 'custom'
+          default: null
+---
+
+deploy:
+  script: echo "Config: $[[ inputs.custom_config ]]"
+```
+
+In this example, when `deployment_type` is `custom`, the `custom_config` input is listed on the run pipeline page
+and users must enter a value for the input.
+
+### Use boolean inputs with `spec:inputs:rules`
+
+You can use boolean inputs in rule conditions. Boolean values can be compared using boolean literals (`true`/`false`):
+
+```yaml
+spec:
+  inputs:
+    publish:
+      type: boolean
+      default: true
+
+    publish_stage:
+      rules:
+        - if: $[[ inputs.publish ]] == true
+          default: 'publish'
+        - if: $[[ inputs.publish ]] == false
+          default: 'test'
+---
+
+job:
+  stage: $[[ inputs.publish_stage ]]
+  script: echo "Publishing is $[[ inputs.publish ]]"
+```
+
+In this example, when `publish` is `true`, `publish_stage` defaults to `publish`. When `publish` is `false`,
+it defaults to `test`.
+
 ## Set input values
 
 ### For configuration added with `include`
@@ -433,13 +495,10 @@ Unexpected inputs are rejected.
 Inputs for pipelines must be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
 of the main `.gitlab-ci.yml` file. You cannot use inputs defined in included files for pipeline-level configuration.
 
-{{< alert type="note" >}}
-
-In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
-and later, pipeline inputs are recommended over passing [pipeline variables](../variables/_index.md#use-pipeline-variables).
-For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
-
-{{< /alert >}}
+> [!note]
+> In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+> and later, pipeline inputs are recommended over passing [pipeline variables](../variables/_index.md#use-pipeline-variables).
+> For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
 
 You should always set default values when defining inputs for pipelines.
 Otherwise the pipeline could fail to start if a new pipeline triggers automatically.
@@ -502,24 +561,17 @@ trigger-job:
 
 {{< /tabs >}}
 
-## Use inputs from external files
+#### Define pipeline inputs in external files
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-You can reuse input definitions across multiple CI/CD configurations by defining them in external files
-and including them with [`spec:include`](../yaml/_index.md#specinclude).
+You can reuse pipeline input definitions across multiple CI/CD configurations by defining them in
+external files and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
 
 Create a file with input definitions, for example in a file named `shared-inputs.yml`:
 
@@ -563,34 +615,28 @@ spec:
 ---
 ```
 
-### Override inputs from an external file
+> [!note]
+> You cannot use `spec:include` for [CI/CD component](../components/_index.md#component-spec-section) inputs.
 
-If you define an input in both an included input file, and the `inputs:` section in the `.gitlab-ci.yml` configuration,
-the inputs from the file are overridden.
+#### Override inputs from an external file
 
-For example, in a `shared-inputs.yml` file:
+{{< history >}}
 
-```yaml
-inputs:
-  environment:
-    options: ['staging', 'production']
-  region:
-    default: 'us-east-1'
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557867) in GitLab 18.9.
+
+{{< /history >}}
+
+Input keys must be unique across all included files and inline specifications.
+If you define an input with the same key in multiple included files, or in both
+an included file and the `inputs:` section in the `.gitlab-ci.yml` configuration,
+the following error is returned:
+
+```plaintext
+Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
 ```
 
-Then then you include the file in your `.gitlab-ci.yml`:
-
-```yaml
-spec:
-  include:
-    - local: /shared-inputs.yml
-  inputs:
-    environment: 'canary'
----
-```
-
-In this case, the `environment` input options in the file are overridden by the
-`inputs: environment` configuration in the `.gitlab-ci.yml` file.
+To fix this error, ensure each input key is defined only once, either in an included
+file or in the inline `inputs:` section, but not both.
 
 ## Specify functions to manipulate input values
 

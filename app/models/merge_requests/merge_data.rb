@@ -9,7 +9,8 @@ module MergeRequests
     self.table_name = 'merge_requests_merge_data'
     self.primary_key = 'merge_request_id'
 
-    partitioned_by :merge_request_id, strategy: :int_range, partition_size: 10_000_000
+    partitioned_by :merge_request_id, strategy: :int_range, partition_size: 10_000_000,
+      sequence_name: 'merge_requests_id_seq'
 
     MERGE_STATUSES = {
       unchecked: 0,

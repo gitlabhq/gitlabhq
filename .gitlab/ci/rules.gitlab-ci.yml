@@ -26,6 +26,7 @@
       (
         $CI_PIPELINE_SOURCE != "merge_request_event"
         && $SCHEDULE_TYPE != "weekly"
+        && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
         &&
         (
           $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
@@ -78,15 +79,6 @@
 
 .if-not-merge-request: &if-not-merge-request
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == null'
-
-# Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
-# or any similar condition to check that the MR has *any* approval (not just required approval).
-.if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
-
-.if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
@@ -196,6 +188,12 @@
 .if-merge-request-tier-3: &if-merge-request-tier-3
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
 
+.if-merge-request-tier-2-or-above: &if-merge-request-tier-2-or-above
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-[23]/'
+
+.if-merge-request-tier-1-or-no-tier: &if-merge-request-tier-1-or-no-tier
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-[23]/'
+
 .if-merge-train: &if-merge-train
   if: $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"
 
@@ -277,6 +275,9 @@
 .if-dev-internal-release: &if-dev-internal-release
   if: '$CI_SERVER_HOST == "dev.gitlab.org" && $CI_PROJECT_PATH == "gitlab/gitlab-ee" && $CI_COMMIT_REF_NAME =~
   /^[\d-]+-stable-ee$/ && $CI_COMMIT_TITLE =~ /^Update VERSION file.*internal/'
+
+.if-triggered-by-aigw-project: &if-triggered-by-aigw-project
+  if: '$CI_PIPELINE_SOURCE == "pipeline" && $TRIGGERED_BY_AI_GATEWAY_PROJECT == "true"'
 
 ####################
 # Changes patterns #
@@ -821,6 +822,7 @@
   - "{,ee/,jh/}app/serializers/**/*"
   # Auto-generated files
   - "doc/api/openapi/openapi_v2.yaml"
+  - "doc/api/openapi/openapi_v3.yaml"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
@@ -846,6 +848,7 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   - "doc/api/openapi/openapi_v2.yaml"
+  - "doc/api/openapi/openapi_v3.yaml"
   - "doc/user/application_security/dast/browser/configuration/variables.md"
   # CI changes
   - "{,jh/}.gitlab-ci.yml"
@@ -1005,7 +1008,9 @@
 
 .permissions-patterns: &permissions-patterns
   - "config/authz/permissions/**/*.yml"
+  - "config/authz/permission_groups/**/*.yml"
   - "{,ee/}app/policies/**/*.rb"
+  - "{,ee/}lib/api/**/*.rb"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
   - "{,ee/}lib/api/*.rb"
@@ -1071,8 +1076,7 @@
       changes: *backend-patterns
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
 
 .rails:rules:system-default-rules:
   rules:
@@ -1087,8 +1091,11 @@
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-1", rules]
+
+.rails:rules:triggered-by-aigw-project:
+  rules:
+    - <<: *if-triggered-by-aigw-project
 
 .rails:rules:previous-failed-tests-default-rules:
   rules:
@@ -1105,7 +1112,7 @@
 ###########################
 .rails:rules:predictive-default-rules:
   rules:
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-2-or-above
       when: never
     - <<: *if-automated-merge-request
       when: never
@@ -1317,8 +1324,6 @@
     - <<: *if-tag
       variables:
         ARCH: amd64,arm64
-      # TODO: Remove once confirmed on a tag pipeline
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
@@ -1402,6 +1407,10 @@
   rules:
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *docs-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *docs-i18n-patterns
       when: manual
       allow_failure: true
 
@@ -1520,7 +1529,7 @@
 ##################
 .frontend:rules:predictive-default-rules:
   rules:
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-2-or-above
       when: never
     - <<: *if-automated-merge-request
       when: never
@@ -1578,6 +1587,7 @@
     - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-branch-schedule-weekly
+    - <<: *if-triggered-by-aigw-project
     - <<: *if-merge-request
       changes: *backend-spec-patterns
     - <<: *if-default-refs
@@ -1597,9 +1607,7 @@
     - <<: *if-default-branch-refs
       when: never
     - !reference [".prevent-tier-2-and-above", "rules"]
-    - <<: *if-merge-request-no-tier
-      changes: *frontend-code-patterns
-    - <<: *if-merge-request-tier-1
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-code-patterns
 
 .frontend:rules:eslint-default:
@@ -1636,7 +1644,7 @@
       when: never
     - !reference [.frontend:rules:default-frontend-jobs, rules]
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:frontend_fixture:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1662,15 +1670,15 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     # Rules for `jest predictive` jobs
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:compile-storybook:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1680,10 +1688,10 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
@@ -1696,8 +1704,8 @@
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
@@ -1747,7 +1755,7 @@
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
@@ -1778,7 +1786,7 @@
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:jest-integration:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1788,10 +1796,10 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
@@ -2042,10 +2050,18 @@
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
-  OMNIBUS_GITLAB_CACHE_UPDATE: "true"
+
+.qa:rules:e2e-schedule-nightly:
+  rules:
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        QA_RUN_IN_PARALLEL: "false"
+        COVERBAND_ENABLED: "false"
 
 .qa:rules:e2e-schedule-blocking:
   rules:
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
 
@@ -2163,11 +2179,10 @@
   rules:
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-labels-pipeline-skip-performance
       when: never
     - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
-      when: never
-    - <<: *if-not-canonical-namespace
       when: never
     # Do not run for scheduled pipeline for ruby-next branch
     - <<: *if-ruby-branch-schedule
@@ -2175,13 +2190,11 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
+    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
+      changes: *backend-only-patterns
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
-    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
-      changes: *backend-only-patterns
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".prevent-tier-1", rules]
     - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:fulfillment-e2e-quarantine-report:
@@ -2203,6 +2216,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-branch-schedule-weekly
+    - <<: *if-triggered-by-aigw-project
 
 .rails:rules:setup-test-env-ee:
   rules:
@@ -2224,7 +2238,7 @@
     - if: '$ENABLE_RSPEC_SINGLE_REDIS == "true"'
     - <<: *if-merge-request
       changes: *redis-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -2243,8 +2257,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB == "true"'
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2273,8 +2286,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION == "true"'
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2304,7 +2316,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB_SEC_CONNECTION == "true"'
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
 
 .rails:rules:single-db-sec-connection-ee:
@@ -2337,7 +2349,7 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-refs
       changes: *db-backup-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-default-refs
       changes: *db-patterns
@@ -2383,8 +2395,7 @@
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-default-refs
       changes: *db-patterns
 
@@ -2414,7 +2425,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
       when: never
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-3
       changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
@@ -2441,7 +2452,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
       when: never
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-3
       changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
@@ -2459,7 +2470,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB == "true"'
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-3
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
@@ -2478,7 +2489,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION == "true"'
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-3
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
@@ -2607,8 +2618,7 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-default-refs
       changes: *db-patterns
 
@@ -2646,6 +2656,7 @@
       when: never
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:system-default-rules", rules]
+    - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -2767,6 +2778,18 @@
       when: never
     - <<: *if-export-coverage
 
+# Sync category owners from stages.yml to ClickHouse
+.rails:rules:sync-category-owners:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-export-coverage
+    - <<: *if-schedule-pipeline
+      when: manual
+
+# These rules should match .rails:rules:rspec-coverage to ensure undercoverage runs whenever coverage data is generated
 .rails:rules:rspec-undercoverage:
   rules:
     - <<: *if-not-ee
@@ -2778,10 +2801,9 @@
     - <<: *if-merge-request-labels-run-all-rspec
     # We cannot get the coverage data from child pipeline so we only run undercoverage on full pipelines for now
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *code-backstage-patterns
 
 .rails:rules:rspec-merge-auto-explain-logs:
   rules:
@@ -2869,8 +2891,8 @@
 .static-analysis:rules:rubocop:
   rules:
     - if: '$ENABLE_RUBOCOP == "true"'
-    # Do not run full rubocop if the merge request isn't approved
-    - <<: *if-merge-request-not-approved
+    # Do not run full rubocop on tier-1 pipelines
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *rubocop-patterns
       variables:
         RUN_ALL_RUBOCOP: "false"
@@ -3114,6 +3136,8 @@
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true
+    - <<: *if-triggered-by-aigw-project
+      allow_failure: true
     - when: manual
       allow_failure: true
 
@@ -3240,6 +3264,7 @@
     - <<: *if-merge-request
       changes: *backend-spec-patterns
     - <<: *if-default-branch-schedule-weekly
+    - <<: *if-triggered-by-aigw-project
 
 .test-metadata:rules:update-tests-metadata:
   rules:
@@ -3254,7 +3279,7 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request
       changes:
@@ -3401,7 +3426,7 @@
     - <<: *if-merge-request-labels-force-as-if-jh
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request
@@ -3431,7 +3456,7 @@
       changes: *dependency-patterns
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns
@@ -3459,6 +3484,10 @@
       when: never
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/'
       # Only run when a version tag is created (release is cut)
+
+.ai-gateway:rules:update-test-branch:
+  rules:
+    - <<: *if-default-branch-refs
 
 ###################
 # Benchmark rules #

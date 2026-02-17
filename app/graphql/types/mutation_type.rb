@@ -109,6 +109,7 @@ module Types
     mount_mutation Mutations::MergeRequests::SetAssignees
     mount_mutation Mutations::MergeRequests::SetReviewers
     mount_mutation Mutations::MergeRequests::ReviewerRereview
+    mount_mutation Mutations::MergeRequests::RequestChanges
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create, deprecated: {
       reason: 'Underlying feature was removed in 16.0',
       milestone: '16.0'
@@ -130,6 +131,8 @@ module Types
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::CustomAttributes::Delete, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Projects::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
@@ -222,6 +225,8 @@ module Types
     }
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Namespaces::RegenerateNewWorkItemEmailAddress, experiment: { milestone: '18.2' }
+    mount_mutation Mutations::Groups::CustomAttributes::Delete, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Groups::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::Users::GroupCallouts::Create
@@ -258,6 +263,8 @@ module Types
     mount_mutation Mutations::WorkItems::SavedViews::Subscribe, experiment: { milestone: '18.7' }
     mount_mutation Mutations::WorkItems::SavedViews::Unsubscribe, experiment: { milestone: '18.7' }
     mount_mutation Mutations::WorkItems::SavedViews::Reorder, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::Users::CustomAttributes::Delete, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Users::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy

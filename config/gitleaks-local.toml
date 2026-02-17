@@ -1,0 +1,43 @@
+# AUTO-GENERATED - DO NOT EDIT
+# Usage: This is used for running `gitleaks` locally via `lefthook`.
+# Source: config/gitleaks.toml
+# Regenerate: scripts/generate-gitleaks-local-config.sh
+
+title = "Local gitleaks config - extends gitleaks default ruleset"
+
+[extend]
+useDefault = true
+
+# Disabled rules (false positives in doc/api/openapi/openapi_v3.yaml)
+disabledRules = ["sourcegraph-access-token"]
+
+[allowlist]
+  description = "global allow list"
+  regexTarget = "match"
+  regexes = [
+    # spotted in doc/user/application_security/secret_detection/_index.md and some frontend specs
+    "glpat-1234567890abcdefghij",
+    # doc/user/application_security/secret_detection/remove_secrets_tutorial.md
+    "glpat-12345678901234567890",
+    # spec/frontend/lib/utils/secret_detection_spec.js
+    "glpat-cgyKc1k_AsnEpmP-5fRL",
+    "gldt-cgyKc1k_AsnEpmP-5fRL",
+    "glsoat-cgyKc1k_AsnEpmP-5fRL",
+    "glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL",
+    "glcbt-1_cgyKc1k_AsnEpmP-5fRL",
+    "glffct-cgyKc1k_AsnEpmP-5fRL",
+    "glagent-3ed828e723deff468979daf3bf007f9f528c959911bdeea90f",
+    "glimt-abde52f19d2e53e987d14c8ea",
+    "glptt-dfc184477c9d3987c7b837e541063577f2ad6426",
+    # spec/frontend/lib/utils/secret_detection_spec.js
+    "GlPat-abcdefghijklmnopqrstuvwxyz",
+    # doc/development/sec/token_revocation_api.md
+    "glpat--8GMtG8Mf4EnMJzmAWDU",
+    # doc/development/sec/token_revocation_api.md
+    "glpat--tG84EGK33nMLLDE70zU",
+    # doc/ci/runners/new_creation_workflow.md
+    "GR1348941C6YcZVddc8kjtdU-yWYD",
+    "glrt-2CR8_eVxiioB1QmzPZwa",
+    "AKIAIOSFODNN7EXAMPLE",
+    "AWSKEY1234567890",
+  ]

@@ -14,11 +14,8 @@ When you choose a name for your namespace, keep in mind:
 - [Naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
 - [Reserved group names](../reserved_names.md#reserved-group-names)
 
-{{< alert type="note" >}}
-
-Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/_index.md#publish-a-terraform-module).
-
-{{< /alert >}}
+> [!note]
+> Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/_index.md#publish-a-terraform-module).
 
 ## Types of namespaces
 

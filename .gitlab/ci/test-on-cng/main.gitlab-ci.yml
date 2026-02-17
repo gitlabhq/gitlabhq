@@ -53,7 +53,6 @@ workflow:
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    QA_FEATURE_FLAGS: "dap_onboarding_empty_states=disabled"
     GIT_STRATEGY: "none"
   before_script:
     - !reference [.qa-install, before_script]

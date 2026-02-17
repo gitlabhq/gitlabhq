@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ActiveRecord
-        class Mean < Column
+        class Mean < MetricDefinition
           def initialize(name, type = :float, *args, **kwargs)
             super
           end

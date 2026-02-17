@@ -1,0 +1,11 @@
+---
+name: delete_package
+description: Grants the ability to delete packages
+permissions:
+  - delete_conan_package
+  - delete_npm_package_tag
+  - delete_nuget_package
+  - delete_package
+boundaries:
+  - group
+  - project

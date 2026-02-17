@@ -9,7 +9,10 @@ module Gitlab
             PATTERN = /!=/
 
             def evaluate(variables = {})
-              @left.evaluate(variables) != @right.evaluate(variables)
+              left_value = @left.evaluate(variables)
+              right_value = @right.evaluate(variables)
+
+              !compare_with_coercion(left_value, right_value)
             end
 
             def self.build(_value, behind, ahead)

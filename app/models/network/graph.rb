@@ -78,8 +78,9 @@ module Network
     end
 
     def calculate_offset
-      if Feature.enabled?(:optimize_network_graph_calculations, @project) && !@filter_ref
-        return @project.repository.count_commits(all: true, after: @commit.date)
+      unless @filter_ref
+        return @project.repository.count_commits(revisions: ['--branches', '--tags'],
+          after: @commit.date)
       end
 
       offset = -1

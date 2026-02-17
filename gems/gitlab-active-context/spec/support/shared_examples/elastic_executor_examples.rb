@@ -317,4 +317,105 @@ RSpec.shared_examples 'an elastic executor' do
       executor.send(:remove_index, 'test_index')
     end
   end
+
+  describe '#add_field' do
+    let(:collection_name) { 'test_collection' }
+    let(:collection) { double('Collection', name: 'prefix_test_collection', number_of_partitions: 2) }
+
+    before do
+      allow(connection).to receive_message_chain(:collections, :find_by).and_return(collection)
+      allow(indices_client).to receive(:exists?).and_return(true)
+      allow(indices_client).to receive(:put_mapping)
+    end
+
+    it 'adds field to all partitions' do
+      executor.add_field(collection_name) do |c|
+        c.text(:description)
+      end
+
+      expect(indices_client).to have_received(:put_mapping).twice
+    end
+
+    it 'uses correct mapping for text field' do
+      executor.add_field(collection_name) do |c|
+        c.text(:description)
+      end
+
+      expect(indices_client).to have_received(:put_mapping).with(
+        index: 'prefix_test_collection_0',
+        body: {
+          properties: {
+            'description' => { type: 'text' }
+          }
+        }
+      )
+    end
+
+    it 'uses correct mapping for keyword field' do
+      executor.add_field(collection_name) do |c|
+        c.keyword(:status)
+      end
+
+      expect(indices_client).to have_received(:put_mapping).with(
+        index: 'prefix_test_collection_0',
+        body: {
+          properties: {
+            'status' => { type: 'keyword' }
+          }
+        }
+      )
+    end
+
+    it 'uses correct mapping for vector field' do
+      executor.add_field(collection_name) do |c|
+        c.vector(:embeddings_v2, dimensions: 768)
+      end
+
+      expect(indices_client).to have_received(:put_mapping).with(
+        index: 'prefix_test_collection_0',
+        body: {
+          properties: {
+            'embeddings_v2' => expected_vector_mapping
+          }
+        }
+      )
+    end
+
+    it 'adds multiple fields' do
+      executor.add_field(collection_name) do |c|
+        c.text(:description)
+        c.keyword(:status)
+      end
+
+      expect(indices_client).to have_received(:put_mapping).at_least(2).times
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(connection).to receive_message_chain(:collections, :find_by).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.add_field(collection_name) do |c|
+            c.text(:description)
+          end
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+
+    context 'when partition does not exist' do
+      before do
+        allow(indices_client).to receive(:exists?).and_return(false)
+      end
+
+      it 'skips adding field to non-existent partition' do
+        executor.add_field(collection_name) do |c|
+          c.text(:description)
+        end
+
+        expect(indices_client).not_to have_received(:put_mapping)
+      end
+    end
+  end
 end

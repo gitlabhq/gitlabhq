@@ -15,6 +15,13 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     let(:url) { "/groups/#{group.id}/packages" }
     let(:package_schema) { 'public_api/v4/packages/group_packages' }
 
+    it_behaves_like 'authorizing granular token permissions', :read_package do
+      before_all { group.add_developer(user) }
+
+      let(:boundary_object) { group }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
+
     context 'with sorting' do
       let_it_be(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
       let_it_be(:package2) { create(:nuget_package, project: project, version: '2.0.4') }

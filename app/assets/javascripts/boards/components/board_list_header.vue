@@ -18,6 +18,7 @@ import { n__, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { TYPE_ISSUE } from '~/issues/constants';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
+import MilestonePopover from '~/issuable/popover/components/milestone_popover.vue';
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
   ListType,
@@ -45,6 +46,7 @@ export default {
     GlButtonGroup,
     GlLabel,
     GlTooltip,
+    MilestonePopover,
     GlIcon,
     GlSprintf,
     GlAnimatedChevronLgRightDownIcon,
@@ -96,6 +98,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      showMilestonePopover: false,
+    };
   },
   computed: {
     isLoggedIn() {
@@ -360,6 +367,13 @@ export default {
       >
         <gl-animated-chevron-lg-right-down-icon :is-on="!list.collapsed" />
       </gl-button>
+      <milestone-popover
+        v-if="showMilestonePopover"
+        :target="$refs.milestoneTrigger"
+        :milestone-id="list.milestone && list.milestone.id"
+        :cached-title="listTitle"
+        :placement="list.collapsed ? 'right' : 'bottom'"
+      />
       <!-- EE start -->
 
       <a
@@ -399,12 +413,27 @@ export default {
           'gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-mx-0 gl-my-3 gl-flex-grow-0 gl-rotate-90 gl-py-0': list.collapsed,
           'gl-grow': !list.collapsed,
+          'gl-max-w-20': list.collapsed && listType === 'milestone',
         }"
       >
         <!-- EE start -->
 
         <span
-          v-if="listType !== 'label'"
+          v-if="listType === 'milestone'"
+          ref="milestoneTrigger"
+          data-testid="milestone-trigger"
+          class="board-title-main-text gl-block gl-truncate"
+          :class="{
+            'gl-max-w-20 gl-text-subtle': list.collapsed,
+          }"
+          @mouseenter="showMilestonePopover = true"
+          @mouseleave="showMilestonePopover = false"
+        >
+          {{ listTitle }}
+        </span>
+
+        <span
+          v-else-if="listType !== 'label'"
           v-gl-tooltip
           :class="{
             '!gl-ml-2': list.collapsed && !showAssigneeListDetails,
@@ -416,6 +445,7 @@ export default {
         >
           {{ listTitle }}
         </span>
+
         <span
           v-if="listType === 'assignee'"
           v-show="!list.collapsed"
@@ -423,9 +453,11 @@ export default {
         >
           @{{ listAssignee }}
         </span>
+
         <!-- EE end -->
+
         <gl-label
-          v-if="listType === 'label'"
+          v-if="listType === 'label' && list.label"
           v-gl-tooltip.bottom
           :background-color="list.label.color"
           :description="list.label.description"

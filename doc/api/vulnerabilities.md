@@ -23,23 +23,11 @@ description: Manage GitLab vulnerabilities with REST API (deprecated). Supports 
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-The former Vulnerabilities API was renamed to Vulnerability Findings API
-and its documentation was moved to [a different location](vulnerability_findings.md).
-This document now describes the new Vulnerabilities API that provides access to
-[Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-This API is in the process of being deprecated and considered unstable.
-The response payload may be subject to change or breakage
-across GitLab releases. Use the
-[GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
-
-{{< /alert >}}
+> [!note]
+> The former Vulnerabilities API was renamed to Vulnerability Findings API
+> and its documentation was moved to [a different location](vulnerability_findings.md).
+> This document now describes the new Vulnerabilities API that provides access to
+> [Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
 
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
@@ -47,9 +35,15 @@ If an authenticated user does not have permission to
 [view vulnerability report](../user/permissions.md#project-application-security),
 this request returns a `403 Forbidden` status code.
 
-## Single vulnerability
+> [!warning]
+> This API is in the process of being deprecated and considered unstable.
+> The response payload may be subject to change or breakage
+> across GitLab releases. Use the
+> [GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
 
-Gets a single vulnerability
+## Retrieve a vulnerability
+
+Retrieves a specified vulnerability.
 
 ```plaintext
 GET /vulnerabilities/:id
@@ -90,9 +84,9 @@ Example response:
 }
 ```
 
-## Confirm vulnerability
+## Confirm a vulnerability
 
-Confirms a given vulnerability. Returns status code `304` if the vulnerability is already confirmed.
+Confirms a specified vulnerability. Returns status code `304` if the vulnerability is already confirmed.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -137,9 +131,9 @@ Example response:
 }
 ```
 
-## Resolve vulnerability
+## Resolve a vulnerability
 
-Resolves a given vulnerability. Returns status code `304` if the vulnerability is already resolved.
+Resolves a specified vulnerability. Returns status code `304` if the vulnerability is already resolved.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -184,9 +178,9 @@ Example response:
 }
 ```
 
-## Dismiss vulnerability
+## Dismiss a vulnerability
 
-Dismisses a given vulnerability. Returns status code `304` if the vulnerability is already dismissed.
+Dismisses a specified vulnerability. Returns status code `304` if the vulnerability is already dismissed.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -231,9 +225,9 @@ Example response:
 }
 ```
 
-## Revert vulnerability to detected state
+## Revert a vulnerability to detected state
 
-Reverts a given vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
+Reverts a specified vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),

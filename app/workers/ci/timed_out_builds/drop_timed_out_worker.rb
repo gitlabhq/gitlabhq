@@ -16,7 +16,12 @@ module Ci
       queue_namespace :cronjob
 
       def perform
-        DropRunningWorker.perform_async
+        sub_workers = [
+          DropRunningWorker,
+          DropCancelingWorker
+        ]
+
+        sub_workers.each(&:perform_async)
       end
     end
   end

@@ -72,7 +72,7 @@ To continue using registration tokens after GitLab 17.0:
 
 Existing runners will continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
 
-The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
+The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes/) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
 
 ## Changes to the `gitlab-runner register` command syntax
@@ -198,12 +198,9 @@ data:
   runner-token: "REDACTED"
 ```
 
-{{< alert type="note" >}}
-
-If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
-you can set it to any string. This value is ignored when `runner-token` is present.
-
-{{< /alert >}}
+> [!note]
+> If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
+> you can set it to any string. This value is ignored when `runner-token` is present.
 
 ## Known issues
 
@@ -230,7 +227,7 @@ during token rotation.
 This occurs when:
 
 - You're using a runner authentication token (prefixed with `glrt-`) in a secret
-  [referenced by a Custom Resource Definition](https://docs.gitlab.com/runner/install/operator.html#install-gitlab-runner).
+  [referenced by a Custom Resource Definition](https://docs.gitlab.com/runner/install/operator/#install-gitlab-runner).
 - The runner authentication token is due to expire.
   For more information about runner authentication token expiration,
   see [Authentication token security](configure_runners.md#authentication-token-security).

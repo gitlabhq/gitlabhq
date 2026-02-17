@@ -36,6 +36,10 @@ export default {
       type: String,
       required: true,
     },
+    simulateSaas: {
+      type: Boolean,
+      required: true,
+    },
   },
   detailedMetrics: [
     {
@@ -169,6 +173,15 @@ export default {
     >
       <div class="view-performance-container gl-flex gl-shrink-0">
         <info-app :current-request="currentRequest" />
+        <span
+          v-if="simulateSaas"
+          v-gl-tooltip.viewport
+          class="view gl-text-sm !gl-text-neutral-0"
+          data-testid="simulate-saas-indicator"
+          :title="s__('PerformanceBar|GitLab running in SaaS mode')"
+        >
+          {{ s__('PerformanceBar|SaaS') }}
+        </span>
         <detailed-metric
           v-for="metric in $options.detailedMetrics"
           :key="metric.metric"

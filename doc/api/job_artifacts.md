@@ -16,7 +16,7 @@ Use this API to download, keep, and delete [job artifacts](../ci/jobs/job_artifa
 
 ## Download job artifacts by job ID
 
-Download a job's artifacts archive using the job ID.
+Download a job's artifacts archive using a job ID.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -62,7 +62,7 @@ artifact_download:
 
 {{< /history >}}
 
-Download a job's artifacts archive from the latest successful pipeline using the reference name.
+Download a job's artifacts archive from the latest successful pipeline using a reference name.
 When `search_recent_successful_pipelines=true`, the search includes up to 100 recent successful pipelines for the specified reference.
 
 The latest successful pipeline is determined based on creation time.
@@ -130,7 +130,7 @@ curl --location \
 
 ## Download a single artifact file by job ID
 
-Download a single file from a job's artifacts using the job ID.
+Download a single file from a job's artifacts using a job ID.
 The file is extracted from the archive and streamed to the client.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
@@ -167,7 +167,7 @@ curl --location \
 
 {{< /history >}}
 
-Lists all files and directories in the artifacts archive of a specified job.
+List all files and directories in the artifacts archive of a specified job.
 This operation reads the artifact metadata without extracting the full archive,
 making it efficient for browsing large archives.
 
@@ -252,8 +252,15 @@ list_artifacts:
 
 ## Download a single artifact file by reference name
 
+{{< history >}}
+
+- `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
+
+{{< /history >}}
+
 Download a single file from a job's artifacts in the latest successful pipeline
 using the reference name. The file is extracted from the archive and streamed to the client with the `plain/text` content type.
+When `search_recent_successful_pipelines=true`, the search includes up to 100 recent successful pipelines for the specified reference.
 
 For [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines),
 artifacts are searched in hierarchical order from parent to child. If both parent and child pipelines
@@ -268,6 +275,7 @@ Prerequisites:
 - If the pipeline includes manual jobs, they must either:
   - Complete successfully.
   - Have `allow_failure: true` set.
+- To search across recent successful pipelines, the `ci_search_recent_successful_pipelines` feature flag must be enabled for the project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -285,8 +293,11 @@ Supported attributes:
 | `job`           | string            | Yes      | The name of the job. |
 | `ref_name`      | string            | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
 | `job_token`     | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
+| `search_recent_successful_pipelines` | boolean | No | Search across recent successful pipelines instead of just the latest one. Defaults to `false`. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
+
+If the job or artifact file are not found, returns [`404`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
@@ -294,6 +305,14 @@ Example request:
 curl --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf"
+```
+
+Example request with recent pipeline search:
+
+```shell
+curl --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf&search_recent_successful_pipelines=true"
 ```
 
 ## Keep job artifacts
@@ -361,7 +380,7 @@ Delete all artifacts associated with a specific job. Artifacts cannot be recover
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/jobs/:job_id/artifacts
@@ -400,7 +419,7 @@ before artifacts are deleted.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/artifacts

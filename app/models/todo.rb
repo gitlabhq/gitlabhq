@@ -403,10 +403,8 @@ class Todo < ApplicationRecord
     return if target.nil?
 
     case target
-    when WorkItem
+    when WorkItem, Issue
       build_work_item_target_url
-    when Issue
-      build_issue_target_url
     when MergeRequest
       build_merge_request_target_url
     when ::DesignManagement::Design
@@ -428,10 +426,6 @@ class Todo < ApplicationRecord
 
   def self_added?
     author == user
-  end
-
-  def self_assigned?
-    self_added? && (assigned? || review_requested?)
   end
 
   private
@@ -466,13 +460,6 @@ class Todo < ApplicationRecord
   end
 
   def build_work_item_target_url
-    ::Gitlab::UrlBuilder.build(
-      target,
-      anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
-    )
-  end
-
-  def build_issue_target_url
     ::Gitlab::UrlBuilder.build(
       target,
       anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil

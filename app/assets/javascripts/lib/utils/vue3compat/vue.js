@@ -1,5 +1,4 @@
 import VueCompatOriginal from '@vue/compat';
-// eslint-disable-next-line no-restricted-imports
 import { logDevNotice } from '../../logger';
 import { compatConfig } from './compat_config';
 
@@ -19,7 +18,7 @@ class GitLabPatchedVue extends VueCompatOriginal {
     }
     super(config, ...rest);
     if (originalEl) {
-      originalEl.parentNode.replaceChild(config.el, originalEl);
+      originalEl?.replaceWith(config.el);
     }
   }
 }

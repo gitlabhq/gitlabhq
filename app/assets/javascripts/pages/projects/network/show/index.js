@@ -18,6 +18,7 @@ const initRefSwitcher = () => {
 
   return new Vue({
     el: refSwitcherEl,
+    name: 'NetworkRefSelectorRoot',
     render(createElement) {
       return createElement(RefSelector, {
         props: {
@@ -43,6 +44,7 @@ export default function initRefSearchForm() {
 
   return new Vue({
     el: refSearchEl,
+    name: 'RefSearchFormRoot',
     render(h) {
       return h(RefSearchForm, {
         props: {

@@ -15,16 +15,13 @@ title: Installing GitLab on Google Cloud Platform
 
 You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official Linux package. You should customize it to accommodate your needs.
 
-{{< alert type="note" >}}
-
-To deploy production-ready GitLab on
-Google Kubernetes Engine,
-you can follow Google Cloud Platform's
-[`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
-It's an alternative to using a GCP VM, and uses
-the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
-
-{{< /alert >}}
+> [!note]
+> To deploy production-ready GitLab on
+> Google Kubernetes Engine,
+> you can follow Google Cloud Platform's
+> [`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
+> It's an alternative to using a GCP VM, and uses
+> the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 
 ## Prerequisites
 
@@ -65,11 +62,8 @@ To deploy GitLab on GCP you must create a virtual machine:
    These labels tag the resources as related to a GitLab installation on Google Cloud, as required by the partnership agreement.
    For more information about resource labels, see the [Google Cloud documentation on labeling resources](https://cloud.google.com/compute/docs/labeling-resources#create_resources_with_labels).
 
-   {{< alert type="note" >}}
-
-   You can also use Terraform to automate the infrastructure creation with the appropriate labels. See the [GitLab installation on Google Cloud Terraform code](https://gitlab.com/gitlab-partners-public/google-cloud/source-code/gitlab-installation-on-google-cloud) for reference.
-
-   {{< /alert >}}
+   > [!note]
+   > You can also use Terraform to automate the infrastructure creation with the appropriate labels. See the [GitLab installation on Google Cloud Terraform code](https://gitlab.com/gitlab-partners-public/google-cloud/source-code/gitlab-installation-on-google-cloud) for reference.
 
 1. Allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
 
@@ -148,7 +142,7 @@ Although not needed, it's strongly recommended to secure GitLab with a
 ### Configuring the email SMTP settings
 
 You must configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
-Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
+Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp/#smtp-settings) how to do so.
 
 ## Further reading
 

@@ -48,12 +48,9 @@ With this configuration, your domain connects directly to your GitLab instance u
 GitLab automatically manages SSL certificates using Let's Encrypt,
 which verifies domain ownership through public DNS lookups and renews certificates automatically every 90 days.
 
-{{< alert type="note" >}}
-
-Your custom domain must be accessible from the public internet for SSL certificate management,
-even if you access your instance through private networks.
-
-{{< /alert >}}
+> [!note]
+> Your custom domain must be accessible from the public internet for SSL certificate management,
+> even if you access your instance through private networks.
 
 For instances configured with private networking (such as AWS PrivateLink),
 public DNS access ensures certificate management works properly,
@@ -416,11 +413,8 @@ Prerequisites:
 - Add the ARN of the role that GitLab Dedicated uses to connect to your endpoint service to the Allowed Principals list on the Endpoint Service. You can find this ARN in Switchboard under Outbound private link IAM principal. For more information, see [Manage permissions](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
 - Recommended. Set **Acceptance required** to **No** to enable GitLab Dedicated to connect in a single operation. If set to **Yes**, you must manually accept the connection after it's initiated.
 
-  {{< alert type="note" >}}
-
-  If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
-
-  {{< /alert >}}
+  > [!note]
+  > If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
 
 - Once the endpoint service is created, note the Service Name and if you have enabled Private DNS or not.
 
@@ -478,38 +472,32 @@ If you have trouble establishing a connection after the Outbound Private Link ha
 
 ## Private hosted zones
 
-A private hosted zone (PHZ) creates custom DNS aliases (CNAMEs) that resolve in your GitLab Dedicated instance's network.
+A private hosted zone (PHZ) creates custom DNS records (such as A, CNAME, or other record types) that resolve in your GitLab Dedicated instance's network.
 
 Use a PHZ when you want to:
 
-- Create multiple DNS names or aliases that use a single endpoint, such as when running a reverse proxy to connect to multiple services.
+- Create multiple DNS records (such as A or CNAME records) that use a single endpoint, such as when running a reverse proxy to connect to multiple services.
 - Use a private domain that cannot be validated by public DNS.
 
 PHZs are commonly used with reverse PrivateLink to create readable domain names instead of using AWS-generated endpoint names. For example, you can use `alpha.beta.tenant.gitlab-dedicated.com` instead of `vpce-0987654321fedcba0-k99y1abc.vpce-svc-0a123bcd4e5f678gh.eu-west-1.vpce.amazonaws.com`.
 
-In some cases, you can also use PHZs to create aliases that resolve to publicly accessible DNS names. For example, you can create an internal DNS name that resolves to a public endpoint when you need internal systems to access a service through its private name.
+In some cases, you can also use PHZs to create DNS records that resolve to publicly accessible DNS names. For example, you can create an internal DNS name that resolves to a public endpoint when you need internal systems to access a service through its private name.
 
 > [!note]
 > Changes to private hosted zones can disrupt services that use these records for up to five minutes.
 
 ### PHZ domain structure
 
-When using your GitLab Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain, where:
+PHZ records can point to different types of targets. The most common and recommended approach is to point to DNS names for AWS VPC endpoints.
 
-- The first subdomain becomes the name of the PHZ.
-- The second subdomain becomes the record entry for the alias.
+When using your GitLab Dedicated instance's domain as part of an alias with a VPC endpoint, you must include at least one subdomain before the main domain. For example:
 
-For example:
+- Valid PHZ entry: `subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+- Invalid PHZ entry: `<your-tenant-id>.gitlab-dedicated.com`.
 
-- Valid PHZ entry: `subdomain2.subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
-- Invalid PHZ entry: `subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+For custom domains, you must provide a PHZ name and a PHZ entry in the format `phz-entry.phz-name.com`.
 
-When not using your GitLab Dedicated instance domain, you must still provide:
-
-- A Private Hosted Zone (PHZ) name
-- A PHZ entry in the format `phz-entry.phz-name.com`
-
-To prevent shadowing of public DNS domains when the domain is created inside the Dedicated tenant, use at least two additional subdomain levels below any public domain for your PHZ entries. For example, if your tenant is hosted at `tenant.gitlab-dedicated.com`, your PHZ entry should be at least `subdomain1.subdomain2.tenant.gitlab-dedicated.com`, or if you own `customer.com` then at least `subdomain1.subdomain2.customer.com`, where `subdomain2` is not a public domain.
+If your PHZ record points to a DNS name that is not a VPC endpoint, you must include at least two subdomains before the main domain. For example: `subdomain1.subdomain2.tenant.gitlab-dedicated.com`.
 
 ### Add a private hosted zone with Switchboard
 

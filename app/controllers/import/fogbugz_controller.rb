@@ -34,7 +34,7 @@ class Import::FogbugzController < Import::BaseController
   def create_user_map
     user_map = user_map_params.to_h[:users]
 
-    unless user_map.is_a?(Hash) && user_map.all? { |k, v| !v[:name].blank? }
+    unless user_map.is_a?(Hash) && user_map.all? { |_k, v| !v[:name].blank? }
       flash.now[:alert] = _('All users must have a name.')
 
       return render 'new_user_map'

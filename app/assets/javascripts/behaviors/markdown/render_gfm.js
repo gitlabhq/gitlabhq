@@ -31,7 +31,7 @@ export function renderGFM(element) {
   const highlightEls = arrayFromAll('.js-syntax-highlight');
   const krokiEls = arrayFromAll('.js-render-kroki[hidden]');
   const mathEls = arrayFromAll('.js-render-math');
-  const mermaidEls = arrayFromAll('.js-render-mermaid');
+  const mermaidEls = arrayFromAll('.js-render-mermaid, code.language-mermaid');
   const iframeEls = arrayFromAll('.js-render-iframe');
   const tableEls = arrayFromAll('[data-canonical-lang="json"][data-lang-params~="table"]');
   const tableHTMLEls = arrayFromAll('table[data-table-fields]');

@@ -60,8 +60,9 @@ entry:
 ```
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
+From GitLab 18.9, `meta.user` will also be populated with any username associated with the token used for the failed request.
 
-To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#get-details-on-a-personal-access-token).
+To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#retrieve-a-personal-access-token).
 You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
 ### Replace expired access tokens
@@ -288,13 +289,10 @@ PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find
 end
 ```
 
-{{< alert type="note" >}}
-
-To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
-`if token.user.blocked?`. However, this action does not leave an audit event,
-unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
-
-{{< /alert >}}
+> [!note]
+> To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
+> `if token.user.blocked?`. However, this action does not leave an audit event,
+> unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ### Find tokens expiring in a given month
 

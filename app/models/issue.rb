@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include EachBatch
   include PgFullTextSearchable
   include Gitlab::DueAtFilterable
+  include Gitlab::Utils::StrongMemoize
 
   extend ::Gitlab::Utils::Override
 
@@ -55,6 +56,11 @@ class Issue < ApplicationRecord
 
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
+
+  # A list of types user can change between - both original and new
+  # type must be included in this list. This is needed for legacy issues
+  # where it's possible to switch between issue and incident.
+  CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
   # Interim columns to convert integer IDs to bigint
   ignore_column :author_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
@@ -158,6 +164,18 @@ class Issue < ApplicationRecord
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
 
+  scope :within_namespace_hierarchy, ->(namespace) do
+    return none if namespace.nil? || namespace.traversal_ids.blank?
+
+    if namespace.traversal_ids.length == 1
+      where("namespace_traversal_ids[1] = ?", namespace.id)
+    else
+      ids = namespace.traversal_ids
+      next_ids = ids[0..-2] + [ids[-1] + 1]
+      where(namespace_traversal_ids: ids...next_ids)
+    end
+  end
+
   scope :join_project_through_namespace, -> do
     joins("JOIN projects ON projects.project_namespace_id = issues.namespace_id")
   end
@@ -229,16 +247,12 @@ class Issue < ApplicationRecord
     )
   }
   scope :with_issue_type, ->(types) {
-    type_ids = Array(types).filter_map do |type|
-      WorkItems::Type::BASE_TYPES.dig(type.to_sym, :id)
-    end
+    type_ids = WorkItems::TypesFramework::Provider.new.ids_by_base_types(types)
 
     where(work_item_type_id: type_ids)
   }
   scope :without_issue_type, ->(types) {
-    type_ids = Array(types).filter_map do |type|
-      WorkItems::Type::BASE_TYPES.dig(type.to_sym, :id)
-    end
+    type_ids = WorkItems::TypesFramework::Provider.new.ids_by_base_types(types)
 
     where.not(work_item_type_id: type_ids)
   }
@@ -256,12 +270,14 @@ class Issue < ApplicationRecord
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
   scope :service_desk, -> {
+    provider = WorkItems::TypesFramework::Provider.new
+
     where(
       author: User.support_bot,
-      work_item_type: WorkItems::Type.default_issue_type
+      work_item_type: provider.default_issue_type.id
     )
     .or(
-      where(work_item_type: WorkItems::Type.default_by_type(:ticket))
+      where(work_item_type: provider.find_by_base_type(:ticket).id)
     )
   }
 
@@ -810,7 +826,7 @@ class Issue < ApplicationRecord
   # Persisted records will always have a work_item_type. This method is useful
   # in places where we use a non persisted issue to perform feature checks
   def work_item_type_with_default
-    work_item_type || WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
+    work_item_type || work_item_type_provider.default_issue_type
   end
 
   def issue_type
@@ -875,19 +891,40 @@ class Issue < ApplicationRecord
     project.autoclose_referenced_issues
   end
 
+  # Overridden in EE
   def epic_work_item?
-    work_item_type&.epic?
+    false
   end
 
   def group_epic_work_item?
     epic_work_item? && group_level?
   end
 
-  # Service Desk issues and incidents should not use the work item view,
-  # since these have not been migrated over to using the work items framework.
-  # These should continue to use the .../issues/... path and render as issues.
+  def use_work_item_url?
+    return false if require_legacy_views?
+    return true if work_item_type&.task?
+
+    resource_parent.use_work_item_url?
+  end
+
+  # Some Issues types/conditions were not fully migrated to WorkItems UI/workflows yet.
+  # On the other hand some other Issue types/conditions are only available through
+  # WorkItems UI/workflows.
+  #
+  # Overriden on EE (For OKRs and Epics)
   def show_as_work_item?
-    !from_service_desk? && !work_item_type&.incident?
+    return false if require_legacy_views?
+    return true if group_level?
+    return true if work_item_type&.task?
+
+    resource_parent.work_items_consolidated_list_enabled?
+  end
+
+  # Legacy views/workflows only
+  # - Service Desk were not converted to the work items framework.
+  # - Incidents were not converted to the work items framework.
+  def require_legacy_views?
+    from_service_desk? || work_item_type&.incident?
   end
 
   def ensure_work_item_description
@@ -972,7 +1009,7 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type.present? || work_item_type_id.present? || work_item_type_id_change&.last.present?
 
-    self.work_item_type = WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
+    self.work_item_type = work_item_type_provider.default_issue_type
   end
 
   def ensure_namespace_traversal_ids
@@ -982,10 +1019,8 @@ class Issue < ApplicationRecord
   def allowed_work_item_type_change
     return unless changes[:work_item_type_id]
 
-    involved_types = WorkItems::Type.where(
-      id: changes[:work_item_type_id].compact
-    ).pluck(:base_type).uniq
-    disallowed_types = involved_types - WorkItems::Type::CHANGEABLE_BASE_TYPES
+    involved_types = work_item_type_provider.base_types_by_ids(changes[:work_item_type_id].compact)
+    disallowed_types = involved_types - CHANGEABLE_BASE_TYPES
 
     return if disallowed_types.empty?
 
@@ -1003,6 +1038,11 @@ class Issue < ApplicationRecord
   def validate_due_date?
     true
   end
+
+  def work_item_type_provider
+    ::WorkItems::TypesFramework::Provider.new(namespace)
+  end
+  strong_memoize_attr :work_item_type_provider
 end
 
 Issue.prepend_mod_with('Issue')

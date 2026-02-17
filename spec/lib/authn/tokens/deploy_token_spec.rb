@@ -18,7 +18,7 @@ RSpec.describe Authn::Tokens::DeployToken, feature_category: :system_access do
 
   let_it_be(:user) { create(:user) }
 
-  subject(:token) { described_class.new(plaintext, :group_token_revocation_service) }
+  subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
   context 'with group deploy token' do
     let_it_be(:group) { create(:group) }

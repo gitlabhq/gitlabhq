@@ -1,0 +1,5 @@
+---
+name: authorize_placeholder_reassignment
+description: Grants the ability to authorize placeholder reassignment uploads
+boundaries:
+  - group

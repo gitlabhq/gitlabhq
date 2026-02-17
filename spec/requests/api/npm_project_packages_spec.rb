@@ -28,6 +28,17 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
       subject { get(url) }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_npm_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/packages/npm/#{package_name}", personal_access_token: pat)
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
+
     context 'when metadata cache exists', :aggregate_failures do
       let!(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package.name, project_id: project.id) }
 
@@ -102,6 +113,17 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
     it_behaves_like 'handling get dist tags requests', scope: :project
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
 
+    it_behaves_like 'authorizing granular token permissions', :read_npm_package_tag do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags", personal_access_token: pat)
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
+
     it_behaves_like 'updating personal access token last used' do
       subject { get(url, headers: build_token_auth_header(personal_access_token.token)) }
     end
@@ -110,6 +132,19 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
   describe 'PUT /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling create dist tag requests', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_npm_package_tag do
+      let(:tag_name) { 'test' }
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}",
+          personal_access_token: pat), env: { 'api.request.body': package.version }
+      end
+
+      before do
+        project.add_developer(user)
+      end
     end
 
     it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
@@ -132,6 +167,21 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
   describe 'DELETE /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling delete dist tag requests', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_npm_package_tag do
+      let_it_be(:package_tag) { create(:packages_tag, package: package) }
+
+      let(:tag_name) { package_tag.name }
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}",
+          personal_access_token: pat)
+      end
+
+      before do
+        project.add_maintainer(user)
+      end
     end
 
     it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
@@ -186,6 +236,14 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
     before do
       project.add_developer(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_npm_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/packages/npm/#{package.name}/-/#{package_file.file_name}",
+          personal_access_token: pat)
+      end
     end
 
     shared_examples 'successfully downloads the file' do
@@ -310,6 +368,18 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
     subject(:request) { put url, headers: headers, as: :json }
 
+    it_behaves_like 'authorizing granular token permissions', :authorize_npm_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/packages/npm/#{encoded_package_name}/authorize", personal_access_token: pat),
+          headers: workhorse_headers, as: :json
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
+
     context 'with workhorse headers' do
       let(:headers) { super().merge(workhorse_headers) }
 
@@ -386,6 +456,20 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
     before do
       project.add_developer(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_npm_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}", personal_access_token: pat),
+          method: :put,
+          file_key: :file,
+          params: params,
+          headers: {},
+          send_rewritten_field: true
+        )
+      end
     end
 
     shared_examples 'handling invalid record with 400 error' do |error_message|

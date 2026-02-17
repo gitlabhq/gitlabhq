@@ -26,7 +26,7 @@ The GitLab Pages feature must be enabled to use these endpoints.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 Remove Pages.
 
@@ -54,7 +54,7 @@ curl --request DELETE \
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 List Pages settings for the project.
 
@@ -130,7 +130,7 @@ Example response:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 Update Pages settings for the project.
 

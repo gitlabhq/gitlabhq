@@ -8,6 +8,10 @@ module Projects
       feature_category :static_application_security_testing, [:show]
       urgency :low, [:show]
 
+      before_action only: [:show] do
+        push_frontend_feature_flag(:security_scan_profiles_feature, project&.root_ancestor)
+      end
+
       def show
         render_403 unless can?(current_user, :read_security_configuration, project)
 

@@ -38,7 +38,11 @@ module Projects
     end
 
     def snippets
-      SnippetsFinder.new(current_user, project: project).execute.select([:id, :title])
+      SnippetsFinder.new(
+        current_user,
+        organization_id: params[:organization_id],
+        project: project
+      ).execute.select([:id, :title])
     end
 
     def wikis

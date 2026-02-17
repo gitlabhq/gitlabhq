@@ -21,6 +21,11 @@ module QA
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: upstream_project)
         Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: upstream_project, status: 'success')
 
+        # Wait for downstream pipeline to be created and succeed via API before UI verification
+        # This reduces flakiness from runner availability delays
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: downstream_project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: downstream_project, status: 'success')
+
         upstream_project.visit_latest_pipeline
       end
 
@@ -37,7 +42,8 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |show|
-          expect(show).to have_passed(timeout: 360)
+          # Reduced timeout since we already verified success via API in before block
+          expect(show).to have_passed(timeout: 60)
           expect(show.output).to have_content(upstream_var)
         end
       end

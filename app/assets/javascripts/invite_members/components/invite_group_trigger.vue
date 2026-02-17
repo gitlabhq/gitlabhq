@@ -18,10 +18,14 @@ export default {
       required: false,
       default: '',
     },
+    triggerSource: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     openModal() {
-      eventHub.$emit('openGroupModal');
+      eventHub.$emit('open-group-modal', { source: this.triggerSource });
     },
   },
 };

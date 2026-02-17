@@ -254,6 +254,7 @@ Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['dis
 Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.root.join('config', 'weak_password_digests.yml')), permitted_classes: [String]).to_set.freeze
 Settings.gitlab['log_decompressed_response_bytesize'] = ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i > 0 ? ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i : 0
 Settings.gitlab['initial_gitlab_product_usage_data'] = true if Settings.gitlab['initial_gitlab_product_usage_data'].nil?
+Settings.gitlab['initial_gitlab_product_usage_data'] = Gitlab::Utils.to_boolean(ENV['GITLAB_PRODUCT_USAGE_DATA_ENABLED'], default: Settings.gitlab['initial_gitlab_product_usage_data'])
 
 Settings['ci_id_tokens'] ||= {}
 Settings.ci_id_tokens['issuer_url'] = Settings.gitlab.url if Settings.ci_id_tokens['issuer_url'].blank?
@@ -505,6 +506,18 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
   Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
 end
 
+#
+# Cron Background Operations
+#
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary'] ||= {}
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['job_class'] = 'Database::BackgroundOperation::CronEnqueueWorker'
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['args'] = {
+  'job_class_name' => 'UsersDeleteUnconfirmedSecondaryEmails',
+  'table_name' => 'emails',
+  'column_name' => 'id'
+}
+
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
@@ -530,6 +543,9 @@ Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleW
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= {}
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
+Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker'] ||= {}
+Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker']['cron'] ||= '*/30 * * * *'
+Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker']['job_class'] = 'Ci::ScheduleBulkDeleteJobArtifactCronWorker'
 Settings.cron_jobs['update_locked_unknown_artifacts_worker'] ||= {}
 Settings.cron_jobs['update_locked_unknown_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['update_locked_unknown_artifacts_worker']['job_class'] = 'Ci::UpdateLockedUnknownArtifactsWorker'
@@ -827,6 +843,9 @@ Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['jo
 Settings.cron_jobs['lost_transaction_recovery_worker'] ||= {}
 Settings.cron_jobs['lost_transaction_recovery_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['lost_transaction_recovery_worker']['job_class'] = 'Cells::LostTransactionRecoveryWorker'
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker'] ||= {}
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['job_class'] = 'Cells::StaleRequestsCleanupCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -901,9 +920,6 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
-  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker'] ||= {}
-  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['job_class'] ||= 'Search::ElasticIndexEmbeddingBulkCronWorker'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['job_class'] ||= 'ElasticIndexInitialBulkCronWorker'
@@ -1022,7 +1038,7 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
   Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '10 * * * *'
   Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
@@ -1115,6 +1131,9 @@ Gitlab.ee do
   Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker'] ||= {}
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['job_class'] = 'SecretsManagement::ProjectSecretsManagerMaintenanceTasksCronWorker'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker'] ||= {}
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['cron'] ||= '40 * * * *'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['job_class'] = 'VirtualRegistries::Cleanup::EnqueuePolicyWorker'
@@ -1238,10 +1257,12 @@ Settings['authn'] ||= {}
 #
 # IAM Service
 #
+# Environment variables (IAM_SERVICE_ENABLED, IAM_SERVICE_URL, IAM_SERVICE_AUDIENCE) can be used
+# to override defaults for testing in sandbox environments. They are temporary and will be removed.
 Settings.authn['iam_service'] ||= {}
-Settings.authn.iam_service['enabled'] ||= false
-Settings.authn.iam_service['url'] ||= 'http://localhost:8084'
-Settings.authn.iam_service['audience'] ||= 'gitlab-rails'
+Settings.authn.iam_service['enabled'] ||= Gitlab::Utils.to_boolean(ENV['IAM_SERVICE_ENABLED']) || false
+Settings.authn.iam_service['url'] ||= ENV['IAM_SERVICE_URL'] || 'http://localhost:8084'
+Settings.authn.iam_service['audience'] ||= ENV['IAM_SERVICE_AUDIENCE'] || 'gitlab-rails'
 
 #
 # Gitlab Secrets Manager Openbao Integration

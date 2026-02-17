@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -18,6 +18,7 @@ type blobParams struct {
 	GetBlobRequest gitalypb.GetBlobRequest
 }
 
+// SendBlob is a senddata.Injector for handling Git blob requests
 var SendBlob = &blob{"git-blob:"}
 
 func (b *blob) Inject(w http.ResponseWriter, r *http.Request, sendData string) {

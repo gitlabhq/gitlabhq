@@ -461,110 +461,79 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     it { expect(described_class.most_recent!).to eq(debian_package.package_files.last) }
   end
 
-  describe '.most_recent_for' do
-    let_it_be(:package1) { create(:npm_package) }
-    let_it_be(:package2) { create(:npm_package) }
-    let_it_be(:package3) { create(:npm_package) }
-    let_it_be(:package4) { create(:npm_package) }
+  describe '.most_recent_for_helm_with_channel' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:helm_package, project: project) }
+    let_it_be(:package2) { create(:helm_package, project: project) }
+    let_it_be(:package3) { create(:helm_package, project: project) }
+    let_it_be(:package4) { create(:helm_package, project: project) }
 
-    let_it_be(:package_file2_2) { create(:package_file, :npm, package: package2) }
+    let_it_be(:package_file1_2) { create(:helm_package_file, channel: 'alpha', package: package1) }
 
-    let_it_be(:package_file3_2) { create(:package_file, :npm, package: package3) }
-    let_it_be(:package_file3_3) { create(:package_file, :npm, package: package3) }
-    let_it_be(:package_file3_4) { create(:package_file, :npm, :pending_destruction, package: package3) }
+    let_it_be(:package_file2_2) { create(:helm_package_file, package: package2) }
+    let_it_be(:package_file2_3) { create(:helm_package_file, channel: 'alpha', package: package2) }
 
-    let_it_be(:package_file4_2) { create(:package_file, :npm, package: package2) }
-    let_it_be(:package_file4_3) { create(:package_file, :npm, package: package2) }
-    let_it_be(:package_file4_4) { create(:package_file, :npm, package: package2) }
-    let_it_be(:package_file4_5) { create(:package_file, :npm, :pending_destruction, package: package2) }
+    let_it_be(:package_file3_2) { create(:helm_package_file, channel: 'alpha', package: package3) }
+    let_it_be(:package_file3_3) { create(:helm_package_file, channel: 'alpha', package: package3) }
+    let_it_be(:package_file3_4) { create(:helm_package_file, :pending_destruction, package: package3) }
 
-    let(:most_recent_package_file1) { package1.installable_package_files.recent.first }
-    let(:most_recent_package_file2) { package2.installable_package_files.recent.first }
-    let(:most_recent_package_file3) { package3.installable_package_files.recent.first }
-    let(:most_recent_package_file4) { package4.installable_package_files.recent.first }
+    let_it_be(:package_file4_2) { create(:helm_package_file, package: package4) }
+    let_it_be(:package_file4_3) { create(:helm_package_file, package: package4, channel: 'alpha') }
+    let_it_be(:package_file4_4) { create(:helm_package_file, package: package4) }
+    let_it_be(:package_file4_5) { create(:helm_package_file, :pending_destruction, package: package4) }
 
-    subject { described_class.most_recent_for(packages) }
+    let(:packages) { [package1, package2, package3, package4] }
 
-    where(
-      package_input1: [1, nil],
-      package_input2: [2, nil],
-      package_input3: [3, nil],
-      package_input4: [4, nil]
-    )
+    subject(:most_recent_files) { described_class.most_recent_for_helm_with_channel(packages, 'alpha') }
+
+    it 'returns one most recent file per package for the given project' do
+      expect(most_recent_files).to eq([
+        package_file4_3,
+        package_file3_3,
+        package_file2_3,
+        package_file1_2
+      ])
+    end
+
+    context 'with package files pending destruction' do
+      subject(:most_recent_files) do
+        described_class.most_recent_for_helm_with_channel([package4], 'alpha')
+      end
+
+      let_it_be(:package_file_pending_destruction) do
+        create(:helm_package_file, :pending_destruction, package: package4, channel: 'alpha')
+      end
+
+      it 'does not return them' do
+        expect(most_recent_files).to contain_exactly(package_file4_3)
+      end
+    end
+  end
+
+  describe '.order_by' do
+    let_it_be(:package) { create(:generic_package, project:) }
+    let_it_be(:older_file) { create(:package_file, package: package, file_name: 'beta.txt', created_at: 2.days.ago) }
+    let_it_be(:newer_file) { create(:package_file, package: package, file_name: 'alpha.txt', created_at: 1.day.ago) }
+
+    where(:column_name, :order, :expected_order) do
+      'id'         | 'asc'     | ->(older, newer) { [older, newer] }
+      'id'         | 'desc'    | ->(older, newer) { [newer, older] }
+      'file_name'  | 'asc'     | ->(older, newer) { [newer, older] }
+      'file_name'  | 'desc'    | ->(older, newer) { [older, newer] }
+      'created_at' | 'asc'     | ->(older, newer) { [older, newer] }
+      'created_at' | 'desc'    | ->(older, newer) { [newer, older] }
+      'invalid'    | 'asc'     | nil
+      'id'         | 'invalid' | nil
+    end
 
     with_them do
-      let(:compact_inputs) { [package_input1, package_input2, package_input3, package_input4].compact }
-      let(:packages) do
-        ::Packages::Package.id_in(
-          compact_inputs.map { |pkg_number| public_send(:"package#{pkg_number}") }
-            .map(&:id)
-        )
-      end
+      subject(:ordered_files) { described_class.where(package:).order_by(column_name, order) }
 
-      let(:expected_package_files) do
-        compact_inputs.map do |pkg_number|
-          public_send(:"most_recent_package_file#{pkg_number}")
-        end
-      end
-
-      it { is_expected.to match_array(expected_package_files) }
-    end
-
-    describe '.order_by' do
-      let_it_be(:package) { create(:generic_package, project:) }
-      let_it_be(:older_file) { create(:package_file, package: package, file_name: 'beta.txt', created_at: 2.days.ago) }
-      let_it_be(:newer_file) { create(:package_file, package: package, file_name: 'alpha.txt', created_at: 1.day.ago) }
-
-      where(:column_name, :order, :expected_order) do
-        'id'         | 'asc'     | ->(older, newer) { [older, newer] }
-        'id'         | 'desc'    | ->(older, newer) { [newer, older] }
-        'file_name'  | 'asc'     | ->(older, newer) { [newer, older] }
-        'file_name'  | 'desc'    | ->(older, newer) { [older, newer] }
-        'created_at' | 'asc'     | ->(older, newer) { [older, newer] }
-        'created_at' | 'desc'    | ->(older, newer) { [newer, older] }
-        'invalid'    | 'asc'     | nil
-        'id'         | 'invalid' | nil
-      end
-
-      with_them do
-        subject(:ordered_files) { described_class.where(package:).order_by(column_name, order) }
-
-        it 'returns the package files in the expected order' do
-          if expected_order
-            expect(ordered_files.first(2)).to eq(expected_order.call(older_file, newer_file))
-          else
-            expect(ordered_files.order_values).to be_empty
-          end
-        end
-      end
-    end
-
-    context 'for extra join and extra where' do
-      let_it_be(:helm_package) { create(:helm_package, without_package_files: true) }
-      let_it_be(:helm_package_file1) { create(:helm_package_file, channel: 'alpha') }
-      let_it_be(:helm_package_file2) { create(:helm_package_file, channel: 'alpha', package: helm_package) }
-      let_it_be(:helm_package_file3) { create(:helm_package_file, channel: 'beta', package: helm_package) }
-      let_it_be(:helm_package_file4) { create(:helm_package_file, channel: 'beta', package: helm_package) }
-
-      let(:extra_join) { :helm_file_metadatum }
-      let(:extra_where) { { packages_helm_file_metadata: { channel: 'alpha' } } }
-
-      subject(:joined_result) do
-        described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join,
-          extra_where: extra_where)
-      end
-
-      it 'returns the most recent package for the selected channel' do
-        expect(joined_result).to contain_exactly(helm_package_file2)
-      end
-
-      context 'with package files pending destruction' do
-        let_it_be(:package_file_pending_destruction) do
-          create(:helm_package_file, :pending_destruction, package: helm_package, channel: 'alpha')
-        end
-
-        it 'does not return them' do
-          expect(joined_result).to contain_exactly(helm_package_file2)
+      it 'returns the package files in the expected order' do
+        if expected_order
+          expect(ordered_files.first(2)).to eq(expected_order.call(older_file, newer_file))
+        else
+          expect(ordered_files.order_values).to be_empty
         end
       end
     end

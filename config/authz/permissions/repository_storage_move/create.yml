@@ -1,0 +1,6 @@
+---
+name: create_repository_storage_move
+description: Grants the ability to create repository storage moves
+boundaries:
+  - group
+  - project

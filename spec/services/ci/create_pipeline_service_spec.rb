@@ -52,43 +52,65 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
     # rubocop:enable Metrics/ParameterLists
 
     context 'performance' do
-      it_behaves_like 'pipelines are created without N+1 SQL queries' do
-        let(:config1) do
-          <<~YAML
-            job1:
-              stage: build
-              script: exit 0
+      let(:config1) do
+        <<~YAML
+          job1:
+            stage: build
+            script: exit 0
 
-            job2:
-              stage: test
-              script: exit 0
-          YAML
+          job2:
+            stage: test
+            script: exit 0
+        YAML
+      end
+
+      let(:config2) do
+        <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+
+          job3:
+            stage: deploy
+            script: exit 0
+        YAML
+      end
+
+      let(:accepted_n_plus_ones) do
+        1 + # INSERT INTO "ci_stages"
+          1 + # INSERT INTO "ci_builds"
+          1 + # INSERT INTO "p_ci_job_definition_instances"
+          1 # INSERT INTO "p_ci_build_sources"
+      end
+
+      before do
+        # warm up
+        stub_ci_pipeline_yaml_file(config1)
+        execute_service
+        stub_ci_pipeline_yaml_file(config2)
+        execute_service
+      end
+
+      it 'avoids N+1 queries', :aggregate_failures, :request_store, :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          stub_ci_pipeline_yaml_file(config1)
+
+          pipeline = execute_service.payload
+
+          expect(pipeline).to be_created_successfully
         end
 
-        let(:config2) do
-          <<~YAML
-            job1:
-              stage: build
-              script: exit 0
+        expect do
+          stub_ci_pipeline_yaml_file(config2)
 
-            job2:
-              stage: test
-              script: exit 0
+          pipeline = execute_service.payload
 
-            job3:
-              stage: deploy
-              script: exit 0
-          YAML
-        end
-
-        let(:accepted_n_plus_ones) do
-          1 + # SELECT "ci_instance_variables"
-            1 + # INSERT INTO "ci_stages"
-            1 + # SELECT "ci_builds".* FROM "ci_builds"
-            1 + # INSERT INTO "ci_builds"
-            1 + # INSERT INTO "ci_builds_metadata"
-            1   # SELECT "taggings".* FROM "taggings"
-        end
+          expect(pipeline).to be_created_successfully
+        end.to issue_same_number_of_queries_as(control).with_threshold(accepted_n_plus_ones)
       end
     end
 
@@ -1795,6 +1817,16 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(successful_request['pipeline_id']).to eq(response.payload.id)
           expect(successful_request['status']).to eq(::Ci::PipelineCreation::Requests::SUCCEEDED)
         end
+
+        it 'triggers GraphQL subscription for the merge request' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
+
+          execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+        end
       end
 
       context 'when the pipeline creation fails' do
@@ -1810,6 +1842,28 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           failed_request = ::Ci::PipelineCreation::Requests.hget(creation_request)
           expect(failed_request['error']).to eq('Insufficient permissions to create a new pipeline')
           expect(failed_request['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+        end
+
+        it 'triggers GraphQL subscription for the merge request' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
+
+          execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+        end
+      end
+
+      context 'when merge_request is not present' do
+        it 'does not trigger GraphQL subscription' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_project(project)
+
+          expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated)
+
+          execute_service(
+            pipeline_creation_request: creation_request, source: :push
+          )
         end
       end
     end

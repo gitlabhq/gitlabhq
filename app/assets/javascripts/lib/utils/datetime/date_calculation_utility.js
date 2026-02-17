@@ -251,8 +251,8 @@ export const endOfDayTime = 'T23:59:59Z';
 /**
  * @param {Date} d1
  * @param {Date} d2
- * @param {Function} formatter
- * @return {Any[]} an array of formatted dates between 2 given dates (including start&end date)
+ * @param {(date:Date) => any} [formatter]
+ * @return {any[]} an array of formatted dates between 2 given dates (including start&end date)
  */
 export const getDatesInRange = (d1, d2, formatter = (x) => x) => {
   if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
@@ -268,7 +268,7 @@ export const getDatesInRange = (d1, d2, formatter = (x) => x) => {
     range.push(new Date(startDate));
   }
 
-  return range.map(formatter);
+  return range.map((date) => formatter(date));
 };
 
 /**

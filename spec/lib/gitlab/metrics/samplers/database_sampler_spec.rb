@@ -79,7 +79,11 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
         .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord })
     end
 
-    context 'when all base models are connected', :add_ci_connection do
+    context 'when all base models are connected' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
+
       it 'samples connection pool statistics for all primaries' do
         expect_metrics_with_labels(main_labels)
         expect_metrics_with_labels(ci_labels)
@@ -104,8 +108,10 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
     end
 
-    context 'when a base model is not connected', :add_ci_connection do
+    context 'when a base model is not connected' do
       before do
+        skip_if_multiple_databases_not_setup
+
         allow(Ci::ApplicationRecord).to receive(:connected?).and_return(false)
       end
 

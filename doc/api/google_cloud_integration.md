@@ -37,7 +37,7 @@ Use this API to interact with the Google Cloud integration. For more information
 
 {{< /history >}}
 
-Users with at least the Maintainer role for the project can use the following endpoint to
+Users with the Maintainer or Owner role for the project can use the following endpoint to
 query a shell script that creates and configures the workload identity
 federation in Google Cloud:
 
@@ -72,7 +72,7 @@ curl --request GET \
 
 {{< /history >}}
 
-Users with at least the Maintainer role for the project can use the following endpoint to
+Users with the Maintainer or Owner role for the project can use the following endpoint to
 query a shell script to set up a Google Cloud integration:
 
 ```plaintext
@@ -112,7 +112,7 @@ curl --request GET \
 
 {{< /history >}}
 
-Users with at least the Maintainer role for the project can use the following endpoint to
+Users with the Maintainer or Owner role for the project can use the following endpoint to
 query a shell script to configure a Google Cloud project for runner provisioning and execution:
 
 ```plaintext

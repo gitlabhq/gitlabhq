@@ -2,6 +2,7 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure and manage group access and permissions.
 title: Group access and permissions
 ---
 
@@ -86,29 +87,26 @@ address. This top-level group setting applies to:
 Administrators can combine restricted access by IP address with
 [globally-allowed IP addresses](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
-{{< alert type="warning" >}}
-
-IP restriction requires proper configuration of the `X-Forwarded-For` header. To limit the risk
-of IP spoofing, you must overwrite, and not append, any `X-Forwarded-For` headers sent by clients.
-
-For deployments without an upstream proxy or load balancer, configure the server that receives direct
-requests from users to preserve the original client IP address and overwrite any `X-Forwarded-For` headers.
-In NGINX, for example, modify your configuration file to include:
-
-```plaintext
-proxy_set_header X-Forwarded-For $remote_addr;
-```
-
-For deployments with an upstream proxy or load balancer, configure the proxy or load balancer to
-preserve the original client IP address and overwrite any `X-Forwarded-For` headers. This approach ensures that
-GitLab receives the full chain of IPs, starting from the original client, and can correctly evaluate
-the IP restrictions. In NGINX, for example, modify your configuration file to include:
-
-```plaintext
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-```
-
-{{< /alert >}}
+> [!warning]
+> IP restriction requires proper configuration of the `X-Forwarded-For` header. To limit the risk
+> of IP spoofing, you must overwrite, and not append, any `X-Forwarded-For` headers sent by clients.
+>
+> For deployments without an upstream proxy or load balancer, configure the server that receives direct
+> requests from users to preserve the original client IP address and overwrite any `X-Forwarded-For` headers.
+> In NGINX, for example, modify your configuration file to include:
+>
+> ```plaintext
+> proxy_set_header X-Forwarded-For $remote_addr;
+> ```
+>
+> For deployments with an upstream proxy or load balancer, configure the proxy or load balancer to
+> preserve the original client IP address and overwrite any `X-Forwarded-For` headers. This approach ensures that
+> GitLab receives the full chain of IPs, starting from the original client, and can correctly evaluate
+> the IP restrictions. In NGINX, for example, modify your configuration file to include:
+>
+> ```plaintext
+> proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+> ```
 
 To restrict group access by IP address:
 
@@ -116,7 +114,18 @@ To restrict group access by IP address:
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
-   address ranges in CIDR notation. This list:
+   address ranges in CIDR notation:
+
+   ```txt
+   192.168.1.0/24
+   10.0.0.0/8
+   2001:db8::/32
+   203.0.113.5/32
+   ```
+
+   You must manually add each IP address entry. Adding multiple entries separated by a comma or space is not supported. Support for bulk entries is proposed in [issue 468998](https://gitlab.com/gitlab-org/gitlab/-/work_items/468998).
+
+   This list:
    - Has no limit on the number of IP address ranges.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by type of authorization.
@@ -184,7 +193,7 @@ To restrict group access by domain:
 The next time you attempt to add a user to the group, their [primary email](../profile/_index.md#change-your-primary-email)
 must match one of the allowed domains.
 
-You cannot restrict the most popular public email domains, such as:
+You cannot restrict using the most popular public email domains, such as:
 
 - `aol.com`, `gmail.com`, `hotmail.co.uk`, `hotmail.com`,
 - `hotmail.fr`, `icloud.com`, `live.com`, `mail.com`,
@@ -194,13 +203,10 @@ You cannot restrict the most popular public email domains, such as:
 
 When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
 
-{{< alert type="note" >}}
-
-Removing a domain from the **Restrict membership by email domain** list does not remove existing users with that domain from the group or its projects.
-Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
-Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email domain** list.
-
-{{< /alert >}}
+> [!note]
+> Removing a domain from the **Restrict membership by email domain** list does not remove existing users with that domain from the group or its projects.
+> Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
+> Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email domain** list.
 
 ## Prevent users from requesting access to a group
 
@@ -213,12 +219,9 @@ your group.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Disabling the **Allow users to request access** setting prevents new access requests.
-Existing pending requests are not removed and can still be approved or denied.
-
-{{< /alert >}}
+> [!note]
+> Disabling the **Allow users to request access** setting prevents new access requests.
+> Existing pending requests are not removed and can still be approved or denied.
 
 ## Prevent project forking outside group
 
@@ -232,12 +235,9 @@ Existing pending requests are not removed and can still be approved or denied.
 By default, projects in a group can be forked.
 However, you can prevent the projects in a group from being forked outside of the current top-level group.
 
-{{< alert type="note" >}}
-
-Prevent forking outside the top-level group when possible to reduce potential avenues for bad actors.
-However, if you expect a lot of external collaboration, allowing forks outside the top-level group might be unavoidable.
-
-{{< /alert >}}
+> [!note]
+> Prevent forking outside the top-level group when possible to reduce potential avenues for bad actors.
+> However, if you expect a lot of external collaboration, allowing forks outside the top-level group might be unavoidable.
 
 Prerequisites:
 
@@ -290,6 +290,11 @@ After you lock the membership for a group:
 - All users who previously had permissions can no longer add members to a group.
 - API requests to add a new user to a project are not possible.
 
+> [!NOTE]
+> When you turn on this setting, [flows](../../user/duo_agent_platform/flows/_index.md)
+> cannot add their service accounts to projects and do not run until you turn off this setting.
+> For more information, see [allow members to be added to projects](../../user/duo_agent_platform/troubleshooting.md#allow-members-to-be-added-to-projects).
+
 ## Manage group memberships with LDAP
 
 {{< details >}}
@@ -310,7 +315,7 @@ Group syncing allows LDAP groups to be mapped to GitLab groups. This provides mo
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings** > **LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
 
 - In GitLab 16.7 and earlier, group Owners cannot add members to or remove members from the group. The LDAP server is considered the single source of truth for group membership for all users who have signed in with LDAP credentials.
-- In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/group_members.md#add-a-member-to-a-group) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
+- In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/group_members.md#add-a-group-member) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
 
 When a user belongs to two LDAP groups configured for the same GitLab group, GitLab assigns them the
 higher of the two associated roles.
@@ -322,11 +327,8 @@ For example:
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
-{{< alert type="note" >}}
-
-When you add LDAP group syncing, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
-
-{{< /alert >}}
+> [!note]
+> When you add LDAP group syncing, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
 
 You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
@@ -381,11 +383,8 @@ To create group links with an LDAP user filter:
 1. Select **Settings** > **Active synchronization**.
 1. Identify the group link you want to remove and select **Remove**.
 
-{{< alert type="note" >}}
-
-When you remove LDAP group syncing, the existing memberships and role assignment are retained.
-
-{{< /alert >}}
+> [!note]
+> When you remove LDAP group syncing, the existing memberships and role assignment are retained.
 
 ### Override user permissions
 

@@ -12,6 +12,7 @@ describe('PasswordInput', () => {
     testid: 'new_user_password',
     autocomplete: 'new-password',
     name: 'new_user',
+    autofocus: true,
   };
 
   const findPasswordInput = () => wrapper.findComponent(GlFormInput);
@@ -41,6 +42,7 @@ describe('PasswordInput', () => {
     expect(passwordInput.attributes('title')).toBe(propsData.title);
     expect(passwordInput.attributes('required')).toBe('true');
     expect(passwordInput.attributes('disabled')).toBeUndefined();
+    expect(passwordInput.attributes('autofocus')).toBe('true');
     expect(passwordInput.props('state')).toBe(null);
   });
 

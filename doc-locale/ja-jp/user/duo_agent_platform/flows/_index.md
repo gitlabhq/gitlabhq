@@ -8,9 +8,10 @@ title: フロー
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: ベータ
+
+この機能は[GitLabクレジット](../../../subscriptions/gitlab_credits.md)を使用します。
 
 {{< /details >}}
 
@@ -22,8 +23,13 @@ title: フロー
 
 {{< history >}}
 
-- GitLab 18.3で`duo_workflow`[フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ](../../../policy/development_stages_support.md)として導入されました。デフォルトでは有効になっています。
-- 個々のフローには、追加のフラグが必要です。
+- GitLab 18.4で`ai_catalog_flows`[フラグ](../../../administration/feature_flags/_index.md)とともに[実験的機能](../../../policy/development_stages_support.md)として導入されました。デフォルトでは無効になっています。
+- GitLab 18.7で[ベータ版](../../../policy/development_stages_support.md)に変更されました。
+- GitLab 18.7の[GitLab.comで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/569060)。
+- GitLab 18.8の[GitLab Self-ManagedおよびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/569060)になりました。
+- 基本フローには、追加のフラグが必要です。
+- GitLab 18.8で基本フローは[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
+- GitLab 18.8でカスタムフローはベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)されました。
 
 {{< /history >}}
 
@@ -33,63 +39,56 @@ title: フロー
 
 {{< /alert >}}
 
-フローとは、1つまたは複数のエージェントが連携して複雑な問題を解決するものです。
+フローとは、1つまたは複数のエージェントが連携して複雑な問題を解決する組み合わせのことです。
+
+GitLabには、次の2種類のフローがあります:
+
+- [基本フロー](foundational_flows/_index.md)は、GitLabが一般的なソフトウェア開発タスクのために作成した、事前構築済みの本番環境対応ワークフローです。
+- [Custom flows](custom.md)は、チーム固有のプロセスを自動化するために作成するワークフローです。ワークフローのステップとエージェントを定義し、フローの実行を制御するトリガーを定義します。
 
 フローは、IDEとGitLab UIで利用できます。
 
-- UIでは、フローはGitLab CI/CDで直接実行され、ブラウザを離れることなく、一般的な開発タスクを自動化できます。
-- IDEでは、フローはVS Code、Visual Studio、およびJetBrainsで利用できます。
+- UIでは、GitLab CI/CDで直接実行され、ブラウザを離れることなく、一般的なソフトウェア開発タスクを自動化できます。
+- IDEでは、ソフトウェア開発フローは、VS Code、Visual Studio、JetBrainsで利用できます。他のフローのサポートも提案されています。
 
-## 利用可能なフロー {#available-flows}
+CI/CDでのフローの実行方法について詳しくは、[flow executionドキュメント](execution.md)をご覧ください。フローのセキュリティについて詳しくは、[the composite identityドキュメント](../security.md)をご覧ください。
 
-以下のフローが利用可能です:
+## 前提条件 {#prerequisites}
 
-- [CI/CDパイプラインを修正](fix_pipeline.md)。
-- [Jenkinsfileを`.gitlab-ci.yml`ファイルに変換](convert_to_gitlab_ci.md)。
-- [イシューをマージリクエストに変換](issue_to_mr.md)。
-- [ソフトウェア開発](software_development.md)のあらゆる側面に取り組みます。このフローでは、ニーズを記述すると、GitLab Duoがリポジトリ、コードベース、およびその構造を理解します。
+フローを使用するには:
 
-選択したコードを理解するなど、より焦点を絞った作業には、[GitLab Duoチャット（エージェント型）](../../gitlab_duo_chat/agentic_chat.md)を使用します。
+- [前提条件](../_index.md#prerequisites)を満たす必要があります。
 
-## フローをオンにする {#turn-on-flows}
+GitLab UIでフローを実行するには:
 
-フローをオンまたはオフにするには、[GitLab Duo設定](../../gitlab_duo/turn_on_off.md)を使用します。
+- [GitLab Duoの設定](../../gitlab_duo/turn_on_off.md)でフローをオンにする必要があります。
+- フローを初めて追加または実行する前に、[プロジェクトが所属するグループにメンバーを追加できるようにする必要があります](../troubleshooting.md#allow-members-to-be-added-to-projects)。
+- コードを作成するフローを使用するには、[サービスアカウントを許可するようにプッシュルールを構成](../troubleshooting.md#configure-push-rules-to-allow-a-service-account)する必要があります。
 
-## GitLab UIで実行中のフローを監視する {#monitor-running-flows-in-the-gitlab-ui}
+## GitLab UIで実行中のフローを監視 {#monitor-running-flows-in-the-gitlab-ui}
 
 プロジェクトで実行されているフローを表示するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **自動化** > **セッション**を選択します。
 
-## IDEでフローの履歴を表示する {#view-flow-history-in-the-ides}
+## IDEでフローの履歴を表示 {#view-flow-history-in-the-ides}
 
 プロジェクトで実行したフローの履歴を表示するには:
 
-- **フロー**タブで、下にスクロールして**Recent agent sessions**（最近のエージェントセッション）を表示します。
+- **フロー**タブで、下にスクロールして**Recent agent sessions**を表示します。
 
-## サポートされているAPIと権限 {#supported-apis-and-permissions}
+## `AGENTS.md`でフローをカスタマイズ {#customize-flows-with-agentsmd}
 
-GitLab UIでは、フローは次のGitLab APIにアクセスできます:
+`AGENTS.md`ファイルを使用して、基本フローとカスタムフローを実行中に従うコンテキストと手順をGitLab Duoに提供します。
 
-- [プロジェクトAPI](../../../api/projects.md)
-- [イシューAPI](../../../api/issues.md)
-- [マージリクエストAPI](../../../api/merge_requests.md)
-- [リポジトリファイルAPI](../../../api/repository_files.md)
-- [ブランチAPI](../../../api/branches.md)
-- [コミットAPI](../../../api/commits.md)
-- [CIパイプラインAPI](../../../api/pipelines.md)
-- [ラベルAPI](../../../api/labels.md)
-- [エピックAPI](../../../api/epics.md)
-- [ノートAPI](../../../api/notes.md)
-- [検索API](../../../api/search.md)
-
-フローは各ユーザーの権限を使用し、すべてのプロジェクトアクセス制御とセキュリティポリシーを尊重します。
+詳細については、[`AGENTS.md`のカスタマイズファイル](../../gitlab_duo/customize_duo/agents_md.md)を参照してください。
 
 ## フィードバックを提供する {#give-feedback}
 
-エージェントフローは、GitLab AI搭載の開発プラットフォームの一部です。皆様からのフィードバックは、これらのワークフローの改善に役立ちます。フローに関する問題を報告したり、改善点を提案するには、[このアンケートにご回答ください](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu)。
+フローは、GitLab AI搭載のソフトウェア開発プラットフォームの一部です。皆様からのフィードバックは、これらのワークフローの改善に役立ちます。フローに関するイシューのレポートや改善案を提案するには、[このアンケートにご回答ください](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu)。
 
 ## 関連トピック {#related-topics}
 
-- [フローの実行場所を設定する](execution.md)
+- [Configure where flows run](execution.md)
+- [基本フロー](foundational_flows/_index.md)

@@ -65,7 +65,7 @@ module Gitlab
           next_min, next_max = next_bounds
           max_cursor = worker.max_cursor
 
-          return if cursor_greater_than?(next_min, max_cursor)
+          return if cursor_greater_than_or_equal?(next_min, max_cursor)
 
           next_max = cursor_min(next_max, max_cursor)
           [next_min, next_max]
@@ -81,8 +81,8 @@ module Gitlab
           end
         end
 
-        def cursor_greater_than?(cursor1, cursor2)
-          (cursor1 <=> cursor2) > 0
+        def cursor_greater_than_or_equal?(cursor1, cursor2)
+          (cursor1 <=> cursor2) >= 0
         end
 
         def cursor_min(cursor1, cursor2)

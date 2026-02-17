@@ -34,6 +34,11 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
         project.add_maintainer(user)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_freeze_period do
+        let(:boundary_object) { project }
+        let(:request) { get api(path, personal_access_token: pat) }
+      end
+
       context 'when there are two freeze_periods' do
         let!(:freeze_period_1) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
         let!(:freeze_period_2) { create(:ci_freeze_period, project: project, created_at: 1.day.ago) }
@@ -139,6 +144,11 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
           project.add_maintainer(user)
         end
 
+        it_behaves_like 'authorizing granular token permissions', :read_freeze_period do
+          let(:boundary_object) { project }
+          let(:request) { get api(path, personal_access_token: pat) }
+        end
+
         it 'responds 200 OK' do
           get api(path, user)
 
@@ -228,6 +238,11 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
     context 'when user is the maintainer' do
       before do
         project.add_maintainer(user)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_freeze_period do
+        let(:boundary_object) { project }
+        let(:request) { post api(path, personal_access_token: pat), params: params }
       end
 
       context 'with valid params' do
@@ -355,6 +370,14 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
         project.add_maintainer(user)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :update_freeze_period do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", personal_access_token: pat),
+            params: params
+        end
+      end
+
       context 'with valid params' do
         it 'accepts the request' do
           subject
@@ -442,6 +465,13 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
     context 'when user is the maintainer' do
       before do
         project.add_maintainer(user)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_freeze_period do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", personal_access_token: pat)
+        end
       end
 
       it 'accepts the request' do

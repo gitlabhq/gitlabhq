@@ -16,7 +16,7 @@ module API
     resource :groups, requirements: { id: %r{[^/]+} } do
       desc 'Download export' do
         detail 'This feature was introduced in GitLab 12.5.'
-        tags %w[group_export]
+        tags %w[group_import_and_export]
         produces %w[application/octet-stream application/json]
         success code: 200
         failure [
@@ -27,6 +27,7 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :download_group_export, boundary_type: :group
       get ':id/export/download' do
         check_rate_limit! :group_download_export, scope: [current_user, user_group]
 
@@ -43,7 +44,7 @@ module API
 
       desc 'Start export' do
         detail 'This feature was introduced in GitLab 12.5.'
-        tags %w[group_export]
+        tags %w[group_import_and_export]
         success code: 202
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -53,6 +54,7 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :start_group_export, boundary_type: :group
       post ':id/export' do
         check_rate_limit! :group_export, scope: current_user
 
@@ -77,7 +79,7 @@ module API
 
         desc 'Start relations export' do
           detail 'This feature was introduced in GitLab 13.12'
-          tags %w[group_export]
+          tags %w[group_import_and_export]
           success code: 202
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -111,7 +113,7 @@ module API
         desc 'Download relations export' do
           detail 'This feature was introduced in GitLab 13.12'
           produces %w[application/octet-stream application/json]
-          tags %w[group_export]
+          tags %w[group_import_and_export]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -169,7 +171,7 @@ module API
         desc 'Relations export status' do
           detail 'This feature was introduced in GitLab 13.12'
           is_array true
-          tags %w[group_export]
+          tags %w[group_import_and_export]
           success code: 200, model: Entities::BulkImports::ExportStatus
           failure [
             { code: 401, message: 'Unauthorized' },

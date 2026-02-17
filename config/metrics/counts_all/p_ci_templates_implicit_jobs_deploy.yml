@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_deploy
 description: ''
-product_group: environments
+product_group: runner_core
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: "14.4"

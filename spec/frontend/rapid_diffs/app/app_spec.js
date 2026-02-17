@@ -1,11 +1,10 @@
 import { createTestingPinia } from '@pinia/testing';
-import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { statuses, useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
 import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
@@ -39,7 +38,6 @@ describe('Rapid Diffs App Facade', () => {
   };
   const getHiddenFilesWarningTarget = () => document.querySelector('[data-hidden-files-warning]');
   const getDiffFile = () => document.querySelector('diff-file');
-  const getLoadingIndicator = () => document.querySelector('[data-list-loading]');
 
   const createApp = (data = {}) => {
     setHTMLFixture(
@@ -151,22 +149,6 @@ describe('Rapid Diffs App Facade', () => {
     app.hide();
     app.show();
     expect(useApp().appVisible).toBe(true);
-  });
-
-  it('shows loading indicator when streaming', async () => {
-    createApp();
-    app.init();
-    useDiffsList(pinia).status = statuses.streaming;
-    await nextTick();
-    expect(getLoadingIndicator().hidden).toBe(false);
-  });
-
-  it('hides loading indicator when not streaming', async () => {
-    createApp();
-    app.init();
-    useDiffsList(pinia).status = statuses.idle;
-    await nextTick();
-    expect(getLoadingIndicator().hidden).toBe(true);
   });
 
   it('delegates clicks', () => {

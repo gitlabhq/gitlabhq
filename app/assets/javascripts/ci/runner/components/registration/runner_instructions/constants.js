@@ -1,5 +1,5 @@
 import { s__, sprintf } from '~/locale';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 export const REGISTRATION_TOKEN_PLACEHOLDER = '$REGISTRATION_TOKEN';
 

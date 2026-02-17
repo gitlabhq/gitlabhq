@@ -14,16 +14,21 @@
  * @param {string} params.filePath - The path of the file being edited
  * @param {string} params.lastCommitSha - The SHA of the last commit
  * @param {string} params.fromMergeRequestIid - The merge request IID if editing from an MR
+ * @param {string} params.forkBranchName - The branch name to use for fork scenarios (when user cannot push to original branch)
  * @returns {Object} Plain object with form data entries
  */
 export const prepareEditFormData = (
   formData,
-  { fileContent, filePath, lastCommitSha, fromMergeRequestIid },
+  { fileContent, filePath, lastCommitSha, fromMergeRequestIid, forkBranchName },
 ) => {
   formData.append('file', fileContent);
   formData.append('file_path', filePath);
   formData.append('last_commit_sha', lastCommitSha);
   formData.append('from_merge_request_iid', fromMergeRequestIid);
+
+  if (forkBranchName) {
+    formData.append('branch_name', forkBranchName);
+  }
 
   return Object.fromEntries(formData);
 };

@@ -46,15 +46,12 @@ or Google Drive, or create a new one.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.
 
-{{< alert type="note" >}}
-
-Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
-and in partnership with Google, GitLab is able to offer an additional $200 for new
-GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
-[Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ#contact-form)
-and apply for credit.
-
-{{< /alert >}}
+> [!note]
+> Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
+> and in partnership with Google, GitLab is able to offer an additional $200 for new
+> GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
+> [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ#contact-form)
+> and apply for credit.
 
 ## Create a Kubernetes cluster
 
@@ -234,13 +231,10 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and selecting the square
 takes you to the pod's logs page.
 
-{{< alert type="note" >}}
-
-The example shows only one pod hosting the application at the moment, but you can add
-more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
-in **Settings** > **CI/CD** > **Variables**.
-
-{{< /alert >}}
+> [!note]
+> The example shows only one pod hosting the application at the moment, but you can add
+> more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
+> in **Settings** > **CI/CD** > **Variables**.
 
 ### Work with branches
 

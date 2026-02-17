@@ -1,0 +1,5 @@
+---
+name: merge_merge_request
+description: Grants the ability to merge merge requests
+boundaries:
+  - project

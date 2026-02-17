@@ -44,7 +44,7 @@ module Keeps
     private
 
     def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+      ::Keeps::Helpers::Groups.instance
     end
 
     def gitlab_api_helper

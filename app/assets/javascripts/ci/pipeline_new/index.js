@@ -37,6 +37,7 @@ const mountPipelineNewForm = (el) => {
 
   return new Vue({
     el,
+    name: 'PipelineNewFormRoot',
     apolloProvider,
     provide: {
       canViewPipelineEditor: parseBoolean(canViewPipelineEditor),

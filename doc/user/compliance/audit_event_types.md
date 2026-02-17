@@ -312,11 +312,12 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`duo_session_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is created | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
-| [`duo_session_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session has failed | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
-| [`duo_session_finished`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is finished | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
-| [`duo_session_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is started | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
-| [`duo_session_stopped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is stopped | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
+| [`duo_session_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is created | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_session_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session has failed | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_session_finished`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is finished | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_session_resumed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222303) | Duo session is resumed | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_session_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is started | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_session_stopped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is stopped | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< yes >}} | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
@@ -554,9 +555,13 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`user_authenticated_using_job_token`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164546) | A user is authenticated using job token | {{< no >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
+| [`secrets_manager_create_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a group level secret is created by a user | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |
 | [`secrets_manager_create_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is created by a user | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_delete_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a group level secret is deleted by a user | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |
 | [`secrets_manager_delete_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is deleted by a user | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_read_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a CI pipeline job reads the value of a group level secret from Openbao | {{< no >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |
 | [`secrets_manager_read_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a CI pipeline job reads the value of a project level secret from Openbao | {{< no >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_update_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a group level secret is updated by a user | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |
 | [`secrets_manager_update_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is updated by a user | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
 
 ### Security policy management
@@ -599,6 +604,8 @@ Audit event types belong to the following product categories.
 | [`security_category_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is created | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
 | [`security_category_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
 | [`security_category_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is updated | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_scan_profile_attached_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219378) | A security scan profile is attached to a project | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582824) | Project |
+| [`security_scan_profile_detached_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219378) | A security scan profile is detached from a project | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582824) | Project |
 
 ### Security testing configuration
 
@@ -758,7 +765,7 @@ Audit event types belong to the following product categories.
 | [`user_impersonation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79340) | An instance administrator starts or stops impersonating a user | {{< yes >}} | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) | User, Group |
 | [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user password is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User |
 | [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | {{< yes >}} | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
-| [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to ghost user during batch processing | {{< yes >}} | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
+| [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to a ghost user during batch processing | {{< yes >}} | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | {{< yes >}} | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 | [`user_external_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207107) | A user is either flagged as external or has the external flag removed. | {{< yes >}} | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/546230) | User |
 
@@ -798,8 +805,8 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`virtual_registries_container_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry container cache entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
-| [`virtual_registries_packages_maven_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
+| [`virtual_registries_container_cache_remote_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220483) | A virtual registry container cache remote entry was deleted | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/583726) | Group |
+| [`virtual_registries_packages_maven_cache_remote_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache remote entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
 
 ### Vulnerability management
 

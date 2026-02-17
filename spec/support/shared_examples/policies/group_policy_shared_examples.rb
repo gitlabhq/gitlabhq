@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'group archiving abilities' do
+  include Namespaces::StatefulHelpers
+
   let(:group) { create(:group, :public) }
   let(:policy) { described_class.new(current_user, group) }
   let(:current_user) { owner }
@@ -50,7 +52,7 @@ RSpec.shared_examples 'group archiving abilities' do
   context 'when group is archived and marked for deletion' do
     before do
       group.namespace_settings.update!(archived: true)
-      group.namespace_details.update!(deleted_at: Time.current)
+      set_state(group, :deletion_in_progress)
     end
 
     it_behaves_like 'archived and marked for deletion'
@@ -71,7 +73,7 @@ RSpec.shared_examples 'group archiving abilities' do
 
     before do
       group.parent.namespace_settings.update!(archived: true)
-      group.parent.namespace_details.update!(deleted_at: Time.current)
+      set_state(group.parent, :deletion_in_progress)
     end
 
     it_behaves_like 'archived and marked for deletion'

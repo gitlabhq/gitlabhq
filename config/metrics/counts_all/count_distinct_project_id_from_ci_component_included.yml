@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_ci_component_included
 description: Count of unique projects that included any CI component in a pipeline, regardless of whether it is published to the CI/CD Catalog.
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 performance_indicator_type: []
 value_type: number
 status: active

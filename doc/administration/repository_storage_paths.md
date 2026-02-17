@@ -20,13 +20,10 @@ storage is either:
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
 - [Virtual storage](gitaly/praefect/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster (Praefect).
 
-{{< alert type="warning" >}}
-
-Repository storage could be configured as a `path` that points directly to the directory where the repositories are
-stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
-access repositories through a physical or virtual storage.
-
-{{< /alert >}}
+> [!warning]
+> Repository storage could be configured as a `path` that points directly to the directory where the repositories are
+> stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
+> access repositories through a physical or virtual storage.
 
 For more information on:
 
@@ -162,12 +159,9 @@ project. Object pool repositories are stored similarly to regular repositories i
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-{{< alert type="warning" >}}
-
-Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
-This can cause data loss in the regular repositories that depend on the object pool.
-
-{{< /alert >}}
+> [!warning]
+> Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
+> This can cause data loss in the regular repositories that depend on the object pool.
 
 ### Translate hashed object pool storage paths
 
@@ -211,13 +205,19 @@ differs from the hashed path. For more information, see
 Users can download an archive in formats such as `.zip` or `.tar.gz` of a repository by using either:
 
 - The GitLab UI.
-- The [Repositories API](../api/repositories.md#get-file-archive).
+- The [Repositories API](../api/repositories.md#retrieve-file-archive-from-a-repository).
 
 GitLab stores this archive in a cache in a directory on the GitLab server.
 
+The location of the cache depends on your installation method:
+
+- For Linux package instances, the default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can configure this with
+  the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
+- For Helm chart instances, the cache is stored in `/srv/gitlab/shared/cache/archive`. The directory cannot be configured.
+
 A background job running on Sidekiq periodically cleans out stale
 archives from this directory. For this reason, this directory must be
-accessible by both the Sidekiq and GitLab Workhorse services. If Sidekiq
+accessible by all Sidekiq and GitLab Workhorse nodes. If Sidekiq
 can't access the same directory used by GitLab Workhorse, the [disk containing the directory fills up](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6005).
 
 If you don't want to use a shared mount for Sidekiq and GitLab
@@ -229,9 +229,6 @@ Alternatively, you can disable the cache entirely:
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}
-
-The default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can
-configure this with the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
 
 To disable the cache:
 
@@ -254,9 +251,6 @@ To disable the cache:
 {{< /tab >}}
 
 {{< tab title="Helm chart (Kubernetes)" >}}
-
-The Helm chart stores the cache in `/srv/gitlab/shared/cache/archive`.
-The directory cannot be configured.
 
 To disable the cache, you can use `--set gitlab.webservice.extraEnv.WORKHORSE_ARCHIVE_CACHE_DISABLED="1"`, or
 specify the following in your values file:
@@ -319,7 +313,7 @@ LFS objects are also [S3-compatible](lfs/_index.md#storing-lfs-objects-in-remote
 
 ## Configure where new repositories are stored
 
-After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration.html#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
+After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration/#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
@@ -338,13 +332,10 @@ By default, if repository weights have not been configured earlier:
 - `default` is weighted `100`.
 - All other storages are weighted `0`.
 
-{{< alert type="note" >}}
-
-If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
-create new repositories on `default`, regardless of the configuration or if `default` exists.
-See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
-
-{{< /alert >}}
+> [!note]
+> If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
+> create new repositories on `default`, regardless of the configuration or if `default` exists.
+> See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
 
 ## Move repositories
 

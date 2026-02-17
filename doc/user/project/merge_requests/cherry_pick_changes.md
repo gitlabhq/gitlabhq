@@ -70,7 +70,7 @@ When a system note is created, the format is {{< icon name="cherry-pick-commit" 
 ![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)
 
 The system note crosslinks the new commit and the existing merge request.
-Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
+Each deployment's [list of associated merge requests](../../../api/deployments.md#list-all-merge-requests-associated-with-a-deployment)
 includes cherry-picked merge commits.
 
 ## Cherry-pick all changes from a merge request
@@ -91,17 +91,14 @@ Prerequisites:
   merge request contains a single commit.
   You can always [cherry-pick individual commits](#cherry-pick-a-single-commit).
 
-  {{< alert type="note" >}}
-
-  [System notes](#view-system-notes-for-cherry-picked-commits) are not created when using the fast-forward
-  merge method.
-
-  {{< /alert >}}
+  > [!note]
+  > [System notes](#view-system-notes-for-cherry-picked-commits) are not created when using the fast-forward
+  > merge method.
 
 To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**, and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
 1. In the upper-right corner of the report, select **Cherry-pick**:
 
@@ -123,7 +120,7 @@ the operation.
 To cherry-pick a commit from the list of all commits for a project:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Commits**.
+1. In the left sidebar, select **Code** > **Commits**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion) of the commit you want to cherry-pick.
 1. In the upper-right corner, select **Options** > **Cherry-pick**.
 1. On the cherry-pick dialog, select the project and branch to cherry-pick into.
@@ -136,7 +133,7 @@ You can cherry-pick from the list of previous commits affecting an individual fi
 when you view that file in your project's Git repository:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Go to the file changed by the commit. In the last commit block, select **History**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion)
    of the commit you want to cherry-pick.

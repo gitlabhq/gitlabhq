@@ -10,11 +10,13 @@ module Projects
 
       def download
         package_file = ::Packages::PackageFile.for_projects(project).find(params.permit(:id)[:id])
+        package = package_file.package
 
-        package_file.package.touch_last_downloaded_at
+        package.touch_last_downloaded_at
 
         send_upload(package_file.file, attachment: package_file.file_name_for_download,
-          ssrf_params: ::Packages::SsrfProtection.params_for(package_file.package))
+          ssrf_params: ::Packages::SsrfProtection.params_for(package_file.package),
+          sanitize_content_type: package.generic?)
       end
     end
   end

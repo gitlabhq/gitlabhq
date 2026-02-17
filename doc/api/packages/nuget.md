@@ -14,24 +14,17 @@ title: NuGet API
 
 Use this API to interact with the [NuGet package manager client](../../user/packages/nuget_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [NuGet package manager client](https://www.nuget.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [NuGet package manager client](https://www.nuget.org/)
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
+## Retrieve a package index
 
-## Package index
-
-Returns the index for a given package, which includes a list of available versions:
+Retrieves the index for a specified package, which includes a list of available versions.
 
 ```plaintext
 GET projects/:id/packages/nuget/download/:package_name/index
@@ -59,7 +52,7 @@ Example response:
 
 ## Download a package file
 
-Download a NuGet package file. The [metadata service](#metadata-service) provides this URL.
+Downloads a specified NuGet package file for a project. The [metadata service](#retrieve-package-metadata) provides this URL.
 
 ```plaintext
 GET projects/:id/packages/nuget/download/:package_name/:package_version/:package_filename
@@ -86,12 +79,9 @@ curl --user <username>:<personal_access_token> \
 
 This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current directory.
 
-{{< alert type="note" >}}
-
-This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to
-[install packages](../../user/packages/nuget_repository/_index.md#install-a-package) with group endpoints to avoid this error.
-
-{{< /alert >}}
+> [!note]
+> This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to
+> [install packages](../../user/packages/nuget_repository/_index.md#install-a-package) with group endpoints to avoid this error.
 
 ## Upload a package file
 
@@ -101,7 +91,7 @@ This API returns a `404` status when you use [group endpoints](#group-level). Us
 
 {{< /history >}}
 
-Upload a NuGet package file:
+Uploads a NuGet package file for a specified project.
 
 - For NuGet v3 feed:
 
@@ -142,7 +132,7 @@ Upload a NuGet package file:
 
 ## Upload a symbol package file
 
-Upload a NuGet symbol package file (`.snupkg`):
+Uploads a specified NuGet symbol package file (`.snupkg`) for a project.
 
 ```plaintext
 PUT projects/:id/packages/nuget/symbolpackage
@@ -196,8 +186,8 @@ The examples in this document all use the project-level prefix.
 
 ### V2 source feed/protocol
 
-Returns an XML document that represents the service index of the v2 NuGet source feed.
-Authentication is not required:
+Retrieves an XML document that represents the service index of the v2 NuGet source feed.
+Authentication is not required.
 
 ```plaintext
 GET <route-prefix>/v2
@@ -231,8 +221,8 @@ Example response:
 
 {{< /history >}}
 
-Returns a list of available API resources.
-Authentication is not required:
+Retrieves a list of available API resources.
+Authentication is not required.
 
 ```plaintext
 GET <route-prefix>/index
@@ -302,9 +292,9 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the group-level route, the returned URLs contain `/groups/:id/-`.
 
-## Metadata Service
+## Retrieve package metadata
 
-Returns metadata for a package:
+Retrieves metadata for a specified package.
 
 ```plaintext
 GET <route-prefix>/metadata/:package_name/index
@@ -353,9 +343,9 @@ Example response:
 }
 ```
 
-## Version Metadata Service
+## Retrieve version metadata
 
-Returns metadata for a specific package version:
+Retrieves metadata for a specified package version.
 
 ```plaintext
 GET <route-prefix>/metadata/:package_name/:package_version
@@ -392,9 +382,9 @@ Example response:
 }
 ```
 
-## Search Service
+## Search for packages
 
-Given a query, search for NuGet packages in the repository:
+Searches for NuGet packages in the repository based on a specified query.
 
 ```plaintext
 GET <route-prefix>/query
@@ -441,7 +431,7 @@ Example response:
 }
 ```
 
-## Delete service
+## Delete a package
 
 {{< history >}}
 
@@ -449,7 +439,7 @@ Example response:
 
 {{< /history >}}
 
-Delete a NuGet package:
+Deletes a specified NuGet package.
 
 ```plaintext
 DELETE projects/:id/packages/nuget/:package_name/:package_version
@@ -484,7 +474,7 @@ Possible request responses:
 
 {{< /history >}}
 
-Download a debugging symbol file (`.pdb`):
+Downloads a specified debugging symbol file (`.pdb`).
 
 ```plaintext
 GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
@@ -606,14 +596,11 @@ Example response:
  </entry>
 ```
 
-{{< alert type="note" >}}
-
-GitLab doesn't receive an authentication token for the `Packages()` and
-`FindPackagesByID()` endpoints, so the latest version of the package
-cannot be returned. You must provide the version when you install
-or upgrade a package with the NuGet v2 feed.
-
-{{< /alert >}}
+> [!note]
+> GitLab doesn't receive an authentication token for the `Packages()` and
+> `FindPackagesByID()` endpoints, so the latest version of the package
+> cannot be returned. You must provide the version when you install
+> or upgrade a package with the NuGet v2 feed.
 
 ```shell
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"

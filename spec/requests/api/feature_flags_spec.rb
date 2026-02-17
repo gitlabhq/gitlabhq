@@ -34,6 +34,14 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
   describe 'GET /projects/:id/feature_flags' do
     subject { get api("/projects/#{project.id}/feature_flags", user) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_feature_flag do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/feature_flags", personal_access_token: pat)
+      end
+    end
+
     context 'when there are two feature flags' do
       let!(:feature_flag_1) do
         create(:operations_feature_flag, project: project)
@@ -169,6 +177,14 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     context 'when there is a feature flag' do
       let!(:feature_flag) { create_flag(project, 'awesome-feature') }
 
+      it_behaves_like 'authorizing granular token permissions', :read_feature_flag do
+        let(:user) { developer }
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/feature_flags/#{feature_flag.name}", personal_access_token: pat)
+        end
+      end
+
       it 'returns a feature flag entry' do
         subject
 
@@ -273,6 +289,12 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
       {
         name: 'awesome-feature'
       }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_feature_flag do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/feature_flags", personal_access_token: pat), params: { name: 'gpat-test-feature' } }
     end
 
     it 'creates a new feature flag' do
@@ -496,6 +518,14 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
       let(:user_list) do
         create(:operations_feature_flag_user_list, project: project)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_feature_flag do
+        let(:user) { developer }
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("/projects/#{project.id}/feature_flags/feature1", personal_access_token: pat), params: { description: 'updated' }
+        end
       end
 
       it 'returns a 404 if the feature flag does not exist' do
@@ -827,6 +857,14 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
     let!(:feature_flag) { create(:operations_feature_flag, project: project) }
     let(:params) { {} }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_feature_flag do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/feature_flags/#{feature_flag.name}", personal_access_token: pat)
+      end
+    end
 
     it 'destroys the feature flag' do
       expect { subject }.to change { Operations::FeatureFlag.count }.by(-1)

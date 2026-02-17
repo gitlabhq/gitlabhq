@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'sentry/transport/dummy_transport'
 
-RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
+RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
   let(:exception_backtrace) { ['lib/gitlab/error_tracking.rb:123'] }
   let(:exception) { RuntimeError.new('boom').tap { |e| e.set_backtrace(exception_backtrace) } }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }

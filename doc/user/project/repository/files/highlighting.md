@@ -27,21 +27,15 @@ GitLab provides syntax highlighting for files through two complementary systems:
 
 The paths here use the [`.gitattributes` interface](https://git-scm.com/docs/gitattributes) in Git.
 
-{{< alert type="note" >}}
-
-The [Web IDE](../../web_ide/_index.md) and [Snippets](../../../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
-for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
-library for syntax highlighting.
-
-{{< /alert >}}
+> [!note]
+> The [Web IDE](../../web_ide/_index.md) and [Snippets](../../../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+> for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
+> library for syntax highlighting.
 
 ## Override syntax highlighting for a file type
 
-{{< alert type="note" >}}
-
-The Web IDE [does not support `.gitattribute` files](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
-
-{{< /alert >}}
+> [!note]
+> The Web IDE [does not support `.gitattribute` files](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
 
 To override syntax highlighting for a file type:
 
@@ -103,7 +97,7 @@ To change the Rouge highlighting limit:
    gitlab:
      extra:
        ## Maximum file size for syntax highlighting
-       ## https://docs.gitlab.com/ee/user/project/highlighting.html
+       ## https://docs.gitlab.com/user/project/repository/files/highlighting/#configure-maximum-file-size-for-highlighting
        maximum_text_highlight_size_kilobytes: 512
    ```
 

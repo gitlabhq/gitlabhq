@@ -18,7 +18,7 @@ module API
       desc 'Get all labels of the group' do
         detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         optional :with_counts,
@@ -45,6 +45,7 @@ module API
           documentation: false
         use :pagination
       end
+      route_setting :authorization, permissions: :read_label, boundary_type: :group
       get ':id/labels' do
         get_labels(user_group, Entities::GroupLabel, declared_params)
       end
@@ -52,7 +53,7 @@ module API
       desc 'Get a single label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         optional :include_ancestor_groups,
@@ -68,6 +69,7 @@ module API
           default: true,
           desc: 'Toggle to include only group labels or also project labels. This feature was added in GitLab 13.6'
       end
+      route_setting :authorization, permissions: :read_label, boundary_type: :group
       get ':id/labels/:name' do
         get_label(user_group, Entities::GroupLabel, declared_params)
       end
@@ -75,11 +77,12 @@ module API
       desc 'Create a new label' do
         detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         use :label_create_params
       end
+      route_setting :authorization, permissions: :create_label, boundary_type: :group
       post ':id/labels' do
         create_label(user_group, Entities::GroupLabel)
       end
@@ -87,7 +90,7 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
@@ -95,6 +98,7 @@ module API
         use :group_label_update_params
         exactly_one_of :label_id, :name
       end
+      route_setting :authorization, permissions: :update_label, boundary_type: :group
       put ':id/labels' do
         update_label(user_group, Entities::GroupLabel)
       end
@@ -102,11 +106,12 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
       end
+      route_setting :authorization, permissions: :delete_label, boundary_type: :group
       delete ':id/labels' do
         delete_label(user_group)
       end
@@ -114,12 +119,13 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be updated'
         use :group_label_update_params
       end
+      route_setting :authorization, permissions: :update_label, boundary_type: :group
       put ':id/labels/:name' do
         update_label(user_group, Entities::GroupLabel)
       end
@@ -127,11 +133,12 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be deleted'
       end
+      route_setting :authorization, permissions: :delete_label, boundary_type: :group
       delete ':id/labels/:name' do
         delete_label(user_group)
       end

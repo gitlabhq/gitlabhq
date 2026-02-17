@@ -5,14 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Arkose Protect
 ---
 
-{{< alert type="warning" >}}
-
-Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
-instances. The following documents the internal requirements for maintaining
-Arkose Protect on GitLab.com. While this feature is theoretically usable in GitLab Self-Managed instances, it
-is not recommended at the moment.
-
-{{< /alert >}}
+> [!warning]
+> Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
+> instances. The following documents the internal requirements for maintaining
+> Arkose Protect on GitLab.com. While this feature is theoretically usable in GitLab Self-Managed instances, it
+> is not recommended at the moment.
 
 GitLab integrates [Arkose Protect](https://www.arkoselabs.com/platform/) to guard against
 malicious users from creating accounts.
@@ -73,12 +70,9 @@ To disable Arkose Protect, run the following command in the Rails console.
    ApplicationSetting.current.update(arkose_labs_enabled: false)
    ```
 
-{{< alert type="note" >}}
-
-Disabling Arkose also disables phone number and credit card verification.
-New users are only required to verify their email address.
-
-{{< /alert >}}
+> [!note]
+> Disabling Arkose also disables phone number and credit card verification.
+> New users are only required to verify their email address.
 
 It is important to note that disabling Arkose also disables phone number and credit card verification. All new users will only be required to verify their email address.
 
@@ -100,7 +94,7 @@ You can triage and debug issues raised by ArkoseLabs with:
   and over 90% of sessions should be verified.
 - If the percentage of `high` risk users or verified sessions is significantly different
   from the expected percentages, contact the [`#ext-gitlab-arkose`](https://gitlab.slack.com/archives/C02SGF6RLPQ)
- Slack channel.
+  Slack channel.
 
 ### View ArkoseLabs Verify API response for a user session
 

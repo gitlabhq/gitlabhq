@@ -11,6 +11,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_legacy_url: true)
     # create AI Setting singleton record to prevent N+1
     Ai::Setting.instance if Gitlab.ee?
   end
@@ -325,7 +326,11 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           issue_ids += create_list(:issue, 3).map(&:id)
           expect(recent_issues).to receive(:search).with(search_term).and_return(Issue.id_in_ordered(issue_ids))
 
-          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control)
+          # Threshold of 6 allows for 2 additional queries per new issue (3 new issues = 6 queries)
+          # These queries are needed for URL determination logic (work_item_type, namespace checks)
+          # introduced by the URL centralization in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213411
+          # and temparory until full migration to Work Items URLs
+          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).with_threshold(6)
         end
 
         it 'does not have an N+1 for recently viewed merge_requests' do
@@ -684,22 +689,22 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       it 'uses the correct singular label' do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo'))
-         .to eq("Showing 1 #{label} for <span>&nbsp;<code>foo</code>&nbsp;</span>")
+        expect(helper.search_entries_info(collection, scope, 'foo'))
+         .to eq("Showing 1 #{label} for <span> <code>foo</code> </span>")
       end
 
       it 'uses the correct plural label' do
         collection = Kaminari.paginate_array([:foo] * 23).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo'))
-          .to eq("Showing 1 - 10 of 23 #{label.pluralize} for <span>&nbsp;<code>foo</code>&nbsp;</span>")
+        expect(helper.search_entries_info(collection, scope, 'foo'))
+          .to eq("Showing 1 - 10 of 23 #{label.pluralize} for <span> <code>foo</code> </span>")
       end
     end
 
     it 'raises an error for unrecognized scopes' do
       expect do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
-        search_entries_info(collection, 'unknown', 'foo')
+        helper.search_entries_info(collection, 'unknown', 'foo')
       end.to raise_error(RuntimeError)
     end
   end
@@ -709,7 +714,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     let!(:project) { build(:project, group: group) }
 
     context 'for global search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
 
       it 'returns the formatted entry message' do
         expect(message).to eq("We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
@@ -718,7 +723,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'for group search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
 
       it 'returns the formatted entry message' do
         expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in group <a')
@@ -727,7 +732,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'for project search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
 
       it 'returns the formatted entry message' do
         expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in project <a')
@@ -1177,7 +1182,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
       it 'returns items in order' do
         expect(Gitlab::Json.parse(search_navigation_json).keys)
-          .to eq(%w[projects blobs issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
+          .to eq(%w[projects blobs work_items issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
       end
     end
   end

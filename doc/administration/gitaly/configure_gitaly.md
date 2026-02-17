@@ -28,7 +28,7 @@ Configure Gitaly in one of two ways:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Configure the [Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/).
-1. [Upgrade your Helm release](https://docs.gitlab.com/charts/installation/deployment.html).
+1. [Upgrade your Helm release](https://docs.gitlab.com/charts/installation/deployment/).
 
 {{< /tab >}}
 
@@ -66,17 +66,9 @@ this default configuration used by:
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
 multiple machines.
 
-{{< alert type="note" >}}
-
-When configured to run on their own servers, Gitaly servers must be
-[upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-[Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
-{{< /alert >}}
+> [!note]
+> When configured to run on their own servers, Gitaly servers must be
+> [upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
 
 The process for setting up Gitaly on its own server is:
 
@@ -85,6 +77,9 @@ The process for setting up Gitaly on its own server is:
 1. [Configure Gitaly servers](#configure-gitaly-servers).
 1. [Configure Gitaly clients](#configure-gitaly-clients).
 1. [Disable Gitaly where not required](#disable-gitaly-where-not-required-optional) (optional).
+
+> [!note]
+> [Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
 
 ### Network architecture
 
@@ -116,13 +111,10 @@ the default ports for HTTP and HTTPs communication.
 
 ![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_v13_9.png)
 
-{{< alert type="warning" >}}
-
-Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
-by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
-Another option is to [use TLS](tls_support.md).
-
-{{< /alert >}}
+> [!warning]
+> Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
+> by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
+> Another option is to [use TLS](tls_support.md).
 
 In the following sections, we describe how to configure two Gitaly servers with secret token
 `abc123secret`:
@@ -429,26 +421,20 @@ connections):
 
 {{< /tabs >}}
 
-{{< alert type="warning" >}}
-
-If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
-default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
-Copying this file causes GitLab to use the direct disk access to repositories hosted on the Gitaly server,
-leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
-
-{{< /alert >}}
+> [!warning]
+> If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
+> default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
+> Copying this file causes GitLab to use the direct disk access to repositories hosted on the Gitaly server,
+> leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
 
 ### Configure Gitaly clients
 
 As the final step, you must update Gitaly clients to switch from using local Gitaly service to use
 the Gitaly servers you just configured.
 
-{{< alert type="note" >}}
-
-GitLab requires a `default` repository storage to be configured.
-[Read more about this limitation](#gitlab-requires-a-default-repository-storage).
-
-{{< /alert >}}
+> [!note]
+> GitLab requires a `default` repository storage to be configured.
+> [Read more about this limitation](#gitlab-requires-a-default-repository-storage).
 
 This can be risky because anything that prevents your Gitaly clients from reaching the Gitaly
 servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
@@ -543,13 +529,10 @@ Configure Gitaly clients in one of two ways. These instructions are for unencryp
 When you tail the Gitaly logs on your Gitaly server, you should see requests coming in. One sure way
 to trigger a Gitaly request is to clone a repository from GitLab over HTTP or HTTPS.
 
-{{< alert type="warning" >}}
-
-If you have [server hooks](../server_hooks.md) configured, either per repository or globally, you
-must move these to the Gitaly servers. If you have multiple Gitaly servers, copy your server hooks
-to all Gitaly servers.
-
-{{< /alert >}}
+> [!warning]
+> If you have [server hooks](../server_hooks.md) configured, either per repository or globally, you
+> must move these to the Gitaly servers. If you have multiple Gitaly servers, copy your server hooks
+> to all Gitaly servers.
 
 #### Mixed configuration
 
@@ -704,12 +687,9 @@ For information on control groups, see [Cgroups](cgroups.md).
 The way data is stored in the object database of a Git repository can become inefficient over time, which slows down Git operations. You can schedule Gitaly to run a
 daily background task with a maximum duration to clean up these items and improve performance.
 
-{{< alert type="warning" >}}
-
-Background repository optimization can place significant load on the host while running.
-Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
-
-{{< /alert >}}
+> [!warning]
+> Background repository optimization can place significant load on the host while running.
+> Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
 Configure background repository optimization in one of two ways:
 
@@ -958,12 +938,9 @@ should be:
 - On a disk with enough IO bandwidth. If the cache disk runs out of IO bandwidth, all
   fetches, and probably the entire server, slows down.
 
-{{< alert type="warning" >}}
-
-All existing data in the specified directory will be removed.
-Take care not to use a directory with existing data.
-
-{{< /alert >}}
+> [!warning]
+> All existing data in the specified directory will be removed.
+> Take care not to use a directory with existing data.
 
 By default, the cache storage directory is set to a subdirectory of the first Gitaly storage
 defined in the configuration file.
@@ -1048,7 +1025,7 @@ Gitaly exports the following Prometheus metrics for monitoring the pack-objects 
 Cache hit rate:
 
 ```promql
-sum(rate(gitaly_pack_objects_cache_lookups_total{result="hit"}[5m])) / 
+sum(rate(gitaly_pack_objects_cache_lookups_total{result="hit"}[5m])) /
 sum(rate(gitaly_pack_objects_cache_lookups_total[5m]))
 ```
 
@@ -1067,7 +1044,7 @@ rate(gitaly_pack_objects_generated_bytes_total[5m])
 Cache efficiency (bytes served vs bytes generated):
 
 ```promql
-rate(gitaly_pack_objects_served_bytes_total[5m]) / 
+rate(gitaly_pack_objects_served_bytes_total[5m]) /
 rate(gitaly_pack_objects_generated_bytes_total[5m])
 ```
 
@@ -1136,7 +1113,7 @@ A lot of Gitaly RPCs need to look up Git objects from repositories.
 Most of the time we use `git cat-file --batch` processes for that. For
 better performance, Gitaly can re-use these `git cat-file` processes
 across RPC calls. Previously used processes are kept around in a
-[`git cat-file` cache](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
+[`git cat-file` cache](https://about.gitlab.com/blog/git-performance-on-nfs/#enter-cat-file-cache).
 To control how much system resources this uses, we have a maximum number of
 cat-file processes that can go into the cache.
 
@@ -1167,13 +1144,10 @@ Configure the `cat-file` cache in the Gitaly configuration file.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`.
-On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature,
+> an administrator can [disable the feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`.
+> On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1268,6 +1242,112 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Configure custom Git configuration
+
+Gitaly does not read the system or user level Git configuration files. To provide custom Git
+configuration on the Gitaly server, use the `git.config` setting.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitaly['configuration'] = {
+  # ...
+  git: {
+    # ...
+    config: [
+      { key: "fsck.badDate", value: "ignore" },
+      ...
+    ],
+  },
+}
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+Edit `/home/git/gitaly/config.toml`:
+
+```toml
+[[git.config]]
+key = "fsck.badDate"
+value = "ignore"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Git configuration set by Gitaly
+
+Gitaly sets the following Git configuration values, which cannot be overridden using
+the `git.config` setting:
+
+- `advice.fetchShowForcedUpdates`
+- `attr.tree`
+- `bundle.heuristic`
+- `bundle.mode`
+- `bundle.version`
+- `core.alternateRefsCommand`
+- `core.autocrlf`
+- `core.bigFileThreshold`
+- `core.filesRefLockTimeout`
+- `core.fsync`
+- `core.fsyncMethod`
+- `core.hooksPath`
+- `core.packedRefsTimeout`
+- `core.useReplaceRefs`
+- `diff.noprefix`
+- `fetch.fsck.badTimezone`
+- `fetch.fsck.missingSpaceBeforeDate`
+- `fetch.fsck.zeroPaddedFilemode`
+- `fetch.fsckObjects`
+- `fetch.negotiationAlgorithm`
+- `fetch.recurseSubmodules`
+- `fetch.writeCommitGraph`
+- `fsck.badTimezone`
+- `fsck.missingSpaceBeforeDate`
+- `fsck.zeroPaddedFilemode`
+- `gc.auto`
+- `grep.threads`
+- `http.<url>.extraHeader`
+- `http.curloptResolve`
+- `http.extraHeader`
+- `http.followRedirects`
+- `init.defaultBranch`
+- `init.templateDir`
+- `maintenance.auto`
+- `pack.allowPackReuse`
+- `pack.island`
+- `pack.islandCore`
+- `pack.threads`
+- `pack.windowMemory`
+- `pack.writeBitmapLookupTable`
+- `pack.writeReverseIndex`
+- `receive.advertisePushOptions`
+- `receive.autogc`
+- `receive.fsck.badTimezone`
+- `receive.fsck.missingSpaceBeforeDate`
+- `receive.fsck.zeroPaddedFilemode`
+- `receive.hideRefs`
+- `receive.procReceiveRefs`
+- `remote.inmemory.fetch`
+- `remote.inmemory.url`
+- `remote.origin.fetch`
+- `remote.origin.url`
+- `repack.updateServerInfo`
+- `repack.writeBitmaps`
+- `transfer.bundleURI`
+- `transfer.fsckObjects`
+- `uploadpack.advertiseBundleURIs`
+- `uploadpack.allowAnySHA1InWant`
+- `uploadpack.allowFilter`
+- `uploadpack.hideRefs`
 
 ## Generate configuration using an external command
 

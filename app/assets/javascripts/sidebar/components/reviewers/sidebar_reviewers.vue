@@ -14,9 +14,14 @@ import { useBatchComments } from '~/batch_comments/store';
 import ReviewerTitle from 'ee_else_ce/sidebar/components/reviewers/reviewer_title.vue';
 import Store from '~/sidebar/stores/sidebar_store';
 import eventHub from '~/sidebar/event_hub';
+import diffsEventHub from '~/diffs/event_hub';
 import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '~/sidebar/queries/merge_request_reviewers.subscription.graphql';
 import { sidebarState } from '~/sidebar/sidebar_state';
+import {
+  EVT_REVIEW_DRAWER_APPROVED,
+  TRACKING_REVIEW_DRAWER_SUBMIT_APPROVED,
+} from '~/diffs/constants';
 import Reviewers from './reviewers.vue';
 
 export default {
@@ -144,8 +149,10 @@ export default {
     eventHub.$on('sidebar.removeAllReviewers', this.removeAllReviewers);
     eventHub.$on('sidebar.saveReviewers', this.saveReviewers);
     eventHub.$on('sidebar.toggleReviewerDrawer', this.toggleDrawerOpen);
+    diffsEventHub.$on(EVT_REVIEW_DRAWER_APPROVED, this.reportReviewApprovedEvent);
   },
   beforeDestroy() {
+    diffsEventHub.$off(EVT_REVIEW_DRAWER_APPROVED, this.reportReviewApprovedEvent);
     eventHub.$off('sidebar.removeReviewer', this.removeReviewer);
     eventHub.$off('sidebar.addReviewer', this.addReviewer);
     eventHub.$off('sidebar.removeAllReviewers', this.removeAllReviewers);
@@ -153,6 +160,22 @@ export default {
     eventHub.$off('sidebar.toggleReviewerDrawer', this.toggleDrawerOpen);
   },
   methods: {
+    reportReviewEvent(trigger, payload) {
+      const { isReviewer } = this;
+      const eventTriggers = {
+        [EVT_REVIEW_DRAWER_APPROVED]: TRACKING_REVIEW_DRAWER_SUBMIT_APPROVED,
+      };
+
+      if (eventTriggers[trigger])
+        this.trackEvent(eventTriggers[trigger], {
+          reviewer: isReviewer,
+          drafts: payload.comments,
+          summary: payload.summary,
+        });
+    },
+    reportReviewApprovedEvent(payload) {
+      this.reportReviewEvent(EVT_REVIEW_DRAWER_APPROVED, payload);
+    },
     reviewBySelf() {
       // Notify gl dropdown that we are now assigning to current user
       this.$el.parentElement.dispatchEvent(new Event('assignYourself'));

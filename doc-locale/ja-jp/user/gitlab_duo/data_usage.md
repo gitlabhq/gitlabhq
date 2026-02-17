@@ -8,7 +8,7 @@ title: GitLab Duoのデータの使用
 
 GitLab Duoは生成AIを使用して、ベロシティを向上させ、生産性を高めます。各AIネイティブ機能は独立して動作し、他の機能の動作に依存しません。
 
-GitLabは、特定のタスクに適した大規模言語モデル（LLM）を使用します。これらのLLMには、[Anthropic Claude](https://www.anthropic.com/product)、[Fireworks AIでホストされるCodestral](https://mistral.ai/news/codestral-2501)、[Google Vertex AIモデル](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models)が含まれています。
+GitLabは、特定のタスクに適した大規模言語モデル（LLM）を使用します。これらのLLMは、[Anthropic Claude](https://claude.com/product/overview) 、[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral) 、[Google Vertex AIモデル](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/overview) 、および[OpenAI models](https://platform.openai.com/docs/models)です。
 
 ## 段階的な機能拡張 {#progressive-enhancement}
 
@@ -26,13 +26,19 @@ GitLab DuoのAIネイティブ機能は、生成AIモデルを搭載していま
 
 以下は、GitLab AIモデル[サブプロセッサ](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors)の現在の保持期間を反映しています:
 
-[Fireworks AIプロンプトキャッシュ](../project/repository/code_suggestions/_index.md#prompt-caching)を除き、GitLabはGitLab Duoリクエストに対して、Anthropic、Fireworks AI、およびGoogleとのゼロデイデータ保持を取り決めています。Anthropic、Fireworks AI（プロンプトキャッシュが無効の場合）、Googleは、出力が提供された直後にモデルの入力および出力データを破棄します。入力および出力データは、不正使用のモニタリングのために保存されません。モデルの入力と出力がモデルのトレーニングに使用されることはありません。
+GitLab Duoのリクエストに関して、GitLabはAnthropic、Fireworks AI、AWS、およびGoogleとのゼロデイデータ保持ポリシーを定めています。
 
-これらのすべてのAIプロバイダーは、GitLabとのデータ保護契約の下にあり、独自の法的義務を履行する場合を除き、顧客コンテンツを独自の目的で使用することを禁止されています。
+これらのベンダーは、出力が提供された直後にモデルの入力および出力データを破棄し、不正使用モニタリングのために入力および出力データを保存しません。ただし、コード提案とGitLab Duo Chat（エージェント型）でFireworks AI、Anthropic、およびVertexAIプロンプトキャッシュが有効になっている場合は除きます。
 
-GitLab Duo ChatとGitLab Duo Agent Platformは、以前に議論したトピックにすばやく戻れるように、それぞれチャット履歴とワークフロー履歴を保持します。GitLab Duo Chatインターフェースでチャットを削除できます。GitLabは、ユーザーがGitLab[サポートチケット](https://about.gitlab.com/support/portal/)を通じて同意を提供しない限り、入力および出力データを保持しません。[AI機能のログ記録](../../administration/logs/_index.md)の詳細をご覧ください。
+プロンプトキャッシュをオフにする方法の詳細については、[プロンプトキャッシュ](../project/repository/code_suggestions/_index.md#prompt-caching)を参照してください。
 
-Fireworks AIプロンプトキャッシュは、コード提案のレイテンシーを改善するために、デフォルトで有効になっています。詳細およびプロンプトキャッシュをオプトアウトする方法については、[コード提案プロンプトキャッシュのドキュメント](../project/repository/code_suggestions/_index.md#prompt-caching)を参照してください。
+> [!note] OpenAIモデルの場合、プロンプトキャッシュをオフにすることはできません。プロンプトキャッシュをオフにしてOpenAIモデルを使用する場合、GitLabは現在のタイムスタンプをプロンプトに追加してキャッシュを無効にしようとします。データデータ保持要件に適したモデルを使用していることを確認してください。
+
+すべてのGitLab AIモデルサブプロセッサは、モデルをトレーニングするためにモデルの入力と出力を使用することを制限されており、顧客コンテンツを独自の目的で使用することを禁止するGitLabとのデータ保護契約を結んでいます。ただし、独立した法的義務を履行する場合を除きます。
+
+GitLab Duo ChatとGitLab Duo Agent Platformは、以前に話し合ったトピックにすばやく戻り、不正使用を防ぐために、それぞれチャット履歴とワークフロー履歴を保持します。GitLab Duo Chatインターフェースでチャットを削除できます。お客様がGitLabの[サポートチケット](https://about.gitlab.com/support/portal/)を通じて同意を提供しない限り、GitLabは入力および出力データを保持しません。
+
+詳細については、[AI機能ロギング](../../administration/logs/_index.md)を参照してください。
 
 ## トレーニングデータ {#training-data}
 

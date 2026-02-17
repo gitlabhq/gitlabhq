@@ -15,17 +15,6 @@ RSpec.shared_examples 'setting project protected branches' do
       expect(ProtectedBranch.last.name).to eq('some->branch')
     end
 
-    it "shows success alert once protected branch is created" do
-      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
-
-      show_add_form
-      set_defaults
-      set_protected_branch_name('some->branch')
-      click_on "Protect"
-      wait_for_requests
-      expect(page).to have_content(success_message)
-    end
-
     it "displays the last commit on the matching branch if it exists" do
       commit = create(:commit, project: project)
       project.repository.add_branch(admin, 'some-branch', commit.id)
@@ -70,7 +59,7 @@ RSpec.shared_examples 'setting project protected branches' do
     end
 
     it "displays the number of matching branches",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/flaky-tests/-/issues/3459' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24079' do
       project.repository.add_branch(admin, 'production-stable', 'master')
       project.repository.add_branch(admin, 'staging-stable', 'master')
 

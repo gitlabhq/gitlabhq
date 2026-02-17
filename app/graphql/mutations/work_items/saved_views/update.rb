@@ -6,6 +6,8 @@ module Mutations
       class Update < BaseMutation
         graphql_name 'WorkItemSavedViewUpdate'
 
+        include Mutations::SpamProtection
+
         authorize :update_saved_view
 
         description "Updates a saved view."
@@ -26,7 +28,7 @@ module Mutations
           description: 'Description of the saved view.'
 
         argument :filters,
-          Types::WorkItems::SavedViews::FilterInputType,
+          ::Types::WorkItems::SavedViews::FilterInputType,
           required: false,
           description: 'Filters associated with the saved view.'
 
@@ -38,7 +40,7 @@ module Mutations
         # rubocop:enable Graphql/JSONType
 
         argument :sort,
-          Types::WorkItems::SortEnum,
+          ::Types::WorkItems::SortEnum,
           required: false,
           description: 'Sorting option associated with the saved view.'
 
@@ -59,10 +61,27 @@ module Mutations
           scopes: [:api],
           description: 'Errors encountered during the mutation.'
 
-        def resolve(id:, **_attrs)
-          authorized_find!(id: id)
+        def resolve(id:, **attrs)
+          saved_view = authorized_find!(id: id)
 
-          { saved_view: nil, errors: [] }
+          result = ::WorkItems::SavedViews::UpdateService.new(
+            current_user: current_user,
+            saved_view: saved_view,
+            params: attrs
+          ).execute
+
+          if result.success?
+            check_spam_action_response!(saved_view)
+            { saved_view: saved_view, errors: [] }
+          else
+            { saved_view: nil, errors: result.message }
+          end
+        end
+
+        private
+
+        def find_object(id:)
+          GitlabSchema.object_from_id(id, expected_type: ::WorkItems::SavedViews::SavedView)
         end
       end
     end

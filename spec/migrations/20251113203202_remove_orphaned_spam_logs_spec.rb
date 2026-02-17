@@ -45,7 +45,7 @@ RSpec.describe RemoveOrphanedSpamLogs, feature_category: :insider_threat do
   end
 
   def create_spam_log(user_id)
-    spam_logs.create!(user_id: user_id)
+    spam_logs.create!(user_id: user_id, organization_id: organization.id)
   end
 
   def drop_constraint

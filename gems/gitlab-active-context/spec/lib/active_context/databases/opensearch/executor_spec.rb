@@ -119,4 +119,20 @@ RSpec.describe ActiveContext::Databases::Opensearch::Executor do
       )
     end
   end
+
+  def expected_vector_mapping
+    {
+      type: 'knn_vector',
+      dimension: 768,
+      method: {
+        name: 'hnsw',
+        engine: 'lucene',
+        space_type: 'cosinesimil',
+        parameters: {
+          ef_construction: 100,
+          m: 16
+        }
+      }
+    }
+  end
 end

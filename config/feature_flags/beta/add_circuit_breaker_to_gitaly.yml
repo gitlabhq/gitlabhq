@@ -1,0 +1,10 @@
+---
+name: add_circuit_breaker_to_gitaly
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582826
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220200
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587529
+milestone: '18.9'
+group: group::source code
+type: beta
+default_enabled: false

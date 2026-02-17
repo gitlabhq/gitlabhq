@@ -1,0 +1,7 @@
+---
+name: delete_webhook_custom_header
+description: Grants the ability to delete webhook custom headers
+boundaries:
+  - group
+  - project
+  - instance

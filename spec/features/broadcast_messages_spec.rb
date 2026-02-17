@@ -11,6 +11,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   shared_examples 'a Broadcast Messages' do |type|
     it 'shows broadcast message' do
+      sign_in(user)
+
       visit path
 
       expect(page).to have_content 'SampleMessage'
@@ -18,6 +20,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it 'renders styled links' do
       create(:broadcast_message, type, message: "<a href='gitlab.com' style='color: purple'>click me</a>")
+
+      sign_in(user)
 
       visit path
 
@@ -28,6 +32,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   shared_examples 'a dismissible Broadcast Messages', :with_current_organization do
     it 'hides broadcast message after dismiss', :js do
+      sign_in(user)
+
       visit path
 
       expect_to_be_on_explore_projects_page
@@ -40,6 +46,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
     end
 
     it 'broadcast message is still hidden after refresh', :js do
+      sign_in(user)
+
       visit path
 
       expect_to_be_on_explore_projects_page
@@ -84,6 +92,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
     it_behaves_like 'a Broadcast Messages'
 
     it 'is not dismissible' do
+      sign_in(user)
+
       visit path
 
       expect(page).not_to have_selector(".js-dismiss-current-broadcast-notification[data-id=#{broadcast_message.id}]")
@@ -92,7 +102,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
     it 'does not replace placeholders' do
       create(:broadcast_message, message: 'Hi {{name}}')
 
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit path
 
@@ -105,7 +115,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages'
 
-    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553844'
+    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5999'
   end
 
   describe 'notification type' do
@@ -113,12 +123,12 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages', :notification
 
-    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553847'
+    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4218'
 
     it 'replaces placeholders' do
       create(:broadcast_message, :notification, message: 'Hi {{name}}')
 
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit path
 
@@ -128,10 +138,12 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   context 'with GitLab revision changes', :js, :use_clean_rails_redis_caching do
     it 'properly shows effects of delete from any revision',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553848' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3865' do
       text = 'my_broadcast_message'
       message = create(:broadcast_message, broadcast_type: :banner, message: text)
       new_strategy_value = { revision: 'abc123', version: '_version_' }
+
+      sign_in(user)
 
       visit path
 
@@ -174,7 +186,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   context 'with omniauth' do
     it_behaves_like 'a dismissible Broadcast Messages',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553850' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5810' do
       let_it_be(:broadcast_message) { create(:broadcast_message, :notification, message: 'SampleMessage') }
       let_it_be(:user) { create(:omniauth_user, extern_uid: 'example-uid', provider: 'saml') }
       let(:sign_in_user) { ->(user) { gitlab_sign_in_via('saml', user, 'example-uid') } }

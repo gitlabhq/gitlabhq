@@ -1,0 +1,5 @@
+---
+name: delete_scim_identity
+description: Grants the ability to delete SCIM user identity
+boundaries:
+  - group

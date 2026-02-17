@@ -9,17 +9,22 @@ import {
 import { createTestingPinia } from '@pinia/testing';
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
+import { visitUrl } from '~/lib/utils/url_utility';
 import AccessTokenForm from '~/vue_shared/access_tokens/components/access_token_form.vue';
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 Vue.use(PiniaVuePlugin);
 
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+}));
+
 describe('AccessTokenForm', () => {
   let wrapper;
-
-  const pinia = createTestingPinia();
-  const store = useAccessTokens();
+  let pinia;
+  let store;
 
   const accessTokenMaxDate = '2021-07-06';
   const accessTokenMinDate = '2020-07-06';
@@ -29,6 +34,8 @@ describe('AccessTokenForm', () => {
     { value: 'other', text: 'scope 3' },
   ];
 
+  const accessTokenTableUrl = '/-/personal_access_tokens';
+
   const createComponent = (props = {}, provide = {}) => {
     wrapper = mountExtended(AccessTokenForm, {
       pinia,
@@ -36,6 +43,7 @@ describe('AccessTokenForm', () => {
         accessTokenMaxDate,
         accessTokenMinDate,
         accessTokenAvailableScopes,
+        accessTokenTableUrl,
         ...provide,
       },
       propsData: {
@@ -52,6 +60,37 @@ describe('AccessTokenForm', () => {
   const findTextArea = () => wrapper.findComponent(GlFormTextarea);
   const findErrorsAlert = () => wrapper.findComponent(GlAlert);
   const findCreateTokenButton = () => wrapper.findByTestId('create-token-button');
+
+  beforeEach(() => {
+    pinia = createTestingPinia();
+    store = useAccessTokens();
+  });
+
+  describe('form classes', () => {
+    describe('when `showCreateFormInline` is true', () => {
+      beforeEach(() => {
+        store.showCreateFormInline = true;
+
+        createComponent();
+      });
+
+      it('applies styling classes', () => {
+        expect(findForm().classes()).toEqual(['gl-rounded-base', 'gl-bg-subtle', 'gl-p-5']);
+      });
+    });
+
+    describe('when `showCreateFormInline` is false', () => {
+      beforeEach(() => {
+        store.showCreateFormInline = false;
+
+        createComponent();
+      });
+
+      it('does not apply styling classes', () => {
+        expect(findForm().classes()).toEqual([]);
+      });
+    });
+  });
 
   it('contains a name field', () => {
     createComponent();
@@ -99,12 +138,34 @@ describe('AccessTokenForm', () => {
   });
 
   describe('reset button', () => {
-    it('emits a cancel event', () => {
-      createComponent();
-      expect(store.setShowCreateForm).toHaveBeenCalledTimes(0);
-      findForm().trigger('reset');
+    describe('when `showCreateFormInline` is true', () => {
+      beforeEach(() => {
+        store.showCreateFormInline = true;
+      });
 
-      expect(store.setShowCreateForm).toHaveBeenCalledWith(false);
+      it('emits a cancel event', () => {
+        createComponent();
+
+        expect(store.setShowCreateForm).toHaveBeenCalledTimes(0);
+
+        findForm().trigger('reset');
+
+        expect(store.setShowCreateForm).toHaveBeenCalledWith(false);
+      });
+    });
+
+    describe('when `showCreateFormInline` is false', () => {
+      beforeEach(() => {
+        store.showCreateFormInline = false;
+      });
+
+      it('redirects to the table', () => {
+        createComponent();
+
+        findForm().trigger('reset');
+
+        expect(visitUrl).toHaveBeenCalledWith(accessTokenTableUrl);
+      });
     });
   });
 

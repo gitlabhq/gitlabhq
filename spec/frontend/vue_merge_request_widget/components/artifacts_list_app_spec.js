@@ -70,7 +70,7 @@ describe('Merge Requests Artifacts list app', () => {
 
     it('renders disabled buttons', () => {
       const buttons = findButtons();
-      expect(buttons.at(0).attributes('disabled')).toBeDefined();
+      expect(buttons.at(0).attributes('aria-disabled')).toBe('true');
       expect(buttons.at(1).attributes('disabled')).toBeDefined();
     });
   });

@@ -20,6 +20,10 @@ You can enforce the following restrictions on sign ups:
 - Require user email confirmation.
 - Allow or deny sign ups using specific email domains.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Disable new sign ups
 
 By default, any user visiting your GitLab domain can sign up for an account. For customers running
@@ -57,15 +61,12 @@ To require administrator approval for new sign ups:
 If an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
 
-{{< alert type="note" >}}
-
-This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
-signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
-[OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
-[LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
-A [user cap](#user-cap) can also be used to enforce approvals for new users.
-
-{{< /alert >}}
+> [!note]
+> This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
+> signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
+> [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
+> [LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
+> A [user cap](#user-cap) can also be used to enforce approvals for new users.
 
 ## Confirm user email
 
@@ -142,11 +143,16 @@ When you turn on restricted access, the following known issues might occur and r
 - The number of billable users can still be exceeded if:
   - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with administrator access add members simultaneously.
-  - New billable users delay accepting an invitation.
+  - New billable users delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
 you will be charged overages for the five additional users.
+
+Additionally, restricted access might block the standard non-overage flows:
+
+- Service bots that are updated or added to a billable role are incorrectly blocked.
+- Inviting or updating existing billable users through email is blocked unexpectedly.
 
 ## User cap
 
@@ -174,13 +180,10 @@ You can still independently configure [project sharing for the group and its sub
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
-{{< alert type="note" >}}
-
-For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
-is enabled or disabled, downtime might occur due to changes in the Rails configuration.
-You can set a user cap to enforce approvals for new users.
-
-{{< /alert >}}
+> [!note]
+> For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
+> is enabled or disabled, downtime might occur due to changes in the Rails configuration.
+> You can set a user cap to enforce approvals for new users.
 
 ### Set a user cap
 
@@ -215,39 +218,37 @@ To remove the user cap:
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
 
-## Minimum password length limit
+## Changing from user cap to restricted access
 
-You can [change](../../security/password_length_limits.md#modify-minimum-password-length)
-the minimum number of characters a user must have in their password using the GitLab UI.
+When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
+To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
 
-### Password complexity requirements
+## Modify password complexity requirements
 
-{{< details >}}
+By default, user passwords have a limited number of [requirements](../../user/profile/user_passwords.md#password-requirements).
+You can modify the requirements to increase the minimum length or require specific character types.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+Changing the password requirements does not affect existing user passwords.
+Modified complexity requirements are enforced only in these situations:
 
-{{< /details >}}
+- When a new user creates an account.
+- When an existing user resets their password.
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
-
-{{< /history >}}
-
-By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
-You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:
-
-- For new users that sign up.
-- For existing users that reset their password.
-
-Existing passwords are unaffected. To change password complexity requirements:
+To modify password complexity requirements:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
-1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
-   and symbols.
+1. Modify the complexity requirements:
+
+   | Setting | Description |
+   |---------|-------------|
+   | **Minimum password length** | Sets the minimum number of characters required. Cannot be less than 8 characters or more than 128 characters. |
+   | **Require numbers** | Requires passwords to contain at least one number (0-9). Premium and Ultimate only. |
+   | **Require uppercase letters** | Requires passwords to contain at least one uppercase letter (A-Z). Premium and Ultimate only. |
+   | **Require lowercase letters** | Requires passwords to contain at least one lowercase letter (a-z). Premium and Ultimate only. |
+   | **Require symbols** | Requires passwords to contain at least one symbol. Premium and Ultimate only. |
+
 1. Select **Save changes**.
 
 ## Allow or deny sign ups using specific email domains

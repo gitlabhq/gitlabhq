@@ -57,7 +57,7 @@ if [ "${DIRECTORY_NAMES_WITH_DASHES}" != "" ]; then
 fi
 
 # Number of filenames with dashes as of 2025-10-14
-FILE_NUMBER_DASHES=22
+FILE_NUMBER_DASHES=20
 FILENAMES_WITH_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
 printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Checking '$(pwd)/doc' for filenames containing dashes...\n"
 if [ "${FILENAMES_WITH_DASHES}" -ne $FILE_NUMBER_DASHES ]

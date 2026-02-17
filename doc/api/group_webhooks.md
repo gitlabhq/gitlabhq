@@ -21,9 +21,9 @@ Prerequisites:
 
 - You must be an Administrator or have the Owner role for the group.
 
-## List group hooks
+## List all group hooks
 
-Get a list of group hooks
+Lists all group hooks for a specified group.
 
 ```plaintext
 GET /groups/:id/hooks
@@ -90,9 +90,9 @@ Example response:
 ]
 ```
 
-## Get a group hook
+## Retrieve a group hook
 
-Get a specific hook for a group.
+Retrieves a specified group hook.
 
 ```plaintext
 GET /groups/:id/hooks/:hook_id
@@ -157,7 +157,7 @@ Example response:
 }
 ```
 
-## Get group hook events
+## List all group hook events
 
 {{< history >}}
 
@@ -165,7 +165,7 @@ Example response:
 
 {{< /history >}}
 
-Get a list of events for a specific group hook in the past seven days from start date.
+Lists all events for a specified group hook in the past seven days from the start date.
 
 ```plaintext
 GET /groups/:id/hooks/:hook_id/events
@@ -481,9 +481,9 @@ Example response:
 }
 ```
 
-## Add a group hook
+## Create a group hook
 
-Adds a hook to a specified group.
+Creates a group hook for a specified group.
 
 ```plaintext
 POST /groups/:id/hooks
@@ -571,9 +571,9 @@ Example response:
 }
 ```
 
-## Edit group hook
+## Update a group hook
 
-Edits a hook for a specified group.
+Updates a group hook for a specified group.
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id
@@ -670,7 +670,7 @@ Example response:
 
 ## Delete a group hook
 
-Deletes a hook from a group. This is an idempotent method and can be called multiple times.
+Deletes a specified group hook. This is an idempotent method and can be called multiple times.
 Either the hook is available or not.
 
 ```plaintext
@@ -733,7 +733,7 @@ Example response:
 {"message":"201 Created"}
 ```
 
-## Set a custom header
+## Update a custom header
 
 {{< history >}}
 
@@ -741,7 +741,7 @@ Example response:
 
 {{< /history >}}
 
-Sets a custom header.
+Updates a custom header for a specified group hook.
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id/custom_headers/:key
@@ -798,13 +798,15 @@ curl --request DELETE \
 
 On success, no message is returned.
 
-## Set a URL variable
+## Update a URL variable
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
 
 {{< /history >}}
+
+Updates a URL variable for a specified group hook.
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id/url_variables/:key
@@ -830,6 +832,8 @@ curl --request PUT \
 On success, no message is returned.
 
 ## Delete a URL variable
+
+Deletes a URL variable for a specified group hook.
 
 ```plaintext
 DELETE /groups/:id/hooks/:hook_id/url_variables/:key

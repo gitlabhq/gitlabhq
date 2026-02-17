@@ -1,0 +1,5 @@
+---
+name: read_saml_group_link
+description: Grants the ability to read SAML group links
+boundaries:
+  - group

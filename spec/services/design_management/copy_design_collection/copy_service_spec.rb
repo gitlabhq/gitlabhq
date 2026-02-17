@@ -320,8 +320,8 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
 
     %w[Design Action Version].each do |model|
       specify do
-        attributes = config["#{model.downcase}_attributes".to_sym] || []
-        ignored_attributes = config["ignore_#{model.downcase}_attributes".to_sym]
+        attributes = config[:"#{model.downcase}_attributes"] || []
+        ignored_attributes = config[:"ignore_#{model.downcase}_attributes"]
 
         expect(attributes + ignored_attributes).to contain_exactly(
           *DesignManagement.const_get(model, false).column_names

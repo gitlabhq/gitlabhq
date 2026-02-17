@@ -140,6 +140,94 @@ describe('WorkItemDescriptionTemplateListbox', () => {
         });
       });
 
+      describe('when selecting template from project settings', () => {
+        const projectSettingsTemplate = {
+          name: 'Default (Project Settings)',
+          __typename: 'WorkItemDescriptionTemplate',
+          category: 'Project Templates',
+          projectId: 1,
+        };
+
+        const templatesWithDefault = {
+          data: {
+            namespace: {
+              __typename: 'Namespace',
+              id: 'gid://gitlab/Project/1',
+              workItemDescriptionTemplates: {
+                __typename: 'WorkItemDescriptionTemplateConnection',
+                nodes: [
+                  projectSettingsTemplate,
+                  {
+                    name: 'Default',
+                    __typename: 'WorkItemDescriptionTemplate',
+                    category: 'Project Templates',
+                    projectId: 1,
+                  },
+                  ...mockTemplatesList,
+                ],
+              },
+            },
+          },
+        };
+
+        it('prioritizes "Default (Project Settings)" when it is first in list', async () => {
+          createComponent({
+            template: { name: 'default', projectId: null },
+            templatesResult: templatesWithDefault,
+          });
+          await waitForPromises();
+
+          expect(findListbox().props('selected')).toBe(
+            JSON.stringify({
+              name: 'Default (Project Settings)',
+              category: 'Project Templates',
+              projectId: 1,
+            }),
+          );
+        });
+
+        it('displays "Default" for "Default (Project Settings)" template', async () => {
+          createComponent({
+            template: projectSettingsTemplate,
+            templatesResult: templatesWithDefault,
+          });
+          await waitForPromises();
+
+          expect(findListbox().props('toggleText')).toBe('Default');
+        });
+
+        it('matches by name when "Default (Project Settings)" is not first', async () => {
+          createComponent({
+            template: { name: 'template 1', projectId: null },
+          });
+          await waitForPromises();
+
+          expect(findListbox().props('selected')).toBe(
+            JSON.stringify({
+              name: 'template 1',
+              category: 'GROUP A',
+              projectId: 1,
+            }),
+          );
+        });
+
+        it('matches template by name when template name is not "default"', async () => {
+          createComponent({
+            template: { name: 'Bug', projectId: null },
+            templatesResult: templatesWithDefault,
+          });
+          await waitForPromises();
+
+          expect(findListbox().props('selected')).toBe(
+            JSON.stringify({
+              name: 'Bug',
+              category: 'GROUP C',
+              projectId: 4,
+            }),
+          );
+        });
+      });
+
       describe('when the listbox is opened', () => {
         beforeEach(async () => {
           createComponent();

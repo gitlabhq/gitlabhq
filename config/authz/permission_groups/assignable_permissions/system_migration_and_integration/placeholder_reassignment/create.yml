@@ -1,0 +1,7 @@
+---
+name: create_placeholder_reassignment
+description: Grants the ability to create placeholder reassignments
+permissions:
+  - create_placeholder_reassignment
+boundaries:
+  - group

@@ -111,7 +111,7 @@ To change the OmniAuth settings:
      ```
 
      For more details, see the
-     [globals documentation](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
+     [globals documentation](https://docs.gitlab.com/charts/charts/globals/#omniauth).
 
   1. Save the file and apply the new values:
 
@@ -361,13 +361,10 @@ To define the external providers list, use the full name of the provider,
 for example, `google_oauth2` for Google. For provider names, see the
 **OmniAuth provider name** column in the [supported providers table](#supported-providers).
 
-{{< alert type="note" >}}
-
-If you remove an OmniAuth provider from the external providers list,
-you must manually update the users that use this sign-in method so their
-accounts are upgraded to full internal accounts.
-
-{{< /alert >}}
+> [!note]
+> If you remove an OmniAuth provider from the external providers list,
+> you must manually update the users that use this sign-in method so their
+> accounts are upgraded to full internal accounts.
 
 {{< tabs >}}
 
@@ -585,7 +582,7 @@ then override the icon in one of two ways:
 - **Provide a custom image path**:
 
   1. If you are hosting the image outside of your GitLab server domain, ensure
-     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration.html#content-security-policy)
+     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration/#content-security-policy)
      are configured to allow access to the image file.
   1. Depending on your method of installing GitLab, add a custom `icon` parameter
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)

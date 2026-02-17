@@ -8,6 +8,8 @@ scope path: '-' do
       post :preview_markdown
     end
 
+    post 'auth/complete'
+
     member do
       get :activity
       get :groups_and_projects

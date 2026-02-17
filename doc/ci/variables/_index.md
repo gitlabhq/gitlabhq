@@ -133,7 +133,7 @@ Prerequisites:
 
 To add or update variables in the project settings:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -168,7 +168,7 @@ Prerequisites:
 
 To add a group variable:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -198,7 +198,7 @@ Alternatively, group variables can be added [by using the API](../../api/group_l
 
 To set a group CI/CD variable to only be available for certain environments:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. To the right of the variable, select **Edit** ({{< icon name="pencil" >}}).
@@ -286,14 +286,11 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 
 ### Mask a CI/CD variable
 
-{{< alert type="warning" >}}
-
-Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
-accessing variable values. To ensure security of sensitive information,
-consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
-to prevent commands such as `env` or `printenv` from printing secret variables.
-
-{{< /alert >}}
+> [!warning]
+> Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
+> accessing variable values. To ensure security of sensitive information,
+> consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
+> to prevent commands such as `env` or `printenv` from printing secret variables.
 
 You can mask a CI/CD variable for a project, group, or instance to prevent
 its value from appearing in job logs. When a job outputs the value of a
@@ -461,13 +458,10 @@ To enable variable expansion for the variable:
 1. Select the **Expand variable reference** checkbox.
 1. Select **Update variable**.
 
-{{< alert type="note" >}}
-
-Do not [mask](#mask-a-cicd-variable) a variable value if you want to use variable expansion.
-If both masking and variable expansion are combined, character limitations prevent
-the use of the `$` to reference other variables.
-
-{{< /alert >}}
+> [!note]
+> Do not [mask](#mask-a-cicd-variable) a variable value if you want to use variable expansion.
+> If both masking and variable expansion are combined, character limitations prevent
+> the use of the `$` to reference other variables.
 
 ## CI/CD variable precedence
 
@@ -497,7 +491,7 @@ The order of precedence for variables is (from highest to lowest):
    the job uses the value from the closest subgroup. For example, if you have
    `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in `Subgroup 2` takes precedence.
 1. Instance variables.
-1. [Variables from `dotenv` reports](job_scripts.md#pass-an-environment-variable-to-another-job).
+1. [Variables from `dotenv` reports](job_scripts.md#pass-environment-variables-to-later-jobs).
 1. Job variables, defined in jobs in the `.gitlab-ci.yml` file.
 1. Default variables for all jobs, defined at the top-level of the `.gitlab-ci.yml` file.
 1. [Deployment variables](predefined_variables.md#deployment-variables).
@@ -523,13 +517,10 @@ have higher precedence than default variables.
 
 Pipeline variables are variables that are specified when running a new pipeline.
 
-{{< alert type="note" >}}
-
-In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
-and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
-For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
-
-{{< /alert >}}
+> [!note]
+> In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+> and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
+> For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
 
 Prerequisites:
 
@@ -578,9 +569,9 @@ To limit the use of pipeline variables to only the Maintainer role and higher:
     Default for new projects in new namespaces on GitLab.com.
   - `owner`: Only users with the Owner role can run pipelines with pipeline variables.
     You must have the Owner role for the project to change the setting to this value.
-  - `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
+  - `maintainer`: Only users with the Maintainer or Owner role can run pipelines with pipeline variables.
     Default when not specified on GitLab Self-Managed and GitLab Dedicated.
-  - `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
+  - `developer`: Only users with the Developer, Maintainer, or Owner role can run pipelines with pipeline variables.
 
 You can also use [the projects API](../../api/projects.md#edit-a-project) to set
 the role for the `ci_pipeline_variables_minimum_override_role` setting.
@@ -610,7 +601,7 @@ Prerequisites:
 
 To enable the pipeline variable restriction setting in projects in the group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Disable pipeline variables in projects that don't use them** section,

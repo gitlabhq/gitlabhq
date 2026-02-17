@@ -18,11 +18,11 @@ a given prompt.
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
 If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](cloud_connector.md#tutorial-connect-a-new-feature-using-cloud-connector):
 
-For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+For more information, see [Cloud Connector: Configuration](unit_primitives.md).
 
-### 2. Create a prompt definition in the AI gateway
+### 2. Create a prompt definition in the AI Gateway
 
-In [the AI gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
+In [the AI Gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
 new prompt definition under `ai_gateway/prompts/definitions` with the route `[ai-action]/base/[prompt-version].yml`
 (see [Prompt versioning conventions](#appendix-a-prompt-versioning-conventions)).
 Specify the model and provider you wish to use, and the prompts that
@@ -75,7 +75,7 @@ model:
 ### 3. Create a Completion class
 
 1. Create a new completion under `ee/lib/gitlab/llm/ai_gateway/completions/` and inherit it from the `Base`
-   AI gateway Completion.
+   AI Gateway Completion.
 
 ```ruby
 # ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb
@@ -212,11 +212,11 @@ module Gitlab
 Once you are ready to make this version stable and start auto-serving it to compatible clients, simply rename the YAML
 definition file to remove the pre-release suffix, and remove the `prompt_version` override.
 
-## How to migrate an existing action to the AI gateway
+## How to migrate an existing action to the AI Gateway
 
 AI actions were initially implemented inside the GitLab monolith. As part of our
-[AI gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
-we're migrating prompts, model selection and model parameters into the AI gateway. This will increase the speed at which
+[AI Gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+we're migrating prompts, model selection and model parameters into the AI Gateway. This will increase the speed at which
 we can deliver improvements to users on GitLab Self-Managed, by decoupling prompt and model changes from monolith releases. To
 migrate an existing action:
 
@@ -250,7 +250,7 @@ the `service_class` with the new `AiGateway::Completions` class to make it the p
 For a complete example of the changes needed to migrate an AI action, see the following MRs:
 
 - [Changes to the GitLab Rails monolith](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152429)
-- [Changes to the AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/921)
+- [Changes to the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/921)
 
 ### Authorization in GitLab-Rails
 
@@ -267,11 +267,8 @@ What needs to be included in the code:
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/global_policy.rb#L222-222) of policy not connected to the particular resource.
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
-{{< alert type="note" >}}
-
-For more information, see [the GitLab AI gateway documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
-
-{{< /alert >}}
+> [!note]
+> For more information, see [the GitLab AI Gateway documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai#prerequisites) about authentication and authorization in AI Gateway.
 
 If your GitLab Duo feature involves an autonomous agent, you should use
 [composite identity](composite_identity.md) authorization.

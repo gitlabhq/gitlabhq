@@ -12,6 +12,7 @@ export default async function initFileTreeBrowser(router, options, apolloProvide
   const { projectPath, ref, refType } = options;
   return new Vue({
     el,
+    name: 'FileTreeBrowserRoot',
     pinia,
     router,
     apolloProvider,

@@ -91,7 +91,7 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
 
         is_expected.to match(
           include: [{ issues: { include: [] } },
-                    { snippets: { include: [] } }],
+            { snippets: { include: [] } }],
           preload: { issues: nil, snippets: nil }
         )
       end
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
         is_expected.to match(
           include: [{ merge_requests:
                       { include: [{ notes: { include: [] } },
-                                  { merge_request_diff: { include: [] } }],
+                        { merge_request_diff: { include: [] } }],
                         preload: { merge_request_diff: nil, notes: nil } } }],
           preload: { merge_requests: { merge_request_diff: nil, notes: nil } }
         )

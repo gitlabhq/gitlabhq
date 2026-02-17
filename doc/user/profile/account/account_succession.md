@@ -22,11 +22,8 @@ description: Designate an individual who can take ownership of your GitLab accou
 You can grant individuals permission to access your GitLab account if you are unable to manage it
 yourself. This ensures continuity of your work and projects.
 
-{{< alert type="note" >}}
-
-This feature is not available for enterprise users.
-
-{{< /alert >}}
+> [!note]
+> This feature is not available for enterprise users.
 
 ## Account manager
 

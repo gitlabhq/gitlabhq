@@ -68,11 +68,8 @@ Offset-based pagination is the easiest way to paginate over records, however, it
   - Promote the usage of the [`Link` header](../../api/rest/_index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
   - This way changing the URL structure is possible without breaking backward compatibility.
 
-{{< alert type="note" >}}
-
-Infinite scroll can use keyset pagination without affecting the user experience since there are no exposed page numbers.
-
-{{< /alert >}}
+> [!note]
+> Infinite scroll can use keyset pagination without affecting the user experience since there are no exposed page numbers.
 
 ## Options for pagination
 
@@ -149,11 +146,8 @@ CREATE INDEX index_on_issues_project_id ON issues (project_id, id);
 
 By making the `id` column part of the index, the previous query reads maximum 20 rows. The query performs well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
 
-{{< alert type="note" >}}
-
-Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
-
-{{< /alert >}}
+> [!note]
+> Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
 
 #### Known issues
 
@@ -285,11 +279,8 @@ In GraphQL, the parameters are serialized to JSON and then encoded:
 eyJpZCI6Ijk0NzMzNTk0IiwidXBkYXRlZF9hdCI6IjIwMjEtMDQtMDkgMDg6NTA6MDUuODA1ODg0MDAwIFVUQyJ9
 ```
 
-{{< alert type="note" >}}
-
-Pagination parameters are visible to the user, so be careful about which columns we order by.
-
-{{< /alert >}}
+> [!note]
+> Pagination parameters are visible to the user, so be careful about which columns we order by.
 
 Keyset pagination can only provide the next, previous, first, and last pages.
 

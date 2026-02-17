@@ -1,5 +1,5 @@
 import { __, n__, s__, sprintf } from '~/locale';
-import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, NAMESPACE_PROJECT } from '~/issues/constants';
 
 const INTERVALS = {
   minute: 'minute',
@@ -92,7 +92,7 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
       'Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}.',
     ),
     {
-      workspaceType: workspaceType === WORKSPACE_PROJECT ? __('project') : __('group'),
+      workspaceType: workspaceType === NAMESPACE_PROJECT ? __('project') : __('group'),
       issuableType: issuableType.toLowerCase().replaceAll('_', ' '),
       permissions:
         issuableType === TYPE_ISSUE

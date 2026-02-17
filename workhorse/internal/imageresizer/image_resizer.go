@@ -1,3 +1,6 @@
+// Package imageresizer provides HTTP middleware for resizing images on-the-fly.
+// It handles image scaling requests by forking scaler processes and streaming
+// the resized images back to clients.
 package imageresizer
 
 import (
@@ -30,6 +33,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
+// Resizer handles image resizing requests by managing scaler processes
+// and streaming resized images to clients.
 type Resizer struct {
 	config.Config
 	senddata.Prefix
@@ -141,6 +146,7 @@ const (
 	maxMagicLen = 8                   // 8 first bytes is enough to detect PNG or JPEG
 )
 
+// NewResizer creates a new Resizer instance with the given configuration.
 func NewResizer(cfg config.Config) *Resizer {
 	imageResizeMaxProcesses.Set(float64(cfg.ImageResizerConfig.MaxScalerProcs))
 
@@ -166,12 +172,7 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 		return
 	}
 
-	if helper.IsURL(params.Location) {
-		// Get the tracker from context and set flags
-		if tracker, ok := metrics.FromContext(req.Context()); ok {
-			tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
-		}
-	}
+	r.trackExternalURL(req, params)
 
 	imageFile, err := openSourceImage(params.Location)
 	if err != nil {
@@ -179,30 +180,59 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 		outcome.error(fmt.Errorf("open image data stream: %v", err))
 		return
 	}
-	defer imageFile.reader.Close()
+	defer func() {
+		if err := imageFile.reader.Close(); err != nil {
+			log.WithRequest(req).WithError(err).Error("failed to close image file reader")
+		}
+	}()
 
+	// #nosec G115 -- Width is validated to be reasonable by Rails before reaching here
 	widthLabelVal := strconv.Itoa(int(params.Width))
 
 	outcome.originalFileSize = imageFile.contentLength
 
+	if r.handleClientCache(w, req, imageFile, params, widthLabelVal, start, &outcome) {
+		return
+	}
+
+	r.processImageResize(w, req, imageFile, params, widthLabelVal, start, &outcome)
+}
+
+func (r *Resizer) trackExternalURL(req *http.Request, params *resizeParams) {
+	if helper.IsURL(params.Location) {
+		// Get the tracker from context and set flags
+		if tracker, ok := metrics.FromContext(req.Context()); ok {
+			tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
+		}
+	}
+}
+
+func (r *Resizer) handleClientCache(w http.ResponseWriter, req *http.Request, imageFile *imageFile, params *resizeParams, widthLabelVal string, start time.Time, outcome *resizeOutcome) bool {
 	setLastModified(w, imageFile.lastModified)
 	// If the original file has not changed, then any cached resized versions have not changed either.
 	if checkNotModified(req, imageFile.lastModified) {
 		writeNotModified(w)
 		imageResizeDurations.WithLabelValues(params.ContentType, widthLabelVal).Observe(time.Since(start).Seconds())
 		outcome.ok(statusClientCache)
-		return
+		return true
 	}
+	return false
+}
 
+func (r *Resizer) processImageResize(w http.ResponseWriter, req *http.Request, imageFile *imageFile, params *resizeParams, widthLabelVal string, start time.Time, outcome *resizeOutcome) {
 	// We first attempt to rescale the image; if this should fail for any reason, imageReader
 	// will point to the original image, i.e. we render it unchanged.
 	imageReader, resizeCmd, err := r.tryResizeImage(req, imageFile, params, r.ImageResizerConfig)
 	if err != nil {
 		// Something failed, but we can still write out the original image, so don't return early.
 		// We need to log this separately since the subsequent steps might add other failures.
-		log.WithRequest(req).WithFields(logFields(start, params, &outcome)).WithError(err).Error()
+		log.WithRequest(req).WithFields(logFields(start, params, outcome)).WithError(err).Error()
 	}
-	defer command.KillProcessGroup(resizeCmd)
+	defer func() {
+		if killErr := command.KillProcessGroup(resizeCmd); killErr != nil {
+			log.WithRequest(req).WithError(killErr).Error("failed to kill process group")
+		}
+	}()
 
 	w.Header().Del("Content-Length")
 	outcome.bytesWritten, err = serveImage(imageReader, w, resizeCmd)
@@ -263,6 +293,7 @@ func (r *Resizer) unpackParameters(paramsData string) (*resizeParams, error) {
 
 // Attempts to rescale the given image data, or in case of errors, falls back to the original image.
 func (r *Resizer) tryResizeImage(req *http.Request, f *imageFile, params *resizeParams, cfg config.ImageResizerConfig) (io.Reader, *exec.Cmd, error) {
+	// #nosec G115 -- MaxFilesize is a config value with reasonable bounds
 	if f.contentLength > int64(cfg.MaxFilesize) {
 		return f.reader, nil, fmt.Errorf("%d bytes exceeds maximum file size of %d bytes", f.contentLength, cfg.MaxFilesize)
 	}
@@ -271,6 +302,7 @@ func (r *Resizer) tryResizeImage(req *http.Request, f *imageFile, params *resize
 		return f.reader, nil, fmt.Errorf("file is too small to resize: %d bytes", f.contentLength)
 	}
 
+	// #nosec G115 -- MaxScalerProcs is a config value with reasonable bounds
 	if !r.numScalerProcs.tryIncrement(int32(cfg.MaxScalerProcs)) {
 		return f.reader, nil, fmt.Errorf("too many running scaler processes (%d / %d)", r.numScalerProcs.n, cfg.MaxScalerProcs)
 	}
@@ -312,6 +344,7 @@ func startResizeImageCommand(ctx context.Context, imageReader io.Reader, params 
 	cmd.Stdin = imageReader
 	cmd.Stderr = &strings.Builder{}
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	// #nosec G115 -- Width is validated to be reasonable by Rails before reaching here
 	cmd.Env = []string{
 		"GL_RESIZE_IMAGE_WIDTH=" + strconv.Itoa(int(params.Width)),
 	}
@@ -353,12 +386,15 @@ func openFromURL(location string) (*imageFile, error) {
 		}
 		return &imageFile{res.Body, res.ContentLength, lastModified}, nil
 	default:
-		res.Body.Close()
+		if err := res.Body.Close(); err != nil {
+			return nil, fmt.Errorf("close response body: %w", err)
+		}
 		return nil, fmt.Errorf("stream data from %q: %d %s", location, res.StatusCode, res.Status)
 	}
 }
 
 func openFromFile(location string) (*imageFile, error) {
+	// #nosec G304 -- location is validated and controlled by Rails before reaching here
 	file, err := os.Open(location)
 	if err != nil {
 		return nil, err
@@ -366,7 +402,9 @@ func openFromFile(location string) (*imageFile, error) {
 
 	fi, err := file.Stat()
 	if err != nil {
-		file.Close()
+		if closeErr := file.Close(); closeErr != nil {
+			return nil, fmt.Errorf("stat file: %w (close error: %v)", err, closeErr)
+		}
 		return nil, err
 	}
 

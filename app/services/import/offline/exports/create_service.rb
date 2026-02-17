@@ -7,7 +7,6 @@ module Import
         include ::Gitlab::Utils::StrongMemoize
 
         # @param current_user [User] current user object
-        # @param source_hostname [String] source hostname or alias hostname
         # @param portable_params [Array<Hash>] list of portables to export.
         #   Each portable hash must have at least its full path. More export options for each portable may
         #   be added later. See https://gitlab.com/gitlab-org/gitlab/-/issues/583383 and
@@ -25,9 +24,8 @@ module Import
         #       path_style: false
         #     }
         #   }
-        def initialize(current_user, source_hostname, portable_params, storage_config, organization_id)
+        def initialize(current_user, portable_params, storage_config, organization_id)
           @current_user = current_user
-          @source_hostname = source_hostname
           @portable_params = portable_params
           @storage_config = storage_config
           @organization_id = organization_id
@@ -61,7 +59,7 @@ module Import
 
         private
 
-        attr_reader :current_user, :source_hostname, :portable_params, :storage_config, :invalid_paths, :organization_id
+        attr_reader :current_user, :portable_params, :storage_config, :invalid_paths, :organization_id
 
         def user_can_export_all_portables?
           found_full_paths = groups.map(&:full_path) + projects.map(&:full_path)
@@ -127,6 +125,10 @@ module Import
           portable_params.map { |params| params[:full_path] }.uniq # rubocop:disable Rails/Pluck -- Not an ActiveRecord object
         end
         strong_memoize_attr :portable_full_paths
+
+        def source_hostname
+          Settings.gitlab.url
+        end
 
         def feature_flag_disabled_error
           service_error('offline_transfer_exports feature flag must be enabled.')

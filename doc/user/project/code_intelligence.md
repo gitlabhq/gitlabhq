@@ -151,21 +151,18 @@ To enable code intelligence for a project, add GitLab CI/CD jobs to your project
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-GitLab limits the artifact produced by the code generation jobs to 200 MB by the
-[(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
-artifact application limit. On GitLab Self-Managed instances, an instance administrator
-can change this value.
-
-{{< /alert >}}
+> [!note]
+> GitLab limits the artifact produced by the code generation jobs to 200 MB by the
+> [(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
+> artifact application limit. On GitLab Self-Managed instances, an instance administrator
+> can change this value.
 
 ## View code intelligence results
 
 After the job succeeds, browse your repository to see code intelligence information:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Go to the file in your repository. If you know the filename, either:
    - Enter the `/~` keyboard shortcut to open the file finder, and enter the file's name.
    - In the upper right, select **Find file**.
@@ -180,7 +177,7 @@ After the job succeeds, browse your repository to see code intelligence informat
 Use code intelligence to see all uses of an object:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Go to the file in your repository. If you know the filename, either:
    - Enter the `/~` keyboard shortcut to open the file finder, and enter the file's name.
    - In the upper right, select **Find file**.

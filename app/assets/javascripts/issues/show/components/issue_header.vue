@@ -1,11 +1,11 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { STATUS_OPEN, STATUS_REOPENED, WORKSPACE_PROJECT } from '~/issues/constants';
+import { STATUS_OPEN, STATUS_REOPENED, NAMESPACE_PROJECT } from '~/issues/constants';
 import { __, s__ } from '~/locale';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 
 export default {
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
   components: {
     GlLink,
     GlSprintf,
@@ -115,7 +115,7 @@ export default {
     :service-desk-reply-to="serviceDeskReplyTo"
     show-work-item-type-icon
     :status-icon="statusIcon"
-    :workspace-type="$options.WORKSPACE_PROJECT"
+    :workspace-type="$options.NAMESPACE_PROJECT"
   >
     <template #status-badge>
       <gl-sprintf v-if="closedStatusLink" :message="statusText">

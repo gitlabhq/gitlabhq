@@ -14,13 +14,15 @@ export const createOptionsMenuAdapter = (dropdownComponent) => {
         if (!menuContainer) return;
         const items = getMenuItems(menuContainer);
         const { oldPath, newPath } = this.data;
+        const fileId = this.id;
 
         // eslint-disable-next-line no-new
         new Vue({
-          el: Vue.version.startsWith('2') ? button : menuContainer,
+          el: button,
+          name: 'DropdownComponentRoot',
           pinia,
           render(h) {
-            return h(dropdownComponent, { props: { items, oldPath, newPath } });
+            return h(dropdownComponent, { props: { items, oldPath, newPath, fileId } });
           },
         });
       },

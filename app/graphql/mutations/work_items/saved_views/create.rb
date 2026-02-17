@@ -29,7 +29,7 @@ module Mutations
           description: 'Description of the saved view.'
 
         argument :filters,
-          Types::WorkItems::SavedViews::FilterInputType,
+          ::Types::WorkItems::SavedViews::FilterInputType,
           required: true,
           description: 'Filters associated with the saved view.'
 
@@ -41,7 +41,7 @@ module Mutations
         # rubocop:enable Graphql/JSONType
 
         argument :sort,
-          Types::WorkItems::SortEnum,
+          ::Types::WorkItems::SortEnum,
           required: true,
           description: 'Sort option associated with the saved view.'
 
@@ -62,10 +62,21 @@ module Mutations
           scopes: [:api],
           description: 'Errors encountered during the mutation.'
 
-        def resolve(namespace_path:, **_attrs)
-          authorized_find!(namespace_path)
+        def resolve(namespace_path:, **attrs)
+          container = authorized_find!(namespace_path)
 
-          { saved_view: nil, errors: [] }
+          result = ::WorkItems::SavedViews::CreateService.new(
+            current_user: current_user,
+            container: container,
+            params: attrs
+          ).execute
+
+          if result.success?
+            check_spam_action_response!(result.payload[:saved_view])
+            { saved_view: result.payload[:saved_view], errors: [] }
+          else
+            { saved_view: nil, errors: result.errors }
+          end
         end
       end
     end

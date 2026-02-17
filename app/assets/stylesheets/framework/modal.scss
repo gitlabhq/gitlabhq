@@ -76,7 +76,7 @@ body.modal-open {
   overflow: hidden;
 }
 
-body.modal-open:not(.body-fixed-scrollbar) {
+body.modal-open {
   padding-right: 0 !important;
 }
 
@@ -84,16 +84,14 @@ body.modal-open:not(.body-fixed-scrollbar) {
   @apply gl-bg-overlay;
 
   .modal-content {
-    border-radius: $modal-border-radius;
+    @apply gl-rounded-2xl;
 
     > :first-child {
-      border-top-left-radius: $modal-border-radius;
-      border-top-right-radius: $modal-border-radius;
+      @apply gl-rounded-t-2xl;
     }
 
     > :last-child {
-      border-bottom-left-radius: $modal-border-radius;
-      border-bottom-right-radius: $modal-border-radius;
+      @apply gl-rounded-b-2xl;
     }
   }
 }

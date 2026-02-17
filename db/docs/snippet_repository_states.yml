@@ -1,11 +1,31 @@
 ---
 table_name: snippet_repository_states
 classes:
-- Geo::SnippetRepositoryState
+  - Geo::SnippetRepositoryState
 feature_categories:
-- geo_replication
+  - geo_replication
 description: Separate table for snippet repositories containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181255
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell_local
+gitlab_schema: gitlab_main_org
+desired_sharding_key:
+  snippet_project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: snippet_repository_id
+        table: snippet_repositories
+        table_primary_key: snippet_id
+        sharding_key: snippet_project_id
+        belongs_to: snippet_repository
+  snippet_organization_id:
+    references: organizations
+    backfill_via:
+      parent:
+        foreign_key: snippet_repository_id
+        table: snippet_repositories
+        table_primary_key: snippet_id
+        sharding_key: snippet_organization_id
+        belongs_to: snippet_repository
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
 table_size: small

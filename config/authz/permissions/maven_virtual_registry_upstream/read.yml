@@ -1,0 +1,5 @@
+name: read_maven_virtual_registry_upstream
+description: Grants the ability to read Maven virtual registry upstreams
+boundaries:
+  - group
+  - instance

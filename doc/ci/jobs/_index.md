@@ -223,7 +223,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 
 To view jobs that ran in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Jobs**.
 
 You can filter the list by job status, source, name, and kind.
@@ -309,7 +309,8 @@ jobs. Hovering over them shows you if all jobs have passed or any has failed. Se
 To create a group of jobs, in the `.gitlab-ci.yml` file,
 separate each job name with a number and one of the following:
 
-- A slash (`/`), for example, `slash-test 1/3`, `slash-test 2/3`, `slash-test 3/3`.
+- A forward or backward slash (`/` or `\`), for example, `slash-test 1/3`,
+  `slash-test 2/3`, `slash-test 3/3`.
 - A colon (`:`), for example, `colon-test 1:3`, `colon-test 2:3`, `colon-test 3:3`.
 - A space, for example `space-test 0 3`, `space-test 1 3`, `space-test 2 3`.
 
@@ -339,12 +340,6 @@ The pipeline graph displays a group named `build ruby` with three jobs.
 The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
 
-[This regular expression](https://gitlab.com/gitlab-org/gitlab/-/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
-evaluates the job names: `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z`.
-One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **end**
-of job names only. Matching substrings found at the beginning or in the middle of
-job names are not removed.
-
 ## Retry jobs
 
 You can retry a job after it completes, regardless of its final state (failed, success, or canceled).
@@ -368,12 +363,12 @@ When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downst
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - The job must not be [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
 
 To retry a job from a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. From your merge request, do one of the following:
    - In the pipeline widget, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
    - Select the **Pipelines** tab, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
@@ -385,7 +380,7 @@ To retry a job from the job log:
 
 To retry a job from a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to retry.
 1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
@@ -394,7 +389,7 @@ To retry a job from a pipeline:
 
 If a pipeline has multiple failed or canceled jobs, you can retry all of them at once:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Do one of the following:
    - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
@@ -422,12 +417,12 @@ If you need to cancel a job immediately without waiting for the `after_script`, 
 
 Prerequisites:
 
-- You must have at least the Developer role for the project,
+- You must have the Developer, Maintainer, or Owner role for the project,
   or the [minimum role required to cancel a pipeline or job](../pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
 
 To cancel a job from a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. From your merge request, do one of the following:
    - In the pipeline widget, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
    - Select the **Pipelines** tab, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
@@ -439,7 +434,7 @@ To cancel a job from the job log:
 
 To cancel a job from a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to cancel.
 1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
@@ -448,7 +443,7 @@ To cancel a job from a pipeline:
 
 You can cancel all jobs in a running pipeline at once.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Do one of the following:
    - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
@@ -472,7 +467,7 @@ The runner aborts the job without waiting for `after_script` to complete.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The job must be in the `canceling` state, which requires:
   - GitLab 17.0 and later.
   - GitLab Runner 16.10 and later.

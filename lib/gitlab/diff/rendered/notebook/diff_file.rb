@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Gitlab
   module Diff
     module Rendered
@@ -45,7 +46,7 @@ module Gitlab
           end
 
           def rendered
-            self
+            notebook_diff ? self : nil
           end
 
           def rendered?

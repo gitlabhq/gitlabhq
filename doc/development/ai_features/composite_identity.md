@@ -36,7 +36,7 @@ Only OAuth tokens are supported.
 1. If integrating with third-party services:
    1. Manually generate an OAuth grant for the service account + OAuth app. See this [example for Amazon Q](https://gitlab.com/gitlab-org/gitlab/-/blob/3665a013d3eca00d50cbac4d4aec3053bd5ca9b5/ee/app/services/ai/amazon_q/amazon_q_trigger_service.rb#L135-142).
    1. Ensure the grant's scopes include the concrete dynamic scope for the human user who originated the AI request, formatted as `user:$ID` (for example, `user:123`). Include other scopes as needed (for example, `api`).
-   1. Exchange the grant for an access token through `https://gitlab.example.com/oauth/toke`.
+   1. Exchange the grant for an access token through `https://gitlab.example.com/oauth/token`.
 1. If not integrating with third-party services:
    1. You can skip the access grant and directly create an OAuth access token, ensuring the scopes include `user:$ID` and any required base scopes.
    1. Refresh the token through the standard `https://gitlab.example.com/oauth/token>` endpoint using `grant_type=refresh_token`.

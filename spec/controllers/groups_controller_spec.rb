@@ -6,6 +6,8 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
   include Namespaces::DeletableHelper
+  include ActionView::Helpers::TagHelper
+  include SafeFormatHelper
 
   let_it_be(:group_organization) { current_organization }
   let_it_be_with_refind(:group) { create_default(:group, :public, organization: group_organization) }
@@ -107,12 +109,18 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
-    context 'adjourned deletion' do
+    context 'adjourned deletion', :freeze_time do
       render_views
 
       let_it_be(:subgroup) { create(:group, :private, parent: group) }
-      let(:ancestor_notice_regex) do
-        /This group will be deleted on .* because its parent group is scheduled for deletion\./
+      let_it_be(:deletion_date) { permanent_deletion_date_formatted(Date.current) }
+      let_it_be(:ancestor_notice) do
+        safe_format(
+          _('The parent group is pending deletion. This group will be ' \
+            '%{strongOpen}permanently deleted%{strongClose} on %{date}.'),
+          tag_pair(tag.strong, :strongOpen, :strongClose),
+          date: tag.strong(deletion_date)
+        )
       end
 
       subject(:get_show) { get :show, params: { id: subgroup.to_param } }
@@ -121,7 +129,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         it 'does not show the notice' do
           subject
 
-          expect(response.body).not_to match(ancestor_notice_regex)
+          expect(response.body).not_to include(ancestor_notice)
         end
       end
 
@@ -137,7 +145,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         it 'shows the notice that the parent group has been scheduled for deletion' do
           subject
 
-          expect(response.body).to match(ancestor_notice_regex)
+          expect(response.body).to include(ancestor_notice)
         end
 
         context 'when the group itself has also been scheduled for deletion' do
@@ -152,11 +160,13 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           it 'does not show the notice that the parent group has been scheduled for deletion' do
             subject
 
-            expect(response.body).not_to match(ancestor_notice_regex)
+            expect(response.body).not_to include(ancestor_notice)
             # However, shows the notice that the project has been marked for deletion.
-            expect(response.body).to match(
-              /This group and its subgroups and projects are pending deletion, and will be deleted on .*./
-            )
+            expect(response.body).to include(safe_format(
+              _('This group and all its data will be %{strongOpen}permanently deleted%{strongClose} on %{date}.'),
+              tag_pair(tag.strong, :strongOpen, :strongClose),
+              date: tag.strong(deletion_date)
+            ))
           end
         end
       end
@@ -430,7 +440,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to create a group with `default_branch_protection`' do
         it 'does not create the group with the specified branch protection level' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
           subject
 
@@ -480,7 +490,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to create a group with `default_branch_protection`' do
         it 'does not create the group with the specified branch protection level' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
           subject
 
@@ -660,33 +670,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         context 'when permanently_remove param is set' do
           let(:params) { { permanently_remove: true } }
 
-          describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-            before do
-              stub_application_setting(allow_immediate_namespaces_deletion: false)
-            end
-
-            it 'returns error' do
-              Sidekiq::Testing.fake! do
-                expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
-              end
-
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
-          end
-
-          context 'when current user is an admin' do
-            let_it_be(:user) { admin_with_admin_mode }
-
-            it 'deletes the group immediately and redirects to root path' do
-              expect(GroupDestroyWorker).to receive(:perform_async)
-
-              subject
-
-              expect(response).to redirect_to(root_path)
-              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
-            end
-          end
-
           context 'for a html request' do
             it 'deletes the group immediately and redirects to root path' do
               expect(GroupDestroyWorker).to receive(:perform_async)
@@ -694,7 +677,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
               subject
 
               expect(response).to redirect_to(root_path)
-              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+              expect(flash[:toast]).to include "#{group.name} is being deleted."
             end
           end
 
@@ -706,7 +689,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
               subject
 
-              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+              expect(json_response['message']).to eq("#{group.name} is being deleted.")
             end
           end
         end
@@ -838,7 +821,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to update default_branch_protection' do
         it 'does not update the attribute' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group) { false }
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group).and_return(false)
 
           subject
 

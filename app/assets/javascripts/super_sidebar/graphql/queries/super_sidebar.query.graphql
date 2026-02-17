@@ -1,5 +1,6 @@
 #import "ee_else_ce/super_sidebar/graphql/queries/super_sidebar_count.fragment.graphql"
 
+# @feature_category: navigation
 query getAsyncSuperSidebarData($fullPath: ID!) {
   namespace(fullPath: $fullPath) {
     id

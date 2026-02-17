@@ -79,6 +79,23 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
-1. On the top bar, go to **Tools** > **Options**.
+1. In the top bar, go to **Tools** > **Options**.
 1. Go to **Environment** > **Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.
+
+### Configure GitLab Duo
+
+GitLab Duo features are enabled by default when you meet the
+prerequisites:
+
+- For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
+- You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
+- You open a project that is linked to a remote repository on GitLab, or you set a
+  default GitLab Duo namespace in the extension:
+  1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
+  1. Under **GitLab**, select **General**.
+  1. Enter a value for **Default namespace (DAP)**.
+  1. Select **OK**.
+- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
+  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
+  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)

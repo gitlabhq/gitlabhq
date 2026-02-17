@@ -46,8 +46,10 @@ Gitlab.ee do
   load File.expand_path('../ee/lib/tasks/gitlab/indexer.rake', __dir__)
   load File.expand_path('../ee/lib/tasks/gitlab/zoekt.rake', __dir__)
   load File.expand_path('../ee/lib/tasks/gitlab/secrets_management/openbao.rake', __dir__)
+  load File.expand_path('../ee/lib/tasks/gitlab/ai_gateway.rake', __dir__)
 
   require_relative '../ee/lib/gitlab/elastic/indexer'
+  require_relative '../ee/lib/tasks/gitlab/ai_gateway/utils'
   require_relative '../lib/gitlab/utils/override'
   require_relative '../ee/spec/support/helpers/secrets_management/openbao_test_setup'
   require_relative '../ee/spec/support/search/zoekt_process_manager'

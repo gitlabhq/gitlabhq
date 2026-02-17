@@ -1,7 +1,0 @@
----
-name: own_pipeline_schedule
-description: Grants the ability to take ownership of a pipeline schedule
-permissions:
-  - own_pipeline_schedule
-boundaries:
-  - project

@@ -1,0 +1,7 @@
+---
+name: create_github_gist_import
+description: Grants the ability to import gists from GitHub
+permissions:
+  - create_github_gist_import
+boundaries:
+  - user

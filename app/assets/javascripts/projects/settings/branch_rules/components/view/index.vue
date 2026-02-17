@@ -38,13 +38,9 @@ import {
   UNPROTECTED_BRANCH,
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
-// eslint-disable-next-line no-restricted-imports
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
-// eslint-disable-next-line no-restricted-imports
 import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
-// eslint-disable-next-line no-restricted-imports
 import deleteSquashOptionMutation from '../../mutations/delete_squash_option.mutation.graphql';
-// eslint-disable-next-line no-restricted-imports
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
@@ -188,14 +184,19 @@ export default {
     allowForcePush() {
       return this.branchProtection?.allowForcePush;
     },
+    deleteBranchRuleTooltip() {
+      return this.modificationBlockedByPolicy
+        ? s__(
+            "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd}. %{linkStart}Learn more%{linkEnd}.",
+          )
+        : s__(
+            "SecurityOrchestration|If one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd} become enforced, you can't unprotect this branch. %{linkStart}Learn more%{linkEnd}.",
+          );
+    },
     forcePushAttributes() {
       const title = this.allowForcePush
         ? this.$options.i18n.allowForcePushTitle
         : this.$options.i18n.doesNotAllowForcePushTitle;
-
-      if (!this.glFeatures.editBranchRules) {
-        return { title, description: this.$options.i18n.forcePushIconDescription };
-      }
 
       return {
         title,
@@ -207,14 +208,6 @@ export default {
       const title = codeOwnerApprovalRequired
         ? this.$options.i18n.requiresCodeOwnerApprovalTitle
         : this.$options.i18n.doesNotRequireCodeOwnerApprovalTitle;
-
-      if (!this.glFeatures.editBranchRules) {
-        const description = codeOwnerApprovalRequired
-          ? this.$options.i18n.requiresCodeOwnerApprovalDescription
-          : this.$options.i18n.doesNotRequireCodeOwnerApprovalDescription;
-
-        return { title, description };
-      }
 
       return {
         title,
@@ -248,14 +241,6 @@ export default {
       const subject = n__('branch', 'branches', total);
       return sprintf(this.$options.i18n.matchingBranchesLinkTitle, { total, subject });
     },
-    // needed to override EE component
-    statusChecksHeader() {
-      return '';
-    },
-    // needed to override EE component
-    statusChecksCount() {
-      return '0';
-    },
     isAllBranchesRule() {
       return this.branch === this.$options.i18n.allBranches;
     },
@@ -264,6 +249,9 @@ export default {
     },
     isDeleteButtonDisabled() {
       return this.$apollo.loading || this.modificationBlockedByPolicy;
+    },
+    isModificationAffectedByPolicy() {
+      return this.modificationBlockedByPolicy || this.warnModificationBlockedByPolicy;
     },
     isPredefinedRule() {
       return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
@@ -295,12 +283,19 @@ export default {
     },
     showDeleteRuleBtn() {
       return (
-        this.glFeatures.editBranchRules &&
         this.branchRule &&
         this.canAdminProtectedBranches &&
         !this.isAllBranchesRule &&
         !this.branchProtection?.isGroupLevel
       );
+    },
+    // needed to override EE component
+    warnModificationBlockedByPolicy() {
+      return false;
+    },
+    // needed to override EE component
+    warnProtectedFromPushBySecurityPolicy() {
+      return false;
     },
   },
   methods: {
@@ -523,7 +518,7 @@ export default {
   <div>
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
-        <span :id="$options.deleteButtonId">
+        <div :id="$options.deleteButtonId">
           <gl-button
             v-if="showDeleteRuleBtn"
             v-gl-modal="$options.deleteModalId"
@@ -533,10 +528,10 @@ export default {
             :disabled="isDeleteButtonDisabled"
             >{{ $options.i18n.deleteRule }}
           </gl-button>
-        </span>
+        </div>
         <!-- EE only-->
-        <gl-popover v-if="modificationBlockedByPolicy" :target="$options.deleteButtonId">
-          <gl-sprintf :message="$options.i18n.disabledDeleteTooltip">
+        <gl-popover v-if="isModificationAffectedByPolicy" :target="$options.deleteButtonId">
+          <gl-sprintf :message="deleteBranchRuleTooltip">
             <template #securityPoliciesPath="{ content }">
               <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
             </template>
@@ -572,7 +567,7 @@ export default {
       <crud-component :title="$options.i18n.ruleTarget" data-testid="rule-target-card">
         <template #actions>
           <gl-button
-            v-if="glFeatures.editBranchRules && !isPredefinedRule && canAdminProtectedBranches"
+            v-if="!isPredefinedRule && canAdminProtectedBranches"
             v-gl-modal="$options.editModalId"
             data-testid="edit-rule-name-button"
             size="small"
@@ -628,6 +623,7 @@ export default {
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
           :is-protected-by-policy="protectedFromPushBySecurityPolicy"
+          :is-protected-by-warn-policy="warnProtectedFromPushBySecurityPolicy"
           :roles="pushAccessLevels.roles"
           :users="pushAccessLevels.users"
           :groups="pushAccessLevels.groups"
@@ -648,6 +644,7 @@ export default {
           data-test-id-prefix="force-push"
           :is-protected="allowForcePush"
           :is-protected-by-policy="protectedFromPushBySecurityPolicy"
+          :is-protected-by-warn-policy="warnProtectedFromPushBySecurityPolicy"
           :label="$options.i18n.allowForcePushLabel"
           :icon-title="forcePushAttributes.title"
           :description="forcePushAttributes.description"
@@ -765,31 +762,16 @@ export default {
 
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <status-checks
-          v-if="glFeatures.editBranchRules"
           :branch-rule-id="branchRule && branchRule.id"
           :status-checks="statusChecks"
           :project-path="projectPath"
           :is-all-branches-rule="isAllBranchesRule"
           class="gl-mt-3"
         />
-
-        <protection
-          v-else
-          data-testid="status-checks-content"
-          class="gl-mt-0"
-          :header="statusChecksHeader"
-          icon="check-circle"
-          :count="statusChecksCount"
-          :header-link-title="$options.i18n.statusChecksLinkTitle"
-          :header-link-href="statusChecksPath"
-          :status-checks="statusChecks"
-          :empty-state-copy="$options.i18n.statusChecksEmptyState"
-        />
       </settings-section>
 
       <!-- EE end -->
       <gl-modal
-        v-if="glFeatures.editBranchRules"
         :ref="$options.deleteModalId"
         :modal-id="$options.deleteModalId"
         :title="$options.i18n.deleteRuleModalTitle"
@@ -801,7 +783,6 @@ export default {
       </gl-modal>
 
       <branch-rule-modal
-        v-if="glFeatures.editBranchRules"
         :id="$options.editModalId"
         :ref="$options.editModalId"
         :title="$options.i18n.updateTargetRule"

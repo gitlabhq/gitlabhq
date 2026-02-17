@@ -1,0 +1,7 @@
+---
+name: disable_two_factor_enterprise_user
+description: Grants the ability to disable two-factor authentication for enterprise users
+boundaries:
+  - group
+permissions:
+  - disable_two_factor_enterprise_user

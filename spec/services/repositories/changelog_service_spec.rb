@@ -152,32 +152,20 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
     end
 
     context 'with queries count check' do
-      shared_examples 'request without extra queries' do
-        it 'avoids N+1 queries', :request_store do
-          RequestStore.clear!
+      it 'avoids N+1 queries', :request_store do
+        RequestStore.clear!
 
-          request = ->(to) do
-            described_class
-              .new(project, creator, version: '1.0.0', from: sha1, to: to)
-              .execute(commit_to_changelog: false)
-          end
-
-          control = ActiveRecord::QueryRecorder.new { request.call(sha2) }
-
-          RequestStore.clear!
-
-          expect { request.call(sha3) }.not_to exceed_query_limit(control)
-        end
-      end
-
-      it_behaves_like 'request without extra queries'
-
-      context 'when feature flag merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        request = ->(to) do
+          described_class
+            .new(project, creator, version: '1.0.0', from: sha1, to: to)
+            .execute(commit_to_changelog: false)
         end
 
-        it_behaves_like 'request without extra queries'
+        control = ActiveRecord::QueryRecorder.new { request.call(sha2) }
+
+        RequestStore.clear!
+
+        expect { request.call(sha3) }.not_to exceed_query_limit(control)
       end
     end
 

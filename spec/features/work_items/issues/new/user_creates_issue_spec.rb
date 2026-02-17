@@ -16,23 +16,25 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     stub_feature_flags(work_item_planning_view: false)
   end
 
-  context "when unauthenticated" do
-    before do
-      sign_out(:user)
-    end
+  with_and_without_sign_in_form_vue do
+    context "when unauthenticated" do
+      before do
+        sign_out(:user)
+      end
 
-    it "redirects to signin then back to new issue after signin" do
-      create(:issue, project: project)
+      it "redirects to signin then back to new issue after signin" do
+        create(:issue, project: project)
 
-      visit project_issues_path(project)
+        visit project_issues_path(project)
 
-      click_link 'New item'
+        click_link 'New item'
 
-      expect(page).to have_current_path new_user_session_path, ignore_query: true
+        expect(page).to have_current_path new_user_session_path, ignore_query: true
 
-      gitlab_sign_in(create(:user))
+        gitlab_sign_in(create(:user))
 
-      expect(page).to have_current_path new_project_issue_path(project), ignore_query: true
+        expect(page).to have_current_path new_project_issue_path(project), ignore_query: true
+      end
     end
   end
 
@@ -310,7 +312,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       visit(new_project_issue_path(project))
     end
 
-    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'" do
+    it "escapes user names with an apostrophe when clicking 'Assign to me'" do
       click_button 'assign yourself'
 
       expect(page).to have_content(user_special.name)

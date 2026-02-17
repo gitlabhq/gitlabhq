@@ -64,11 +64,8 @@ It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](ht
 [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
 Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access)).
 
-{{< alert type="note" >}}
-
-To track user interactions in the browser, Do-Not-Track (DNT) needs to be disabled. DNT is disabled by default for most browsers.
-
-{{< /alert >}}
+> [!note]
+> To track user interactions in the browser, Do-Not-Track (DNT) needs to be disabled. DNT is disabled by default for most browsers.
 
 ### Tableau
 
@@ -135,7 +132,7 @@ For a list of other metrics tables refer to the [Data Models Cheat Sheet](https:
 ### Product Analytics
 
 Internal Analytics is dogfooding the GitLab [Product Analytics](https://www.youtube.com/watch?v=i8Mze9lRZiY?) functionality, which allows you to visualize events as well.
-The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#create-a-dashboard-by-configuration) explains how to build custom visualizations and dashboards.
+The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md) explains how to build custom visualizations and dashboards.
 The custom dashboards accessible [within the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/analytics/dashboards) are defined in a [separate repository](https://gitlab.com/gitlab-org/analytics-section/gitlab-com-dashboards).
 It is possible to build dashboards based on events instrumented via the Internal events system. Only events emitted by the .com installation will be counted in those visualizations.
 
@@ -147,9 +144,8 @@ For GitLab there is an essential difference in analytics setup between GitLab.co
 
 ### Self-Managed and Dedicated
 
-{{< alert type="note" >}}
-Starting with version 18.0, we collect event-level data on both Self-Managed and Dedicated instances, providing more detailed insights into product usage.
-{{< /alert >}}
+> [!note]
+> Starting with version 18.0, we collect event-level data on both Self-Managed and Dedicated instances, providing more detailed insights into product usage.
 
 For Self-Managed and Dedicated instances on versions prior to 18.0, only pre-computed metrics are available. These metrics are computed once per week on a randomly chosen day and forwarded to our [version app](https://version.gitlab.com) via a process called Service Ping. Only the metrics that were instrumented up to the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running version 16.9 or later, but not on instances running earlier versions such as 16.8.
 The received payloads are imported into our Data Warehouse once per day.

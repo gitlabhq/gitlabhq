@@ -20,6 +20,7 @@ export const initGroupNameAndPath = () => {
 
     return new Vue({
       el: element,
+      name: 'GroupNameAndPathRoot',
       apolloProvider: new VueApollo({
         defaultClient: createDefaultClient(),
       }),

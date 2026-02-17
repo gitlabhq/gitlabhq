@@ -101,7 +101,7 @@ export default {
         :empty-description="
           s__('UserLists|User lists allow you to define a set of users to use with Feature Flags.')
         "
-        @dismissAlert="clearAlert"
+        @dismiss-alert="clearAlert"
       >
         <user-lists-table :user-lists="userLists" @delete="deleteUserList" />
       </empty-state>

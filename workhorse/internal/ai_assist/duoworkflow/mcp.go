@@ -153,6 +153,11 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 				originalReq: r,
 			},
 		},
+		// DisableStandaloneSSE must be true because the GitLab MCP server does not support
+		// SSE (Server-Sent Events). Without this flag, the client attempts an SSE connection
+		// first, which fails and breaks the connection flow.
+		// See: https://github.com/modelcontextprotocol/go-sdk/pull/729
+		DisableStandaloneSSE: true,
 	}
 
 	session, err := client.Connect(r.Context(), t, nil)

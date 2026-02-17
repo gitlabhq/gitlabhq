@@ -13,7 +13,7 @@ RSpec.describe 'Slack application', :js, feature_category: :integrations do
   before do
     stub_application_setting(slack_app_enabled: true)
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def visit_slack_application_form

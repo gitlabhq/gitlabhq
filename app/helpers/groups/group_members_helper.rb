@@ -14,13 +14,13 @@ module Groups::GroupMembersHelper
     access_requests:,
     banned:,
     include_relations:,
-    search:,
     pending_members_count:,
-    placeholder_users:
+    placeholder_users:,
+    params: {}
   )
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
-      group: group_group_links_list_data(group, include_relations, search),
+      group: group_group_links_list_data(group, include_relations, params),
       invite: group_members_list_data(group, invited.nil? ? [] : invited, { param_name: :invited_members_page, params: { page: nil } }),
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
@@ -39,11 +39,10 @@ module Groups::GroupMembersHelper
   # rubocop:enable Metrics/ParameterLists
 
   def group_member_header_subtext(group)
-    ERB::Util.html_escape(_("You're viewing members of %{strong_start}%{group_name}%{strong_end}.").html_safe) % {
-      group_name: group.name,
-      strong_start: '<strong>'.html_safe,
-      strong_end: '</strong>'.html_safe
-    }
+    safe_format(
+      _("You're viewing members of %{open}%{group_name}%{close}."),
+      tag_pair(tag.strong, :open, :close),
+      group_name: group.name)
   end
 
   # Overriden in ee/app/helpers/ee/groups/group_members_helper.rb
@@ -57,8 +56,8 @@ module Groups::GroupMembersHelper
     MemberSerializer.new.represent(members, { current_user: current_user, group: group, source: group })
   end
 
-  def group_group_links_serialized(group, group_links)
-    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user, source: group })
+  def group_group_links_serialized(source, group_links)
+    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user, source: source })
   end
 
   # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`
@@ -83,13 +82,16 @@ module Groups::GroupMembersHelper
     group_links.distinct_on_shared_with_group_id_with_group_access
   end
 
-  def group_group_links_list_data(group, include_relations, search)
+  def group_group_links_list_data(group, include_relations, params)
+    search = params[:search_groups]
+
     group_links = group_group_links(group, include_relations)
     group_links = group_links.search(search, include_parents: true) if search
+    group_links = group_links.page(params[:page])
 
     {
       members: group_group_links_serialized(group, group_links),
-      pagination: members_pagination_data(group_links),
+      pagination: members_pagination_data(group_links, { param_name: :page }),
       member_path: group_group_link_path(group, ':id')
     }
   end

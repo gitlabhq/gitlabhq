@@ -18,6 +18,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/components/blame_skeleton_loader.vue';
 import * as utils from '~/vue_shared/components/source_viewer/utils';
 import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 
@@ -80,7 +81,7 @@ describe('Source Viewer component', () => {
 
   const findChunks = () => wrapper.findAllComponents(Chunk);
   const findBlameComponents = () => wrapper.findAllComponents(Blame);
-  const findBlameComponent = () => wrapper.findComponent(Blame);
+  const findBlameSkeletonLoaders = () => wrapper.findAllComponents(BlameSkeletonLoader);
   const triggerChunkAppear = async (chunkIndex = 0) => {
     findChunks().at(chunkIndex).vm.$emit('appear');
     await waitForPromises();
@@ -127,55 +128,65 @@ describe('Source Viewer component', () => {
     describe('DOM updates', () => {
       it('adds the necessary classes to the DOM', async () => {
         setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
-        jest.spyOn(utils, 'toggleBlameClasses');
+        jest.spyOn(utils, 'toggleBlameLineBorders');
         createComponent();
         await triggerChunkAppear();
-        expect(utils.toggleBlameClasses).toHaveBeenCalledWith(blameInfo, true);
+        expect(utils.toggleBlameLineBorders).toHaveBeenCalledWith(blameInfo, true);
       });
     });
 
     describe('Blame information', () => {
-      it('passes loading state to Blame component when data is not yet loaded', () => {
-        expect(findBlameComponent().exists()).toBe(true);
-
-        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
-        expect(findBlameComponent().props('blameInfo')).toHaveLength(0);
-      });
-
-      it('passes loaded state to Blame component once blame data has loaded', async () => {
-        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
-
-        await triggerChunkAppear();
-
-        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
-        expect(findBlameComponent().props('blameInfo')).toHaveLength(blameInfo.length);
-      });
-
-      it('passes loading state again when showBlame is toggled off and back on', async () => {
-        await triggerChunkAppear();
-        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
-
-        // Toggle showBlame off
-        await wrapper.setProps({ showBlame: false });
-        await nextTick();
-        expect(findBlameComponent().exists()).toBe(false);
-
-        // Toggle showBlame back on - should pass loading state
-        await wrapper.setProps({ showBlame: true });
-        await nextTick();
-        expect(findBlameComponent().exists()).toBe(true);
-        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
-        expect(findBlameComponent().props('blameInfo')).toHaveLength(0);
-
-        // After chunk appears again, should pass loaded state
-        await triggerChunkAppear();
-        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
-      });
       it('renders a Blame component when a chunk appears', async () => {
         await triggerChunkAppear();
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+        expect(findBlameComponents().at(0).props()).toMatchObject({
+          blameInfo,
+          projectPath,
+        });
+      });
+
+      describe('per-chunk skeleton loaders', () => {
+        const emitAppear = () => findChunks().at(0).vm.$emit('appear');
+
+        it.each([
+          { showBlame: true, minCount: 1 },
+          { showBlame: false, minCount: 0 },
+        ])(
+          'shows skeleton loaders when showBlame is $showBlame',
+          async ({ showBlame, minCount }) => {
+            createComponent({ showBlame });
+            emitAppear();
+            await nextTick();
+            expect(findBlameSkeletonLoaders().length).toBeGreaterThanOrEqual(minCount);
+          },
+        );
+
+        it('removes skeleton loader after data loads', async () => {
+          createComponent();
+          await triggerChunkAppear(0);
+          expect(findBlameSkeletonLoaders()).toHaveLength(0);
+        });
+
+        it('positions skeleton loader at chunk offset', async () => {
+          createComponent();
+          emitAppear();
+          await nextTick();
+
+          const chunkOffset = findChunks().at(0).element.offsetTop;
+          expect(findBlameSkeletonLoaders().at(0)?.attributes('style')).toContain(
+            `transform: translateY(${chunkOffset}px)`,
+          );
+        });
+
+        it('passes totalLines from the chunk to the skeleton loader', async () => {
+          createComponent();
+          emitAppear();
+          await nextTick();
+
+          const loader = findBlameSkeletonLoaders().at(0);
+          expect(loader.props('totalLines')).toBe(1);
+        });
       });
 
       it('preloads blame data', async () => {
@@ -213,6 +224,19 @@ describe('Source Viewer component', () => {
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
       });
 
+      describe('chunk visibility queuing', () => {
+        it('does not fetch blame data when chunk disappears before processing', () => {
+          blameDataQueryHandlerSuccess.mockClear();
+
+          triggerChunkAppear(0);
+          findChunks().at(0).vm.$emit('disappear');
+
+          jest.runAllTimers();
+
+          expect(blameDataQueryHandlerSuccess).not.toHaveBeenCalled();
+        });
+      });
+
       it('requests blame information for overlapping chunk', async () => {
         await triggerChunkAppear(1);
 
@@ -241,6 +265,8 @@ describe('Source Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Unable to load blame information. Please try again.',
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: expect.any(Error),
         });
@@ -259,6 +285,8 @@ describe('Source Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: backendErrorMessage,
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: graphQLError,
         });

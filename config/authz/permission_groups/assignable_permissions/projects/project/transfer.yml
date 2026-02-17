@@ -5,3 +5,4 @@ permissions:
   - transfer_project
 boundaries:
   - project
+  - instance

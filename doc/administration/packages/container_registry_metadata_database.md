@@ -35,7 +35,7 @@ which removes old data automatically with zero downtime.
 This database works in conjunction with the storage already used by the registry, but does not replace object storage or a file system.
 You must continue to maintain a storage solution even after performing a metadata import to the metadata database.
 
-For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
+For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database/#create-the-database)
 in the Helm Charts documentation.
 
 ## Enhancements
@@ -122,16 +122,13 @@ You do not need to do the following in preparation before importing:
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
   import enough to recoup the time spent running this command.
 
-{{< alert type="note" >}}
-
-The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
-exclusively referenced by them, are left behind and become inaccessible. Untagged images
-were never visible through the GitLab UI or API, but they can become "dangling" and
-left behind in the backend. After import to the new registry, all images are subject
-to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
-and layers that remain for longer than 24 hours.
-
-{{< /alert >}}
+> [!note]
+> The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
+> exclusively referenced by them, are left behind and become inaccessible. Untagged images
+> were never visible through the GitLab UI or API, but they can become "dangling" and
+> left behind in the backend. After import to the new registry, all images are subject
+> to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
+> and layers that remain for longer than 24 hours.
 
 #### How to choose the right import method
 
@@ -225,12 +222,9 @@ To skip post-deployment migrations:
    sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
-{{< alert type="note" >}}
-
-The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
-Run `sudo gitlab-ctl registry-database migrate up --help` for details.
-
-{{< /alert >}}
+> [!note]
+> The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
+> Run `sudo gitlab-ctl registry-database migrate up --help` for details.
 
 ## Online garbage collection monitoring
 
@@ -326,7 +320,7 @@ The garbage collector might be working through items caused by a spike in activi
 
 Similarly, the `created_at` date of these tasks alone is not good health indicator.
 When an event adds the same blob or manifest to the queue, the `review_after`
-of the existing task is updated, which postpones the review. No duplicate task is created. 
+of the existing task is updated, which postpones the review. No duplicate task is created.
 
 This can occur any number of times, so
 tasks created months ago are not a cause for concern.
@@ -413,22 +407,16 @@ registry['database'] = {
 }
 ```
 
-{{< alert type="note" >}}
-
-When using an external database, omit the `-u registry` option from the
-commands throughout this documentation.
-
-{{< /alert >}}
+> [!note]
+> When using an external database, omit the `-u registry` option from the
+> commands throughout this documentation.
 
 ## Backup with metadata database
 
-{{< alert type="note" >}}
-
-If you have configured your own database for container registry metadata,
-you must manage backups manually. `gitlab-backup` does not backup the metadata database.
-For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
-
-{{< /alert >}}
+> [!note]
+> If you have configured your own database for container registry metadata,
+> you must manage backups manually. `gitlab-backup` does not backup the metadata database.
+> For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
 
 When the metadata database is enabled, backups must capture both the object storage
 used by the registry, as before, but also the database. Backups of object storage
@@ -497,12 +485,9 @@ Use separate database instances on each site because:
 
 You can revert your registry to use object storage metadata after completing a metadata import.
 
-{{< alert type="warning" >}}
-
-When you revert to object storage metadata, any container images, tags, or repositories
-added or deleted between the import completion and this revert operation are not available.
-
-{{< /alert >}}
+> [!warning]
+> When you revert to object storage metadata, any container images, tags, or repositories
+> added or deleted between the import completion and this revert operation are not available.
 
 To revert to object storage metadata:
 

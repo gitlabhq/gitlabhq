@@ -1,0 +1,4 @@
+name: delete_maven_virtual_registry
+description: Grants the ability to delete Maven virtual registries
+boundaries:
+  - group

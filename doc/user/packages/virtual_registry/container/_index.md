@@ -9,23 +9,21 @@ description: Use the container virtual registry to cache container images from u
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548794) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The GitLab container virtual registry is a local proxy you can use to cache container images from
 upstream registries. It acts as a pull-through cache, storing frequently-accessed images locally
@@ -153,7 +151,7 @@ services:
 ### Virtual registry authentication issues from CI/CD jobs
 
 GitLab Runner authenticates automatically using the CI/CD job token. However, the underlying Docker engine
-is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#precedence-of-docker-authorization-resolving).
+is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration/#precedence-of-docker-authorization-resolving).
 
 Misconfigurations in the authentication mechanism may cause `HTTP Basic: Access denied` and `403: Access forbidden` errors.
 

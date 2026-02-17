@@ -9,6 +9,10 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, developers: user, group: group) }
 
+  before_all do
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
+  end
+
   before do
     sign_in(user)
   end

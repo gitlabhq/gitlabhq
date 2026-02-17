@@ -8,33 +8,33 @@ title: 'チュートリアル: GitLab Duoを使用して、Pythonのショップ
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-このチュートリアルは、シリーズのパート2です。最初のチュートリアルでは、[GitLab Duoを使用して、Pythonでショップアプリケーションを作成しました](fix_code_python_shop.md)。
+このチュートリアルは、シリーズのパート2です。最初のチュートリアルでは、[GitLab Duoを使用して、Pythonでショップアプリケーションを作成](fix_code_python_shop.md)しました。
 
-最初のチュートリアルに従い、コードが完全に動作する場合は、ルートからエラー処理を削除して、一般的なエラーを発生させます。たとえば、`try`ブロックと`catch`ブロック、および入力検証を削除します。次に、このチュートリアルに従って、GitLab Duoの助けを借りてそれらを追加し直します。
+最初のチュートリアルに従い、コードが問題なく動作する場合は、ルートからエラー処理を削除して、一般的なエラーを発生させます。たとえば、`try`ブロックと`catch`ブロック、および入力検証を削除します。次に、このチュートリアルに従って、GitLab Duoを使用してそれらを再度追加します。
 
 このチュートリアルでは、次のことを行います:
 
-- 包括的なテストケースを作成し、テストを実行して、修正が必要なイシューを特定します。
+- 包括的なテストケースを作成し、テストを実行して、修正が必要な問題を特定します。
 - データベースのエラー処理と接続管理を改善します。
 - データ検証を実装します。
 - ルートに堅牢なエラー処理を追加します。
 - Flaskアプリケーション設定を改善します。
 - アプリケーションが正しく動作することを確認します。
 
-## テストケースの作成 {#write-test-cases}
+## テストケースを作成する {#write-test-cases}
 
-まず、チャットを使用して、Webアプリケーション用の包括的なテストケースを生成します。
+まず、Chatを使用して、Webアプリケーション用の包括的なテストケースを生成します。
 
 適切に作成された包括的なテストケース:
 
 - コードが機能していない場所を体系的に特定します。
 - 標準条件とエラー条件の両方で、コードの各部分がどのように動作するかを正確に検討するのに役立ちます。
-- 修正が必要なイシューの優先順位付きリストを作成します。
+- 修正が必要な問題の優先順位付きリストを作成します。
 - 修正が機能しているかどうかをユーザーがすぐに検証できるようにします
 
 テストケースを作成するには:
 
-1. IDEでチャットを開き、次のように入力します:
+1. IDEでChatを開き、次のように入力します:
 
    ```plaintext
    I need to write comprehensive tests for a Flask API for a bookstore inventory.
@@ -56,18 +56,18 @@ title: 'チュートリアル: GitLab Duoを使用して、Pythonのショップ
    I want to test both successful operations and error handling.
    ```
 
-1. チャットからの応答をレビューします。セットアップコード、フィクスチャ定義、および各ルートのテスト関数を含む、包括的なテスト計画を受け取る必要があります。
+1. Chatからの応答をレビューします。セットアップコード、フィクスチャ定義、および各ルートのテスト関数を含む、包括的なテスト計画を受け取るはずです。
 
-1. チャットの応答をレビューした後、フォローアップの質問をすることを検討してください:
+1. Chatの応答をレビューした後、フォローアップの質問をすることを検討してください:
 
-   - テストフィクスチャの設計についてより深く理解するように努めてください:
+   - テストフィクスチャの設計についてより深く理解するように努めます:
 
      ```plaintext
      Can you explain why you're using these specific fixtures? What's the benefit of
      separating the app fixture from the client fixture?
      ```
 
-   - 特定のエラー条件をテストする方法を理解するために、チャットに支援を求めてください:
+   - 特定のエラー条件をテストする方法を理解するために、Chatにサポートを求めます:
 
      ```plaintext
      I'm particularly concerned about error handling for the POST and PUT routes.
@@ -75,20 +75,20 @@ title: 'チュートリアル: GitLab Duoを使用して、Pythonのショップ
      and missing required fields?
      ```
 
-   - Flaskテストに関するより具体的なガイダンスについては、`/help`コマンドを使用してください:
+   - Flaskテストに関するより具体的なガイダンスについては、`/help`コマンドを使用します:
 
      ```plaintext
      /help Flask testing with pytest
      ```
 
-   - テストを高速化する方法をチャットに提案してもらいます:
+   - Chatにテストを高速化する方法を提案するよう求めます:
 
      ```plaintext
      These tests seem comprehensive but might be slow when running the full suite.
      Are there any optimizations you'd suggest for the test setup?
      ```
 
-1. 必要に応じてテスト計画を修正します。計画に満足したら、テストファイルの完全な実装についてチャットに尋ねてください:
+1. 必要に応じてテスト計画を修正します。計画に満足したら、テストファイルの完全な実装についてChatに尋ねます:
 
    ```plaintext
    Based on the test plan, provide a complete implementation of the test_shop.py file that includes:
@@ -232,84 +232,84 @@ title: 'チュートリアル: GitLab Duoを使用して、Pythonのショップ
 
 Python Webアプリケーション用の包括的なテストケースが作成されました。
 
-次に、テストを実行して、アプリケーションのイシューを特定します。
+次に、テストを実行して、アプリケーションの問題を特定します。
 
-## アプリケーションイシューを特定するためのテストの実行 {#run-tests-to-identify-application-issues}
+## アプリケーションの問題を特定するためにテストを実行する {#run-tests-to-identify-application-issues}
 
-前のセクションで作成したテストを実行して、アプリケーションのイシューを特定します:
+前のセクションで作成したテストを実行して、アプリケーションの問題を特定します:
 
 ```python
 pytest -v tests/test_shop.py
 ```
 
-失敗したテストをレビューして、修正する必要があるイシューを特定します。
+失敗したテストをレビューして、修正する必要がある問題を特定します。
 
 失敗したテスト結果は次のようになります。
 
 ### `test_delete_book` - 失敗 {#test_delete_book---failure}
 
-このテストでは、書籍を削除しようとし、次に存在しない書籍（ID`999`）を削除しようとします。テストでは次の動作を想定しています:
+このテストでは、書籍を削除してから、存在しない書籍（ID `999`）を削除しようとします。テストでは次の動作を想定しています:
 
 - 削除が成功すると、`200`ステータスコードが返されます
 - 存在しない書籍を削除しようとすると、`404`ステータスコードが返されます
 
 このテストが失敗する理由は:
 
-- `delete_article`関数が`app/database.py`ステータスを返しません。
+- `app/database.py`内の`delete_article`関数がステータスを返しません。
 - `delete_book`ルートは次のことを行いません:
 
-  - 削除する前に書籍が存在するかどうかを確認します。
-  - 存在しない書籍の場合を処理しないため、存在しない書籍の場合でも`200`ステータスコードが返されます。
+  - 削除する前に書籍が存在するかどうかを確認しません。
+  - 存在しない書籍の処理が行われないため、存在しない書籍でも`200`ステータスコードが返されます。
 
 ### `test_update_book` - 部分的な失敗 {#test_update_book---partial-failure}
 
-このテストでは、既存の書籍を更新してから、存在しない書籍を更新しようとします。存在しない書籍の部分は合格する可能性がありますが、イシューがあります:
+このテストでは、既存の書籍を更新してから、存在しない書籍を更新しようとします。存在しない書籍の部分は成功判定される可能性がありますが、実際には以下の問題が存在します:
 
-- `update_article`関数が`database.py`ステータスを返しません。
-- 入力データに対して検証は行われません。
+- `database.py`内の`update_article`関数がステータスを返しません。
+- 入力データに対して検証が行われません。
 - エラー処理がありません。
 
 ### `test_add_book` - 潜在的な失敗 {#test_add_book---potential-failure}
 
-このテストでは、新しい書籍を追加し、応答にステータスコード201があるかどうかを確認します。このテストが失敗する理由は:
+このテストでは、新しい書籍を追加し、応答にステータスコード201があるかどうかを確認します。このテストが失敗する可能性がある理由は:
 
 - `add_book`ルートに入力検証がありません。
 - データが不足しているか無効な場合、エラー処理は行われません。
-- `Article`クラスは、負の価格のような入力を検証しません。
+- `Article`クラスは、マイナス価格のような入力を検証しません。
 
 ### テストクライアントのセットアップ - 潜在的な失敗 {#test-client-setup---potential-failure}
 
-テストフィクスチャが失敗する可能性がある理由は:
+テストフィクスチャは次の理由で失敗する可能性があります:
 
 - アプリケーションがテスト設定を適切に処理しません。
 - `create_app`関数は、提供されたテスト設定を使用しません。
 - データベースパスがハードコードされているため、テストデータベースを使用するのが困難です。
 
-### すべてのテストに影響する一般的なイシュー {#general-issues-affecting-all-tests}
+### すべてのテストに影響する一般的な問題 {#general-issues-affecting-all-tests}
 
-コードベースのいくつかのイシューは、すべてのテストに影響します:
+コードベースのいくつかの問題は、すべてのテストに影響します:
 
-- データベース操作でエラー処理は行われません。
-- アプリケーション全体で入力検証は行われません。
-- ハードコードされた設定値。
+- データベース操作でエラー処理が行われません。
+- アプリケーション全体で入力検証が行われません。
+- ハードコードされた設定の値。
 - 重要な環境変数がありません。
-- データベース関数で接続管理は行われません。
+- データベース関数で接続管理が行われません。
 
-アプリケーションを堅牢でテスト可能にするには、これらのイシューに対処する必要があります。
+アプリケーションを堅牢でテスト可能なものにするには、これらの問題に対処する必要があります。
 
 ### 失敗したテストを特定した後の次の手順 {#next-steps-after-identifying-failing-tests}
 
-どのテストが失敗したかを確認した後、チャットとコード提案を使用して、次の方法でこれらのイシューに体系的に対処します:
+どのテストが失敗したかを確認した後、Chatとコード提案を使用して、次の方法でこれらの問題に体系的に対処します:
 
 - データベースのエラー処理と接続管理を改善します。
-- アーティクルクラスにデータ検証を実装します。
+- Articleクラスにデータ検証を実装します。
 - 適切なエラー処理をルート関数に追加します。
 - アプリケーション設定を改善します。
 - 修正をテストして検証します。
 
 ## データベースのエラー処理と接続管理を改善する {#improve-database-error-handling-and-connection-management}
 
-ここで、コード提案（特にコード生成）を使用して、データベースのエラー処理と接続管理を改善します:
+ここでは、コード提案（特にコード生成）を使用して、データベースのエラー処理と接続管理を改善します:
 
 1. IDEで`app/database.py`ファイルを開きます。
 
@@ -320,7 +320,7 @@ pytest -v tests/test_shop.py
    DATABASE_PATH = 'bookstore.db'
    ```
 
-1. 必要に応じて、生成されたコードをレビューして調整します。出力は次のようになります。
+1. 必要に応じて、生成されたコードをレビューして調整します。次のようになります: 
 
    ```python
    import os
@@ -338,7 +338,7 @@ pytest -v tests/test_shop.py
    # Add in missing error handling and connection management.
    ```
 
-1. 生成されたコードをレビューし、必要に応じて調整します。出力は次のようになります。
+1. 生成されたコードをレビューし、必要に応じて調整します。次のようになります: 
 
    ```python
    def get_db_connection():
@@ -368,7 +368,7 @@ pytest -v tests/test_shop.py
    # was deleted, or failure if article was not found
    ```
 
-1. 生成されたコードをレビューし、必要に応じて調整します。出力は次のようになります。
+1. 生成されたコードをレビューし、必要に応じて調整します。次のようになります: 
 
    ```python
    def delete_article(article_id):
@@ -403,7 +403,7 @@ pytest -v tests/test_shop.py
    # was deleted, or failure if article was not found
    ```
 
-1. 生成されたコードをレビューし、必要に応じて調整します。出力は次のようになります。
+1. 生成されたコードをレビューし、必要に応じて調整します。次のようになります: 
 
    ```python
    def update_article(article):
@@ -434,13 +434,13 @@ pytest -v tests/test_shop.py
         return False
    ```
 
-お疲れ様でした。コード提案を使用して、データベースのエラー処理と接続管理を改善しました。次に、チャットを使用して、`Article`クラスのデータ検証を実装します。
+お疲れ様でした。コード提案を使用して、データベースのエラー処理と接続管理を改善しました。次に、Chatを使用して、`Article`クラスのデータ検証を実装します。
 
-## データ検証の実装 {#implement-data-validation}
+## データ検証を実装する {#implement-data-validation}
 
-ここで、チャットを使用して、`Article`クラスの検証ルールを実装します:
+ここでは、Chatを使用して、`Article`クラスの検証ルールを実装します:
 
-1. IDEでチャットを開き、次のように入力します:
+1. IDEでChatを開き、次のように入力します:
 
    ```plaintext
    How can I implement data validation rules for the Article class? I need to
@@ -448,30 +448,30 @@ pytest -v tests/test_shop.py
    a non-negative integer, and handle any validation errors.
    ```
 
-1. 回答をレビューします。回答をイテレーションを行うために、フォローアップの質問をすることを検討してください:
+1. 応答をレビューします。応答のイテレーションを行うために、フォローアップの質問をすることを検討してください:
 
-   - 検証実装の特定の部分について説明するようにチャットに依頼します:
+   - 検証実装の特定の部分について説明するようにChatに依頼します:
 
      ```plaintext
      Can you explain how the ValidationError class works in this implementation?
      Why is it defined as an inner class rather than separately?
      ```
 
-   - より効率的な検証アプローチを提案するようにチャットにリクエストします:
+   - より効率的な検証アプローチを提案するようにChatにリクエストします:
 
      ```plaintext
      The validation logic in the constructor feels verbose. Is there a more efficient
      way to handle the validation, perhaps using Python decorators or a validation library?
      ```
 
-   - 検証コードをリファクタリングするようにチャットに依頼します:
+   - 検証コードをリファクタリングするようにChatに依頼します:
 
      ```plaintext
      Can you refactor the validation code to make it more maintainable? Perhaps
      extract the validation logic into separate methods?
      ```
 
-1. リファクタリングされたコードの応答をレビューし、改善されたアーティクルクラスを実装します。出力は次のようになります。
+1. リファクタリングされたコードの応答をレビューし、改善されたArticleクラスを実装します。次のようになります: 
 
    ```python
    class Article:
@@ -565,17 +565,17 @@ pytest -v tests/test_shop.py
         )
    ```
 
-1. オプション。より専門的な検証については、基本的な型チェックを超えた追加のPythonデータ検証手法について、チャットに問い合わせてください。
+1. オプション。より専門的な検証については、基本的な型チェックにとどまらない、追加のPythonデータ検証手法について、Chatに問い合わせてください。
 
    必要に応じて、`/explain`スラッシュコマンドを使用して、追加の手法を理解してください。
 
-Duoチャットを使用して、`Article`クラスのデータ検証を実装しました。
+GitLab Duo Chatを使用して、`Article`クラスのデータ検証を実装しました。
 
 次に、コード提案を使用して、ルートのエラー処理を改善します。
 
-## ルートのエラー処理の実装 {#implement-error-handling-in-routes}
+## ルートのエラー処理を実装する {#implement-error-handling-in-routes}
 
-ここで、コード提案を使用して、ルートのエラー処理を改善します:
+ここでは、コード提案を使用して、ルートのエラー処理を改善します:
 
 1. IDEで`app/routes/shop.py`ファイルを開きます。
 
@@ -658,7 +658,7 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
    # and return a 404 status code if the book does not exist
    ```
 
-1. 生成されたコード</codeを検証し、必要に応じて調整します。次のようになります:
+1. 生成されたコードを検証し、必要に応じて調整します。次のようになります:
 
    ```python
    @shop_bp.route('/<int:book_id>', methods=['DELETE'])
@@ -691,7 +691,7 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
    # and return a 500 status code if the book does not exist
    ```
 
-1. 生成されたコード</codeを検証し、必要に応じて調整します。次のようになります:
+1. 生成されたコードを検証し、必要に応じて調整します。次のようになります:
 
    ```python
    @shop_bp.route('/<int:book_id>', methods=['PUT'])
@@ -742,15 +742,15 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
 
 お疲れ様でした。ルートのエラー処理が正常に改善されました。
 
-次に、チャットを使用して、Flaskアプリケーション設定を改善します。
+次に、Chatを使用して、Flaskアプリケーション設定を改善します。
 
 ## Flaskアプリケーション設定を改善する {#improve-flask-application-configuration}
 
-最後に行う改善は、チャットを使用してFlaskアプリケーション設定を改善することです。
+最後に行う改善は、Chatを使用してFlaskアプリケーション設定を改善することです。
 
 1. IDEで`app/__init__.py`ファイルを開きます。
 
-1. IDEでチャットを開き、次のように入力します:
+1. IDEでChatを開き、次のように入力します:
 
    ```plaintext
    I need to improve this Flask application initialization code, specifically
@@ -758,7 +758,7 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
    `create_app` function.
    ```
 
-1. 回答をレビューします。`create_app`関数を改善するために、フォローアップの質問をすることを検討してください:
+1. 応答をレビューします。`create_app`関数を改善するために、フォローアップの質問をすることを検討してください:
 
    - 特定のセキュリティ改善をリクエストします:
 
@@ -775,14 +775,14 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
      this differently?
      ```
 
-   - 設定の選択肢の影響について説明するようにリクエストします:
+   - 設定の選択肢の影響について説明を求めます:
 
      ```plaintext
      Can you explain the security implications of these configuration choices?
      What other Flask configurationsettings should I be aware of for a secure deployment?
      ```
 
-1. 応答に基づいて、`create_app`関数を改善します。質問したフォローアップの質問に応じて、関数は次のようになります:
+1. 応答に基づいて、`create_app`関数を改善します。フォローアップの質問に応じて、関数は次のようになります:
 
    ```python
    from flask import Flask
@@ -826,7 +826,7 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
     return app
    ```
 
-1. 次に、ハードコードするのではなくデータベースパスの環境変数を使用してテスト設定を適切に処理するために、`create_app`を更新します。次をチャットに入力します。
+1. 次に、ハードコードではなくデータベースパスの環境変数を使用してテスト設定を適切に処理するために、`create_app`を更新します。次をChatに入力します。
 
    ```plaintext
    How can I update create_app to properly handle test configuration and use
@@ -913,7 +913,7 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
    DATABASE_PATH=bookstore.db
    ```
 
-1. オプション。環境変数に関するセキュリティのベストプラクティスについてチャットにリクエストし、設定処理をさらに改善します:
+1. オプション。環境変数に関するセキュリティのベストプラクティスについてChatに尋ね、設定処理をさらに改善します:
 
    ```plaintext
    /security What are the best practices for handling environment variables and
@@ -922,11 +922,11 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
 
    提供されたガイダンスを使用して、設定処理をさらに改善します。
 
-## テストを再度実行し、アプリケーションが動作することを確認します {#run-tests-again-and-verify-the-application-works}
+## テストを再実行し、アプリケーションが動作することを確認する {#run-tests-again-and-verify-the-application-works}
 
-イシューを修正し、改善を実装したので、すべてが正しく動作することを確認しましょう:
+問題を修正し、改善を実装したので、すべてが正しく動作することを確認しましょう:
 
-1. すべてのテストに合格するように、テストを再度実行します:
+1. テストを再実行して、すべてのテストに合格することを確認します:
 
    ```python
    pytest -v tests/test_shop.py
@@ -938,30 +938,30 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
    flask run
    ```
 
-1. 有効な入力と無効な入力の両方を使用して、APIエンドポイントをテストします。これを行うには、次のエンドポイントで[Postman](https://www.postman.com/)や[cURL](https://curl.se/)のようなAPI開発ツールを使用します。
+1. 有効な入力と無効な入力の両方を使用して、APIエンドポイントをテストします。これを行うには、次のエンドポイントで[Postman](https://www.postman.com/)や[curl](https://curl.se/)のようなAPI開発ツールを使用します。
 
    - 有効なリクエストで`GET /books`。
    - 有効なIDで`GET /books/1`。
    - 無効なIDで`GET /books/999`。
-   - 有効および無効（たとえば、フィールドの欠落、負の価格）データで`POST /books`。
+   - 有効および無効な（たとえば、フィールドの欠落、マイナスの価格）データで`POST /books`。
    - 有効なデータと無効なデータで`PUT /books/1`。
    - `DELETE /books/1`。
    - 存在しないIDで`DELETE /books/999`。
 
 1. エラー処理がすべてのエラーケースに対して正しく機能することを検証します。
 
-1. オプション。エラー処理が正しく機能することを検証する方法をチャットに質問します。
+1. オプション。エラー処理が正しく機能することを検証する方法をChatに質問します。
 
 ## まとめ {#summary}
 
-このチュートリアルでは、チャットとコード提案を使用して、次のことを行いました:
+このチュートリアルでは、Chatとコード提案を使用して、次のことを行いました:
 
-- 包括的なテストケースを作成し、テストを実行して、修正が必要なイシューを特定します。
+- 包括的なテストケースを作成し、テストを実行して、修正が必要な問題を特定します。
 - データベースのエラー処理と接続管理を改善します。
 - データ検証を実装します。
 - ルートに堅牢なエラー処理を追加します。
 - Flaskアプリケーション設定を改善します。
-- アプリケーションが正しく動作することを検証します。
+- アプリケーションが正しく動作することを確認します。
 
 これらの改善により、アプリケーションの信頼性、安全性、保守性が向上しました。
 
@@ -969,10 +969,12 @@ Duoチャットを使用して、`Article`クラスのデータ検証を実装�
 
 - [GitLab Duoのユースケース](../use_cases.md)
 - [GitLab Duoのスタートガイド](../../get_started/getting_started_gitlab_duo.md)
-- ブログ投稿: [DevSecOpsエンジニアリングワークフローをGitLab Duoで効率化する](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
+- ブログ投稿: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
 <!-- markdownlint-disable -->
-- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duoチャット](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
-<!-- Video published on 2024-04-18 -->
-- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duoコード提案](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo Chat（エージェント）](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
+  <!-- Video published on 2025-06-02 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo Chat（クラシック）](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
+  <!-- Video published on 2024-04-18 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i>[GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
 <!-- Video published on 2024-01-24 -->
 <!-- markdownlint-enable -->

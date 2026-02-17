@@ -7,6 +7,7 @@ module Tooling
       LOCK_CONFIG_PATH = 'config/database_upgrade_ddl_lock.yml'
       SCHEMA_FILE_PATTERN = %r{\Adb/structure\.sql}
       SECONDS_PER_DAY = 86400
+      DEFAULT_MERGE_BUFFER_DAYS = 2
 
       def check_ddl_lock_contention
         return unless config_file_exists? && config_valid?
@@ -57,14 +58,21 @@ module Tooling
 
       def calculate_time_range(lock_config)
         warning_offset = lock_config['warning_days'].to_i * SECONDS_PER_DAY
+        merge_buffer = (lock_config['merge_buffer'] || DEFAULT_MERGE_BUFFER_DAYS).to_i * SECONDS_PER_DAY
+        maintenance_start = parse_date(lock_config['start_date'].to_s)
+
         {
-          start: parse_date(lock_config['start_date'].to_s) - warning_offset,
+          start: maintenance_start - merge_buffer - warning_offset,
           end: parse_date(lock_config['end_date'].to_s)
         }
       end
 
-      def start_date
-        @start_date ||= parse_date(config['start_date'].to_s)
+      def maintenance_start_date
+        @maintenance_start_date ||= parse_date(config['start_date'].to_s)
+      end
+
+      def merge_lock_start_date
+        @merge_lock_start_date ||= maintenance_start_date - (merge_buffer_days * SECONDS_PER_DAY)
       end
 
       def end_date
@@ -83,13 +91,17 @@ module Tooling
         @warning_days ||= config['warning_days'].to_i
       end
 
+      def merge_buffer_days
+        @merge_buffer_days ||= (config['merge_buffer'] || DEFAULT_MERGE_BUFFER_DAYS).to_i
+      end
+
       def ddl_lock_active?
-        time_current.between?(start_date, end_date)
+        time_current.between?(merge_lock_start_date, end_date)
       end
 
       def within_warning_period?
-        warning_start = start_date - (warning_days * SECONDS_PER_DAY)
-        time_current.between?(warning_start, start_date - 1)
+        warning_start = merge_lock_start_date - (warning_days * SECONDS_PER_DAY)
+        time_current.between?(warning_start, merge_lock_start_date - 1)
       end
 
       def lock_message
@@ -103,7 +115,8 @@ module Tooling
 
           See change request: %<upgrade_issue_url>s
 
-          Started at: %<start_date>s
+          Maintenance starts at: %<maintenance_start_date>s
+          Merge lock started at: %<merge_lock_start_date>s
           Locked until: %<end_date>s
           Details: %<details>s
           Background: #{BACKGROUND_ISSUE_URL}
@@ -116,13 +129,14 @@ module Tooling
 
       def warning_message_template
         <<~MSG
-          A database upgrade lock will be active in %<days_until_lock>s day(s). Starting at %<start_date>s, merging
-          migrations that changes the schema (DDL) will be disabled while a major database upgrade is performed.
-          Plan accordingly or consider merging your changes before the lock begins.
+          A database upgrade lock will be active in %<days_until_lock>s day(s). Starting at %<merge_lock_start_date>s, merging
+          migrations that changes the schema (DDL) will be disabled. The maintenance window is scheduled for %<maintenance_start_date>s,
+          but merges are blocked %<merge_buffer_days>s day(s) earlier to allow time for deployment ahead of the upgrade.
 
           See change request: %<upgrade_issue_url>s
 
-          Starts at: %<start_date>s
+          Maintenance starts at: %<maintenance_start_date>s
+          Merge lock starts at: %<merge_lock_start_date>s
           Locked until: %<end_date>s
           Details: %<details>s
           Background: #{BACKGROUND_ISSUE_URL}
@@ -131,10 +145,12 @@ module Tooling
 
       def message_params
         {
-          start_date: start_date,
+          maintenance_start_date: maintenance_start_date,
+          merge_lock_start_date: merge_lock_start_date,
           end_date: end_date,
           details: details,
-          upgrade_issue_url: upgrade_issue_url
+          upgrade_issue_url: upgrade_issue_url,
+          merge_buffer_days: merge_buffer_days
         }
       end
 
@@ -147,13 +163,13 @@ module Tooling
       end
 
       def valid_dates?
-        start_date && end_date && start_date < end_date && end_date >= time_current
+        maintenance_start_date && end_date && merge_lock_start_date < end_date && end_date >= time_current
       end
 
       def days_until_lock
-        return unless start_date
+        return unless merge_lock_start_date
 
-        ((start_date - time_current) / SECONDS_PER_DAY).to_i
+        ((merge_lock_start_date - time_current) / SECONDS_PER_DAY).to_i
       end
 
       def parse_date(date)

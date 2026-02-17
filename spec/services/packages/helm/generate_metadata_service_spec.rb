@@ -27,8 +27,9 @@ RSpec.describe ::Packages::Helm::GenerateMetadataService, feature_category: :pac
 
   let(:project_id_param) { project.id }
   let(:channel) { 'stable' }
+  let(:expected_packages) { packages.reverse }
 
-  describe '#execute' do
+  describe '#execute', :aggregate_failures do
     subject(:response) do
       described_class.new(project_id_param, channel, ::Packages::Package.id_in(packages.map(&:id))).execute
     end
@@ -43,8 +44,8 @@ RSpec.describe ::Packages::Helm::GenerateMetadataService, feature_category: :pac
       entries = response.payload[:entries]
 
       expect(entries.size).to eq(5)
-      expect(entries.keys).to eq(packages.map(&:name))
-      entries.values.zip(packages) do |raws, pkg|
+      expect(entries.keys).to eq(expected_packages.map(&:name))
+      entries.values.zip(expected_packages) do |raws, pkg|
         expect(raws.size).to eq(1)
 
         file = pkg.package_files.recent.first

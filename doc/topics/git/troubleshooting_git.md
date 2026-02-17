@@ -20,7 +20,8 @@ with Git.
 
 ## Debugging
 
-When troubleshooting problems with Git, try these debugging techniques.
+When debugging Git problems on a GitLab server, use `/opt/gitlab/embedded/bin/git`
+instead of the system-provided `git` binary, which might be older.
 
 ### Use a custom SSH key for a Git command
 
@@ -28,19 +29,25 @@ When troubleshooting problems with Git, try these debugging techniques.
 GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
 ```
 
-### Debug problems with cloning
+Replace `<command>` with the Git command you want to run.
 
-For Git over SSH:
-
-```shell
-GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>
-```
-
-For Git over HTTPS:
+### Debug Git over SSH
 
 ```shell
-GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
+GIT_SSH_COMMAND="ssh -vvv" git clone <git@url> 2>&1 \
+| tee /tmp/gitlab-clone-test.log
 ```
+
+Replace `<git@url>` with your repository's SSH URL. The output is saved to `/tmp/gitlab-clone-test.log`.
+
+### Debug Git over HTTPS
+
+```shell
+GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url> 2>&1 \
+| tee /tmp/gitlab-clone-test.log
+```
+
+Replace `<url>` with your repository's HTTPS URL. The output is saved to `/tmp/gitlab-clone-test.log`.
 
 ### Debug Git with traces
 
@@ -297,7 +304,7 @@ fatal: index-pack failed
 ```
 
 This problem is common in Git itself, due to its inability to handle large files or large quantities of files.
-[Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
+[Git LFS](https://about.gitlab.com/blog/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
 
 - The number of files in the repository.
 - The number of revisions in the history.

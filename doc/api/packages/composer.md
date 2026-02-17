@@ -14,24 +14,17 @@ title: Composer API
 
 Use this API to interact with the [Composer package manager client](../../user/packages/composer_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [Composer package manager client](https://getcomposer.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [Composer package manager client](https://getcomposer.org/)
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [Composer package registry documentation](../../user/packages/composer_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
+## Retrieve repository URL templates
 
-## Base repository request
-
-Returns the repository URL templates for requesting individual packages:
+Retrieves the repository URL templates for requesting individual packages for a group.
 
 ```plaintext
 GET group/:id/-/packages/composer/packages
@@ -81,7 +74,7 @@ Example response:
 
 ## V1 packages list
 
-Given the V1 provider SHA, returns a list of packages in the repository. Using Composer V2 is
+Retrieves a list of packages in the repository for a group, given the V1 provider SHA. Using Composer V2 is
 recommended over V1.
 
 ```plaintext
@@ -91,7 +84,7 @@ GET group/:id/-/packages/composer/p/:sha
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | string | yes | The ID or full path of the group. |
-| `sha`     | string | yes | The provider SHA, provided by the Composer [base request](#base-repository-request). |
+| `sha`     | string | yes | The provider SHA, provided by the Composer [base request](#retrieve-repository-url-templates). |
 
 ```shell
 curl --user <username>:<personal_access_token> \
@@ -110,9 +103,9 @@ Example response:
 }
 ```
 
-## V1 Package Metadata
+## Retrieve V1 package metadata
 
-Returns the list of versions and metadata for a given package. Using Composer V2 is recommended over
+Retrieves the list of versions and metadata for a specified package for a group. Using Composer V2 is recommended over
 V1.
 
 ```plaintext
@@ -181,9 +174,9 @@ Example response:
 }
 ```
 
-## V2 Package Metadata
+## Retrieve V2 package metadata
 
-Returns the list of versions and metadata for a given package:
+Retrieves the list of versions and metadata for a specified package for a group.
 
 ```plaintext
 GET group/:id/-/packages/composer/p2/:package_name
@@ -248,7 +241,7 @@ Example response:
 
 ## Create a package
 
-Create a Composer package from a Git tag or branch:
+Creates a Composer package from a specified Git tag or branch for a project.
 
 ```plaintext
 POST projects/:id/packages/composer
@@ -276,8 +269,8 @@ Example response:
 
 ## Download a package archive
 
-Download a Composer package. This URL is provided in the [v1](#v1-package-metadata)
-or [v2 package metadata](#v2-package-metadata)
+Downloads a specified Composer package archive for a project. This URL is provided in the [v1](#retrieve-v1-package-metadata)
+or [v2 package metadata](#retrieve-v2-package-metadata)
 response. A `.zip` file extension must be in the request.
 
 ```plaintext

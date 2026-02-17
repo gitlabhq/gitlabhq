@@ -217,11 +217,8 @@ Example output:
 }
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is only available for Rails web workers. Sidekiq workers cannot be inspected this way.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is only available for Rails web workers. Sidekiq workers cannot be inspected this way.
 
 ## Settings that impact performance
 

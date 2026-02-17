@@ -1,7 +1,7 @@
 ---
 stage: Runtime
 group: Cells Infrastructure
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with the Maintainer or Owner role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Cells
 description: Configure and test GitLab Cells functionality for GitLab.com administrators as part of functionality testing, including enabling Cell instances and configuring topology service clients.
 ---
@@ -13,19 +13,13 @@ description: Configure and test GitLab Cells functionality for GitLab.com admini
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This feature is available for administrators of GitLab.com only. This feature is not available for GitLab Self-Managed or GitLab Dedicated instances.
-
-{{< /alert >}}
+> [!note]
+> This feature is available for administrators of GitLab.com only. This feature is not available for GitLab Self-Managed or GitLab Dedicated instances.
 
 {{< alert type="disclaimer" />}}
 
-{{< alert type="note" >}}
-
-Cells 1.0 is in development. For more information about the state of cell development, see [epic 12383](https://gitlab.com/groups/gitlab-org/-/epics/12383).
-
-{{< /alert >}}
+> [!note]
+> Cells 1.0 is in development. For more information about the state of cell development, see [epic 12383](https://gitlab.com/groups/gitlab-org/-/epics/12383).
 
 To test cell functionality, configure the GitLab Rails console.
 

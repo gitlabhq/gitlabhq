@@ -657,6 +657,14 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         end
       end
     end
+
+    context "with pipeline and ref status" do
+      let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
+
+      it_behaves_like 'pipeline notification integration', integration_name do
+        subject(:chat_integration) { described_class.new(project: project) }
+      end
+    end
   end
 
   describe 'Deployment events' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationHelper do
+RSpec.describe ApplicationHelper, feature_category: :shared do
   include Devise::Test::ControllerHelpers
 
   # This spec targets CI environment with precompiled assets to trigger
@@ -323,8 +323,8 @@ RSpec.describe ApplicationHelper do
     end
 
     context 'when alternate support url is not specified' do
-      it 'builds the support url from the promo_url' do
-        expect(helper.support_url).to eq(promo_url(path: '/get-help/'))
+      it 'builds the support url from the default support url' do
+        expect(helper.support_url).to eq("https://support.gitlab.com")
       end
     end
   end
@@ -655,19 +655,11 @@ RSpec.describe ApplicationHelper do
       end
     end
 
-    context 'when mastodon is set' do
+    describe '#mastodon_url' do
       let(:user) { build(:user) }
       let(:mastodon) { mastodon_url(user) }
 
-      it 'returns an empty string if mastodon username is not set' do
-        expect(mastodon).to eq('')
-      end
-
-      context 'when verify_mastodon_user FF is enabled' do
-        before do
-          stub_feature_flags(verify_mastodon_user: true)
-        end
-
+      context 'when a valid handle is set' do
         it 'returns mastodon url with relme when user handle is set' do
           user.mastodon = '@robin@example.com'
 
@@ -675,14 +667,15 @@ RSpec.describe ApplicationHelper do
         end
       end
 
-      context 'when verify_mastodon_user FF is disabled' do
-        before do
-          stub_feature_flags(verify_mastodon_user: false)
+      context 'when an invalid handle is set' do
+        it 'returns an empty string when the mastodon handle is blank' do
+          expect(mastodon).to eq('')
         end
 
-        it 'returns mastodon url when user handle is set' do
-          user.mastodon = '@robin@example.com'
-          expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
+        it 'returns an empty string when mastodon handle doesn`t match the validation regex' do
+          user.mastodon = 'invalid-mastodon_handle-format'
+
+          expect(mastodon).to eq('')
         end
       end
     end
@@ -835,29 +828,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#disable_fixed_body_scroll' do
-    it 'disables body scroll' do
-      helper.disable_fixed_body_scroll
-      expect(helper.body_scroll_classes).to eq('')
-    end
-  end
-
-  describe '#body_scroll_classes' do
-    it 'does not fix body scroll' do
-      expect(helper.body_scroll_classes).to eq('')
-    end
-
-    context 'when `project studio` feature is disabled' do
-      before do
-        allow(helper).to receive(:project_studio_enabled?).and_return(false)
-      end
-
-      it 'fixes body scroll by default' do
-        expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
-      end
-    end
-  end
-
   describe '#dispensable_render' do
     context 'when an error occurs in the template to be rendered' do
       before do
@@ -990,40 +960,23 @@ RSpec.describe ApplicationHelper do
   end
 
   describe 'collapsed_super_sidebar?' do
-    context 'when @force_desktop_expanded_sidebar is true' do
+    context 'when super_sidebar_collapsed cookie is true' do
       before do
-        helper.instance_variable_set(:@force_desktop_expanded_sidebar, true)
+        helper.request.cookies['super_sidebar_collapsed'] = 'true'
+      end
+
+      it 'returns true' do
+        expect(helper.collapsed_super_sidebar?).to eq(true)
+      end
+    end
+
+    context 'when super_sidebar_collapsed cookie is false' do
+      before do
+        helper.request.cookies['super_sidebar_collapsed'] = 'false'
       end
 
       it 'returns false' do
         expect(helper.collapsed_super_sidebar?).to eq(false)
-      end
-
-      it 'does not use the cookie value' do
-        expect(helper).not_to receive(:cookies)
-        helper.collapsed_super_sidebar?
-      end
-    end
-
-    context 'when @force_desktop_expanded_sidebar is not set (default)' do
-      context 'when super_sidebar_collapsed cookie is true' do
-        before do
-          helper.request.cookies['super_sidebar_collapsed'] = 'true'
-        end
-
-        it 'returns true' do
-          expect(helper.collapsed_super_sidebar?).to eq(true)
-        end
-      end
-
-      context 'when super_sidebar_collapsed cookie is false' do
-        before do
-          helper.request.cookies['super_sidebar_collapsed'] = 'false'
-        end
-
-        it 'returns false' do
-          expect(helper.collapsed_super_sidebar?).to eq(false)
-        end
       end
     end
   end

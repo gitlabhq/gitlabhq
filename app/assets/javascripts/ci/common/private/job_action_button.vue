@@ -76,7 +76,7 @@ export default {
       default: false,
     },
   },
-  emits: ['jobActionExecuted'],
+  emits: ['job-action-executed'],
   data() {
     return {
       isLoading: false,
@@ -109,6 +109,9 @@ export default {
         } = await this.$apollo.mutate({
           mutation: this.$options.JOB_ACTIONS[this.actionType].mutation,
           variables: { id: this.jobId },
+          context: {
+            featureCategory: 'continuous_integration',
+          },
         });
         if (errors.length) {
           reportToSentry(this.$options.name, new Error(errors.join(', ')));
@@ -118,7 +121,7 @@ export default {
         reportToSentry(this.$options.name, error);
       } finally {
         this.isLoading = false;
-        this.$emit('jobActionExecuted');
+        this.$emit('job-action-executed');
       }
     },
   },

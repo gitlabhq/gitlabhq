@@ -108,7 +108,7 @@ module GroupsHelper
     quantity.to_i > 0
   end
 
-  def project_list_sort_by
+  def group_project_list_sort_by
     @group_projects_sort || @sort || params[:sort] || sort_value_recently_created
   end
 
@@ -116,8 +116,7 @@ module GroupsHelper
     {
       parent_group_url: group.parent && group_url(group.parent),
       parent_group_name: group.parent&.name,
-      import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane'),
-      is_saas: Gitlab.com?.to_s
+      import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane')
     }
   end
 
@@ -131,7 +130,7 @@ module GroupsHelper
   def groups_show_app_data(group)
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      initial_sort: project_list_sort_by,
+      initial_sort: group_project_list_sort_by,
       full_path: group.full_path,
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
@@ -235,7 +234,7 @@ module GroupsHelper
   def groups_list_with_filtered_search_app_data(endpoint)
     {
       endpoint: endpoint,
-      initial_sort: project_list_sort_by,
+      initial_sort: group_project_list_sort_by,
       base_path: dashboard_groups_path
     }.to_json
   end
@@ -275,7 +274,7 @@ module GroupsHelper
 
   def remove_the_share_with_group_lock_from_ancestor(group)
     ancestor = oldest_consecutively_locked_ancestor(group)
-    text = s_("GroupSettings|remove the share with group lock from %{ancestor_group_name}") % { ancestor_group_name: ancestor.name }
+    text = format(s_("GroupSettings|remove the share with group lock from %{ancestor_group_name}"), ancestor_group_name: ancestor.name)
     if can?(current_user, :admin_group, ancestor)
       link_to text, edit_group_path(ancestor)
     else

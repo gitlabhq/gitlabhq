@@ -80,7 +80,7 @@ export default {
             class="gl-text-blue-600 hover:gl-cursor-pointer"
           />
           <gl-popover
-            :target="() => $refs.informationIcon.$el"
+            :target="() => $refs.informationIcon && $refs.informationIcon.$el"
             :title="$options.i18n.staticSitePopover.title"
             triggers="hover focus"
           >

@@ -7,10 +7,11 @@ module Gitlab
         Command = Struct.new(
           :source, :project, :current_user,
           :origin_ref, :checkout_sha, :after_sha, :before_sha, :source_sha, :target_sha,
-          :schedule, :merge_request, :external_pull_request,
+          :trigger, :schedule, :merge_request, :external_pull_request,
           :ignore_skip_ci, :save_incompleted,
           :seeds_block, :variables_attributes, :push_options,
           :chat_data, :mirror_update, :bridge, :content, :dry_run, :linting, :logger, :pipeline_policy_context,
+          :duo_workflow_definition,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
           :pipeline_config, :partition_id, :inputs, :gitaly_context, :pipeline_creation_forced_to_continue,

@@ -401,13 +401,20 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
       end
     end
 
-    context 'when duplicating to instance level' do
-      let(:new_integration) { build(:gitlab_slack_application_integration, project: nil) }
+    context 'when duplicating to organization level' do
+      let(:new_integration) do
+        build(
+          :gitlab_slack_application_integration,
+          project: nil,
+          organization: create(:common_organization)
+        )
+      end
 
-      it 'sets alias to instance default' do
+      it 'sets alias to organization default' do
         initial_integration.after_build_from_integration(new_integration)
 
-        expect(new_integration.slack_integration.alias).to eq(SlackIntegration::INSTANCE_ALIAS)
+        expect(new_integration.slack_integration.alias)
+          .to eq("gitlab-organization-#{new_integration.organization_id}")
       end
 
       it 'sets the correct sharding key on the newly created integration' do

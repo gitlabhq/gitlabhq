@@ -242,13 +242,10 @@ to the default branch (`main`).
    git push
    ```
 
-{{< alert type="note" >}}
-
-For this tutorial, you merge your branch directly to the default branch for your
-repository. In GitLab, you typically use a [merge request](../../user/project/merge_requests/_index.md)
-to merge your branch.
-
-{{< /alert >}}
+> [!note]
+> For this tutorial, you merge your branch directly to the default branch for your
+> repository. In GitLab, you typically use a [merge request](../../user/project/merge_requests/_index.md)
+> to merge your branch.
 
 ### View your changes in GitLab
 
@@ -279,7 +276,7 @@ Nice work.
 - Get a complete introduction to Git in the <i class="fa-youtube-play" aria-hidden="true"></i> [Git for GitLab](https://www.youtube.com/watch?v=4lxvVj7wlZw) beginner's course (1h 33m).
 - Find other tutorials about Git and GitLab on the [tutorials page](../_index.md).
 - PDF download: [GitLab Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
-- Blog post: [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/).
-- Blog post: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/2015/02/19/8-tips-to-help-you-work-better-with-git/).
+- Blog post: [Git Tips & Tricks](https://about.gitlab.com/blog/git-tips-and-tricks/).
+- Blog post: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/8-tips-to-help-you-work-better-with-git/).
 - Official [Git documentation](https://git-scm.com), including
   [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab).

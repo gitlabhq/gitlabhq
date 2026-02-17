@@ -19,6 +19,7 @@ export default () => {
 
   return new Vue({
     el: formContainerEl,
+    name: 'ErrorTrackingSettingsRoot',
     store: createStore(),
     render(createElement) {
       return createElement(ErrorTrackingSettings, {

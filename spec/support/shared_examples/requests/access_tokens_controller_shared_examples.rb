@@ -3,10 +3,18 @@
 RSpec.shared_examples 'GET resource access tokens available' do
   let_it_be(:active_resource_access_token) { create(:personal_access_token, user: access_token_user) }
 
+  let_it_be(:active_resource_access_token_from_another_resource) do
+    create(:personal_access_token, user: access_token_user_from_another_resource)
+  end
+
   before_all do
     create(:personal_access_token, :expired, user: access_token_user)
     create(:personal_access_token, :revoked, user: access_token_user)
     create(:personal_access_token, :revoked, user: access_token_user)
+
+    create(:personal_access_token, :expired, user: access_token_user_from_another_resource)
+    create(:personal_access_token, :revoked, user: access_token_user_from_another_resource)
+    create(:personal_access_token, :revoked, user: access_token_user_from_another_resource)
   end
 
   it 'retrieves active access tokens' do
@@ -26,7 +34,7 @@ RSpec.shared_examples 'GET resource access tokens available' do
   it 'retrieves count of active access tokens' do
     get_access_tokens
 
-    expect(assigns(:active_access_tokens_size)).to eq(assigns(:active_access_tokens).size)
+    expect(assigns(:active_access_tokens_size)).to eq(1)
   end
 
   it 'retrieves count of inactive access tokens' do

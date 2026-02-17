@@ -82,7 +82,7 @@ module Ci
 
           Gitlab::Redis::SharedState
             .with { |redis| redis.hvals(key) }
-            .map { |request| Gitlab::Json.parse(request) }
+            .map { |request| Gitlab::Json.safe_parse(request) }
         end
 
         def get_request(project, request_id)
@@ -95,6 +95,23 @@ module Ci
 
         def merge_request_key(merge_request)
           format(MERGE_REQUEST_REDIS_KEY, project_id: merge_request.project_id, mr_id: merge_request.id)
+        end
+
+        # Extracts merge request ID from Redis key and returns the MergeRequest object
+        #
+        # @param key [String] Redis key in MERGE_REQUEST_REDIS_KEY format
+        # @return [MergeRequest, nil] The MergeRequest object or nil if not found
+        def merge_request_from_key(key)
+          return unless key
+
+          match = key.match(/mrs:\{(?<mr_id>\d+)\}/)
+          return unless match
+
+          mr_id = match[:mr_id].to_i
+
+          MergeRequest.find(mr_id)
+        rescue ActiveRecord::RecordNotFound
+          nil
         end
 
         def hset(request, status, pipeline_id: nil, error: nil)
@@ -111,7 +128,7 @@ module Ci
         end
 
         def hget(request)
-          Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.parse(redis.hget(request['key'], request['id'])) }
+          Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.safe_parse(redis.hget(request['key'], request['id'])) }
         end
 
         def generate_id

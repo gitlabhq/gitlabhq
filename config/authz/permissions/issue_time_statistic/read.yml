@@ -1,0 +1,5 @@
+---
+name: read_issue_time_statistic
+description: Grants the ability to read time statistics for issues
+boundaries:
+  - project

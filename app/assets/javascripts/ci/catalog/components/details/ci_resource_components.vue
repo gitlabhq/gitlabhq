@@ -145,7 +145,7 @@ export default {
             data-testid="usage-count"
             :title="
               s__(
-                'CiCatalogComponent|The number of projects that used the component in the last 30 days.',
+                'CiCatalogComponent|The number of projects that used this version of the component in the last 30 days.',
               )
             "
             class="gl-ml-2 gl-text-sm gl-font-normal gl-text-subtle"

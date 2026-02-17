@@ -16,7 +16,7 @@ Use this API to moderate user accounts. For more information, see [Moderate user
 
 ## Approve access to a user
 
-Approves access to a given user account that is pending approval.
+Approves access to a specified user account that is pending approval.
 
 Prerequisites:
 
@@ -61,7 +61,7 @@ Example Responses:
 
 ## Reject access to a user
 
-Rejects access to a given user account that is pending approval.
+Rejects access to a specified user account that is pending approval.
 
 Prerequisites:
 
@@ -106,7 +106,7 @@ Example Responses:
 
 ## Deactivate a user
 
-Deactivates a given user account. For more information on banned users, see [Activate and deactivate users](../administration/moderate_users.md#deactivate-and-reactivate-users).
+Deactivates a specified user account. For more information on banned users, see [Activate and deactivate users](../administration/moderate_users.md#deactivate-and-reactivate-users).
 
 Prerequisites:
 
@@ -139,7 +139,7 @@ Returns:
 
 ## Reactivate a user
 
-Reactivates a given user account that was previously deactivated.
+Reactivates a specified user account that was previously deactivated.
 
 Prerequisites:
 
@@ -169,7 +169,7 @@ Returns:
 
 ## Block access to a user
 
-Blocks a given user account. For more information on banned users, see [Block and unblock users](../administration/moderate_users.md#block-and-unblock-users).
+Blocks a specified user account. For more information on banned users, see [Block and unblock users](../administration/moderate_users.md#block-and-unblock-users).
 
 Prerequisites:
 
@@ -201,7 +201,7 @@ Returns:
 
 ## Unblock access to a user
 
-Unblocks a given user account that was previously blocked.
+Unblocks a specified user account that was previously blocked.
 
 Prerequisites:
 
@@ -231,7 +231,7 @@ Returns:
 
 ## Ban a user
 
-Bans a given user account. For more information on banned users, see [Ban and unban users](../administration/moderate_users.md#ban-and-unban-users).
+Bans a specified user account. For more information on banned users, see [Ban and unban users](../administration/moderate_users.md#ban-and-unban-users).
 
 Prerequisites:
 
@@ -261,7 +261,7 @@ Returns:
 
 ## Unban a user
 
-Unbans a given user account that was previously banned.
+Unbans a specified user account that was previously banned.
 
 Prerequisites:
 

@@ -40,7 +40,7 @@ Using [Location-Aware DNS](_index.md#configure-location-aware-dns), with the fea
 Using separate secondary URLs, the runners should be:
 
 1. Registered with the secondary external URL.
-1. Configured with [`clone_url`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-clone_url-works) set to the `external_url` of the secondary instance.
+1. Configured with [`clone_url`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#how-clone_url-works) set to the `external_url` of the secondary instance.
 
 ## Handling a Planned Failover with secondary runners
 
@@ -58,7 +58,7 @@ When using [Location-Aware DNS](_index.md#configure-location-aware-dns), all run
 
 When failing over to a new primary:
 
-- While the old primary is still in the DNS record, any runners previously connected to your old primary still attempt to pick up jobs from the old primary. If it is unreachable, the runners [detect this](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-unhealthy_requests_limit-and-unhealthy_interval-works), and stop requesting for an extended period of time after the instance returns.
+- While the old primary is still in the DNS record, any runners previously connected to your old primary still attempt to pick up jobs from the old primary. If it is unreachable, the runners [detect this](https://docs.gitlab.com/runner/configuration/advanced-configuration/#how-unhealthy_requests_limit-and-unhealthy_interval-works), and stop requesting for an extended period of time after the instance returns.
 - If you have [multiple secondary nodes](../disaster_recovery/_index.md#promoting-secondary-geo-replica-in-multi-secondary-configurations), after the initial failover the remaining secondaries are in an unhealthy state until they are [replicated](../disaster_recovery/_index.md#step-2-initiate-the-replication-process) with the new primary. The runners attached to them are then unable to check in, and their health check also kicks in.
 - If you remove any of the unhealthy nodes from the Geo DNS entry, the runners pick the next closest instance. Depending on your architecture, this may not be what you want because you could overwhelm your site in its reduced state.
 

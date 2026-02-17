@@ -3,7 +3,6 @@
 Lint/AssignmentInCondition:
   Exclude:
     - 'app/controllers/concerns/verifies_with_email.rb'
-    - 'app/controllers/omniauth_callbacks_controller.rb'
     - 'app/controllers/projects/commit_controller.rb'
     - 'app/controllers/projects/merge_requests/diffs_controller.rb'
     - 'app/controllers/projects/settings/integrations_controller.rb'
@@ -59,7 +58,6 @@ Lint/AssignmentInCondition:
     - 'app/services/repositories/changelog_service.rb'
     - 'app/services/system_notes/incident_service.rb'
     - 'app/services/system_notes/merge_requests_service.rb'
-    - 'app/services/task_list_toggle_service.rb'
     - 'app/services/users/last_push_event_service.rb'
     - 'app/services/users/refresh_authorized_projects_service.rb'
     - 'app/services/users/update_service.rb'
@@ -83,7 +81,6 @@ Lint/AssignmentInCondition:
     - 'config/initializers/peek.rb'
     - 'config/initializers/validate_database_config.rb'
     - 'config/initializers/zz_metrics.rb'
-    - 'ee/app/controllers/concerns/gitlab_subscriptions/seat_count_alert.rb'
     - 'ee/app/controllers/omniauth_kerberos_controller.rb'
     - 'ee/app/finders/ee/projects_finder.rb'
     - 'ee/app/finders/incident_management/oncall_users_finder.rb'

@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ClickHouse
-        class Count < Column
+        class Count < MetricDefinition
           attr_reader :distinct
 
           def initialize(name = 'total', type = :integer, expression = nil, distinct: false, **kwargs)

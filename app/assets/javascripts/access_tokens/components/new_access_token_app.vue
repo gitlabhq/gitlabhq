@@ -73,7 +73,7 @@ export default {
     this.form = document.querySelector(FORM_SELECTOR);
 
     /** @type {HTMLButtonElement} */
-    this.submitButton = this.form.querySelector(
+    this.submitButton = this.form?.querySelector(
       'button[type=submit][data-testid=create-token-button]',
     );
 
@@ -94,6 +94,9 @@ export default {
       this.newToken = null;
     },
     enableSubmitButton() {
+      if (!this.submitButton) {
+        return;
+      }
       this.submitButton.classList.remove('disabled');
       this.submitButton.removeAttribute('disabled');
     },

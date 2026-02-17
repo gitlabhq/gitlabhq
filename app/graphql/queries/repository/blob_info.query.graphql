@@ -1,3 +1,4 @@
+# @feature_category: source_code_management
 query getBlobInfo(
   $projectPath: ID!
   $filePath: [String!]!

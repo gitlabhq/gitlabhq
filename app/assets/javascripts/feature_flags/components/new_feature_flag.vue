@@ -35,7 +35,7 @@ export default {
       :cancel-path="path"
       :submit-text="s__('FeatureFlags|Create feature flag')"
       :strategies="strategies"
-      @handleSubmit="(data) => createFeatureFlag(data)"
+      @handle-submit="(data) => createFeatureFlag(data)"
     />
   </div>
 </template>

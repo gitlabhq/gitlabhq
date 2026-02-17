@@ -18,18 +18,15 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get details on current application statistics
+## Retrieve application statistics
 
-Gets details on the current application statistics.
+Retrieves statistics from your GitLab instance.
 
-{{< alert type="note" >}}
-
-For values less than 10,000, this endpoint returns an exact count. For values of 10,000 and greater, this endpoint only returns approximate data when
-[TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16)
-and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads)
-strategies are used for calculations.
-
-{{< /alert >}}
+> [!note]
+> For values less than 10,000, this endpoint returns an exact count. For values of 10,000 and greater, this endpoint only returns approximate data when
+> [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16)
+> and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads)
+> strategies are used for calculations.
 
 ```plaintext
 GET /application/statistics

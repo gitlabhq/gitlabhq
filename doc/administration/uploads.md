@@ -15,26 +15,20 @@ description: Administer uploads storage.
 
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
-{{< alert type="note" >}}
-
-Attachments added to comments or descriptions are deleted **only** when the parent project or group
-is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
-request, epic) where they were uploaded is deleted.
-
-{{< /alert >}}
+> [!note]
+> Attachments added to comments or descriptions are deleted **only** when the parent project or group
+> is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
+> request, epic) where they were uploaded is deleted.
 
 ## Using local storage
 
 This is the default configuration. To change the location where the uploads are
 stored locally, use the steps in this section based on your installation method:
 
-{{< alert type="note" >}}
-
-For historical reasons, uploads for the whole instance (for example the [favicon](appearance.md#customize-the-favicon)) are stored in a base directory,
-which by default is `uploads/-/system`. Changing the base
-directory on an existing GitLab installation is strongly discouraged.
-
-{{< /alert >}}
+> [!note]
+> For historical reasons, uploads for the whole instance (for example the [favicon](appearance.md#customize-the-favicon)) are stored in a base directory,
+> which by default is `uploads/-/system`. Changing the base
+> directory on an existing GitLab installation is strongly discouraged.
 
 For Linux package installations:
 

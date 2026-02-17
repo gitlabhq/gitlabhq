@@ -2,7 +2,7 @@ import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
-import Draggable from 'vuedraggable';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';

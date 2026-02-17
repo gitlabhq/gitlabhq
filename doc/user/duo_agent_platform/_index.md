@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Agent Platform
 ---
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
@@ -19,43 +26,50 @@ title: GitLab Duo Agent Platform
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
+- Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
 
 {{< /history >}}
 
-With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, helping you create code,
-research results, and perform tasks simultaneously.
-The agents have full context across your entire software development lifecycle.
+The GitLab Duo Agent Platform is an AI-native solution that embeds multiple
+intelligent assistants ("agents")
+throughout the software development lifecycle.
 
-The Agent Platform is made up of [several features](../gitlab_duo/feature_summary.md),
-which are available in the GitLab UI and IDEs.
+- Instead of following a linear workflow, collaborate asynchronously with AI agents.
+- Delegate routine tasks, from code refactoring and security scans to research,
+  to specialized AI agents.
 
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Developer Onboarding with GitLab Duo Agent Platform](https://youtu.be/UD8vAAglkY0?si=7AWWDfd-mLGdkBwT).
-<!-- Video published on 2025-11-20 -->
+To get started, see
+[Get started with the GitLab Duo Agent Platform](../get_started/get_started_agent_platform.md).
 
 ## Prerequisites
 
 To use the Agent Platform:
 
-- Use GitLab 18.2 or later. For the best experience, use the latest version of GitLab.
-- Have purchased [GitLab Credits](../../subscriptions/gitlab_credits.md).
-- [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
+- Have [GitLab Duo turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- If you do not have GitLab Duo Enterprise or Pro, have [GitLab Duo Core turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - Depending on your GitLab version:
-  - In GitLab 18.8 and later, the [Agent Platform must be turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
-  - In GitLab 18.7 and earlier, [beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/configure/gitlab_self_managed.md)
-  and the composite identity turned on.
-- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md),
-  you must [install and run the AI gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
+  - In GitLab 18.8 and later, have the [Agent Platform turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+  - In GitLab 18.7 and earlier, have [beta and experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+- For GitLab Self-Managed, [configure your instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
+- For GitLab Duo Self-Hosted, [install the AI Gateway](../../install/install_ai_gateway.md) with the Agent Platform service.
 
-In addition, to use the Agent Platform in your IDE:
+To use the Agent Platform in your IDE:
 
-- You must install an editor extension, like the GitLab Workflow extension for VS Code, and authenticate with GitLab.
-- You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
+- Install an editor extension and authenticate with GitLab.
+- Have a project in a [group namespace](../namespace/_index.md).
+- Have the Developer, Maintainer, or Owner role.
 
-## Related topics
+## Use cases
 
-- [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
-- [AI Catalog](ai_catalog.md)
-- [Agents](agents/_index.md)
-- [Flows](flows/_index.md)
+Solve these use cases by using the GitLab Duo Agent Platform.
+
+| Use case | Feature |
+|-------------|---------|
+| Answer complex questions by searching multiple sources and autonomously creating and editing files. | [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) |
+| Automate repetitive tasks: Triage issues, fix bugs, generate tests, add documentation, analyze vulnerabilities. | [Agents](agents/_index.md) - Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations).|
+| Solve complex problems and automate development tasks by making one or more agents work together: Fix CI/CD pipelines, review and modernize code, fix vulnerabilities. | [Flows](flows/_index.md) |
+| Discover, create, and enable agents and flows from this central list. | [AI Catalog](ai_catalog.md) |
+| Customize the Agent Platform with custom rules for Agentic Chat, AGENTS.md files for project-specific context, and code review instructions to enforce coding standards. | [Customization](customize/_index.md) |
+| Securely connect GitLab Duo features to external data sources and tools. | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) |
+| Securely connect AI tools and applications to your GitLab instance. | [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) |
+| Create structured, queryable representations of code repositories and use them to power AI features. | [Knowledge Graph](../project/repository/knowledge_graph/_index.md) |

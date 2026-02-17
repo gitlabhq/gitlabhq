@@ -10,7 +10,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
 
   before do
     group.add_maintainer(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     allow(Groups::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
     allow_next_instance_of(Clusters::Kubernetes::CreateOrUpdateNamespaceService) do |instance|
@@ -130,7 +130,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
         # signs out the user with `maintainer` role in the project
         gitlab_sign_out
 
-        gitlab_sign_in(admin)
+        sign_in(admin)
         enable_admin_mode!(admin)
 
         visit group_clusters_path(group)

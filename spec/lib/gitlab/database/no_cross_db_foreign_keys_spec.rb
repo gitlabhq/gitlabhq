@@ -51,9 +51,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   def is_cross_db?(fk_record)
     tables = [fk_record.from_table, fk_record.to_table]
 
-    table_schemas = Gitlab::Database::GitlabSchema.table_schemas!(tables)
-
-    !Gitlab::Database::GitlabSchema.cross_foreign_key_allowed?(table_schemas, tables)
+    !Gitlab::Database::GitlabSchema.cross_foreign_key_allowed?(tables)
   end
 
   def matches_acceptable_cross_schema_fk?(fk)

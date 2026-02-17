@@ -4,6 +4,7 @@ import { intersection, some } from 'lodash';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
+import { ACCESS_USER_ENUM } from '~/personal_access_tokens/constants';
 import PersonalAccessTokenResourcesList from './personal_access_token_resources_list.vue';
 import PersonalAccessTokenGranularPermissionsList from './personal_access_token_granular_permissions_list.vue';
 
@@ -16,6 +17,10 @@ export default {
     PersonalAccessTokenGranularPermissionsList,
   },
   props: {
+    targetBoundaries: {
+      type: Array,
+      required: true,
+    },
     error: {
       type: String,
       required: false,
@@ -50,9 +55,17 @@ export default {
     isLoading() {
       return Boolean(this.$apollo.queries.permissions.loading);
     },
-    filteredPermissionsByAccess() {
+    isUserScope() {
+      return this.targetBoundaries.includes(ACCESS_USER_ENUM);
+    },
+    resourceTitle() {
+      return this.isUserScope
+        ? this.$options.i18n.user.resourceTitle
+        : this.$options.i18n.namespace.resourceTitle;
+    },
+    filteredPermissionsByBoundary() {
       return this.permissions.filter(
-        ({ boundaries }) => intersection(['GROUP', 'PROJECT'], boundaries).length > 0,
+        ({ boundaries }) => intersection(this.targetBoundaries, boundaries).length > 0,
       );
     },
     filteredPermissions() {
@@ -61,34 +74,48 @@ export default {
       }
 
       if (!this.searchTerm) {
-        return this.filteredPermissionsByAccess;
+        return this.filteredPermissionsByBoundary;
       }
 
-      return this.filteredPermissionsByAccess.filter((permission) =>
+      return this.filteredPermissionsByBoundary.filter((permission) =>
         some(['description', 'category'], (field) =>
           permission[field].toLowerCase().includes(this.searchTerm.toLowerCase()),
         ),
       );
     },
   },
+  watch: {
+    selectedResources(newResources, oldResources) {
+      this.updateSelectedResources(newResources, oldResources);
+    },
+  },
   methods: {
-    handleResourceChange(resource) {
-      const exists = this.selectedResources.includes(resource);
+    updateSelectedResources(newResources, oldResources) {
+      // find resources that were removed
+      const removedResources = oldResources.filter((resource) => !newResources.includes(resource));
 
-      // if a resource doesn't exist i.e. is unchecked,
-      // remove any selected permissions
-      if (!exists) {
+      // remove permissions associated with the removed resources
+      if (removedResources.length > 0) {
         this.selectedPermissions = this.selectedPermissions.filter(
-          (perm) => !perm.endsWith(`_${resource}`),
+          (permission) => !removedResources.some((resource) => permission.endsWith(`_${resource}`)),
         );
 
+        // emit updated permissions after cleanup
         this.$emit('input', this.selectedPermissions);
       }
     },
+    handleRemoveResource(resourceToRemove) {
+      this.selectedResources = this.selectedResources.filter(
+        (selectedResource) => selectedResource !== resourceToRemove,
+      );
+    },
   },
   i18n: {
-    group: {
+    namespace: {
       resourceTitle: s__('AccessTokens|Group and project resources'),
+    },
+    user: {
+      resourceTitle: s__('AccessTokens|User resources'),
     },
     searchPlaceholder: s__('AccessTokens|Search for resources to add'),
     noResourcesFound: __('No resources found'),
@@ -100,9 +127,9 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-flex-col lg:gl-flex-row lg:gl-gap-5">
-      <div class="gl-border gl-mt-5 gl-w-full gl-rounded-lg gl-p-4 lg:gl-w-1/3">
+      <div class="gl-border gl-mt-5 gl-w-full gl-rounded-lg gl-p-4 lg:gl-min-h-75 lg:gl-w-1/3">
         <h3 class="gl-heading-5">
-          {{ $options.i18n.group.resourceTitle }}
+          {{ resourceTitle }}
         </h3>
 
         <gl-search-box-by-type
@@ -116,7 +143,6 @@ export default {
           v-else-if="filteredPermissions.length"
           v-model="selectedResources"
           :permissions="filteredPermissions"
-          @change="handleResourceChange"
         />
         <div v-else class="gl-my-4 gl-text-center gl-text-subtle">
           {{ $options.i18n.noResourcesFound }}
@@ -125,10 +151,12 @@ export default {
 
       <personal-access-token-granular-permissions-list
         v-model="selectedPermissions"
-        :permissions="filteredPermissions"
-        :resources="selectedResources"
+        :permissions="filteredPermissionsByBoundary"
+        :selected-resources="selectedResources"
+        :target-boundaries="targetBoundaries"
         class="gl-mt-5 gl-w-full lg:gl-w-2/3"
         @input="$emit('input', $event)"
+        @remove-resource="handleRemoveResource"
       />
     </div>
 

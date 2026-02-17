@@ -15,39 +15,23 @@ gitlab_dedicated: no
 
 ## Prerequisites
 
-- Allow both outbound and inbound connections.
-  Network firewalls might cause delay.
-- [Turn off Silent Mode](../../silent_mode/_index.md#turn-off-silent-mode).
-- [Activate your GitLab instance with an activation code](../../license.md#activate-gitlab-ee).
-  You cannot use a legacy license.
-  Except for [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md),
-  you also cannot use an offline license.
-- Turn on composite identity.
+- Silent Mode is [turned off](../../silent_mode/_index.md#turn-off-silent-mode).
+- [Your instance is activated with an activation code](../../license.md#activate-gitlab-ee).
+  - You cannot use a license key.
+  - You cannot use GitLab Duo with an offline license, with the exception of [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md).
 
-For the best results, use GitLab 17.2 and later.
-Earlier versions might continue to work, but performance might be degraded.
+## Turn on composite identity (removed)
 
-## Turn on composite identity
+---
 
-You must turn on [composite identity](../../../user/duo_agent_platform/composite_identity.md)
-so that the `@duo-developer` service account can perform actions
-on behalf of users.
+<!--- start_remove The following content will be removed on remove_date: '2026-04-11' -->
 
-1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
-1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588629) in GitLab 18.9.
 
-## Allow outbound connections from the GitLab instance
+<!--- end_remove -->
 
- Check both your outbound and inbound settings:
+## Allow outbound connections from the GitLab instance to GitLab Duo
 
-- Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
-  These hosts are protected by Cloudflare. Update your firewall settings to allow traffic to
-  all IP addresses in the [list of IP ranges Cloudflare publishes](https://www.cloudflare.com/ips/).
-- To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
-  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
-- In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
 - For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
   connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
@@ -92,6 +76,17 @@ the runner must be able to connect to the GitLab instance.
 The same [inbound connections from clients to the GitLab instance](#allow-inbound-connections-from-clients-to-the-gitlab-instance)
 must be allowed as outbound connections from the runner to the GitLab instance.
 
+In addition, runners must be able to connect to:
+
+| Destination | Port | Purpose |
+|-------------|------|---------|
+| `registry.npmjs.org` | `443` | Download the Duo CLI package at runtime |
+| `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)) |
+
+If your organization cannot allow access to the public npm registry, you can use a
+[custom Docker image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)
+with the required dependencies already installed.
+
 ## Run a health check for GitLab Duo
 
 {{< details >}}
@@ -126,28 +121,28 @@ To run a health check:
 
 These tests are performed:
 
-| Test | Description |
-|-----------------|-------------|
-| AI Gateway | GitLab Duo Self-Hosted models only. Tests whether the AI Gateway URL is configured as an environment variable. This connectivity is required for self-hosted model deployments that use the AI Gateway. |
-| Network | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](gitlab_self_managed.md). |
-| Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
-| Code Suggestions | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
+| Test                      | Description |
+|---------------------------|-------------|
+| AI Gateway                | GitLab Duo Self-Hosted models only. Tests whether the AI Gateway URL is configured as an environment variable. This connectivity is required for self-hosted model deployments that use the AI Gateway. |
+| Network                   | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo). |
+| Synchronization           | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
+| Code Suggestions          | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
 | GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Chat (Agentic). |
-| System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
+| System exchange           | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
 For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
 see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).
 
 ## Other hosting options
 
-By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI gateway that's hosted by GitLab.
+By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI Gateway that's hosted by GitLab.
 
-If you want to host your own language models or AI gateway:
+If you want to host your own language models or AI Gateway:
 
-- You can [use GitLab Duo Self-Hosted to host the AI gateway and use any of the supported self-hosted models](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms).
+- You can [use GitLab Duo Self-Hosted to host the AI Gateway and use any of the supported self-hosted models](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms).
   This option provides full control over your data and security.
 - Use a [hybrid configuration](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
-  where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.
+  where you host your own AI Gateway and models for some features, but configure other features to use the GitLab AI Gateway and vendor models.
 
 ## Hide sidebar widget that shows GitLab Duo Core availability (removed)
 

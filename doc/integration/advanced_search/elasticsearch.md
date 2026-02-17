@@ -21,12 +21,9 @@ To enable advanced search, you must:
 1. [Install an Elasticsearch or AWS OpenSearch cluster](#install-an-elasticsearch-or-aws-opensearch-cluster).
 1. [Enable advanced search](#enable-advanced-search).
 
-{{< alert type="note" >}}
-
-Advanced search stores all projects in the same Elasticsearch indices.
-However, private projects appear in search results only to users who have access.
-
-{{< /alert >}}
+> [!note]
+> Advanced search stores all projects in the same Elasticsearch indices.
+> However, private projects appear in search results only to users who have access.
 
 ## Elasticsearch glossary
 
@@ -58,12 +55,9 @@ Running the search cluster on the same server as GitLab might lead to performanc
 For a search cluster with a single node, the cluster status is always yellow because the primary shard is allocated.
 The cluster cannot assign replica shards to the same node as primary shards.
 
-{{< alert type="note" >}}
-
-Before you use a new Elasticsearch cluster in production, see
-[important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
-
-{{< /alert >}}
+> [!note]
+> Before you use a new Elasticsearch cluster in production, see
+> [important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
 
 ### Version requirements
 
@@ -224,12 +218,9 @@ Here's an example of a resource-based (domain) access policy where `es:ESHttp*` 
 }
 ```
 
-{{< alert type="note" >}}
-
-The `aws_role_arn` must be provided if using [AWS `AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
-across accounts. The ARN should be the role that has permissions to access OpenSearch.
-
-{{< /alert >}}
+> [!note]
+> The `aws_role_arn` must be provided if using [AWS `AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
+> across accounts. The ARN should be the role that has permissions to access OpenSearch.
 
 ###### Identity-based policy examples
 
@@ -266,6 +257,10 @@ You can also specify an IAM ARN, which is the IAM role you assigned to your EC2 
 For more information, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user).
 
+Prerequisites:
+
+- Administrator access.
+
 To set an IAM ARN as a master user, you must
 use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
@@ -279,14 +274,11 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
    1. In **AWS access key** and **AWS secret access key**,
       enter your access keys for authentication.
 
-      {{< alert type="note" >}}
-
-      GitLab deployments that run directly on EC2 instances (not in containers)
-      don't have to enter access keys.
-      Your GitLab instance obtains these keys automatically from the
-      [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
-
-      {{< /alert >}}
+      > [!note]
+      > GitLab deployments that run directly on EC2 instances (not in containers)
+      > don't have to enter access keys.
+      > Your GitLab instance obtains these keys automatically from the
+      > [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
 
 1. Select **Save changes**.
 
@@ -296,6 +288,10 @@ If you create a master user in the internal user database,
 you can use HTTP basic authentication to make requests to the cluster.
 For more information, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user).
+
+Prerequisites:
+
+- Administrator access.
 
 To create a master user, you must configure the OpenSearch domain URL and
 the master username and password on your GitLab instance:
@@ -406,13 +402,10 @@ PREFIX=/usr sudo -E make install
 
 After installation, be sure to [enable Elasticsearch](#enable-advanced-search).
 
-{{< alert type="note" >}}
-
-If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-indexer/` while indexing, you
-may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
-`/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
-
-{{< /alert >}}
+> [!note]
+> If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-indexer/` while indexing, you
+> may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
+> `/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
 
 ### View indexing errors
 
@@ -439,14 +432,11 @@ To enable advanced search:
 1. Optional. [Check indexing status](#check-indexing-status).
 1. After the indexing is complete, select the **Search with advanced search** checkbox, then select **Save changes**.
 
-{{< alert type="note" >}}
-
-When your Elasticsearch cluster is down while Elasticsearch is enabled,
-you might have problems updating documents such as issues because your
-instance queues a job to index the change, but cannot find a valid
-Elasticsearch cluster.
-
-{{< /alert >}}
+> [!note]
+> When your Elasticsearch cluster is down while Elasticsearch is enabled,
+> you might have problems updating documents such as issues because your
+> instance queues a job to index the change, but cannot find a valid
+> Elasticsearch cluster.
 
 For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
@@ -585,6 +575,7 @@ The following Elasticsearch settings are available:
 | **AWS Secret Access Key**                                   | The AWS secret access key. |
 | **Maximum file size indexed**                               | See [the explanation in instance limits.](../../administration/instance_limits.md#maximum-file-size-indexed). |
 | **Maximum field length**                                    | See [the explanation in instance limits.](../../administration/instance_limits.md#maximum-field-length). |
+| **Indexing timeout (minutes)**                              | Indexing timeout in minutes per project. |
 | **Number of shards for non-code indexing**                  | Number of indexing worker shards. This improves non-code indexing throughput by enqueuing more parallel Sidekiq jobs. Increasing the number of shards is not recommended for smaller instances or instances with few Sidekiq processes. Default is `2`. |
 | **Maximum bulk request size (MiB)**                         | Used by the GitLab Ruby and Go-based indexer processes. This setting indicates how much data must be collected (and stored in memory) in a given indexing process before submitting the payload to the Elasticsearch Bulk API. For the GitLab Go-based indexer, you should use this setting with **Bulk request concurrency**. **Maximum bulk request size (MiB)** must accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer from either the `gitlab-rake` command or the Sidekiq tasks. |
 | **Bulk request concurrency**                                | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the **Maximum bulk request size (MiB)** setting and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
@@ -593,14 +584,11 @@ The following Elasticsearch settings are available:
 | **Retry on failure**                                        | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
 | **Index prefix**                                            | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. When changed, all indices will use this prefix instead of `gitlab` (for example, `custom-production-issues` instead of `gitlab-production-issues`). Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3421) in GitLab 18.2. |
 
-{{< alert type="warning" >}}
-
-Increasing the values of **Maximum bulk request size (MiB)** and **Bulk request concurrency** can negatively impact
-Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
-in your Sidekiq logs. For more information, see
-[issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
-
-{{< /alert >}}
+> [!warning]
+> Increasing the values of **Maximum bulk request size (MiB)** and **Bulk request concurrency** can negatively impact
+> Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
+> in your Sidekiq logs. For more information, see
+> [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
 
 ### Limit the amount of namespace and project data to index
 
@@ -613,12 +601,9 @@ in your Sidekiq logs. For more information, see
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When you select the **Limit the amount of namespace and project data to index** checkbox,
 you can specify namespaces and projects to index.
@@ -632,12 +617,9 @@ When you enable this setting:
   to support filtering in security reports.
 - [Associated data](#advanced-search-index-scopes) is indexed only for the namespaces and projects you specify.
 
-{{< alert type="warning" >}}
-
-If you do not specify any namespace or project after you enable this setting,
-only project records are indexed and no associated data can be searched.
-
-{{< /alert >}}
+> [!warning]
+> If you do not specify any namespace or project after you enable this setting,
+> only project records are indexed and no associated data can be searched.
 
 #### Indexed namespaces
 
@@ -1169,20 +1151,17 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-{{< alert type="warning" >}}
-
-Indexing a large instance generates a lot of Sidekiq jobs.
-Make sure to prepare for this task by having a
-[scalable setup](../../administration/reference_architectures/_index.md) or by creating
-[extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
-
-Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
-However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
-
-For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
-on the primary site's Sidekiq nodes.
-
-{{< /alert >}}
+> [!warning]
+> Indexing a large instance generates a lot of Sidekiq jobs.
+> Make sure to prepare for this task by having a
+> [scalable setup](../../administration/reference_architectures/_index.md) or by creating
+> [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+>
+> Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
+> However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
+>
+> For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
+> on the primary site's Sidekiq nodes.
 
 If [enabling advanced search](#enable-advanced-search) causes problems
 due to large volumes of data being indexed:
@@ -1217,11 +1196,8 @@ due to large volumes of data being indexed:
 
    You can expect a 20% decrease in indexing time. After the indexing is complete, you can set `refresh_interval` and `number_of_replicas` back to their desired values.
 
-   {{< alert type="note" >}}
-
-   This step is optional but may help significantly speed up large indexing operations.
-
-   {{< /alert >}}
+   > [!note]
+   > This step is optional but may help significantly speed up large indexing operations.
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1269,13 +1245,10 @@ due to large volumes of data being indexed:
    Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
    The previous example indexes all projects from ID `1001` up to (and including) ID `2000`.
 
-   {{< alert type="note" >}}
-
-   Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
-   can get interrupted. This may happen for many reasons, but it's always safe
-   to run the indexing task again.
-
-   {{< /alert >}}
+   > [!note]
+   > Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+   > can get interrupted. This may happen for many reasons, but it's always safe
+   > to run the indexing task again.
 
    You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
    indexer to "forget" all progress, so it retries the indexing process from the
@@ -1338,50 +1311,13 @@ due to large volumes of data being indexed:
 
 1. After the indexing is complete, [select the **Search with advanced search** checkbox](#enable-advanced-search).
 
-### Deleted documents
+### Index large instances with dedicated Sidekiq nodes or processes
 
-Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
-
-Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
-
-You should generally let Elasticsearch merge and reclaim space automatically with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
-
-However, some larger installations may wish to tune the merge policy settings:
-
-- Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes allows merging to happen more frequently.
-
-  ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
-       --data '{
-         "index" : {
-           "merge.policy.max_merged_segment": "2gb"
-         }
-       }'
-  ```
-
-- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so you should not change this unless you understand the tradeoffs.
-
-  ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
-       --data '{
-         "index" : {
-           "merge.policy.reclaim_deletes_weight": "3.0"
-         }
-       }'
-  ```
-
-- Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
-
-## Index large instances with dedicated Sidekiq nodes or processes
-
-{{< alert type="warning" >}}
-
-For most instances, you do not have to configure dedicated Sidekiq nodes or processes.
-The following steps use an advanced setting of Sidekiq
-called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
-Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
-
-{{< /alert >}}
+> [!warning]
+> For most instances, you do not have to configure dedicated Sidekiq nodes or processes.
+> The following steps use an advanced setting of Sidekiq
+> called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
+> Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
 
 Indexing a large instance can be a lengthy and resource-intensive process that has the potential
 of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
@@ -1395,6 +1331,9 @@ another dedicated worker to avoid contention.
 For this purpose, use the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)
 option that allows Sidekiq to route jobs to a specific queue based on [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
+> [!note]
+> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
+
 You can choose one of the two following options to handle this:
 
 - [Use two queue groups on one single node](#single-node-two-processes).
@@ -1407,19 +1346,13 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
-> [!note]
-> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
+> [!warning]
+> When starting multiple processes, the number of processes cannot exceed the number of CPU
+> cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
+> to the available workload and concurrency settings. For more details, see how to
+> [run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
-{{< alert type="warning" >}}
-
-When starting multiple processes, the number of processes cannot exceed the number of CPU
-cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
-to the available workload and concurrency settings. For more details, see how to
-[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
-
-{{< /alert >}}
-
-### Single node, two processes
+#### Single node, two processes
 
 To create both an indexing and a non-indexing Sidekiq process in one node:
 
@@ -1453,14 +1386,11 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as the previous configuration.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
-{{< alert type="note" >}}
+> [!note]
+> It is important to run the Rake task immediately after reconfiguring GitLab.
+> After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
-It is important to run the Rake task immediately after reconfiguring GitLab.
-After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
-
-{{< /alert >}}
-
-### Two nodes, one process for each
+#### Two nodes, one process for each
 
 To handle these queue groups on two nodes:
 
@@ -1524,12 +1454,43 @@ To handle these queue groups on two nodes:
    sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
    ```
 
-{{< alert type="note" >}}
+> [!note]
+> It is important to run the Rake task immediately after reconfiguring GitLab.
+> After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
-It is important to run the Rake task immediately after reconfiguring GitLab.
-After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
+### Deleted documents
 
-{{< /alert >}}
+Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
+
+Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
+
+You should generally let Elasticsearch merge and reclaim space automatically with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
+
+However, some larger installations may wish to tune the merge policy settings:
+
+- Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes allows merging to happen more frequently.
+
+  ```shell
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.max_merged_segment": "2gb"
+         }
+       }'
+  ```
+
+- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so you should not change this unless you understand the tradeoffs.
+
+  ```shell
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.reclaim_deletes_weight": "3.0"
+         }
+       }'
+  ```
+
+- Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
 
 ## Reverting to Basic Search
 

@@ -1,13 +1,13 @@
 include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
-.db:setup pg16:
+.db:setup pg17:
   stage: prepare
   needs:
     - job: cache:ruby-gems
       optional: true
   extends:
-    - .use-pg16
+    - .use-pg17
     - .default-before_script
     - .ruby-cache
     - .rails:rules:setup-test-env
@@ -24,21 +24,21 @@ clickhouse:check-schema:
     ENABLE_CLICKHOUSE_DB_DUMP: "true"
   extends:
     - .rspec-base
-    - .use-pg16-clickhouse25
+    - .use-pg17-clickhouse25
     - .rails:rules:clickhouse-migration-changes
   allow_failure: true
   script:
     - !reference [.clickhouse-setup, script]
     - ruby scripts/validate_clickhouse_schema.rb
 
-db:setup pg16:
+db:setup pg17:
   extends:
-    - .db:setup pg16
+    - .db:setup pg17
 
 # Job name is detected in scripts/utils.sh to set up EE-only databases.
-db:setup-ee pg16:
+db:setup-ee pg17:
   extends:
-    - .db:setup pg16
+    - .db:setup pg17
     - .rails:rules:setup-test-env-ee
 
 db:rollback single-db-ci-connection:
@@ -110,7 +110,7 @@ db:rollback single-db:
     - .single-db
     - .rails:rules:single-db
 
-# https://docs.gitlab.com/ee/development/database/dbmigrate_multi_version_upgrade_job.html
+# https://docs.gitlab.com/development/database/dbmigrate_multi_version_upgrade_job/
 db:migrate:multi-version-upgrade:
   extends:
     - .single-db

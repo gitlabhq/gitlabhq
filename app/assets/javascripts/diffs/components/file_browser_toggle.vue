@@ -79,7 +79,7 @@ export default {
     <gl-tooltip
       v-if="shortcutsEnabled"
       custom-class="file-browser-toggle-tooltip"
-      :target="() => $refs.toggle.$el"
+      :target="() => $refs.toggle && $refs.toggle.$el"
     >
       {{ toggleFileBrowserTitle }}
       <shortcut

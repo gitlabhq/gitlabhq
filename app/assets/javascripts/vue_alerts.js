@@ -13,6 +13,7 @@ const mountVueAlert = (el) => {
 
   return new Vue({
     el,
+    name: 'DismissibleAlertRoot',
     render(createElement) {
       return createElement(DismissibleAlert, {
         props,

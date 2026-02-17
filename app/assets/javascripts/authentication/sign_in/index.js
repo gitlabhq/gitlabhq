@@ -14,6 +14,10 @@ export const initSignInForm = () => {
 
   const {
     signInPath,
+    // This prop is used behind a default disabled feature flag but is required.
+    // Fallback to empty string to avoid issues with backwards compatibility across updates
+    // https://docs.gitlab.com/development/multi_version_compatibility/
+    usersSignInPathPath = '',
     passkeysSignInPath,
     isUnconfirmedEmail,
     newUserConfirmationPath,
@@ -30,6 +34,7 @@ export const initSignInForm = () => {
         props: {
           railsFields,
           signInPath,
+          usersSignInPathPath,
           passkeysSignInPath,
           isUnconfirmedEmail,
           newUserConfirmationPath,

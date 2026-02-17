@@ -197,11 +197,8 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
-
-{{< /alert >}}
+> [!note]
+> The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 ### With the group endpoint
 
@@ -323,11 +320,8 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
-
-{{< /alert >}}
+> [!note]
+> The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 ## Publish a package
 
@@ -579,14 +573,11 @@ To prevent group members and users from publishing duplicate NuGet packages, tur
 You can also turn off duplicate NuGet packages with the
 `nuget_duplicates_allowed` setting in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 
-{{< alert type="warning" >}}
-
-If the `.nuspec` file is not located in the root of the package
-or the beginning of the archive, the package might
-not be immediately recognized as a duplicate. When it is inevitably recognized as
-a duplicate, an error displays in the **Package manager** page.
-
-{{< /alert >}}
+> [!warning]
+> If the `.nuspec` file is not located in the root of the package
+> or the beginning of the archive, the package might
+> not be immediately recognized as a duplicate. When it is inevitably recognized as
+> a duplicate, an error displays in the **Package manager** page.
 
 ## Install a package
 
@@ -627,13 +618,10 @@ to install the correct package.
 
 {{< tab title=".NET CLI" >}}
 
-{{< alert type="note" >}}
-
-If the GitLab package registry has a NuGet package with the same name as a package at
-a different source, verify the order in which `dotnet` checks sources during
-install. This behavior is defined in the `nuget.config` file.
-
-{{< /alert >}}
+> [!note]
+> If the GitLab package registry has a NuGet package with the same name as a package at
+> a different source, verify the order in which `dotnet` checks sources during
+> install. This behavior is defined in the `nuget.config` file.
 
 Install the latest version of a package by running this command:
 
@@ -706,11 +694,8 @@ choco upgrade MyPackage -Source gitlab -Version 1.0.3
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Deleting a package is a permanent action that cannot be undone.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a package is a permanent action that cannot be undone.
 
 Prerequisites:
 

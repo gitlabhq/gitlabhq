@@ -173,7 +173,10 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     context 'when service is called multiple times' do
       it 'creates a pipeline once' do
         expect do
-          service.execute(merge_request)
+          first_pipeline = service.execute(merge_request)
+          first_pipeline.payload.update!(status: :running)
+
+          allow(merge_request).to receive(:find_diff_head_pipeline).and_call_original
           service.execute(merge_request)
         end.to change { Ci::Pipeline.count }.by(1)
       end
@@ -183,7 +186,10 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
 
         it 'creates pipelines multiple times' do
           expect do
-            service.execute(merge_request)
+            first_pipeline = service.execute(merge_request)
+            first_pipeline.payload.update!(status: :running)
+
+            allow(merge_request).to receive(:find_diff_head_pipeline).and_call_original
             service.execute(merge_request)
           end.to change { Ci::Pipeline.count }.by(2)
         end
@@ -266,12 +272,116 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
         expect { response }.not_to change { Ci::Pipeline.count }
 
         expect(response).to be_error
-        expect(response.message).to eq('Cannot create a pipeline for this merge request.')
+        expect(response.message).to eq('Cannot create a pipeline for this merge request: no commits to build.')
         expect(response.payload).to be_nil
 
         failed_creation = ::Ci::PipelineCreation::Requests.hget(request)
         expect(failed_creation['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
-        expect(failed_creation['error']).to eq('Cannot create a pipeline for this merge request.')
+        expect(failed_creation['error']).to eq('Cannot create a pipeline for this merge request: no commits to build.')
+      end
+    end
+
+    context 'when duplicate pipeline is still in progress' do
+      let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+      let(:params) { { pipeline_creation_request: request } }
+
+      before do
+        existing_pipeline = create(:ci_pipeline, merge_requests_as_head_pipeline: [merge_request])
+        allow(existing_pipeline).to receive_messages(
+          merge_request?: true,
+          running?: true,
+          pending?: false,
+          merge_request_diff_sha: merge_request.diff_head_sha
+        )
+        allow(merge_request).to receive_messages(has_no_commits?: false, find_diff_head_pipeline: existing_pipeline)
+      end
+
+      it 'calls cannot_create_pipeline_error with retriable flag' do
+        response = service.execute(merge_request)
+
+        expect(response).to be_error
+        expect(response.message).to include('duplicate pipeline still in progress')
+      end
+
+      it 'keeps pipeline creation in progress for retry' do
+        service.execute(merge_request)
+
+        request_data = ::Ci::PipelineCreation::Requests.hget(params[:pipeline_creation_request])
+        expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::IN_PROGRESS)
+      end
+    end
+
+    context 'when duplicate pipeline is completed' do
+      let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+      let(:params) { { pipeline_creation_request: request } }
+
+      before do
+        existing_pipeline = create(:ci_pipeline, merge_requests_as_head_pipeline: [merge_request], status: :success)
+        allow(existing_pipeline).to receive_messages(
+          merge_request?: true,
+          running?: false,
+          pending?: false,
+          merge_request_diff_sha: merge_request.diff_head_sha
+        )
+        allow(merge_request).to receive_messages(has_no_commits?: false, find_diff_head_pipeline: existing_pipeline)
+      end
+
+      it 'returns non-retriable duplicate error and marks request as failed' do
+        response = service.execute(merge_request)
+
+        expect(response).to be_error
+        expect(response.message).to include('duplicate pipeline')
+
+        request_data = ::Ci::PipelineCreation::Requests.hget(params[:pipeline_creation_request])
+        expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+      end
+    end
+
+    context 'when existing pipeline was created for a different source branch commit' do
+      let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+      let(:params) { { pipeline_creation_request: request } }
+
+      before do
+        existing_pipeline = create(:ci_pipeline, merge_requests_as_head_pipeline: [merge_request])
+        allow(existing_pipeline).to receive_messages(
+          merge_request?: true,
+          merge_request_diff_sha: 'different_sha'
+        )
+        allow(merge_request).to receive_messages(
+          has_no_commits?: false,
+          find_diff_head_pipeline: existing_pipeline,
+          diff_head_sha: 'current_sha'
+        )
+      end
+
+      it 'allows pipeline creation (no duplicate error)' do
+        response = service.execute(merge_request)
+
+        expect(response).to be_success
+        expect(response.errors).to be_empty
+      end
+    end
+
+    context 'when existing pipeline is not a merge request pipeline' do
+      let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+      let(:params) { { pipeline_creation_request: request } }
+
+      before do
+        existing_pipeline = create(:ci_pipeline, merge_requests_as_head_pipeline: [merge_request])
+        allow(existing_pipeline).to receive_messages(
+          merge_request?: nil
+        )
+        allow(merge_request).to receive_messages(
+          has_no_commits?: false,
+          find_diff_head_pipeline: existing_pipeline
+        )
+      end
+
+      it 'allows pipeline creation (no duplicate error)' do
+        response = service.execute(merge_request)
+
+        expect(response).to be_success
+        expect(response.errors).to be_empty
       end
     end
 
@@ -313,47 +423,6 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     end
   end
 
-  describe '#create_merge_request_pipeline' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:params) { { pipeline_creation_request: { 'key' => '123', 'id' => '456' } } }
-
-    before do
-      allow_next_instance_of(Ci::CreatePipelineService) do |service|
-        allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: pipeline))
-      end
-    end
-
-    it 'triggers GraphQL subscription after pipeline creation' do
-      expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-      service.create_merge_request_pipeline(merge_request)
-    end
-
-    context 'for sync requests without a pipeline creation request' do
-      let(:params) { {} }
-
-      it 'does not trigger GraphQL subscription after pipeline creation for sync requests' do
-        expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-        service.create_merge_request_pipeline(merge_request)
-      end
-    end
-
-    context 'when pipeline creation fails' do
-      before do
-        allow_next_instance_of(Ci::CreatePipelineService) do |service|
-          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Failed'))
-        end
-      end
-
-      it 'still triggers GraphQL subscription' do
-        expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-        service.create_merge_request_pipeline(merge_request)
-      end
-    end
-  end
-
   describe '#allowed?' do
     subject(:allowed) { service.allowed?(merge_request) }
 
@@ -392,6 +461,67 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#cannot_create_pipeline_error' do
+    let(:service) { described_class.new(project: project, current_user: user, params: params) }
+    let(:params) { { pipeline_creation_request: { 'key' => '123', 'id' => '456' } } }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    context 'when called with retriable_error: false (default)' do
+      it 'returns an error response' do
+        response = service.send(:cannot_create_pipeline_error, 'test reason')
+
+        expect(response).to be_error
+        expect(response.message).to eq('Cannot create a pipeline for this merge request: test reason.')
+      end
+
+      it 'marks the pipeline creation request as failed' do
+        service.send(:cannot_create_pipeline_error, 'test reason')
+
+        failed_request = ::Ci::PipelineCreation::Requests.hget(params[:pipeline_creation_request])
+        expect(failed_request['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+        expect(failed_request['error']).to eq('Cannot create a pipeline for this merge request: test reason.')
+      end
+
+      it 'includes the reason in the error message' do
+        response = service.send(:cannot_create_pipeline_error, 'custom failure reason')
+
+        expect(response.message).to include('custom failure reason')
+      end
+    end
+  end
+
+  describe '#cannot_create_pipeline_error with retriable_error flag' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+    let(:service) { described_class.new(project: project, current_user: user, params: params) }
+    let(:params) { { pipeline_creation_request: request } }
+
+    context 'when called with retriable: true' do
+      it 'returns an error response' do
+        response = service.send(:cannot_create_pipeline_error, 'test reason', retriable: true)
+
+        expect(response).to be_error
+        expect(response.message).to eq('Cannot create a pipeline for this merge request: test reason.')
+      end
+
+      it 'does NOT mark the pipeline creation request as failed' do
+        service.send(:cannot_create_pipeline_error, 'test reason', retriable: true)
+
+        # The request should still be in progress, not marked as failed
+        request_data = ::Ci::PipelineCreation::Requests.hget(params[:pipeline_creation_request])
+        expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::IN_PROGRESS)
+        expect(request_data['error']).to be_nil
+      end
+
+      it 'allows the worker to retry the job' do
+        response = service.send(:cannot_create_pipeline_error, 'duplicate pipeline still in progress', retriable: true)
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:retriable_error)
+      end
     end
   end
 end

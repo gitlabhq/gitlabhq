@@ -2,6 +2,8 @@
 key_path: counts.count_total_commit_change_to_ciconfigfile_monthly
 description: Monthly count of commits that include a change to the CI config file.
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 performance_indicator_type:
 - leading_indicator
 value_type: number

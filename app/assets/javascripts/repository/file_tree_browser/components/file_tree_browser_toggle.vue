@@ -21,6 +21,13 @@ export default {
     GlTooltip,
   },
   mixins: [InternalEvents.mixin()],
+  props: {
+    isAnimating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, [
       'fileTreeBrowserIsVisible',
@@ -33,6 +40,9 @@ export default {
     },
     shortcutsEnabled() {
       return !shouldDisableShortcuts();
+    },
+    showTooltip() {
+      return this.shortcutsEnabled && !this.isAnimating;
     },
     target() {
       return () => this.$refs.toggle?.$el;
@@ -80,7 +90,7 @@ export default {
     @click="onClickToggle"
   >
     <gl-tooltip
-      v-if="shortcutsEnabled"
+      v-if="showTooltip"
       custom-class="file-browser-toggle-tooltip"
       :target="target"
       placement="left"

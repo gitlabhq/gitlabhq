@@ -1,0 +1,6 @@
+---
+name: delete_wiki_page_meta_note
+description: Grants the ability to delete wiki page meta notes
+boundaries:
+  - project
+  - group

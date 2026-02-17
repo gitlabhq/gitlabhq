@@ -59,6 +59,10 @@ module Types
       calls_gitaly: true,
       experiment: { milestone: '17.10' },
       description: 'Inputs to create a pipeline.' do
+      argument :fail_on_cache_miss, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Whether to throw an error for a cache miss.'
       argument :ref, GraphQL::Types::String,
         required: true,
         description: 'Ref where to create the pipeline.'
@@ -145,6 +149,11 @@ module Types
       null: true,
       description: 'Admin path of the project. Only available to admins.',
       authorize: :admin_all_resources
+
+    field :custom_attributes, [Types::CustomAttributeType],
+      null: true,
+      description: 'Custom attributes of the project. Only available to admins.',
+      authorize: :read_custom_attribute
 
     field :forks_count, GraphQL::Types::Int,
       null: false,
@@ -792,7 +801,8 @@ module Types
       description: "Branch rules configured for the project.",
       resolver: Resolvers::Projects::BranchRulesResolver,
       connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
-      max_page_size: 100
+      max_page_size: 100,
+      calls_gitaly: true
 
     field :languages, [Types::Projects::RepositoryLanguageType],
       null: true,
@@ -924,6 +934,10 @@ module Types
       experiment: { milestone: '18.5' },
       description: 'A single project webhook.'
 
+    field :pipeline_schedule_status_counts, Types::Ci::PipelineScheduleStatusCountType,
+      resolver: Resolvers::Ci::ProjectPipelineScheduleStatusCountsResolver,
+      description: 'Counts of pipeline schedules by status.'
+
     def ci_pipeline_creation_request(request_id:)
       ::Ci::PipelineCreation::Requests.get_request(object, request_id)
     end
@@ -1042,11 +1056,17 @@ module Types
       project.container_repositories.size
     end
 
-    def ci_pipeline_creation_inputs(ref:)
+    def ci_pipeline_creation_inputs(ref:, fail_on_cache_miss: false)
       response = ::Ci::PipelineCreation::FindPipelineInputsService.new(
         current_user: context[:current_user],
         project: object,
         ref: ref).execute
+
+      if response.nil?
+        raise_resource_not_available_error! "Failed to retrieve pipeline inputs from cache." if fail_on_cache_miss
+
+        return
+      end
 
       raise Gitlab::Graphql::Errors::ArgumentError, response.message if response.error?
 
@@ -1088,7 +1108,9 @@ module Types
 
       if project.repository.empty?
         raise Gitlab::Graphql::Errors::MutationError,
-          _(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe
+          ApplicationController.helpers.safe_format(
+            _('You must %{docs_link} before using Security features.'),
+            docs_link: add_file_docs_link)
       end
 
       ::Security::CiConfiguration::SastParserService.new(object).configuration

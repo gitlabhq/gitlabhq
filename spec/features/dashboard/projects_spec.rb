@@ -31,15 +31,12 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
   end
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_projects_path, :projects
-  it_behaves_like 'page with product usage data collection banner' do
-    let(:page_path) { dashboard_projects_path }
-  end
 
   it 'links to the "Explore projects" page' do
     visit dashboard_projects_path
     wait_for_requests
 
-    expect(page).to have_link("Explore projects", href: starred_explore_projects_path)
+    expect(page).to have_link("Explore projects", href: explore_projects_path)
   end
 
   context 'when user has access to the project' do
@@ -249,7 +246,10 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     end
   end
 
-  it 'avoids an N+1 query in dashboard index' do
+  it 'avoids an N+1 query in dashboard index', quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/589685',
+    type: :investigating
+  } do
     visit member_dashboard_projects_path
     wait_for_requests
 
@@ -266,11 +266,12 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     # - User#max_member_access_for_project_ids
     # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
     # - Ci::Pipeline#detailed_status
+    # - Checking the callout status before saving the new one
 
     expect do
       visit member_dashboard_projects_path
       wait_for_requests
-    end.not_to exceed_query_limit(control).with_threshold(4)
+    end.not_to exceed_query_limit(control).with_threshold(6)
   end
 
   context 'for delayed deletion' do

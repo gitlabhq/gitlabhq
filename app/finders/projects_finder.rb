@@ -169,9 +169,17 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_deleted_status(items)
-    return items.without_deleted unless current_user&.can?(:admin_all_resources)
+    return items_without_deleted(items) unless current_user&.can?(:admin_all_resources)
 
-    params[:include_pending_delete].present? ? items : items.without_deleted
+    params[:include_pending_delete].present? ? items : items_without_deleted(items)
+  end
+
+  def items_without_deleted(items)
+    if Feature.enabled?(:use_deletion_in_progress_in_finders, Feature.current_request)
+      items.not_deletion_in_progress
+    else
+      items.without_deleted
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

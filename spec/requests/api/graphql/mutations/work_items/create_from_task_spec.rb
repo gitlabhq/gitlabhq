@@ -12,7 +12,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
   end
 
   let(:lock_version) { work_item.lock_version }
-  let(:task_type) { WorkItems::Type.default_by_type(:task) }
+  let(:task_type) { build(:work_item_system_defined_type, :task) }
   let(:task_gid) { task_type.to_gid.to_s }
   let(:input) do
     {

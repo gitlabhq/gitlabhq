@@ -1,0 +1,10 @@
+---
+name: work_item_system_defined_type
+description: Switch work_item_type from using the DB model to use WorkItems::TypesFramework::SystemDefined::Type.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20287
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221710
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583465
+milestone: '18.9'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

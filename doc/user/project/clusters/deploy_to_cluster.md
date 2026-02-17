@@ -18,13 +18,10 @@ title: Deploy to a Kubernetes cluster with cluster certificates (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
-To deploy with the agent, use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
+> To deploy with the agent, use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 
 A Kubernetes cluster can be the destination for a deployment job. If
 
@@ -149,11 +146,8 @@ Reasons for failure include:
   [`environment:name`](../../../ci/environments/_index.md). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
-{{< alert type="note" >}}
-
-Project-level clusters upgraded from GitLab 12.0 or older may be configured
-in a way that causes this error. Ensure you clear the
-[GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
-namespaces and service accounts yourself.
-
-{{< /alert >}}
+> [!note]
+> Project-level clusters upgraded from GitLab 12.0 or older may be configured
+> in a way that causes this error. Ensure you clear the
+> [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
+> namespaces and service accounts yourself.

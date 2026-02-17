@@ -193,7 +193,7 @@ export default {
         return queryVariables;
       },
       update(data) {
-        return data.workspace?.issuable;
+        return data.namespace?.issuable;
       },
       error() {
         createAlert({ message: __('Error fetching labels.') });

@@ -1,0 +1,5 @@
+---
+name: read_repository_tree
+description: Grants the ability to read repository trees
+boundaries:
+  - project

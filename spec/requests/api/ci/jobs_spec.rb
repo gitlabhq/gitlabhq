@@ -588,6 +588,56 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
+  describe 'filtering jobs by ref' do
+    subject(:perform_request) do
+      get api("/projects/#{project.id}/jobs", user), params: query
+    end
+
+    let_it_be(:pipeline_first) { create(:ci_pipeline, project: project, ref: 'add_images_and_changes') }
+    let_it_be(:pipeline_second) { create(:ci_pipeline, project: project, ref: 'main') }
+    let_it_be(:job_matching_ref) do
+      create(:ci_build, :success, project: project, pipeline: pipeline_first, ref: 'add_images_and_changes')
+    end
+
+    let_it_be(:job_other_ref) do
+      create(:ci_build, :success, project: project, pipeline: pipeline_second, ref: 'main')
+    end
+
+    context 'when ref exists' do
+      let(:query) { { ref: 'add_images_and_changes' } }
+
+      it 'returns only jobs matching the given ref' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+
+        refs = json_response.pluck('ref')
+        expect(refs).to contain_exactly('add_images_and_changes')
+      end
+    end
+
+    context 'when ref does not exist' do
+      let(:query) { { ref: 'non-existent-ref' } }
+
+      it 'returns no jobs' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'when ref is blank' do
+      let(:query) { { ref: ' ' } }
+
+      it 'returns all jobs' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+
+        refs = json_response.pluck('ref')
+        expect(refs).to contain_exactly('main', 'add_images_and_changes', 'master', 'master', 'master')
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs offset pagination' do
     it 'returns one record for the first page' do
       get api("/projects/#{project.id}/jobs", api_user), params: { per_page: 1 }
@@ -1230,9 +1280,11 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
     let(:params) { {} }
+    let(:ci_job_inputs_flag) { true }
 
     before do
       project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
     end
 
@@ -1309,6 +1361,63 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error']).to eq('job_variables_attributes[1][key] is missing')
             expect(job.reload).to be_manual
+          end
+        end
+
+        context 'when the user provides valid custom inputs' do
+          let_it_be(:job) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline, options: {
+              inputs: {
+                environment: { type: 'string' },
+                version: { type: 'string', default: '1.0' }
+              }
+            })
+          end
+
+          let(:params) { { job_inputs: { environment: 'production' } } }
+
+          it 'applies the inputs to the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(job.reload).to be_pending
+            expect(job.inputs.map(&:name)).to contain_exactly('environment')
+            expect(job.inputs.find_by(name: 'environment').value).to eq('production')
+          end
+        end
+
+        context 'when the user provides invalid inputs' do
+          let_it_be(:job) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline, options: {
+              inputs: {
+                environment: { type: 'string' }
+              }
+            })
+          end
+
+          let(:params) { { job_inputs: { unknown_input: 'value' } } }
+
+          it 'returns an error and does not run the job' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('Unknown input')
+            expect(job.reload).to be_manual
+          end
+        end
+
+        context 'when job_inputs feature flag is disabled' do
+          let_it_be(:job) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline, options: {
+              inputs: {
+                environment: { type: 'string' }
+              }
+            })
+          end
+
+          let(:params) { { job_inputs: { environment: 'production' } } }
+          let(:ci_job_inputs_flag) { false }
+
+          it 'ignores the inputs and plays the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(job.reload).to be_pending
+            expect(job.inputs).to be_empty
           end
         end
       end

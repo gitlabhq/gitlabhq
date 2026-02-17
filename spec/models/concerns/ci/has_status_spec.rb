@@ -90,7 +90,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'success and failed but allowed to fail' do
         let!(:statuses) do
           [create(type, status: :success),
-           create(type, status: :failed, allow_failure: true)]
+            create(type, status: :failed, allow_failure: true)]
         end
 
         it { is_expected.to eq 'success' }
@@ -123,7 +123,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'one failed but allowed to fail and one canceled' do
         let!(:statuses) do
           [create(type, status: :failed, allow_failure: true),
-           create(type, status: :canceled)]
+            create(type, status: :canceled)]
         end
 
         it { is_expected.to eq 'canceled' }
@@ -148,7 +148,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'success and canceled but allowed to fail' do
         let!(:statuses) do
           [create(type, status: :success),
-           create(type, status: :canceled, allow_failure: true)]
+            create(type, status: :canceled, allow_failure: true)]
         end
 
         it { is_expected.to eq 'success' }
@@ -157,7 +157,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'one finished and second running but allowed to fail' do
         let!(:statuses) do
           [create(type, status: :success),
-           create(type, status: :running, allow_failure: true)]
+            create(type, status: :running, allow_failure: true)]
         end
 
         it { is_expected.to eq 'running' }
@@ -174,8 +174,8 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'when there is a manual status before created status' do
         let!(:statuses) do
           [create(type, status: :success),
-           create(type, status: :manual, allow_failure: false),
-           create(type, status: :created)]
+            create(type, status: :manual, allow_failure: false),
+            create(type, status: :created)]
         end
 
         it { is_expected.to eq 'manual' }
@@ -184,7 +184,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'when one status is a blocking manual action' do
         let!(:statuses) do
           [create(type, status: :failed),
-           create(type, status: :manual, allow_failure: false)]
+            create(type, status: :manual, allow_failure: false)]
         end
 
         it { is_expected.to eq 'manual' }
@@ -193,7 +193,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       context 'when one status is a non-blocking manual action' do
         let!(:statuses) do
           [create(type, status: :failed),
-           create(type, status: :manual, allow_failure: true)]
+            create(type, status: :manual, allow_failure: true)]
         end
 
         it { is_expected.to eq 'failed' }
@@ -242,7 +242,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
     end
 
     %i[created waiting_for_callback waiting_for_resource preparing running pending success
-       failed canceled skipped].each do |status|
+      failed canceled skipped].each do |status|
       it_behaves_like 'having a job', status
     end
   end

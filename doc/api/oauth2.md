@@ -187,12 +187,9 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    }
    ```
 
-{{< alert type="note" >}}
-
-The `redirect_uri` must match the `redirect_uri` used in the original
-authorization request.
-
-{{< /alert >}}
+> [!note]
+> The `redirect_uri` must match the `redirect_uri` used in the original
+> authorization request.
 
 You can now make requests to the API with the access token.
 
@@ -206,12 +203,9 @@ You can now make requests to the API with the access token.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
-detailed flow description.
-
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
+> detailed flow description.
 
 The authorization code flow is essentially the same as
 [authorization code flow with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce),
@@ -283,12 +277,9 @@ be used as a CSRF token.
    }
    ```
 
-{{< alert type="note" >}}
-
-The `redirect_uri` must match the `redirect_uri` used in the original
-authorization request.
-
-{{< /alert >}}
+> [!note]
+> The `redirect_uri` must match the `redirect_uri` used in the original
+> authorization request.
 
 You can now make requests to the API with the access token returned.
 
@@ -302,12 +293,9 @@ You can now make requests to the API with the access token returned.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
-description of the device authorization grant flow, from device authorization request to token response from the browser login.
-
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
+> description of the device authorization grant flow, from device authorization request to token response from the browser login.
 
 The device authorization grant flow makes it possible to securely authenticate your GitLab identity from input constrained devices where browser interactions are not an option.
 
@@ -353,8 +341,10 @@ This makes the device authorization grant flow ideal for users attempting to use
 1. The device client receives a response from the token endpoint. If the authorization was successful,
    a success response is returned, otherwise, an error response is returned.
    Potential error responses are categorized by either of the following:
+
    - Those defined by the OAuth Authorization Framework access token error responses.
    - Those specific to the device authorization grant flow described here.
+
    Those error responses specific to the device flow are described in the following content.
    For more information on each potential response, see the relevant [RFC spec for device authorization grant](https://datatracker.ietf.org/doc/html/rfc8628#section-3.5) and the
    [RFC spec for authorization tokens](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2).
@@ -422,28 +412,19 @@ A sample application that implements the client side device flow can be found at
 
 ### Resource owner password credentials flow
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
-detailed flow description.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Resource owner password credentials are disabled for users with
-[two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
-and [enterprise users](../user/enterprise_user/_index.md)
-with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
-These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
-instead.
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
-checkbox is selected for the GitLab instance to support the password credentials flow.
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
+> detailed flow description.
+>
+> Resource owner password credentials are disabled for users with
+> [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
+> and [enterprise users](../user/enterprise_user/_index.md)
+> with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
+> These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
+> instead.
+>
+> Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https)
+> checkbox is selected for the GitLab instance to support the password credentials flow.
 
 In this flow, a token is requested in exchange for the resource owner credentials
 (username and password).
@@ -455,14 +436,11 @@ The credentials should only be used when:
   privileged application.
 - Other authorization grant types are not available (such as an authorization code).
 
-{{< alert type="warning" >}}
-
-Never store the user's credentials and only use this grant type when your client
-is deployed to a trusted environment, in 99% of cases
-[personal access tokens](../user/profile/personal_access_tokens.md) are a better
-choice.
-
-{{< /alert >}}
+> [!warning]
+> Never store the user's credentials and only use this grant type when your client
+> is deployed to a trusted environment, in 99% of cases
+> [personal access tokens](../user/profile/personal_access_tokens.md) are a better
+> choice.
 
 Even though this grant type requires direct client access to the resource owner
 credentials, the resource owner credentials are used for a single request and
@@ -485,7 +463,9 @@ Example cURL request:
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --request POST "https://gitlab.example.com/oauth/token"
+curl --request POST \
+  --url "https://gitlab.example.com/oauth/token" \
+  --data "@auth.txt"
 ```
 
 You can also use this grant flow with registered OAuth applications, by using
@@ -493,8 +473,10 @@ HTTP Basic Authentication with the application's `client_id` and `client_secret`
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --user client_id:client_secret \
-     --request POST "https://gitlab.example.com/oauth/token"
+curl --request POST \
+  --url "https://gitlab.example.com/oauth/token" \
+  --data "@auth.txt" \
+  --user client_id:client_secret
 ```
 
 Then, you receive a response containing the access token:

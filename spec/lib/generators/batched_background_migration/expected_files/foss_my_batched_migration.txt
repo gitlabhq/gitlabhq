@@ -4,6 +4,10 @@ module Gitlab
   module BackgroundMigration
     # TODO Add a top-level documentation comment for the class
     class MyBatchedMigration < BatchedMigrationJob
+      # Cursor strategy is the default for batched migrations.
+      # For composite primary keys, use: cursor :column1, :column2
+      cursor :id
+
       feature_category :database
 
       def perform; end

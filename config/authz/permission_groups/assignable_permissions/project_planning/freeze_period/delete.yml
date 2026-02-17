@@ -1,0 +1,7 @@
+---
+name: delete_freeze_period
+description: Grants the ability to delete freeze periods
+boundaries:
+  - project
+permissions:
+  - delete_freeze_period

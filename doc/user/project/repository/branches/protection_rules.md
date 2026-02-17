@@ -43,12 +43,12 @@ When a branch matches multiple protection rules, these behaviors apply:
 
 When a branch is protected, the default behavior enforces these restrictions:
 
-| Action                   | Who can do it                           |
-|:-------------------------|:----------------------------------------|
-| Protect a branch         | At least the Maintainer role.           |
+| Action                   | Who can do it |
+|:-------------------------|:--------------|
+| Protect a branch         | Users with the Maintainer or Owner role. |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one.                                 |
-| Delete the branch        | No one. (2)                             |
+| Force push to the branch | No one.       |
+| Delete the branch        | No one. (2)   |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](default.md).

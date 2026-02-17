@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Jobs (JavaScript fixtures)' do
+RSpec.describe 'Jobs (JavaScript fixtures)', feature_category: :continuous_integration do
   include ApiHelpers
   include JavaScriptFixturesHelpers
   include GraphqlHelpers

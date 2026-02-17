@@ -10,8 +10,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   let(:multiple_sticking_objects) do
     Set.new([
       [ActiveRecord::Base.sticking, :user, 42],
-              [ActiveRecord::Base.sticking, :runner, '123456789'],
-              [ActiveRecord::Base.sticking, :runner, '1234']
+      [ActiveRecord::Base.sticking, :runner, '123456789'],
+      [ActiveRecord::Base.sticking, :runner, '1234']
     ])
   end
 

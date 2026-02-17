@@ -15,7 +15,7 @@ title: Topics API
 
 Use this API to interact with project topics. For more information, see [project topics](../user/project/project_topics.md).
 
-## List topics
+## List all topics
 
 Returns a list of project topics in the GitLab instance ordered by number of associated projects.
 
@@ -73,9 +73,9 @@ Example response:
 ]
 ```
 
-## Get a topic
+## Retrieve a topic
 
-Get a project topic by ID.
+Retrieves a project topic by ID.
 
 ```plaintext
 GET /topics/:id
@@ -108,9 +108,9 @@ Example response:
 }
 ```
 
-## List projects assigned to a topic
+## List all projects assigned to a topic
 
-Use the [Projects API](projects.md#list-all-projects) to list all projects assigned to a specific topic.
+Uses the [Projects API](projects.md#list-all-projects) to list all projects assigned to a specific topic.
 
 ```plaintext
 GET /projects?topic=<topic_name>
@@ -118,7 +118,7 @@ GET /projects?topic=<topic_name>
 
 ## Create a project topic
 
-Create a new project topic. Only available to administrators.
+Creates a new project topic. Only available to administrators.
 
 ```plaintext
 POST /topics
@@ -159,7 +159,7 @@ Example response:
 
 ## Update a project topic
 
-Update a project topic. Only available to administrators.
+Updates a project topic. Only available to administrators.
 
 ```plaintext
 PUT /topics/:id

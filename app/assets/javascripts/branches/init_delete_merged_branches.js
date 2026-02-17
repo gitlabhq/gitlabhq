@@ -11,6 +11,7 @@ export default function initDeleteMergedBranchesModal() {
 
   return new Vue({
     el,
+    name: 'DeleteMergedBranchesRoot',
     render(createComponent) {
       return createComponent(DeleteMergedBranches, {
         props: {

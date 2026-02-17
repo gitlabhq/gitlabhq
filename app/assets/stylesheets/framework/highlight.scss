@@ -134,6 +134,8 @@ td.line-numbers {
 }
 
 .blob-viewer {
+  --blame-line-height: 1.1875rem;
+
   .line-numbers {
     min-width: 6rem;
     // for server-side-rendering

@@ -20,6 +20,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 jest.mock('~/vue_shared/plugins/global_toast');
 
 const MOCK_PROJECT = {
+  name: 'With Delay Project',
   nameWithNamespace: 'With Delay Project',
   fullPath: 'path/to/project/2',
   group: {
@@ -105,27 +106,19 @@ describe('availableGraphQLProjectActions', () => {
 
   describe('when user has removeProject permission', () => {
     describe.each`
-      description                                      | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | allowImmediateNamespacesDeletion | expectedActions
-      ${'project is not marked for deletion'}          | ${false}          | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_DELETE]}
-      ${'project is scheduled for deletion'}           | ${true}           | ${true}                 | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-      ${'project is scheduled but immediate disabled'} | ${true}           | ${true}                 | ${false}                 | ${false}                         | ${[ACTION_COPY_ID, ACTION_RESTORE]}
-      ${'project belongs to a deleted group'}          | ${true}           | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID]}
-      ${'project deletion is in progress'}             | ${true}           | ${true}                 | ${true}                  | ${true}                          | ${[]}
+      description                             | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | expectedActions
+      ${'project is not marked for deletion'} | ${false}          | ${false}                | ${false}                 | ${[ACTION_COPY_ID, ACTION_DELETE]}
+      ${'project is scheduled for deletion'}  | ${true}           | ${true}                 | ${false}                 | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+      ${'project belongs to a deleted group'} | ${true}           | ${false}                | ${false}                 | ${[ACTION_COPY_ID]}
+      ${'project deletion is in progress'}    | ${true}           | ${true}                 | ${true}                  | ${[]}
     `(
       'when $description',
       ({
         markedForDeletion,
         isSelfDeletionScheduled,
         isSelfDeletionInProgress,
-        allowImmediateNamespacesDeletion,
         expectedActions,
       }) => {
-        beforeEach(() => {
-          window.gon = {
-            allow_immediate_namespaces_deletion: allowImmediateNamespacesDeletion,
-          };
-        });
-
         it('returns expected actions', () => {
           const availableActions = availableGraphQLProjectActions({
             userPermissions: { removeProject: true },
@@ -179,7 +172,7 @@ describe('renderDeleteSuccessToast', () => {
 
     it('renders toast explaining project will be delayed deleted', () => {
       expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PROJECT_DELAY_DELETION_ENABLED.nameWithNamespace}' will be deleted on ${MOCK_PROJECT_DELAY_DELETION_ENABLED.permanentDeletionDate}.`,
+        `${MOCK_PROJECT_DELAY_DELETION_ENABLED.name} moved to pending deletion.`,
       );
     });
   });
@@ -190,9 +183,7 @@ describe('renderDeleteSuccessToast', () => {
     });
 
     it('renders toast explaining project is being deleted', () => {
-      expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PROJECT_PENDING_DELETION.nameWithNamespace}' is being deleted.`,
-      );
+      expect(toast).toHaveBeenCalledWith(`${MOCK_PROJECT_PENDING_DELETION.name} is being deleted.`);
     });
   });
 });

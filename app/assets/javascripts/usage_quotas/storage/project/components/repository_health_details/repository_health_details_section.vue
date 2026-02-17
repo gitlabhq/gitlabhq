@@ -5,6 +5,10 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getProjectRepositoryHealth } from '~/rest_api';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import RepositoryHealthDetailsHeader from './repository_health_details_header.vue';
+import RepositoryHealthDetailsStorageBreakdown from './repository_health_details_storage_breakdown.vue';
+import RepositoryHealthDetailsPerformanceOptimizations from './repository_health_details_performance_optimizations.vue';
+import RepositoryHealthDetailsMaintenanceStatus from './repository_health_details_maintenance_status.vue';
 
 export default {
   name: 'RepositoryHealthDetailsSection',
@@ -12,6 +16,10 @@ export default {
     GlLoadingIcon,
     GlButton,
     GlEmptyState,
+    RepositoryHealthDetailsHeader,
+    RepositoryHealthDetailsStorageBreakdown,
+    RepositoryHealthDetailsPerformanceOptimizations,
+    RepositoryHealthDetailsMaintenanceStatus,
   },
   props: {
     repository: {
@@ -68,7 +76,7 @@ export default {
 </script>
 
 <template>
-  <section>
+  <section class="gl-border gl-rounded-lg gl-bg-neutral-10 gl-px-6 gl-py-5 lg:gl-ml-7">
     <template v-if="!projectId">
       <p class="gl-mb-0">{{ s__('UsageQuota|Failed to parse Project ID from Repository.') }}</p>
     </template>
@@ -88,7 +96,13 @@ export default {
       </template>
     </gl-empty-state>
     <template v-else>
-      {{ healthDetails }}
+      <repository-health-details-header
+        :health-details="healthDetails"
+        @regenerate-report="fetchRepositoryHealth({ generate: true })"
+      />
+      <repository-health-details-storage-breakdown :health-details="healthDetails" />
+      <repository-health-details-performance-optimizations :health-details="healthDetails" />
+      <repository-health-details-maintenance-status :health-details="healthDetails" />
     </template>
   </section>
 </template>

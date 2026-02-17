@@ -157,11 +157,8 @@ GitLab enforces a limit of **15 indexes** per table. This limitation:
 - Reduces maintenance overhead
 - Prevents excessive disk space usage
 
-{{< alert type="note" >}}
-
-If you need to add an index to a table that already has 15 indexes, consider:
-
-{{< /alert >}}
+> [!note]
+> If you need to add an index to a table that already has 15 indexes, consider:
 
 - Removing unused indexes
 - Combining existing indexes
@@ -229,13 +226,10 @@ Use two MRs to create the index in a post-deployment migration and make the appl
 - The second MR makes application code changes. It should merge only after the first MR's
   post-deployment migrations are executed on GitLab.com.
 
-{{< alert type="note" >}}
-
-If you can use a feature flag, you might be able to use a single MR
-to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
-After the post-deployment migration executes, you can enable the feature flag.
-
-{{< /alert >}}
+> [!note]
+> If you can use a feature flag, you might be able to use a single MR
+> to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
+> After the post-deployment migration executes, you can enable the feature flag.
 
 For GitLab.com, we execute post-deployment migrations throughout a single release through continuous integration:
 
@@ -336,12 +330,9 @@ them by index size in descending order. More information on the meaning of the v
 For GitLab.com, you can check the latest generated [production reports](https://console.postgres.ai/gitlab/reports/)
 on postgres.ai and inspect the `H002 Unused Indexes` file.
 
-{{< alert type="warning" >}}
-
-These reports only show indexes that have no recorded usage **since the last statistics reset.**
-They do not guarantee that the indexes are never used.
-
-{{< /alert >}}
+> [!warning]
+> These reports only show indexes that have no recorded usage **since the last statistics reset.**
+> They do not guarantee that the indexes are never used.
 
 ### Verifying that an index is unused
 
@@ -360,14 +351,14 @@ Be aware that certain factors can give the false impression that an index is unu
 
 1. Start by gathering all the metadata available for the index, verifying its name and definition.
    - The index name in the development environment may not match production. It's important to correlate the indexes
-    based on definition rather than name. To check its definition, you can:
-      - Manually inspect [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
-         (This file does **not** include data on dynamically generated partitions.)
-      - [Use Database Lab to check the status of an index.](database_lab.md#checking-indexes)
+     based on definition rather than name. To check its definition, you can:
+     - Manually inspect [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
+       (This file does **not** include data on dynamically generated partitions.)
+     - [Use Database Lab to check the status of an index.](database_lab.md#checking-indexes)
    - For partitioned tables, child indexes are often named differently than the parent index.
      To list all child indexes, you can:
-      - Run `\d+ <PARENT_INDEX_NAME>` in [Database Lab](database_lab.md).
-      - Run the following query to see the full parent-child index structure in more detail:
+     - Run `\d+ <PARENT_INDEX_NAME>` in [Database Lab](database_lab.md).
+     - Run the following query to see the full parent-child index structure in more detail:
 
         ```sql
         SELECT
@@ -416,9 +407,9 @@ which the queries are or may be executed so that we can determine if the index e
 1. Investigate the origins of the index.
    - Dig through the commit history, related merge requests, and issues that introduced the index.
    - Try to find answers to questions such as:
-      - Why was the index added in the first place? What query was it meant to support?
-      - Does that query still exist and get executed?
-      - Is it only applicable to GitLab Self-Managed instances?
+     - Why was the index added in the first place? What query was it meant to support?
+     - Does that query still exist and get executed?
+     - Is it only applicable to GitLab Self-Managed instances?
 
 1. Examine queries outputted from running the [`rspec:merge-auto-explain-logs`](https://gitlab.com/gitlab-org/gitlab/-/jobs/9805995367) CI job.
    - This job collects and analyzes queries executed through tests. The output is saved as an artifact: `auto_explain/auto_explain.ndjson.gz`
@@ -450,6 +441,47 @@ After collecting the relevant queries, you can then obtain [EXPLAIN plans](under
 relies on the index in question. For this process, it's necessary to have a good understanding of how indexes support queries and how
 their usage is affected by data distribution changes. We recommend seeking guidance from a database domain expert to help with your assessment.
 
+### Composite index column order
+
+When dropping or replacing an index, developers sometimes assume that an existing composite index can serve as a replacement.
+However, PostgreSQL B-tree indexes are most efficient when queries filter on the leading (leftmost) columns of the index.
+A composite index cannot efficiently support queries that filter only on non-leading columns.
+
+For example, consider the `ssh_signatures` table with the following indexes:
+
+- Single-column index: `index_ssh_signatures_on_commit_sha` on `(commit_sha)`
+- Composite index: `index_ssh_signatures_on_project_id_and_commit_sha` on `(project_id, commit_sha)`
+
+The composite index `(project_id, commit_sha)` can efficiently support:
+
+- Queries filtering on both `project_id` and `commit_sha`:
+
+  ```sql
+  SELECT * FROM ssh_signatures WHERE project_id = 1 AND commit_sha = 'abc123';
+  ```
+
+- Queries filtering only on `project_id` (the leading column):
+
+  ```sql
+  SELECT * FROM ssh_signatures WHERE project_id = 1;
+  ```
+
+However, the composite index **cannot** efficiently support queries filtering only on `commit_sha`:
+
+```sql
+SELECT * FROM ssh_signatures WHERE commit_sha = 'abc123';
+```
+
+For this query, the single-column index `index_ssh_signatures_on_commit_sha` is required. Dropping it would
+cause the query to perform poorly, potentially leading to timeouts or incidents in production.
+
+Before dropping any index, you must verify that all queries using that index can be efficiently served by other
+existing indexes. Pay special attention to composite index column ordering and ensure that queries filter on
+the leading columns. For more information on how PostgreSQL uses composite indexes, see the
+[PostgreSQL documentation on multicolumn indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html#INDEXES-MULTICOLUMN).
+
+If you're dropping an index that you think it's unused, check [the index usage stats](#dropping-unused-indexes).
+
 ## Requirements for naming indexes
 
 Indexes with complex definitions must be explicitly named rather than
@@ -470,7 +502,7 @@ Check our [Constraints naming conventions](constraint_naming_convention.md) page
 
 ### Why explicit names are required
 
-As Rails is database agnostic, it generates an index name only
+As Rails is database-independent, it generates an index name only
 from the required options of all indexes: table name and column names.
 For example, imagine the following two indexes are created in a migration:
 
@@ -708,19 +740,12 @@ def down
 end
 ```
 
-{{< alert type="note" >}}
-
 Async indexes are only supported for GitLab.com environments,
 so `prepare_async_index` and `prepare_partitioned_async_index` are no-ops for other environments.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-`prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
-In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
-
-{{< /alert >}}
+> [!note]
+> `prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
+> In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
 
 ### Verify the MR was deployed and the index exists in production
 
@@ -730,6 +755,15 @@ In the [next step for the partitioned table](#create-the-index-synchronously-for
    [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. In the case of an [index created asynchronously](#schedule-the-index-to-be-created), wait
    until the next week so that the index can be created over a weekend.
+   - Async indexes are scheduled to run every 12th minute during weekends (`12 * * * 0,6`). The configuration is set in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/77e24f41130d9e6ae716860a2a46559b1d6312e1/roles/gprd-base-deploy-node.json#L84) and [omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/778a97e365b62e48eacde6c283b4fcaa0f240b43/files/gitlab-cookbooks/gitlab/recipes/database_reindexing_enable.rb#L19).
+   - If the index is not created after a weekend, check the status of queued index operations by running the below query in a recent DB thin clone.
+
+     ```postgresql
+     SELECT definition, created_at, attempts, last_error FROM postgres_async_indexes
+     WHERE definition ILIKE 'CREATE%'
+     ORDER BY attempts ASC, id ASC;
+     ```
+
 1. Use [Database Lab](database_lab.md) to check [if creation was successful](database_lab.md#checking-indexes).
    Ensure the output does not indicate the index is `invalid`.
 
@@ -743,13 +777,10 @@ migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-{{< alert type="warning" >}}
-
-Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
-If the second migration is deployed before the index has been created,
-the index is created synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
+> If the second migration is deployed before the index has been created,
+> the index is created synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/
@@ -799,7 +830,7 @@ Use the asynchronous index helpers on your local environment to test changes for
 1. Run `bundle exec rails db:migrate` so that it creates an entry in the `postgres_async_indexes` table.
 1. Run `bundle exec rails gitlab:db:execute_async_index_operations:all` so that the index is created asynchronously on all databases.
 1. To verify the index, open the PostgreSQL console using the [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/) command `gdk psql` and run the command `\d <index_name>` to check that your newly created index exists.
-      - For indexes created on partitions, check that a unique name has been autogenerated for that table `\d gitlab_partitions_dynamic.<table_name>`
+   - For indexes created on partitions, check that a unique name has been autogenerated for that table `\d gitlab_partitions_dynamic.<table_name>`
 
 ## Drop indexes asynchronously
 
@@ -872,13 +903,10 @@ The synchronous migration results in a no-op on GitLab.com, but you should still
 migration as expected for other installations. For example, to
 create the second migration for the previous asynchronous example:
 
-{{< alert type="warning" >}}
-
-Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
-If the second migration is deployed before the index has been destroyed,
-the index is destroyed synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
+> If the second migration is deployed before the index has been destroyed,
+> the index is destroyed synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/

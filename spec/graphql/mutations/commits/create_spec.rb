@@ -114,11 +114,11 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
 
             expect_to_contain_deltas([
               a_hash_including(a_mode: '0', b_mode: '100644', new_path: 'foo/foobar'),
-                                       a_hash_including(deleted_file: true, new_path: 'README.md'),
-                                       a_hash_including(deleted_file: true, new_path: 'LICENSE'),
-                                       a_hash_including(new_file: true, new_path: 'LICENSE.md'),
-                                       a_hash_including(new_file: false, new_path: 'VERSION'),
-                                       a_hash_including(a_mode: '100644', b_mode: '100755', new_path: 'CHANGELOG')
+              a_hash_including(deleted_file: true, new_path: 'README.md'),
+              a_hash_including(deleted_file: true, new_path: 'LICENSE'),
+              a_hash_including(new_file: true, new_path: 'LICENSE.md'),
+              a_hash_including(new_file: false, new_path: 'VERSION'),
+              a_hash_including(a_mode: '100644', b_mode: '100755', new_path: 'CHANGELOG')
             ])
           end
         end

@@ -17,6 +17,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   before_action only: [:index, :trending, :starred] do
     push_frontend_feature_flag(:explore_projects_vue, current_user)
+    push_frontend_feature_flag(:retire_trending_projects, current_user)
 
     # For background information on the limit, see:
     #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357
@@ -48,8 +49,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   def trending
     if Feature.enabled?(:retire_trending_projects, current_user)
       respond_to do |format|
-        format.html { redirect_to starred_explore_projects_path }
-        format.json { redirect_to starred_explore_projects_path(format: :json), status: :found }
+        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
       end
       return
     end
@@ -69,6 +70,14 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
+    if Feature.enabled?(:explore_projects_vue, current_user)
+      respond_to do |format|
+        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
+      end
+      return
+    end
+
     @projects = load_projects.reorder('star_count DESC')
 
     respond_to do |format|
@@ -83,7 +92,6 @@ class Explore::ProjectsController < Explore::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def topics
-    load_project_counts
     load_topics
   end
 
@@ -106,14 +114,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   private
 
-  def load_project_counts
-    @all_user_projects = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
-    @all_starred_projects = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
-  end
-
   def load_projects
-    load_project_counts
-
     finder_params = {
       minimum_search_length: MIN_SEARCH_LENGTH,
       not_aimed_for_deletion: true,
@@ -167,7 +168,6 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def page_out_of_bounds(error)
-    load_project_counts
     @max_page_number = error.message
 
     respond_to do |format|

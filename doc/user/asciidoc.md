@@ -207,13 +207,10 @@ v1.0, 2019-01-01
 
 ## Includes
 
-{{< alert type="note" >}}
-
-[Wiki pages](project/wiki/_index.md#create-a-new-wiki-page) created with the AsciiDoc
-format are saved with the file extension `.asciidoc`. When working with AsciiDoc wiki
-pages, change the filename from `.adoc` to `.asciidoc`.
-
-{{< /alert >}}
+> [!note]
+> [Wiki pages](project/wiki/_index.md#create-a-new-wiki-page) created with the AsciiDoc
+> format are saved with the file extension `.asciidoc`. When working with AsciiDoc wiki
+> pages, change the filename from `.adoc` to `.asciidoc`.
 
 ```plaintext
 include::basics.adoc[]
@@ -234,12 +231,9 @@ inclusive of transitive dependencies. To customize the number of processed inclu
 the application setting `asciidoc_max_includes` with the
 [application settings API](../api/settings.md#available-settings).
 
-{{< alert type="note" >}}
-
-The current maximum allowed value for `asciidoc_max_includes` is 64. If the value is
-too high, it might cause performance issues in some situations.
-
-{{< /alert >}}
+> [!note]
+> The current maximum allowed value for `asciidoc_max_includes` is 64. If the value is
+> too high, it might cause performance issues in some situations.
 
 To use includes from separate pages or external URLs, enable the `allow-uri-read`
 in [application settings](../administration/wikis/_index.md#allow-uri-includes-for-asciidoc).

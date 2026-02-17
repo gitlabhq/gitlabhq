@@ -1,0 +1,5 @@
+---
+name: delete_container_virtual_registry
+description: Grants the ability to delete container virtual registries
+boundaries:
+  - group

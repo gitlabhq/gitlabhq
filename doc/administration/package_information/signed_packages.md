@@ -35,7 +35,7 @@ sign these packages can be found on [MIT PGP Public Key Server](https://pgp.mit.
 
 ## Verifying Signatures
 
-Information on how to verify GitLab package signatures can be found in [Package Signatures](https://docs.gitlab.com/omnibus/update/package_signatures.html).
+Information on how to verify GitLab package signatures can be found in [Package Signatures](https://docs.gitlab.com/omnibus/update/package_signatures/).
 
 ## GPG Signature Management
 

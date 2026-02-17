@@ -41,7 +41,7 @@ You can flag a merge request as a draft in several ways:
 When a merge request is ready to merge, you can remove the `Draft` flag in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request, select **Mark as ready**.
-  Users with at least the Developer role can also scroll to the bottom of the merge request
+  Users with the Developer, Maintainer, or Owner role can also scroll to the bottom of the merge request
   description and select **Mark as ready**.
 - Editing an existing merge request: Remove `[Draft]`, `Draft:` or `(Draft)`
   from the beginning of the title, or clear **Mark as draft** below the **Title** field.
@@ -57,7 +57,7 @@ When you view or search in your project's merge requests list, to include or exc
 draft merge requests:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. To filter by merge request status, select **Open**, **Merged**, **Closed**,
    or **All** in the navigation bar.
 1. Select the search box to display a list of filters and select **Draft**, or

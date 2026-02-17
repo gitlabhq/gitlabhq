@@ -20,7 +20,6 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
-    route_setting :authorization, skip_job_token_policies: true
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List container repositories within a project' do
         detail 'This feature was introduced in GitLab 11.8.'
@@ -37,6 +36,7 @@ module API
         optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
         optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
       end
+      route_setting :authorization, permissions: :read_container_repository, boundary_type: :project, skip_job_token_policies: true
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
           user: current_user, subject: user_project
@@ -60,6 +60,7 @@ module API
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
       end
+      route_setting :authorization, permissions: :delete_container_repository, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
@@ -97,7 +98,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         use :pagination
       end
-
+      route_setting :authorization, permissions: :read_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       get ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_read_container_image!
 
@@ -141,6 +142,7 @@ module API
         optional :keep_n, type: Integer, desc: 'Keep n of latest tags with matching name'
         optional :older_than, type: String, desc: 'Delete older than: 1h, 1d, 1month'
       end
+      route_setting :authorization, permissions: :delete_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
@@ -171,6 +173,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
+      route_setting :authorization, permissions: :read_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       get ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_read_container_image!
         validate_tag!
@@ -193,6 +196,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
+      route_setting :authorization, permissions: :delete_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_destroy_container_image_tag!
 

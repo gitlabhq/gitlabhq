@@ -1,0 +1,4 @@
+name: disassociate_maven_virtual_registry_upstream
+description: Grants the ability to remove association between an upstream registry and a Maven virtual registry.
+boundaries:
+  - group

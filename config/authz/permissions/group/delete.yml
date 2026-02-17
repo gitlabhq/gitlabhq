@@ -1,0 +1,5 @@
+---
+name: delete_group
+description: Grants the ability to delete a group
+boundaries:
+  - group

@@ -1,0 +1,8 @@
+---
+name: read_service_account
+description: Grants the ability to read service accounts
+boundaries:
+  - group
+  - instance
+permissions:
+  - read_service_account

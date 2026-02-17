@@ -1,0 +1,7 @@
+---
+name: delete_deployment
+description: Grants the ability to remove deployments from a project
+boundaries:
+  - project
+permissions:
+  - delete_deployment

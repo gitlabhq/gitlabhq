@@ -2,8 +2,8 @@ import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitl
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import mockPipelineNeedsResponse from 'test_fixtures/pipelines/pipeline_needs.json';
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';

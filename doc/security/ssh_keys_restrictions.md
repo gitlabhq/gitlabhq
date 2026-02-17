@@ -24,7 +24,13 @@ ECDSA_SK, or RSA over the older DSA. Administrators should strongly consider
 limiting the allowed SSH key algorithms to maintain security.
 
 GitLab allows you to restrict the allowed SSH key technology as well as specify
-the minimum key length for each technology:
+the minimum key length for each technology.
+
+Prerequisites:
+
+- Administrator access.
+
+To configure SSH key restrictions:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General** .
@@ -85,12 +91,9 @@ Git user has default SSH configuration? ... no
   Please fix the error above and rerun the checks.
 ```
 
-{{< alert type="warning" >}}
-
-Remove the custom configuration as soon as you can. These customizations
-are explicitly not supported and may stop working at any time.
-
-{{< /alert >}}
+> [!warning]
+> Remove the custom configuration as soon as you can. These customizations
+> are explicitly not supported and may stop working at any time.
 
 ## Verify GitLab SSH ownership and permissions
 

@@ -2,6 +2,7 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use the Groups API to manage groups, subgroups, and project access.
 title: Groups API
 ---
 
@@ -16,9 +17,9 @@ Use this API to view and manage GitLab groups. For more information, see [groups
 
 Endpoint responses might vary based on the [permissions](../user/permissions.md) of the authenticated user in the group.
 
-## Get a single group
+## Retrieve a group
 
-Get all details of a group. This endpoint can be accessed without authentication
+Retrieve details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
 if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
 for the group too, if the user is an administrator or has the Owner role.
@@ -35,15 +36,13 @@ Parameters:
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects in a group, use the [list a group's projects endpoint](#list-projects).) |
 
-{{< alert type="note" >}}
-
-The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
-To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
-
-{{< /alert >}}
+> [!note]
+> The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
+> To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4"
 ```
 
 This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects within a group, use the [list a group's projects endpoint](#list-projects) instead.
@@ -258,7 +257,8 @@ Additional response attributes:
 When adding the parameter `with_projects=false`, projects aren't returned.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
 ```
 
 Example response:
@@ -285,7 +285,7 @@ Example response:
 
 ### List all groups
 
-Get a list of visible groups for the authenticated user. When accessed without
+List visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -487,7 +487,7 @@ And to switch pages add:
 
 ### Search for a group
 
-Get all groups that match your string in their name or path.
+Search for groups that match a string in their name or path.
 
 ```plaintext
 GET /groups?search=foobar
@@ -508,7 +508,7 @@ GET /groups?search=foobar
 
 ### List projects
 
-Get a list of projects in this group. When accessed without authentication, only public projects are returned.
+List projects in a group. When accessed without authentication, only public projects are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -595,7 +595,7 @@ Example response:
 
 ### List shared projects
 
-Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.
+List projects shared to a group. When accessed without authentication, only public shared projects are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -768,7 +768,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/saml_users"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/saml_users"
 ```
 
 Example response:
@@ -841,9 +842,9 @@ Example response:
 
 {{< /details >}}
 
-Get a list of users provisioned by a given group. Does not include subgroups.
+List users provisioned by a group. Does not include subgroups.
 
-Requires at least the Maintainer role on the group.
+Requires the Maintainer or Owner role on the group.
 
 ```plaintext
 GET /groups/:id/provisioned_users
@@ -911,7 +912,7 @@ Example response:
 
 ### List subgroups
 
-Get a list of visible direct subgroups in this group.
+List visible direct subgroups in a group.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -995,7 +996,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 ### List descendant groups
 
-Get a list of visible descendant groups of this group.
+List visible descendant groups of a group.
 When accessed without authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -1112,7 +1113,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 ### List shared groups
 
-Get a list of groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
+List groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -1190,7 +1191,7 @@ Example response:
 
 ### List invited groups
 
-Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+List invited groups in a group. When accessed without authentication, only public invited groups are returned.
 This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -1278,12 +1279,9 @@ Group audit events can be accessed via the [Group audit events API](audit_events
 
 ### Create a group
 
-{{< alert type="note" >}}
-
-On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
-use the API to do this.
-
-{{< /alert >}}
+> [!note]
+> On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
+> use the API to do this.
 
 Creates a new project group. Available only for users who can create groups.
 
@@ -1347,12 +1345,13 @@ The `default_branch_protection` attribute determines whether users with the Deve
 The `default_branch_protection_defaults` attribute describes the default branch
 protection defaults. All parameters are optional.
 
-| Key                          | Type    | Description |
-|:-----------------------------|:--------|:------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
-| `allow_force_push`           | boolean | Allow force push for all users with push access. |
-| `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push. |
+| Key                            | Type    | Description |
+|:-------------------------------|:--------|:------------|
+| `allowed_to_push`              | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
+| `allow_force_push`             | boolean | Allow force push for all users with push access. |
+| `allowed_to_merge`             | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
+| `developer_can_initial_push`   | boolean | Allow developers to initial push. |
+| `code_owner_approval_required` | boolean | Require Code Owner approval. |
 
 ### Create a subgroup
 
@@ -1362,60 +1361,100 @@ This is similar to creating a [New group](#create-a-group). You need the `parent
 - `subgroup_name`
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-Type: application/json" \
-     --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> }' \
-     "https://gitlab.example.com/api/v4/groups/"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> }' \
+  --url "https://gitlab.example.com/api/v4/groups/"
 ```
 
-### Delete a group
+### Schedule a group for deletion
 
 {{< history >}}
 
-- Marking groups for deletion [available](https://gitlab.com/groups/gitlab-org/-/epics/17208) on Free tier in GitLab 18.0.
-- Since GitLab 18.5, `permanently_remove` is [not permitted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205572)
-  when the immediate deletion
-  [instance setting](../administration/settings/visibility_and_access_controls.md#immediate-deletion)
-  is disabled (behind [a feature flag](../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`).
-  The setting is enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
-Prerequisites:
-
-- You must be an administrator or have the Owner role for the group.
-
-Marks a group for deletion. Groups are deleted at the end of the retention period:
+Schedules a group for deletion. Groups are deleted at the end of the retention period:
 
 - On GitLab.com, groups are retained for 30 days.
 - On GitLab Self-Managed, the retention period is controlled by the
   [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-This endpoint can also immediately delete a subgroup that was previously marked for deletion.
+This endpoint can also immediately delete a subgroup that was previously scheduled for deletion.
 
-{{< alert type="warning" >}}
+Prerequisites:
 
-On GitLab.com, after a group is deleted, its data is retained for 30 days, and immediate deletion is not available.
-If you really need to delete a group immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
-
-{{< /alert >}}
+- You must be an administrator or have the Owner role for the group.
 
 ```plaintext
 DELETE /groups/:id
 ```
 
-Parameters:
-
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `permanently_remove` | boolean/string    | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. Disabled on GitLab.com and Dedicated. |
-| `full_path`          | string            | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `full_path`          | string            | Conditional       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
+| `permanently_remove` | boolean/string    | No       | If `true`, immediately deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
 
-The response is `202 Accepted` if the user has authorization.
+If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
+```
 
 > [!note]
 > You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
+
+#### Delete a group permanently
+
+Bypasses the configured retention period and
+deletes a group and its data permanently.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+```plaintext
+DELETE /groups/:id
+```
+
+| Attribute            | Type              | Required | Description |
+|----------------------|-------------------|----------|-------------|
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `full_path`          | string            | Yes       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
+| `permanently_remove` | boolean/string    | Yes       | If `true`, permanently deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
+
+If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.
+
+To permanently delete a group scheduled for deletion, you must:
+
+1. Schedule the group for deletion with an API call.
+1. In a second API call, delete the group.
+
+For example:
+
+```shell
+# Schedule a group for deletion
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
+
+# Permanently delete a group scheduled for deletion
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --data '{"full_path": <full_path>, "permanently_remove": "true"}' \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
+```
 
 #### Restore a group marked for deletion
 
@@ -1442,16 +1481,9 @@ Parameters:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Archive a group.
 
@@ -1542,16 +1574,9 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Unarchive a group.
 
@@ -1654,8 +1679,9 @@ Parameters:
 | `group_id` | integer | no       | ID of the new parent group. If unspecified, the group is transformed into a top-level group. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
 ```
 
 #### List all locations available for group transfer
@@ -1674,7 +1700,8 @@ GET /groups/:id/transfer_locations
 Example request:
 
 ```shell
-curl --request GET "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
+curl --request GET \
+    --url "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
 ```
 
 Example response:
@@ -1730,8 +1757,9 @@ Parameters:
 | `project_id` | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/4/projects/56"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
 ### Invite groups
@@ -1780,16 +1808,14 @@ Returns `204` and no content on success.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 - `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 - `allow_personal_snippets` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+- `allow_personal_snippets` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Updates the attributes for a specified group.
 
@@ -1853,16 +1879,14 @@ PUT /groups/:id
 | `only_allow_merge_if_all_discussions_are_resolved`  | boolean           | no       | Only allow merging merge requests when all discussions are resolved. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
 | `allow_personal_snippets`                           | boolean           | no       | Allow enterprise users in this group to create personal snippets. When disabled, enterprise users are restricted from creating snippets in their personal namespace. |
 
-{{< alert type="note" >}}
-
-The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
-To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
-
-{{< /alert >}}
+> [!note]
+> The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
+> To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 ```
 
 This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects in a group, use the
@@ -1980,7 +2004,7 @@ Example:
 curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   --remote-header-name \
   --remote-name \
-  "https://gitlab.example.com/api/v4/groups/4/avatar"
+  --url "https://gitlab.example.com/api/v4/groups/4/avatar"
 ```
 
 ### Upload a group avatar
@@ -1991,8 +2015,10 @@ curl to post data using the header `Content-Type: multipart/form-data`. The
 `@`. For example:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
-     --form "avatar=@/tmp/example.png"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "avatar=@/tmp/example.png" \
+  --url "https://gitlab.example.com/api/v4/groups/22"
 ```
 
 ### Remove a group avatar
@@ -2002,83 +2028,10 @@ To remove a group avatar, use a blank value for the `avatar` attribute.
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
-     --data "avatar="
-```
-
-## Revoke a token
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `group_agnostic_token_revocation`. Disabled by default.
-- Revocation of user feed tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468599) in GitLab 17.3.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-Revoke a token, if it has access to the group or any of its subgroups
-and projects. If the token is revoked, or was already revoked, its
-details are returned in the response.
-
-The following criteria must be met:
-
-- The group must be a top-level group.
-- You must have the Owner role for the group.
-- The token type is one of:
-  - Personal access token
-  - Group access token
-  - Project access token
-  - Group deploy token
-  - User feed tokens
-
-Additional token types may be supported at a later date.
-
-```plaintext
-POST /groups/:id/tokens/revoke
-```
-
-| Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `token`   | string            | Yes      | The plaintext token. |
-
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and
-a JSON representation of the token. The attributes returned will vary by
-token type.
-
-Example request
-
-```shell
-curl --request POST \
+curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --header "Content-Type: application/json" \
-  --data '{"token":"glpat-EXAMPLE"}' \
-  --url "https://gitlab.example.com/api/v4/groups/63/tokens/revoke"
-```
-
-Example response:
-
-```json
-{
-    "id": 9,
-    "name": "my-subgroup-deploytoken",
-    "username": "gitlab+deploy-token-9",
-    "expires_at": null,
-    "scopes":
-    [
-        "read_repository",
-        "read_package_registry",
-        "write_package_registry"
-    ],
-    "revoked": true,
-    "expired": false
-}
+  --data "avatar=" \
+  --url "https://gitlab.example.com/api/v4/groups/22"
 ```
 
 ## Sync a group with LDAP
@@ -2149,7 +2102,8 @@ GET /groups/:id/manage/personal_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
 ```
 
 Example response:
@@ -2196,7 +2150,8 @@ GET /groups/:id/manage/resource_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
 ```
 
 Example response:
@@ -2240,7 +2195,8 @@ GET /groups/:id/manage/ssh_keys
 | `expires_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire after the specified time. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
 ```
 
 Example response:

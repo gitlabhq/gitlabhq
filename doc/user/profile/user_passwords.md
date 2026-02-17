@@ -37,18 +37,48 @@ By default, GitLab enforces the following requirements:
 - Must not contain part of your name, username, or email address.
 - Must not contain a predictable word (for example, `gitlab` or `devops`).
 
-On GitLab Self-Managed and GitLab Dedicated, administrators can configure:
+On GitLab Self-Managed and GitLab Dedicated, administrators can
+[modify password complexity requirements](../../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements).
 
-- [Custom password length limits](../../security/password_length_limits.md).
-- [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
+## Compromised password detection
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188723) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `notify_compromised_passwords`. Disabled by default.
+- Enabled on GitLab.com in GitLab 18.1. Feature flag `notify_compromised_passwords` removed.
+
+{{< /history >}}
+
+GitLab can notify you if your GitLab.com credentials are compromised as part of a data breach on another service or platform. GitLab credentials are encrypted and GitLab itself does not have direct access to them.
+
+When a compromised credential is detected, GitLab displays a security banner and sends an email alert that includes instructions on how to change your password and strengthen your account security.
+
+Compromised password detection is unavailable when authenticating [with an external provider](../../administration/auth/_index.md), or if your account is already [locked](../../security/unlock_user.md).
 
 ## Choose your password
 
 You can choose a password when you [create a user account](account/create_accounts.md).
 
-If you register your account using an external authentication and
-authorization provider, you do not need to choose a password. GitLab
-[sets a random, unique, and secure password for you](../../security/passwords_for_integrated_authentication_methods.md).
+### Passwords for externally authenticated accounts
+
+If your account was created with an external [authentication and authorization provider](../../administration/auth/_index.md),
+GitLab automatically generates a random password to maintain data consistency.
+
+This password has the following properties:
+
+- 128 characters in length
+- Generated using the Devise gem's
+  [`friendly_token` method](https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise.rb#L492)
+- Unique and secure
+
+You don't need to know or use this password.
 
 ## Change your password
 
@@ -85,10 +115,28 @@ To reset your password:
 You are redirected to the sign-in page. If the provided email is verified and associated with an
 existing account, GitLab sends a password reset email.
 
-{{< alert type="note" >}}
+> [!note]
+> Your account can have more than one verified email address, and any email address
+> associated with your account can be verified. However, only the primary email address
+> can be used to sign in once the password is reset.
 
-Your account can have more than one verified email address, and any email address
-associated with your account can be verified. However, only the primary email address
-can be used to sign in once the password is reset.
+## Credential storage
 
-{{< /alert >}}
+GitLab stores user passwords in a hashed format, not as plain text. To hash passwords, GitLab uses
+the [Devise](https://github.com/heartcombo/devise) authentication library.
+
+Password hashes use these security measures:
+
+- Hashing algorithm:
+  - Bcrypt: Used by default.
+  - PBKDF2+SHA512: Used when FIPS mode is enabled.
+- Stretching: Passwords are [stretched](https://en.wikipedia.org/wiki/Key_stretching) to protect against
+  brute-force attacks. The stretching factor depends on the hashing algorithm:
+  - Bcrypt: 10
+  - PBKDF2+SHA512: 20,000
+- Salting: A random [cryptographic salt](https://en.wikipedia.org/wiki/Salt_(cryptography))
+  is generated for each password to protect against pre-computed hash and
+  dictionary attacks. Each password has a unique salt.
+
+OAuth access tokens are also stored in the database in PBKDF2+SHA512 format and
+stretched 20,000 times.

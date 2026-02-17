@@ -10,6 +10,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'DevopsScoreRoot',
     provide: {
       devopsScoreMetrics: JSON.parse(devopsScoreMetrics),
       noDataImagePath,

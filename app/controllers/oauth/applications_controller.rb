@@ -77,7 +77,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @application = current_user.oauth_applications.find(params[:id])
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |exception|
+  rescue_from ActiveRecord::RecordNotFound do |_exception|
     render "errors/not_found", layout: "errors", status: :not_found
   end
 

@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts_monthly.aggregated_metrics.code_review_extension_category_monthly_active_users
 description: Number of users performing api requests with editor extensions
 product_group: code_review
+product_categories:
+- editor_extensions
 value_type: number
 status: active
 milestone: '13.12'

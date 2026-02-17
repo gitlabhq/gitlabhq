@@ -37,12 +37,6 @@
     @apply gl-transition-padding;
     @apply motion-reduce:gl-transition-none;
   }
-
-  &:has(.wiki-sidebar.sidebar-expanded) {
-    .wiki-sidebar-header-toggle {
-      @apply gl-hidden;
-    }
-  }
 }
 
 @mixin wiki-screen-lg {
@@ -55,10 +49,6 @@
   .wiki-sidebar .sidebar-container {
     position: sticky;
   }
-}
-
-.wiki-sidebar.sidebar-expanded + * .wiki-sidebar-header-toggle {
-  @apply gl-hidden;
 }
 
 .wiki-sidebar {
@@ -87,6 +77,34 @@
       @apply gl-duration-medium;
       @apply motion-reduce:gl-transition-none;
     }
+
+    &.sidebar-expanded {
+      .wiki-sidebar-toggle.toggle-action-open {
+        @apply gl-transition-all;
+        @apply gl-duration-medium;
+        /* wait until the sidebar has finished opening to hide the toggle */
+        transition-delay: $gl-transition-duration-medium;
+      }
+    }
+
+    + * .toggle-with-hide-transition {
+      @apply gl-transition-all;
+      @apply gl-overflow-hidden;
+      @apply gl-duration-medium;
+    }
+  }
+
+  &.sidebar-expanded {
+    /* Hide the open toggle. It can be both a descendant... */
+    .wiki-sidebar-toggle.toggle-action-open {
+      @apply gl-opacity-0;
+    }
+
+    /* ...as well as a descendant of a sibling to the wiki sidebar */
+    + * .toggle-with-hide-transition {
+      @apply gl-w-0;
+      @apply gl-px-0;
+    }
   }
 
   &.sidebar-collapsed {
@@ -96,6 +114,14 @@
       width: 0 !important;
       overflow: hidden;
       visibility: hidden;
+    }
+
+    .resizer {
+      display: none;
+    }
+
+    + * .toggle-with-hide-transition {
+      @apply gl-w-9;
     }
   }
 
@@ -109,6 +135,7 @@
     position: relative;
     @apply gl-flex;
     @apply gl-flex-col;
+    @apply gl-bg-default;
 
     .blocks-container {
       @apply gl-flex;
@@ -204,6 +231,15 @@
   }
 }
 
+/* Sidebar in edit mode */
+.wiki-overview:has(.wiki-form.immersive) .wiki-sidebar {
+
+  /* Hide the floating `open`-toggle since the edit header has its own */
+  .wiki-sidebar-toggle.toggle-action-open {
+    @apply gl-hidden;
+  }
+}
+
 .wiki-page-details, .wiki-comments {
   @apply gl-w-full;
   @apply gl-mx-auto;
@@ -244,7 +280,7 @@ ul.wiki-pages-list.content-list {
   }
 }
 
-.panel-content-inner:has(.wiki-form.immersive) {
+.panel-content-inner:has(.wiki-overview) {
   padding-left: 0;
   padding-right: 0;
 }
@@ -265,6 +301,23 @@ ul.wiki-pages-list.content-list {
 
 .wiki-form.immersive {
   --immersive-editor-text-width: #{$wiki-content-default-width};
+}
+
+.wiki-form {
+  .flexible-input-container {
+    @apply gl-w-full;
+  }
+
+  @supports (field-sizing: content) {
+    .flexible-input {
+      // stylelint-disable-next-line property-no-unknown
+      field-sizing: content;
+    }
+
+    .flexible-input-container {
+      @apply gl-w-auto;
+    }
+  }
 }
 
 .wiki-list {

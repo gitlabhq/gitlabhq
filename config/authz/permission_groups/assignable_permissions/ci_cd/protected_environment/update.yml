@@ -1,0 +1,8 @@
+---
+name: update_protected_environment
+description: Grants the ability to update protected environments
+permissions:
+  - update_protected_environment
+boundaries:
+  - project
+  - group

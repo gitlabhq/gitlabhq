@@ -9,7 +9,7 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag, feature_category: :tooling do
   around do |ex|
     RSpec::Core::Sandbox.sandboxed do |config|
       config.add_formatter QA::Support::Formatters::ContextFormatter
-      config.add_formatter QA::Support::Formatters::QuarantineFormatter
+      config.add_formatter GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
       config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
 
       # If there is an example-within-an-example, we want to make sure the inner example

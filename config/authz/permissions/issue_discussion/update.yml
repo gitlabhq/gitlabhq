@@ -1,0 +1,5 @@
+---
+name: update_issue_discussion
+description: Grants the ability to resolve/unresolve issue discussions
+boundaries:
+  - project

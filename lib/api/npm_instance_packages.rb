@@ -13,6 +13,10 @@ module API
       end
     end
 
+    def self.authorization_boundary_options
+      { boundary_type: :project, boundary: -> { project } }
+    end
+
     namespace 'packages/npm' do
       include ::API::Concerns::Packages::NpmEndpoints
       include ::API::Concerns::Packages::NpmNamespaceEndpoints

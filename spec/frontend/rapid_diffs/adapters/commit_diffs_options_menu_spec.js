@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { commitDiffsOptionsMenuAdapter } from '~/rapid_diffs/adapters/commit_diffs_options_menu';
@@ -33,8 +34,10 @@ describe('Commit Diffs File Options Menu Adapter', () => {
 
   const mount = (items = [item1]) => {
     const viewer = 'any';
+    const oldPath = '/old';
+    const newPath = '/new';
     document.body.innerHTML = `
-      <diff-file data-file-data='${JSON.stringify({ viewer })}'>
+      <diff-file id="file" data-file-data='${JSON.stringify({ viewer, old_path: oldPath, new_path: newPath })}'>
         <div class="rd-diff-file">
           <div class="rd-diff-file-header">
             <div class="rd-diff-file-options-menu">
@@ -75,7 +78,7 @@ describe('Commit Diffs File Options Menu Adapter', () => {
     expect(get('serverButton')).not.toBeNull();
   });
 
-  it('replaces the server-rendered button with a Vue CommitDiffsFileOptionsDropdown when the button is clicked', () => {
+  it('replaces the server-rendered button with a Vue CommitDiffsFileOptionsDropdown when the button is clicked', async () => {
     mount();
     const button = get('serverButton');
 
@@ -86,6 +89,8 @@ describe('Commit Diffs File Options Menu Adapter', () => {
 
     expect(get('vueButton')).not.toBeNull();
     expect(get('serverButton')).toBeNull();
+    // Wait for Vue 3 to complete child component rendering and focus
+    await nextTick();
     expect(document.activeElement).toEqual(get('vueButton'));
   });
 
@@ -97,8 +102,8 @@ describe('Commit Diffs File Options Menu Adapter', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items).toHaveLength(1);
-    expect(items[0].textContent.trim()).toBe(item1.text);
-    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[0].textContent.trim()).toBe('Copy link to the file');
+    expect(items[1].textContent.trim()).toBe(item1.text);
+    expect(items[1].querySelector('a').getAttribute('href')).toBe(item1.href);
   });
 });

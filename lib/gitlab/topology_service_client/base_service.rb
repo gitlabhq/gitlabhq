@@ -30,7 +30,8 @@ module Gitlab
         interceptors = [
           Labkit::Correlation::GRPC::ClientInterceptor.instance,
           Gitlab::Cells::TopologyService::MetadataClient.new(
-            Gitlab.config.cell.topology_service_client.metadata)
+            Gitlab.config.cell.topology_service_client.metadata),
+          ConcurrencyLimitInterceptor.new
         ]
 
         # Add metrics interceptor if metrics are enabled

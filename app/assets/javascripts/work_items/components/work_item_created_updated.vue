@@ -3,7 +3,8 @@ import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_PROJECT } from '~/issues/constants';
+import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -42,14 +43,23 @@ export default {
     };
   },
   computed: {
-    createdAt() {
-      return this.workItem?.createdAt || '';
-    },
     author() {
       return this.workItem?.author ?? {};
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
+    },
+    createdAt() {
+      return this.workItem?.createdAt || '';
+    },
+    createdMessage() {
+      if (this.workItem.externalAuthor && this.author.name) {
+        return __('created %{timeAgo} by %{email} via %{author}');
+      }
+      if (this.author.name) {
+        return __('created %{timeAgo} by %{author}');
+      }
+      return __('created %{timeAgo}');
     },
     workItemState() {
       return this.workItem?.state;
@@ -93,7 +103,7 @@ export default {
       },
     },
   },
-  WORKSPACE_PROJECT,
+  NAMESPACE_PROJECT,
 };
 </script>
 
@@ -113,7 +123,7 @@ export default {
       v-if="isWorkItemConfidential"
       class="gl-align-middle"
       :issuable-type="workItemType"
-      :workspace-type="$options.WORKSPACE_PROJECT"
+      :workspace-type="$options.NAMESPACE_PROJECT"
       hide-text-in-small-screens
     />
     <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />
@@ -127,9 +137,12 @@ export default {
       icon-class="gl-fill-icon-subtle"
     />
     <span data-testid="work-item-created" class="gl-align-middle">
-      <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
+      <gl-sprintf :message="createdMessage">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
+        </template>
+        <template #email>
+          {{ workItem.externalAuthor }}
         </template>
         <template #author>
           <gl-avatar-link
@@ -141,11 +154,6 @@ export default {
           >
             {{ author.name }}
           </gl-avatar-link>
-        </template>
-      </gl-sprintf>
-      <gl-sprintf v-else-if="createdAt" :message="__('created %{timeAgo}')">
-        <template #timeAgo>
-          <time-ago-tooltip :time="createdAt" />
         </template>
       </gl-sprintf>
     </span>

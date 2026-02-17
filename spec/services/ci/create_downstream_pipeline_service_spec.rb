@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category: :continuous_integration do
   include Ci::SourcePipelineHelpers
   include Ci::PipelineMessageHelpers
+  include Ci::PipelineVariableHelpers
 
   # Using let_it_be on user and projects for these specs can cause
   # spec-ordering failures due to the project-based permissions
@@ -744,7 +745,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
     context 'when pipeline variables are defined' do
       before do
-        upstream_pipeline.variables.create!(key: 'PIPELINE_VARIABLE', value: 'my-value')
+        create_or_replace_pipeline_variables(upstream_pipeline, key: 'PIPELINE_VARIABLE', value: 'my-value')
       end
 
       it 'does not pass pipeline variables directly downstream' do
@@ -761,7 +762,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
 
         it 'makes it possible to pass pipeline variable downstream' do
-          pipeline.variables.find_by(key: 'BRIDGE').tap do |variable|
+          pipeline.variables.find { |var| var.key == 'BRIDGE' }.tap do |variable|
             expect(variable.value).to eq 'my-value-var'
           end
         end

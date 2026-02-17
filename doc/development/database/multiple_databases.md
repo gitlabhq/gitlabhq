@@ -53,7 +53,7 @@ The usage of schema enforces the base class to be used:
 ### Defining a sharding key for all cell-local tables
 
 This content has been moved to a
-[new location](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables)
+[new location](../organization/sharding/_index.md#choosing-the-right-sharding-key)
 
 ### The impact of `gitlab_schema`
 
@@ -102,13 +102,10 @@ Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
 By default, GDK is configured to run with multiple databases.
 
-{{< alert type="warning" >}}
-
-Switching back-and-forth between single and multiple databases in
-the same development instance is discouraged. Any data in the `ci` or `sec`
-database will not be accessible in single database mode. For single database, you should use a separate development instance.
-
-{{< /alert >}}
+> [!warning]
+> Switching back-and-forth between single and multiple databases in
+> the same development instance is discouraged. Any data in the `ci` or `sec`
+> database will not be accessible in single database mode. For single database, you should use a separate development instance.
 
 To configure GDK to use a single database:
 
@@ -538,11 +535,8 @@ class Group < Namespace
 end
 ```
 
-{{< alert type="warning" >}}
-
-Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
-
-{{< /alert >}}
+> [!warning]
+> Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
 
 ```ruby
 class Group < Namespace
@@ -822,24 +816,18 @@ longer updated. So this data can be removed by truncating the tables.
 
 For this purpose, GitLab provides separate Rake tasks, one for each database:
 
+> [!note]
+> These tasks can only be run when the tables in the database are
+> [locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
+
 - `gitlab:db:truncate_legacy_tables:main` will truncate the legacy tables in Main database.
 - `gitlab:db:truncate_legacy_tables:ci` will truncate the legacy tables in CI database.
 - `gitlab:db:truncate_legacy_tables:sec` will truncate the legacy tables in Sec database.
 
-{{< alert type="note" >}}
-
-These tasks can only be run when the tables in the database are
-[locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The examples in this section use `DRY_RUN=true`. This ensures no data is actually
-truncated. GitLab highly recommends to have a backup available before you run any of
-these tasks without `DRY_RUN=true`.
-
-{{< /alert >}}
+> [!warning]
+> The examples in this section use `DRY_RUN=true`. This ensures no data is actually
+> truncated. GitLab highly recommends to have a backup available before you run any of
+> these tasks without `DRY_RUN=true`.
 
 These tasks have the option to see what they do without actually changing the
 data:

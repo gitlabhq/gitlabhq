@@ -26,11 +26,17 @@ module Ci
         .new(project: project, current_user: current_user)
         .close_all(pipeline)
 
+      pipeline.update(finished_at: nil)
+
       start_pipeline(pipeline)
 
       ServiceResponse.success
     rescue Gitlab::Access::AccessDeniedError => e
       ServiceResponse.error(message: e.message, http_status: :forbidden)
+    rescue ActiveRecord::StaleObjectError
+      raise unless Feature.enabled?(:rescue_stale_object_errors_in_pipeline_processing, project)
+
+      ServiceResponse.error(message: 'Error updating stale job', http_status: :conflict)
     end
 
     def check_access(pipeline)

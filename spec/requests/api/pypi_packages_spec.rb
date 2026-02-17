@@ -82,6 +82,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'updating personal access token last used' do
         let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pypi_package do
+        before_all do
+          group.add_developer(user)
+        end
+
+        let(:boundary_object) { group }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple' do
@@ -104,6 +113,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it_behaves_like 'updating personal access token last used' do
         let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pypi_package do
+        before_all do
+          project.add_developer(user)
+        end
+
+        let(:boundary_object) { project }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
       end
     end
   end
@@ -153,6 +171,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'updating personal access token last used' do
         let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pypi_package do
+        before_all do
+          group.add_developer(user)
+        end
+
+        let(:boundary_object) { group }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
@@ -175,6 +202,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it_behaves_like 'updating personal access token last used' do
         let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pypi_package do
+        before_all do
+          project.add_developer(user)
+        end
+
+        let(:boundary_object) { project }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
       end
     end
   end
@@ -238,6 +274,17 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_pypi_package do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(url), headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers)
+      end
     end
   end
 
@@ -541,6 +588,24 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_pypi_package do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :post,
+          file_key: :content,
+          params: params,
+          headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers),
+          send_rewritten_field: send_rewritten_field
+        )
+      end
+    end
   end
 
   context 'file download endpoint' do
@@ -563,6 +628,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'pypi file download endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
       it_behaves_like 'a pypi user namespace endpoint'
+
+      it_behaves_like 'authorizing granular token permissions', :download_pypi_package do
+        before_all do
+          group.add_developer(user)
+        end
+
+        let(:boundary_object) { group }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/files/:sha256/*file_identifier' do
@@ -572,6 +646,15 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'pypi file download endpoint'
       it_behaves_like 'rejects PyPI access with unknown project id'
       it_behaves_like 'allow access for everyone with public package_registry_access_level'
+
+      it_behaves_like 'authorizing granular token permissions', :download_pypi_package do
+        before_all do
+          project.add_developer(user)
+        end
+
+        let(:boundary_object) { project }
+        let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+      end
     end
   end
 end

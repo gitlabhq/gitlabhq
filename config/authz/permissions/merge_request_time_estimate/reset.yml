@@ -1,0 +1,5 @@
+---
+name: reset_merge_request_time_estimate
+description: Grants the ability to reset time estimates for merge requests
+boundaries:
+  - project

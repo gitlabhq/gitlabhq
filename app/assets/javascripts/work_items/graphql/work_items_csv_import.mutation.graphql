@@ -1,6 +1,0 @@
-mutation WorkItemsCsvImport($input: WorkItemsCsvImportInput!) {
-  workItemsCsvImport(input: $input) {
-    message
-    errors
-  }
-}

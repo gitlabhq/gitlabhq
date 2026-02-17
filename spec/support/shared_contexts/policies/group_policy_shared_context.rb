@@ -103,12 +103,12 @@ RSpec.shared_context 'GroupPolicy context' do
     (
       reporter_permissions + %i[
         create_custom_emoji
-        create_package
         create_observability_access_request
-        update_o11y_settings
+        create_package
         delete_o11y_settings
         read_cluster
         read_observability_portal
+        update_o11y_settings
       ]
     ).uniq
   end
@@ -116,53 +116,61 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:maintainer_permissions) do
     (
       developer_permissions + %i[
-        destroy_package
-        create_projects
-        create_cluster update_cluster admin_cluster add_cluster
-        admin_upload destroy_upload
+        add_cluster
         admin_achievement
-        award_achievement
-        read_runners
+        admin_cluster
         admin_push_rules
+        admin_upload
+        award_achievement
+        create_cluster
+        create_projects
+        destroy_package
+        destroy_upload
+        read_runners
+        update_cluster
       ]
     ).uniq
   end
 
   let(:owner_permissions) do
     (
-      maintainer_permissions + security_manager_permissions + %i[
-        owner_access
+      maintainer_permissions + planner_permissions + security_manager_permissions + %i[
+        activate_group_member
         admin_cicd_variables
         admin_group
-        admin_namespace
         admin_group_member
+        admin_integrations
+        admin_member_access_request
+        admin_namespace
         admin_package
         admin_runners
-        change_visibility_level
-        set_note_created_at
-        create_subgroup
-        read_statistics
-        update_default_branch_protection
-        register_group_runners
-        read_billing
-        edit_billing
-        destroy_issue
-        admin_member_access_request
-        update_git_access_protocol
-        remove_group
-        view_edit_page
-        manage_merge_request_settings
-        admin_integrations
-        set_issue_updated_at
-        set_issue_created_at
-        activate_group_member
         archive_group
+        change_visibility_level
+        create_subgroup
+        destroy_issue
+        edit_billing
+        manage_merge_request_settings
+        owner_access
+        read_billing
+        read_statistics
+        register_group_runners
+        remove_group
+        set_issue_created_at
+        set_issue_updated_at
+        set_note_created_at
+        update_default_branch_protection
+        update_git_access_protocol
+        view_edit_page
       ]
     ).uniq
   end
 
   let(:admin_permissions) do
-    (owner_permissions + %i[admin_organization read_confidential_issues read_internal_note]).uniq
+    (owner_permissions + %i[
+      admin_organization
+      read_confidential_issues
+      read_internal_note
+    ]).uniq
   end
 
   let(:all_permissions) do
@@ -171,8 +179,8 @@ RSpec.shared_context 'GroupPolicy context' do
       owner_permissions +
       maintainer_permissions +
       developer_permissions +
-      reporter_permissions +
       security_manager_permissions +
+      reporter_permissions +
       planner_permissions +
       guest_permissions +
       public_permissions +

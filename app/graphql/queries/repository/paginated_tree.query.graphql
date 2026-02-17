@@ -1,3 +1,4 @@
+# @feature_category: source_code_management
 fragment TreeEntry on Entry {
   __typename
   id

@@ -9,11 +9,14 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
     let_it_be(:current_user) { create(:user) }
     let_it_be(:organization) { create(:organization) }
 
-    let(:granular_scope) { build(:granular_scope, boundary: ::Authz::Boundary.for(:user), organization: organization) }
+    let(:granular_scopes) do
+      [build(:granular_scope, boundary: ::Authz::Boundary.for(:user), organization: organization)]
+    end
+
     let(:params) { { name: 'Test token', expires_at: Time.zone.today + 1.month, description: "Test Description" } }
     let(:service) do
       described_class.new(current_user: current_user, organization: organization, params: params,
-        granular_scopes: [granular_scope])
+        granular_scopes: granular_scopes)
     end
 
     let(:token) { execute.payload[:personal_access_token] }
@@ -30,7 +33,32 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
 
       expect(token.scopes).to eq([::Gitlab::Auth::GRANULAR_SCOPE])
       expect(token).to be_granular
-      expect(token.granular_scopes.map(&:id)).to match_array([granular_scope.id])
+      expect(token.granular_scopes.map(&:id)).to match_array(granular_scopes.map(&:id))
+    end
+
+    describe 'internal event tracking' do
+      let(:common_attrs) { { organization: organization } }
+      let(:group) { create(:group, **common_attrs, guests: [current_user]) }
+      let(:other_group) { create(:group, **common_attrs, guests: [current_user]) }
+      let(:granular_scopes) do
+        [
+          build(:granular_scope, boundary: ::Authz::Boundary.for(:instance), **common_attrs,
+            permissions: ['read_admin_member_role']),
+          build(:granular_scope, boundary: ::Authz::Boundary.for(group), permissions: ['read_page']),
+          build(:granular_scope, boundary: ::Authz::Boundary.for(other_group), permissions: ['delete_page'])
+        ]
+      end
+
+      it 'tracks the creation event' do
+        scopes = 'instance, groups_and_projects'
+        permissions = 'instance: read_admin_member_role | groups_and_projects: delete_page, read_page'
+
+        expect { execute }.to trigger_internal_events('create_pat')
+          .with(user: current_user, additional_properties: { type: 'granular', scopes: scopes,
+                                                             permissions: permissions })
+          .and increment_usage_metrics('counts.count_total_personal_access_token_created_granular')
+          .and not_increment_usage_metrics('counts.count_total_personal_access_token_created_legacy')
+      end
     end
 
     context 'when no granular scopes are provided' do
@@ -60,6 +88,10 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
         expect(execute).to be_error
         expect(execute.message).to eq('Token creation failed')
       end
+
+      it 'does not trigger create event tracking' do
+        expect { execute }.not_to trigger_internal_events('create_pat')
+      end
     end
 
     context 'when addition of granular scopes fails' do
@@ -75,6 +107,10 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
         expect { execute }.not_to change { [PersonalAccessToken.count, Authz::GranularScope.count] }
 
         expect(execute.message).to eq('Granular scope addition failed')
+      end
+
+      it 'does not trigger create event tracking' do
+        expect { execute }.not_to trigger_internal_events('create_pat')
       end
     end
   end

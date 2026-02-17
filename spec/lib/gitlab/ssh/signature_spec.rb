@@ -186,7 +186,7 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
         key.update!(key: public_key_text)
       end
 
-      it_behaves_like 'unverified signature'
+      it_behaves_like 'verified signature'
     end
 
     context 'when signed text is an empty string' do
@@ -252,8 +252,8 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
         user.update!(confirmed_at: nil)
       end
 
-      it 'reports unverified status' do
-        expect(signature.verification_status).to eq(:unverified)
+      it 'reports same_user_different_email status' do
+        expect(signature.verification_status).to eq(:same_user_different_email)
       end
     end
 

@@ -1,0 +1,138 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
+# @feature_category: portfolio_management
+query getWorkItemsSlim(
+  $excludeProjects: Boolean = false
+  $excludeGroupWorkItems: Boolean = false
+  $includeDescendants: Boolean = true
+  $iid: String
+  $fullPath: ID!
+  $search: String
+  $sort: WorkItemSort
+  $state: IssuableState
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $closedAfter: Time
+  $closedBefore: Time
+  $confidential: Boolean
+  $createdAfter: Time
+  $createdBefore: Time
+  $dueAfter: Time
+  $dueBefore: Time
+  $labelName: [String!]
+  $milestoneTitle: [String!]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $subscribed: SubscriptionStatus
+  $types: [IssueType!]
+  $updatedAfter: Time
+  $updatedBefore: Time
+  $crmOrganizationId: String
+  $crmContactId: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $hierarchyFilters: HierarchyFilterInput
+  $in: [IssuableSearchableField!]
+  $not: NegatedWorkItemFilterInput
+  $or: UnionedWorkItemFilterInput
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $useWorkItemFeatures: Boolean = false
+) {
+  namespace(fullPath: $fullPath) {
+    id
+    name
+    workItems(
+      iid: $iid
+      excludeProjects: $excludeProjects
+      excludeGroupWorkItems: $excludeGroupWorkItems
+      includeDescendants: $includeDescendants
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
+      confidential: $confidential
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      dueBefore: $dueBefore
+      dueAfter: $dueAfter
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      subscribed: $subscribed
+      types: $types
+      updatedAfter: $updatedAfter
+      updatedBefore: $updatedBefore
+      crmContactId: $crmContactId
+      crmOrganizationId: $crmOrganizationId
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      hierarchyFilters: $hierarchyFilters
+      in: $in
+      not: $not
+      or: $or
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        author {
+          ...User
+        }
+        closedAt
+        createdAt
+        iid
+        namespace {
+          id
+          fullPath
+        }
+        reference(full: true)
+        title
+        updatedAt
+        webUrl
+        webPath @gl_introduced(version: "18.6.0-pre")
+        state
+        widgets(onlyTypes: [LABELS]) {
+          type
+          ... on WorkItemWidgetLabels {
+            allowsScopedLabels
+            labels {
+              nodes {
+                ...Label
+              }
+            }
+          }
+        }
+        features @include(if: $useWorkItemFeatures) {
+          labels {
+            allowsScopedLabels
+            labels {
+              nodes {
+                ...Label
+              }
+            }
+          }
+        }
+        workItemType {
+          id
+          name
+        }
+      }
+    }
+  }
+}

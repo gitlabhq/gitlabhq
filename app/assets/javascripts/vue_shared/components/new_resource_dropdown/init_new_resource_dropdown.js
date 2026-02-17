@@ -20,6 +20,7 @@ export const initNewResourceDropdown = (props = {}) => {
 
   return new Vue({
     el,
+    name: 'NewResourceDropdownRoot',
     apolloProvider,
     render(createElement) {
       return createElement(NewResourceDropdown, {

@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { merge } from 'lodash';
-import { GlDropdown, GlTruncate, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -25,7 +25,7 @@ describe('GroupNameAndPath', () => {
   const mockGroupUrl = 'my-awesome-group';
   const mockGroupUrlSuggested = 'my-awesome-group1';
 
-  const mockQueryResponse = jest.fn().mockResolvedValue({
+  const mockResponse = jest.fn().mockResolvedValue({
     data: {
       currentUser: {
         id: '1',
@@ -55,7 +55,7 @@ describe('GroupNameAndPath', () => {
     mattermostEnabled: false,
   };
 
-  const createComponent = ({ provide = {} } = {}) => {
+  const createComponent = ({ provide = {}, mockQueryResponse = mockResponse } = {}) => {
     wrapper = mountExtended(GroupNameAndPath, {
       provide: merge({}, defaultProvide, provide),
       apolloProvider: createMockApollo([
@@ -73,7 +73,7 @@ describe('GroupNameAndPath', () => {
   const findGroupUrlField = () => wrapper.findByLabelText('Group URL');
   const findSubgroupNameField = () => wrapper.findByLabelText('Subgroup name');
   const findSubgroupSlugField = () => wrapper.findByLabelText('Subgroup slug');
-  const findSelectedGroup = () => wrapper.findComponent(GlTruncate);
+  const findSelectedGroup = () => wrapper.findComponent(GlCollapsibleListbox);
   const findChangeUrlAlert = () => extendedWrapper(wrapper.findByTestId('changing-url-alert'));
   const findDotInPathAlert = () => extendedWrapper(wrapper.findByTestId('dot-in-path-alert'));
 
@@ -111,6 +111,45 @@ describe('GroupNameAndPath', () => {
         createComponent({ provide: { newSubgroup: true } });
       });
 
+      it('show correct state before dropdown is opened', () => {
+        expect(findSelectedGroup().props('loading')).toBe(false);
+        expect(findSelectedGroup().props('noResultsText')).toBe('');
+      });
+
+      it('shows correct state when dropdown is opened', async () => {
+        findSelectedGroup().vm.$emit('shown');
+        await nextTick();
+
+        expect(findSelectedGroup().props('loading')).toBe(true);
+        expect(findSelectedGroup().props('noResultsText')).toBe('');
+      });
+
+      it('shows no-results text when query completes with no results', async () => {
+        // Mock the GraphQL query to return empty results
+        const mockQuery = jest.fn().mockResolvedValue({
+          data: {
+            currentUser: {
+              groups: {
+                nodes: [],
+              },
+            },
+          },
+        });
+        wrapper.vm.$apollo.query = mockQuery;
+
+        findSelectedGroup().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(findSelectedGroup().props('noResultsText')).toBe('No matches found');
+      });
+
+      it('shows searching state when user types in search', async () => {
+        findSelectedGroup().vm.$emit('search', 'test');
+        await nextTick();
+
+        expect(findSelectedGroup().props('searching')).toBe(true);
+      });
+
       it('updates `Subgroup slug` field as user types', async () => {
         await findSubgroupNameField().setValue(mockGroupName);
 
@@ -119,19 +158,18 @@ describe('GroupNameAndPath', () => {
 
       describe('when user selects parent group', () => {
         it('updates `Subgroup URL` dropdown and calls API', async () => {
-          expect(findSelectedGroup().text()).toContain('/path1');
+          expect(findSelectedGroup().props('toggleText')).toContain('/path1');
 
           await findSubgroupNameField().setValue(mockGroupName);
+          findSelectedGroup().vm.$emit('shown');
 
-          wrapper.findComponent(GlDropdown).vm.$emit('shown');
-          await wrapper.vm.$apollo.queries.currentUserGroups.refetch();
-          jest.runOnlyPendingTimers();
           await waitForPromises();
 
-          wrapper.findComponent(GlDropdownItem).vm.$emit('click');
+          findSelectedGroup().vm.$emit('select', '2');
           await nextTick();
 
-          expect(findSelectedGroup().text()).toContain('/path2');
+          expect(findSelectedGroup().props('toggleText')).toContain('/path2');
+
           expect(getGroupPathAvailability).toHaveBeenCalled();
 
           expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(

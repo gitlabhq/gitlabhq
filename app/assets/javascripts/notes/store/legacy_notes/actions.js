@@ -64,8 +64,11 @@ export function expandDiscussion(data) {
   this[types.EXPAND_DISCUSSION](data);
 }
 
-export function collapseDiscussion(data) {
-  return this[types.COLLAPSE_DISCUSSION](data);
+export function collapseDiscussion(discussionId) {
+  const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+  Object.assign(discussion, { expanded: false });
+  if (!discussion.diff_file) return;
+  this.tryStore('legacyDiffs').collapseDiffDiscussion(discussion);
 }
 
 export function setNotesData(data) {
@@ -410,7 +413,7 @@ export function resolveDiscussion({ discussionId }) {
   });
 }
 
-export function toggleResolveNote({ endpoint, isResolved, discussion }) {
+export function toggleResolveNote({ endpoint, isResolved, discussion, discussionId }) {
   const method = isResolved
     ? constants.UNRESOLVE_NOTE_METHOD_NAME
     : constants.RESOLVE_NOTE_METHOD_NAME;
@@ -422,6 +425,10 @@ export function toggleResolveNote({ endpoint, isResolved, discussion }) {
     this.updateResolvableDiscussionsCounts();
 
     this.updateMergeRequestWidget();
+
+    if (!isResolved && discussionId) {
+      this.collapseDiscussion(discussionId);
+    }
   });
 }
 

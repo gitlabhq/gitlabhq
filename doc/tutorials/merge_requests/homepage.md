@@ -22,12 +22,9 @@ title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 This tutorial introduces you to the new user interface for managing merge requests.
 
@@ -45,7 +42,7 @@ helps you track your work. It sorts your work into clear categories to help you:
 To see your merge request homepage on GitLab.com, either:
 
 - Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../user/shortcuts.md).
-- On the left sidebar, select **Merge requests**.
+- In the left sidebar, select **Merge requests**.
 
 It's organized into three tabs, to help you focus on what needs your attention right now, while
 still giving you access to other recent work:

@@ -7,10 +7,7 @@ module Ci
     included do
       include Gitlab::EncryptedAttribute
 
-      enum :variable_type, {
-        env_var: 1,
-        file: 2
-      }
+      enum :variable_type, Enums::Ci::Variable::TYPES
 
       validates :key,
         presence: true,

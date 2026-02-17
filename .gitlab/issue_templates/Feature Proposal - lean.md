@@ -49,8 +49,8 @@ Explore (../../doc/development/internal_analytics/internal_event_instrumentation
 
 ### Does this feature require an audit event?
 
-<!--- Checkout these docs to know more
-https://docs.gitlab.com/ee/development/audit_event_guide/#what-are-audit-events
+<!--- Check out these docs to know more
+https://docs.gitlab.com/development/audit_event_guide/#what-are-audit-events
 https://docs.gitlab.com/administration/compliance/audit_event_reports/
 --->
 

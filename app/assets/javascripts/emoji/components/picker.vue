@@ -8,12 +8,11 @@ import {
   GlAnimatedSmileIcon,
 } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
-import VirtualList from 'vue-virtual-scroll-list';
 import { getEmojiCategoryMap, state } from '~/emoji';
 import { __ } from '~/locale';
 import { CATEGORY_NAMES, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from '../constants';
-import Category from './category.vue';
 import EmojiList from './emoji_list.vue';
+import VirtualList from './virtual_list.vue';
 import { addToFrequentlyUsed, getEmojiCategories, hasFrequentlyUsedEmojis } from './utils';
 
 export default {
@@ -23,7 +22,6 @@ export default {
     GlSearchBoxByType,
     GlAnimatedSmileIcon,
     VirtualList,
-    Category,
     EmojiList,
   },
   directives: {
@@ -73,6 +71,7 @@ export default {
       isFocused: false,
       currentCategory: 0,
       searchValue: '',
+      scrollTop: 0,
     };
   },
   computed: {
@@ -101,7 +100,7 @@ export default {
       const categories = await getEmojiCategories();
       const { top } = categories[categoryName];
 
-      this.$refs.virtualScoller.setScrollTop(top);
+      this.scrollTop = top;
     },
     selectEmoji({ category, emoji }) {
       this.$emit('click', emoji);
@@ -112,14 +111,14 @@ export default {
       }
     },
     onSearchInput() {
-      if (this.$refs.virtualScoller) {
-        this.$refs.virtualScoller.setScrollTop(0);
-        this.$refs.virtualScoller.forceRender();
+      if (this.$refs.virtualList) {
+        this.scrollTop = 0;
       }
     },
-    async onScroll(event, { offset }) {
-      const categories = await getEmojiCategories();
+    async onScroll({ offset }) {
+      this.scrollTop = offset;
 
+      const categories = await getEmojiCategories();
       this.currentCategory = findLastIndex(Object.values(categories), ({ top }) => offset >= top);
     },
     onShow() {
@@ -161,9 +160,10 @@ export default {
       @shown="onShow"
       @hidden="onHide"
     >
-      <template #toggle>
+      <template #toggle="{ accessibilityAttributes }">
         <gl-button
           v-gl-tooltip
+          v-bind="accessibilityAttributes"
           :title="buttonTitle || $options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
           :category="toggleCategory"
@@ -214,21 +214,13 @@ export default {
       <emoji-list v-if="isVisible" :search-value="searchValue">
         <template #default="{ filteredCategories }">
           <virtual-list
-            ref="virtualScoller"
-            :size="258"
-            :remain="1"
-            :bench="2"
-            variable
-            :onscroll="onScroll"
-          >
-            <div
-              v-for="(category, categoryKey) in filteredCategories"
-              :key="categoryKey"
-              :style="{ height: category.height + 'px' }"
-            >
-              <category :category="categoryKey" :emojis="category.emojis" @click="selectEmoji" />
-            </div>
-          </virtual-list>
+            ref="virtualList"
+            :categories="filteredCategories"
+            :search-term="searchValue"
+            :scroll-top="scrollTop"
+            @select-emoji="selectEmoji"
+            @scroll="onScroll"
+          />
         </template>
       </emoji-list>
 

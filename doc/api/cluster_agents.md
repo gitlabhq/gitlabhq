@@ -20,11 +20,11 @@ title: Kubernetes agent API
 
 Use this API to interact with the [GitLab agent for Kubernetes](../user/clusters/agent/_index.md).
 
-## List the agents for a project
+## List all agents
 
-Returns the list of agents registered for the project.
+Lists all agents registered for the project.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents
@@ -100,11 +100,11 @@ Example response:
 ]
 ```
 
-## Get details about an agent
+## Retrieve an agent
 
-Gets a single agent details.
+Retrieves a single agent's details.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id
@@ -164,11 +164,11 @@ Example response:
 }
 ```
 
-## Register an agent with a project
+## Create an agent
 
-Registers an agent to the project.
+Creates a new agent for the project.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 POST /projects/:id/cluster_agents
@@ -230,11 +230,11 @@ Example response:
 }
 ```
 
-## Delete a registered agent
+## Delete an agent
 
 Deletes an existing agent registration.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id
@@ -255,7 +255,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
 ```
 
-## List tokens for an agent
+## List all agent tokens
 
 {{< history >}}
 
@@ -263,9 +263,9 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Returns a list of active tokens for an agent.
+Lists all active tokens for an agent.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/tokens
@@ -328,7 +328,7 @@ Example response:
 > [!note]
 > The `last_used_at` field for a token is only returned when getting a single agent token.
 
-## Get a single agent token
+## Retrieve an agent token
 
 {{< history >}}
 
@@ -336,9 +336,9 @@ Example response:
 
 {{< /history >}}
 
-Gets a single agent token.
+Retrieves a single agent token.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 Returns a `404` if the agent token has been revoked.
 
@@ -404,7 +404,7 @@ Example response:
 
 Creates a new token for an agent.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 An agent can have only two active tokens at one time.
 
@@ -476,7 +476,7 @@ Example response:
 
 Revokes an agent token.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id/tokens/:token_id
@@ -516,11 +516,11 @@ curl --request DELETE \
 [Receptive agents](../user/clusters/agent/_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
 that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
-### List URL configurations for a receptive agent
+### List all URL configurations
 
-Returns a list of URL configurations for an agent.
+Lists all URL configurations for a specified agent.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/url_configurations
@@ -571,11 +571,11 @@ Example response:
 > [!note]
 > Either `public_key` or `client_cert` is set, but never both.
 
-### Get a single agent URL configuration
+### Retrieve a URL configuration
 
-Gets a single agent URL configuration.
+Retrieves a single agent URL configuration.
 
-You must have at least the Developer role to use this endpoint.
+You must have the Developer, Maintainer, or Owner role to use this endpoint.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id
@@ -625,11 +625,11 @@ Example response:
 > [!note]
 > Either `public_key` or `client_cert` is set, but never both.
 
-### Create an agent URL configuration
+### Create a URL configuration
 
 Creates a new URL configuration for an agent.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 An agent can have only one URL configuration at the time.
 
@@ -710,11 +710,11 @@ Example response for mTLS:
 > [!note]
 > If the `client_cert` and `client_key` are not provided, a private-public key pair is generated and JWT authentication is used instead of mTLS.
 
-### Delete an agent URL configuration
+### Delete a URL configuration
 
 Deletes an agent URL configuration.
 
-You must have at least the Maintainer role to use this endpoint.
+You must have the Maintainer or Owner role to use this endpoint.
 
 ```plaintext
 DELETE /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id

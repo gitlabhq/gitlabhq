@@ -79,7 +79,7 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
 
       findButton().vm.$emit('click');
 
-      expect(spy).toHaveBeenCalledWith('openModal', {
+      expect(spy).toHaveBeenCalledWith('open-modal', {
         source: triggerSource,
       });
     });

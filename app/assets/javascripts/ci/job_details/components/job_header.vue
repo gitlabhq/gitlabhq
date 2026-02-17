@@ -52,6 +52,7 @@ export default {
       required: true,
     },
   },
+  emits: ['clicked-sidebar-button'],
   apollo: {
     job: {
       query: getJobQuery,
@@ -151,7 +152,7 @@ export default {
   },
   methods: {
     onClickSidebarButton() {
-      this.$emit('clickedSidebarButton');
+      this.$emit('clicked-sidebar-button');
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },

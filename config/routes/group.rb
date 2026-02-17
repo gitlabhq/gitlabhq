@@ -39,11 +39,7 @@ constraints(Namespaces::GroupUrlConstraint.new) do
     get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
     get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
 
-    resources :saved_views, only: [], path: 'work_items/saved_views' do
-      member do
-        get :subscribe
-      end
-    end
+    resources :saved_views, only: [:show], path: 'work_items/views'
 
     namespace :settings do
       resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
@@ -97,7 +93,6 @@ constraints(Namespaces::GroupUrlConstraint.new) do
     resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]
-    resources :shared_projects, only: [:index]
 
     resources :labels, except: [:show] do
       post :toggle_subscription, on: :member

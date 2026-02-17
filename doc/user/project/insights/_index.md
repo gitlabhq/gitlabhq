@@ -393,12 +393,9 @@ The `period_field` is automatically set to:
 - `merged_at` if `query.issuable_state` is `merged`
 - `created_at` otherwise
 
-{{< alert type="note" >}}
-
-Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
-you may see `created_at` in place of `merged_at`. `created_at` is used instead.
-
-{{< /alert >}}
+> [!note]
+> Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
+> you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 ##### `DORA` query parameters
 
@@ -515,18 +512,15 @@ monthlyBugsCreated:
 You can configure insights for projects and groups.
 After you create a `.gitlab/insights.yml` file in a project, you can also use it for the project's group.
 
-{{< alert type="note" >}}
-
-A custom `.gitlab/insights.yml` file overrides the default configuration.
-To retain the original configuration, copy the content of the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml) as a base.
-
-{{< /alert >}}
+> [!note]
+> A custom `.gitlab/insights.yml` file overrides the default configuration.
+> To retain the original configuration, copy the content of the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml) as a base.
 
 #### For projects
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To configure project insights, create a file `.gitlab/insights.yml` either:
 

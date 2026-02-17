@@ -48,12 +48,9 @@ You can create deploy tokens at either the project or group level:
 By default, a deploy token does not expire. You can optionally set an expiry date when you create
 it. Expiry occurs at midnight UTC on that date.
 
-{{< alert type="warning" >}}
-
-You cannot use new or existing deploy tokens for Git operations and package registry operations if
-[external authorization](../../../administration/settings/external_authorization.md) is enabled.
-
-{{< /alert >}}
+> [!warning]
+> You cannot use new or existing deploy tokens for Git operations and package registry operations if
+> [external authorization](../../../administration/settings/external_authorization.md) is enabled.
 
 ## Scope
 
@@ -90,14 +87,11 @@ For example, to use a GitLab token to sign in to your GitLab container registry:
 echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
 ```
 
-{{< alert type="note" >}}
-
-In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token does not
-work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
-`CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings** > **CI/CD** > **Variables** to the
-name and token of the group deploy token.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token does not
+> work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
+> `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings** > **CI/CD** > **Variables** to the
+> name and token of the group deploy token.
 
 When `gitlab-deploy-token` is defined in a group, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD`
 CI/CD variables are available only to immediate child projects of the group.
@@ -110,12 +104,9 @@ CI/CD variables are available only to immediate child projects of the group.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Deploy tokens expire on the date you define at 00:00 AM UTC.
 
@@ -132,7 +123,7 @@ To prevent leaking the deploy token, you should also configure your
 [runners](../../../ci/runners/_index.md) to be secure:
 
 - Avoid using Docker `privileged` mode if the machines are re-used.
-- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell/) when jobs
   run on the same machine.
 
 An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other
@@ -151,7 +142,7 @@ Create a deploy token to automate deployment tasks that can run independently of
 Prerequisites:
 
 - To create a group deploy token, you must have the Owner role for the group.
-- To create a project deploy token, you must have at least the Maintainer role for the project.
+- To create a project deploy token, you must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Repository**.
@@ -170,7 +161,7 @@ Revoke a token when it's no longer required.
 Prerequisites:
 
 - To revoke a group deploy token, you must have the Owner role for the group.
-- To revoke a project deploy token, you must have at least the Maintainer role for the project.
+- To revoke a project deploy token, you must have the Maintainer or Owner role for the project.
 
 To revoke a deploy token:
 

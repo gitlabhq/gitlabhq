@@ -29,12 +29,9 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 - [`go-import`](https://pkg.go.dev/cmd/go#hdr-Remote_import_paths)
 - [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
 
-{{< alert type="note" >}}
-
-If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
-You can find the HTTP credentials in `~/.netrc` (MacOS and Linux) or `~/_netrc` (Windows).
-
-{{< /alert >}}
+> [!note]
+> If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
+> You can find the HTTP credentials in `~/.netrc` (MacOS and Linux) or `~/_netrc` (Windows).
 
 ## Authenticate Go requests to private projects
 

@@ -51,7 +51,7 @@ frameworks, or a combination, that you specify.
 | Field                   | Type     | Possible values          | Description |
 |-------------------------|----------|--------------------------|-------------|
 | `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
-| `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+| `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
 | `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
 
 ### Scope examples
@@ -101,6 +101,25 @@ subgroups and their projects), excluding the project with ID `64`.
         - id: 64
 ```
 
+In this example, the scan execution policy enforces a SAST scan on all projects except archived
+projects. This is useful when you have many archived projects that should not be scanned.
+
+```yaml
+- name: Enforce SAST scan excluding archived projects
+  description: This policy enforces SAST scans but excludes archived projects
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: sast
+  policy_scope:
+    projects:
+      excluding:
+        - type: archived
+```
+
 ## Separation of duties
 
 Separation of duties is vital to successfully implementing policies. Implement policies that achieve
@@ -133,7 +152,7 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 
 To create and manage security policies:
 
-- For policies enforced on groups: You must have at least the Maintainer role for the group.
+- For policies enforced on groups: You must have the Maintainer or Owner role for the group.
 - For policies enforced on projects:
   - You must be the project owner.
   - You must be a group member with permissions to create projects in the group.
@@ -329,18 +348,15 @@ Be aware of the following limitations for the GitLab Security Policy Bot:
 
 ### Security troubleshooting
 
-{{< alert type="warning" >}}
-
-Vulnerability with abuse reports: GitLab Security Policy Bot instances can be banned or deleted through the abuse reporting system, which can prevent scheduled pipelines from running. Administrators should be aware that:
-
-- Reporting a Security Policy Bot for abuse can lead to the bot being banned or deleted.
-- Banning or deleting the bot causes scheduled pipelines to fail.
-- Once banned, you cannot easily restore the bot through standard administrative actions.
-- Security policy enforcement is completely disrupted until the bot is restored.
-
-To prevent accidental disruption of security policies, administrators should exercise caution when processing abuse reports for internal user accounts.
-
-{{< /alert >}}
+> [!warning]
+> Vulnerability with abuse reports: GitLab Security Policy Bot instances can be banned or deleted through the abuse reporting system, which can prevent scheduled pipelines from running. Administrators should be aware that:
+>
+> - Reporting a Security Policy Bot for abuse can lead to the bot being banned or deleted.
+> - Banning or deleting the bot causes scheduled pipelines to fail.
+> - Once banned, you cannot restore the bot through standard administrative actions.
+> - Security policy enforcement is completely disrupted until the bot is restored.
+>
+> To prevent accidental disruption of security policies, administrators should exercise caution when processing abuse reports for internal user accounts.
 
 If you experience issues with Security Policy Bot functionality:
 

@@ -18,9 +18,18 @@ RSpec.describe Types::Notes::BaseDiscussionInterface, feature_category: :team_pl
   end
 
   describe 'fields with :ai_workflows scope' do
-    it 'includes :ai_workflows scope for the reply_id field' do
-      field = described_class.fields['replyId']
-      expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+    it 'includes :ai_workflows scope for the applicable fields' do
+      reply_id_field = described_class.fields['replyId']
+      expect(reply_id_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+
+      resolved_field = described_class.fields['resolved']
+      expect(resolved_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+
+      resolvable_field = described_class.fields['resolvable']
+      expect(resolvable_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+
+      id_field = described_class.fields['id']
+      expect(id_field.instance_variable_get(:@scopes)).to include(:ai_workflows)
     end
   end
 end

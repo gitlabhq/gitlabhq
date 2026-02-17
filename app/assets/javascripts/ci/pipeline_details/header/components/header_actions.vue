@@ -101,8 +101,6 @@ export default {
         :title="$options.BUTTON_TOOLTIP_DELETE"
         :loading="isDeleting"
         :disabled="isDeleting"
-        variant="danger"
-        category="secondary"
         data-testid="delete-pipeline"
       >
         {{ __('Delete') }}

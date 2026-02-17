@@ -2,7 +2,7 @@
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { stripQuotes } from '~/lib/utils/text_utility';
@@ -39,7 +39,7 @@ export default {
       return this.config.defaultMilestones || DEFAULT_MILESTONES;
     },
     namespace() {
-      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+      return this.config.isProject ? NAMESPACE_PROJECT : NAMESPACE_GROUP;
     },
     fetchMilestonesQuery() {
       return this.config.fetchMilestones

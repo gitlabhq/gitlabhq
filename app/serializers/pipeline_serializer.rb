@@ -22,17 +22,24 @@ class PipelineSerializer < BaseSerializer
     data.dig(:details, :status) || {}
   end
 
-  def represent_stages(resource)
-    return {} unless resource.present?
-
-    data = represent(resource, { only: [{ details: [:stages] }], preload: true })
-    data.dig(:details, :stages) || []
-  end
-
   private
 
   def preloaded_relations(preload_statuses: true, preload_downstream_statuses: true, **options)
     disable_failed_builds = options.delete(:disable_failed_builds)
+    disable_manual_and_scheduled_actions = options[:disable_manual_and_scheduled_actions]
+
+    manual_and_scheduled_actions_relations =
+      if disable_manual_and_scheduled_actions
+        {
+          manual_actions: [],
+          scheduled_actions: []
+        }
+      else
+        {
+          manual_actions: [:metadata, :job_definition],
+          scheduled_actions: [:metadata, :job_definition]
+        }
+      end
 
     [
       :pipeline_metadata,
@@ -46,8 +53,7 @@ class PipelineSerializer < BaseSerializer
       (:limited_failed_builds if disable_failed_builds),
       {
         **(disable_failed_builds ? {} : { failed_builds: %i[project metadata] }),
-        manual_actions: [:metadata, :job_definition],
-        scheduled_actions: [:metadata, :job_definition],
+        **manual_and_scheduled_actions_relations,
         merge_request: {
           source_project: [:route, { namespace: :route }],
           target_project: [:route, { namespace: :route }]

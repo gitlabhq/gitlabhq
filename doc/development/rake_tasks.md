@@ -534,11 +534,8 @@ For information on updating audit event types documentation, see
 
 ## Update OpenAPI client for Error Tracking feature
 
-{{< alert type="note" >}}
-
-This Rake task needs `docker` to be installed.
-
-{{< /alert >}}
+> [!note]
+> This Rake task needs `docker` to be installed.
 
 To update generated code for OpenAPI client located in
 `gems/error_tracking_open_api` run the following commands:

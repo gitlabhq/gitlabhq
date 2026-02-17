@@ -103,12 +103,9 @@ To build a package:
    conan create . mycompany/beta
    ```
 
-   {{< alert type="note" >}}
-
-   If you use an [instance remote](../conan_1_repository/_index.md#add-a-remote-for-your-instance), you must
-   follow a specific [naming convention](../conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
-
-   {{< /alert >}}
+   > [!note]
+   > If you use an [instance remote](../conan_1_repository/_index.md#add-a-remote-for-your-instance), you must
+   > follow a specific [naming convention](../conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
 
 A package with the recipe `Hello/0.1@mycompany/beta` is created.
 

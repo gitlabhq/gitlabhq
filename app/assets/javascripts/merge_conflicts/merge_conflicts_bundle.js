@@ -15,6 +15,7 @@ export default function initMergeConflicts() {
 
   return new Vue({
     el: conflictsEl,
+    name: 'MergeConflictsResolverAppRoot',
     store,
     provide: {
       sourceBranchPath,

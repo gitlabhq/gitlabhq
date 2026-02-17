@@ -118,12 +118,14 @@ export default {
     getReferenceClientRect() {
       const { view } = this.tiptapEditor;
       const { from } = this.tiptapEditor.state.selection;
-      let selectedCells = [
-        ...view.domAtPos(from).node.closest('table').querySelectorAll('.selectedCell'),
-      ];
+
+      const { node } = view.domAtPos(from);
+      const el = node instanceof Text ? node.parentElement : node;
+
+      let selectedCells = [...el.closest('table').querySelectorAll('.selectedCell')];
 
       if (!selectedCells.length) {
-        selectedCells = [view.domAtPos(from).node.closest('td, th')];
+        selectedCells = [el.closest('td, th')];
       }
 
       return rectUnion(...selectedCells.map((cell) => cell.getBoundingClientRect()));

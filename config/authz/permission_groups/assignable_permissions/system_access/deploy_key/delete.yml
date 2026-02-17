@@ -1,0 +1,7 @@
+---
+name: delete_deploy_key
+description: Grants the ability to remove deploy keys
+boundaries:
+  - project
+permissions:
+  - delete_deploy_key

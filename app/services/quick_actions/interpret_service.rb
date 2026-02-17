@@ -144,9 +144,13 @@ module QuickActions
     end
 
     def find_labels(labels_params = nil)
-      extracted_references = extract_references(labels_params, :label)
-      extracted_references = extracted_references.reject(&:archived?) if Feature.enabled?(:labels_archive, :instance)
-      extracted_references | find_labels_by_name_no_tilde(labels_params)
+      extracted_references = extract_references(labels_params, :label) | find_labels_by_name_no_tilde(labels_params)
+
+      if Feature.enabled?(:labels_archive, group || project_group)
+        extracted_references = extracted_references.reject(&:archived)
+      end
+
+      extracted_references
     end
 
     def find_labels_by_name_no_tilde(labels_params)
@@ -156,7 +160,6 @@ module QuickActions
       finder_params[:project_id] = project.id if project
       finder_params[:group_id] = group.id if group
       finder_params[:name] = extract_label_names(labels_params) if labels_params
-      finder_params[:archived] = false if Feature.enabled?(:labels_archive, :instance)
 
       LabelsFinder.new(current_user, finder_params).execute
     end

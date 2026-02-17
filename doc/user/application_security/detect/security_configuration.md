@@ -149,12 +149,9 @@ GitLab application security tools have up to two template editions:
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
 
-{{< alert type="note" >}}
-
-Don't mix security templates in the same project. Mixing different security template editions can
-cause both merge request and branch pipelines to run.
-
-{{< /alert >}}
+> [!note]
+> Don't mix security templates in the same project. Mixing different security template editions can
+> cause both merge request and branch pipelines to run.
 
 ### Override the default registry base address
 
@@ -195,7 +192,7 @@ file.
 
 For more information about overriding security jobs, see:
 
-- [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
+- [Override SAST jobs](../sast/_index.md#override-sast-jobs).
 - [Overriding dependency scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
 - [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
 - [Overriding secret detection jobs](../secret_detection/pipeline/configure.md).

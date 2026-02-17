@@ -151,13 +151,10 @@ Now you're ready to read the proposed changes. For large merge requests,
 skim the changes before diving in. Build your understanding of what to
 expect before you begin to read changes line by line.
 
-{{< alert type="note" >}}
-
-The diffs displayed in the **Changes** tab are dense with information. To learn
-how to get the most out of this page, see
-[Changes in merge requests](../../user/project/merge_requests/changes.md).
-
-{{< /alert >}}
+> [!note]
+> The diffs displayed in the **Changes** tab are dense with information. To learn
+> how to get the most out of this page, see
+> [Changes in merge requests](../../user/project/merge_requests/changes.md).
 
 ### Skim changes for an overview
 
@@ -394,4 +391,4 @@ After you provide your feedback, tidy up.
 ## Related topics
 
 - [Conventional comments](https://conventionalcomments.org/) provide helpful structure for comments.
-- [Efficient code review tips](https://about.gitlab.com/blog/2020/09/08/efficient-code-review-tips/)
+- [Efficient code review tips](https://about.gitlab.com/blog/efficient-code-review-tips/)

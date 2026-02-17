@@ -9,14 +9,14 @@ module Gitlab
         DEFAULT_NUMBER_OF_JOBS = 20
         DEFAULT_EMA_ALPHA = 0.4
 
-        def initialize(record:)
-          @record = record
+        def initialize(worker:)
+          @worker = worker
         end
 
         def optimizer
           Gitlab::Database::Batch::Optimizer.new(
-            current_batch_size: record.batch_size,
-            max_batch_size: record.max_batch_size,
+            current_batch_size: worker.batch_size,
+            max_batch_size: worker.max_batch_size,
             time_efficiency: smoothed_time_efficiency
           )
         end
@@ -26,7 +26,7 @@ module Gitlab
 
         private
 
-        attr_reader :record
+        attr_reader :worker
 
         def smoothed_time_efficiency(number_of_jobs: DEFAULT_NUMBER_OF_JOBS, alpha: DEFAULT_EMA_ALPHA)
           return if job_records.size < number_of_jobs
@@ -41,11 +41,12 @@ module Gitlab
         end
 
         def job_records
-          record.jobs.successful_in_execution_order.reverse_order.limit(DEFAULT_NUMBER_OF_JOBS).with_preloads
+          worker.jobs.successful_in_execution_order.reverse_order.limit(DEFAULT_NUMBER_OF_JOBS)
         end
+        strong_memoize_attr :job_records
 
-        def extract_valid_efficiencies
-          record.jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
+        def extract_valid_efficiencies(jobs)
+          jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
         end
 
         def calculate_weighted_sums(efficiencies, alpha)

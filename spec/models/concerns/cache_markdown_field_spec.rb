@@ -4,23 +4,27 @@ require 'spec_helper'
 
 RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: :markdown do
   let(:ar_class) do
+    type_id = build(:work_item_system_defined_type, :issue).id
+
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'
       include CacheMarkdownField
       cache_markdown_field :title, pipeline: :single_line
       cache_markdown_field :description
 
-      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+      before_validation -> { self.work_item_type_id = type_id }
     end
   end
 
   let(:ar_class_store_mentions_after_commit) do
+    type_id = build(:work_item_system_defined_type, :issue).id
+
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'
       include CacheMarkdownField
       cache_markdown_field :description
 
-      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+      before_validation -> { self.work_item_type_id = type_id }
 
       def store_mentions_after_commit?
         true

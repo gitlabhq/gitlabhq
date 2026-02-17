@@ -51,15 +51,12 @@ Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
 and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365).
 
-{{< alert type="note" >}}
-
-If your provider or server supports email sub-addressing, we recommend using it.
-A dedicated email address only supports Reply by Email functionality.
-A catch-all mailbox supports the same features as sub-addressing,
-but sub-addressing is still preferred because only one email address is used,
-leaving a catch-all available for other purposes beyond GitLab.
-
-{{< /alert >}}
+> [!note]
+> If your provider or server supports email sub-addressing, we recommend using it.
+> A dedicated email address only supports Reply by Email functionality.
+> A catch-all mailbox supports the same features as sub-addressing,
+> but sub-addressing is still preferred because only one email address is used,
+> leaving a catch-all available for other purposes beyond GitLab.
 
 ### Catch-all mailbox
 
@@ -140,11 +137,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security concerns
 
-{{< alert type="warning" >}}
-
-Be careful when choosing the domain used for receiving incoming email.
-
-{{< /alert >}}
+> [!warning]
+> Be careful when choosing the domain used for receiving incoming email.
 
 For example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain through Google
@@ -170,23 +164,16 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
 
-{{< alert type="warning" >}}
+> [!warning]
+> Use a mail server that has been configured to reduce spam.
+> A Postfix mail server that is running on a default configuration, for example,
+> can result in abuse. All messages received on the configured mailbox are processed
+> and messages that are not intended for the GitLab instance receive a reject notice.
+> If the sender's address is spoofed, the reject notice is delivered to the spoofed
+> `FROM` address, which can cause the mail server's IP or domain to appear on a block list.
 
-Use a mail server that has been configured to reduce
-spam.
-A Postfix mail server that is running on a default configuration, for example,
-can result in abuse. All messages received on the configured mailbox are processed
-and messages that are not intended for the GitLab instance receive a reject notice.
-If the sender's address is spoofed, the reject notice is delivered to the spoofed
-`FROM` address, which can cause the mail server's IP or domain to appear on a block
-list.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first. This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
-{{< /alert >}}
+Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first.
+This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
 
 ### Linux package installations
 
@@ -225,11 +212,8 @@ Reply by email should now be working.
    gem install gitlab-mail_room
    ```
 
-   {{< alert type="note" >}}
-
-   This step is necessary to avoid thread deadlocks and to support the latest MailRoom features.
-
-   {{< /alert >}}
+   > [!note]
+   > This step is necessary to avoid thread deadlocks and to support the latest MailRoom features.
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
    and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
@@ -394,11 +378,8 @@ incoming_email:
 
 Example configuration for Gmail/Google Workspace. Assumes mailbox `gitlab-incoming@gmail.com`.
 
-{{< alert type="note" >}}
-
-`incoming_email_email` cannot be a Gmail alias account.
-
-{{< /alert >}}
+> [!note]
+> `incoming_email_email` cannot be a Gmail alias account.
 
 Example for Linux package installations:
 
@@ -565,12 +546,9 @@ incoming_email:
 
 ##### Dedicated email address
 
-{{< alert type="note" >}}
-
-Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk/_index.md).
-
-{{< /alert >}}
+> [!note]
+> Supports [Reply by Email](reply_by_email.md) only.
+> Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
@@ -636,13 +614,10 @@ Example configurations for Microsoft Office 365 with IMAP enabled.
 
 ##### Sub-addressing mailbox
 
-{{< alert type="note" >}}
-
-As of September 2020 sub-addressing support
-[has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
-enabled by default, and must be enabled through PowerShell.
-
-{{< /alert >}}
+> [!note]
+> As of September 2020 sub-addressing support
+> [has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
+> enabled by default, and must be enabled through PowerShell.
 
 This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization
@@ -783,12 +758,9 @@ incoming_email:
 
 ##### Dedicated email address
 
-{{< alert type="note" >}}
-
-Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk/_index.md).
-
-{{< /alert >}}
+> [!note]
+> Supports [Reply by Email](reply_by_email.md) only.
+> Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 
@@ -973,7 +945,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-incoming-emails).
 
 {{< /tab >}}
 

@@ -51,7 +51,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:issue_email_participants, @project)
-    push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
@@ -94,7 +93,7 @@ class ProjectsController < Projects::ApplicationController
     @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
 
-    @parent_group = Group.find_by(id: params[:namespace_id])
+    @parent_group = @namespace if @namespace&.group_namespace?
 
     manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 
@@ -178,7 +177,7 @@ class ProjectsController < Projects::ApplicationController
       return
     end
 
-    if @project.pending_delete?
+    if @project.deletion_in_progress?
       flash.now[:alert] = safe_format(_("Project '%{project_name}' queued for deletion."), project_name: @project.name)
     end
 
@@ -204,9 +203,7 @@ class ProjectsController < Projects::ApplicationController
     if @project.self_deletion_scheduled? &&
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_delete)[:permanently_delete])
 
-      return destroy_immediately if Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
-
-      return access_denied!
+      return destroy_immediately
     end
 
     result = ::Projects::MarkForDeletionService.new(@project, current_user).execute
@@ -415,7 +412,7 @@ class ProjectsController < Projects::ApplicationController
 
   def destroy_immediately
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+    flash[:toast] = safe_format(_("%{project_name} is being deleted."), project_name: @project.name)
 
     redirect_to dashboard_projects_path, status: :found
   end

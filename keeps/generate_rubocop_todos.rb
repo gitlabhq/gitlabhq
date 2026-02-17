@@ -92,7 +92,7 @@ module Keeps
     end
 
     def roulette
-      @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+      Keeps::Helpers::ReviewerRoulette.instance
     end
 
     def rubocop_todo_files_unchanged?

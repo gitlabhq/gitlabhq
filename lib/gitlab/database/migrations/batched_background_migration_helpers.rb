@@ -356,6 +356,15 @@ module Gitlab
           min_cursor = model.order(cursor_columns.index_with { :asc }).pick(*cursor_columns)
           max_cursor = model.order(cursor_columns.index_with { :desc }).pick(*cursor_columns)
 
+          if min_cursor.nil? && max_cursor.nil?
+            default_cursor = cursor_columns.map { BATCH_MIN_VALUE }
+            return [default_cursor, default_cursor]
+          end
+
+          # Normalize single-column cursor to array format for JSONB storage
+          min_cursor = Array(min_cursor)
+          max_cursor = Array(max_cursor)
+
           [min_cursor, max_cursor]
         end
 

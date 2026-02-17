@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe NotesFinder do
+RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
   before do
     project.add_maintainer(user)
+    Current.organization = current_organization
   end
 
   describe '#execute' do
@@ -269,6 +270,33 @@ RSpec.describe NotesFinder do
               expect(notes.count).to eq(1)
             else
               expect { notes }.to raise_error(::ActiveRecord::RecordNotFound)
+            end
+          end
+        end
+      end
+
+      context 'organization_id parameter for snippet noteables' do
+        %w[snippet project_snippet personal_snippet].each do |noteable_type|
+          context "when target_type is #{noteable_type}" do
+            let(:snippet) do
+              case noteable_type
+              when 'snippet', 'project_snippet'
+                create(:project_snippet, project: project)
+              when 'personal_snippet'
+                create(:personal_snippet, author: user)
+              end
+            end
+
+            let(:note) { create(:note, noteable: snippet, project: noteable_type == 'personal_snippet' ? nil : project) }
+            let(:params) { { organization_id: current_organization.id, project: project, target_type: noteable_type, target_id: note.noteable.id } }
+
+            it 'passes organization_id to SnippetsFinder' do
+              expect(SnippetsFinder).to receive(:new).with(
+                user,
+                hash_including(organization_id: current_organization.id)
+              ).and_call_original
+
+              described_class.new(user, params).execute
             end
           end
         end

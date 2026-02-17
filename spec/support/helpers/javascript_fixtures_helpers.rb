@@ -51,7 +51,7 @@ module JavaScriptFixturesHelpers
     path = Rails.root / base / query_path
     queries = Gitlab::Graphql::Queries.find(path)
     if queries.length == 1
-      query = queries.first.text(mode: Gitlab.ee? ? :ee : :ce)
+      query = queries.first.text
       query = inflate_query_with_typenames(query)
 
       # If a relative_url_root is provided and a block is given,
@@ -68,7 +68,7 @@ module JavaScriptFixturesHelpers
         query
       end
     else
-      raise "Could not find query file at #{path}, please check your query_path" % path
+      raise "Could not find query file at #{path}, please check your query_path"
     end
   end
 

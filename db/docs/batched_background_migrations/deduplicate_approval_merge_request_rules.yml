@@ -1,0 +1,8 @@
+---
+migration_job_name: DeduplicateApprovalMergeRequestRules
+description: Deduplicates security policy MR approval rules created by a race condition
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220876
+milestone: '18.10'
+queued_migration_version: 20260216140430
+finalized_by:

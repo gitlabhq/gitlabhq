@@ -79,7 +79,7 @@ describe('WorkItemBreadcrumb', () => {
     });
 
     it('renders root `Service Desk` breadcrumb on epics list page', () => {
-      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TICKET });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TICKET, workItemPlanningView: true });
 
       expect(findBreadcrumb().props('items')).toEqual([
         {

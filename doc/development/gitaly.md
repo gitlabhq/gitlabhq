@@ -45,13 +45,45 @@ anywhere in the `gitlab` repository. Anything that
 needs direct access to the Git repository must be implemented in Gitaly, and
 exposed through an RPC.
 
-It's often easier to develop a new feature in Gitaly if you make the changes to
-GitLab that intends to use the new feature in a separate merge request, to be merged
-immediately after the Gitaly one. This allows you to test your changes before
-they are merged.
+To develop a new feature in Gitaly:
 
-- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
-- In GDK run `gdk install` and restart GDK using `gdk restart` to use a locally modified Gitaly version for development
+1. Raise a Gitaly merge request with the required changes.
+1. Also raise a GitLab merge request that makes use of the Gitaly changes.
+1. Test both sets of changes locally by running a local version of Gitaly that contains your changes along with your modified version of GitLab to test your changes in both projects before they're merged.
+
+See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
+
+In GDK run `gdk install` and restart GDK using `gdk restart` to use a locally modified Gitaly version for development
+
+## Gitaly version compatibility requirement
+
+Compatibility between new Gitaly client versions and old Gitaly versions must be maintained during an upgrade. During an
+upgrade, Gitaly clients (for example, Rails) could be upgraded to the new version before Gitaly is upgraded. The
+newer Gitaly client can't rely on functionality that isn't available on the older Gitaly that is to be upgraded.
+
+To enforce this policy, Gitaly client developers must only use Gitaly features available in already released versions of
+Gitaly. Gitaly client developers must never develop against Gitaly features that are either:
+
+- Still in development.
+- To be released in the same milestone as the Gitaly client update that uses the features.
+
+For example:
+
+- If the current GitLab milestone is `18.1` and the version of GitLab to be released is `18.1`, all GitLab features
+  developed during the milestone must make use of features in Gitaly version `18.0` and earlier.
+- When GitLab `18.2` is released, Gitaly clients in that release must only use features that are available in Gitaly
+  `18.1` and earlier.
+- When Gitaly `18.2` is released, Gitaly client developers can use Gitaly features introduced in Gitaly `18.2`
+  for the GitLab `18.3` release.
+
+```mermaid
+sequenceDiagram
+        participant gl1 as GitLab 18.1.0
+        participant gl2 as GitLab 18.2.0
+        participant gl3 as GitLab 18.3.0
+        gl2 -->> gl1: "Clients uses Gitaly 18.1.0"
+        gl3 -->> gl2: "Clients uses Gitaly 18.2.0"
+```
 
 ## Gitaly-Related Test Failures
 
@@ -117,14 +149,11 @@ Usually, GitLab CE/EE tests use a local clone of Gitaly in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
 branches and SHA to use a custom commit in [the repository](https://gitlab.com/gitlab-org/gitaly).
 
-{{< alert type="note" >}}
-
-With the introduction of auto-deploy for Gitaly, the format of
-`GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
-It no longer supports `=revision`, it evaluates the file content as a Git
-reference (branch or SHA). Only if it matches a semantic version does it prepend a `v`.
-
-{{< /alert >}}
+> [!note]
+> With the introduction of auto-deploy for Gitaly, the format of
+> `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
+> It no longer supports `=revision`, it evaluates the file content as a Git
+> reference (branch or SHA). Only if it matches a semantic version does it prepend a `v`.
 
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
@@ -279,12 +308,9 @@ Pay attention to the name of the flag and the one used in the Rails console. The
 between them (dashes replaced by underscores and name prefix is changed). Make sure to prefix all
 flags with `gitaly_`.
 
-{{< alert type="note" >}}
-
-If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
-default value. The default value depends on the GitLab version.
-
-{{< /alert >}}
+> [!note]
+> If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
+> default value. The default value depends on the GitLab version.
 
 ### Testing with GDK
 

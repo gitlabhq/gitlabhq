@@ -151,7 +151,6 @@ module Issuables
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # overridden in EE
     def target_label_links_query(_target_model, base_target_model, label_ids)
       LabelLink.by_target_for_exists_query(base_target_model.name, base_target_model.arel_table['id'], label_ids)
     end

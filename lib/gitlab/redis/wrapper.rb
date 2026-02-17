@@ -149,6 +149,10 @@ module Gitlab
         redis_store_options[:db] || 0
       end
 
+      def ssl_params
+        raw_config_hash[:ssl_params]
+      end
+
       def sentinels
         raw_config_hash[:sentinels]
       end

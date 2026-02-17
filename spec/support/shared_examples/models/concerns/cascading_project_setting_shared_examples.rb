@@ -113,7 +113,7 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
 
     context 'when parent locks the attribute' do
       before do
-        parent_group_settings.update!("lock_#{settings_attribute_name}".to_sym => true,
+        parent_group_settings.update!(:"lock_#{settings_attribute_name}" => true,
           settings_attribute_name => false)
       end
 

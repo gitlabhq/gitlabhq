@@ -54,7 +54,7 @@ export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registr
 export const duoHelpPath = helpPagePath('user/gitlab_duo/_index');
 export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 export const duoContextExclusionHelpPath = helpPagePath('user/gitlab_duo/context', {
-  anchor: 'exclude-context-from-gitlab-duo',
+  anchor: 'exclude-context-from-code-review-classic',
 });
 export const duoFlowHelpPath = helpPagePath('user/duo_agent_platform/flows/_index.md');
 

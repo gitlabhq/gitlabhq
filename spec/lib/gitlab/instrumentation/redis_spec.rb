@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'support/helpers/rails_helpers'
 
-RSpec.describe Gitlab::Instrumentation::Redis do
+RSpec.describe Gitlab::Instrumentation::Redis, feature_category: :redis do
   include RedisHelpers
 
   def stub_storages(method, value)

@@ -210,7 +210,7 @@ RSpec.shared_examples 'rich text editor - links' do
       end
 
       it 'expands the link, updates the link attributes and text if text is updated',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419684' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24076' do
         page.within '[data-testid="link-bubble-menu"]' do
           fill_in 'link-text', with: 'new text'
           fill_in 'link-href', with: 'https://about.gitlab.com'

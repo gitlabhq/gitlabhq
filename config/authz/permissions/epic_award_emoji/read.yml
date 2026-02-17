@@ -1,0 +1,5 @@
+---
+name: read_epic_award_emoji
+description: Grants the ability to read award emoji reactions on epics
+boundaries:
+  - group

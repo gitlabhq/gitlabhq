@@ -73,12 +73,7 @@ module Issues
     private
 
     def set_work_item_type(issue)
-      work_item_type = if params[:work_item_type_id].present?
-                         params.delete(:work_item_type)
-                         WorkItems::Type.find_by(id: params.delete(:work_item_type_id)) # rubocop: disable CodeReuse/ActiveRecord
-                       else
-                         params.delete(:work_item_type)
-                       end
+      work_item_type = work_item_type_provider.fetch_work_item_type(extract_work_item_type_param)
 
       # We need to support the legacy input params[:issue_type] even if we don't have the issue_type column anymore.
       # In the future only params[:work_item_type] should be provided
@@ -88,12 +83,22 @@ module Issues
       # and check whether type belongs to namespace hierarchy
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/581940
       issue.work_item_type = if create_issue_type_allowed?(container, base_type)
-                               work_item_type || WorkItems::Type.default_by_type(base_type)
+                               work_item_type || work_item_type_provider.find_by_base_type(base_type)
                              else
                                # If no work item type was provided or not allowed, we need to set it to
                                # the default issue_type
-                               WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)
+                               work_item_type_provider.default_issue_type
                              end
+    end
+
+    def extract_work_item_type_param
+      # Prioritize work_item_type_id over work_item_type
+      if params[:work_item_type_id].present?
+        params.delete(:work_item_type) # Clean up unused param
+        params.delete(:work_item_type_id)
+      else
+        params.delete(:work_item_type)
+      end
     end
 
     def model_klass

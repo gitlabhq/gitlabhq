@@ -333,12 +333,9 @@ You can schedule this command with a tool like `cron(8)`.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Gitaly can generate bundles automatically by determining if it is handling frequent clones for the same repository.
 The current heuristic keeps track of the number of times a `git fetch` request is issued for each repository. If the

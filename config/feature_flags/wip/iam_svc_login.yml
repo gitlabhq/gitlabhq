@@ -1,0 +1,9 @@
+name: iam_svc_login
+description: "Enable OAuth integration with the centralized IAM Service for Protocells at an instance level. Controls all pre-login flows that are not covered by the user-specific `iam_svc_login` feature flag"
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/580755
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218776/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582613
+milestone: '18.9'
+group: group::authentication
+type: wip
+default_enabled: false

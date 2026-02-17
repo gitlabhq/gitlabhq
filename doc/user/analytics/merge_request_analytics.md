@@ -38,7 +38,7 @@ These insights can help you make data-driven decisions like:
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 To view merge request analytics:
 

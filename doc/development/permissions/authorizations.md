@@ -20,7 +20,7 @@ For more information on permissions, see the permissions section in the [secure 
 
 ### Considerations
 
-Services or finders are appropriate locations because:
+You MUST enforce authorization as much as possible in shared business logic layer (i.e. services and finders). That would help ensure that authorization is consistent across REST, graphql, and controllers. Services or finders are appropriate locations because:
 
 - Multiple endpoints share services or finders so downstream logic is more likely to be re-used.
 - Sometimes authorization logic must be incorporated in DB queries to filter records.

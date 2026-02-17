@@ -44,6 +44,7 @@ BBlue='\033[1;34m'
 Color_Off='\033[0m'
 
 set -o errexit
+set -o nounset
 set -o pipefail
 trap onexit_err ERR
 
@@ -56,6 +57,7 @@ function onexit_err() {
   fi
 
   printf "\n${BRed}- If the failure was in a feature spec, those are sometimes flaky. Try running again, or run the test in isolation${Color_Off}\n"
+  printf "\n${BRed}- If the failure was jest and may be due to fixtures, run 'bin/rake frontend:fixtures' and try again${Color_Off}\n"
 
   exit "${exit_status}"
 }
@@ -117,10 +119,10 @@ function should_run {
   local skip_var="SKIP_${section}"
 
   # If any ONLY_* var is set, run only those sections; otherwise use SKIP_* behavior
-  if [ -n "${ONLY_RUBOCOP}${ONLY_RSPEC}${ONLY_JEST}" ]; then
-    [ -n "${!only_var}" ]
+  if [ -n "${ONLY_RUBOCOP:-}${ONLY_RSPEC:-}${ONLY_JEST:-}" ]; then
+    [ -n "${!only_var:-}" ]
   else
-    [ -z "${!skip_var}" ]
+    [ -z "${!skip_var:-}" ]
   fi
 }
 

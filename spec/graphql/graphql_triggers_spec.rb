@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GraphqlTriggers, feature_category: :shared do
+RSpec.describe GraphqlTriggers, feature_category: :api do
   let_it_be(:project) { create(:project) }
   let_it_be(:issuable, refind: true) { create(:work_item, project: project) }
 
@@ -229,22 +229,6 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
 
       described_class.ci_pipeline_statuses_updated(pipeline)
     end
-
-    describe 'when ci_pipeline_statuses_updated_subscription is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_statuses_updated_subscription: false)
-      end
-
-      it 'does not trigger the ci_pipeline_statuses_updated subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_pipeline_statuses_updated,
-          { project_id: pipeline.project.to_gid },
-          pipeline
-        )
-
-        described_class.ci_pipeline_statuses_updated(pipeline)
-      end
-    end
   end
 
   describe '.ci_pipeline_job_updated' do
@@ -302,22 +286,6 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       ).and_call_original
 
       described_class.ci_pipeline_creation_requests_updated(merge_request)
-    end
-
-    describe 'when FF ci_pipeline_creation_requests_realtime is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_creation_requests_realtime: false)
-      end
-
-      it 'does not trigger the subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_pipeline_creation_requests_updated,
-          { merge_request_id: merge_request.to_gid },
-          merge_request
-        )
-
-        described_class.ci_pipeline_creation_requests_updated(merge_request)
-      end
     end
 
     it 'passes correct merge request GID to subscription' do

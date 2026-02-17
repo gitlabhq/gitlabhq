@@ -1,14 +1,13 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 export default {
   components: {
     GlButton,
     GlFormGroup,
     GlFormInput,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   props: {
     backButtonPath: {
@@ -27,12 +26,12 @@ export default {
 <template>
   <form method="post" :action="formPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('ProjectsNew|Import projects from FogBugz')"
       :current-step="3"
       :steps-total="4"
     >
-      <template #form>
+      <template #default>
         <gl-form-group :label="s__('ProjectsNew|FogBugz URL')" label-for="uri">
           <gl-form-input
             id="uri"
@@ -69,6 +68,6 @@ export default {
           {{ __('Next step') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

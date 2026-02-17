@@ -8,8 +8,8 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::QueryResult do
       'hits' => {
         'total' => { 'value' => 2 },
         'hits' => [
-          { '_source' => { 'id' => 1, 'name' => 'test1' } },
-          { '_source' => { 'id' => 2, 'name' => 'test2' } }
+          { '_source' => { 'id' => 1, 'name' => 'test1' }, '_score' => 0.95 },
+          { '_source' => { 'id' => 2, 'name' => 'test2' }, '_score' => 0.85 }
         ]
       }
     }
@@ -28,10 +28,10 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::QueryResult do
   end
 
   describe '#each' do
-    it 'yields each hit source' do
+    it 'yields each hit source with score' do
       expected_sources = [
-        { 'id' => 1, 'name' => 'test1' },
-        { 'id' => 2, 'name' => 'test2' }
+        { 'id' => 1, 'name' => 'test1', 'score' => 0.95 },
+        { 'id' => 2, 'name' => 'test2', 'score' => 0.85 }
       ]
 
       expect { |b| query_result.each(&b) }.to yield_successive_args(*expected_sources)
@@ -45,7 +45,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::QueryResult do
   describe 'enumerable behavior' do
     it 'implements Enumerable methods' do
       expect(query_result.map { |hit| hit['id'] }).to eq([1, 2]) # rubocop: disable Rails/Pluck -- pluck not implemented
-      expect(query_result.select { |hit| hit['id'] == 1 }).to eq([{ 'id' => 1, 'name' => 'test1' }])
+      expect(query_result.select { |hit| hit['id'] == 1 }).to eq([{ 'id' => 1, 'name' => 'test1', 'score' => 0.95 }])
     end
   end
 

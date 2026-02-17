@@ -18,6 +18,7 @@ export function initListbox(el, { onChange } = {}) {
 
   return new Vue({
     el,
+    name: 'ListboxAppRoot',
     data() {
       return {
         selected,

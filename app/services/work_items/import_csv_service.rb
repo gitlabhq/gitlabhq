@@ -55,7 +55,9 @@ module WorkItems
     # todo: This should be updated once we can determine available work item types based on namespace,
     #       see https://gitlab.com/gitlab-org/gitlab/-/issues/524828
     def available_work_item_types
-      WorkItems::Type.all.reject { |wit| wit.base_type == :epic }
+      # TODO: When we add the types filter in the provider, we can remove the reject.
+      # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
+      ::WorkItems::TypesFramework::Provider.new(project).all.reject { |wit| wit.base_type == :epic }
         .index_by(&:name).with_indifferent_access.transform_keys(&:strip).transform_keys(&:downcase)
     end
     strong_memoize_attr :available_work_item_types

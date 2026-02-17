@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::GroupsController, feature_category: :organization do
+RSpec.describe Organizations::GroupsController, :without_current_organization, feature_category: :organization do
   let_it_be(:organization) { create(:organization) }
 
   describe 'GET #new' do
@@ -306,20 +306,6 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
               subject(:gitlab_request) do
                 delete groups_organization_path(organization, id: group.to_param), params: params, as: :json
-              end
-
-              describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-                before do
-                  stub_application_setting(allow_immediate_namespaces_deletion: false)
-                end
-
-                it 'returns error' do
-                  Sidekiq::Testing.fake! do
-                    expect { gitlab_request }.not_to change { GroupDestroyWorker.jobs.size }
-                  end
-
-                  expect(response).to have_gitlab_http_status(:not_found)
-                end
               end
 
               it 'deletes the group immediately' do

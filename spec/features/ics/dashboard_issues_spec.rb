@@ -114,7 +114,8 @@ RSpec.describe 'Dashboard Issues Calendar Feed', feature_category: :team_plannin
         )
       end
 
-      it 'renders issue fields' do
+      it 'renders issue fields',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/26027' do
         visit issues_dashboard_path(
           :ics,
           due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,

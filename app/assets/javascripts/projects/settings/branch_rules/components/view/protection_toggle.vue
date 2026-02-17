@@ -57,6 +57,11 @@ export default {
       required: false,
       default: false,
     },
+    isProtectedByWarnPolicy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -68,6 +73,9 @@ export default {
     },
   },
   computed: {
+    isProtectedByAnyPolicyType() {
+      return this.isProtectedByPolicy || this.isProtectedByWarnPolicy;
+    },
     toggleDisabled() {
       return this.isGroupLevel || this.isProtectedByPolicy;
     },
@@ -82,14 +90,10 @@ export default {
       return this.dataTestIdPrefix ? `${this.dataTestIdPrefix}-icon` : '';
     },
     hasDescription() {
-      if (!this.glFeatures.editBranchRules) {
-        return Boolean(this.description);
-      }
-
       return this.isProtected ? Boolean(this.description) : false;
     },
     canEditProtectionToggles() {
-      return this.canAdminProtectedBranches && this.glFeatures.editBranchRules;
+      return this.canAdminProtectedBranches;
     },
   },
 };
@@ -109,7 +113,10 @@ export default {
       <template #label>
         <div class="gl-flex gl-items-center">
           {{ label }}
-          <disabled-by-policy-popover v-if="isProtectedByPolicy" />
+          <disabled-by-policy-popover
+            v-if="isProtectedByAnyPolicyType"
+            :is-protected-by-policy="isProtectedByPolicy"
+          />
           <group-inheritance-popover
             v-else-if="isGroupLevel"
             :has-group-permissions="canAdminGroupProtectedBranches"

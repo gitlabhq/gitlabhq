@@ -60,6 +60,11 @@ export default {
       required: false,
       default: false,
     },
+    isProtectedByWarnPolicy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     roles: {
       type: Array,
       required: false,
@@ -125,6 +130,9 @@ export default {
     isEditDisabled() {
       return this.isGroupLevel || this.isProtectedByPolicy;
     },
+    isProtectedByAnyPolicy() {
+      return this.isProtectedByPolicy || this.isProtectedByWarnPolicy;
+    },
     showDivider() {
       return this.hasRoles || this.hasUsers;
     },
@@ -147,11 +155,12 @@ export default {
 <template>
   <crud-component :title="header" :icon="icon" :count="count" data-testid="status-checks">
     <template v-if="showDescriptionSlot" #description>
-      <slot v-if="$scopedSlots.description" name="description"></slot>
-      <template v-else>{{ helpText }}</template>
+      <slot name="description">
+        {{ helpText }}
+      </slot>
     </template>
     <template #actions>
-      <div v-if="glFeatures.editBranchRules && isEditAvailable" class="gl-flex">
+      <div v-if="isEditAvailable" class="gl-flex">
         <gl-button
           :disabled="isEditDisabled"
           size="small"
@@ -159,7 +168,10 @@ export default {
           @click="$emit('edit')"
           >{{ __('Edit') }}
         </gl-button>
-        <disabled-by-policy-popover v-if="isProtectedByPolicy" />
+        <disabled-by-policy-popover
+          v-if="isProtectedByAnyPolicy"
+          :is-protected-by-policy="isProtectedByPolicy"
+        />
         <group-inheritance-popover
           v-else-if="isGroupLevel"
           :has-group-permissions="canAdminGroupProtectedBranches"

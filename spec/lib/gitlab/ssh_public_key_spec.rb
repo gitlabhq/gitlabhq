@@ -195,14 +195,14 @@ RSpec.describe Gitlab::SSHPublicKey, :lib, feature_category: :system_access, fip
     context 'with a valid SSH key' do
       where(:factory) do
         %i[rsa_key_2048
-           rsa_key_4096
-           rsa_key_5120
-           rsa_key_8192
-           dsa_key_2048
-           ecdsa_key_256
-           ed25519_key_256
-           ecdsa_sk_key_256
-           ed25519_sk_key_256]
+          rsa_key_4096
+          rsa_key_5120
+          rsa_key_8192
+          dsa_key_2048
+          ecdsa_key_256
+          ed25519_key_256
+          ecdsa_sk_key_256
+          ed25519_sk_key_256]
       end
 
       with_them do

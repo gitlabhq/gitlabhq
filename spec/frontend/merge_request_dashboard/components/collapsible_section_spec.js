@@ -62,26 +62,26 @@ describe('Merge request dashboard collapsible section', () => {
 
     await nextTick();
 
-    expect(sectionContent().exists()).toBe(false);
+    expect(sectionContent().isVisible()).toBe(false);
 
     collapseToggle().vm.$emit('click');
 
     await nextTick();
 
-    expect(sectionContent().exists()).toBe(true);
+    expect(sectionContent().isVisible()).toBe(true);
     expect(sectionContent().text()).toContain('content');
   });
 
   it('displays content when count is hidden', () => {
     createComponent({ hasMergeRequests: true, count: null });
 
-    expect(sectionContent().exists()).toBe(true);
+    expect(sectionContent().isVisible()).toBe(true);
   });
 
   it('displays content when loading', () => {
     createComponent({ hasMergeRequests: false, loading: true, count: null });
 
-    expect(sectionContent().exists()).toBe(true);
+    expect(sectionContent().isVisible()).toBe(true);
   });
 
   it('hides empty state when there are no merge requests, not loading and an error', () => {
@@ -98,7 +98,7 @@ describe('Merge request dashboard collapsible section', () => {
 
       await nextTick();
 
-      expect(sectionContent().exists()).toBe(false);
+      expect(sectionContent().isVisible()).toBe(false);
     });
   });
 });

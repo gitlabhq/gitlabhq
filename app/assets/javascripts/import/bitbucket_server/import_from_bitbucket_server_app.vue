@@ -1,15 +1,14 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import validation, { initForm } from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 export default {
   components: {
     GlButton,
     GlFormGroup,
     GlFormInput,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   directives: {
     validation: validation(),
@@ -58,12 +57,12 @@ export default {
 <template>
   <form ref="form" method="post" :action="formPath" @submit.prevent="onSubmit">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('ProjectsNew|Import repositories from Bitbucket Server')"
       :current-step="3"
       :steps-total="4"
     >
-      <template #form>
+      <template #default>
         <gl-form-group
           :label="s__('ProjectsNew|Bitbucket Server URL')"
           label-for="bitbucket_server_url"
@@ -142,6 +141,6 @@ export default {
           {{ __('Next step') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

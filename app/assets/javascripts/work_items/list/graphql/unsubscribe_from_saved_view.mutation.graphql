@@ -1,0 +1,9 @@
+# @feature_category: portfolio_management
+
+mutation workItemSavedViewUnsubscribe($input: WorkItemSavedViewUnsubscribeInput!) {
+  workItemSavedViewUnsubscribe(input: $input) {
+    savedView {
+      id
+    }
+  }
+}

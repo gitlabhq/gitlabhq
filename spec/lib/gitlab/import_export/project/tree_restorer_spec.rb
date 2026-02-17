@@ -183,19 +183,20 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           task_issue2 = Issue.find_by(title: 'task by both attributes')
           incident_issue = Issue.find_by(title: 'incident by work_item_type')
           issue_with_invalid_type = Issue.find_by(title: 'invalid issue type')
-          issue_type = WorkItems::Type.default_by_type(:issue)
-          task_type = WorkItems::Type.default_by_type(:task)
+          issue_type = build(:work_item_system_defined_type, :issue)
+          task_type = build(:work_item_system_defined_type, :task)
+          incident_type = build(:work_item_system_defined_type, :incident)
 
-          expect(task_issue1.work_item_type).to eq(task_type)
-          expect(task_issue2.work_item_type).to eq(task_type)
-          expect(incident_issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
-          expect(issue_with_invalid_type.work_item_type).to eq(issue_type)
+          expect(task_issue1.work_item_type_id).to eq(task_type.id)
+          expect(task_issue2.work_item_type_id).to eq(task_type.id)
+          expect(incident_issue.work_item_type_id).to eq(incident_type.id)
+          expect(issue_with_invalid_type.work_item_type_id).to eq(issue_type.id)
 
-          other_issue_types = Issue.preload(:work_item_type).where.not(
+          other_issue_types = Issue.where.not(
             id: [task_issue1.id, task_issue2.id, incident_issue.id, issue_with_invalid_type]
-          ).map(&:work_item_type)
+          ).pluck(:work_item_type_id)
 
-          expect(other_issue_types).to all(eq(issue_type))
+          expect(other_issue_types).to all(eq(issue_type.id))
         end
 
         it 'preserves updated_at on issues' do
@@ -292,13 +293,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         it 'assigns committer and author details to all diff commits and commits metadata' do
           MergeRequestDiffCommit.all.each do |commit|
-            expect(commit.commit_author_id).not_to be_nil
-            expect(commit.committer_id).not_to be_nil
+            expect(commit.commit_author).not_to be_nil
+            expect(commit.committer).not_to be_nil
           end
 
           MergeRequest::CommitsMetadata.all.each do |metadata|
-            expect(metadata.commit_author_id).not_to be_nil
-            expect(metadata.committer_id).not_to be_nil
+            expect(metadata.commit_author).not_to be_nil
+            expect(metadata.committer).not_to be_nil
           end
         end
 
@@ -316,10 +317,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(commit_metadata_2.commit_author.email).to eq('james@jameslopez.es')
 
           commit1 = MergeRequestDiffCommit
-            .find_by(sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9')
+            .find_by(merge_request_commits_metadata_id: commit_metadata_1)
 
           commit2 = MergeRequestDiffCommit
-            .find_by(sha: 'a4e5dfebf42e34596526acb8611bc7ed80e4eb3f')
+            .find_by(merge_request_commits_metadata_id: commit_metadata_2)
 
           expect(commit1.commit_author.name).to eq('Dmitriy Zaporozhets')
           expect(commit1.commit_author.email).to eq('dmitriy.zaporozhets@gmail.com')

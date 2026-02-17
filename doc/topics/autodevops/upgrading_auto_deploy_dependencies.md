@@ -110,13 +110,10 @@ If your Auto DevOps project has an active environment that was deployed with the
      If you accidentally delete the Helm v2 releases before you are ready, you can restore
      this backup from a Kubernetes manifest file by using `kubectl apply -f $backup`.
 
-     {{< alert type="warning" >}}
-
-     Do not use this if you have public pipelines.
-     This artifact can contain secrets and is visible to any
-     user who can see your job.
-
-     {{< /alert >}}
+     > [!warning]
+     > Do not use this if you have public pipelines.
+     > This artifact can contain secrets and is visible to any
+     > user who can see your job.
 
 1. Run a pipeline and trigger the `<environment-name>:helm-2to3:migrate` job.
 1. Deploy your environment as usual. This deployment uses Helm v3.
@@ -190,12 +187,9 @@ include:
   - template: Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
-{{< alert type="warning" >}}
-
-Using a [beta](../../policy/development_stages_support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
-your environments. Do not test it with important projects or environments.
-
-{{< /alert >}}
+> [!warning]
+> Using a [beta](../../policy/development_stages_support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
+> your environments. Do not test it with important projects or environments.
 
 ## Resource Architectures of the `auto-deploy-app` chart
 

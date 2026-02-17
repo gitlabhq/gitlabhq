@@ -34,11 +34,8 @@ At the project level, in the upper-right corner, you can see **CLI Commands** wh
 corresponding commands to sign in, build images, and push images. **CLI Commands** is not shown at
 the group level.
 
-{{< alert type="note" >}}
-
-Default settings for the Harbor integration at the project level are inherited from the group level.
-
-{{< /alert >}}
+> [!note]
+> Default settings for the Harbor integration at the project level are inherited from the group level.
 
 ## Use images from the Harbor registry
 

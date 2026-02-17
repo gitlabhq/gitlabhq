@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
 import PipelineGraph from '~/ci/pipeline_details/graph/components/graph_component.vue';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
@@ -66,6 +67,7 @@ describe('graph component', () => {
       stubs: {
         'links-inner': true,
         'linked-pipeline': true,
+        'linked-pipelines-column': stubComponent(LinkedPipelinesColumn),
         'job-item': true,
         'job-group-dropdown': true,
         ...stubOverride,

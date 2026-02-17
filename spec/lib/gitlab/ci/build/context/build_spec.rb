@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
 
   shared_examples 'variables collection' do
     it 'returns a collection of variables' do
-      is_expected.to include('CI_COMMIT_REF_NAME'  => 'master')
+      is_expected.to include('CI_COMMIT_REF_NAME'  => 'main')
       is_expected.to include('CI_PIPELINE_IID'     => pipeline.iid.to_s)
       is_expected.to include('CI_PROJECT_PATH'     => project.full_path)
       is_expected.to include('CI_JOB_NAME'         => 'some-job')
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
 
       it 'returns a collection of variables' do
         is_expected.to include('CI_JOB_NAME'        => nil)
-        is_expected.to include('CI_COMMIT_REF_NAME' => 'master')
+        is_expected.to include('CI_COMMIT_REF_NAME' => 'main')
         is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path)
       end
     end
@@ -140,7 +140,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
 
       it 'returns a collection of variables' do
-        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-master')
+        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-main')
         is_expected.to include('KUBE_NAMESPACE' => "k8s-#{project.full_path}")
       end
     end
@@ -160,7 +160,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       end
 
       it 'expands the nested variable' do
-        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-nested-master')
+        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-nested-main')
       end
     end
 
@@ -168,12 +168,12 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       let(:seed_attributes) do
         {
           name: 'some-job',
-          environment: 'env-master',
+          environment: 'env-main',
           yaml_variables: [
             { key: 'NESTED_VAR', value: 'nested-$CI_PROJECT_PATH' }
           ],
           options: {
-            environment: { name: 'env-master', kubernetes: { namespace: 'k8s-$NESTED_VAR' } }
+            environment: { name: 'env-main', kubernetes: { namespace: 'k8s-$NESTED_VAR' } }
           }
         }
       end

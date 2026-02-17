@@ -54,19 +54,19 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     describe '#data_for_edit_release_page' do
       it 'has the needed data to display the "edit release" page' do
         keys = %i[project_id
-                  group_id
-                  group_milestones_available
-                  project_path
-                  tag_name
-                  markdown_preview_path
-                  markdown_docs_path
-                  releases_page_path
-                  release_assets_docs_path
-                  manage_milestones_path
-                  new_milestone_path
-                  upcoming_release_docs_path
-                  edit_release_docs_path
-                  delete_release_docs_path]
+          group_id
+          group_milestones_available
+          project_path
+          tag_name
+          markdown_preview_path
+          markdown_docs_path
+          releases_page_path
+          release_assets_docs_path
+          manage_milestones_path
+          new_milestone_path
+          upcoming_release_docs_path
+          edit_release_docs_path
+          delete_release_docs_path]
 
         expect(helper.data_for_edit_release_page.keys).to match_array(keys)
       end
@@ -75,19 +75,19 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     describe '#data_for_new_release_page' do
       it 'has the needed data to display the "new release" page' do
         keys = %i[project_id
-                  group_id
-                  group_milestones_available
-                  project_path
-                  tag_name
-                  releases_page_path
-                  markdown_preview_path
-                  markdown_docs_path
-                  release_assets_docs_path
-                  manage_milestones_path
-                  new_milestone_path
-                  default_branch
-                  upcoming_release_docs_path
-                  edit_release_docs_path]
+          group_id
+          group_milestones_available
+          project_path
+          tag_name
+          releases_page_path
+          markdown_preview_path
+          markdown_docs_path
+          release_assets_docs_path
+          manage_milestones_path
+          new_milestone_path
+          default_branch
+          upcoming_release_docs_path
+          edit_release_docs_path]
 
         expect(helper.data_for_new_release_page.keys).to match_array(keys)
       end
@@ -124,9 +124,9 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
       it 'has the needed data to display the individual "release" page' do
         keys = %i[project_id
-                  project_path
-                  tag_name
-                  deployments]
+          project_path
+          tag_name
+          deployments]
 
         expect(helper.data_for_show_page.keys).to match_array(keys)
       end

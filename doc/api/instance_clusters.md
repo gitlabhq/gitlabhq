@@ -23,7 +23,7 @@ Users need administrator access to use these endpoints.
 
 ## List instance clusters
 
-Returns a list of instance clusters.
+Lists all instance clusters.
 
 ```plaintext
 GET /admin/clusters
@@ -32,7 +32,8 @@ GET /admin/clusters
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/admin/clusters"
 ```
 
@@ -102,9 +103,9 @@ Example response:
 ]
 ```
 
-## Get a single instance cluster
+## Retrieve a single instance cluster
 
-Returns a single instance cluster.
+Retrieves a single instance cluster.
 
 Parameters:
 
@@ -119,7 +120,8 @@ GET /admin/clusters/:cluster_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/admin/clusters/9"
 ```
 
@@ -156,9 +158,9 @@ Example response:
 }
 ```
 
-## Add existing instance cluster
+## Create an instance cluster
 
-Adds an existing Kubernetes instance cluster.
+Creates an instance cluster by adding an existing Kubernetes cluster.
 
 ```plaintext
 POST /admin/clusters/add
@@ -224,7 +226,7 @@ Example response:
 }
 ```
 
-## Edit instance cluster
+## Update an instance cluster
 
 Updates an existing instance cluster.
 
@@ -248,13 +250,10 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
 
-{{< alert type="note" >}}
-
-`name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
-through the [Add existing instance cluster](#add-existing-instance-cluster) endpoint.
-
-{{< /alert >}}
+> [!note]
+> `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
+> through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
+> through the [Create an instance cluster](#create-an-instance-cluster) endpoint.
 
 Example request:
 

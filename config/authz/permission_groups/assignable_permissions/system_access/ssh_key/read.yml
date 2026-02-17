@@ -1,0 +1,7 @@
+---
+name: read_ssh_key
+description: Grants the ability to view SSH keys by ID or fingerprint
+boundaries:
+  - instance
+permissions:
+  - read_ssh_key

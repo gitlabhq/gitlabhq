@@ -103,6 +103,14 @@ module Types
       validates mutually_exclusive: %i[except_types only_types]
     end
 
+    field :features,
+      Types::WorkItems::FeaturesType,
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'Features of the work item.',
+      method: :itself,
+      experiment: { milestone: '18.9' }
+
     field :work_item_type, Types::WorkItems::TypeType, null: false,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Type assigned to the work item.'

@@ -1,7 +1,0 @@
----
-name: create_protected_tag
-description: Grants the ability to create protected tags
-permissions:
-  - create_protected_tag
-boundaries:
-  - project

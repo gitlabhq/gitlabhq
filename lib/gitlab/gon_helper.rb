@@ -20,8 +20,6 @@ module Gitlab
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
-      gon.allow_immediate_namespaces_deletion =
-        Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
       gon.iframe_rendering_enabled      = Gitlab::CurrentSettings.iframe_rendering_enabled?
       gon.iframe_rendering_allowlist    = Gitlab::CurrentSettings.iframe_rendering_allowlist
 
@@ -106,11 +104,11 @@ module Gitlab
       push_frontend_feature_flag(:glql_work_items, current_user)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
-      push_frontend_feature_flag(:archive_group)
-      push_frontend_feature_flag(:accessible_loading_button, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, true)
+
+      push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
     end
 
     # Exposes the state of a feature flag to the frontend code.

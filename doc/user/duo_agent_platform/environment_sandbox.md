@@ -6,14 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Remote execution environment sandbox
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578048) in GitLab 18.7 [with a flags](../../administration/feature_flags/_index.md) named `ai_duo_agent_platform_network_firewall` and `ai_dap_executor_connects_over_ws`
@@ -43,6 +35,10 @@ The sandbox is enabled when:
 
 If you specify a [custom Docker image](flows/execution.md#change-the-default-docker-image),
 the sandbox is not applied, and your flow can access any domain reachable from your runner.
+
+For information about CI/CD variable differences between default and custom
+image configurations, see
+[Flow execution variables](flows/execution_variables.md).
 
 ## Prerequisites
 

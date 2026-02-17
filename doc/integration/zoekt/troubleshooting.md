@@ -99,6 +99,155 @@ Alternatively, you can use the `gitlab:zoekt:info` Rake task.
 If the number of online nodes is lower than the number of configured nodes or is zero when nodes are configured,
 you might have connectivity issues between GitLab and your Zoekt nodes.
 
+## Debug Zoekt connection errors
+
+When you experience connection issues with Zoekt, it's important to understand
+the request flow and systematically verify each component in the architecture.
+
+### Zoekt architecture
+
+Zoekt uses a unified binary (`gitlab-zoekt`) that can operate in two modes:
+
+- Indexer mode for indexing repositories from Gitaly
+- Webserver mode for serving search requests
+
+The basic search flow is:
+
+```plaintext
+GitLab Rails → Zoekt webserver
+```
+
+For Helm chart (Kubernetes) deployments, the architecture
+includes additional gateway components for load balancing:
+
+```plaintext
+GitLab Rails → external gateway (NGINX) → internal gateway (NGINX) → Zoekt webserver
+```
+
+These gateway components are part of the Helm chart deployment,
+not internal Zoekt components.
+They're NGINX proxies that distribute requests across multiple Zoekt webserver instances
+and handle routing, load balancing, and optional TLS termination.
+
+For more information about the Zoekt architecture design, see
+[use Zoekt For code search](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/).
+
+### Verify network reachability
+
+To verify the Zoekt gateway is reachable from your GitLab Rails pods,
+[run a health check](_index.md#run-a-health-check):
+
+```shell
+gitlab-rake gitlab:zoekt:health
+```
+
+This task verifies connectivity from Rails to Zoekt and reports
+the overall status as `HEALTHY`, `DEGRADED`, or `UNHEALTHY`.
+If the health check fails, network connectivity issues
+might exist between GitLab and your Zoekt infrastructure.
+
+To check the node status and configuration, run the following Rake task:
+
+```shell
+gitlab-rake gitlab:zoekt:info
+```
+
+To view detailed node information including URLs,
+in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session),
+run the following command:
+
+```ruby
+# View all node attributes including URLs
+Search::Zoekt::Node.all.map(&:attributes)
+```
+
+- `search_base_url` should point to the Zoekt webserver or the external gateway in Kubernetes
+  (for example, `http://gitlab-zoekt:8080/`).
+- `index_base_url` should point to the Zoekt indexer.
+
+If you get a `404` response when you search, requests might not be properly routed.
+This error indicates the issue is likely with the gateway configuration
+rather than network connectivity.
+
+### Monitor Zoekt logs
+
+For Helm chart (Kubernetes) deployments, monitor Zoekt component logs
+to identify connection issues.
+
+`StatefulSet` contains three containers:
+
+```shell
+# Monitor webserver logs (search requests from Rails)
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-webserver -n your_namespace
+
+# Monitor indexer logs (repository indexing)
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-indexer -n your_namespace
+
+# Monitor internal gateway logs (NGINX proxy between the external gateway and webserver)
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-internal-gateway -n your_namespace
+```
+
+If you're using the external gateway deployment,
+you can also monitor external gateway logs:
+
+```shell
+# Monitor external gateway logs (NGINX proxy for incoming requests from Rails)
+kubectl logs -f deployment/gitlab-zoekt-gateway -c zoekt-external-gateway -n your_namespace
+```
+
+While you monitor these logs, run test searches from the GitLab UI.
+The logs should show the request being processed.
+If requests do not appear in the logs, a network routing issue
+might exist between Rails and Zoekt.
+
+### Run test searches from the UI
+
+While you monitor Zoekt logs, you can run test searches from the GitLab UI:
+
+- Search in a project for specific nodes.
+- Search in a group to query multiple nodes.
+- Search globally to query all nodes.
+
+If searches fail, check the Rails application logs for detailed error messages:
+
+```shell
+# For installations that use the Linux package
+tail -f /var/log/gitlab/gitlab-rails/application_json.log | grep -i zoekt
+
+# For self-compiled installations
+tail -f log/application_json.log | grep -i zoekt
+```
+
+Look for connection errors, timeouts, or authentication failures that might
+indicate network issues between GitLab and your Zoekt infrastructure.
+
+### Verify pod and service status
+
+For Helm chart (Kubernetes) deployments, check the status of your Zoekt pods and services:
+
+```shell
+# Check pod status
+kubectl get pods -n your_namespace -l app=gitlab-zoekt
+
+# Check `StatefulSet` status
+kubectl get statefulset gitlab-zoekt -n your_namespace
+
+# Check service endpoints
+kubectl get endpoints gitlab-zoekt -n your_namespace
+
+# Describe the service to see the configuration
+kubectl describe service gitlab-zoekt -n your_namespace
+```
+
+Ensure all pods are in a running state and the service has valid endpoints.
+If the pods are not running or the endpoints are missing,
+your Zoekt deployment might have configuration issues.
+
+For more information about deployment architecture, see:
+
+- [External gateway deployment configuration](https://gitlab.com/gitlab-org/cloud-native/charts/gitlab-zoekt/-/blob/main/templates/deployment.yaml)
+- [`StatefulSet` configuration (indexer, webserver, and internal gateway)](https://gitlab.com/gitlab-org/cloud-native/charts/gitlab-zoekt/-/blob/main/templates/stateful_sets.yaml)
+
 ## Error: `TaskRequest responded with [401]`
 
 In your Zoekt indexer logs, you might see `TaskRequest responded with [401]`.

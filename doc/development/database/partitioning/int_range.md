@@ -49,12 +49,9 @@ CREATE TABLE merge_request_diff_files (
 PARTITION BY RANGE(merge_request_diff_id);
 ```
 
-{{< alert type="note" >}}
-
-The primary key of a partitioned table must include the partition key as
-part of the primary key definition.
-
-{{< /alert >}}
+> [!note]
+> The primary key of a partitioned table must include the partition key as
+> part of the primary key definition.
 
 And we might have a list of partitions for the table, such as:
 
@@ -230,11 +227,8 @@ background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
 
-{{< alert type="warning" >}}
-
-A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
-
-{{< /alert >}}
+> [!warning]
+> A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
 
 Once again, continuing the example, this migration would look like:
 

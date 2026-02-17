@@ -243,11 +243,8 @@ make && go test ./ -run TestRedirect
 
 ### Feature flags
 
-{{< alert type="warning" >}}
-
-All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#how-to-use-feature-flags).
-
-{{< /alert >}}
+> [!warning]
+> All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#how-to-use-feature-flags).
 
 Consider adding a [feature flag](../feature_flags/_index.md) for any non-trivial changes.
 Feature flags can make the release and rollback of these changes easier, avoiding

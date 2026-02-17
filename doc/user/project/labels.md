@@ -77,13 +77,13 @@ You can also assign and unassign labels with quick actions:
 
 To view the **project's labels**:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Manage** > **Labels**.
 
 Or:
 
 1. View an issue or merge request.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Manage project labels**.
 
 The list of labels includes both the labels created in the project and
@@ -94,13 +94,13 @@ project or group path where it was created.
 
 To view the **group's labels**:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Labels**.
 
 Or:
 
 1. View an epic.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Manage group labels**.
 
 The list includes all labels created only in the group. It does not list any labels created in
@@ -151,7 +151,7 @@ Prerequisites:
 To do so:
 
 1. View an issue or merge request.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Create project label**.
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
@@ -198,7 +198,7 @@ Prerequisites:
 To do so:
 
 1. View an epic.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Create group label**.
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
@@ -243,12 +243,9 @@ To edit a **group** label:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-If you delete a label, it is permanently deleted. All references to the label are removed from the
-system and you cannot undo the deletion.
-
-{{< /alert >}}
+> [!warning]
+> If you delete a label, it is permanently deleted. All references to the label are removed from the
+> system and you cannot undo the deletion.
 
 Prerequisites:
 
@@ -280,16 +277,14 @@ To delete a **group** label:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211744) flag `labels_archive` so it can be turned on and off for a group in GitLab 18.7.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can archive labels that are no longer actively used but need to be preserved
 for historical perspective and search purposes.
@@ -360,11 +355,8 @@ If other projects in the same group have a label with the same title, they are a
 merged with the new group label. If a group label with the same title exists, it is
 also merged.
 
-{{< alert type="warning" >}}
-
-Promoting a label is a permanent action and cannot be reversed.
-
-{{< /alert >}}
+> [!warning]
+> Promoting a label is a permanent action and cannot be reversed.
 
 Prerequisites:
 
@@ -486,11 +478,8 @@ To filter issue, merge request, or epic lists by a given scope, enter
 For example, filtering by the `platform::*` label returns issues that have `platform::iOS`,
 `platform::Android`, or `platform::Linux` labels.
 
-{{< alert type="note" >}}
-
-Filtering by scoped labels not available on the issues or merge requests dashboard pages.
-
-{{< /alert >}}
+> [!note]
+> Filtering by scoped labels not available on the issues or merge requests dashboard pages.
 
 ### Scoped labels examples
 
@@ -583,12 +572,9 @@ by [label priority](issues/sorting_issue_lists.md#sorting-by-label-priority) and
 When prioritizing labels, you must do it from a project.
 It's not possible to do it from the group label list.
 
-{{< alert type="note" >}}
-
-Priority sorting is based on the highest priority label only.
-[This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
-
-{{< /alert >}}
+> [!note]
+> Priority sorting is based on the highest priority label only.
+> [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
 
 Prerequisites:
 
@@ -627,13 +613,10 @@ To learn what happens when you sort by priority or label priority, see
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 To comply with certain auditing requirements, you can set a label to be locked.
 When a merge request with locked labels gets merged, nobody can remove them from the MR.
@@ -644,11 +627,8 @@ Prerequisites:
 
 - You must have at least the Planner role for the project or group.
 
-{{< alert type="warning" >}}
-
-After you set a label as locked, nobody can undo it or delete the label.
-
-{{< /alert >}}
+> [!warning]
+> After you set a label as locked, nobody can undo it or delete the label.
 
 To set a label to get locked on merge:
 

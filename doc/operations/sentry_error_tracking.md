@@ -25,7 +25,7 @@ GitLab provides a way to connect Sentry to your project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable the Sentry integration:
 
@@ -74,6 +74,10 @@ To fix this issue, enable the **Monitor** feature for the project.
 ### Error `Connection has failed. Re-check Auth Token and try again`
 
 On-premise Sentry integrations may encounter this issue when attempting to connect.
+
+Prerequisites:
+
+- Administrator access.
 
 To fix this issue:
 

@@ -26,9 +26,9 @@ module Integrations
           Rails.application.routes.url_helpers.help_page_url('user/profile/service_accounts.md'),
           target: '_blank', rel: 'noopener noreferrer')
 
-        format(s_(
-          'BeyondIdentityService|If enabled, Beyond Identity will not check commits from %{docs_link}.'
-        ).html_safe, docs_link: docs_link.html_safe) # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
+        safe_format(
+          s_('BeyondIdentityService|If enabled, Beyond Identity will not check commits from %{docs_link}.'),
+          docs_link: docs_link)
       },
       description: -> {
         s_('BeyondIdentityService|If enabled, Beyond Identity will not check commits from service accounts.')

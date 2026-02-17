@@ -1,0 +1,5 @@
+---
+name: reorder_issue
+description: Grants the ability to reorder issues
+boundaries:
+  - project

@@ -2,6 +2,8 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import {
   convertDescriptionWithNewSort,
   deleteTaskListItem,
+  disableTaskListItem,
+  enableTaskListItem,
   extractTaskTitleAndDescription,
   insertNextToTaskListItemText,
 } from '~/issues/show/utils';
@@ -350,6 +352,82 @@ paragraph text
         newDescription,
         taskDescription,
         taskTitle: 'item 7',
+      });
+    });
+  });
+
+  describe('disableTaskListItem', () => {
+    it('disable unchecked item', () => {
+      const description = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+      const sourcepos = '4:4-4:14';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [~] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+
+      expect(disableTaskListItem(description, sourcepos)).toEqual({
+        newDescription,
+      });
+    });
+
+    it('disable checked item', () => {
+      const description = `Tasks
+
+1. [ ] item 1
+   1. [x] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+      const sourcepos = '4:4-4:14';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [~] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+
+      expect(disableTaskListItem(description, sourcepos)).toEqual({
+        newDescription,
+      });
+    });
+  });
+
+  describe('enableTaskListItem', () => {
+    it('enable item', () => {
+      const description = `Tasks
+
+1. [ ] item 1
+   1. [~] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+      const sourcepos = '4:4-4:14';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6`;
+
+      expect(enableTaskListItem(description, sourcepos)).toEqual({
+        newDescription,
       });
     });
   });

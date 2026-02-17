@@ -142,7 +142,7 @@ With custom text: [[Backend API Standards|backend/api:api-standards]]
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
-- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/476990) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
 
 {{< /history >}}
@@ -151,12 +151,9 @@ Transform your wiki pages into live dashboards using [GitLab Query Language](../
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
-{{< alert type="note" >}}
-
-Embedded views have performance considerations. Large queries may time out or be rate-limited.
-If you encounter timeouts, reduce the scope of your query by adding more filters or reducing the `limit` parameter.
-
-{{< /alert >}}
+> [!note]
+> Embedded views have performance considerations. Large queries may time out or be rate-limited.
+> If you encounter timeouts, reduce the scope of your query by adding more filters or reducing the `limit` parameter.
 
 ### Basic embedded view syntax
 
@@ -181,12 +178,9 @@ as issues are created, modified, or closed.
 
 Create comprehensive planning dashboards directly in your wiki pages.
 
-{{< alert type="note" >}}
-
-In the examples throughout this section, replace `project = "group/project"` with your actual project path,
-such as `project = "gitlab-org/gitlab"` or `project = "my-team/my-project"`.
-
-{{< /alert >}}
+> [!note]
+> In the examples throughout this section, replace `project = "group/project"` with your actual project path,
+> such as `project = "gitlab-org/gitlab"` or `project = "my-team/my-project"`.
 
 Prerequisites:
 

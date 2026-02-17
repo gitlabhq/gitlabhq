@@ -6,7 +6,6 @@ module Ci
     TRANSACTION_MESSAGE = "can't perform network calls inside a database transaction"
     BATCH_SIZE = 100
     RETRY_IN = 10.minutes
-    ACCEPTABLE_DELAY = 12.hours
 
     attr_reader :batch_size
 
@@ -74,8 +73,8 @@ module Ci
 
     def delete_object(object)
       if object.delete_file_from_storage
+        ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.track_deletion(object)
         ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: false)
-        ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_apdex(success: object.created_at > ACCEPTABLE_DELAY.ago)
         true
       else
         ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: true)

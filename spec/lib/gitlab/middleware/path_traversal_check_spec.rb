@@ -143,6 +143,23 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       end
     end
 
+    context 'when query params are already parsed and cached' do
+      let(:method) { 'get' }
+      let(:path) { '/admin/users' }
+      let(:query_params) { { search_query: 'foo', other: 'bar' } }
+
+      it 'does not mutate the cached query params hash' do
+        request_before = ::ActionDispatch::Request.new(env)
+        original_query_hash = request_before.GET
+
+        expect(original_query_hash).to include('search_query' => 'foo', 'other' => 'bar')
+
+        described_class.new(fake_app).call(env)
+
+        expect(original_query_hash).to include('search_query' => 'foo', 'other' => 'bar')
+      end
+    end
+
     context 'with check_path_traversal_middleware disabled' do
       before do
         stub_feature_flags(check_path_traversal_middleware: false)

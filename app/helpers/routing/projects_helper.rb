@@ -22,10 +22,6 @@ module Routing
       expose_path(api_v4_projects_environments_path(id: environment.project.id, environment_id: environment.id))
     end
 
-    def issue_path(entity, *args)
-      project_issue_path(entity.project, entity, *args)
-    end
-
     def merge_request_path(entity, *args)
       project_merge_request_path(entity.project, entity, *args)
     end
@@ -34,23 +30,24 @@ module Routing
       project_pipeline_path(pipeline.project, pipeline.id, *args)
     end
 
-    def issue_url(entity, *args)
-      if use_work_items_path?(entity)
-        work_item_url(entity, *args)
+    def issue_path(entity, *args)
+      if entity.use_work_item_url?
+        project_work_item_path(entity.project, entity, *args)
       else
-        project_issue_url(entity.project, entity, *args)
+        project_issue_path(entity.project, entity, *args)
       end
     end
 
     def work_item_url(entity, *args)
-      return group_work_item_url(entity.namespace, entity.iid, *args) unless entity.project.present?
+      return group_work_item_url(entity.namespace, entity, *args) if entity.group_level?
 
-      if use_issue_path?(entity)
-        project_issue_url(entity.project, entity.iid, *args)
-      else
+      if entity.use_work_item_url?
         project_work_item_url(entity.project, entity.iid, *args)
+      else
+        project_issue_url(entity.project, entity.iid, *args)
       end
     end
+    alias_method :issue_url, :work_item_url
 
     def merge_request_url(entity, *args)
       project_merge_request_url(entity.project, entity, *args)
@@ -90,18 +87,6 @@ module Routing
       else
         toggle_subscription_project_merge_request_path(entity.project, entity)
       end
-    end
-
-    private
-
-    def use_work_items_path?(issue)
-      return true if issue.project.blank? && issue.namespace.present?
-
-      issue.issue_type == 'task'
-    end
-
-    def use_issue_path?(work_item)
-      work_item.work_item_type.issue? || work_item.work_item_type.incident? || work_item.from_service_desk?
     end
   end
 end

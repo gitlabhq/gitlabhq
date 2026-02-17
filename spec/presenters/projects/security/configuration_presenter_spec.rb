@@ -48,6 +48,125 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         expect(html_data[:latest_pipeline_path]).to eq(project_pipeline_path(project, pipeline))
       end
 
+      it 'includes a link to vulnerability_training_docs' do
+        expect(html_data[:vulnerability_training_docs_path]).to eq(
+          help_page_path(
+            'user/application_security/vulnerabilities/_index.md',
+            anchor: 'enable-security-training-for-vulnerabilities'
+          )
+        )
+      end
+
+      it 'includes a link to upgrade url' do
+        expect(html_data[:upgrade_path]).to eq(promo_pricing_url)
+      end
+
+      context 'with group_full_path value' do
+        context 'when project has root group' do
+          let_it_be(:parent) { create(:group) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          it 'includes a link to group_full_path' do
+            expect(html_data[:group_full_path]).to eq(parent.full_path)
+          end
+        end
+
+        context 'when project is under a user namespace' do
+          let_it_be(:parent) { create(:user_namespace) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          it 'returns nil' do
+            expect(html_data[:group_full_path]).to be_nil
+          end
+        end
+      end
+
+      context 'with scan profiles permissions' do
+        context 'when project has root group' do
+          let_it_be(:parent) { create(:group) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          where(:has_permission, :result) do
+            true  | true
+            false | false
+          end
+
+          with_them do
+            before do
+              allow_next_instance_of(described_class) do |presenter|
+                allow(presenter).to receive(:can?).and_return(false) # default stub for any other permission checks
+                allow(presenter).to receive(:can?).with(anything, :apply_security_scan_profiles, project).and_return(has_permission)
+              end
+            end
+
+            it 'returns expected permission result for can_apply_profiles' do
+              expect(html_data[:can_apply_profiles]).to eq(result)
+            end
+          end
+        end
+
+        context 'when project is under a user namespace' do
+          let_it_be(:parent) { create(:user_namespace) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          before do
+            allow_next_instance_of(described_class) do |presenter|
+              allow(presenter).to receive(:can?).and_return(true)
+            end
+          end
+
+          it 'always returns false' do
+            expect(html_data[:can_apply_profiles]).to be false
+          end
+        end
+      end
+
+      context 'with attributes permissions' do
+        context 'when project has root group' do
+          let_it_be(:parent) { create(:group) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          where(:permission, :field, :has_permission, :result) do
+            :read_security_attribute   | :can_read_attributes   | true  | true
+            :read_security_attribute   | :can_read_attributes   | false | false
+            :admin_security_attributes | :can_manage_attributes | true  | true
+            :admin_security_attributes | :can_manage_attributes | false | false
+          end
+
+          with_them do
+            before do
+              allow_next_instance_of(described_class) do |presenter|
+                allow(presenter).to receive(:can?).and_return(false) # default stub for any other permission checks
+                allow(presenter).to receive(:can?).with(anything, permission, parent).and_return(has_permission)
+              end
+            end
+
+            it 'returns expected permission result' do
+              expect(html_data[field]).to eq(result)
+            end
+          end
+        end
+
+        context 'when project is under a user namespace' do
+          let_it_be(:parent) { create(:user_namespace) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          where(:field) { [:can_read_attributes, :can_manage_attributes] }
+
+          with_them do
+            before do
+              allow_next_instance_of(described_class) do |presenter|
+                allow(presenter).to receive(:can?).and_return(true)
+              end
+            end
+
+            it 'always returns false' do
+              expect(html_data[field]).to be false
+            end
+          end
+        end
+      end
+
       context "while retrieving information about user's ability to enable auto_devops" do
         where(:is_admin, :archived, :feature_available, :result) do
           true     | true      | true   | false
@@ -179,7 +298,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
               project.ci_config_path_or_default,
               'contents go here',
               message: 'test',
-              branch_name: 'master')
+              branch_name: project.default_branch)
           end
 
           it 'expects gitlab_ci_present to be true' do
@@ -195,7 +314,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       it 'includes the path to gitlab_ci history' do
-        expect(subject[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'master/.gitlab-ci.yml'))
+        expect(subject[:gitlab_ci_history_path]).to eq(project_blame_path(project, "#{project.default_branch}/.gitlab-ci.yml"))
       end
     end
 
@@ -213,7 +332,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       it 'includes the path to gitlab_ci history' do
         allow(project).to receive(:default_branch).and_return(nil)
 
-        expect(html_data[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'master/.gitlab-ci.yml'))
+        expect(html_data[:gitlab_ci_history_path]).to eq(project_blame_path(project, 'main/.gitlab-ci.yml'))
       end
     end
 

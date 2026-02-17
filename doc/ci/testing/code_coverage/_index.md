@@ -56,7 +56,6 @@ The following sample regex patterns were designed to parse coverage output from 
 Test the regex patterns carefully. Tool output formats can change over time, and these patterns might no longer work as expected.
 
 <!-- vale gitlab_base.Spelling = NO -->
-<!-- markdownlint-disable MD056 -->
 <!--
 Verify regex patterns carefully, especially patterns containing the pipe (`|`) character.
 To use `|` in the text of a table cell (not as cell delimiters), you must escape it with a backslash (`\|`).
@@ -95,12 +94,16 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 {{< tab title="Node.js" >}}
 
+<!-- markdownlint-disable MD056 -->
+
 | Tool      | Command                                    | Regex pattern |
 |-----------|--------------------------------------------|---------------|
 | tap       | `tap --coverage-report=text-summary`       | `/^Statements\s*:\s*([^%]+)/` |
 | nyc       | `nyc npm test`                             | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
 | jest      | `jest --ci --coverage`                     | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
 | node:test | `node --experimental-test-coverage --test` | `/all files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
+
+<!-- markdownlint-enable MD056 -->
 
 {{< /tab >}}
 
@@ -124,11 +127,15 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 {{< tab title=".NET and PowerShell" >}}
 
+<!-- markdownlint-disable MD056 -->
+
 | Tool      | Language   | Command | Regex pattern |
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
 | Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.\|,)?\d{0,2}%)/` |
+
+<!-- markdownlint-enable MD056 -->
 
 {{< /tab >}}
 
@@ -144,7 +151,6 @@ See: https://docs.gitlab.com/user/markdown/#tables
 {{< /tabs >}}
 
 <!-- vale gitlab_base.Spelling = YES -->
-<!-- markdownlint-enable MD056 -->
 
 ## Coverage visualization
 
@@ -245,7 +251,7 @@ You can track the evolution of code coverage for your project or group over time
 
 To view the code coverage history for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Repository analytics**.
 1. From the dropdown list, select the job you want to view historical data for.
 1. Optional. To view a CSV file of the data, select **Download raw data (.csv)**.
@@ -260,7 +266,7 @@ To view the code coverage history for a project:
 
 To view the code coverage history for all projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Repository analytics**.
 1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
 

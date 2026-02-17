@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let(:presenter) { described_class.new(build) }
   let(:archive) { { paths: ['sample.txt'] } }
 
@@ -234,7 +236,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
     context 'when GIT_DEPTH variable is specified' do
       before do
-        create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: build.pipeline)
+        create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 1 })
       end
 
       it 'returns its value' do
@@ -296,7 +298,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       context 'when GIT_DEPTH is zero' do
         before do
-          create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
+          create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
         end
 
         it 'returns the correct refspecs' do
@@ -325,7 +327,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       context 'when GIT_DEPTH is zero' do
         before do
-          create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
+          create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
         end
 
         it 'returns the correct refspecs' do
@@ -498,9 +500,11 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
     context 'with references in pipeline variables' do
       before do
-        create(:ci_pipeline_variable, key: 'A', value: 'refA-$B', pipeline: build.pipeline)
-        create(:ci_pipeline_variable, key: 'B', value: 'refB-$C-$D', pipeline: build.pipeline)
-        create(:ci_pipeline_variable, key: 'C', value: 'value', pipeline: build.pipeline)
+        create_or_replace_pipeline_variables(build.pipeline, [
+          { key: 'A', value: 'refA-$B' },
+          { key: 'B', value: 'refB-$C-$D' },
+          { key: 'C', value: 'value' }
+        ])
       end
 
       it 'returns expanded and sorted variables' do

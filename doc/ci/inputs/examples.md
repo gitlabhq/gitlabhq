@@ -247,8 +247,8 @@ The expression is evaluated in two steps:
    In this example, the `$[[ inputs.some_example ]]` input is replaced with the [set value](_index.md#set-input-values).
    For example, if the value is:
 
-    - `test-branch`, the expression becomes `if: '"test-branch" == "test-branch"'`.
-    - `$CI_COMMIT_BRANCH`, the expression becomes `if: '"$CI_COMMIT_BRANCH" == "test-branch"'`.
+   - `test-branch`, the expression becomes `if: '"test-branch" == "test-branch"'`.
+   - `$CI_COMMIT_BRANCH`, the expression becomes `if: '"$CI_COMMIT_BRANCH" == "test-branch"'`.
 
 1. Expression evaluation: After the inputs are interpolated, GitLab attempts to create the pipeline.
    During pipeline creation, the expressions are evaluated to determine which jobs to add to the pipeline.

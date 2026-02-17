@@ -77,11 +77,8 @@ For example:
 
 When using the GitLab UI form builder, the following components are available for use in HAML.
 
-{{< alert type="note" >}}
-
-Currently only the listed components are available but more components are planned.
-
-{{< /alert >}}
+> [!note]
+> Currently only the listed components are available but more components are planned.
 
 #### `gitlab_ui_checkbox_component`
 

@@ -1,6 +1,6 @@
 ---
 migration_job_name: BackfillGoogleInstanceAuditEventDestinationsFixed
-description: Fixed version of BackfillGoogleInstanceAuditEventDestinations BBM
+description: Backfill the audit_events_instance_google_cloud_logging_configurations table to audit_events_instance_external_streaming_destinations
 feature_category: audit_events
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186866
 milestone: '18.0'

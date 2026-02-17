@@ -334,14 +334,14 @@ version of the product:
    only if the project namespace's plan includes the feature.
 
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Settings** > **General**.
+   1. In the left sidebar, select **Settings** > **General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Overview** > **Groups**.
+   1. In the left sidebar, select **Overview** > **Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
    1. Select **Save changes**.
@@ -955,18 +955,24 @@ while keeping the initializer code itself unchanged between editions.
 
 ### Code in `config/routes`
 
-When we add `draw :admin` in `config/routes.rb`, the application tries to
+When we add `draw_all :admin` in `config/routes.rb`, the application tries to
 load the file located in `config/routes/admin.rb`, and also try to load the
 file located in `ee/config/routes/admin.rb`.
 
-In EE, it should at least load one file, at most two files. If it cannot find
-any files, an error is raised. In CE, since we don't know if an
-EE route exists, it doesn't raise any errors even if it cannot find anything.
+If it cannot find any files, an error is raised.
 
-This means if we want to extend a particular CE route file, just add the same
-file located in `ee/config/routes`. If we want to add an EE only route, we
-could still put `draw :ee_only` in both CE and EE, and add
-`ee/config/routes/ee_only.rb` in EE, similar to `render_if_exists`.
+In EE, it should at least load one file, at most two files.
+In CE, it will only load one file.
+
+Use `draw_all` for routes that have both CE and EE route files.
+
+If we want to add an EE only route, use `draw` with `Gitlab.ee` instead:
+
+```ruby
+Gitlab.ee do
+  draw :ee_only
+end
+```
 
 ### Code in `app/controllers/`
 
@@ -1691,13 +1697,10 @@ export default {
 </template>
 ```
 
-{{< alert type="note" >}}
-
-An EE component can be imported
-[asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
-its rendering within CE codebase relies on some check (for example, a feature flag check).
-
-{{< /alert >}}
+> [!note]
+> An EE component can be imported
+> [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
+> its rendering within CE codebase relies on some check (for example, a feature flag check).
 
 Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
 the license is present.
@@ -1726,11 +1729,8 @@ export default {
 </template>
 ```
 
-{{< alert type="note" >}}
-
-Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
-
-{{< /alert >}}
+> [!note]
+> Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
 
 ##### Recommended alternative approach (named/scoped slots)
 

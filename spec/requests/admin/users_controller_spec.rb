@@ -41,6 +41,63 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
           .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
       end
     end
+
+    context "when admin changes email_otp_required_after" do
+      let(:new_datetime) { 1.day.from_now.change(usec: 0) }
+
+      it 'can be set to a datetime' do
+        expect do
+          patch admin_user_path(user), params: { user: { email_otp_required_after: new_datetime } }
+        end.to change { user.reload.email_otp_required_after }.to(new_datetime)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:notice]).to eq('User was successfully updated.')
+      end
+
+      it 'can be set to nil' do
+        user.update!(email_otp_required_after: 1.day.ago)
+
+        expect do
+          patch admin_user_path(user), params: { user: { email_otp_required_after: nil } }
+        end.to change { user.reload.email_otp_required_after }.to(nil)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:notice]).to eq('User was successfully updated.')
+      end
+
+      context "when email OTP is required" do
+        before do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        end
+
+        it 'cannot be set to nil' do
+          user.update!(email_otp_required_after: 1.day.ago)
+
+          expect do
+            patch admin_user_path(user), params: { user: { email_otp_required_after: nil } }
+          end.not_to change { user.reload.email_otp_required_after }
+
+          expect(response).to redirect_to(admin_user_path(user))
+        end
+      end
+
+      context "when email OTP is not permitted" do
+        let(:admin) { create(:admin, :two_factor) }
+        let(:user) { create(:user, :two_factor) }
+
+        before do
+          stub_application_setting(require_two_factor_authentication: true)
+        end
+
+        it 'cannot be set to a datetime' do
+          expect do
+            patch admin_user_path(user), params: { user: { email_otp_required_after: new_datetime } }
+          end.not_to change { user.reload.email_otp_required_after }
+
+          expect(response).to redirect_to(admin_user_path(user))
+        end
+      end
+    end
   end
 
   describe 'PUT #block' do
@@ -132,6 +189,73 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
         expect(response).to redirect_to(admin_user_path(user))
         expect(flash[:alert]).to eq(s_('Error occurred. User was not updated'))
       end
+    end
+  end
+
+  describe '#safe_params' do
+    it 'permits only expected parameters' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          id: user.id,
+          email_id: 123,
+          personal_projects_page: 1,
+          projects_page: 2,
+          groups_page: 3,
+          tab: 'activity',
+          search_query: 'test',
+          sort: 'name_asc',
+          page: 5,
+          filter: 'active',
+          extra_param: 'value',
+          malicious: 'data'
+        )
+      )
+
+      result = controller_instance.send(:safe_params)
+
+      expect(result.keys).to contain_exactly(
+        'id',
+        'email_id',
+        'personal_projects_page',
+        'projects_page',
+        'groups_page',
+        'tab',
+        'search_query',
+        'sort',
+        'page',
+        'filter'
+      )
+      expect(result[:extra_param]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
+    end
+  end
+
+  describe '#permitted_user_password_params' do
+    it 'permits only password and password_confirmation from user params' do
+      controller_instance = described_class.new
+      allow(controller_instance).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          user: {
+            password: 'newpassword123',
+            password_confirmation: 'newpassword123',
+            email: 'hacker@example.com',
+            admin: true,
+            malicious: 'data'
+          }
+        )
+      )
+
+      result = controller_instance.send(:permitted_user_password_params)
+
+      expect(result.keys).to contain_exactly('password', 'password_confirmation')
+      expect(result[:password]).to eq('newpassword123')
+      expect(result[:password_confirmation]).to eq('newpassword123')
+      expect(result[:email]).to be_nil
+      expect(result[:admin]).to be_nil
+      expect(result[:malicious]).to be_nil
+      expect(result.permitted?).to be true
     end
   end
 end

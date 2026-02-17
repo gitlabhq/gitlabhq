@@ -119,12 +119,9 @@ The new email address is added as a secondary email address.
 You can use secondary email addresses to reset passwords but not to authenticate.
 You can update your [primary email address](#change-your-primary-email).
 
-{{< alert type="note" >}}
-
-[Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching and
-[group and project imports](../import/_index.md).
-
-{{< /alert >}}
+> [!note]
+> [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching and
+> [group and project imports](../import/_index.md).
 
 ## Delete email addresses from your user profile
 
@@ -142,12 +139,9 @@ sent to the primary email address instead.
 
 Unverified secondary email addresses are automatically deleted after three days.
 
-{{< alert type="note" >}}
-
-Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
-the deleted email address.
-
-{{< /alert >}}
+> [!note]
+> Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
+> the deleted email address.
 
 To delete an email address from your account:
 
@@ -162,11 +156,8 @@ You can also [use the API to delete a secondary email address](../../api/user_em
 
 You can make your user profile visible to only you and GitLab administrators.
 
-{{< alert type="note" >}}
-
-A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
-
-{{< /alert >}}
+> [!note]
+> A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
 
 To make your profile private:
 
@@ -181,13 +172,10 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 - Date when account was created
 - Tabs for activity, groups, contributed projects, personal projects, starred projects, snippets
 
-{{< alert type="note" >}}
-
-Making your user profile page private does not hide all your public resources from
-the REST or GraphQL APIs. For example, the email address associated with your commit
-signature is accessible unless you [use an automatically-generated private commit email](#use-an-automatically-generated-private-commit-email).
-
-{{< /alert >}}
+> [!note]
+> Making your user profile page private does not hide all your public resources from
+> the REST or GraphQL APIs. For example, the email address associated with your commit
+> signature is accessible unless you [use an automatically-generated private commit email](#use-an-automatically-generated-private-commit-email).
 
 ### User visibility
 
@@ -232,14 +220,6 @@ to match your username.
 
 ## Add external accounts to your user profile page
 
-{{< history >}}
-
-- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
-- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
-- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
-
-{{< /history >}}
-
 You can add links to certain other external accounts you might have, like Discord and X (formerly Twitter).
 They can help other users connect with you on other platforms.
 
@@ -249,15 +229,48 @@ To add links to other accounts:
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
-   - LinkedIn profile name.
    - BlueSky [`did:plc` identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
-   - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
-   - Discord username.
-   - X (formerly Twitter) @username.
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - GitHub username.
+   - LinkedIn profile name.
+   - [Mastodon handle](#add-a-mastodon-handle).
    - [ORCID](https://orcid.org/).
+   - X (formerly Twitter) @username.
 
    Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
+
+### Add a Mastodon handle
+
+{{< history >}}
+
+- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
+- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
+- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
+- Ability to verify Mastodon account using your GitLab user profile [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/504194) in GitLab 18.8. Feature flag `verify_mastodon_user` removed.
+
+{{< /history >}}
+
+To add a Mastodon handle:
+
+1. Add Mastodon handle to your GitLab profile.
+   1. Sign in to GitLab.
+   1. In the upper-right corner, select your avatar.
+   1. Select **Edit profile**.
+   1. In the **Social accounts** section, go to **Mastodon** and enter your handle. For example: `@alex.garcia@exampleServer`.
+   1. Select **Update profile settings**.
+1. Get the verification URI.
+   1. In the upper-right corner, select your avatar.
+   1. Select your name or username.
+   1. On the right side, select your Mastodon handle.
+   1, Copy the URI from the page that opens.
+1. Add verification to Mastodon.
+   1. Go to your Mastodon profile settings.
+   1. In the **Extra fields** section, enter the URI from earlier.
+   1. Save your Mastodon profile changes.
+
+Verify that a green checkmark is displayed next to your GitLab site's extra field in Mastodon.
+If a green checkmark is not displayed, you may need to perform additional troubleshooting.
 
 ## Show private contributions on your user profile page
 
@@ -417,11 +430,8 @@ You can disable following and being followed by other users.
 1. Clear the **Enable follow users** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When this feature is being disabled, all current followed/following connections are deleted.
-
-{{< /alert >}}
+> [!note]
+> When this feature is being disabled, all current followed/following connections are deleted.
 
 ## View a user's activity
 
@@ -522,14 +532,11 @@ When it expires or isn't available, GitLab:
 
 When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 
-{{< alert type="note" >}}
-
-When any session is signed out, or when a session is revoked
-from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
-While other sessions remain active, the **Remember me** feature doesn't restore
-a session if the browser is closed or the existing session expires.
-
-{{< /alert >}}
+> [!note]
+> When any session is signed out, or when a session is revoked
+> from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
+> While other sessions remain active, the **Remember me** feature doesn't restore
+> a session if the browser is closed or the existing session expires.
 
 ## Related topics
 

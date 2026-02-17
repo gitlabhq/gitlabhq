@@ -21,6 +21,7 @@ export const initRemoveAvatar = () => {
 
   return new Vue({
     el,
+    name: 'RemoveAvatarRoot',
     provide: {
       path,
       name,
@@ -40,6 +41,7 @@ export const initMergeTopics = () => {
 
   return new Vue({
     el,
+    name: 'MergeTopicsRoot',
     apolloProvider,
     provide: { path },
     render(createElement) {

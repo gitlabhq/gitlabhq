@@ -1,0 +1,5 @@
+---
+name: unshare_project
+description: Grants the ability to unshare a project from a group
+boundaries:
+  - project

@@ -45,7 +45,7 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
     it 'shows "Attaching 2 files" message on uploading 2 file' do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'video_sample.mp4'),
-                       Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+          Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
         expect(page).to have_selector('.attaching-file-message', visible: true, text: 'Attaching 2 files -')
       end

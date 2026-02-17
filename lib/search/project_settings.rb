@@ -27,9 +27,14 @@ module Search
         { text: _("Visibility, project features, permissions"),
           href: edit_project_path(project, anchor: 'js-shared-permissions') },
         { text: _("Badges"), href: edit_project_path(project, anchor: 'js-badges-settings') },
-        { text: _("Service Desk"), href: edit_project_path(project, anchor: 'js-service-desk') },
+
+        (if ::ServiceDesk.supported?
+           { text: _("Service Desk"),
+             href: edit_project_path(project, anchor: 'js-service-desk') }
+         end),
+
         { text: _("Advanced"), href: edit_project_path(project, anchor: 'js-project-advanced-settings') }
-      ]
+      ].compact
     end
 
     def repository_settings

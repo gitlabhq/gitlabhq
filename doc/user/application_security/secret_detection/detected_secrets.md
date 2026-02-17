@@ -21,6 +21,8 @@ This table lists the secrets detected by:
 Secret detection rules are updated in the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main).
 Detected secrets with patterns that have been removed or updated remain open so you can triage them.
 
+If you want to add a new secret detection rule, you can [propose new detection rules](pipeline/configure.md#propose-new-detection-rules) for all GitLab users, or [customize rulesets](pipeline/configure.md#customize-analyzer-rulesets) for your specific project.
+
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab_base.Spelling = NO -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->

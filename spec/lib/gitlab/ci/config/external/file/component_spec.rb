@@ -120,6 +120,54 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
             expect(external_resource.error_message).to match(/Invalid configuration format/)
           end
         end
+
+        context 'when component uses spec:include' do
+          let(:content) do
+            <<~YAML
+              spec:
+                include:
+                  - local: /shared-inputs.yml
+              ---
+              job:
+                script: echo
+            YAML
+          end
+
+          it 'is invalid because spec:include is not supported in components' do
+            expect(subject).to be_falsy
+            expect(external_resource.error_message).to eq(
+              "Component `gitlab.com/acme/components/my-component@1.0.0` cannot use `spec:include`. " \
+                "This keyword is not supported in components"
+            )
+          end
+        end
+
+        context 'when component has spec but no include' do
+          let(:content) do
+            <<~YAML
+              spec:
+                inputs:
+                  env:
+                    default: prod
+              ---
+              job:
+                script: echo
+            YAML
+          end
+
+          it 'is valid' do
+            expect(subject).to be_truthy
+          end
+        end
+
+        context 'when content is empty' do
+          let(:content) { '' }
+
+          it 'does not add spec:include errors' do
+            expect(subject).to be_falsy
+            expect(external_resource.error_message.to_s).not_to include('spec:include')
+          end
+        end
       end
     end
   end
@@ -236,8 +284,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
     end
 
     it 'tracks the content load time' do
-      expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_content_hash).and_yield
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_component_content).and_yield
+      expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_content_hash).and_yield
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_expand_content_includes).and_yield
 
       external_resource.load_and_validate_expanded_hash!

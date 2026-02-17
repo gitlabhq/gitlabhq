@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
+RSpec.describe Gitlab::CurrentSettings, feature_category: :settings do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end

@@ -1,5 +1,6 @@
 #import "ee_else_ce/ci/pipeline_details/header/graphql/fragments/pipeline_header.fragment.graphql"
 
+# @feature_category: continuous_integration
 query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
   project(fullPath: $fullPath) {
     id

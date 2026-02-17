@@ -22,6 +22,7 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
         expect(response.body).to have_pushed_frontend_feature_flags(workItemsSavedViews: true)
+        expect(response.body).to have_pushed_frontend_feature_flags(useWorkItemUrl: true)
       end
 
       context 'for work_items_client_side_boards feature flag' do
@@ -47,6 +48,17 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: false)
           end
+        end
+      end
+
+      context 'for work_items_nav_badge_callout' do
+        it 'dismisses the callout for authenticated users' do
+          Users::Callout.where(user: current_user, feature_name: 'work_items_nav_badge').delete_all
+          sign_in(current_user)
+
+          expect { get work_items_path }.to change {
+            Users::Callout.where(user: current_user, feature_name: 'work_items_nav_badge').count
+          }.from(0).to(1)
         end
       end
     end

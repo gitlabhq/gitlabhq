@@ -173,12 +173,9 @@ Elasticsearch is not supported in Geo.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 #### Enable or disable replication (for some data types)
 
@@ -197,15 +194,12 @@ To enable, such as for package file replication:
 Feature.enable(:geo_package_file_replication)
 ```
 
-{{< alert type="warning" >}}
-
-Features not on this list, or with **No** in the **Replicated** column,
-are not replicated to a **secondary** site. Failing over without manually
-replicating data from those features causes the data to be **lost**.
-To use those features on a **secondary** site, or to execute a failover
-successfully, you must replicate their data using some other means.
-
-{{< /alert >}}
+> [!warning]
+> Features not on this list, or with **No** in the **Replicated** column,
+> are not replicated to a **secondary** site. Failing over without manually
+> replicating data from those features causes the data to be **lost**.
+> To use those features on a **secondary** site, or to execute a failover
+> successfully, you must replicate their data using some other means.
 
 | Feature                                                                                                               | Replicated (added in GitLab version)                                          | Verified (added in GitLab version)                                            | GitLab-managed object storage replication (added in GitLab version)             | GitLab-managed object storage verification (added in GitLab version)            | Notes |
 |:----------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:------|

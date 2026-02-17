@@ -36,7 +36,7 @@ module Gitlab
           # chunks.
           body = []
           # each_with_object doesn't work with Rack::BodyProxy
-          response_body.each { |chunk| body << chunk.to_s }
+          response_body.each { |chunk| body << chunk.to_s } # rubocop:disable Style/MapIntoArray -- response_body is not an array
           body
         end
 

@@ -1,5 +1,6 @@
 <script>
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
 import { LOAD_FAILURE } from '../../constants';
 import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW, STAGE_VIEW } from '../constants';
@@ -60,11 +61,59 @@ export default {
       currentPipeline: null,
       loadingPipelineId: null,
       pipelineLayers: {},
-      pipelineExpanded: false,
+      expandedPipeline: null,
     };
   },
-  titleClasses: ['gl-font-bold', 'gl-pipeline-job-width', 'gl-truncate', 'gl-leading-36'],
-  minWidth: `${ONE_COL_WIDTH}px`,
+  apollo: {
+    currentPipeline: {
+      query: getPipelineDetails,
+      pollInterval: 10000,
+      context() {
+        return getQueryHeaders(this.configPaths.graphqlResourceEtag);
+      },
+      variables() {
+        return this.pipelineVariables;
+      },
+      skip() {
+        return !this.pipelineVariables.iid || !this.pipelineVariables.projectPath;
+      },
+      update(data) {
+        /*
+          This check prevents the pipeline from being overwritten
+          when a poll times out and the data returned is empty.
+          This can be removed once the timeout behavior is updated.
+          See: https://gitlab.com/gitlab-org/gitlab/-/issues/323213.
+        */
+
+        if (!data?.project?.pipeline) {
+          return this.currentPipeline;
+        }
+
+        const incomingPipelineId = getIdFromGraphQLId(data.project.pipeline.id);
+
+        if (incomingPipelineId !== this.expandedPipeline?.id) {
+          return this.currentPipeline;
+        }
+
+        return unwrapPipelineData(
+          this.pipelineVariables.projectPath,
+          JSON.parse(JSON.stringify(data)),
+        );
+      },
+      result() {
+        this.loadingPipelineId = null;
+        this.$emit('scrollContainer');
+      },
+      error(err) {
+        this.$emit('error', { type: LOAD_FAILURE, skipSentry: true });
+
+        reportToSentry(
+          this.$options.name,
+          `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(err)}`,
+        );
+      },
+    },
+  },
   computed: {
     columnClass() {
       const positionValues = {
@@ -91,53 +140,19 @@ export default {
     minWidth() {
       return this.isUpstream ? 0 : this.$options.minWidth;
     },
-  },
-  methods: {
-    getPipelineData(pipeline) {
-      const projectPath = pipeline.project.fullPath;
-
-      this.$apollo.addSmartQuery('currentPipeline', {
-        query: getPipelineDetails,
-        pollInterval: 10000,
-        context() {
-          return getQueryHeaders(this.configPaths.graphqlResourceEtag);
-        },
-        variables() {
-          return {
-            projectPath,
-            iid: pipeline.iid,
-          };
-        },
-        update(data) {
-          /*
-            This check prevents the pipeline from being overwritten
-            when a poll times out and the data returned is empty.
-            This can be removed once the timeout behavior is updated.
-            See: https://gitlab.com/gitlab-org/gitlab/-/issues/323213.
-          */
-
-          if (!data?.project?.pipeline) {
-            return this.currentPipeline;
-          }
-
-          return unwrapPipelineData(projectPath, JSON.parse(JSON.stringify(data)));
-        },
-        result() {
-          this.loadingPipelineId = null;
-          this.$emit('scrollContainer');
-        },
-        error(err) {
-          this.$emit('error', { type: LOAD_FAILURE, skipSentry: true });
-
-          reportToSentry(
-            this.$options.name,
-            `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(err)}`,
-          );
-        },
-      });
-
-      toggleQueryPollingByVisibility(this.$apollo.queries.currentPipeline);
+    pipelineVariables() {
+      return {
+        projectPath: this.expandedPipeline?.project?.fullPath,
+        iid: this.expandedPipeline?.iid,
+      };
     },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.currentPipeline);
+  },
+  titleClasses: ['gl-font-bold', 'gl-pipeline-job-width', 'gl-truncate', 'gl-leading-36'],
+  minWidth: `${ONE_COL_WIDTH}px`,
+  methods: {
     getPipelineLayers(id) {
       if (this.viewType === LAYER_VIEW && !this.pipelineLayers[id]) {
         this.pipelineLayers[id] = calculatePipelineLayersInfo(
@@ -158,23 +173,14 @@ export default {
     onPipelineClick(pipeline) {
       /* If the clicked pipeline has been expanded already, close it, clear, exit */
       if (this.currentPipeline?.id === pipeline.id) {
-        this.pipelineExpanded = false;
+        this.expandedPipeline = null;
         this.currentPipeline = null;
         return;
       }
 
-      /* Set the loading id */
+      /* Expand the pipeline - Apollo will automatically fetch when expandedPipeline changes */
+      this.expandedPipeline = pipeline;
       this.loadingPipelineId = pipeline.id;
-
-      /*
-        Expand the pipeline.
-        If this was not a toggle close action, and
-        it was already showing a different pipeline, then
-        this will be a no-op, but that doesn't matter.
-      */
-      this.pipelineExpanded = true;
-
-      this.getPipelineData(pipeline);
     },
     onDownstreamHovered(jobName) {
       this.$emit('downstreamHovered', jobName);

@@ -151,15 +151,12 @@ To manually manage the created cadence, see [Create an iteration manually](#crea
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
 From there you can create a new iteration or select an iteration to get a more detailed view.
 
-{{< alert type="note" >}}
-
-If a project has issue tracking
-[turned off](../../project/settings/_index.md#configure-project-features-and-permissions),
-to view the iterations list, enter its URL. To do so, add: `/-/cadences` to your project or group URL.
-For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
-[Issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009) tracks improving this.
-
-{{< /alert >}}
+> [!note]
+> If a project has issue tracking
+> [turned off](../../project/settings/_index.md#configure-project-features-and-permissions),
+> to view the iterations list, enter its URL. To do so, add: `/-/cadences` to your project or group URL.
+> For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
+> [Issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009) tracks improving this.
 
 ### Edit an iteration cadence
 

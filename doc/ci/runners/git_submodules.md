@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use Git submodules to include code from other repositories in CI/CD pipelines with relative URLs, absolute URLs, and CI/CD variables.
 title: Using Git submodules with GitLab CI/CD
 ---
 
@@ -58,12 +59,9 @@ You do not need to configure additional variables in this case, but you need to 
 
 ### Using relative URLs
 
-{{< alert type="warning" >}}
-
-If you use relative URLs, submodules may resolve incorrectly in forking workflows.
-Use absolute URLs instead if you expect your project to have forks.
-
-{{< /alert >}}
+> [!warning]
+> If you use relative URLs, submodules may resolve incorrectly in forking workflows.
+> Use absolute URLs instead if you expect your project to have forks.
 
 When your submodule is on the same GitLab server, you can also use relative URLs in
 your `.gitmodules` file:
@@ -91,7 +89,7 @@ For submodules not located on the same GitLab server, always use the full URL:
 Prerequisites:
 
 - If you use the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) to clone a submodule in a
-  pipeline job, you must have at least the Reporter role for the submodule repository to pull the code.
+  pipeline job, you must have the Reporter, Developer, Maintainer, or Owner role for the submodule repository to pull the code.
 - [CI/CD job token access](../jobs/ci_job_token.md#control-job-token-access-to-your-project) must be properly configured in the upstream submodule project.
 
 To make submodules work correctly in CI/CD jobs:
@@ -198,13 +196,10 @@ The authentication method you choose depends on your GitLab Runner executor type
   configuration changes persist between jobs. This can cause authentication conflicts
   if different jobs use different credentials.
 
-{{< alert type="warning" >}}
-
-When using shell executors, avoid `git config --global` commands that persist authentication
-credentials. These settings remain active between jobs and can cause authentication failures
-or security issues if different jobs use different credentials.
-
-{{< /alert >}}
+> [!warning]
+> When using shell executors, avoid `git config --global` commands that persist authentication
+> credentials. These settings remain active between jobs and can cause authentication failures
+> or security issues if different jobs use different credentials.
 
 You can use one of the following token types:
 

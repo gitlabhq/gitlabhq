@@ -16,11 +16,8 @@ GitLab allows you to start multiple Sidekiq processes to process background jobs
 at a higher rate on a single instance. By default, Sidekiq starts one worker
 process and only uses a single core.
 
-{{< alert type="note" >}}
-
-The information in this page applies only to Linux package installations.
-
-{{< /alert >}}
+> [!note]
+> The information in this page applies only to Linux package installations.
 
 ## Start multiple processes
 
@@ -138,13 +135,10 @@ processes:
 
 ## Troubleshoot using the CLI
 
-{{< alert type="warning" >}}
-
-It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
-If you experience a problem, you should contact GitLab support. Use the command
-line at your own risk.
-
-{{< /alert >}}
+> [!warning]
+> It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
+> If you experience a problem, you should contact GitLab support. Use the command
+> line at your own risk.
 
 For debugging purposes, you can start extra Sidekiq processes by using the command
 `/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command

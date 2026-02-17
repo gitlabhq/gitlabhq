@@ -361,11 +361,7 @@ constraints(Projects::ProjectUrlConstraint.new) do
         get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
         get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
 
-        resources :saved_views, only: [], path: 'work_items/saved_views' do
-          member do
-            get :subscribe
-          end
-        end
+        resources :saved_views, only: [:show], path: 'work_items/views'
 
         resources :work_items, only: [:show, :index, :edit], param: :iid do
           collection do
@@ -421,9 +417,9 @@ constraints(Projects::ProjectUrlConstraint.new) do
           as: :snippet_blob_raw,
           constraints: { snippet_id: /\d+/, ref: %r{[^\/]+} }
 
-        draw :issues
-        draw :merge_requests
-        draw :pipelines
+        draw_all :issues
+        draw_all :merge_requests
+        draw_all :pipelines
 
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes

@@ -1,3 +1,4 @@
+# @feature_category: package_registry
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getPackageFiles(

@@ -20,7 +20,7 @@ import ImportStats from '~/import_entities/components/import_stats.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -207,7 +207,7 @@ export default {
     },
 
     pathWithSuffix(path, item) {
-      const suffix = item.entity_type === WORKSPACE_GROUP ? '/' : '';
+      const suffix = item.entity_type === NAMESPACE_GROUP ? '/' : '';
       return `${path}${suffix}`;
     },
 
@@ -248,9 +248,9 @@ export default {
 
     getEntityTooltip(item) {
       switch (item.entity_type) {
-        case WORKSPACE_PROJECT:
+        case NAMESPACE_PROJECT:
           return __('Project');
-        case WORKSPACE_GROUP:
+        case NAMESPACE_GROUP:
           return __('Group');
         default:
           return '';

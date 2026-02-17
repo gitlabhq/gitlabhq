@@ -153,7 +153,11 @@ export default {
       <!-- Placeholder for line numbers while content is not highlighted -->
     </div>
 
-    <gl-intersection-observer class="gl-w-full" @appear="handleChunkAppear">
+    <gl-intersection-observer
+      class="gl-w-full"
+      @appear="handleChunkAppear"
+      @disappear="() => $emit('disappear')"
+    >
       <pre
         class="code highlight gl-m-0 gl-w-full !gl-overflow-visible !gl-border-none !gl-p-0 gl-leading-0"
       ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line !gl-whitespace-pre-wrap gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>

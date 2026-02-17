@@ -15,6 +15,8 @@ module API
         params do
           requires :value, type: String, desc: 'The value of the variable'
         end
+        route_setting :authorization, permissions: :update_webhook_url_variable,
+          boundary_type: configuration[:boundary_type]
         put ":key" do
           hook = find_hook
           key = params.delete(:key)
@@ -27,6 +29,8 @@ module API
         end
 
         desc 'Un-Set a url variable'
+        route_setting :authorization, permissions: :delete_webhook_url_variable,
+          boundary_type: configuration[:boundary_type]
         delete ":key" do
           hook = find_hook
           key = params.delete(:key)

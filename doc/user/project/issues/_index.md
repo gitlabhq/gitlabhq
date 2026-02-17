@@ -23,7 +23,7 @@ Issues:
 - Integrate with external tools like Zoom, Jira, and email services.
 
 For more information about issues, see the GitLab blog post:
-[Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/).
+[Always start a discussion with an issue](https://about.gitlab.com/blog/start-with-an-issue/).
 
 Issues are always associated with a specific project. If you have multiple
 projects in a group, you can view all of the projects' issues at once.
@@ -61,7 +61,7 @@ We have changed how issues look by migrating them to a unified framework for wor
 meet the product needs of our Agile Planning offering.
 
 For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the blog post
-[First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/)
+[First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/)
 (June 2024).
 
 If you run into any issues while trying out this change, you can use the

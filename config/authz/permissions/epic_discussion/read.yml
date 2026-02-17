@@ -1,0 +1,5 @@
+---
+name: read_epic_discussion
+description: Grants the ability to read epic discussions and notes
+boundaries:
+  - group

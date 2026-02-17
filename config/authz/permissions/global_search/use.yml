@@ -1,0 +1,7 @@
+---
+name: use_global_search
+description: Grants the ability to use global search functionality
+boundaries:
+  - group
+  - project
+  - user

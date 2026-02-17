@@ -304,13 +304,6 @@ export default class MergeRequestStore {
     this.headBlobPath = blobPath.head_path || '';
     this.baseBlobPath = blobPath.base_path || '';
     this.codequalityReportsPath = data.codequality_reports_path;
-
-    // Security reports
-    this.sastComparisonPath = data.sast_comparison_path;
-    this.secretDetectionComparisonPath = data.secret_detection_comparison_path;
-
-    this.sastComparisonPathV2 = data.new_sast_comparison_path;
-    this.secretDetectionComparisonPathV2 = data.new_secret_detection_comparison_path;
   }
 
   get isNothingToMergeState() {

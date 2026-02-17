@@ -74,13 +74,10 @@ To view a diff between your configuration file and the latest version, run:
 sudo gitlab-ctl diff-config
 ```
 
-{{< alert type="warning" >}}
-
-If you are pasting the output of this command into your
-`/etc/gitlab/gitlab.rb` configuration file, omit any leading `+` and `-`
-characters on each line.
-
-{{< /alert >}}
+> [!warning]
+> If you are pasting the output of this command into your
+> `/etc/gitlab/gitlab.rb` configuration file, omit any leading `+` and `-`
+> characters on each line.
 
 ## Init system detection
 

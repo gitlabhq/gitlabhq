@@ -36,11 +36,12 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[generic_packages]
+            tags %w[packages]
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :admin_packages
+          route_setting :authorization, permissions: :authorize_generic_package, boundary_type: :project,
+            job_token_policies: :admin_packages
 
           params do
             requires :package_name, type: String, desc: 'Package name', regexp: Gitlab::Regex.generic_package_name_regex, file_path: true
@@ -69,7 +70,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[generic_packages]
+            tags %w[packages]
           end
 
           params do
@@ -83,7 +84,8 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :admin_packages
+          route_setting :authorization, permissions: :upload_generic_package, boundary_type: :project,
+            job_token_policies: :admin_packages
 
           put do
             project = authorized_user_project
@@ -126,7 +128,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[generic_packages]
+            tags %w[packages]
           end
 
           params do
@@ -137,7 +139,8 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :read_packages,
+          route_setting :authorization, permissions: :download_generic_package, boundary_type: :project,
+            job_token_policies: :read_packages,
             allow_public_access_for_enabled_project_features: :package_registry
 
           get do
@@ -153,8 +156,12 @@ module API
 
             # Prepare extra response headers including checksum
             extra_response_headers = { SHA256_CHECKSUM_HEADER => package_file.file_sha256 }.compact_blank
-
-            present_package_file!(package_file, content_disposition: :attachment, extra_response_headers: extra_response_headers)
+            present_package_file!(
+              package_file,
+              content_disposition: :attachment,
+              content_type: determine_content_type(package_file),
+              extra_response_headers: extra_response_headers
+            )
           end
         end
       end
@@ -181,6 +188,12 @@ module API
       def encoded_file_name
         file_name = [declared_params[:path], declared_params[:file_name]].compact.join('/')
         declared_params[:path].present? ? URI.encode_uri_component(file_name) : file_name
+      end
+
+      def determine_content_type(package_file)
+        content_type = ::Gitlab::Utils::MimeType.from_filename(package_file.file_name)
+
+        ::Gitlab::ContentTypes.sanitize_content_type(content_type)
       end
     end
   end

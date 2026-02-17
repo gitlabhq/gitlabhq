@@ -59,9 +59,9 @@ Example response:
 ]
 ```
 
-## Get project alias details
+## Retrieve a project alias
 
-Get details of a project alias:
+Retrieves details of a project alias:
 
 ```plaintext
 GET /project_aliases/:name

@@ -8,6 +8,7 @@ description: Store file related information within a merge request diff
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12047
 milestone: '9.4'
 gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422767
 desired_sharding_key:
   project_id:
     references: projects

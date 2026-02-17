@@ -2,7 +2,7 @@
 <script>
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -15,6 +15,7 @@ import {
   PACKAGE_ERROR_STATUS,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+import getPackagesCountQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages_count.query.graphql';
 import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
@@ -55,6 +56,8 @@ export default {
   data() {
     return {
       packagesResource: {},
+      packagesCount: 0,
+      packagesCountLoadingKey: 0,
       sort: '',
       filters: {},
       isDeleteInProgress: false,
@@ -64,9 +67,31 @@ export default {
     };
   },
   apollo: {
+    packagesCount: {
+      query: getPackagesCountQuery,
+      loadingKey: 'packagesCountLoadingKey',
+      context: {
+        batchKey: 'getPackages',
+      },
+      variables() {
+        return this.countQueryVariables;
+      },
+      update(data) {
+        return data[this.graphqlResource]?.packages?.count ?? 0;
+      },
+      skip() {
+        return !this.sort;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
     packagesResource: {
       query: getPackagesQuery,
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      context: {
+        batchKey: 'getPackages',
+      },
       variables() {
         return this.queryVariables;
       },
@@ -102,22 +127,30 @@ export default {
     },
   },
   computed: {
+    packagesCountLoading() {
+      return Boolean(this.packagesCountLoadingKey);
+    },
     packages() {
       return this.packagesResource?.packages ?? {};
     },
+    countQueryVariables() {
+      return {
+        fullPath: this.fullPath,
+        isGroupPage: this.isGroupPage,
+        ...this.packageParams,
+      };
+    },
     queryVariables() {
       return {
-        isGroupPage: this.isGroupPage,
-        fullPath: this.fullPath,
+        ...this.countQueryVariables,
         sort: this.isGroupPage ? undefined : this.sort,
         groupSort: this.isGroupPage ? this.sort : undefined,
         first: this.pageSize,
-        ...this.packageParams,
         ...this.pageParams,
       };
     },
     graphqlResource() {
-      return this.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.isGroupPage ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     pageInfo() {
       return this.packages?.pageInfo ?? {};
@@ -129,9 +162,6 @@ export default {
         packageVersion: this.filters?.packageVersion,
         packageStatus: this.filters?.packageStatus,
       };
-    },
-    packagesCount() {
-      return this.packages?.count;
     },
     hasFilters() {
       return (
@@ -166,6 +196,10 @@ export default {
         {
           query: getPackagesQuery,
           variables: this.queryVariables,
+        },
+        {
+          query: getPackagesCountQuery,
+          variables: this.countQueryVariables,
         },
       ];
     },
@@ -239,7 +273,7 @@ export default {
 
 <template>
   <div>
-    <package-title :count="packagesCount" :is-loading="isLoading">
+    <package-title :count="packagesCount" :is-loading="packagesCountLoading">
       <template v-if="settingsPath" #settings-link>
         <gl-button
           v-gl-tooltip="$options.i18n.settingsText"
@@ -288,9 +322,8 @@ export default {
         </div>
       </template>
     </delete-packages>
-    <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-center">
+    <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-between @md/panel:gl-justify-center">
       <persisted-pagination
-        class="gl-mt-3"
         :pagination="pageInfo"
         @prev="fetchPreviousPage"
         @next="fetchNextPage"
@@ -298,7 +331,7 @@ export default {
       <page-size-selector
         v-if="packagesCount"
         :value="pageSize"
-        class="gl-relative gl-right-5 @md/panel:gl-absolute"
+        class="gl-relative gl-right-0 @md/panel:gl-absolute @md/panel:gl-right-5"
         @input="handlePageSizeChange"
       />
     </div>

@@ -23,9 +23,9 @@ title: Container repository protection rules API
 
 Use this API to manage [container repository protection rules](../user/packages/container_registry/protected_container_tags.md).
 
-## List container repository protection rules
+## List all container repository protection rules
 
-Gets a list of container repository protection rules from a project's container registry.
+Lists all container repository protection rules for a specified project.
 
 ```plaintext
 GET /api/v4/projects/:id/registry/protection/repository/rules
@@ -82,7 +82,7 @@ Example response:
 
 {{< /history >}}
 
-Create a container repository protection rule for a project's container registry.
+Creates a container repository protection rule for a specified project.
 
 ```plaintext
 POST /api/v4/projects/:id/registry/protection/repository/rules
@@ -130,7 +130,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Update a container repository protection rule for a project's container registry.
+Updates a container repository protection rule for a specified project.
 
 ```plaintext
 PATCH /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id
@@ -177,7 +177,7 @@ curl --request PATCH \
 
 {{< /history >}}
 
-Deletes a container repository protection rule from a project's container registry.
+Deletes a specified container repository protection rule.
 
 ```plaintext
 DELETE /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id

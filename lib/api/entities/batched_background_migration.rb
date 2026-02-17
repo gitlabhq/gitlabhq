@@ -10,6 +10,7 @@ module API
       expose :status_name, as: :status, override: true, documentation: { type: 'String', example: "active" }
       expose :progress, documentation: { type: 'Float', example: 50 }
       expose :created_at, documentation: { type: 'DateTime', example: "2022-11-28T16:26:39+02:00" }
+      expose :estimated_time_remaining, documentation: { type: 'String', example: '1 day' }
     end
   end
 end

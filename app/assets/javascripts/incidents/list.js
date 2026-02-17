@@ -30,6 +30,7 @@ export default () => {
 
   return new Vue({
     el: selector,
+    name: 'IncidentsListRoot',
     components: {
       IncidentsList,
     },

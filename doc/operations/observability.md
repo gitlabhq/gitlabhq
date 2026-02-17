@@ -21,13 +21,10 @@ title: Observability
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Use GitLab Observability (O11y) to:
 
@@ -49,7 +46,7 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 - **Cost-effective open source model**: Only pay for compute resources rather than per-seat licensing, making observability accessible for teams of any size. Contribute features and fixes directly, helping ensure the platform evolves to meet your specific needs.
 - **Simplified access management**: New engineers automatically gain access to production observability data when they receive code repository access, helping eliminate lengthy provisioning processes. This unified access model helps ensure team members can immediately contribute to troubleshooting and monitoring efforts without administrative delays.
-- **Enhanced development workflow**: Developers can correlate code changes directly with application performance metrics, helping to more easily identify when deployments introduce issues. This tight integration between code commits and runtime behavior accelerates debugging and reduces mean time to resolution.
+- **Enhanced development workflow**: Developers can correlate code changes directly with application performance metrics, helping to identify when deployments introduce issues. This tight integration between code commits and runtime behavior accelerates debugging and reduces mean time to resolution.
 - **Shift-left observability**: Teams can catch performance issues and anomalies earlier in the development cycle, by integrating observability data into their development process. This proactive approach reduces the cost and impact of fixing problems. The open source nature can make it easier and more cost-effective to orchestrate comprehensive staging environments that mirror production observability.
 - **Streamlined incident response**: When issues occur, teams can more quickly have context about recent deployments, code changes, and the developers involved, helping with faster triage and resolution. The integration provides a single pane of glass for both code and operational data.
 - **Data next to decisions**: Real-time performance metrics and user behavior data become accessible in the development environment, helping teams make informed decisions about feature prioritization, technical debt, and optimization efforts.
@@ -62,15 +59,15 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 ## Prerequisites
 
-- You must have at least the Developer role for the group
+- You must have the Developer, Maintainer, or Owner role for the group
 - Your group must have GitLab Observability enabled
 
 ## Request access to GitLab Observability
 
 If GitLab Observability is not yet enabled for your group:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 1. Select **Request Access**.
 1. Select **Enable Observability**.
 1. Wait for an email notification confirming your observability instance is ready.
@@ -81,8 +78,8 @@ The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting yo
 
 Once access is granted:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
 
@@ -311,8 +308,8 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
 
 After you have configured GitLab O11y, to access the dashboard embedded in GitLab:
 
-1. On the top bar, select **Search or go to** and find your group where the feature flag is enabled.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group where the feature flag is enabled.
+1. In the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar,
 go directly to `http://<gitlab_instance>/groups/<group_path>/-/observability/services`.
@@ -442,7 +439,7 @@ GitLab Observability automatically instruments your CI/CD pipelines when enabled
 
 To enable automatic pipeline instrumentation, add the `GITLAB_OBSERVABILITY_EXPORT` CI/CD variable to your project or group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.
@@ -482,8 +479,8 @@ No changes to your `.gitlab-ci.yml` file are required. The instrumentation happe
 
 After running pipelines with instrumentation enabled:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 1. Select **Services** to see your `gitlab-ci` service.
 1. Select the service to view traces, metrics, and logs from your pipeline executions.
 

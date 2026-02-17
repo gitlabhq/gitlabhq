@@ -198,10 +198,6 @@ module Issuable
       false
     end
 
-    def has_multiple_assignees?
-      assignees.count > 1
-    end
-
     def allows_reviewers?
       false
     end
@@ -220,10 +216,6 @@ module Issuable
 
     def incident_type_issue?
       is_a?(Issue) && work_item_type&.incident?
-    end
-
-    def supports_issue_type?
-      is_a?(Issue)
     end
 
     def supports_assignee?
@@ -550,10 +542,6 @@ module Issuable
 
   def subscribed_without_subscriptions?(user, _project)
     participant?(user)
-  end
-
-  def can_assign_epic?(_user)
-    false
   end
 
   # rubocop:disable Metrics/PerceivedComplexity -- Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/437679

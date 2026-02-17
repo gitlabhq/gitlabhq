@@ -4,16 +4,6 @@
 
 = render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
 
-- if show_invite_banner?(@group)
-  = content_for :group_invite_members_banner do
-    .gl-pt-6
-      .js-group-invite-members-banner{ data: { svg_path: image_path('illustrations/add-user-sm.svg'),
-        track_label: 'invite_members_banner',
-        invite_members_path: group_group_members_path(@group),
-        callouts_path: group_callouts_path,
-        callouts_feature_id: Users::GroupCalloutsHelper::INVITE_MEMBERS_BANNER,
-        group_id: @group.id } }
-
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 

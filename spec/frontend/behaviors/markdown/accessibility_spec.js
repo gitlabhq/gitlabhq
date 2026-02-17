@@ -136,7 +136,7 @@ describe('addAriaLabels', () => {
     const checkbox = container.querySelector('input[type="checkbox"]');
     addAriaLabels([checkbox]);
 
-    expect(checkbox.getAttribute('aria-label')).toBe('Check option: ');
+    expect(checkbox.getAttribute('aria-label')).toBeNull();
   });
 
   it('should handle whitespace-only text content', () => {
@@ -153,7 +153,7 @@ describe('addAriaLabels', () => {
     const checkbox = container.querySelector('input[type="checkbox"]');
     addAriaLabels([checkbox]);
 
-    expect(checkbox.getAttribute('aria-label')).toBe('Check option: ');
+    expect(checkbox.getAttribute('aria-label')).toBeNull();
   });
 
   it('should process multiple checkboxes correctly', () => {

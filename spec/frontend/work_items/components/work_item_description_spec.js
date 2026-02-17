@@ -8,7 +8,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditedAt from '~/issues/show/components/edited.vue';
-import { updateDraft } from '~/lib/utils/autosave';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -21,7 +21,7 @@ import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_des
 import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
 import { newWorkItemId } from '~/work_items/utils';
-import { ROUTES } from '~/work_items/constants';
+import { ROUTES, WIDGET_TYPE_DESCRIPTION } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -31,6 +31,9 @@ import {
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
+
+const mockWorkItemWidgetsAutoSaveKey = 'test-autosave-key';
+const mockDraftData = { [WIDGET_TYPE_DESCRIPTION]: { description: '' } };
 
 const { markdownPaths } = namespacePathsQueryResponse.data.namespace;
 
@@ -108,7 +111,14 @@ describe('WorkItemDescription', () => {
     fullPath = mockFullPath,
     hideFullscreenMarkdownButton = false,
     workspacePermissionsHandler = mockWorkspacePermissionsHandler,
+    workItemWidgetsAutoSaveKey = mockWorkItemWidgetsAutoSaveKey,
   } = {}) => {
+    getDraft.mockImplementation((key) => {
+      if (key === mockWorkItemWidgetsAutoSaveKey) {
+        return JSON.stringify(mockDraftData);
+      }
+      return null;
+    });
     router = {
       replace: jest.fn(),
     };
@@ -133,6 +143,7 @@ describe('WorkItemDescription', () => {
         isGroup,
         hideFullscreenMarkdownButton,
         uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
+        workItemWidgetsAutoSaveKey,
       },
       mocks: {
         $route: {

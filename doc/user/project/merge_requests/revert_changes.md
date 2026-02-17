@@ -48,7 +48,7 @@ Prerequisites:
 To revert merge request `Example`:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. From the secondary menu, select **Merged**, and select your merge request (here, `Example`).
 1. Scroll to the merge request reports area, and find the report showing the
    **Merged by** information.
@@ -61,8 +61,6 @@ To revert merge request `Example`:
    select **Start a new merge request**, then:
    1. Fill in the fields for your revert merge request, then select **Create merge request**.
    1. When the merge request merges, the revert of `Example` is complete.
-
-After you revert the `Example` merge request, the option to **Revert** is no longer shown on it.
 
 ## Revert a commit
 
@@ -82,14 +80,14 @@ To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. If you know the merge request that contains the commit:
-   1. Select **Code** > **Merge requests**, then select your merge request.
+   1. In the left sidebar, select **Code** > **Merge requests**, then select your merge request.
    1. Select **Commits**, then select the title of the commit you want to revert.
       This displays the commit in the context of your merge request.
    1. Below the secondary menu, GitLab shows the message **Viewing commit `00001111`**,
       where `00001111` is the hash of the commit. Select the commit hash to show
       the commit's page.
 1. If you don't know the merge request the commit originated from:
-   1. Select **Code** > **Commits**.
+   1. In the left sidebar, select **Code** > **Commits**.
    1. Select the title of the commit to display full information about the commit.
 1. In the upper-right corner, select **Options**, then select **Revert**.
 1. In **Revert in branch**, select the branch to revert your changes into.

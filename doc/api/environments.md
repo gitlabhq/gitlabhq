@@ -22,9 +22,9 @@ title: Environments API
 
 Use this API to interact with [GitLab environments](../ci/environments/_index.md).
 
-## List environments
+## List all environments
 
-Get all environments for a given project.
+Lists all environments for a specified project.
 
 ```plaintext
 GET /projects/:id/environments
@@ -66,7 +66,9 @@ Example response:
 ]
 ```
 
-## Get a specific environment
+## Retrieve an environment
+
+Retrieves a specified environment for a project.
 
 ```plaintext
 GET /projects/:id/environments/:environment_id
@@ -201,11 +203,9 @@ Example of response
 }
 ```
 
-## Create a new environment
+## Create an environment
 
-Creates a new environment with the given name and `external_url`.
-
-It returns `201` if the environment was successfully created, `400` for wrong parameters.
+Creates an environment for a specified project.
 
 ```plaintext
 POST /projects/:id/environments
@@ -222,6 +222,8 @@ POST /projects/:id/environments
 | `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment. |
 | `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. |
 | `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
+
+If successful, returns `201`, returns `400` for wrong parameters.
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -256,9 +258,7 @@ Example response:
 
 {{< /history >}}
 
-Updates an existing environment's name and/or `external_url`.
-
-It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned.
+Updates an existing environment for a project.
 
 ```plaintext
 PUT /projects/:id/environments/:environments_id
@@ -275,6 +275,8 @@ PUT /projects/:id/environments/:environments_id
 | `kubernetes_namespace` | string or null  | no       | The Kubernetes namespace to associate with this environment or `null` to remove it. |
 | `flux_resource_path`   | string or null  | no       | The Flux resource path to associate with this environment or `null` to remove it. |
 | `auto_stop_setting`    | string or null  | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
+
+If successful, returns `200`. In case of an error, returns `400`.
 
 ```shell
 curl --request PUT \
@@ -304,7 +306,7 @@ Example response:
 
 ## Delete an environment
 
-It returns `204` if the environment was successfully deleted, and `404` if the environment does not exist. The environment must be stopped first, otherwise the request returns `403`.
+Deletes an environment from a project. The environment must be stopped first.
 
 ```plaintext
 DELETE /projects/:id/environments/:environment_id
@@ -315,6 +317,8 @@ DELETE /projects/:id/environments/:environment_id
 | `id`             | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `environment_id` | integer        | yes      | The ID of the environment. |
 
+If successful, returns `204`. Returns `404` if the environment does not exist. Returns `403` if the environment is not stopped.
+
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -323,11 +327,7 @@ curl --request DELETE \
 
 ## Delete multiple stopped review apps
 
-It schedules for deletion multiple environments that have already been
-[stopped](../ci/environments/_index.md#stopping-an-environment) and
-are [in the review app folder](../ci/review_apps/_index.md).
-The actual deletion is performed after 1 week from the time of execution.
-By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
+Schedules deletion of multiple environments that have already been [stopped](../ci/environments/_index.md#stopping-an-environment) and are [in the review app folder](../ci/review_apps/_index.md). The actual deletion is performed after 1 week from the time of execution. By default, it only deletes environments 30 days or older.
 
 ```plaintext
 DELETE /projects/:id/environments/review_apps
@@ -370,7 +370,7 @@ Example response:
 
 ## Stop an environment
 
-It returns `200` if the environment was successfully stopped, and `404` if the environment does not exist.
+Stops a running environment.
 
 ```plaintext
 POST /projects/:id/environments/:environment_id/stop
@@ -407,7 +407,7 @@ Example response:
 
 ## Stop stale environments
 
-Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/_index.md#stopping-an-environment).
+Stops all environments that were last modified or deployed to before a specified date. Excludes protected environments.
 
 ```plaintext
 POST /projects/:id/environments/stop_stale

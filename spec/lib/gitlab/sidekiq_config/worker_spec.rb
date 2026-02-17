@@ -126,7 +126,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
 
       expect(YAML.dump([worker_a, worker_b]))
         .to eq(YAML.dump([attributes_a.reverse_merge(name: 'a'),
-                          attributes_b.reverse_merge(name: 'b')]))
+          attributes_b.reverse_merge(name: 'b')]))
     end
 
     it 'encodes the queue_namespace' do

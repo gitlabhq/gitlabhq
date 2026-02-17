@@ -20,11 +20,6 @@ describe('TimelineEntryItem', () => {
       expect(wrapper.find('[data-testid="content-slot"]').exists()).toBe(true);
       expect(wrapper.find('[data-testid="avatar-slot"]').exists()).toBe(false);
     });
-
-    it('does not apply timeline classes', () => {
-      createComponent({ timelineLayout: false });
-      expect(wrapper.find('li').classes()).not.toContain('gl-relative');
-    });
   });
 
   describe('when timelineLayout is true', () => {
@@ -32,16 +27,6 @@ describe('TimelineEntryItem', () => {
       createComponent({ timelineLayout: true });
       expect(wrapper.find('[data-testid="avatar-slot"]').exists()).toBe(true);
       expect(wrapper.find('[data-testid="content-slot"]').exists()).toBe(true);
-    });
-
-    it('applies timeline classes when not last discussion', () => {
-      createComponent({ timelineLayout: true, isLastDiscussion: false });
-      expect(wrapper.find('li').classes()).toContain('gl-relative');
-    });
-
-    it('does not apply timeline classes when last discussion', () => {
-      createComponent({ timelineLayout: true, isLastDiscussion: true });
-      expect(wrapper.find('li').classes()).not.toContain('gl-relative');
     });
   });
 });

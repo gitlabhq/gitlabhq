@@ -46,6 +46,7 @@ describe('BlobRepositoryActionsGroup', () => {
     expect(findDropdownGroup().exists()).toBe(true);
     expect(findFindFileDropdownItem().exists()).toBe(true);
     expect(findBlameDropdownItem().props()).toStrictEqual({
+      icon: null,
       item: {
         extraAttrs: {
           'data-testid': 'blame',
@@ -53,6 +54,7 @@ describe('BlobRepositoryActionsGroup', () => {
         href: 'blame/file.js',
         text: 'Blame',
       },
+      siblingsHaveIcons: false,
       variant: null,
     });
     expect(findPermalinkLinkDropdown().props()).toStrictEqual({

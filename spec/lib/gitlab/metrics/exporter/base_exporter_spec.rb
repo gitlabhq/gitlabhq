@@ -166,7 +166,8 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :durab
       end
 
       describe '#start' do
-        it "doesn't start running server", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438765' do
+        it "doesn't start running server",
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25437' do
           expect(::WEBrick::HTTPServer).not_to receive(:new)
 
           exporter.start

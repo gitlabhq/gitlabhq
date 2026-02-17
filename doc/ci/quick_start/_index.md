@@ -48,7 +48,7 @@ If you're using GitLab.com, you can skip this step. GitLab.com provides instance
 
 To view available runners:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -79,8 +79,8 @@ In this file, you define:
 
 To create a `.gitlab-ci.yml` file in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
    If you're not sure, leave `master` or `main`.
    Then select the plus icon ({{< icon name="plus" >}}) and **New file**:

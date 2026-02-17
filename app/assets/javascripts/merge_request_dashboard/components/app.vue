@@ -1,11 +1,9 @@
 <script>
-import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlBanner, GlSprintf } from '@gitlab/ui';
-import mergeRequestIllustration from '@gitlab/svgs/dist/illustrations/merge-requests-sm.svg';
+import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlSprintf } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import eventHub from '../event_hub';
 import userMergeRequestUpdatedSubscription from '../queries/user_merge_request_updated.subscription.graphql';
 import TabTitle from './tab_title.vue';
@@ -47,9 +45,7 @@ export default {
     GlTabs,
     GlTab,
     GlLink,
-    GlBanner,
     GlSprintf,
-    UserCalloutDismisser,
     TabTitle,
     MergeRequestsQuery,
     CollapsibleSection,
@@ -107,34 +103,12 @@ export default {
       return { href: this.$router.resolve({ path: tab.key }).href };
     },
   },
-  mergeRequestIllustration,
   docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
 };
 </script>
 
 <template>
   <div>
-    <user-callout-dismisser feature-name="new_merge_request_dashboard_welcome">
-      <template #default="{ shouldShowCallout, dismiss }">
-        <gl-banner
-          v-if="shouldShowCallout"
-          :title="__('New, streamlined merge request homepage!')"
-          variant="introduction"
-          :button-text="__('See how it works')"
-          :button-link="$options.docsPath"
-          :svg-path="$options.mergeRequestIllustration"
-          @close="dismiss"
-        >
-          <p>
-            {{
-              __(
-                "Welcome to the new merge request homepage! This page gives you a centralized view of all the merge requests you're working on. Know at a glance what merge requests need your attention first so you can spend less time checking in, and more time reviewing and responding to feedback.",
-              )
-            }}
-          </p>
-        </gl-banner>
-      </template>
-    </user-callout-dismisser>
     <gl-tabs no-key-nav>
       <gl-tab
         v-for="tab in tabs"

@@ -2,6 +2,8 @@
 key_path: counts.i_code_review_saved_replies_count_use
 description: Total number of times a saved reply comment was used
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "16.3"

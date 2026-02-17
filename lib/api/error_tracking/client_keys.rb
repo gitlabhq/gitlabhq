@@ -4,8 +4,7 @@ module API
   class ErrorTracking::ClientKeys < ::API::Base
     before { authenticate! }
 
-    ERROR_TRACKING_CLIENT_KEYS_TAGS = %w[error_tracking_client_keys].freeze
-
+    ERROR_TRACKING_CLIENT_KEYS_TAGS = %w[error_tracking].freeze
     feature_category :observability
     urgency :low
 

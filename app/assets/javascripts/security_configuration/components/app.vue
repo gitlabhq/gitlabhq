@@ -1,5 +1,6 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton, GlExperimentBadge } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -10,6 +11,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import ScanProfileConfiguration from 'ee_else_ce/security_configuration/components/scan_profiles/scan_profile_configuration.vue';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -23,7 +25,7 @@ import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
 import PipelineSecretDetectionFeatureCard from './pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
-import TrainingProviderList from './training_provider_list.vue';
+import TrainingSection from './training_section.vue';
 import RefTrackingList from './ref_tracking_list.vue';
 
 export default {
@@ -46,12 +48,10 @@ export default {
     LocalStorageSync,
     SectionLayout,
     GlButton,
-    GlExperimentBadge,
-    UpgradeBanner: () =>
-      import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
-    TrainingProviderList,
+    TrainingSection,
     RefTrackingList,
+    ScanProfileConfiguration,
     ContainerScanningForRegistryFeatureCard: () =>
       import(
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
@@ -66,7 +66,12 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath', 'canReadAttributes'],
+  inject: {
+    projectFullPath: { default: '' },
+    vulnerabilityTrainingDocsPath: { default: '' },
+    canReadAttributes: { default: false },
+    maxTrackedRefs: { default: 0 },
+  },
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -109,9 +114,6 @@ export default {
     };
   },
   computed: {
-    canUpgrade() {
-      return [...this.augmentedSecurityFeatures].some(({ available }) => !available);
-    },
     canViewCiHistory() {
       return Boolean(this.gitlabCiPresent && this.gitlabCiHistoryPath);
     },
@@ -131,16 +133,23 @@ export default {
       return this.glFeatures?.vulnerabilitiesAcrossContexts;
     },
     shouldShowSecurityAttributes() {
-      return (
-        window.gon?.licensed_features?.securityAttributes &&
-        this.glFeatures?.securityContextLabels &&
-        this.canReadAttributes
-      );
+      return window.gon?.licensed_features?.securityAttributes && this.canReadAttributes;
+    },
+    shouldShowScannerProfiles() {
+      return this.glFeatures?.securityScanProfilesFeature;
     },
     trackedRefsHelpPagePath() {
       // Once the help page content is available, we can use the anchor to link to the specific section
       // See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/578081
       return helpPagePath('user/application_security/vulnerability_report/_index.md');
+    },
+    trackedRefsDescription() {
+      return sprintf(
+        __(
+          'Track vulnerabilities in up to %{limit} refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+        ),
+        { limit: this.maxTrackedRefs },
+      );
     },
   },
   methods: {
@@ -209,12 +218,6 @@ export default {
 
     <page-heading :heading="$options.i18n.securityConfiguration" />
 
-    <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
-      <template #default="{ dismiss, shouldShowCallout }">
-        <upgrade-banner v-if="shouldShowCallout" @close="dismiss" />
-      </template>
-    </user-callout-dismisser>
-
     <gl-tabs
       content-class="gl-pt-0"
       data-testid="security-configuration-container"
@@ -232,6 +235,22 @@ export default {
           class="gl-mt-3"
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
+
+        <section-layout
+          v-if="shouldShowScannerProfiles"
+          stacked
+          class="gl-border-b-0"
+          :heading="$options.i18n.securityProfiles"
+        >
+          <template #description>
+            <p>
+              {{ $options.i18n.securityProfilesDesc }}
+            </p>
+          </template>
+          <template #features>
+            <scan-profile-configuration />
+          </template>
+        </section-layout>
 
         <section-layout stacked class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>
@@ -295,11 +314,7 @@ export default {
         >
           <template #description>
             <p>
-              {{
-                __(
-                  'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
-                )
-              }}
+              {{ trackedRefsDescription }}
             </p>
             <p>
               {{
@@ -318,31 +333,12 @@ export default {
             <ref-tracking-list />
           </template>
         </section-layout>
-        <section-layout
-          stacked
-          :heading="$options.i18n.securityTraining"
-          data-testid="security-training-section"
-        >
-          <template #description>
-            <p>
-              {{ $options.i18n.securityTrainingDescription }}
-            </p>
-            <p>
-              <gl-link :href="vulnerabilityTrainingDocsPath">{{
-                $options.i18n.securityTrainingDoc
-              }}</gl-link>
-            </p>
-          </template>
-          <template #features>
-            <training-provider-list :security-training-enabled="securityTrainingEnabled" />
-          </template>
-        </section-layout>
+        <training-section :is-feature-available-on-current-tier="securityTrainingEnabled" />
         <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
       </gl-tab>
       <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">
         <template #title>
           {{ s__('SecurityAttributes|Security attributes') }}
-          <gl-experiment-badge type="beta" class="gl-ml-2" />
         </template>
         <project-security-attributes-list />
       </gl-tab>

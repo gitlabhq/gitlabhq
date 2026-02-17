@@ -103,7 +103,7 @@ module Notes
 
       # We need to refresh the previous suggestions call cache
       # in order to get the new records.
-      note.reset
+      note.suggestions.reset
     end
 
     def update_todos(note, old_mentioned_users)

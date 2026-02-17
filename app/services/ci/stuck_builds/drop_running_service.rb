@@ -19,7 +19,7 @@ module Ci
 
       def running_stuck_builds(partition)
         Ci::Build
-          .not_timed_out_builds
+          .not_timed_out_running_builds
           .updated_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)
           .in_partition(partition.id)
       end

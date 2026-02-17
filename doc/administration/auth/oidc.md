@@ -135,11 +135,8 @@ The OpenID Connect provider provides you with a client's details and secret for 
        }
    ```
 
-   {{< alert type="note" >}}
-
-   For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
-
-   {{< /alert >}}
+   > [!note]
+   > For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
 1. For the provider configuration, change the values for the provider to match your
    OpenID Connect client setup. Use the following as a guide:
@@ -421,7 +418,7 @@ gitlab_rails['omniauth_providers'] = [
 
 For Helm installations:
 
-Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals.html#providers) in a YAML file (for example, `provider.yaml`):
+Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals/#providers) in a YAML file (for example, `provider.yaml`):
 
 {{< tabs >}}
 
@@ -492,7 +489,7 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
 - **For users with an email address in Entra ID**, to allow falling back to email address and updating the user's identity,
   configure the following:
   - In a Linux package installation, [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users).
-  - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
+  - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals/#omniauth).
 
 - **For users with no email address**, administrators must take one of the following actions:
 
@@ -536,12 +533,13 @@ Azure B2C [offers two ways of defining the business logic for logging in a user]
 - [User flows](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
 - [Custom policies](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
 
-Custom policies are required because standard Azure B2C user flows
-[do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566).
+Custom policies are required because standard Azure B2C user flows do not send the OpenID `email` claim that GitLab needs to create or link users.
 Therefore, the standard user flows do not work with the
 [`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-common-settings).
 With a standard Azure B2C policy, GitLab cannot create a new account or
 link to an existing account with an email address.
+
+For more information on how Azure AD B2C issues tokens and claims in user flows and custom policies, see the Microsoft documentation on [user flows and custom policies](https://learn.microsoft.com/azure/active-directory-b2c/user-flow-overview) and [claims schema configuration](https://learn.microsoft.com/azure/active-directory-b2c/claimsschema).
 
 First, [create a custom policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
 
@@ -696,12 +694,9 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-{{< alert type="warning" >}}
-
-The following instructions are included for completeness, but only use symmetric key
-encryption if absolutely necessary.
-
-{{< /alert >}}
+> [!warning]
+> The following instructions are included for completeness, but only use symmetric key
+> encryption if absolutely necessary.
 
 To use symmetric key encryption:
 
@@ -1416,13 +1411,10 @@ To configure a custom duration for your ID tokens:
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 In some cases, default authentication methods don't protect critical resources or high-risk actions.
 Step-up authentication adds an extra layer for privileged actions or sensitive operations.
@@ -1508,13 +1500,10 @@ To enable step-up authentication for Admin Mode:
 
 1. Save the configuration file and restart GitLab for the changes to take effect.
 
-{{< alert type="note" >}}
-
-Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
-The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
-These values can vary based on the requirements for each IdP.
-
-{{< /alert >}}
+> [!note]
+> Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
+> The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
+> These values can vary based on the requirements for each IdP.
 
 ### Require step-up authentication with Keycloak
 
@@ -1718,7 +1707,7 @@ Prerequisites:
 
 To force step-up authentication for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under Step-up authentication, select an available authentication provider.
@@ -1756,15 +1745,105 @@ When users fail step-up authentication, they see a helpful error message with li
 documentation for the providers that failed. The links are displayed only for providers where the
 step-up authentication actually failed, making the guidance more relevant and actionable.
 
-{{< alert type="note" >}}
+> [!note]
+> Best practices for documentation links:
+> 
+> - Use HTTPS URLs for security.
+> - Link to internal documentation that explains the specific authentication requirements for your organization.
+> - Include information about how to enable `MFA` or other required authentication methods.
 
-Best practices for documentation links:
+### Session expiration
 
-- Use HTTPS URLs for security.
-- Link to internal documentation that explains the specific authentication requirements for your organization.
-- Include information about how to enable `MFA` or other required authentication methods.
+By default, step-up authentication sessions expire based on the identity provider (IdP) token
+expiration time, typically around 10 minutes. This behavior provides strong security assurance
+but may require users to re-authenticate frequently during long working sessions.
 
-{{< /alert >}}
+#### Disabling session expiration
+
+To allow step-up authentication to remain valid for the entire user session,
+you can disable session expiration in your provider configuration:
+
+:::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         # ... other args ...
+       },
+       step_up_auth: {
+         session_expiration_enabled: false,  # Disable session expiration
+         admin_mode: {
+           # ... admin_mode config ...
+         },
+         namespace: {
+           # ... namespace config ...
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+         - { name: 'openid_connect',
+             label: 'Provider name',
+             args: {
+               name: 'openid_connect',
+               # ... other args ...
+             },
+             step_up_auth: {
+               session_expiration_enabled: false,
+               admin_mode: {
+                 # ... admin_mode config ...
+               },
+               namespace: {
+                 # ... namespace config ...
+               }
+             }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+:::EndTabs
+
+| Setting | Behavior |
+|---------|----------|
+| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim (typically ~10 minutes). |
+| `session_expiration_enabled: false` | Step-up authentication remains valid for the entire user session until logout. |
+
+WARNING:
+Disabling session expiration reduces security assurance. Only disable this setting if your
+security requirements allow session-lifetime step-up authentication. When disabled, users
+authenticate once per session rather than periodically re-verifying their identity.
 
 ## Troubleshooting
 

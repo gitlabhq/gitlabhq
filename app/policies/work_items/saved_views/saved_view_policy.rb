@@ -6,6 +6,9 @@ module WorkItems
       # Require users be logged in before they can create, read, update or delete saved views
       rule { anonymous }.prevent_all
 
+      # Require users to be able to read the namespace before they can interact with saved views
+      rule { ~can_read_namespace }.prevent_all
+
       condition(:can_read_namespace) do
         can?(:read_namespace, @subject.namespace)
       end
@@ -30,14 +33,14 @@ module WorkItems
         enable :delete_saved_view
       end
 
-      rule { can_read_namespace & is_author }.policy do
+      rule { is_author }.policy do
         enable :read_saved_view
         enable :update_saved_view
         enable :delete_saved_view
         enable :update_saved_view_visibility
       end
 
-      rule { can_read_namespace & ~is_private }.policy do
+      rule { ~is_private }.policy do
         enable :read_saved_view
       end
     end

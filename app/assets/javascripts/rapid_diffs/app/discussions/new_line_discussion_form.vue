@@ -6,7 +6,6 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
-import { createAlert } from '~/alert';
 import NoteForm from './note_form.vue';
 
 export default {
@@ -65,24 +64,15 @@ export default {
       this.removeNewLineDiscussionForm(this.discussion);
     }),
     async saveNote(noteBody) {
-      try {
-        const {
-          data: { discussion },
-        } = await axios.post(this.endpoints.discussions, {
-          note: {
-            position: this.discussion.position,
-            note: noteBody,
-          },
-        });
-        clearDraft(this.autosaveKey);
-        this.replaceDiscussion(this.discussion, discussion);
-      } catch (error) {
-        createAlert({
-          message: __('Failed to submit your comment. Please try again.'),
-          parent: this.$refs.root,
-          error,
-        });
-      }
+      const {
+        data: { discussion },
+      } = await axios.post(this.endpoints.discussions, {
+        note: {
+          position: this.discussion.position,
+          note: noteBody,
+        },
+      });
+      this.replaceDiscussion(this.discussion, discussion);
     },
   },
 };
@@ -98,6 +88,7 @@ export default {
       :autosave-key="autosaveKey"
       :autofocus="discussion.shouldFocus"
       :note-body="discussion.noteBody"
+      :save-button-title="__('Comment')"
       :save-note="saveNote"
       restore-from-autosave
       @input="setNewLineDiscussionFormText(discussion, $event)"

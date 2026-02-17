@@ -39,8 +39,7 @@ RSpec.shared_examples 'work item does not support assignee widget updates via qu
   let(:body) { "Updating assignee.\n/assign @#{developer.username}" }
 
   before do
-    WorkItems::Type.default_by_type(:task).widget_definitions
-      .find_by_widget_type(:assignees).update!(disabled: true)
+    stub_all_work_item_widgets(assignees: false)
   end
 
   it 'ignores the quick action' do
@@ -105,8 +104,7 @@ RSpec.shared_examples 'work item does not support labels widget updates via quic
   let(:body) { "Updating labels.\n/labels ~\"#{label1.name}\"" }
 
   before do
-    WorkItems::Type.default_by_type(:task).widget_definitions
-      .find_by_widget_type(:labels).update!(disabled: true)
+    stub_all_work_item_widgets(labels: false)
   end
 
   it 'ignores the quick action' do
@@ -141,8 +139,7 @@ RSpec.shared_examples 'work item does not support start and due date widget upda
   let(:body) { "Updating due date.\n/due today" }
 
   before do
-    WorkItems::Type.default_by_type(:task).widget_definitions
-      .find_by_widget_type(:start_and_due_date).update!(disabled: true)
+    stub_all_work_item_widgets(start_and_due_date: false)
   end
 
   it 'ignores the quick action' do
@@ -155,12 +152,12 @@ end
 
 RSpec.shared_examples 'work item supports type change via quick actions' do
   let_it_be(:assignee) { create(:user) }
-  let_it_be(:task_type) { WorkItems::Type.default_by_type(:task) }
+  let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
 
   let(:body) { "Updating type.\n/type issue" }
 
   before do
-    noteable.update!(work_item_type: task_type)
+    noteable.update!(work_item_type_id: task_type.id)
   end
 
   shared_examples 'a quick command that changes type' do
@@ -196,8 +193,7 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
       let(:body) { "\n/type Issue\n/assign @#{assignee.username}" }
 
       before do
-        WorkItems::Type.default_by_type(:issue).widget_definitions
-                       .find_by_widget_type(:assignees).update!(disabled: true)
+        stub_all_work_item_widgets(assignees: false)
       end
 
       it 'updates only type' do

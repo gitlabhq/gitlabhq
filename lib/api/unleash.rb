@@ -4,8 +4,7 @@ module API
   class Unleash < ::API::Base
     include PaginationParams
 
-    unleash_tags = %w[unleash_api]
-
+    unleash_tags = %w[unleash]
     feature_category :feature_flags
 
     namespace :feature_flags do
@@ -20,15 +19,19 @@ module API
             authorize_by_unleash_instance_id!
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           get do
             # not supported yet
             status :ok
           end
 
-          desc 'Get a list of features (deprecated, v2 client support)' do
+          desc 'Get a list of features (v2 client support)' do
+            detail 'Deprecated in GitLab 15.6'
             is_array true
             tags unleash_tags
+            deprecated true
           end
+          route_setting :authorization, skip_granular_token_authorization: true
           get 'features', urgency: :low do
             present_feature_flags
           end
@@ -37,15 +40,18 @@ module API
             is_array true
             tags unleash_tags
           end
+          route_setting :authorization, skip_granular_token_authorization: true
           get 'client/features', urgency: :medium do
             present_feature_flags
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           post 'client/register' do
             # not supported yet
             status :ok
           end
 
+          route_setting :authorization, skip_granular_token_authorization: true
           post 'client/metrics', urgency: :low do
             # not supported yet
             status :ok

@@ -21,8 +21,6 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-**Under active development**: For more information, see [epic 58](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58).
-
 A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
 
 We currently have three tiers:
@@ -66,10 +64,6 @@ In summary:
 
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
-
-### Predictive Tests Dashboards
-
-- <https://10az.online.tableau.com/#/site/gitlab/views/DRAFTTestIntelligenceAccuracy/TestIntelligenceAccuracy>
 
 ### The `detect-tests` CI job
 
@@ -205,8 +199,8 @@ This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST
 
 ## Re-run previously failed tests in merge request pipelines
 
-In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg16-rerun-previous-failed-tests`
-and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg17-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg17-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
@@ -214,7 +208,7 @@ This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/git
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
-1. The `rspec rspec-pg16-rerun-previous-failed-tests` and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs
+1. The `rspec rspec-pg17-rerun-previous-failed-tests` and `rspec rspec-ee-pg17-rerun-previous-failed-tests` jobs
    will run the test files gathered by the `detect-previous-failed-tests` job.
 
 ```mermaid
@@ -224,8 +218,8 @@ graph LR
     end
 
     subgraph "test stage";
-        B["rspec rspec-pg16-rerun-previous-failed-tests"];
-        C["rspec rspec-ee-pg16-rerun-previous-failed-tests"];
+        B["rspec rspec-pg17-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg17-rerun-previous-failed-tests"];
     end
 
     A --"artifact: list of test files"--> B & C
@@ -292,11 +286,8 @@ We have dedicated jobs for each [testing level](../testing_guide/testing_levels.
 changes made in your merge request.
 If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
 
-{{< alert type="warning" >}}
-
-Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
-
-{{< /alert >}}
+> [!warning]
+> Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
 ### End-to-end jobs
 
@@ -423,30 +414,21 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 as-if-jh pipeline grabs files from the respective branch, rather than from the
 default branch `main-jh`.
 
-{{< alert type="note" >}}
-
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
-[GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
-it does not include any corresponding JH branch beside the default `main-jh`.
-This is why when we want to fetch corresponding JH branch we should fetch it
-from the main mirror, rather than the validation project.
-{{< /alert >}}
+> [!note]
+> While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
+> [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
+> it does not include any corresponding JH branch beside the default `main-jh`.
+> This is why when we want to fetch corresponding JH branch we should fetch it
+> from the main mirror, rather than the validation project.
 
 #### How as-if-JH pipeline was configured
 
 The whole process looks like this:
 
-{{< alert type="note" >}}
-
-We only run `sync-as-if-jh-branch` when there are dependencies changes.
-
-{{< /alert >}}
+> [!note]
+> We only run `sync-as-if-jh-branch` when there are dependencies changes.
 
 ```mermaid
 flowchart TD
@@ -635,6 +617,31 @@ First, review the coverage data from the `gitlab.lcov` artifact from the
 The `rspec:coverage` job might have failed to gather coverage data for various
 [reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/578019).
 
+It is possible the `rspec:undercoverage` job will detect undercoverage for a method call but does not display [warnings](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218529).
+
+```ruby
+loc: app/controllers/projects/attestations_controller.rb:84:102, coverage: 87.5%
+  def parsed_attestation_file hits: n/a
+    @parsed_attestation_file ||= begin hits: 52
+      if attestation && attestation_file hits: 12 branches: 1/1
+        Gitlab::Json.parse(attestation_file.read) hits: 10
+      else hits: n/a
+        {} hits: 2
+      end hits: n/a
+    rescue JSON::ParserError => e hits: n/a
+      Gitlab::AppJsonLogger.error( hits: 2
+        message: 'Failed to parse attestation file', hits: n/a
+        error_class: e.class.name, hits: n/a
+        error_message: e.message, hits: n/a
+        attestation_id: attestation&.id, hits: n/a
+        project_id: project.id, hits: n/a
+        feature_category: 'artifact_security' hits: n/a
+      ) hits: n/a
+      {} hits: 2
+    end hits: n/a
+  end hits: n/a
+```
+
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
 that can cause false positive failures. Such false positive failures may also happen if you are updating database migration that is too old.
 You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
@@ -684,27 +691,59 @@ Our current RSpec tests parallelization setup is as follows:
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
-## Flaky tests
+## Code coverage
 
-### Automatic skipping of flaky tests
+We collect code coverage data from our test suites to power test selection, coverage analytics, and flaky test analysis.
 
-We used to skip tests that are [known to be flaky](../testing_guide/unhealthy_tests.md#automatic-retries-and-flaky-tests-detection),
-but we stopped doing so since that could actually lead to actual broken `master`.
-Instead, we introduced
-[a fast-quarantining process](../testing_guide/unhealthy_tests.md#fast-quarantine)
-to proactively quarantine any flaky test reported in `#master-broken` incidents.
+### Coverage types
 
-This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`
-variable to `false`.
+| Type | Collection method | Tests |
+|------|------------------|-------|
+| Backend | SimpleCov → LCOV | RSpec |
+| Backend E2E | Coverband | E2E specs |
+| Frontend | Istanbul | Jest |
+| Frontend E2E | Istanbul | E2E specs |
+| Workhorse | Go coverage | Go tests |
 
-### Automatic retry of failing tests in a separate process
+### CI jobs
 
-Unless `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `false` (`true` by default), RSpec tests that failed are automatically retried once in a separate
-RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
+Coverage data flows through several CI jobs:
 
-We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
+1. **Collection**: Tests run with coverage instrumentation
+   - `rspec` jobs collect backend coverage via SimpleCov
+   - `jest` jobs collect frontend coverage via Istanbul
+   - `e2e:test-on-gdk` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
+   - `workhorse` jobs collect Go coverage
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1148).
+1. **Merging**: Coverage from parallel jobs and E2E is merged
+   - `rspec:coverage` merges RSpec coverage into `coverage/lcov/gitlab.lcov`
+   - `coverage-frontend` merges Jest coverage
+   - Merge scripts combine E2E coverage with unit/integration coverage
+
+1. **Export**: Merged coverage is exported to ClickHouse
+   - `test-coverage:export-rspec-and-e2e` exports backend coverage
+   - `test-coverage:export-jest-and-e2e` exports frontend coverage
+   - `test-coverage:export-workhorse` exports Workhorse coverage
+
+For detailed documentation on coverage collection, data flow, and ClickHouse storage, see [Code coverage](code_coverage.md).
+
+## Flaky tests retry and quarantine
+
+### Automatic retry of failing tests
+
+Backend tests that fail are automatically retried once in a separate RSpec process. This helps detect flaky tests, defined as tests that fail then pass with the same commit SHA.
+
+On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
+
+The "retrying failed tests in a new RSpec process" can be disabled by setting the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable to `false`.
+
+### Quarantined tests
+
+GitLab CI pipelines use [fast quarantine](../testing_guide/quarantining_tests.md#fast-quarantine) to skip tests that are blocking pipelines while being investigated.
+
+The fast quarantine process can be disabled by setting the `$FAST_QUARANTINE` variable to `false`.
+
+For quarantine procedures and syntax, see [Quarantining Tests](../testing_guide/quarantining_tests.md) and the [Quarantine Process handbook](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
 
 ## Compatibility testing
 
@@ -716,10 +755,10 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.2 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
+We're running Ruby 3.3 on GitLab.com, as well as for the default branch.
+To prepare for the next Ruby version, we run merge requests in Ruby 3.4.
 See the roadmap at
-[Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
+[Ruby 3.4 epic](https://gitlab.com/groups/gitlab-org/-/work_items/16601)
 for more details.
 
 To make sure all supported Ruby versions are working, we also run our test
@@ -741,14 +780,14 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 
 #### Current versions testing
 
-| Where?                                                                                          | PostgreSQL version                  | Ruby version          |
-|-------------------------------------------------------------------------------------------------|-------------------------------------|-----------------------|
-| Merge requests                                                                                  | 16 (default version)                | 3.2 (default version) |
-| `master` branch commits                                                                         | 16 (default version)                | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 17 and 18     | 3.2 (default version) |
-| `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.2 (default version) |
+| Where?                                                                                          | PostgreSQL version              | Ruby version          |
+|-------------------------------------------------------------------------------------------------|---------------------------------|-----------------------|
+| Merge requests                                                                                  | 17 (default version)            | 3.3 (default version) |
+| `master` branch commits                                                                         | 17 (default version)            | 3.3 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 17 (default version)            | 3.3 (default version) |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.3                   |
+| `nightly` scheduled pipelines for the `master` branch                                           | 17 (default version), 16 and 18 | 3.3 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 17 (default version)            | 3.3 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.

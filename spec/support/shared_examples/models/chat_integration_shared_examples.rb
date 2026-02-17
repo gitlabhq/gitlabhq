@@ -305,6 +305,10 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
         end
       end
 
+      context "with pipeline and ref status" do
+        it_behaves_like 'pipeline notification integration', integration_name
+      end
+
       context "with default branch" do
         let(:sample_data) do
           Gitlab::DataBuilder::Push.build(project: project, user: user, ref: project.default_branch)

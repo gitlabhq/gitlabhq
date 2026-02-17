@@ -6,6 +6,7 @@ export default (containerId = '#js-google-cloud-service-accounts') => {
   const { ...attrs } = JSON.parse(element.getAttribute('data'));
   return new Vue({
     el: element,
+    name: 'GoogleCloudServiceAccountsFormRoot',
     render: (createElement) => createElement(Form, { attrs }),
   });
 };

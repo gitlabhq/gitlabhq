@@ -11,6 +11,7 @@ export default (el) => {
 
   return new Vue({
     el,
+    name: 'DefaultBranchSelectorRoot',
     render(createElement) {
       return createElement(DefaultBranchSelector, {
         props: {

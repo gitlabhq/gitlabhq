@@ -1,0 +1,10 @@
+# @feature_category: portfolio_management
+
+mutation subscribeToSavedView($input: WorkItemSavedViewSubscribeInput!) {
+  workItemSavedViewSubscribe(input: $input) {
+    savedView {
+      id
+    }
+    errors
+  }
+}

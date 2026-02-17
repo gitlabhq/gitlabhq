@@ -10,6 +10,7 @@ export const initAdminDeployKeysTable = () => {
 
   return new Vue({
     el,
+    name: 'DeployKeysTableRoot',
     provide: {
       editPath,
       deletePath,

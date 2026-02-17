@@ -1,0 +1,5 @@
+---
+name: read_merge_request_merge_ref
+description: Grants the ability to read merge request merge ref
+boundaries:
+  - project

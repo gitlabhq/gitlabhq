@@ -6,9 +6,13 @@ RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js, feat
   include FilteredSearchHelpers
 
   let(:group) { create(:group) }
-  let(:user_in_dropdown) { create(:user) }
+  let_it_be(:user_in_dropdown) { create(:user) }
   let!(:user_not_in_dropdown) { create(:user) }
   let!(:project) { create(:project, group: group) }
+
+  before_all do
+    create(:callout, user: user_in_dropdown, feature_name: :work_items_onboarding_modal)
+  end
 
   before do
     group.add_developer(user_in_dropdown)

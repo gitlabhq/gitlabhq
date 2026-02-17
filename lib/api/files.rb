@@ -174,20 +174,27 @@ module API
       requires :id, type: String, desc: 'The project ID', documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
-      desc 'Get blame file metadata from repository'
+      desc 'Get blame file metadata from repository' do
+        success code: 200
+        tags %w[files]
+      end
       params do
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       head ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
         set_http_headers(blob_data)
       end
 
-      desc 'Get blame file from the repository'
+      desc 'Get blame file from the repository' do
+        success [Entities::BlameRange]
+        tags %w[files]
+      end
       params do
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
@@ -195,11 +202,12 @@ module API
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
         optional :range, type: Hash, desc: 'Object that contains the blame range' do
           requires :start, type: Integer,
-            desc: 'The first line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+            desc: 'The first line of the range to blame', values: 1.., allow_blank: false
           requires :end, type: Integer,
-            desc: 'The last line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+            desc: 'The last line of the range to blame', values: 1.., allow_blank: false
         end
       end
+      route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
         blame_params = declared_params(include_missing: false)
 
@@ -213,6 +221,7 @@ module API
 
       desc 'Get raw file contents from the repository' do
         success File
+        tags %w[files]
       end
       params do
         requires :file_path, type: String, file_path: { allow_initial_path_separator: true },
@@ -224,8 +233,8 @@ module API
           default: false
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_repositories,
-        allow_public_access_for_enabled_project_features: :repository
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project,
+        job_token_policies: :read_repositories, allow_public_access_for_enabled_project_features: :repository
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
@@ -242,26 +251,34 @@ module API
         end
       end
 
-      desc 'Get file metadata from repository'
+      desc 'Get file metadata from repository' do
+        success code: 200
+        tags %w[files]
+      end
       params do
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       head ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
         set_http_headers(blob_data)
       end
 
-      desc 'Get a file from the repository'
+      desc 'Get a file from the repository' do
+        success code: 200
+        tags %w[files]
+      end
       params do
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         # Loads metadata for @blob as a side effect, but not not the actual data
         #
@@ -282,25 +299,30 @@ module API
 
       desc 'Authorize create files upload' do
         success code: 200
+        tags %w[files]
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[files]
         hidden true
       end
+      route_setting :authorization, skip_granular_token_authorization: true
       post ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Create new file in repository'
+      desc 'Create new file in repository' do
+        success code: 201
+        tags %w[files]
+      end
       params do
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The file content to be created (generated by Multipart middleware)', documentation: { type: 'file' }
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
+      route_setting :authorization, permissions: :create_repository_file, boundary_type: :project
       post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
 
@@ -329,16 +351,21 @@ module API
         tags %w[files]
         hidden true
       end
+      route_setting :authorization, skip_granular_token_authorization: true
       put ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Update existing file in repository'
+      desc 'Update existing file in repository' do
+        success code: 200
+        tags %w[files]
+      end
       params do
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The file content to be updated (generated by Multipart middleware)', documentation: { type: 'file' }
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
+      route_setting :authorization, permissions: :update_repository_file, boundary_type: :project
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
 
@@ -361,7 +388,10 @@ module API
         end
       end
 
-      desc 'Delete an existing file in repository'
+      desc 'Delete an existing file in repository' do
+        success code: 204
+        tags %w[files]
+      end
       params do
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
@@ -376,12 +406,19 @@ module API
           desc: 'The email of the author', documentation: { example: 'johndoe@example.com' }
         optional :author_name, type: String,
           desc: 'The name of the author', documentation: { example: 'John Doe' }
+        optional :last_commit_id, type: String,
+          desc: 'Last known file commit id', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
       end
+      route_setting :authorization, permissions: :delete_repository_file, boundary_type: :project
       delete ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
-        result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
+        begin
+          result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
+        rescue ::Files::UpdateService::FileChangedError => e
+          render_api_error!(e.message, 400)
+        end
 
         if result[:status] != :success
           render_api_error!(result[:message], 400)

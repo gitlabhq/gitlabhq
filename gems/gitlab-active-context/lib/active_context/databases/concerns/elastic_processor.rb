@@ -67,6 +67,7 @@ module ActiveContext
           when :all     then process_all
           when :filter  then process_filter(node.value)
           when :prefix  then process_prefix(node.value)
+          when :missing then process_missing(node)
           when :or      then process_or(node)
           when :and     then process_and(node.children)
           when :knn     then process_knn(node)
@@ -117,6 +118,27 @@ module ActiveContext
             conditions.each do |field, value|
               queries << { prefix: { field => value } }
             end
+          end
+        end
+
+        # Processes missing field conditions into must_not exists queries
+        #
+        # @param node [ActiveContext::Query] The missing query node
+        # @return [Hash] A bool query with must_not exists clause
+        # @example
+        #   process_missing(node)
+        #   # => { query: { bool: { must_not: { exists: { field: 'embedding' } } } } }
+        # @example With filter
+        #   query = ActiveContext::Query.filter(type: 1).missing('embedding')
+        #   # => { query: { bool: { must: [{ term: { type: 1 } }], must_not: { exists: { field: 'embedding' } } } } }
+        def process_missing(node)
+          field = node.value
+
+          build_bool_query(:must) do |queries|
+            node.children.each do |child|
+              queries << extract_query(process(child))
+            end
+            queries << { bool: { must_not: { exists: { field: field } } } }
           end
         end
 

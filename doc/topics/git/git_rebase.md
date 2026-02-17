@@ -29,15 +29,12 @@ While most rebases are performed against `main`, you can rebase against any othe
 branch. You can also specify a different remote repository.
 For example, `upstream` instead of `origin`.
 
-{{< alert type="warning" >}}
-
-`git rebase` rewrites the commit history. It can cause conflicts in
-shared branches and complex merge conflicts.
-Instead of rebasing your branch against the default branch,
-consider using `git pull origin master`. Pulling has similar
-effects with less risk of compromising others' work.
-
-{{< /alert >}}
+> [!warning]
+> `git rebase` rewrites the commit history. It can cause conflicts in
+> shared branches and complex merge conflicts.
+> Instead of rebasing your branch against the default branch,
+> consider using `git pull origin master`. Pulling has similar
+> effects with less risk of compromising others' work.
 
 ## Rebase
 
@@ -232,13 +229,10 @@ Prerequisites:
    git commit -m "Resolve merge conflicts"
    ```
 
-   {{< alert type="warning" >}}
-
-   You can run `git rebase --abort` to stop the process before this point.
-   Git aborts the rebase and rolls back the branch to the state
-   before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
-
-   {{< /alert >}}
+   > [!warning]
+   > You can run `git rebase --abort` to stop the process before this point.
+   > Git aborts the rebase and rolls back the branch to the state
+   > before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
 
 1. Continue the rebase:
 

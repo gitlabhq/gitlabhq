@@ -1,0 +1,6 @@
+---
+name: download_pypi_package
+description: Grants the ability to download PyPI packages
+boundaries:
+  - group
+  - project

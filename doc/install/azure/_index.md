@@ -18,15 +18,14 @@ the [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace
 This tutorial describes installing GitLab
 Enterprise Edition in a single Virtual Machine (VM).
 
-## Prerequisite
+## Prerequisites
 
-You need an account on Azure. Use of the following methods to obtain an account:
-
-- If you or your company already have an account with a subscription, use that account.
-  If not, you can [create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
-- If you have an MSDN subscription, you can activate your Azure subscriber benefits. Your MSDN
-  subscription gives you recurring Azure credits every month, so you can use
-  those credits and try out GitLab.
+- An Azure account. Use one of the following methods:
+  - If you or your company already have an account with a subscription, use that account.
+  - [Create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
+  - If you have an MSDN subscription, activate your Azure subscriber benefits. Your MSDN
+    subscription gives you recurring Azure credits every month.
+- Administrator access to maintain your GitLab instance.
 
 ## Deploy and configure GitLab
 
@@ -44,16 +43,13 @@ create a new VM:
 For the sake of this guide, let's create the VM from scratch, so
 select **Create**.
 
-{{< alert type="note" >}}
-
-Be aware that Azure incurs compute charges whenever your VM is
-active (known as "allocated"), even if you're using free trial
-credits.
-[how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
-See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
-to learn how much resources can cost.
-
-{{< /alert >}}
+> [!note]
+> Be aware that Azure incurs compute charges whenever your VM is
+> active (known as "allocated"), even if you're using free trial
+> credits.
+> [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
+> See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
+> to learn how much resources can cost.
 
 After you create the virtual machine, use the information in the following
 sections to configure it.
@@ -166,7 +162,7 @@ to assign a descriptive DNS name to the VM:
 Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.
 You can use the [Azure DNS](https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
-or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
+or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns/).
 
 ### Change the GitLab external URL
 
@@ -189,12 +185,9 @@ To set up the GitLab external URL:
    ssh -i <private key path> gitlab-azure@gitlab-prod.eastus.cloudapp.azure.com
    ```
 
-   {{< alert type="note" >}}
-
-   If you need to reset your credentials, read
-   [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
-
-   {{< /alert >}}
+   > [!note]
+   > If you need to reset your credentials, read
+   > [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
 1. Find `external_url` and replace it with your own domain name. For the sake
@@ -281,13 +274,10 @@ To update GitLab to the latest version:
    and can take time to complete. During this time, the terminal shows various update tasks being
    completed in your terminal.
 
-   {{< alert type="note" >}}
-
-   If you get an error like
-   `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
-   see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
-
-   {{< /alert >}}
+   > [!note]
+   > If you get an error like
+   > `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
+   > see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
 
 1. After the update process is complete, a message like the
    following appears:
@@ -315,15 +305,12 @@ This section describes common errors you can encounter.
 
 ### Update the GPG key for the GitLab repositories
 
-{{< alert type="note" >}}
-
-This is a temporary fix until the GitLab image is updated with the new
-GPG key.
-
-{{< /alert >}}
+> [!note]
+> This is a temporary fix until the GitLab image is updated with the new
+> GPG key.
 
 The pre-configured GitLab image in Azure (provided by Bitnami) uses
-a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gpg-key-for-gitlab-package-repositories-metadata-changing/).
+a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/gpg-key-for-gitlab-package-repositories-metadata-changing/).
 
 If you try to update the repositories, the system returns the following error:
 
@@ -342,4 +329,4 @@ sudo curl --fail --silent --show-error \
 ```
 
 You can now [update GitLab](#update-gitlab). For more information, read about the
-[packages signatures](https://docs.gitlab.com/omnibus/update/package_signatures.html).
+[packages signatures](https://docs.gitlab.com/omnibus/update/package_signatures/).

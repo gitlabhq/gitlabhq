@@ -21,7 +21,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
   let(:ci_env) do
     {
       job_id: '12345',
-      job_name: 'rspec-unit pg16',
+      job_name: 'rspec-unit pg17',
       pipeline_id: '67890',
       project_id: '278964',
       merge_request_iid: '199241',
@@ -43,7 +43,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       result = builder.build_bigquery_event(sample_cache_data)
 
       expect(result[:job_id]).to eq(12345)
-      expect(result[:job_name]).to eq('rspec-unit pg16')
+      expect(result[:job_name]).to eq('rspec-unit pg17')
       expect(result[:pipeline_id]).to eq(67890)
       expect(result[:project_id]).to eq(278964)
       expect(result[:cache_key]).to eq('ruby-gems-debian-bookworm-ruby-3.3.8-gemfile-Gemfile-22')
@@ -86,7 +86,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       result = builder.build_internal_event_properties(sample_cache_data)
 
       expect(result[:extra_properties][:job_id]).to eq(12345)
-      expect(result[:extra_properties][:job_name]).to eq('rspec-unit pg16')
+      expect(result[:extra_properties][:job_name]).to eq('rspec-unit pg17')
       expect(result[:extra_properties][:cache_key]).to eq('ruby-gems-debian-bookworm-ruby-3.3.8-gemfile-Gemfile-22')
     end
 
@@ -136,7 +136,7 @@ RSpec.describe Tooling::CiAnalytics::CacheEventBuilder, feature_category: :tooli
       expect(result[:project_id]).to eq(278964)
       expect(result[:merge_request_iid]).to eq(199241)
       # String fields remain strings
-      expect(result[:job_name]).to eq('rspec-unit pg16')
+      expect(result[:job_name]).to eq('rspec-unit pg17')
     end
 
     it 'includes all CI environment variables' do

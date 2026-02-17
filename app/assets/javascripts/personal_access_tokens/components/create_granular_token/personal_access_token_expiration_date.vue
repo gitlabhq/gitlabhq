@@ -58,7 +58,7 @@ export default {
   i18n: {
     expirationDateLabel: s__('AccessTokens|Expiration date'),
     maxTokenLifetime: s__(
-      'AccessTokens|An administrator has set the maximum expiration date to %{days} days (%{maxDate}). %{linkStart}Learn more%{linkEnd}.',
+      'AccessTokens|An administrator has set the %{linkStart}maximum expiration date%{linkEnd} to %{days} days (%{maxDate}).',
     ),
     clearDate: __('Clear the date to create access tokens without expiration.'),
   },

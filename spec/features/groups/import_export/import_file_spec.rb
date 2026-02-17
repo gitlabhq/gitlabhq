@@ -13,7 +13,7 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
 
     stub_uploads_object_storage(FileUploader)
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   after do

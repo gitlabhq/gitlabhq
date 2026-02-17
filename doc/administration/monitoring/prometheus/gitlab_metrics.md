@@ -355,6 +355,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_packages_nuget_symbols_verification_total`          | Gauge     | 18.6  | `url`                                                                                     | Number of NuGet symbol files to attempt to verify on secondary |
 | `geo_packages_nuget_symbols_verified`                    | Gauge     | 18.6  | `url`                                                                                     | Number of NuGet symbol files successfully verified on secondary |
 | `geo_packages_nuget_symbols_verification_failed`         | Gauge     | 18.6  | `url`                                                                                     | Number of NuGet symbol files that failed verification on secondary |
+| `geo_packages_helm_metadata_caches`                      | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches on primary |
+| `geo_packages_helm_metadata_caches_checksum_total`       | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches to checksum on primary |
+| `geo_packages_helm_metadata_caches_checksummed`          | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches that successfully calculated the checksum on primary |
+| `geo_packages_helm_metadata_caches_checksum_failed`      | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches that failed to calculate the checksum on primary |
+| `geo_packages_helm_metadata_caches_synced`               | Gauge     | 18.9  | `url`                                                                                     | Number of syncable Helm metadata caches synced on secondary |
+| `geo_packages_helm_metadata_caches_failed`               | Gauge     | 18.9  | `url`                                                                                     | Number of syncable Helm metadata caches failed to sync on secondary |
+| `geo_packages_helm_metadata_caches_registry`             | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches in the registry |
+| `geo_packages_helm_metadata_caches_verification_total`   | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches to attempt to verify on secondary |
+| `geo_packages_helm_metadata_caches_verified`             | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches successfully verified on secondary |
+| `geo_packages_helm_metadata_caches_verification_failed`  | Gauge     | 18.9  | `url`                                                                                     | Number of Helm metadata caches that failed verification on secondary |
 | `geo_pages_deployments_checksum_failed`                  | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments failed to calculate the checksum on primary |
 | `geo_pages_deployments_checksum_total`                   | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments to checksum on primary |
 | `geo_pages_deployments_checksummed`                      | Gauge     | 14.6  | `url`                                                                                     | Number of pages deployments that successfully calculated the checksum on primary |
@@ -419,6 +429,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_uploads_verification_total`                         | Gauge     | 14.6  | `url`                                                                                     | Number of uploads to attempt to verify on secondary |
 | `geo_uploads_verified`                                   | Gauge     | 14.6  | `url`                                                                                     | Number of uploads successfully verified on secondary |
 | `geo_uploads`                                            | Gauge     | 14.1  | `url`                                                                                     | Number of uploads on primary |
+| `gitlab_audit_event_streaming_worker_total`              | Counter   | 18.9  | `should_stream`, `should_persist`, `streamable`                                           | Audit events processed by streaming worker |
 | `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3  |                                                                                           | The number of active runners that can process the CI/CD queue in a project |
 | `gitlab_maintenance_mode`                                | Gauge     | 15.11 |                                                                                           | Is GitLab Maintenance Mode enabled? |
 | `gitlab_memwd_violations_handled_total`                  | Counter   | 15.9  |                                                                                           | Total number of times Sidekiq process memory violations were handled |
@@ -554,7 +565,7 @@ Some basic Ruby runtime metrics are available:
 
 These client metrics are meant to complement Redis server metrics.
 These metrics are broken down per
-[Redis instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
+[Redis instance](https://docs.gitlab.com/omnibus/settings/redis/#running-with-multiple-redis-instances).
 These metrics all have a `storage` label which indicates the Redis
 instance. For example, `cache` or `shared_state`.
 

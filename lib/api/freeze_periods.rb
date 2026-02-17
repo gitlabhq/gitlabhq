@@ -5,7 +5,6 @@ module API
     include PaginationParams
 
     freeze_periods_tags = %w[freeze_periods]
-
     before { authenticate! }
 
     feature_category :continuous_delivery
@@ -31,6 +30,7 @@ module API
         use :pagination
       end
 
+      route_setting :authorization, permissions: :read_freeze_period, boundary_type: :project
       get ":id/freeze_periods" do
         authorize! :read_freeze_period, user_project
 
@@ -51,6 +51,7 @@ module API
       params do
         requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
       end
+      route_setting :authorization, permissions: :read_freeze_period, boundary_type: :project
       get ":id/freeze_periods/:freeze_period_id" do
         authorize! :read_freeze_period, user_project
 
@@ -73,6 +74,7 @@ module API
           type: String,
           desc: 'The time zone for the cron fields, defaults to UTC if not provided'
       end
+      route_setting :authorization, permissions: :create_freeze_period, boundary_type: :project
       post ':id/freeze_periods' do
         authorize! :create_freeze_period, user_project
 
@@ -101,6 +103,7 @@ module API
         optional :freeze_end, type: String, desc: 'End of the freeze period in cron format'
         optional :cron_timezone, type: String, desc: 'The time zone for the cron fields'
       end
+      route_setting :authorization, permissions: :update_freeze_period, boundary_type: :project
       put ':id/freeze_periods/:freeze_period_id' do
         authorize! :update_freeze_period, user_project
 
@@ -124,6 +127,7 @@ module API
       params do
         requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
       end
+      route_setting :authorization, permissions: :delete_freeze_period, boundary_type: :project
       delete ':id/freeze_periods/:freeze_period_id' do
         authorize! :delete_freeze_period, user_project
 

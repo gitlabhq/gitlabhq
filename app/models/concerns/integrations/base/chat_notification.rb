@@ -8,6 +8,7 @@ module Integrations
 
       include ChatMessage
       include NotificationBranchSelection
+      include NotificationPipelineStatusSelection
 
       prepend_mod_with('Integrations::Base::ChatNotification') # rubocop:disable Cop/InjectEnterpriseEditionModule -- need to prepend before class_methods block. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171515#note_2197128497
 
@@ -85,6 +86,10 @@ module Integrations
 
         if properties.empty?
           self.notify_only_broken_pipelines = true if respond_to?(:notify_only_broken_pipelines)
+          if respond_to?(:notify_only_when_pipeline_status_changes)
+            self.notify_only_when_pipeline_status_changes = false
+          end
+
           self.branches_to_be_notified = "default"
           self.labels_to_be_notified_behavior = MATCH_ANY_LABEL
         elsif !notify_only_default_branch.nil?
@@ -114,7 +119,7 @@ module Integrations
       end
 
       def fields
-        self.class.fields + build_event_channels
+        super + build_event_channels
       end
 
       def execute(data)
@@ -264,7 +269,8 @@ module Integrations
 
         return false if labels.blank?
 
-        matching_labels = labels_to_be_notified_list & labels.pluck(:title) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- Legacy use
+        label_titles = labels.filter_map { |label| label[:title] }
+        matching_labels = labels_to_be_notified_list & label_titles
 
         if labels_to_be_notified_behavior == MATCH_ALL_LABELS
           labels_to_be_notified_list.difference(matching_labels).empty?
@@ -353,17 +359,6 @@ module Integrations
         return true if Gitlab::Git.tag_ref?(project.repository.expand_ref(ref) || ref)
 
         notify_for_branch?(data)
-      end
-
-      def notify_for_pipeline?(data)
-        case data[:object_attributes][:status]
-        when 'success'
-          !notify_only_broken_pipelines?
-        when 'failed'
-          true
-        else
-          false
-        end
       end
 
       def channels_for_event(event)

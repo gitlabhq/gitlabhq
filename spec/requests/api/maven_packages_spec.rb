@@ -14,7 +14,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
   let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }
-  let_it_be(:package_file) { package.package_files.with_file_name_like('%.xml').first }
+  let_it_be(:package_file, reload: true) { package.package_files.with_file_name_like('%.xml').first }
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
@@ -363,6 +363,23 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response.body).to eq(package_file.file_sha1)
         end
 
+        context 'when package file has nil checksums' do
+          before do
+            # Simulate a package file with nil checksums (e.g., from incomplete upload or data corruption)
+            package_file.update_columns(file_sha1: nil, file_md5: nil)
+          end
+
+          %w[sha1 md5].each do |format|
+            it "returns an empty string for #{format} instead of raising an error" do
+              download_file(file_name: package_file.file_name + ".#{format}")
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.media_type).to eq('text/plain')
+              expect(response.body).to eq('')
+            end
+          end
+        end
+
         context 'with a non existing maven path' do
           subject { download_file(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
 
@@ -508,6 +525,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     it_behaves_like 'not touching last downloaded at field for head request' do
       subject { head api("/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -792,6 +817,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       subject { head api("/groups/#{group.id}/-/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { group }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
+    end
+
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path, group_id: group.id)
       get api("/groups/#{group_id}/-/packages/maven/#{path}/#{file_name}"), params: params, headers: request_headers
     end
@@ -818,6 +851,21 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('text/plain')
           expect(response.body).to eq(package_file.send(:"file_#{format}"))
+        end
+
+        context 'when package file has nil checksums' do
+          before do
+            # Simulate a package file with nil checksums (e.g., from incomplete upload or data migration)
+            package_file.update_columns(file_sha1: nil, file_md5: nil)
+          end
+
+          it 'returns an empty string instead of raising an error' do
+            download_file(file_name: package_file.file_name + ".#{format}")
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('text/plain')
+            expect(response.body).to eq('')
+          end
         end
       end
 
@@ -910,6 +958,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     it_behaves_like 'not touching last downloaded at field for head request' do
       subject { head api("/projects/#{project.id}/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { project }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -1473,6 +1529,25 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'updating personal access token last used'
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_maven_package_file do
+      let(:boundary_object) { project }
+      let(:request) do
+        file_extension = 'jar'
+        file_name = 'my-app-1.0-20180724.124855-1'
+        url = "/projects/#{project.id}/packages/maven/#{param_path}/#{file_name}.#{file_extension}"
+        params = { file: file_upload }
+
+        workhorse_finalize(
+          api(url, personal_access_token: pat),
+          method: :put,
+          file_key: :file,
+          params: params,
+          headers: headers,
+          send_rewritten_field: send_rewritten_field
+        )
+      end
     end
 
     def upload_file(params: {}, request_headers: headers, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')

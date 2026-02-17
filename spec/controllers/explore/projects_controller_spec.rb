@@ -6,10 +6,15 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   shared_examples 'pushes feature flag' do |action|
     render_views
 
-    it 'pushes explore_projects_vue feature flag' do
+    it 'pushes expected feature flag to the frontend' do
+      stub_feature_flags(explore_projects_vue: false, retire_trending_projects: false)
+
       get action
 
-      expect(response.body).to have_pushed_frontend_feature_flags(exploreProjectsVue: true)
+      expect(response.body).to have_pushed_frontend_feature_flags(
+        exploreProjectsVue: false,
+        retireTrendingProjects: false
+      ), response.body
     end
   end
 
@@ -34,10 +39,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #trending.json' do
       render_views
 
-      it 'redirects to most starred projects with json format', :aggregate_failures do
+      it 'redirects to active projects with json format', :aggregate_failures do
         get :trending, format: :json
 
-        expect(response).to redirect_to(starred_explore_projects_path(format: :json))
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
         expect(response).to have_gitlab_http_status(:found)
       end
 
@@ -59,15 +64,25 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #starred.json' do
       render_views
 
-      before do
+      it 'redirects to active projects with stars_desc sort and json format', :aggregate_failures do
         get :starred, format: :json
+
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
+        expect(response).to have_gitlab_http_status(:found)
       end
 
-      it { is_expected.to respond_with(:success) }
+      context 'when `explore_projects_vue` flag is disabled' do
+        before do
+          stub_feature_flags(explore_projects_vue: false)
+          get :starred, format: :json
+        end
 
-      it 'sets a default sort parameter' do
-        expect(controller.params[:sort]).to eq(expected_default_sort)
-        expect(assigns[:sort]).to eq(expected_default_sort)
+        it { is_expected.to respond_with(:success) }
+
+        it 'sets a default sort parameter' do
+          expect(controller.params[:sort]).to eq(expected_default_sort)
+          expect(assigns[:sort]).to eq(expected_default_sort)
+        end
       end
     end
 
@@ -76,10 +91,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
 
     describe 'GET #trending' do
-      it 'redirects to most starred projects' do
+      it 'redirects to active projects' do
         get :trending
 
-        expect(response).to redirect_to(starred_explore_projects_path)
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
       end
 
       context 'when `retire_trending_projects` flag is disabled' do
@@ -132,7 +147,11 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
 
     describe 'GET #starred' do
-      it_behaves_like 'pushes feature flag', :starred
+      it 'redirects to active projects with stars_desc sort' do
+        get :starred
+
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
+      end
     end
 
     describe 'GET #topic' do
@@ -288,6 +307,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
 
           before do
             stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
+            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
             get endpoint, params: { page: page_limit }
           end
 
@@ -300,6 +320,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
 
           before do
             stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
+            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
             get endpoint, params: { page: page_limit }, format: :json
           end
 
@@ -371,21 +392,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #index' do
       let(:controller_action) { :index }
       let(:params_with_name) { { name: 'some project' } }
-
-      it 'assigns the correct all_user_projects' do
-        get :index
-        all_user_projects = assigns(:all_user_projects)
-
-        expect(all_user_projects.count).to eq(2)
-      end
-
-      it 'assigns the correct all_starred_projects' do
-        get :index
-        all_starred_projects = assigns(:all_starred_projects)
-
-        expect(all_starred_projects.count).to eq(1)
-        expect(all_starred_projects).to include(project2)
-      end
 
       context 'when disable_anonymous_project_search is enabled' do
         before do

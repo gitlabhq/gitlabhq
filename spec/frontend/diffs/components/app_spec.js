@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { createWrapper, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -39,7 +39,6 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { DynamicScroller } from 'vendor/vue-virtual-scroller';
-import * as mergeRequestUtils from '~/diffs/utils/merge_request';
 import {
   ISSUABLE_COMMENT_OR_REPLY,
   keysFor,
@@ -158,18 +157,24 @@ describe('diffs/components/app', () => {
     });
 
     it('updates diff counter', async () => {
-      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      const counter = document.createElement('div');
+      counter.classList.add('js-changes-tab-count');
+      document.body.appendChild(counter);
       createComponent();
       await waitForPromises();
-      expect(spy).toHaveBeenCalledWith({ count: 20 });
+      expect(counter.textContent).toBe('20');
+      counter.remove();
     });
 
     it('sets diff counter to 0 without changes', async () => {
-      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      const counter = document.createElement('div');
+      counter.classList.add('js-changes-tab-count');
+      document.body.appendChild(counter);
       store.fetchDiffFilesMeta.mockResolvedValue();
       createComponent();
       await waitForPromises();
-      expect(spy).toHaveBeenCalledWith({ count: 0 });
+      expect(counter.textContent).toBe('0');
+      counter.remove();
     });
   });
 
@@ -744,7 +749,7 @@ describe('diffs/components/app', () => {
 
     describe('pagination', () => {
       const fileByFileNav = () => wrapper.find('[data-testid="file-by-file-navigation"]');
-      const paginator = () => fileByFileNav().findComponent(GlPagination);
+      const paginator = () => fileByFileNav().findComponent(GlKeysetPagination);
 
       it('sets previous button as disabled', async () => {
         useFileBrowser().treeEntries = {
@@ -756,8 +761,8 @@ describe('diffs/components/app', () => {
 
         await nextTick();
 
-        expect(paginator().attributes('prevpage')).toBe(undefined);
-        expect(paginator().attributes('nextpage')).toBe('2');
+        expect(paginator().props('hasPreviousPage')).toBe(false);
+        expect(paginator().props('hasNextPage')).toBe(true);
       });
 
       it('sets next button as disabled', async () => {
@@ -771,8 +776,8 @@ describe('diffs/components/app', () => {
 
         await nextTick();
 
-        expect(paginator().attributes('prevpage')).toBe('1');
-        expect(paginator().attributes('nextpage')).toBe(undefined);
+        expect(paginator().props('hasPreviousPage')).toBe(true);
+        expect(paginator().props('hasNextPage')).toBe(false);
       });
 
       it("doesn't display when there's fewer than 2 files", async () => {
@@ -787,12 +792,12 @@ describe('diffs/components/app', () => {
       });
 
       it.each`
-        currentDiffFileId | targetFile
-        ${'123'}          | ${2}
-        ${'312'}          | ${1}
+        currentDiffFileId | direction | expectedIndex
+        ${'123'}          | ${'next'} | ${1}
+        ${'312'}          | ${'prev'} | ${0}
       `(
-        'calls navigateToDiffFileIndex with $index when $link is clicked',
-        async ({ currentDiffFileId, targetFile }) => {
+        'calls navigateToDiffFileIndex with correct index when $direction is clicked',
+        async ({ currentDiffFileId, direction, expectedIndex }) => {
           useFileBrowser().treeEntries = {
             123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
             312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
@@ -802,9 +807,9 @@ describe('diffs/components/app', () => {
           createComponent();
 
           await nextTick();
-          paginator().vm.$emit('input', targetFile);
+          paginator().vm.$emit(direction);
           await nextTick();
-          expect(store.navigateToDiffFileIndex).toHaveBeenLastCalledWith(targetFile - 1);
+          expect(store.navigateToDiffFileIndex).toHaveBeenLastCalledWith(expectedIndex);
         },
       );
     });

@@ -1,11 +1,11 @@
 <script>
-import { GlIcon, GlAlert, GlBadge, GlTableLite } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlTableLite } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { __ } from '~/locale';
 
 export default {
   name: 'DbCorruptedIndexes',
-  components: { GlIcon, GlAlert, GlBadge, GlTableLite, NumberToHumanSize },
+  components: { GlIcon, GlBadge, GlTableLite, NumberToHumanSize },
   props: {
     corruptedIndexes: {
       type: Array,
@@ -38,24 +38,18 @@ export default {
 
 <template>
   <section class="gl-mt-8">
-    <p>
+    <h4 class="gl-heading-5 gl-flex gl-items-center gl-gap-3">
       <gl-icon v-bind="iconAttrs" />
-      <strong>{{ __('Corrupted indexes') }}</strong>
-      <gl-badge
-        v-if="hasCorruptedIndexes"
-        variant="danger"
-        class="gl-ml-2"
-        data-testid="corrupted-indexes-count"
-      >
+      {{ __('Corrupted indexes') }}
+      <gl-badge v-if="hasCorruptedIndexes" data-testid="corrupted-indexes-count">
         {{ corruptedIndexes.length }}
       </gl-badge>
-    </p>
+    </h4>
 
     <gl-table-lite
       v-if="hasCorruptedIndexes"
       :items="corruptedIndexes"
       :fields="$options.corruptedIndexesFields"
-      bordered
       stacked="lg"
       data-testid="corrupted-indexes-table"
     >
@@ -84,9 +78,9 @@ export default {
       </template>
     </gl-table-lite>
     <template v-else>
-      <gl-alert variant="success" data-testid="no-corrupted-indexes-alert" :dismissible="false">
+      <p class="gl-text-sm gl-text-subtle" data-testid="no-corrupted-indexes-alert">
         {{ __('No corrupted indexes detected.') }}
-      </gl-alert>
+      </p>
     </template>
   </section>
 </template>

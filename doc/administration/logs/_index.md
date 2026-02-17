@@ -30,7 +30,7 @@ System log files are typically plain text in a standard log file format.
 The log system is similar to [audit events](../compliance/audit_event_reports.md).
 For more information, see also:
 
-- [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+- [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs/)
 - [Parsing and analyzing GitLab logs in JSON format](log_parsing.md)
 
 ## Log Levels
@@ -92,9 +92,9 @@ The logs for a given service may be managed and rotated by:
 The following table includes information about which daemon is responsible for managing and rotating logs for
 the included services:
 
-- Logs [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs) are written to a file called `current`.
+- Logs [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs/#runit-logs) are written to a file called `current`.
   Their archived versions are compressed into `@<hexadecimal-ID>.s` files.
-- The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+- The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs/#logrotate).
   Their archived versions are compressed into `<original-name>.<number>.gz` files.
 
 | Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
@@ -273,14 +273,11 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-{{< alert type="note" >}}
-
-If an error occurs, an
-`exception` field is included with `class`, `message`, and
-`backtrace`. Previous versions included an `error` field instead of
-`exception.class` and `exception.message`. For example:
-
-{{< /alert >}}
+> [!note]
+> If an error occurs, an
+> `exception` field is included with `class`, `message`, and
+> `backtrace`. Previous versions included an `error` field instead of
+> `exception.class` and `exception.message`. For example:
 
 ```json
 {
@@ -408,14 +405,11 @@ associated SSH key can download the project in question by using a `git fetch` o
 - `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
 - `ua`: The User-Agent of the requester
 
-{{< alert type="note" >}}
-
-As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
-the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
-Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
-process on Redis or external HTTP, not only the serialization process.
-
-{{< /alert >}}
+> [!note]
+> As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
+> the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
+> Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
+> process on Redis or external HTTP, not only the serialization process.
 
 ## `application.log` (deprecated)
 
@@ -549,12 +543,9 @@ only. For example:
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-GitLab Free tracks a small number of different audit events.
-GitLab Premium tracks many more.
-
-{{< /alert >}}
+> [!note]
+> GitLab Free tracks a small number of different audit events.
+> GitLab Premium tracks many more.
 
 This log is located:
 
@@ -1182,13 +1173,10 @@ The `llm.log` file logs information related to
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 To log the LLM prompt input and response output, enable the `expanded_ai_logging` feature flag. This flag is intended for use on GitLab.com only, and not on GitLab Self-Managed instances.
 
@@ -1412,13 +1400,10 @@ For example:
 
 ## Product Usage Data log
 
-{{< alert type="note" >}}
-
-We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
-
-The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
-
-{{< /alert >}}
+> [!note]
+> We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
+>
+> The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
 
 This log is located:
 

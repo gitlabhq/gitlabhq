@@ -137,11 +137,8 @@ Add up to six email participants.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 **Availability**:
 
@@ -445,11 +442,8 @@ Schedule check-in reminders for objectives.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 **Availability**:
 
@@ -1105,7 +1099,6 @@ Merge the changes.
 **Additional details**:
 
 - Depending on the project setting, this may be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
-- To start a new pipeline and set auto-merge, use [`/ship`](#ship).
 
 ### `milestone`
 
@@ -1599,11 +1592,8 @@ Remove up to six email participants.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 **Availability**:
 
@@ -1843,6 +1833,39 @@ Assign a reviewer or request a new review from one or more users.
 - Behaves like [`/assign_reviewer`](#assign_reviewer), but also requests a new review from currently assigned reviewers.
 - For more information, see [request a review](merge_requests/reviews/_index.md#request-a-review).
 
+### `run_pipeline`
+
+Run a new pipeline for the merge request.
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212811) in GitLab 18.7.
+
+{{< /history >}}
+
+**Availability**:
+
+- Merge request
+
+**Examples**:
+
+- Run a new pipeline:
+
+  ```plaintext
+    /run_pipeline
+  ```
+
+**Additional details**:
+
+- The pipeline is triggered asynchronously and appears shortly after the command is executed.
+- You must have permission to create pipelines for the merge request.
+- You can combine this with other quick actions. For example, to run a pipeline and set auto-merge:
+
+  ```plaintext
+    /run_pipeline
+    /merge
+  ```
+
 ### `set_parent`
 
 Set the parent item.
@@ -1918,39 +1941,6 @@ Set the severity of an incident.
   ```plaintext
   /severity S1
   ```
-
-### `ship`
-
-Create a merge request pipeline and set auto-merge.
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78998) in GitLab 18.6 [with a flag](../../administration/feature_flags/list.md) named `ship_mr_quick_action`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-**Availability**:
-
-- Merge request
-
-**Examples**:
-
-- Ship the merge request:
-
-  ```plaintext
-  /ship
-  ```
-
-**Additional details**:
-
-- This is an experimental feature.
-- To merge immediately, use [`/merge`](#merge).
 
 ### `shrug`
 

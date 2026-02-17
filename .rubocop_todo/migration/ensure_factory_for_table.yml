@@ -1,4 +1,0 @@
----
-Migration/EnsureFactoryForTable:
-  Exclude:
-    - 'db/migrate/20250526043824_create_namespace_deletion_schedules.rb'

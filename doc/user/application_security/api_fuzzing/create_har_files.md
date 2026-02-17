@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to create HAR files using browsers and tools to capture HTTP traffic for web API fuzz testing, and review them for sensitive data.
 title: Create HAR files
 ---
 
@@ -19,13 +20,10 @@ with a web site. The file extension `.har` is commonly used.
 HAR files can be used to perform [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har)
 in CI/CD pipelines.
 
-{{< alert type="warning" >}}
-
-A HAR file stores information exchanged between web client and web server. It could also
-store sensitive information such as authentication tokens, API keys, and session cookies. We
-recommend that you review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> A HAR file stores information exchanged between web client and web server. It could also
+> store sensitive information such as authentication tokens, API keys, and session cookies. We
+> recommend that you review the HAR file contents before adding them to a repository.
 
 ## HAR file creation
 
@@ -43,12 +41,9 @@ automatically record your network activity and generate the HAR file:
 - Chrome web browser
 - Firefox web browser
 
-{{< alert type="warning" >}}
-
-HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. You should review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> HAR files may contain sensitive information such as authentication tokens, API keys, and session
+> cookies. You should review the HAR file contents before adding them to a repository.
 
 ### GitLab HAR recorder
 

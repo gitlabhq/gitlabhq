@@ -23,7 +23,7 @@ RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
 
     expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable', subscription_data).at_least(:once)
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit project_issue_path(project, issue)
 
     # Because there is no visual indicator for Capybara to wait on before closing the browser,

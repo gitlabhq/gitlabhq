@@ -7,7 +7,7 @@ RSpec.describe Mutations::WorkItems::Create, feature_category: :api do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, developer_of: project) }
-  let_it_be(:work_item_type) { WorkItems::Type.default_issue_type }
+  let_it_be(:work_item_type) { build(:work_item_system_defined_type, :issue) }
 
   let(:params) { { title: 'Title', project_path: project.full_path, work_item_type_id: work_item_type.to_gid } }
   let(:restricted_params) { { created_at: 2.days.ago } }

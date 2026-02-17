@@ -1,0 +1,7 @@
+# @feature_category: portfolio_management
+mutation WorkItemsCsvImport($input: WorkItemsCsvImportInput!) {
+  workItemsCsvImport(input: $input) {
+    message
+    errors
+  }
+}

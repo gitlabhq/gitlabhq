@@ -6,6 +6,7 @@ module Gitlab
       class Worker < SharedModel
         include CommonWorker
         include Queueable
+        include Observable
 
         self.table_name = :background_operation_workers
 

@@ -141,11 +141,11 @@ describe('DiscussionNotes', () => {
         expect(wrapper.emitted().deleteNote).toHaveLength(1);
       });
 
-      it('emits startReplying when first note emits startReplying', async () => {
-        findNoteableNotes().at(0).vm.$emit('startReplying');
+      it('emits start-replying when first note emits start-replying', async () => {
+        findNoteableNotes().at(0).vm.$emit('start-replying');
 
         await nextTick();
-        expect(wrapper.emitted().startReplying).toHaveLength(1);
+        expect(wrapper.emitted()['start-replying']).toHaveLength(1);
       });
 
       it('emits deleteNote when second note emits handleDeleteNote', async () => {

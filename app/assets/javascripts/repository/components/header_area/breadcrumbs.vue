@@ -6,6 +6,7 @@ import getRefMixin from '~/repository/mixins/get_ref';
 import projectShortPathQuery from '~/repository/queries/project_short_path.query.graphql';
 
 export default {
+  name: 'RepositoryBreadcrumbs',
   components: {
     GlBreadcrumb,
   },

@@ -69,8 +69,9 @@ export default {
     fetchProjects() {
       return getProjects(this.searchTerm, this.$options.defaultFetchOptions);
     },
-    selectProject() {
-      this.$emit('input', this.selectedProject);
+    selectProject(projectId) {
+      const project = this.projects.find((prj) => prj.id === projectId) || {};
+      this.$emit('input', project);
     },
   },
   i18n: {

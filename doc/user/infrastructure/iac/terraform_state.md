@@ -34,18 +34,23 @@ With GitLab-managed OpenTofu state, you:
 - Integrate seamlessly with your existing GitLab CI/CD pipelines
 - Access state remotely from both CI/CD jobs and local development environments
 
-{{< alert type="warning" >}}
+## Disaster recovery considerations
 
-**Disaster recovery planning**
-OpenTofu state files are encrypted with the Lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the `db_key_base` application setting.
-[To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
-If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
-Kubernetes clusters, or network components), you cannot access the state file easily or decrypt it.
-Additionally, if GitLab serves up OpenTofu modules or other dependencies that are required to bootstrap GitLab,
-these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
-or consider using a separate GitLab instance with no shared points of failure.
+OpenTofu state files are encrypted with the Lockbox Ruby gem when at rest on disk and in object storage.
+The encryption uses a key derived from the `db_key_base` application setting.
+Because of this encryption approach, the instance must be available to decrypt a state file.
 
-{{< /alert >}}
+If the instance goes offline, you cannot access or decrypt your state files.
+This becomes problematic if your state files contain the configuration for infrastructure that GitLab depends on to run.
+
+If GitLab hosts OpenTofu modules or other dependencies required to bootstrap itself,
+these dependencies become inaccessible when the instance is offline.
+
+To avoid this issue:
+
+- Host or back up dependencies separately.
+- Use a separate GitLab instance with no shared points of failure.
+- Consider alternative hosting for critical bootstrap dependencies.
 
 ## Prerequisites
 
@@ -57,24 +62,25 @@ For GitLab Self-Managed, before you can use GitLab for your OpenTofu state files
   1. Expand **Visibility, project features, permissions**.
   1. Under **Infrastructure**, turn on the toggle.
 
+## Secure plan data
+
+> [!warning]
+> OpenTofu `plan.json` or `plan.cache` files are not encrypted and might contain sensitive data like
+> passwords, access tokens, or certificates. By default, users with the Guest role can access your plan files.
+
+To secure your plan data:
+
+- Set `access: 'developer'` in your [artifact configuration](../../../ci/yaml/_index.md#artifactsaccess). This setting limits access to users with the Developer role or higher.
+- [Disable public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects).
+- Encrypt plan output.
+- Set project visibility to private.
+
 ## Initialize an OpenTofu state as a backend by using GitLab CI/CD
 
 Prerequisites:
 
-- To lock, unlock, and write to the state by using `tofu apply`, you must have at least the Maintainer role.
-- To read the state by using `tofu plan -lock=false`, you must have at least the Developer role.
-
-{{< alert type="warning" >}}
-
-Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
-Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
-files include sensitive data like passwords, access tokens, or certificates, you should
-encrypt the plan output or modify the project visibility settings. You should also **disable**
-[public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's access flag to 'developer'](../../../ci/yaml/_index.md#artifactsaccess) (`access: 'developer'`).
-This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Developer role.
-
-{{< /alert >}}
+- To lock, unlock, and write to the state by using `tofu apply`, you must have the Maintainer or Owner role.
+- To read the state by using `tofu plan -lock=false`, you must have the Developer, Maintainer, or Owner role.
 
 To configure GitLab CI/CD as a backend:
 
@@ -124,23 +130,17 @@ variables:
   TF_PLAN_CACHE: "my-plan.tfplan"
 ```
 
-{{< alert type="note" >}}
-
-Do not set the output filename by passing the `-out=<filename>` option. GitLab commands override this option.
-
-{{< /alert >}}
+> [!note]
+> Do not set the output filename by passing the `-out=<filename>` option. GitLab commands override this option.
 
 ## Access the state from your local machine
 
 You can access the GitLab-managed OpenTofu state from your local machine.
 
-{{< alert type="warning" >}}
-
-On clustered deployments of GitLab, you should not use local storage.
-A split state can occur across nodes, making subsequent OpenTofu executions
-inconsistent. Instead, use a remote storage resource.
-
-{{< /alert >}}
+> [!warning]
+> On clustered deployments of GitLab, you should not use local storage.
+> A split state can occur across nodes, making subsequent OpenTofu executions
+> inconsistent. Instead, use a remote storage resource.
 
 1. Ensure the OpenTofu state has been
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).
@@ -358,7 +358,7 @@ You can use a GitLab-managed OpenTofu state backend as an
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
 
-To read the OpenTofu state in the target project, you need at least the Developer role.
+To read the OpenTofu state in the target project, you need the Developer, Maintainer, or Owner role.
 
 ## Manage OpenTofu state files
 
@@ -376,8 +376,8 @@ the GitLab CLI (`glab`) or the API.
 
 Prerequisites:
 
-- To get state versions using their serial number, you must have at least the Developer role.
-- To remove state versions using their serial number, you must have at least the Maintainer role.
+- To get state versions using their serial number, you must have the Developer, Maintainer, or Owner role.
+- To remove state versions using their serial number, you must have the Maintainer or Owner role.
 
 To get state versions using their serial number:
 {{< tabs >}}
@@ -428,7 +428,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Prerequisites:
 
-- To remove a state file, you must have at least the Maintainer role.
+- To remove a state file, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 
@@ -473,7 +473,7 @@ To remove a state file using the UI:
 
 Prerequisites:
 
-- To lock a state file, you must have at least the Maintainer role.
+- To lock a state file, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 
@@ -518,7 +518,7 @@ To lock or unlock a state file using the UI:
 
 Prerequisites:
 
-- To download a state file, you must have at least the Developer role.
+- To download a state file, you must have the Developer, Maintainer, or Owner role.
 
 {{< tabs >}}
 
@@ -570,11 +570,8 @@ To reduce exposure of sensitive data:
 
 - GitLab Ultimate customers: Create a custom role that replicates the Developer role but excludes the `admin_terraform_state` permission. This action allows team members to contribute to the Infrastructure as Code (IaC) projects without accessing the Terraform state files that contain sensitive data.
 
-  {{< alert type="note" >}}
-
-  Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
-
-  {{< /alert >}}
+  > [!note]
+  > Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
 
 - OpenTofu users: Turn on state and plan encryption to protect sensitive data at rest. GitLab supports this natively through the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu), which provides encryption configuration. Even if unauthorized users access the state file, encrypted content remains protected.
 

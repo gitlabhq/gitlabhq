@@ -87,6 +87,15 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       end
 
       context 'when authenticated as a maintainer/owner' do
+        it_behaves_like 'authorizing granular token permissions', :create_invitation do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) do
+            post api("/#{source.model_name.plural}/#{source.id}/invitations", personal_access_token: pat),
+              params: { email: email, access_level: Member::DEVELOPER }
+          end
+        end
+
         context 'and new member is already a requester' do
           it 'transforms the requester into a proper member' do
             expect do
@@ -525,6 +534,12 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(0)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_invitation do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) { get api("/#{source.model_name.plural}/#{source.id}/invitations", personal_access_token: pat) }
+        end
       end
 
       %i[access_requester stranger developer].each do |type|
@@ -635,6 +650,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           end.to change { source.members.count }.by(-1)
         end
 
+        it_behaves_like 'authorizing granular token permissions', :delete_invitation do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) do
+            delete api("/#{source.model_name.plural}/#{source.id}/invitations/#{invite.invite_email}", personal_access_token: pat)
+          end
+        end
+
         context 'when MAINTAINER tries to remove invitation of an OWNER' do
           let_it_be(:maintainer) { maintainer2 }
           let!(:owner_invite) do
@@ -715,6 +738,15 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       end
 
       context 'when authenticated as a maintainer/owner' do
+        it_behaves_like 'authorizing granular token permissions', :update_invitation do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) do
+            put api("/#{source.model_name.plural}/#{source.id}/invitations/#{invite.invite_email}", personal_access_token: pat),
+              params: { access_level: Member::MAINTAINER }
+          end
+        end
+
         context 'updating access level' do
           it 'updates the invitation' do
             put update_api(source, maintainer, invite.invite_email), params: { access_level: Member::MAINTAINER }

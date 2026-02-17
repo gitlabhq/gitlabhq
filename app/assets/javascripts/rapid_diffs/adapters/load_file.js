@@ -33,6 +33,7 @@ async function loadWithDisabledButton(button, params) {
   } catch (error) {
     createAlert({
       message: s__('RapidDiffs|Failed to load changes, please try again.'),
+      parent: this.diffElement,
       error,
     });
     button.removeAttribute('disabled');

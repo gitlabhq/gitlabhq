@@ -20,6 +20,39 @@ You can choose to install and manage Redis and Sentinel yourself, use a hosted
 cloud solution, or you can use the ones that come bundled with the Linux
 packages so you can only focus on configuration. Pick the one that suits your needs.
 
+## Use Valkey instead of Redis
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9113) in GitLab 18.9 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+[Valkey](https://valkey.io/) is an open source high-performance key/value datastore that is
+fully compatible with Redis. GitLab supports Valkey as an opt-in alternative to Redis.
+
+Using Valkey instead of Redis is a [beta](../../policy/development_stages_support.md#beta) feature.
+
+When enabled, Valkey uses the same user, group, data directory, and log directory conventions
+as Redis by default.
+
+To switch to Valkey on Redis nodes, add the following to `/etc/gitlab/gitlab.rb`:
+
+```ruby
+redis['backend'] = 'valkey'
+```
+
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
+
 ## Redis replication and failover using the Linux package
 
 This setup is for when you have installed GitLab using the

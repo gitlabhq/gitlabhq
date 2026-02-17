@@ -10,25 +10,22 @@ title: Migrate to a new server
 You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
 If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/_index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
-{{< alert type="warning" >}}
-
-Avoid uncoordinated data processing by both the new and old servers, where multiple
-servers could connect concurrently and process the same data. For example, when using
-[incoming email](../incoming_email.md), if both GitLab instances are
-processing email at the same time, then both instances miss some data.
-This type of problem can occur with other services as well, such as a
-[non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
-a non-packaged Redis instance, or non-packaged Sidekiq.
-
-{{< /alert >}}
+> [!warning]
+> Avoid uncoordinated data processing by both the new and old servers, where multiple
+> servers could connect concurrently and process the same data. For example, when using
+> [incoming email](../incoming_email.md), if both GitLab instances are
+> processing email at the same time, then both instances miss some data.
+> This type of problem can occur with other services as well, such as a
+> [non-packaged database](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server),
+> a non-packaged Redis instance, or non-packaged Sidekiq.
 
 Prerequisites:
 
-- Some time before your migration, consider notifying your users of upcoming
-  scheduled maintenance with a [broadcast message banner](../broadcast_messages.md).
-- Ensure your backups are complete and current. Create a complete system-level backup, or
+- A [broadcast message banner](../broadcast_messages.md) published in advance to notify your users of the upcoming migration.
+- Complete and current backups. Create a complete system-level backup, or
   take a snapshot of all servers involved in the migration, in case destructive commands
   (like `rm`) are run incorrectly.
+- Administrator access.
 
 ## Prepare the new server
 
@@ -43,7 +40,7 @@ To prepare the new server:
    1. Install GitLab.
    1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
       Read the
-      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups.html) for more detail.
+      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups/) for more detail.
    1. If applicable, disable [incoming email](../incoming_email.md).
    1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
       Edit `/etc/gitlab/gitlab.rb` and set the following:
@@ -91,15 +88,15 @@ To prepare the new server:
 
 1. Disable periodic background jobs:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs** to show the Sidekiq dashboard.
+   1. In the left sidebar, select **Monitoring** > **Background jobs** to show the Sidekiq dashboard.
    1. On the Sidekiq dashboard, on its top menu, select **Cron**.
    1. On the Sidekiq dashboard, on its upper right, select **Disable All**.
 1. Wait for the running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
    To view all running jobs:
-   1. On the left sidebar, select **CI/CD** > **Jobs**.
+   1. In the left sidebar, select **CI/CD** > **Jobs**.
    1. In the filter bar, select **Status** > **Running**.
 1. Wait for Sidekiq jobs to finish:
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, on its top menu, select **Queues**.
    1. On the Sidekiq dashboard, on its upper right, select **Live Poll**.
       Wait for **Busy** and **Enqueued** to drop to 0.
@@ -177,8 +174,9 @@ The main volumes that you might need to migrate manually are:
   [the moving repositories documentation section](../operations/moving_repositories.md#migrate-to-another-gitlab-instance)
   to eliminate the chance of Git data corruption.
 - The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
+- The `/var/opt/gitlab/gitlab-rails/uploads` directory which contains upload data, like user profile photos.
 - If you are using the bundled PostgreSQL included with the Linux package,
-  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
+  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database/#store-postgresql-data-in-a-different-directory)
   under `/var/opt/gitlab/postgresql/data`.
 
 After all GitLab services have been stopped, you can use tools like `rsync` or mounting volume snapshots to move the data
@@ -206,7 +204,7 @@ to the new environment.
 1. [Restore the GitLab backup](restore_gitlab.md).
 1. Verify that the Redis database restored correctly:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**

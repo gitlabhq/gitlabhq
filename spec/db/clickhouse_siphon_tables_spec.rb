@@ -5,9 +5,41 @@ require 'spec_helper'
 RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :database do
   let_it_be(:siphon_table_prefix) { 'siphon_' }
   let_it_be(:skip_tables) { [] } # insert table name in the array to be skipped on specs
-  let_it_be(:skip_fields) { %(title_html description_html) } # insert field name in the array to be skipped on specs
+  let_it_be(:skip_fields) do
+    # insert field names to be skipped on specs
+    # traversal_path: computed column only in ClickHouse
+    # users table: sensitive/auth fields intentionally excluded from siphon
+    %(
+      title_html
+      description_html
+      traversal_path
+      confirmation_sent_at
+      confirmation_token
+      confirmed_at
+      encrypted_otp_secret
+      encrypted_otp_secret_iv
+      encrypted_otp_secret_salt
+      encrypted_password
+      feed_token
+      incoming_email_token
+      note_html
+      otp_backup_codes
+      otp_required_for_login
+      otp_secret_expires_at
+      password_expires_at
+      remember_created_at
+      reset_password_sent_at
+      reset_password_token
+      static_object_token
+      static_object_token_encrypted
+      unlock_token
+      cached_markdown_version
+    )
+  end
+
   let_it_be(:ch_database_name) { ClickHouse::Client.configuration.databases[:main].database }
   let_it_be(:pg_type_map) { Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP }
+  let_it_be(:ch_type_map) { pg_type_map.invert }
 
   let(:siphon_tables) { ch_table_names - skip_tables }
 
@@ -43,6 +75,10 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       end
 
       next if ch_field_type.include?(pg_type_map[type_id])
+
+      # Using Int8 can be allowed for smallint (Int16) PG columns
+      # in cases when the ActiveRecord ENUM contains only a few values.
+      next if ch_field_type.include?('Int8') && type_id == ch_type_map['Int16']
 
       raise("Postgres field '#{field_name}' of table #{pg_table} does not  " \
         "have the same correspondent type in ClickHouse. Expected #{ch_field_type}, got #{pg_type_map[type_id]}"

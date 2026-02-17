@@ -13,11 +13,8 @@ title: Protected branches
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-The **Protected branches** settings for projects will be removed. Configure protected branches from **Settings** > **Repository** > **Branch rules** instead.
-
-{{< /alert >}}
+> [!note]
+> The **Protected branches** settings for projects will be removed. Configure protected branches from **Settings** > **Repository** > **Branch rules** instead.
 
 Protected branches enforce specific permissions on branches in GitLab to ensure code stability
 and quality. Protected branches:
@@ -29,12 +26,9 @@ and quality. Protected branches:
 - Regulate force push permissions to maintain commit history.
 - Control access through both the UI and the Protected branches API.
 
-{{< alert type="note" >}}
-
-The default branch for your repository is protected by default.
-For more information about default branch settings, see [default branch](default.md).
-
-{{< /alert >}}
+> [!note]
+> The default branch for your repository is protected by default.
+> For more information about default branch settings, see [default branch](default.md).
 
 For information about how protection rules behave when a branch matches multiple rules or has
 complex permission requirements, see [Protection rules](protection_rules.md).
@@ -47,7 +41,7 @@ Configure protected branches for individual projects or for all projects in a gr
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 - When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the project must be accessible and shared with the group.
   For more information, see [Shared projects](../../members/sharing_projects_groups.md).
@@ -69,12 +63,9 @@ To protect a branch:
      1. If desired, search to add **Deploy keys**.
      1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-In GitLab Premium and Ultimate, you can also add groups or individual users
-to **Allowed to merge** and **Allowed to push and merge**.
-
-{{< /alert >}}
+> [!note]
+> In GitLab Premium and Ultimate, you can also add groups or individual users
+> to **Allowed to merge** and **Allowed to push and merge**.
 
 ### In a group
 
@@ -123,13 +114,10 @@ aspects of branch protection:
 | **Allowed to merge**          | Controls who can merge changes through merge requests and create new protected branches through the UI and API | No one can merge (unless they have **Allowed to push and merge**). |
 | **Allowed to push and merge** | Controls who can push directly to existing protected branches and merge through merge requests                 | No one can push.                  |
 
-{{< alert type="note" >}}
-
-**Allowed to push and merge** grants both push and merge capabilities.
-Users with this permission can merge through merge requests even without
-**Allowed to merge** permission.
-
-{{< /alert >}}
+> [!note]
+> **Allowed to push and merge** grants both push and merge capabilities.
+> Users with this permission can merge through merge requests even without
+> **Allowed to merge** permission.
 
 When you select **No one** for either **Allowed to merge** or **Allowed to push and merge**, the UI
 clears other role selections.
@@ -159,13 +147,10 @@ For active development branches:
 With this configuration, developers can merge approved merge requests while requiring
 all changes to go through code review.
 
-{{< alert type="note" >}}
-
-When **Allowed to push and merge** is not configured, it does not restrict
-push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
-to **No one**.
-
-{{< /alert >}}
+> [!note]
+> When **Allowed to push and merge** is not configured, it does not restrict
+> push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
+> to **No one**.
 
 ### Permission combinations for Developer role
 
@@ -196,7 +181,7 @@ how the branch behaves. For merge controls to work properly, set
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To protect multiple branches at the same time:
 
@@ -283,12 +268,9 @@ to a protected branch:
 
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When you assign a group to a protected branch, only direct members of that group are included.
-Members from parent groups are not automatically granted permissions to the protected branch.
-
-{{< /alert >}}
+> [!note]
+> When you assign a group to a protected branch, only direct members of that group are included.
+> Members from parent groups are not automatically granted permissions to the protected branch.
 
 #### Group inheritance requirements
 
@@ -335,12 +317,9 @@ To grant access to Subgroup Y members for Project A, you must share the project 
 the subgroup. Adding the subgroup directly to the protected branch settings is not effective
 and isn't applicable to subgroup members.
 
-{{< alert type="note" >}}
-
-For a group to have protected branch permissions, the project must be directly shared with the group.
-Inherited project membership from parent groups is not sufficient for protected branch permissions.
-
-{{< /alert >}}
+> [!note]
+> For a group to have protected branch permissions, the project must be directly shared with the group.
+> Inherited project membership from parent groups is not sufficient for protected branch permissions.
 
 ### Enable deploy key access
 
@@ -447,20 +426,17 @@ their feature branches. Thus, they can skip merge request approval rules, Code O
 {{< /details >}}
 
 When you protect a branch, you can also control who can unprotect it later.
-By default, users with at least the Maintainer role can unprotect protected branches.
+By default, users with the Maintainer or Owner role can unprotect protected branches.
 
 For organizations with regulatory or compliance requirements, you can restrict these permissions to
 specific users, groups, or access levels.
 
-{{< alert type="note" >}}
-
-To avoid permanently locking protection settings for a branch, ensure at least one user or group
-retains unprotect permissions for the branch at all times.
-
-Users cannot create, modify, or delete protected branch settings unless they can unprotect the
-branch themselves. This safety mechanism is in place to prevent configuration errors.
-
-{{< /alert >}}
+> [!note]
+> To avoid permanently locking protection settings for a branch, ensure at least one user or group
+> retains unprotect permissions for the branch at all times.
+> 
+> Users cannot create, modify, or delete protected branch settings unless they can unprotect the
+> branch themselves. This safety mechanism is in place to prevent configuration errors.
 
 You can configure these permissions through the API only. Use this feature for:
 
@@ -475,7 +451,7 @@ The following table shows who can unprotect a branch based on your configuration
 
 | Configuration                     | Who can unprotect |
 |-----------------------------------|-------------------|
-| Default behavior                  | Users with at least the Maintainer role |
+| Default behavior                  | Users with the Maintainer or Owner role |
 | Specific users configured         | Only designated users |
 | Specific groups configured        | Only members of designated groups |
 | Multiple access levels configured | Any user, group, or role from the configured access levels |
@@ -495,14 +471,14 @@ For more information, see [Control access to protected variables and runners](..
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 - To create a protected branch, branch protection must be configured to
   [require everyone to submit merge requests for a protected branch](#require-merge-requests).
 
 To create a new branch with protections:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Select **New branch**.
 1. Fill in the branch name and select an existing branch, tag, or commit to
    base the new branch on. If you require everyone to submit merge requests for a protected branch,
@@ -514,11 +490,11 @@ If branch protection is configured to [allow everyone to push directly to a prot
 
 ## Delete protected branches
 
-Users with at least the Maintainer role can manually delete protected
+Users with the Maintainer or Owner role can manually delete protected
 branches by using the GitLab web interface:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Next to the branch you want to delete, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete protected branch**.
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.

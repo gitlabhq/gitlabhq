@@ -1,0 +1,19 @@
+---
+description: An issue was moved to another project
+internal_events: true
+action: g_project_management_issue_moved
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_group: project_management
+milestone: "16.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131847
+tiers:
+- free
+- premium
+- ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218505
+milestone_removed: '18.9'

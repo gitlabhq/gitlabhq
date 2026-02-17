@@ -1,0 +1,10 @@
+---
+name: read_member
+description: Grants the ability to read members
+boundaries:
+  - group
+  - project
+permissions:
+  - read_billable_member
+  - read_member
+  - read_pending_member

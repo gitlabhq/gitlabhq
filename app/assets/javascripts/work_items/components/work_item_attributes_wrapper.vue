@@ -1,12 +1,8 @@
 <script>
-import { GlBanner, GlLink } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { ListType } from '~/boards/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 
@@ -44,9 +40,6 @@ import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 export default {
   ListType,
   components: {
-    GlBanner,
-    GlLink,
-    UserCalloutDismisser,
     Participants,
     WorkItemLabels,
     WorkItemMilestone,
@@ -69,9 +62,6 @@ export default {
   inject: {
     hasSubepicsFeature: {
       default: false,
-    },
-    newTrialPath: {
-      default: '',
     },
   },
   props: {
@@ -228,17 +218,6 @@ export default {
   methods: {
     isWidgetPresent(type, workItem = this.workItem) {
       return workItem?.widgets?.find((widget) => widget.type === type);
-    },
-  },
-  promoUrl: PROMO_URL,
-  i18n: {
-    upgradeBanner: {
-      title: s__('Promotions|Upgrade for advanced agile planning'),
-      description: s__(
-        'Promotions|Unlock epics, advanced boards, status, weight, iterations, and more to seamlessly tie your strategy to your DevSecOps workflows with GitLab.',
-      ),
-      primaryAction: s__('Promotions|Try it for free'),
-      secondaryAction: s__('Promotions|Learn more'),
     },
   },
 };
@@ -410,31 +389,5 @@ export default {
       :participants="workItemParticipantNodes"
       :participant-count="workItemParticipantCount"
     />
-    <user-callout-dismisser
-      v-if="workItem.showPlanUpgradePromotion && newTrialPath"
-      feature-name="ultimate_trial"
-    >
-      <template #default="{ dismiss, shouldShowCallout }">
-        <gl-banner
-          v-if="shouldShowCallout"
-          class="work-item-attributes-item gl-mt-6"
-          :title="$options.i18n.upgradeBanner.title"
-          :button-text="$options.i18n.upgradeBanner.primaryAction"
-          :button-link="newTrialPath"
-          @close="dismiss"
-        >
-          <p>{{ $options.i18n.upgradeBanner.description }}</p>
-          <template #actions>
-            <gl-link
-              class="gl-ml-4"
-              :href="`${$options.promoUrl}/features/?stage=plan`"
-              target="_blank"
-            >
-              {{ $options.i18n.upgradeBanner.secondaryAction }}
-            </gl-link>
-          </template>
-        </gl-banner>
-      </template>
-    </user-callout-dismisser>
   </div>
 </template>

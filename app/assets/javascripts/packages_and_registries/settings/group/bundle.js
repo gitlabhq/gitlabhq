@@ -16,6 +16,7 @@ export default () => {
   }
   return new Vue({
     el,
+    name: 'PackagesSettingsAppRoot',
     apolloProvider,
     provide: {
       groupPath: el.dataset.groupPath,

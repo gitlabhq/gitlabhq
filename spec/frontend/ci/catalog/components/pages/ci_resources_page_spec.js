@@ -41,6 +41,7 @@ describe('CiResourcesPage', () => {
     scope: SCOPE.all,
     searchTerm: null,
     sortValue: DEFAULT_SORT_VALUE,
+    minAccessLevel: null,
   };
 
   const createComponent = () => {
@@ -98,6 +99,7 @@ describe('CiResourcesPage', () => {
 
       it('renders the empty state', () => {
         expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props('currentTab')).toBe('all');
       });
 
       it('renders the search', () => {
@@ -133,24 +135,40 @@ describe('CiResourcesPage', () => {
       });
 
       it('updates the scope after switching tabs', async () => {
-        await findCatalogTabs().vm.$emit('setScope', SCOPE.namespaces);
+        await findCatalogTabs().vm.$emit('tab-change', {
+          scope: SCOPE.namespaces,
+          name: 'namespaces',
+        });
 
         expect(catalogResourcesResponse).toHaveBeenCalledWith({
           ...defaultQueryVariables,
           scope: SCOPE.namespaces,
         });
 
-        await findCatalogTabs().vm.$emit('setScope', SCOPE.all);
+        await findCatalogTabs().vm.$emit('tab-change', { scope: SCOPE.all, name: 'all' });
 
         expect(catalogResourcesResponse).toHaveBeenCalledWith({
           ...defaultQueryVariables,
           scope: SCOPE.all,
+        });
+
+        await findCatalogTabs().vm.$emit('tab-change', {
+          scope: SCOPE.namespaces,
+          name: 'analytics',
+          minAccessLevel: 'MAINTAINER',
+        });
+
+        expect(catalogResourcesResponse).toHaveBeenCalledWith({
+          ...defaultQueryVariables,
+          scope: SCOPE.namespaces,
+          minAccessLevel: 'MAINTAINER',
         });
       });
 
       it('passes down props to the resources list', () => {
         expect(findCiResourcesList().props()).toMatchObject({
           resources: nodes,
+          currentTab: 'all',
           pageInfo,
         });
       });
@@ -164,8 +182,8 @@ describe('CiResourcesPage', () => {
   describe('pagination', () => {
     it.each`
       eventName
-      ${'onPrevPage'}
-      ${'onNextPage'}
+      ${'on-prev-page'}
+      ${'on-next-page'}
     `('refetch query with new params when receiving $eventName', async ({ eventName }) => {
       const { pageInfo } = catalogResponseBody.data.ciCatalogResources;
 
@@ -178,7 +196,7 @@ describe('CiResourcesPage', () => {
 
       expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
 
-      if (eventName === 'onNextPage') {
+      if (eventName === 'on-next-page') {
         expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
           ...defaultQueryVariables,
           after: pageInfo.endCursor,
@@ -308,7 +326,7 @@ describe('CiResourcesPage', () => {
         });
 
         it('does not increment the page and calls createAlert', async () => {
-          findCiResourcesList().vm.$emit('onNextPage');
+          findCiResourcesList().vm.$emit('on-next-page');
           await waitForPromises();
 
           expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });
@@ -328,10 +346,10 @@ describe('CiResourcesPage', () => {
         });
 
         it('does not decrement the page and calls createAlert', async () => {
-          findCiResourcesList().vm.$emit('onNextPage');
+          findCiResourcesList().vm.$emit('on-next-page');
           await waitForPromises();
 
-          findCiResourcesList().vm.$emit('onPrevPage');
+          findCiResourcesList().vm.$emit('on-prev-page');
           await waitForPromises();
 
           expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });

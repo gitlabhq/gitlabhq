@@ -8,19 +8,26 @@ import {
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
   HTTP_STATUS_FORBIDDEN,
 } from '~/lib/utils/http_status';
-import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import * as redirectUtils from '~/repository/utils/blob_edit_redirect_utils';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('lodash/uniqueId', () => {
   return jest.fn((input) => `${input}1`);
 });
+jest.mock('~/repository/utils/blob_edit_redirect_utils', () => ({
+  ...jest.requireActual('~/repository/utils/blob_edit_redirect_utils'),
+  redirectToExistingMergeRequest: jest.fn(),
+  redirectToCreateMergeRequest: jest.fn(),
+  redirectToForkMergeRequest: jest.fn(),
+  redirectToBlobWithAlert: jest.fn(),
+}));
 
 describe('BlobEditHeader', () => {
   let wrapper;
@@ -56,6 +63,9 @@ describe('BlobEditHeader', () => {
         projectId: 123,
         projectPath: 'gitlab-org/gitlab',
         newMergeRequestPath: 'merge_request/new/123',
+        targetProjectId: 123,
+        targetProjectPath: 'gitlab-org/gitlab',
+        nextForkBranchName: null,
         ...provided,
         glFeatures: { blobEditRefactor: true, ...glFeatures },
       },
@@ -156,22 +166,25 @@ describe('BlobEditHeader', () => {
         });
         await submitForm();
 
-        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
-          message:
-            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully. You can now submit a merge request to get this change into the original branch.',
-          messageLinks: {
-            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
-          },
-          variant: 'info',
+        expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
+          url: window.location.href,
+          resultingBranch: 'feature',
+          responseData: { branch: 'feature', file_path: 'test.js' },
+          formData: expect.objectContaining({
+            file_path: 'test.js',
+            file: content,
+            branch_name: 'feature',
+            original_branch: 'main',
+          }),
+          isNewBranch: true,
+          targetProjectPath: 'gitlab-org/gitlab',
+          successMessageFn: expect.any(Function),
         });
 
         expect(mock.history.put).toHaveLength(1);
         expect(mock.history.put[0].url).toBe('/api/v4/projects/123/repository/files/test.js');
         const putData = JSON.parse(mock.history.put[0].data);
         expect(putData.content).toBe(content);
-        expect(visitUrlSpy).toHaveBeenCalledWith(
-          'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
-        );
       });
 
       it('on submit to the same branch, saves shorter success message to localStorage', async () => {
@@ -183,17 +196,24 @@ describe('BlobEditHeader', () => {
         await submitForm();
         await axios.waitForAll();
 
-        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
-          message:
-            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully.',
-          messageLinks: {
-            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/main/test.js',
-          },
-          variant: 'info',
+        expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
+          url: window.location.href,
+          resultingBranch: 'main',
+          responseData: { branch: 'main', file_path: 'test.js' },
+          formData: expect.objectContaining({
+            file_path: 'test.js',
+            file: content,
+            branch_name: 'feature',
+            original_branch: 'main',
+          }),
+          isNewBranch: false,
+          targetProjectPath: 'gitlab-org/gitlab',
+          successMessageFn: expect.any(Function),
         });
 
-        expect(visitUrlSpy).toHaveBeenCalledWith(
-          'http://test.host/gitlab-org/gitlab/-/blob/main/test.js',
+        const { successMessageFn } = redirectUtils.redirectToBlobWithAlert.mock.calls[0][0];
+        expect(successMessageFn(false, true)).toBe(
+          'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully.',
         );
       });
 
@@ -205,8 +225,7 @@ describe('BlobEditHeader', () => {
           'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
         );
 
-        const removeParamsSpy = jest.spyOn(urlUtility, 'removeParams');
-        removeParamsSpy.mockReturnValue('http://test.host/gitlab-org/gitlab/-/merge_requests/19');
+        clickCommitChangesButton();
 
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'main', // Same as originalBranch
@@ -216,48 +235,65 @@ describe('BlobEditHeader', () => {
         await submitForm();
         await axios.waitForAll();
 
-        expect(removeParamsSpy).toHaveBeenCalledWith(
-          ['from_merge_request_iid'],
-          'http://test.host/gitlab-org/gitlab/-/merge_requests/19?from_merge_request_iid=19',
-        );
-        expect(visitUrlSpy).toHaveBeenCalledWith(
-          'http://test.host/gitlab-org/gitlab/-/merge_requests/19',
-        );
-        expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
+        expect(redirectUtils.redirectToExistingMergeRequest).toHaveBeenCalledWith({
+          url: 'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
+          projectPath: 'gitlab-org/gitlab',
+          fromMergeRequestIid: '19',
+        });
+        expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
 
         // Restore original location
         window.location = originalLocation;
-        removeParamsSpy.mockRestore();
       });
 
-      it('on submit to new branch to a fork repo, saves success message with "original project" text', async () => {
-        // Create wrapper with canPushToBranch: false to simulate fork scenario
+      it('when branchAllowsCollaboration is true, skips MR redirect and shows success message', async () => {
+        // Mock URL with from_merge_request_iid parameter
+        const originalLocation = window.location;
+        delete window.location;
+        window.location = new URL(
+          'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
+        );
+
         createWrapper({
           glFeatures: { blobEditRefactor: true },
-          provided: { canPushToBranch: false },
+          provided: {
+            branchAllowsCollaboration: true,
+          },
         });
 
-        // Need to click the commit button first to open modal and set up file content
         clickCommitChangesButton();
-
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
-          branch: 'feature',
+          branch: 'main', // Same as originalBranch
           file_path: 'test.js',
         });
-        await submitForm();
 
-        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
-          message:
-            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully. You can now submit a merge request to get this change into the original project.',
-          messageLinks: {
-            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
-          },
-          variant: 'info',
+        await submitForm();
+        await axios.waitForAll();
+
+        expect(redirectUtils.redirectToExistingMergeRequest).not.toHaveBeenCalled();
+        expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
+          url: 'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
+          resultingBranch: 'main',
+          responseData: { branch: 'main', file_path: 'test.js' },
+          formData: expect.objectContaining({
+            file_path: 'test.js',
+            file: content,
+            branch_name: 'feature',
+            original_branch: 'main',
+            from_merge_request_iid: '19',
+          }),
+          isNewBranch: false,
+          targetProjectPath: 'gitlab-org/gitlab',
+          successMessageFn: expect.any(Function),
         });
 
-        expect(visitUrlSpy).toHaveBeenCalledWith(
-          'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
+        const { successMessageFn } = redirectUtils.redirectToBlobWithAlert.mock.calls[0][0];
+        expect(successMessageFn(false, true)).toBe(
+          'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully.',
         );
+
+        // Restore original location
+        window.location = originalLocation;
       });
 
       describe('error handling', () => {
@@ -297,9 +333,6 @@ describe('BlobEditHeader', () => {
             'An error occurred editing the blob',
           );
 
-          // Mock visitUrl to prevent actual navigation
-          visitUrlSpy.mockImplementation(() => {});
-
           mock.onPut().replyOnce(HTTP_STATUS_OK, {
             branch: 'feature',
             file_path: 'test.js',
@@ -312,9 +345,7 @@ describe('BlobEditHeader', () => {
 
           // The error should be cleared at the start of handleFormSubmit
           expect(findCommitChangesModal().props('error')).toBeNull();
-          expect(visitUrlSpy).toHaveBeenCalledWith(
-            'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
-          );
+          expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalled();
         });
       });
 
@@ -324,6 +355,11 @@ describe('BlobEditHeader', () => {
           mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
           mockEditor.getOriginalFilePath.mockReturnValue('test.js');
           clickCommitChangesButton();
+        });
+
+        afterEach(() => {
+          // Restore to initial value
+          mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('test.js');
         });
 
         it('uses commits API when file path changes', async () => {
@@ -365,9 +401,20 @@ describe('BlobEditHeader', () => {
 
           await submitForm();
 
-          expect(visitUrlSpy).toHaveBeenCalledWith(
-            'http://test.host/gitlab-org/gitlab/-/blob/feature/renamed_test.js',
-          );
+          expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
+            url: window.location.href,
+            resultingBranch: 'feature',
+            responseData: {},
+            formData: expect.objectContaining({
+              file_path: 'renamed_test.js',
+              file: content,
+              branch_name: 'feature',
+              original_branch: 'main',
+            }),
+            isNewBranch: true,
+            targetProjectPath: 'gitlab-org/gitlab',
+            successMessageFn: expect.any(Function),
+          });
         });
 
         it('handles error responses from commits API', async () => {
@@ -392,6 +439,82 @@ describe('BlobEditHeader', () => {
 
           expect(findCommitChangesModal().props('error')).toBe(errorMessage);
           expect(visitUrlSpy).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when working on a fork', () => {
+        beforeEach(async () => {
+          createWrapper({
+            glFeatures: { blobEditRefactor: true },
+            provided: {
+              canPushToBranch: false,
+              targetProjectId: 456,
+              targetProjectPath: 'user/gitlab-fork',
+              nextForkBranchName: 'patch-1',
+            },
+          });
+
+          clickCommitChangesButton();
+          mock.onPut().replyOnce(HTTP_STATUS_OK, {
+            branch: 'patch-1',
+            file_path: 'test.js',
+          });
+
+          await submitForm();
+        });
+
+        it('on submit, redirects to merge request creation', () => {
+          expect(mock.history.put).toHaveLength(1);
+          expect(mock.history.put[0].url).toBe('/api/v4/projects/456/repository/files/test.js');
+          const putData = JSON.parse(mock.history.put[0].data);
+          expect(putData.content).toBe(content);
+
+          expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
+            url: window.location.href,
+            forkProjectPath: 'user/gitlab-fork',
+            sourceBranch: 'patch-1',
+            upstreamProjectId: 123,
+            targetBranch: 'main',
+          });
+          expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when renaming a file in fork', () => {
+        beforeEach(async () => {
+          createWrapper({
+            glFeatures: { blobEditRefactor: true },
+            provided: {
+              canPushToBranch: false,
+              targetProjectId: 456,
+              targetProjectPath: 'user/gitlab-fork',
+              nextForkBranchName: 'patch-1',
+            },
+          });
+          mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
+          mockEditor.getOriginalFilePath.mockReturnValue('test.js');
+          clickCommitChangesButton();
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
+
+          await submitForm();
+        });
+
+        afterEach(() => {
+          // Restore to initial value
+          mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('test.js');
+        });
+
+        it('redirects to merge request creation page after renaming file', () => {
+          expect(mock.history.post).toHaveLength(1);
+          expect(mock.history.post[0].url).toBe('/api/v4/projects/456/repository/commits');
+          expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
+            url: window.location.href,
+            forkProjectPath: 'user/gitlab-fork',
+            sourceBranch: 'patch-1',
+            upstreamProjectId: 123,
+            targetBranch: 'main',
+          });
+          expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
         });
       });
     });

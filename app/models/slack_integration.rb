@@ -9,7 +9,7 @@ class SlackIntegration < ApplicationRecord
   SCOPE_COMMANDS = 'commands'
   SCOPE_CHAT_WRITE = 'chat:write'
   SCOPE_CHAT_WRITE_PUBLIC = 'chat:write.public'
-  INSTANCE_ALIAS = '_gitlab-instance'
+  ORGANIZATION_ALIAS = 'gitlab-organization'
 
   # These scopes are requested when installing the app, additional scopes
   # will need reauthorization.
@@ -56,6 +56,12 @@ class SlackIntegration < ApplicationRecord
   validates :bot_access_token, length: { maximum: 255 }, if: :bot_access_token_changed?
 
   after_commit :update_active_status_of_integration, on: [:create, :destroy]
+
+  def self.organization_alias(organization_id)
+    raise ArgumentError, 'organization_id must be an Integer' unless organization_id.is_a?(Integer)
+
+    [SlackIntegration::ORGANIZATION_ALIAS, organization_id].join('-')
+  end
 
   def feature_available?(feature_name)
     case feature_name

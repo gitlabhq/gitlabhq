@@ -14,6 +14,7 @@ export default ({ onTemplateSelected }) => {
 
   return new Vue({
     el,
+    name: 'FilepathFormRoot',
     render(h) {
       return h(FilepathForm, {
         props: {

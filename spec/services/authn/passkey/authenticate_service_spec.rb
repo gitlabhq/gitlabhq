@@ -85,10 +85,18 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
         expect(passkey_registration.last_used_at).to be_present
       end
 
-      it 'authenticates with a passkey (passwordless sign_in)' do
-        authenticate_service
+      context 'when passkey authentication is disabled for user' do
+        before do
+          allow_next_found_instance_of(User) do |instance|
+            allow(instance).to receive(:allow_passkey_authentication?).and_return(false)
+          end
+        end
 
-        expect(passkey_registration.authentication_mode).to eq('passwordless')
+        it_behaves_like 'returns authentication failure'
+
+        it 'returns generic error message' do
+          expect(authenticate_service.message).to eq(_('Failed to connect to your device. Try again.'))
+        end
       end
     end
 

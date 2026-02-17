@@ -1,7 +1,0 @@
----
-name: read_merge_request_pipeline
-description: Grants the ability to read merge request pipelines
-boundaries:
-  - project
-permissions:
-  - read_merge_request_pipeline

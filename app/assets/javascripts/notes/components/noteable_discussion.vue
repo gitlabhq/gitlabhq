@@ -203,13 +203,13 @@ export default {
     },
   },
   created() {
-    eventHub.$on('startReplying', this.onStartReplying);
+    eventHub.$on('start-replying', this.onStartReplying);
     if (this.hasDraft) {
       this.showReplyForm();
     }
   },
   beforeDestroy() {
-    eventHub.$off('startReplying', this.onStartReplying);
+    eventHub.$off('start-replying', this.onStartReplying);
   },
   methods: {
     ...mapActions(useNotes, [
@@ -356,7 +356,7 @@ export default {
               :line="line"
               :should-group-replies="shouldGroupReplies"
               :is-overview-tab="isOverviewTab"
-              @startReplying="showReplyForm"
+              @start-replying="showReplyForm"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>

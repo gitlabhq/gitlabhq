@@ -12,6 +12,7 @@ export const initDiffStatsDropdown = () => {
 
   return new Vue({
     el,
+    name: 'DiffStatsDropdownRoot',
     render: (createElement) =>
       createElement(DiffStatsDropdown, {
         props: {

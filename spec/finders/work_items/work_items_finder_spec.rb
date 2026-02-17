@@ -35,123 +35,13 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   end
 
   context 'with namespace_traversal_ids_filtering' do
-    include_context '{Issues|WorkItems}Finder#execute context', :work_item
-
-    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
     let_it_be(:group_project_work_item) { create(:work_item, project: project1, author: user) }
 
-    let_it_be(:subgroup_work_item) { create(:work_item, :group_level, namespace: subgroup, author: user) }
-
-    let(:params) { { group_id: group, include_descendants: true } }
-    let(:scope) { 'all' }
-
-    before do
-      group.add_developer(user)
-    end
-
-    it 'only returns project level work_items' do
-      expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
-    end
-
-    context 'with a search param and attempt_group_search_optimizations = true' do
-      let(:params) do
-        { group_id: group, include_descendants: true, search: "test", attempt_group_search_optimizations: true }
-      end
-
-      it 'overrides use_cte_for_search?' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    it 'generates query with condition to filter out work_items without project_id' do
-      result_sql = items.to_sql
-      expect(result_sql).to include('"issues"."project_id" IS NOT NULL')
-    end
-
-    it_behaves_like 'generates query with namespace_traversal_id filtering'
-
-    context 'with conditional traversal_ids filtering' do
-      context 'when no group is specified' do
-        let(:params) { { project_id: project1.id } }
-        let(:scope) { 'all' }
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when feature flag is disabled' do
-        let(:params) { { group_id: group, include_descendants: true } }
-        let(:scope) { 'all' }
-
-        before do
-          stub_feature_flags(use_namespace_traversal_ids_for_work_items_finder: false)
-        end
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when include_descendants is false' do
-        let(:params) { { group_id: group, include_descendants: false } }
-        let(:scope) { 'all' }
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when all basic conditions are met' do
-        let(:scope) { 'all' }
-
-        context 'for a sub-group' do
-          let(:group) { subgroup }
-          let(:params) { { group_id: subgroup, include_descendants: true } }
-
-          it_behaves_like 'generates query with namespace_traversal_id filtering'
-
-          context 'with name sorting' do
-            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'title_asc' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-
-          context 'with updated sorting' do
-            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'updated_desc' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-        end
-
-        context 'for a root group' do
-          context 'with updated/created sorting' do
-            %w[updated_asc updated_desc created_asc created_desc].each do |sort_value|
-              context "with sort: #{sort_value}" do
-                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
-
-                it_behaves_like 'generates query with namespace_traversal_id filtering'
-              end
-            end
-          end
-
-          context 'with other sorting' do
-            %w[name_asc name_desc priority_asc priority_desc].each do |sort_value|
-              context "with sort: #{sort_value}" do
-                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
-
-                it_behaves_like 'generates query without namespace_traversal_id filtering'
-              end
-            end
-          end
-
-          context 'with no sort specified' do
-            let(:params) { { group_id: group, include_descendants: true } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-
-          context 'with blank sort' do
-            let(:params) { { group_id: group, include_descendants: true, sort: '' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-        end
-      end
+    it_behaves_like 'issues or work items finder with namespace_traversal_ids filtering',
+      :work_item,
+      include_subgroups_param: :include_descendants,
+      unsupported_sort_options: %w[name_asc name_desc priority_asc priority_desc] do
+      let(:expected_items) { [item1, item4, item5, group_project_work_item] }
     end
   end
 
@@ -207,8 +97,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     let(:scope) { 'all' }
 
     context 'when user has access to child item' do
-      let_it_be(:child_item1) { create(:work_item, project: project1) }
-      let_it_be(:parent_item1) { create(:work_item, :epic, project: project1) }
+      let_it_be(:child_item1) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item1) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item1.id] } }
 
@@ -223,8 +113,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
     context 'when filtering by parent item from different project' do
       let_it_be(:another_project) { create(:project) }
-      let_it_be(:child_item2) { create(:work_item, project: project1) }
-      let_it_be(:parent_item2) { create(:work_item, :epic, project: another_project) }
+      let_it_be(:child_item2) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item2) { create(:work_item, :issue, project: another_project) }
 
       let(:params) { { work_item_parent_ids: [parent_item2.id] } }
 
@@ -238,11 +128,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when filtering by multiple parent items' do
-      let_it_be(:child_item3) { create(:work_item, project: project1) }
-      let_it_be(:child_item4) { create(:work_item, project: project1) }
+      let_it_be(:child_item3) { create(:work_item, :task, project: project1) }
+      let_it_be(:child_item4) { create(:work_item, :task, project: project1) }
 
-      let_it_be(:parent_item3) { create(:work_item, :epic, project: project1) }
-      let_it_be(:parent_item4) { create(:work_item, :epic, project: project1) }
+      let_it_be(:parent_item3) { create(:work_item, :issue, project: project1) }
+      let_it_be(:parent_item4) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item3.id, parent_item4.id] } }
 
@@ -257,8 +147,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when user does not have access to child items' do
-      let_it_be(:confidential_work_item) { create(:work_item, confidential: true, project: project1) }
-      let_it_be(:parent_item5) { create(:work_item, :epic, confidential: true, project: project1) }
+      let_it_be(:confidential_work_item) { create(:work_item, :task, confidential: true, project: project1) }
+      let_it_be(:parent_item5) { create(:work_item, :issue, confidential: true, project: project1) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [parent_item5.id] } }
@@ -274,8 +164,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
     context 'when user does not have access to child and parent items' do
       let_it_be(:private_project) { create(:project, :private) }
-      let_it_be(:private_work_item) { create(:work_item, project: private_project) }
-      let_it_be(:private_parent_item) { create(:work_item, :epic, project: private_project) }
+      let_it_be(:private_work_item) { create(:work_item, :task, project: private_project) }
+      let_it_be(:private_parent_item) { create(:work_item, :issue, project: private_project) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [private_parent_item.id] } }
@@ -286,23 +176,6 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
       it 'does not return those items' do
         expect(items).to be_empty
-      end
-    end
-
-    context 'when using include_descendant_work_items filter' do
-      let_it_be(:parent_item) { create(:work_item, :epic) }
-      let_it_be(:child_item_1) { create(:work_item, :issue, project: project1) }
-      let_it_be(:child_item_2) { create(:work_item, :task, project: project1) }
-
-      let(:params) { { work_item_parent_ids: [parent_item.id], include_descendant_work_items: true } }
-
-      before do
-        create(:parent_link, work_item_parent: parent_item, work_item: child_item_1)
-        create(:parent_link, work_item_parent: child_item_1, work_item: child_item_2)
-      end
-
-      it 'includes descendant work items regardless of the work item types' do
-        expect(items).to include(child_item_1, child_item_2)
       end
     end
   end
@@ -387,6 +260,33 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
       it 'returns no issues' do
         expect(items).to be_empty
+      end
+    end
+  end
+
+  describe '#widget_definition_class' do
+    subject(:finder) { described_class.new(user, params) }
+
+    context 'with group params' do
+      let(:params) { { group_id: group.id } }
+
+      it 'returns SystemDefined::WidgetDefinition' do
+        expect(finder.send(:widget_definition_class))
+          .to eq(WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
+      end
+    end
+
+    context 'when work_item_system_defined_type feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      context 'with group params' do
+        let(:params) { { group_id: group.id } }
+
+        it 'returns legacy WidgetDefinition' do
+          expect(finder.send(:widget_definition_class)).to eq(WorkItems::WidgetDefinition)
+        end
       end
     end
   end

@@ -106,8 +106,8 @@ describe('Pipelines Table', () => {
         ['gl-w-3/20'],
         ['gl-w-5/20'],
         ['gl-w-3/20'],
-        ['gl-w-5/20'],
         ['gl-w-4/20'],
+        ['gl-w-5/20'],
       ]);
     });
 
@@ -334,7 +334,7 @@ describe('Pipelines Table', () => {
     });
 
     it('tracks pipeline mini graph stage click', () => {
-      findPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+      findPipelineMiniGraph().vm.$emit('mini-graph-stage-click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
         label: TRACKING_CATEGORIES.table,

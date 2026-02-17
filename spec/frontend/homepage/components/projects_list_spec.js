@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ProjectsList from '~/homepage/components/projects_list.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import FrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
+import userProjectsQuery from '~/homepage/graphql/queries/user_projects.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 Vue.use(VueApollo);
@@ -19,46 +19,63 @@ jest.mock('~/sentry/sentry_browser_wrapper', () => ({
 describe('ProjectsList', () => {
   let wrapper;
 
-  const mockFrecentProjectsResponse = {
+  const mockUserProjectsResponse = {
     data: {
       frecentProjects: [
         {
           id: 'gid://gitlab/Project/1',
           name: 'GitLab',
           namespace: 'gitlab-org / GitLab',
-          fullPath: 'gitlab-org/gitlab',
+          webPath: '/gitlab-org/gitlab',
           avatarUrl: null,
         },
         {
           id: 'gid://gitlab/Project/2',
           name: 'Runner',
           namespace: 'gitlab-org / Runner',
-          fullPath: 'gitlab-org/gitlab-runner',
+          webPath: '/gitlab-org/gitlab-runner',
           avatarUrl: 'https://example.com/avatar.png',
         },
       ],
+      currentUser: {
+        id: 'gid://gitlab/User/1',
+        starredProjects: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Project/3',
+              name: 'Gitaly',
+              namespace: 'gitlab-org / Gitaly',
+              webPath: '/gitlab-org/gitaly',
+              avatarUrl: null,
+            },
+          ],
+        },
+      },
     },
   };
 
-  const frecentProjectsQuerySuccessHandler = jest
-    .fn()
-    .mockResolvedValue(mockFrecentProjectsResponse);
-  const frecentProjectsQueryErrorHandler = jest.fn().mockRejectedValue(new Error('GraphQL Error'));
+  const userProjectsQuerySuccessHandler = jest.fn().mockResolvedValue(mockUserProjectsResponse);
+  const userProjectsQueryErrorHandler = jest.fn().mockRejectedValue(new Error('GraphQL Error'));
 
   const createComponent = ({
-    frecentProjectsHandler = frecentProjectsQuerySuccessHandler,
+    userProjectsHandler = userProjectsQuerySuccessHandler,
+    selectedSources = ['FRECENT'],
   } = {}) => {
-    const mockApollo = createMockApollo([[FrecentProjectsQuery, frecentProjectsHandler]]);
+    const mockApollo = createMockApollo([[userProjectsQuery, userProjectsHandler]]);
 
     wrapper = shallowMountExtended(ProjectsList, {
       apolloProvider: mockApollo,
+      propsData: {
+        selectedSources,
+      },
     });
   };
 
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
   const findErrorMessage = () =>
     wrapper.findByText('Your projects are not available. Please refresh the page to try again.');
-  const findEmptyState = () => wrapper.findByText('Projects you visit will appear here.');
+  const findEmptyState = () =>
+    wrapper.findByText('No projects match your selected display options.');
   const findProjectsList = () => wrapper.find('ul');
   const findProjectLinks = () => wrapper.findAll('a[href^="/"]');
   const findProjectAvatars = () => wrapper.findAllComponents(ProjectAvatar);
@@ -85,7 +102,7 @@ describe('ProjectsList', () => {
 
   describe('error state', () => {
     beforeEach(async () => {
-      createComponent({ frecentProjectsHandler: frecentProjectsQueryErrorHandler });
+      createComponent({ userProjectsHandler: userProjectsQueryErrorHandler });
       await waitForPromises();
     });
 
@@ -106,16 +123,22 @@ describe('ProjectsList', () => {
     });
   });
 
-  describe('empty state and frequently visited message', () => {
+  describe('empty state and footer message', () => {
     it('shows empty state when there are no projects', async () => {
       const emptyResponse = {
         data: {
           frecentProjects: [],
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            starredProjects: {
+              nodes: [],
+            },
+          },
         },
       };
 
       const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ frecentProjectsHandler: emptyQueryHandler });
+      createComponent({ userProjectsHandler: emptyQueryHandler });
       await waitForPromises();
 
       expect(findEmptyState().exists()).toBe(true);
@@ -123,17 +146,40 @@ describe('ProjectsList', () => {
       expect(findFrequentlyVisitedMessage().exists()).toBe(false);
     });
 
-    it('does not show frequently visited message during loading', () => {
-      createComponent();
-
-      expect(findFrequentlyVisitedMessage().exists()).toBe(false);
-    });
-
-    it('does not show frequently visited message during error state', async () => {
-      createComponent({ frecentProjectsHandler: frecentProjectsQueryErrorHandler });
+    it('does not show footer message during error state', async () => {
+      createComponent({ userProjectsHandler: userProjectsQueryErrorHandler });
       await waitForPromises();
 
       expect(findFrequentlyVisitedMessage().exists()).toBe(false);
+    });
+  });
+
+  describe('project source filtering', () => {
+    it('shows only frecent projects when selectedSources is FRECENT', async () => {
+      createComponent({ selectedSources: ['FRECENT'] });
+      await waitForPromises();
+
+      const links = findProjectLinks();
+      expect(links).toHaveLength(2);
+      expect(links.at(0).attributes('href')).toBe('/gitlab-org/gitlab');
+      expect(links.at(1).attributes('href')).toBe('/gitlab-org/gitlab-runner');
+    });
+
+    it('shows only starred projects when selectedSources is STARRED', async () => {
+      createComponent({ selectedSources: ['STARRED'] });
+      await waitForPromises();
+
+      const links = findProjectLinks();
+      expect(links).toHaveLength(1);
+      expect(links.at(0).attributes('href')).toBe('/gitlab-org/gitaly');
+    });
+
+    it('shows both frecent and starred projects when both are selected', async () => {
+      createComponent({ selectedSources: ['FRECENT', 'STARRED'] });
+      await waitForPromises();
+
+      const links = findProjectLinks();
+      expect(links).toHaveLength(3);
     });
   });
 
@@ -141,7 +187,7 @@ describe('ProjectsList', () => {
     it('makes the correct GraphQL query', () => {
       createComponent();
 
-      expect(frecentProjectsQuerySuccessHandler).toHaveBeenCalled();
+      expect(userProjectsQuerySuccessHandler).toHaveBeenCalled();
     });
   });
 
@@ -151,7 +197,7 @@ describe('ProjectsList', () => {
       await waitForPromises();
     });
 
-    it('renders projects with correct URLs and avatars', () => {
+    it('renders frecent projects with correct URLs and avatars', () => {
       const links = findProjectLinks();
 
       expect(links).toHaveLength(2);
@@ -166,6 +212,33 @@ describe('ProjectsList', () => {
       expect(tooltips).toHaveLength(2);
       expect(tooltips.at(0).text()).toContain('GitLab · gitlab-org / GitLab');
       expect(tooltips.at(1).text()).toBe('Runner · gitlab-org / Runner');
+    });
+  });
+
+  describe('deduplication logic', () => {
+    it('removes duplicate projects when same project appears in both sources', async () => {
+      const deduplicateHandler = jest.fn().mockResolvedValue({
+        data: {
+          ...mockUserProjectsResponse.data,
+          currentUser: {
+            ...mockUserProjectsResponse.data.currentUser,
+            starredProjects: {
+              nodes: [
+                mockUserProjectsResponse.data.frecentProjects[0], // Duplicate
+                mockUserProjectsResponse.data.currentUser.starredProjects.nodes[0],
+              ],
+            },
+          },
+        },
+      });
+
+      createComponent({
+        userProjectsHandler: deduplicateHandler,
+        selectedSources: ['FRECENT', 'STARRED'],
+      });
+      await waitForPromises();
+
+      expect(findProjectLinks()).toHaveLength(3);
     });
   });
 

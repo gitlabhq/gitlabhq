@@ -8,7 +8,6 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { EXCLUDE_FORKS_FILTER_PARAM } from '~/search/sidebar/constants';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
-// eslint-disable-next-line no-restricted-imports
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import EmptyResult from './result_empty.vue';
 import ErrorResult from './result_error.vue';
@@ -33,6 +32,7 @@ export default {
   data() {
     return {
       hasError: false,
+      errorData: null,
       blobSearch: {},
       loaded: false,
     };
@@ -77,6 +77,7 @@ export default {
         logError(error);
         this.loaded = true;
         this.hasError = true;
+        this.errorData = error;
       },
     },
   },
@@ -101,7 +102,7 @@ export default {
 
 <template>
   <div>
-    <error-result v-if="hasError" />
+    <error-result v-if="hasError" :error="errorData" />
     <section v-else>
       <status-bar v-if="!isLoading" :blob-search="blobSearch" />
       <zoekt-blob-results

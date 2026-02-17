@@ -92,9 +92,8 @@ GitLab OK
 
 ## Comprehensive health check
 
-{{< alert type="warning" >}}
-**Do not use `/health_check` for load balancing or autoscaling.** This endpoint validates backend services (database, Redis) and will fail even when the application is functioning properly if these services are slow or unavailable. This can cause unnecessary removal of healthy application nodes from load balancers.
-{{< /alert >}}
+> [!warning]
+> **Do not use `/health_check` for load balancing or autoscaling.** This endpoint validates backend services (database, Redis) and will fail even when the application is functioning properly if these services are slow or unavailable. This can cause unnecessary removal of healthy application nodes from load balancers.
 
 The `/health_check` endpoint performs comprehensive health checks including database connectivity, Redis availability, and other backend services. It's provided by the `health_check` gem and validates the entire application stack.
 
@@ -176,13 +175,10 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-{{< alert type="warning" >}}
-
-In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
-the response body of the Liveness check was changed
-to match the example below.
-
-{{< /alert >}}
+> [!warning]
+> In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
+> the response body of the Liveness check was changed
+> to match the example below.
 
 Checks whether the application server is running.
 This probe is used to know if Rails Controllers

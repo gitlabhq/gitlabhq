@@ -1,7 +1,7 @@
 <script>
-import { GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import CommitInfo from '~/repository/components/commit_info.vue';
+import BlameCommitInfo from './blame_commit_info.vue';
 
 export default {
   name: 'BlameInfo',
@@ -18,8 +18,7 @@ export default {
     'blame-commit-age-9': 'var(--gl-color-data-blue-50)',
   },
   components: {
-    CommitInfo,
-    GlSkeletonLoader,
+    BlameCommitInfo,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -30,9 +29,10 @@ export default {
       type: Array,
       required: true,
     },
-    isBlameLoading: {
-      type: Boolean,
-      required: true,
+    projectPath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -99,28 +99,6 @@ export default {
 <template>
   <div class="blame gl-border-r gl-bg-subtle">
     <div class="blame-commit !gl-border-none">
-      <!-- Skeleton loaders - fixed number during loading -->
-      <template v-if="isBlameLoading && !blameInfo.length">
-        <gl-skeleton-loader
-          v-for="i in 5"
-          :key="i"
-          :width="150"
-          :height="30"
-          class="blame-commit-wrapper gl-mb-2"
-        >
-          <!-- Color indicator -->
-          <rect x="0" y="0" width="2" height="20" fill="var(--gl-color-data-blue-500)" />
-
-          <!-- Avatar -->
-          <circle cx="12" cy="10" r="6" />
-
-          <!-- Commit title -->
-          <rect x="22" y="7" width="80" height="4" rx="2" />
-          <!-- Commit meta -->
-          <rect x="22" y="13" width="50" height="3" rx="2" />
-        </gl-skeleton-loader>
-      </template>
-
       <template v-if="blameInfo.length">
         <span
           v-for="(processedBlame, index) in processedBlameInfo"
@@ -133,7 +111,7 @@ export default {
       </template>
 
       <template v-if="blameInfo.length">
-        <commit-info
+        <blame-commit-info
           v-for="(blame, index) in blameInfo"
           :key="index"
           :class="{ 'gl-border-t': blame.blameOffset !== '0px' }"
@@ -141,7 +119,8 @@ export default {
           :style="{ top: blame.blameOffset }"
           :commit="blame.commit"
           :span="blame.span"
-          :prev-blame-link="blame.commitData && blame.commitData.projectBlameLink"
+          :previous-path="blame.previousPath"
+          :project-path="projectPath"
         />
       </template>
     </div>

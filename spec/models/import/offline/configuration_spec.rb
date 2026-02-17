@@ -19,7 +19,7 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:provider) }
-    it { is_expected.to define_enum_for(:provider).with_values(%i[aws minio]) }
+    it { is_expected.to define_enum_for(:provider).with_values(%i[aws s3_compatible]) }
 
     it { is_expected.to validate_presence_of(:export_prefix) }
     it { is_expected.to validate_presence_of(:object_storage_credentials) }
@@ -31,21 +31,21 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     it { is_expected.not_to allow_value('special.characters/\?<>@&=_ ').for(:bucket) }
 
     describe '#provider' do
-      context 'when in development environment' do
+      context 'when S3 compatible storage is allowed for offline transfer' do
         before do
-          allow(Rails.env).to receive(:development?).and_return(true)
+          stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
         end
 
-        it { is_expected.to allow_values('minio', 'aws').for(:provider) }
+        it { is_expected.to allow_values('s3_compatible', 'aws').for(:provider) }
       end
 
-      context 'when not in development environment' do
+      context 'when S3 compatible storage is not allowed for offline transfer' do
         before do
-          allow(Rails.env).to receive(:development?).and_return(false)
+          stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: false)
         end
 
         it { is_expected.to allow_value('aws').for(:provider) }
-        it { is_expected.not_to allow_value('minio').for(:provider) }
+        it { is_expected.not_to allow_value('s3_compatible').for(:provider) }
       end
     end
 
@@ -103,8 +103,8 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
         end
       end
 
-      context 'when provider is MinIO' do
-        let(:provider) { :minio }
+      context 'when provider is S3-compatible' do
+        let(:provider) { :s3_compatible }
         let(:valid_credentials) do
           {
             aws_access_key_id: 'MinIO-user+access@key123/456?',
@@ -116,7 +116,7 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
         end
 
         before do
-          allow(Rails.env).to receive(:development?).and_return(true)
+          stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
         end
 
         context 'with valid credentials' do
@@ -162,7 +162,7 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
 
   describe 'callbacks' do
     describe '#generate_export_prefix', time_travel_to: '2025-11-04 12:35:45.000000' do
-      it 'sets export_prefix on initalization' do
+      it 'sets export_prefix on initialization' do
         configuration = described_class.new
 
         expect(configuration.export_prefix).to match(/^2025-11-04_12-35-45_export_[a-zA-Z0-9]{8}$/)

@@ -1,0 +1,5 @@
+---
+name: create_project_relation_export
+description: Grants the ability to start project relation exports
+boundaries:
+  - project

@@ -4,28 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#orphan_objects' do
-    before do
-      Gitlab.config.artifacts.object_store.tap do |config|
-        config[:remote_directory] = remote_directory
-        config[:bucket_prefix] = bucket_prefix
-      end
-
-      allow(Gitlab::AppLogger).to receive(:info)
-    end
-
-    let(:batch) { described_class.new(entries) }
-
-    let(:fog_connection) do
-      stub_object_storage_uploader(
-        config: Gitlab.config.artifacts.object_store,
-        uploader: JobArtifactUploader,
-        direct_upload: true
-      )
-    end
-
     let(:remote_directory) { 'artifacts' }
-    let(:bucket_prefix) { nil }
-
     let(:entries) do
       [
         [orphan_final_object_1.key, orphan_final_object_1.content_length].join(','),
@@ -38,11 +17,33 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
     let!(:orphan_final_object_1) { create_fog_file }
     let!(:orphan_final_object_2) { create_fog_file }
     let!(:non_existent_object) { create_fog_file.tap(&:destroy) }
-
     let!(:object_with_job_artifact_record) do
       create_fog_file.tap do |file|
         create(:ci_job_artifact, file_final_path: path_without_bucket_prefix(file.key))
       end
+    end
+
+    let(:bucket_prefix) { nil }
+
+    let(:config) do
+      config = Gitlab.config.artifacts.object_store.dup
+      config[:remote_directory] = remote_directory
+      config[:bucket_prefix] = bucket_prefix
+      config
+    end
+
+    let(:batch) { described_class.new(entries) }
+
+    let(:fog_connection) do
+      stub_object_storage_uploader(
+        config: config,
+        uploader: JobArtifactUploader,
+        direct_upload: true
+      )
+    end
+
+    before do
+      allow(Gitlab::AppLogger).to receive(:info)
     end
 
     subject(:orphan_objects) { batch.orphan_objects }

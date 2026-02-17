@@ -7,6 +7,7 @@ export default function initDeleteTagModal() {
 
   return new Vue({
     el,
+    name: 'DeleteTagModalRoot',
     render(createComponent) {
       return createComponent(DeleteTagModal);
     },

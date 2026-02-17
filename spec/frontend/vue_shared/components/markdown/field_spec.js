@@ -50,6 +50,9 @@ describe('Markdown field component', () => {
         },
         template: `
 <markdown-field :class="wrapperClasses" v-bind="$attrs">
+  <template #header>
+    <div data-testid="header-slot-content"></div>
+  </template>
   <template #textarea>
     <textarea class="js-gfm-input" :value="$attrs.textareaValue"></textarea>
   </template>
@@ -279,6 +282,18 @@ describe('Markdown field component', () => {
             supportsQuickActions: true,
           });
         });
+
+        it('hides preview when textareaValue changes', async () => {
+          previewToggle = getPreviewToggle();
+
+          previewToggle.trigger('click');
+
+          subject.setProps({ textareaValue: 'new content' });
+
+          await nextTick();
+
+          expect(subject.find('.md-preview-holder').element.style.display).toBe('none');
+        });
       });
 
       describe('no_header_anchors', () => {
@@ -479,6 +494,54 @@ describe('Markdown field component', () => {
       createSubject({ showContentEditorSwitcher: true });
 
       expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(true);
+    });
+  });
+
+  describe('immersive mode', () => {
+    beforeEach(() => {
+      createSubject({
+        immersive: true,
+      });
+    });
+
+    it('passes immersive prop to MarkdownHeader', () => {
+      expect(findMarkdownHeader().props('immersive')).toBe(true);
+    });
+
+    it('shows the markdown toolbar exactly once', () => {
+      expect(subject.findAllComponents(MarkdownToolbar)).toHaveLength(1);
+    });
+
+    it('shows the header content', () => {
+      expect(subject.findByTestId('header-slot-content').exists()).toBe(true);
+    });
+
+    it('makes the header be sticky', () => {
+      expect(subject.findByTestId('header-container').classes()).toContain('gl-sticky');
+    });
+  });
+
+  describe('immersive mode disabled', () => {
+    beforeEach(() => {
+      createSubject({
+        immersive: false,
+      });
+    });
+
+    it('passes immersive prop to MarkdownHeader', () => {
+      expect(findMarkdownHeader().props('immersive')).toBe(false);
+    });
+
+    it('shows the markdown toolbar exactly once', () => {
+      expect(subject.findAllComponents(MarkdownToolbar)).toHaveLength(1);
+    });
+
+    it('does not show the header content', () => {
+      expect(subject.findByTestId('header-slot-content').exists()).toBe(false);
+    });
+
+    it('does not make the header', () => {
+      expect(subject.findByTestId('header-container').classes()).not.toContain('gl-sticky');
     });
   });
 });

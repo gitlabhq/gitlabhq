@@ -259,15 +259,15 @@ describe('ReportActions', () => {
             expect(isDrawerOpen()).toBe(false);
           });
 
-          it('emits the showAlert event', () => {
-            expect(wrapper.emitted('showAlert')).toStrictEqual([[alertType, alertMessage]]);
+          it('emits the show-alert event', () => {
+            expect(wrapper.emitted('show-alert')).toStrictEqual([[alertType, alertMessage]]);
           });
 
-          it(`${success ? 'does' : 'does not'} emit the closeReport event`, () => {
+          it(`${success ? 'does' : 'does not'} emit the close-report event`, () => {
             if (success) {
-              expect(wrapper.emitted('closeReport')).toBeDefined();
+              expect(wrapper.emitted('close-report')).toBeDefined();
             } else {
-              expect(wrapper.emitted('closeReport')).toBeUndefined();
+              expect(wrapper.emitted('close-report')).toBeUndefined();
             }
           });
         },

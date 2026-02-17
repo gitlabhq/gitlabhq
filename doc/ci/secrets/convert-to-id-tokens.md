@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to convert from deprecated `CI_JOB_JWT` variable to ID tokens
 title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 ---
 
@@ -12,12 +13,9 @@ title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
-when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
-
-{{< /alert >}}
+> [!note]
+> Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
+> when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
 
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](id_token_authentication.md).
 

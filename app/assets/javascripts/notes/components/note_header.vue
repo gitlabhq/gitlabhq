@@ -182,7 +182,7 @@ export default {
       <span
         v-if="$scopedSlots.default"
         class="system-note-message"
-        :class="!isSystemNote && !emailParticipant && 'md:-gl-ml-2'"
+        :class="!isSystemNote && !emailParticipant && '@md/panel:-gl-ml-2'"
         data-testid="system-note-content"
       >
         <slot></slot>

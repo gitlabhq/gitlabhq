@@ -87,19 +87,6 @@ class ProjectTeam
   end
   alias_method :users, :members
 
-  # `members` method uses project_authorizations table which
-  # is updated asynchronously, on project move it still contains
-  # old members who may not have access to the new location,
-  # so we filter out only members of project or project's group
-  def members_in_project_and_ancestors
-    members.where(id: member_user_ids)
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432606')
-  end
-
-  def members_with_access_levels(access_levels = [])
-    fetch_members(access_levels)
-  end
-
   def guests
     @guests ||= fetch_members(Gitlab::Access::GUEST)
   end

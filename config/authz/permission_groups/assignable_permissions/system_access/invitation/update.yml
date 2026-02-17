@@ -1,0 +1,8 @@
+---
+name: update_invitation
+description: Grants the ability to update invitations
+boundaries:
+  - group
+  - project
+permissions:
+  - update_invitation

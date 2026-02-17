@@ -61,6 +61,7 @@ RSpec.describe WorkhorseCoverageExporter, feature_category: :tooling do
           '--test-map', anything,
           '--clickhouse-url', 'http://localhost:8123',
           '--clickhouse-database', 'test_db',
+          '--clickhouse-shared-database', '',
           '--clickhouse-username', 'test_user',
           '--responsibility-patterns', '.gitlab/coverage/responsibility_patterns.yml'
         )

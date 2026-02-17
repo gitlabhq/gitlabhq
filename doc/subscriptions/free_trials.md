@@ -16,9 +16,8 @@ title: Ultimate trials
 You can get a trial license for the GitLab Ultimate tier.
 
 During the trial period, you have access to nearly all Ultimate features.
-On GitLab.com, your trial includes a GitLab Duo Enterprise trial to test [GitLab Duo Enterprise features](../user/gitlab_duo/feature_summary.md).
 
-A trial license for Ultimate and GitLab Duo Enterprise is valid for:
+A trial license for Ultimate is valid for:
 
 - 30 days if you're on the Free tier.
 - 60 days if you're on the Premium tier.
@@ -26,6 +25,27 @@ A trial license for Ultimate and GitLab Duo Enterprise is valid for:
 The trial starts when you receive the confirmation email including the activation code, not when you activate it.
 
 When the trial period is over, you lose access to paid features. To maintain access, you can [buy a subscription](manage_subscription.md#buy-a-subscription).
+
+## GitLab Duo Agent Platform trials
+
+Prerequisites:
+
+- For GitLab Self-Managed, you must have GitLab 18.9 or later.
+- For GitLab.com, your trial must start after February 10, 2026.
+
+If you're on the Free tier and you start an Ultimate trial, your trial includes 24 [GitLab credits](gitlab_credits.md#included-credits) per user.
+You can use credits to test GitLab Duo Agent Platform features.
+
+Credits are valid for the duration of the trial (30 days). Unused credits do not carry over if you buy a subscription, or when your trial ends.
+If you use all included credits before your trial ends, you cannot get more credits.
+
+If you already started or completed a trial that did not include credits, you can start a new trial:
+
+- If your trial has expired, you can start a new trial immediately.
+- If your trial is still active, you must complete your current trial period before starting a new one.
+
+If you're on the Premium tier, your trial does not provide additional credits over and above your existing included credits per user.
+You can request additional [temporary evaluation credits](gitlab_credits.md#temporary-evaluation-credits) to try GitLab Duo Agent Platform features.
 
 ## Start a trial on GitLab.com
 
@@ -47,7 +67,7 @@ If you already have a GitLab account, you can start a trial directly from your g
 Prerequisites:
 
 - You must have the Owner role for the top-level group the trial should be applied to. Indirect ownership through group membership is not sufficient.
-- The top-level group must not have trialed previously.
+- The top-level group must not have trialed previously with GitLab Credits.
 
 To start a trial:
 
@@ -71,9 +91,9 @@ Prerequisites:
 - Your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 - You must be an administrator.
 
-To start an Ultimate trial with GitLab Duo Core or native Duo features:
+To start a trial:
 
-1. Go to the [GitLab Ultimate with Duo Core](https://about.gitlab.com/free-trial/?hosted=self-managed) trial page.
+1. Go to the [GitLab Ultimate](https://about.gitlab.com/free-trial/?hosted=self-managed) trial page.
 1. Complete the fields.
 1. Select **Get Started**.
 1. Check your email for the trial activation code.

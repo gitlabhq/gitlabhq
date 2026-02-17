@@ -37,13 +37,17 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 
 	// Add readiness checkers
 	if cfg.ReadinessProbeURL != "" {
+		opts := []PumaReadinessCheckerOption{
+			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
+			WithSkipInterval(cfg.RailsSkipInterval.Duration),
+		}
+
 		pumaReadinessChecker := NewPumaReadinessChecker(
 			cfg.ReadinessProbeURL,
 			cfg.PumaControlURL,
 			cfg.Timeout.Duration,
 			logger,
-			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
-			WithSkipInterval(cfg.RailsSkipInterval.Duration),
+			opts...,
 		)
 		server.AddReadinessChecker(pumaReadinessChecker)
 	}
@@ -51,7 +55,8 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 	return server, nil
 }
 
-// InitializeAndStart creates and starts the health check server if configured
+// InitializeAndStart creates and starts the health check server
+// Returns the server, a cancel function for the background context, and any error
 func InitializeAndStart(cfg config.Config, accessLogger *logrus.Logger, errors chan error) (*Server, context.CancelFunc, error) {
 	if cfg.HealthCheckListener == nil {
 		return nil, nil, nil
@@ -62,8 +67,10 @@ func InitializeAndStart(cfg config.Config, accessLogger *logrus.Logger, errors c
 		return nil, nil, fmt.Errorf("failed to create health check server: %v", err)
 	}
 
-	// Start health check server in background
+	// Create a context for background services (health check and load shedding)
 	healthCtx, healthCancel := context.WithCancel(context.Background()) // lint:allow context.Background
+
+	// Start health check server in background
 	go healthCheckServer.Start(healthCtx)
 
 	// Start health check HTTP server

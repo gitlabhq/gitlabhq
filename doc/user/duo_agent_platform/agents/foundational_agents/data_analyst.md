@@ -8,7 +8,6 @@ title: Data Analyst Agent
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -26,13 +25,10 @@ title: Data Analyst Agent
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 The Data Analyst Agent is a specialized AI assistant that helps you query, visualize, and surface
 data across the GitLab platform. It uses [GitLab Query Language (GLQL)](../../../glql/_index.md)
@@ -94,7 +90,7 @@ Prerequisites:
   - "Show me a table of issues with titles and labels assigned to me."
   - "List open merge requests by author."
 - Status and monitoring:
-  - "Show me open issues with ~priority::1 and ~bug labels."
+  - "Show me open issues with `~priority::1` and `~bug` labels."
   - "Show me overdue issues."
   - "What merge requests are waiting for review?"
   - "List issues in the current milestone."

@@ -40,10 +40,10 @@ to this is when Fireworks AI, Anthropic, and VertexAI prompt caching is enabled 
 Code Suggestions and GitLab Duo Chat (Agentic).
 
 For more information on how to turn off prompt caching, see
-[prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching).
+prompt caching with [Code Suggestions](../duo_agent_platform/code_suggestions/_index.md#prompt-caching) or [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md#prompt-caching).
 
 > [!note]
-> For OpenAI models, you cannot turn off prompt caching. Ensure that you use a model that is suitable for your data retention requirements.
+> For OpenAI models, you cannot turn off prompt caching. If you have turned off prompt caching and you use an OpenAI model, GitLab attempts to invalidate the cache by adding the current timestamp to the prompt. Ensure that you use a model that is suitable for your data retention requirements.
 
 All GitLab AI model Sub-Processors are restricted from using model input and
 output to train models and are under data protection agreements with GitLab that
@@ -55,6 +55,8 @@ history, respectively, to help you return quickly to previously discussed topics
 You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise
 retain input and output data unless customers provide consent through a GitLab
 [support ticket](https://about.gitlab.com/support/portal/).
+
+When groups or instances enable extended logging for GitLab Duo Agent Platform workflows, trace data is retained. This is separate from the zero-day retention policy with AI model providers.
 
 For more information, see [AI feature logging](../../administration/logs/_index.md).
 
@@ -105,20 +107,67 @@ GitLab is actively iterating on all our AI-assisted capabilities to improve the 
 
 {{< /history >}}
 
-GitLab Duo includes secret detection and redaction, powered by Gitleaks. It automatically
+GitLab Duo includes [secret detection and redaction](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/docs/developer/secret-redaction.md) during flow execution. Depending on the scenario, GitLab Duo automatically
 detects and removes sensitive information like API keys, credentials, and tokens from your
-code before processing it with large language models. This security feature is particularly
-important for compliance with data protection regulations, like GDPR.
+code before processing it with large language models.
 
 Your code goes through a pre-scan security workflow when using GitLab Duo:
 
 1. Your code is scanned for sensitive information using Gitleaks.
 1. Any detected secrets are automatically removed from the request.
 
+Secret scanning runs in the following scenarios:
+
+- Code completion context transformation (before the context is sent to AI)
+- AI context transformation
+- Workflow tool results
+- Agentic Chat user input
+- Git command logging
+- CLI config logging
+
+> [!note]
+> Secret scanning does not occur when you interact with GitLab Duo Chat through the web interface.
+
+## Collecting usage data
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+
+{{< /history >}}
+
+You can enable extended logging to collect detailed AI interaction data from the GitLab Duo Agent Platform.
+
+This data is used exclusively for service improvement and debugging, and not for training AI models.
+
+### Which data is logged
+
+When data collection is enabled, the following data is logged:
+
+- Full prompt and response text from interactions with GitLab Duo.
+- Session context, including sessions that were ongoing at the time the setting is enabled.
+- Model metadata (model version, token counts, latency).
+- Tool calls and their results.
+- Session IDs to correlate with user feedback.
+
+The following information is not included in logs, as long as users don't include it in their own prompts:
+
+- User IDs or usernames.
+- Email addresses or personal identifiers.
+- Project or namespace identifiers.
+
+GitLab does not remove identifiers that users have included in their prompt.
+
+### Configure data collection for an instance
+
+To configure data collection for GitLab Self-Managed, see [these instructions](../../administration/gitlab_duo_self_hosted/configure_duo_features.md#enable-extended-logging-for-debugging).
+
+When you turn on logging in a fully self-hosted configuration, detailed logs are stored on your infrastructure and are not shared with GitLab unless your self-hosted AI Gateway is explicitly configured to send traces to an external observability service.
+
 ## GitLab Duo Self-Hosted
 
 When you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-and the self-hosted AI gateway, you do not share any data with GitLab.
+and the self-hosted AI Gateway, you do not share any data with GitLab.
 
 GitLab Self-Managed administrators can use [Service Ping](../../administration/settings/usage_statistics.md#service-ping)
 to send usage statistics to GitLab. This is separate to the [telemetry data](#telemetry).

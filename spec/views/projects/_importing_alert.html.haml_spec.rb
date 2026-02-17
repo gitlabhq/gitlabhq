@@ -14,25 +14,6 @@ RSpec.describe 'projects/_importing_alert', feature_category: :importers do
     render 'projects/importing_alert', project: project
   end
 
-  context 'when import is in progress' do
-    let(:has_permission) { false }
-    let(:project) do
-      instance_double(
-        Project,
-        import_in_progress?: true,
-        import_failed?: false,
-        import_state: import_state
-      )
-    end
-
-    it 'renders the in progress alert' do
-      expect(page_level_alert).to have_text('Import in progress')
-      expect(page_level_alert).to have_text(
-        'This project is being imported. Do not make any changes to the project until the import is complete.'
-      )
-    end
-  end
-
   context 'when import has failed' do
     let(:repository) { instance_double(Repository, exists?: repository_exists) }
     let(:import_state) { build_stubbed(:import_state, :failed, last_error: "Connection timed out") }

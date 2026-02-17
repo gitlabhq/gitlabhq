@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GonHelper, feature_category: :shared do
+RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
   let_it_be(:organization) { create(:organization) }
   let(:helper) do
     Class.new do
@@ -116,18 +116,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
     context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
       it 'does not expose current_organization' do
         expect(gon).not_to receive(:current_organization=)
-
-        helper.add_gon_variables
-      end
-    end
-
-    describe 'allow_immediate_namespaces_deletion' do
-      before do
-        allow(Gitlab::CurrentSettings).to receive(:allow_immediate_namespaces_deletion_for_user?).and_return(false)
-      end
-
-      it 'exposes allow_immediate_namespaces_deletion property' do
-        expect(gon).to receive(:allow_immediate_namespaces_deletion=).with(false)
 
         helper.add_gon_variables
       end

@@ -6,7 +6,7 @@ feature_categories:
   - virtual_registry
 description: Cache entry for the virtual registry for containers. Mainly the body
   of a response of a container registry upstream for a file web request. Contains
-  references to an object storage file.
+  references to an object storage file. This table is deprecated in favor of virtual_registries_container_cache_remote_entries.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199567
 milestone: '18.5'
 gitlab_schema: gitlab_main_org

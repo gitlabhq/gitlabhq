@@ -234,12 +234,9 @@ job1:
       - rspec.xmp
 ```
 
-{{< alert type="warning" >}}
-
-Do not save tokens, passwords, or other sensitive information in artifacts,
-as they could be viewed by any user with access to the pipelines.
-
-{{< /alert >}}
+> [!warning]
+> Do not save tokens, passwords, or other sensitive information in artifacts,
+> as they could be viewed by any user with access to the pipelines.
 
 ### Run the job's commands locally
 
@@ -361,6 +358,37 @@ To [prevent duplicate pipelines](jobs/job_rules.md#avoid-duplicate-pipelines), u
 which pipelines can run.
 
 ## Pipeline errors
+
+### Error: `Identity verification is required in order to run CI jobs`
+
+{{< details >}}
+
+- Tier: Free
+- Offering: GitLab.com
+
+{{< /details >}}
+
+When using GitLab-hosted runners on GitLab.com with a free plan,
+if you see an error message that says `Identity verification is required in order to run CI jobs`,
+you must complete identity verification.
+
+This requirement helps prevent abuse of free compute resources.
+Depending on your risk score, you may need to verify your email, phone number, or add a payment method.
+For more information, see [identity verification](../security/identity_verification.md).
+
+To complete validation:
+
+1. In the alert banner, select **Verify my account**.
+1. When prompted, follow the identity verification steps.
+   You might be required to verify your phone number or add a payment method.
+1. Create a new commit or manually trigger a new pipeline.
+
+Alternatively, you can:
+
+- Upgrade to a paid plan.
+- Purchase additional compute minutes for your namespace.
+- Use project or group runners instead of GitLab-hosted runners.
+- Ask your group owner to set up self-managed runners.
 
 ### `A CI/CD pipeline must run and be successful before merge` message
 
@@ -521,15 +549,12 @@ To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-
 
 ### `config should be an array of hashes` error message
 
-You might see an error similar to the following when using [`!reference` tags](yaml/yaml_optimization.md#reference-tags)
-with the [`parallel:matrix` keyword](yaml/_index.md#parallelmatrix):
+You might see an error similar to the following when using multiple [`!reference` tags](yaml/yaml_optimization.md#reference-tags) in an array:
 
 ```plaintext
 This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.
 ```
 
-The `parallel:matrix` keyword does not support multiple `!reference` tags at the same time.
-Try using [YAML anchors](yaml/yaml_optimization.md#anchors) instead.
-
-[Issue 439828](https://gitlab.com/gitlab-org/gitlab/-/issues/439828) proposes improving
-`!reference` tag support in `parallel:matrix`.
+While the `script`, `rules`, and `stages` keywords support using multiple reference tags, other keywords expecting an array do not.
+You can [use nesting to work around this limitation](https://gitlab.com/gitlab-org/gitlab/-/issues/439828#note_1918858137),
+or use [YAML anchors](yaml/yaml_optimization.md#anchors) instead.

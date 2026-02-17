@@ -1,7 +1,4 @@
-const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500'];
-const PADDING_TOP_SMALL = '!gl-pt-3';
-const PADDING_BOTTOM_LARGE = '!gl-pb-6';
-const PADDING_BOTTOM_SMALL = '!gl-pb-3';
+const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500', '-gl-mt-px'];
 const VIEWER_SELECTOR = '.file-holder .blob-viewer';
 
 const findLineNumberElement = (lineNumber) => document.getElementById(`L${lineNumber}`);
@@ -24,33 +21,28 @@ export const shouldRender = (data, index) => {
   return !identicalSha || lineNumberSmaller;
 };
 
-export const toggleBlameClasses = (blameData, isVisible) => {
+export const toggleBlameLineBorders = (blameData, isVisible) => {
   /**
-   * Adds/removes classes to line number/content elements to match the line with the blame info
-   * */
+   * Adds/removes top border to lines that start a new blame block
+   */
   const method = isVisible ? 'add' : 'remove';
-  blameData.forEach(({ lineno, span }, index) => {
+  blameData.forEach(({ lineno }, index) => {
     if (!shouldRender(blameData, index)) return;
 
     const lineNumberEl = findLineNumberElement(lineno)?.parentElement;
     const lineContentEl = findLineContentElement(lineno);
-    const lineNumberSpanEl = findLineNumberElement(lineno + span - 1)?.parentElement;
-    const lineContentSpanEl = findLineContentElement(lineno + span - 1);
 
-    lineNumberEl?.classList[method](PADDING_TOP_SMALL);
-    lineContentEl?.classList[method](PADDING_TOP_SMALL);
-
-    if (lineno !== 1) {
-      lineNumberEl?.classList[method](...BLAME_INFO_CLASSLIST);
-      lineContentEl?.classList[method](...BLAME_INFO_CLASSLIST);
-    }
-
-    if (span === 1) {
-      lineNumberSpanEl?.classList[method](PADDING_BOTTOM_LARGE);
-      lineContentSpanEl?.classList[method](PADDING_BOTTOM_LARGE);
-    } else {
-      lineNumberSpanEl?.classList[method](PADDING_BOTTOM_SMALL);
-      lineContentSpanEl?.classList[method](PADDING_BOTTOM_SMALL);
-    }
+    lineNumberEl?.classList[method](...BLAME_INFO_CLASSLIST);
+    lineContentEl?.classList[method](...BLAME_INFO_CLASSLIST);
   });
+};
+
+/**
+ * Checks if any blame data exists for a given chunk's line range.
+ * Used to determine if a skeleton loader should still be shown for a chunk.
+ */
+export const hasBlameDataForChunk = (blameData, chunk) => {
+  const startLine = chunk.startingFrom + 1;
+  const endLine = chunk.startingFrom + chunk.totalLines;
+  return blameData.some((b) => b.lineno >= startLine && b.lineno <= endLine);
 };

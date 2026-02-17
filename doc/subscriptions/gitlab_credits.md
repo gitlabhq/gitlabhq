@@ -3,13 +3,13 @@ stage: Fulfillment
 group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Understand how GitLab Credits work and view your credit usage.
-title: GitLab Credits
+title: GitLab Credits and usage billing
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -23,13 +23,20 @@ title: GitLab Credits
 GitLab Credits are the standardized consumption currency for usage-based billing.
 Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md),
 where each usage action consumes a number of credits.
+
+[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo (Classic) features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
+
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
+You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
 
 GitLab provides three ways to obtain credits:
 
 - Included credits
 - Monthly Commitment Pool
 - On-Demand credits
+
+For a click-through demo, see [GitLab Credits](https://gitlab.navattic.com/credits-dashboard).
+<!-- Demo published on 2026-01-28 -->
 
 For information about credit pricing, see [GitLab pricing](https://about.gitlab.com/pricing/).
 
@@ -50,8 +57,8 @@ All users in your subscription can draw from this shared pool after they have co
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided in 12.
 
-For example, you purchase 12,000 GitLab Credits for the year.
-You get access to 1,000 per month, representing the Monthly Commitment Pool.
+For example, when you purchase a monthly commitment pool of 1,000 credits,
+you will have 1,000 credits available each month for the contract term.
 
 You can increase your commitment at any time through your GitLab account team.
 The additional commitment applies for the remainder of your contract term.
@@ -63,15 +70,22 @@ The commitment is billed up front at the start of the contract term.
 Credits become available immediately after purchase, and reset on the first of every month.
 Unused credits do not roll over to the next month.
 
-## On-Demand Credits
+> [!note]
+> When purchasing a monthly commitment pool, you accept the usage billing terms, including On-Demand credit usage.
+
+## On-Demand credits
 
 On-Demand credits cover usage incurred after you have used all included credits
 and the credits in the Monthly Committed Pool.
 On-Demand credits are billed monthly.
 
+On-Demand credits are consumed at the list price of $1 per credit used.
+
 On-Demand credits can be used after you have accepted usage billing terms.
 You can accept these terms when you purchase your monthly commitment,
 or directly in the GitLab Credits dashboard.
+By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
+in the current monthly billing period, and any On-Demand charges incurred going forward.
 
 If you haven’t accepted usage billing terms, you can’t use GitLab Duo Agent Platform and consume On-Demand credits.
 You can regain access to GitLab Duo Agent Platform by either purchasing
@@ -90,9 +104,72 @@ GitLab Credits are consumed in the following order:
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
 
+## Temporary evaluation credits
+
+If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
+you can request a free temporary pool of credits to evaluate GitLab Duo Agent Platform features.
+
+Credits are allocated based on the number of users you request for the evaluation,
+and added to a shared pool for those users.
+Credits are valid for 30 days, and cannot be used after they expire.
+
+To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
+
+If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
+
 ## Buy GitLab Credits
 
-To buy GitLab Credits, [contact the Sales team](https://about.gitlab.com/sales/).
+You can buy GitLab Credits for your Monthly Commitment Pool in Customers Portal.
+
+{{< tabs >}}
+
+{{< tab title="Customers Portal" >}}
+
+Prerequisites:
+
+- You must be a billing account manager.
+
+1. Sign in to [Customers Portal](https://customers.gitlab.com/).
+1. On the relevant subscription card, select **GitLab Credits dashboard**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. Enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Credits**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. In the Customers Portal form, enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- You must be an administrator.
+- Your instance must be able to synchronize your subscription data with GitLab.
+
+1. In the upper-right corner, select **Admin**.
+1. Select **GitLab Credits**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. In the Customers Portal form, enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Your GitLab Credits are displayed in the subscription card in Customers Portal, and in the GitLab Credits dashboard.
 
@@ -106,44 +183,54 @@ Some features have multiple model options to choose from, while other features u
 The following table lists the number of requests you can make with one GitLab Credit for different models.
 Newer, more complex models have a higher multiplier and require more credits.
 
+For self-hosted models, you can make eight requests for one credit for any [supported](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) or [compatible](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models) model.
+
 For subsidized models with basic integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| gpt-5-mini | 8.0 |
-| gemini-2.5-flash | 8.0 |
-| codestral-2501 | 8.0 |
-| claude-3-haiku | 8.0 |
-| gemini-2.0-flash-lite | 8.0 |
+| `claude-3-haiku` | 8.0 |
+| `codestral-2501` | 8.0 |
+| `gemini-2.0-flash-lite` | 8.0 |
+| `gemini-2.5-flash` | 8.0 |
+| `gpt-5-mini` | 8.0 |
 
 For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| claude-4.5-haiku (default Agentic Chat model) | 6.7 |
-| gpt-5-codex | 3.3|
-| gpt-5 | 3.3 |
-| gpt-5.2 | 2.5 |
-| claude-3.7-sonnet | 2.0 |
-| claude-3.5-sonnet | 2.0 |
-| claude-sonnet-4 <=200k tokens (default model) | 2.0 |
-| claude-sonnet-4 >200k tokens | 1.1 |
-| claude-sonnet-4.5 <=200k tokens | 2.0 |
-| claude-sonnet-4.5 >200k tokens | 1.1 |
+| `claude-4.5-haiku` (default Agentic Chat model) | 6.7 |
+| `gpt-5-codex` | 3.3|
+| `gpt-5` | 3.3 |
+| `gpt-5.2` | 2.5 |
+| `claude-3.5-sonnet` | 2.0 |
+| `claude-3.7-sonnet` | 2.0 |
+| `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
+| `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
+| `claude-opus-4.5` | 1.2 |
+| `claude-opus-4.6` <sup>1</sup> | 1.2 |
+| `claude-sonnet-4` <sup>2</sup> | 1.1 |
+| `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
+| `gpt-5.2-codex` | 0.8 |
+| `claude-opus-4.6` <sup>2</sup> | 0.7 |
+| `gpt-5.1-codex` | 0.6 |
+
+**Footnotes**:
+
+1. Prompts with up to 200,000 tokens.
+1. Prompts with more than 200,000 tokens.
 
 ### Features
 
 The following table lists the number of requests you can make with one GitLab Credit for features that use a fixed model.
-You are billed for features that are generally available.
 
 | Feature | Requests with one credit |
 |---------|---------------------------|
-| [GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) | 50 |
-| [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) | 6.7 <sup>1</sup> |
+| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
 
-**Footnotes**:
-
-1. For requests with the default model (claude-4.5-haiku). Credit cost varies based on the model selected for the request.
+[GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
+so credit cost varies based on the model selected for the request.
+With the default model (`claude-4.5-haiku`) you can make 6.7 requests with one credit.
 
 ## GitLab Credits dashboard
 
@@ -167,21 +254,18 @@ On the dashboard, used credits represent deductions from available credits.
 For overages (On-Demand credits), used credits represent on-demand usage that will be paid later,
 if you have agreed to the usage billing terms.
 
-To help you manage credit consumption, GitLab emails the following information to 
+To help you manage credit consumption, GitLab emails the following information to
 administrators and subscription owners:
 
 - Monthly credit usage summaries
-- Notifications when credit usage thresholds are at 50%, 80%, and 100% 
+- Notifications when credit usage thresholds are at 50%, 80%, and 100%
 
 You can access the dashboard in the Customers Portal and in GitLab.
 
-{{< alert type="note" >}}
-
-Usage data is not displayed in real time.
-Data is synchronized to the dashboards periodically, so usage data should appear within a few hours of actual consumption.
-This means your dashboard shows recent usage, but might not reflect actions taken in the last few hours.
-
-{{< /alert >}}
+> [!note]
+> Usage data is not displayed in real time.
+> Data is synchronized to the dashboards periodically, so usage data should appear within a few hours of actual consumption.
+> This means your dashboard shows recent usage, but might not reflect actions taken in the last few hours.
 
 ### In Customers Portal
 
@@ -228,8 +312,8 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **Usage**.
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Credits**.
 
 {{< /tab >}}
 
@@ -240,9 +324,12 @@ Prerequisites:
 - You must be an administrator.
 - Your instance must be able to synchronize your subscription data with GitLab.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring** > **Usage**.
+1. In the upper-right corner, select **Admin**.
+1. Select **GitLab Credits**.
 
 {{< /tab >}}
 
 {{< /tabs >}}
+
+By default, individual user data is not displayed in the GitLab Credits dashboard.
+To display it, you must enable this setting for your [group](../user/group/manage.md#display-gitlab-credits-user-data) or [instance](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).

@@ -18,7 +18,7 @@ Use this API to interact with milestone events for issues and merge requests.
 
 ### List project issue milestone events
 
-Gets a list of all milestone events for a single issue.
+Lists all milestone events for a single issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_milestone_events
@@ -98,9 +98,9 @@ Example response:
 ]
 ```
 
-### Get single issue milestone event
+### Retrieve a single issue milestone event
 
-Returns a single milestone event for a specific project issue
+Retrieves a single milestone event for a specific project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_milestone_events/:resource_milestone_event_id
@@ -124,7 +124,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### List project merge request milestone events
 
-Gets a list of all milestone events for a single merge request.
+Lists all milestone events for a single merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events
@@ -204,9 +204,9 @@ Example response:
 ]
 ```
 
-### Get single merge request milestone event
+### Retrieve a single merge request milestone event
 
-Returns a single milestone event for a specific project merge request
+Retrieves a single milestone event for a specific project merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events/:resource_milestone_event_id

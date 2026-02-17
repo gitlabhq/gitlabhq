@@ -20,6 +20,7 @@ export default (containerId = 'js-artifacts-settings-app') => {
 
   return new Vue({
     el: containerEl,
+    name: 'KeepLatestArtifactToggleRoot',
     apolloProvider,
     provide: {
       fullPath,

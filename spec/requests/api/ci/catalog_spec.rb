@@ -109,6 +109,13 @@ RSpec.describe API::Ci::Catalog, feature_category: :pipeline_composition do
         expect(components.map(&:component_type)).to all(eq('template'))
       end
 
+      it_behaves_like 'authorizing granular token permissions', :publish_catalog_version do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(url, personal_access_token: pat), params: { version: release.tag, metadata: metadata }
+        end
+      end
+
       context 'when the release was already published' do
         before do
           post api(url, user), params: { version: release.tag, metadata: metadata }

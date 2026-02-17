@@ -3,6 +3,7 @@ import { GlModal, GlSprintf, GlFormInput } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import { __, s__, sprintf } from '~/locale';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
+import { getDayDifference, newDate, getCurrentUtcDate } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'GroupsProjectsDeleteModal',
@@ -10,15 +11,21 @@ export default {
     [RESOURCE_TYPES.PROJECT]: {
       primaryButtonText: __('Yes, delete project'),
       cancelButtonText: __('Cancel, keep project'),
-      restoreMessage: __(
-        'This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}.',
+      messageDeleteDelayed: s__(
+        'Projects|This action will place this project, including all its resources, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}.',
+      ),
+      messageDeletePermanently: s__(
+        'Projects|This project is scheduled for deletion on %{date}. This action will permanently delete this project, including all its resources, %{strongStart}immediately%{strongEnd}. This action cannot be undone.',
       ),
     },
     [RESOURCE_TYPES.GROUP]: {
       primaryButtonText: s__('Groups|Yes, delete group'),
       cancelButtonText: s__('Groups|Cancel, keep group'),
-      restoreMessage: s__(
-        'Groups|This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}.',
+      messageDeleteDelayed: s__(
+        'Groups|This action will place this group, including its subgroups and projects, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}.',
+      ),
+      messageDeletePermanently: s__(
+        'Groups|This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strongStart}immediately%{strongEnd}. This action cannot be undone.',
       ),
     },
   },
@@ -93,8 +100,19 @@ export default {
         name: this.fullName,
       });
     },
-    showRestoreMessage() {
-      return !this.markedForDeletion;
+    modalBodyMessage() {
+      if (this.markedForDeletion) {
+        return this.i18n.messageDeletePermanently;
+      }
+
+      return this.i18n.messageDeleteDelayed;
+    },
+    delayedDeletionPeriodInDays() {
+      if (this.markedForDeletion) {
+        return null;
+      }
+
+      return getDayDifference(getCurrentUtcDate(), newDate(this.permanentDeletionDate));
     },
   },
   watch: {
@@ -122,7 +140,25 @@ export default {
     <template #modal-title>{{ __('Are you absolutely sure?') }}</template>
     <div>
       <slot name="alert"></slot>
-      <p class="gl-mb-1">{{ __('Enter the following to confirm:') }}</p>
+      <p data-testid="modal-body-message">
+        <gl-sprintf :message="modalBodyMessage">
+          <template #delayedDeletionPeriodInDays>{{ delayedDeletionPeriodInDays }}</template>
+          <template #date>
+            <span class="gl-font-bold">{{ permanentDeletionDate }}</span>
+          </template>
+          <template #strong="{ content }">
+            <span class="gl-font-bold">{{ content }}</span>
+          </template>
+        </gl-sprintf>
+      </p>
+      <p>
+        {{
+          __(
+            'This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention.',
+          )
+        }}
+      </p>
+      <p class="gl-mb-1 gl-font-bold">{{ __('Enter the following to confirm:') }}</p>
       <p>
         <code class="gl-whitespace-pre-wrap">{{ confirmPhrase }}</code>
       </p>
@@ -134,18 +170,6 @@ export default {
         type="text"
         data-testid="confirm-name-field"
       />
-      <p
-        v-if="showRestoreMessage"
-        class="gl-mb-0 gl-mt-3 gl-text-subtle"
-        data-testid="restore-message"
-      >
-        <gl-sprintf :message="i18n.restoreMessage">
-          <template #date>{{ permanentDeletionDate }}</template>
-          <template #link="{ content }">
-            <slot name="restore-help-page-link" :content="content"></slot>
-          </template>
-        </gl-sprintf>
-      </p>
     </div>
   </gl-modal>
 </template>

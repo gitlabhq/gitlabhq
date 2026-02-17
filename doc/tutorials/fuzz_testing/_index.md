@@ -14,12 +14,9 @@ title: 'Tutorial: Perform fuzz testing in GitLab (deprecated)'
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Coverage-guided fuzz testing was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
-and is planned for removal in 19.0. This is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> Coverage-guided fuzz testing was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+> and is planned for removal in 19.0. This is a breaking change.
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -76,7 +73,7 @@ a random buffer as a parameter.
 
 To create the two fuzz target files:
 
-1. On the top bar, select **Search or go to** and find the `fuzz-testing-demo` project.
+1. In the top bar, select **Search or go to** and find the `fuzz-testing-demo` project.
 1. Create a file in the root directory of the project.
 1. Name the file `fuzz-sayhello.js` and add the following code:
 
@@ -183,7 +180,7 @@ fuzz test using the pipeline you've just created.
 
 To run the fuzz test:
 
-1. On the left sidebar, select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select **New merge request**.
 1. In the **Source branch** section, select the `add-fuzz-test` branch.
 1. In the **Target branch** section, make sure that your namespace and the `main` branch are selected.

@@ -1,0 +1,5 @@
+---
+name: read_snippet_discussion_note
+description: Grants the ability to read notes in snippet discussions
+boundaries:
+  - project

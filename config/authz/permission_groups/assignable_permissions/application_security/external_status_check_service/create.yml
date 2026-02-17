@@ -1,0 +1,7 @@
+---
+name: create_external_status_check_service
+description: Grants the ability to create external status check services
+boundaries:
+  - project
+permissions:
+  - create_external_status_check_service

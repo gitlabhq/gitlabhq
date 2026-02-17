@@ -1,0 +1,7 @@
+---
+name: create_deployment
+description: Grants the ability to create deployments in a project
+boundaries:
+  - project
+permissions:
+  - create_deployment

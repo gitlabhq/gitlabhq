@@ -1,0 +1,6 @@
+---
+name: read_package
+description: Grants the ability to read packages
+boundaries:
+  - group
+  - project

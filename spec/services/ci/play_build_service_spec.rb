@@ -8,10 +8,13 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :manual, user: user, pipeline: pipeline) }
   let(:job_variables) { nil }
+  let(:job_inputs) { {} }
 
-  subject(:execute_service) do
-    described_class.new(current_user: user, build: build, variables: job_variables).execute
+  let(:service_result) do
+    described_class.new(current_user: user, build: build, variables: job_variables, inputs: job_inputs).execute
   end
+
+  subject(:execute_service) { service_result.payload[:job] }
 
   before do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
@@ -29,8 +32,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     end
 
     it 'does not allow user with developer role to play build' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
@@ -116,8 +118,64 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
 
         context 'when user is developer' do
           it 'raises an error' do
-            expect { execute_service }.to raise_error Gitlab::Access::AccessDeniedError
+            expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
           end
+        end
+      end
+    end
+
+    context 'when inputs are supplied', :aggregate_failures do
+      let(:build) do
+        create(:ci_build, :manual, pipeline: pipeline, options: {
+          inputs: {
+            environment: { type: 'string' },
+            version: { type: 'string', default: '1.0' }
+          }
+        })
+      end
+
+      let(:job_inputs) { { environment: 'production' } }
+
+      it 'assigns the inputs to the build' do
+        execute_service
+
+        expect(build.reload.inputs.map(&:name)).to contain_exactly('environment')
+        expect(build.reload.inputs.find_by(name: 'environment').value).to eq('production')
+      end
+
+      it 'filters out inputs with default values' do
+        job_inputs[:version] = '1.0'
+
+        execute_service
+
+        expect(build.reload.inputs.map(&:name)).to contain_exactly('environment')
+      end
+
+      context 'when inputs are invalid' do
+        let(:job_inputs) { { unknown_input: 'value' } }
+
+        it 'returns an error response' do
+          expect(service_result).to be_a(ServiceResponse)
+          expect(service_result.error?).to be true
+          expect(service_result.message).to include('Unknown input')
+        end
+
+        it 'does not enqueue the build' do
+          service_result
+
+          expect(build.reload).to be_manual
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_inputs: false)
+        end
+
+        it 'does not assign inputs to the build' do
+          execute_service
+
+          expect(build.reload.inputs).to be_empty
         end
       end
     end
@@ -159,8 +217,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
 
     it 'raises an error' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
@@ -169,8 +226,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'raises an error' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 end

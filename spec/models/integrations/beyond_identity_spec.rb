@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466155' do
+RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations,
+  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25434' do
   subject(:integration) { create(:beyond_identity_integration, :instance) }
 
   describe 'validations' do

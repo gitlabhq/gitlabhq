@@ -281,6 +281,12 @@ module Types
       description: 'List of permissions for fine-grained access tokens',
       resolver: Resolvers::Authz::AccessTokens::PermissionsResolver
 
+    field :security_configuration, ::Types::Security::ConfigurationType,
+      null: true,
+      calls_gitaly: true,
+      description: 'Security configuration for the project',
+      resolver: ::Resolvers::Security::ConfigurationResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillPackagesComposerMetadataProjectId,
-  feature_category: :package_registry,
-  schema: 20240927123738 do
+  feature_category: :package_registry do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :packages_composer_metadata }
     let(:batch_column) { :package_id }

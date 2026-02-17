@@ -34,15 +34,12 @@ Prerequisites:
 
 ### Configure the primary site
 
-{{< alert type="note" >}}
-
-For Docker-based installations:
-
-Either apply the settings mentioned below directly to the GitLab container's `/etc/gitlab/gitlab.rb` file, or add them to the `GITLAB_OMNIBUS_CONFIG` environment variable in its [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose) file.
-
-When using [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose), use `docker-compose -f <docker-compose-file-name>.yml up` instead of `gitlab-ctl reconfigure` to apply configuration changes.
-
-{{< /alert >}}
+> [!note]
+> For Docker-based installations:
+> 
+> Either apply the settings mentioned below directly to the GitLab container's `/etc/gitlab/gitlab.rb` file, or add them to the `GITLAB_OMNIBUS_CONFIG` environment variable in its [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose) file.
+> 
+> When using [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose), use `docker-compose -f <docker-compose-file-name>.yml up` instead of `gitlab-ctl reconfigure` to apply configuration changes.
 
 1. SSH into your GitLab primary site and sign in as root:
 
@@ -57,7 +54,7 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -80,13 +77,10 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
-   {{< alert type="note" >}}
-
-   The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
-   However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
-   Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
-
-   {{< /alert >}}
+   > [!note]
+   > The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
+   > However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
+   > Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
 
    1. Generate a MD5 hash of the desired password:
 
@@ -177,13 +171,10 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
       private addresses (which correspond to "internal address" for Google Cloud Platform) for
       `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
-      {{< alert type="note" >}}
-
-      If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
-      `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
-      Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
-
-      {{< /alert >}}
+      > [!note]
+      > If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
+      > `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
+      > Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
@@ -403,13 +394,10 @@ The script uses the default Linux package directories.
 If you changed the defaults, replace the directory and path
 names in the script below with your own names.
 
-{{< alert type="warning" >}}
-
-Run the replication script on only the secondary site.
-The script removes all PostgreSQL data before it runs `pg_basebackup`,
-which can lead to data loss.
-
-{{< /alert >}}
+> [!warning]
+> Run the replication script on only the secondary site.
+> The script removes all PostgreSQL data before it runs `pg_basebackup`,
+> which can lead to data loss.
 
 To replicate the database:
 
@@ -419,25 +407,19 @@ To replicate the database:
    sudo -i
    ```
 
-1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)  for your secondary site to
+1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION) for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name.
 
-   {{< alert type="note" >}}
    Replication slot names must only contain lowercase letters,
    numbers, and the underscore character.
 
-   {{< /alert >}}
-
 1. Execute the following command to back up and restore the database, and begin the replication.
 
-   {{< alert type="warning" >}}
-
-   Each Geo secondary site must have its own unique replication slot name.
-   Using the same slot name between two secondaries breaks PostgreSQL replication.
-
-   {{< /alert >}}
+   > [!warning]
+   > Each Geo secondary site must have its own unique replication slot name.
+   > Using the same slot name between two secondaries breaks PostgreSQL replication.
 
    ```shell
    gitlab-ctl replicate-geo-database \
@@ -460,13 +442,10 @@ Follow the documentation to [configure fast lookup of authorized SSH keys](../..
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-{{< alert type="note" >}}
-
-Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the **Admin** area should be made in the primary site, because the
-secondary site is a read-only copy.
-
-{{< /alert >}}
+> [!note]
+> Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
+> Any change that requires access to the **Admin** area should be made in the primary site, because the
+> secondary site is a read-only copy.
 
 ### Manually replicate secret GitLab values
 
@@ -615,7 +594,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```

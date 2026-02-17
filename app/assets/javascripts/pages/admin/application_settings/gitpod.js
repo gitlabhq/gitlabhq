@@ -12,6 +12,7 @@ export default function initGitpod() {
 
   return new Vue({
     el,
+    name: 'GitpodIntegrationHelpTextRoot',
     render(createElement) {
       return createElement(IntegrationHelpText, {
         props: {

@@ -54,6 +54,10 @@ module Mcp
         }
       end
 
+      def icons
+        IconConfig.gitlab_icons
+      end
+
       def execute(request: nil, params: nil)
         args = params[:arguments]&.slice(*settings[:params]) || {}
         request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
@@ -61,6 +65,14 @@ module Mcp
 
         status, _, body = route.exec(request.env)
         process_response(status, Array(body)[0])
+      end
+
+      def annotations
+        return settings[:annotations] if settings[:annotations].present?
+
+        auto_annotations = {}
+        auto_annotations[:readOnlyHint] = true if route.request_method == 'GET'
+        auto_annotations
       end
 
       private
@@ -78,7 +90,7 @@ module Mcp
       end
 
       def process_response(status, body)
-        parsed_response = Gitlab::Json.parse(body)
+        parsed_response = Gitlab::Json.safe_parse(body)
         if status >= 400
           message = parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
           ::Mcp::Tools::Response.error(message, parsed_response)

@@ -6,7 +6,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 
 export default {
   components: {
@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     namespaceType() {
-      return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     hasPath() {
       return this.leavePath || this.withdrawPath || this.requestAccessPath;

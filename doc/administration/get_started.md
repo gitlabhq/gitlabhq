@@ -88,13 +88,13 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Set password length limit, configure SSO or SAML user management.
 - Limit email domains if allowing sign-up.
 - Require two-factor authentication (2FA).
-- [Turn off password authentication](settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
+- Turn off [password authentication for Git over HTTPS](settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https).
 - Set up [email notification for unknown sign-ins](settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
-- Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
-- Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
+- Configure [user and IP rate limits](https://about.gitlab.com/blog/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
+- Limit [webhooks local access](https://about.gitlab.com/blog/gitlab-instance-security-best-practices/#webhooks).
 - Set [rate limits for protected paths](settings/protected_paths.md).
 - Subscribe to [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
-- Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
+- Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/gitlab-instance-security-best-practices/).
 
 ## Monitor GitLab performance
 
@@ -105,7 +105,7 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
   [these GitLab metrics](monitoring/prometheus/gitlab_metrics.md#metrics-available).
 - Learn more about GitLab [bundled software metrics](monitoring/prometheus/_index.md#bundled-software-metrics).
 - Prometheus and its exporters are on by default. However, you must [configure the service](monitoring/prometheus/_index.md#configuring-prometheus).
-- Find out why [application performance metrics](https://about.gitlab.com/blog/2020/05/07/working-with-performance-metrics/) matter.
+- Find out why [application performance metrics](https://about.gitlab.com/blog/working-with-performance-metrics/) matter.
 - Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
 
 ### Components of monitoring
@@ -170,13 +170,10 @@ All backups are encrypted. After 90 days, backups are deleted.
   - Labels
   - Additional items
 
-{{< alert type="note" >}}
-
-You should not use [direct transfer](../user/group/import/_index.md) or
-[project export files](../user/project/settings/import_export.md) to back up your data.
-Project export files do not always work for data backups, and not all items are exported.
-
-{{< /alert >}}
+> [!note]
+> You should not use [direct transfer](../user/group/import/_index.md) or
+> [project export files](../user/project/settings/import_export.md) to back up your data.
+> Project export files do not always work for data backups, and not all items are exported.
 
 ### Alternative backup strategies
 

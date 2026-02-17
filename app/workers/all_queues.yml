@@ -103,16 +103,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :auto_merge
-- :name: auto_merge:merge_requests_ship_merge_request
-  :worker_name: MergeRequests::ShipMergeRequestWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :auto_merge
 - :name: background_operations:database_background_operation_base_orchestrator
   :worker_name: Database::BackgroundOperation::BaseOrchestratorWorker
   :feature_category: :database
@@ -456,6 +446,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:cells_stale_requests_cleanup_cron
+  :worker_name: Cells::StaleRequestsCleanupCronWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
@@ -560,6 +560,16 @@
 - :name: cronjob:ci_runners_stale_machines_cleanup_cron
   :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
   :feature_category: :fleet_visibility
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:ci_schedule_bulk_delete_job_artifact_cron
+  :worker_name: Ci::ScheduleBulkDeleteJobArtifactCronWorker
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2905,6 +2915,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :pipeline_hooks
+- :name: pipeline_hooks:ci_observability_group_export
+  :worker_name: Ci::Observability::GroupExportWorker
+  :feature_category: :observability
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :pipeline_hooks
 - :name: pipeline_hooks:pipeline_hooks
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
@@ -3066,6 +3086,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :terraform
+- :name: timed_out_builds:ci_timed_out_builds_drop_canceling
+  :worker_name: Ci::TimedOutBuilds::DropCancelingWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :timed_out_builds
 - :name: timed_out_builds:ci_timed_out_builds_drop_running
   :worker_name: Ci::TimedOutBuilds::DropRunningWorker
   :feature_category: :continuous_integration
@@ -3595,7 +3625,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker
@@ -3605,7 +3636,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_transform_references
   :worker_name: BulkImports::TransformReferencesWorker
@@ -3635,6 +3667,16 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: ci_bulk_delete_expired_job_artifacts
+  :worker_name: Ci::BulkDeleteExpiredJobArtifactsWorker
+  :feature_category: :job_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: ci_cancel_pipeline
@@ -3743,6 +3785,16 @@
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
   :feature_category: :mobile_devops
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: ci_pipeline_schedules_deactivate_schedules
+  :worker_name: Ci::PipelineSchedules::DeactivateSchedulesWorker
+  :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4634,6 +4686,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_notify_about_push
+  :worker_name: MergeRequests::Refresh::NotifyAboutPushWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_refresh_pipeline
   :worker_name: MergeRequests::Refresh::PipelineWorker
   :feature_category: :code_review_workflow
@@ -5171,6 +5233,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: reactive_caching_low_urgency
+  :worker_name: ReactiveCaching::LowUrgencyWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: rebase
   :worker_name: RebaseWorker
   :feature_category: :source_code_management
@@ -5210,6 +5282,16 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: repositories_cache_tag_signatures
+  :worker_name: Repositories::CacheTagSignaturesWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: repositories_post_receive

@@ -14,6 +14,9 @@
     },
     "relation_export_batch_size": {
       "type": "integer"
+    },
+    "allow_s3_compatible_storage_for_offline_transfer": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

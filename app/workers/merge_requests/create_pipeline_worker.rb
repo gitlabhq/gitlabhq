@@ -3,17 +3,35 @@
 module MergeRequests
   class CreatePipelineWorker
     include ApplicationWorker
+    include PipelineQueue
+
+    PipelineCreationRetryError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
     data_consistency :sticky
 
     sidekiq_options retry: 3
-    include PipelineQueue
+    sidekiq_retry_in do |_count|
+      10
+    end
 
     queue_namespace :pipeline_creation
     feature_category :pipeline_composition
     urgency :high
     worker_resource_boundary :cpu
     idempotent!
+
+    sidekiq_retries_exhausted do |job, _exception|
+      pipeline_creation_request = job['args'][3]&.dig('pipeline_creation_request')
+      next unless pipeline_creation_request
+
+      error_message = 'Cannot create a pipeline for this merge request after multiple retries.'
+
+      ::Ci::PipelineCreation::Requests.failed(pipeline_creation_request, error_message)
+
+      merge_request = ::Ci::PipelineCreation::Requests.merge_request_from_key(pipeline_creation_request['key'])
+
+      GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
+    end
 
     def perform(project_id, user_id, merge_request_id, params = {})
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
@@ -32,7 +50,7 @@ module MergeRequests
       push_options = params.with_indifferent_access[:push_options]
       gitaly_context = params.with_indifferent_access[:gitaly_context]
 
-      MergeRequests::CreatePipelineService
+      result = MergeRequests::CreatePipelineService
         .new(
           project: project,
           current_user: user,
@@ -43,6 +61,8 @@ module MergeRequests
             gitaly_context: gitaly_context
           }
         ).execute(merge_request)
+
+      raise PipelineCreationRetryError, result.message if result&.error? && result.reason == :retriable_error
 
       merge_request.update_head_pipeline
 

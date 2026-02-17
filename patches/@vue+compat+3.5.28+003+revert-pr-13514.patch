@@ -1,0 +1,115 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index 2977a69..d6fcbe4 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6664,6 +6664,7 @@ const PublicInstanceProxyHandlers = {
+       return true;
+     }
+     const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
++    let normalizedProps;
+     if (key === "__isVue") {
+       return true;
+     }
+@@ -6686,7 +6687,9 @@ const PublicInstanceProxyHandlers = {
+       } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+         accessCache[key] = 2 /* DATA */;
+         return data[key];
+-      } else if (hasOwn(props, key)) {
++      } else if (
++        (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)
++      ) {
+         accessCache[key] = 3 /* PROPS */;
+         return props[key];
+       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+@@ -6777,10 +6780,10 @@ const PublicInstanceProxyHandlers = {
+     return true;
+   },
+   has({
+-    _: { data, setupState, accessCache, ctx, appContext, props, type }
++    _: { data, setupState, accessCache, ctx, appContext, propsOptions, type }
+   }, key) {
+-    let cssModules;
+-    return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
++    let normalizedProps, cssModules;
++    return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+   },
+   defineProperty(target, key, descriptor) {
+     if (descriptor.get != null) {
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index 9bb7121..d33e679 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6644,6 +6644,7 @@ const PublicInstanceProxyHandlers = {
+       return true;
+     }
+     const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
++    let normalizedProps;
+     if (!!(process.env.NODE_ENV !== "production") && key === "__isVue") {
+       return true;
+     }
+@@ -6666,7 +6667,11 @@ const PublicInstanceProxyHandlers = {
+       } else if (__VUE_OPTIONS_API__ && data !== EMPTY_OBJ && hasOwn(data, key)) {
+         accessCache[key] = 2 /* DATA */;
+         return data[key];
+-      } else if (hasOwn(props, key)) {
++      } else if (
++        // only cache other properties when instance has declared (thus stable)
++        // props
++        (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)
++      ) {
+         accessCache[key] = 3 /* PROPS */;
+         return props[key];
+       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+@@ -6757,10 +6762,10 @@ const PublicInstanceProxyHandlers = {
+     return true;
+   },
+   has({
+-    _: { data, setupState, accessCache, ctx, appContext, props, type }
++    _: { data, setupState, accessCache, ctx, appContext, propsOptions, type }
+   }, key) {
+-    let cssModules;
+-    return !!(accessCache[key] || __VUE_OPTIONS_API__ && data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
++    let normalizedProps, cssModules;
++    return !!(accessCache[key] || __VUE_OPTIONS_API__ && data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+   },
+   defineProperty(target, key, descriptor) {
+     if (descriptor.get != null) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 7794465..33bd9dc 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6571,6 +6571,7 @@ const PublicInstanceProxyHandlers = {
+       return true;
+     }
+     const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
++    let normalizedProps;
+     if (!!(process.env.NODE_ENV !== "production") && key === "__isVue") {
+       return true;
+     }
+@@ -6593,7 +6594,11 @@ const PublicInstanceProxyHandlers = {
+       } else if (__VUE_OPTIONS_API__ && data !== EMPTY_OBJ && hasOwn(data, key)) {
+         accessCache[key] = 2 /* DATA */;
+         return data[key];
+-      } else if (hasOwn(props, key)) {
++      } else if (
++        // only cache other properties when instance has declared (thus stable)
++        // props
++        (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)
++      ) {
+         accessCache[key] = 3 /* PROPS */;
+         return props[key];
+       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+@@ -6684,10 +6689,10 @@ const PublicInstanceProxyHandlers = {
+     return true;
+   },
+   has({
+-    _: { data, setupState, accessCache, ctx, appContext, props, type }
++    _: { data, setupState, accessCache, ctx, appContext, propsOptions, type }
+   }, key) {
+-    let cssModules;
+-    return !!(accessCache[key] || __VUE_OPTIONS_API__ && data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
++    let normalizedProps, cssModules;
++    return !!(accessCache[key] || __VUE_OPTIONS_API__ && data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+   },
+   defineProperty(target, key, descriptor) {
+     if (descriptor.get != null) {

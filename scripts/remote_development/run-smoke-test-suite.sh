@@ -50,6 +50,7 @@ BBlue='\033[1;34m'
 Color_Off='\033[0m'
 
 set -o errexit
+set -o nounset
 set -o pipefail
 trap onexit_err ERR
 
@@ -57,11 +58,12 @@ trap onexit_err ERR
 function onexit_err() {
   local exit_status=${1:-$?}
   printf "\n❌❌❌ ${BRed}Remote Development smoke test failed!${Color_Off} ❌❌❌\n"
-  if [ "${REVEAL_RUBOCOP_TODO}" -ne 0 ]; then
+  if [ "${REVEAL_RUBOCOP_TODO:-1}" -ne 0 ]; then
     printf "\n${BRed}- If the failure was due to rubocop, try setting REVEAL_RUBOCOP_TODO=0 to ignore TODOs${Color_Off}\n"
   fi
 
   printf "\n${BRed}- If the failure was in a feature spec, those sometimes are flaky, try running it focused${Color_Off}\n"
+  printf "\n${BRed}- If the failure was jest and may be due to fixtures, run 'bin/rake frontend:fixtures' and try again${Color_Off}\n"
 
   exit "${exit_status}"
 }
@@ -111,6 +113,11 @@ function run_rspec_fast {
   while IFS='' read -r file; do
       files_for_rspec_fast+=("$file")
   done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb')
+
+  if [ ${#files_for_rspec_fast[@]} -eq 0 ]; then
+    printf "No fast specs found, skipping.\n"
+    return
+  fi
 
   printf "Running rspec fast command:\n\n"
   printf "bin/rspec "
@@ -190,10 +197,10 @@ function should_run {
   local skip_var="SKIP_${section}"
 
   # If any ONLY_* var is set, run only those sections; otherwise use SKIP_* behavior
-  if [ -n "${ONLY_RUBOCOP}${ONLY_RSPEC_FP}${ONLY_RSPEC_FAST}${ONLY_JEST}${ONLY_RSPEC_NON_FAST}${ONLY_RSPEC_FEATURE}" ]; then
-    [ -n "${!only_var}" ]
+  if [ -n "${ONLY_RUBOCOP:-}${ONLY_RSPEC_FP:-}${ONLY_RSPEC_FAST:-}${ONLY_JEST:-}${ONLY_RSPEC_NON_FAST:-}${ONLY_RSPEC_FEATURE:-}" ]; then
+    [ -n "${!only_var:-}" ]
   else
-    [ -z "${!skip_var}" ]
+    [ -z "${!skip_var:-}" ]
   fi
 }
 

@@ -7,7 +7,7 @@ module Observability
     AuthenticationError = Class.new(StandardError)
     ConfigurationError = Class.new(StandardError)
     NetworkError = Class.new(StandardError)
-    SETUP_BUFFER_TIME = 5.minutes.freeze
+    SETUP_BUFFER_MINUTES = 10
 
     class TokenResponse
       attr_reader :access_jwt, :refresh_jwt
@@ -131,7 +131,7 @@ module Observability
     end
 
     def new_settings?
-      o11y_settings.created_at > SETUP_BUFFER_TIME.ago
+      o11y_settings.created_at > SETUP_BUFFER_MINUTES.minutes.ago
     end
 
     class HttpClient

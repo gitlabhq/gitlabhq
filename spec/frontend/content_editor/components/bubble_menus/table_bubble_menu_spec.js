@@ -481,4 +481,36 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
       });
     });
   });
+
+  describe('getReferenceClientRect', () => {
+    it('returns correct rect when selection is within a text node', async () => {
+      await insertTable(`
+        <table>
+          <tbody>
+            <tr><td>Cell 1</td><td>Cell 2</td></tr>
+            <tr><td>Cell 3</td><td>Cell 4</td></tr>
+          </tbody>
+        </table>
+      `);
+
+      // Position selection wholly within the "Cell 1" cell (and not at any boundary),
+      // such that `view.domAtPos(textPos).node` is a Text node and not an Element.
+      const { doc } = tiptapEditor.state;
+      let textPos = 0;
+      doc.descendants((node, pos) => {
+        if (node.isText && node.text === 'Cell 1') {
+          textPos = pos + 2;
+          return false;
+        }
+        return true;
+      });
+      tiptapEditor.commands.setTextSelection(textPos);
+
+      await showBubbleMenu();
+
+      const rect = wrapper.vm.getReferenceClientRect();
+      expect(rect).toBeDefined();
+      expect(typeof rect.width).toBe('number');
+    });
+  });
 });

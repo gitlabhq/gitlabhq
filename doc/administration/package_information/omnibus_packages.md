@@ -98,7 +98,7 @@ There are two things to keep in mind before going down this route:
    when using a library version that is not tested by majority of users.
 1. Packages from the Linux package also allow shutting off of any services that you do not need,
    if you need to run a component independently. For example, you can use a
-   [non-bundled PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
+   [non-bundled PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server)
    with a Linux package installation.
 
 Keep in mind that a non-standard solution like the Linux package

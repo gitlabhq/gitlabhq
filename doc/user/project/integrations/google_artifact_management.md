@@ -29,7 +29,7 @@ After you connect the Google Artifact Registry to your project, you can view, pu
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the GitLab project.
+- You must have the Maintainer or Owner role for the GitLab project.
 - You must have the [permissions needed](https://cloud.google.com/iam/docs/granting-changing-revoking-access#required-permissions) to manage access to the Google Cloud project with the Artifact Registry repository.
 - A [workload identity federation](../../../integration/google_cloud_iam.md) (WLIF) pool and provider must be configured to authenticate to Google Cloud.
 - A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration:
@@ -156,7 +156,7 @@ pull-image:
     # The following two variables ensure that the DinD service starts in TLS
     # mode and that the Docker CLI is properly configured to communicate with
     # the API. More details about the importance of this can be found at
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-the-docker-executor-with-docker-in-docker
+    # https://docs.gitlab.com/ci/docker/using_docker_build/#use-the-docker-executor-with-docker-in-docker
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:

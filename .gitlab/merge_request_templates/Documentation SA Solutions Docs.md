@@ -1,6 +1,6 @@
 <!-- Use this template for documentation updates in the /doc/solutions directory. -->
 
-This MR Template ensures that Solutions Docs published here: https://docs.gitlab.com/ee/solutions/, follow the optimized review and approval workflow for that area rather than the normal tech writing workflow by applying appropriate labels and reviewers.
+This MR Template ensures that Solutions Docs published here: <https://docs.gitlab.com/solutions/>, follow the optimized review and approval workflow for that area rather than the normal tech writing workflow by applying appropriate labels and reviewers.
 
 ## What does this MR do?
 

@@ -315,6 +315,11 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                 name
                 path
                 releasedAt
+                semver {
+                  major
+                  minor
+                  patch
+                }
               }
             }
           }
@@ -334,13 +339,15 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           version1,
           name: version1.name,
           path: project_tag_path(project, version1.name),
-          releasedAt: version1.released_at
+          releasedAt: version1.released_at,
+          semver: { 'major' => 1, 'minor' => 0, 'patch' => 0 }
         ),
         a_graphql_entity_for(
           version2,
           name: version2.name,
           path: project_tag_path(project, version2.name),
-          releasedAt: version2.released_at
+          releasedAt: version2.released_at,
+          semver: { 'major' => 2, 'minor' => 0, 'patch' => 0 }
         )
       )
     end
@@ -402,7 +409,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             releasedAt: version1.released_at,
             readme: version1.readme,
             readmeHtml: "<p data-sourcepos=\"1:1-1:17\" dir=\"auto\"><a data-sourcepos=\"1:1-1:17\" " \
-              "href=\"/group1/project-1/-/blob/master/README.md\" class=\"gfm\">link</a></p>"
+              "href=\"/group1/project-1/-/blob/main/README.md\" class=\"gfm\">link</a></p>"
           )
         )
       end

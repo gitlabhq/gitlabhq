@@ -5,8 +5,6 @@ import VueRouter from 'vue-router';
 import { GlPagination } from '@gitlab/ui';
 import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
 import YourWorkGroupsApp from '~/groups/your_work/components/app.vue';
-import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { createRouter } from '~/groups/your_work';
 import groupCountsQuery from '~/groups/your_work/graphql/queries/group_counts.query.graphql';
 import {
@@ -29,16 +27,12 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { resolvers } from '~/groups/your_work/graphql/resolvers';
+import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
-// We need to globally render components to avoid circular references
-// https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
-Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
 
 describe('YourWorkGroupsApp', () => {
   let wrapper;

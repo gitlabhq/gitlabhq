@@ -52,11 +52,8 @@ For a full list of reference architectures, see
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to deploy them over multiple availability zones for resilience if desired.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to deploy them over multiple availability zones for resilience if desired.
 
 ```plantuml
 @startuml 2k
@@ -113,7 +110,7 @@ The 40 RPS / 2k user reference architecture is designed to accommodate most comm
 | Git (Pull)    | 4 RPS             |
 | Git (Push)    | 1 RPS             |
 
-These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
@@ -356,7 +353,7 @@ If you use a third party external service:
    plain text password. These details are necessary when configuring the
    [GitLab application server](#configure-gitlab-rails) later.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database/)
 are supported and can be added if needed.
 
 <div align="right">
@@ -370,12 +367,9 @@ are supported and can be added if needed.
 In this section, you'll be guided through configuring an external Redis instance
 to be used with GitLab.
 
-{{< alert type="note" >}}
-
-Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< /alert >}}
+> [!note]
+> Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+> Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 ### Provide your own Redis instance
 
@@ -424,7 +418,7 @@ the Linux package:
    Redis password. These will be necessary when
    [configuring the GitLab application servers](#configure-gitlab-rails) later.
 
-Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 <div align="right">
@@ -438,13 +432,10 @@ are supported and can be added if needed.
 [Gitaly](../gitaly/_index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
-{{< alert type="warning" >}}
-
-Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
-If you believe this applies to you, contact us for additional guidance as required.
-
-{{< /alert >}}
+> [!warning]
+> Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 
@@ -461,13 +452,10 @@ Be sure to note the following items:
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-{{< alert type="note" >}}
-
-The token referred to throughout the Gitaly documentation is an arbitrary
-password selected by the administrator. This token is unrelated to tokens
-created for the GitLab API or other similar web API tokens.
-
-{{< /alert >}}
+> [!note]
+> The token referred to throughout the Gitaly documentation is an arbitrary
+> password selected by the administrator. This token is unrelated to tokens
+> created for the GitLab API or other similar web API tokens.
 
 The following procedure describes how to configure a single Gitaly server named
 `gitaly1.internal` with the secret token `gitalysecret`. We assume your GitLab
@@ -482,11 +470,8 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-   {{< alert type="note" >}}
-
-   You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
-
-   {{< /alert >}}
+   > [!note]
+   > You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
    <!--
    Updates to example must be made at:
@@ -529,7 +514,7 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
       },
       # Gitaly Pack-objects cache
       # Recommended to be enabled for improved performance but can notably increase disk I/O
-      # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+      # Refer to https://docs.gitlab.com/administration/gitaly/configure_gitaly/#pack-objects-cache for more info
       pack_objects_cache: {
          # ...
          enabled: true,
@@ -568,14 +553,11 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates).
 
-{{< alert type="note" >}}
-
-The self-signed certificate must specify the address you use to access the
-Gitaly server. If you are addressing the Gitaly server by a hostname, add it as a Subject Alternative
-Name. If you are addressing the Gitaly server by its IP address, you must add it
-as a Subject Alternative Name to the certificate.
-
-{{< /alert >}}
+> [!note]
+> The self-signed certificate must specify the address you use to access the
+> Gitaly server. If you are addressing the Gitaly server by a hostname, add it as a Subject Alternative
+> Name. If you are addressing the Gitaly server by its IP address, you must add it
+> as a Subject Alternative Name to the certificate.
 
 It's possible to configure Gitaly servers with both an unencrypted listening
 address (`listen_addr`) and an encrypted listening address (`tls_listen_addr`)
@@ -630,19 +612,12 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-{{< alert type="note" >}}
-
 If you find that the environment's Sidekiq job processing is slow with long queues
 you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
 
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
 Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
-{{< /alert >}}
 
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
@@ -1125,20 +1100,14 @@ Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts
 documentation for setup instructions including guidance on what GitLab secrets to sync
 between Kubernetes and the backend components.
 
-{{< alert type="note" >}}
-
-This is an **advanced** setup. Running services in Kubernetes is well known
-to be complex. **This setup is only recommended** if you have strong working
-knowledge and experience in Kubernetes. The rest of this
-section assumes this.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The 2,000 reference architecture is not a highly-available setup. To achieve HA,
-you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
-{{< /alert >}}
+> [!note]
+>
+> - This is an **advanced** setup. Running services in Kubernetes is well known
+>   to be complex. **This setup is only recommended** if you have strong working
+>   knowledge and experience in Kubernetes. The rest of this
+>   section assumes this.
+> - The 2,000 reference architecture is not a highly-available setup. To achieve HA,
+>   you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 
 For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 
@@ -1186,11 +1155,8 @@ services where applicable):
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 2k
@@ -1292,8 +1258,5 @@ After following this guide you should now have a fresh GitLab environment with c
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.
-
-{{< /alert >}}
+> [!note]
+> Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.

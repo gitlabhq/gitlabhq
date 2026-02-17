@@ -367,7 +367,8 @@ describe('Markdown field header component', () => {
 
     const findFindInput = () => wrapper.findByTestId('find-input');
     const findReplaceInput = () => wrapper.findByTestId('replace-input');
-    const findReplaceButton = () => wrapper.findByRole('button', { name: 'Replace' });
+    const findReplaceButton = () => wrapper.findByTestId('replace-button');
+    const findReplaceAllButton = () => wrapper.findByTestId('replace-all-button');
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
     const findAndReplaceMatchCount = () => wrapper.findByTestId('find-and-replace-matches').text();
@@ -375,7 +376,8 @@ describe('Markdown field header component', () => {
     const findPrevButton = () => wrapper.findByTestId('find-prev');
     const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
     const findTextarea = () => document.querySelector('textarea');
-    const findToggleButton = () => wrapper.findByTestId('replace-toggle').findComponent(GlButton);
+    const findToggleReplaceSectionButton = () =>
+      wrapper.findByTestId('replace-section-toggle').findComponent(GlButton);
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -559,18 +561,18 @@ describe('Markdown field header component', () => {
     it('hides replace section by default and enables it on click', async () => {
       await showFindAndReplace();
 
-      expect(findToggleButton().props('icon')).toBe('chevron-right');
-      expect(findToggleButton().attributes('aria-expanded')).toBeUndefined();
+      expect(findToggleReplaceSectionButton().props('icon')).toBe('chevron-right');
+      expect(findToggleReplaceSectionButton().attributes('aria-expanded')).toBeUndefined();
 
       expect(findReplaceInput().exists()).toBe(false);
       expect(findReplaceButton().exists()).toBe(false);
 
-      findToggleButton().vm.$emit('click');
+      findToggleReplaceSectionButton().vm.$emit('click');
 
       await nextTick();
 
-      expect(findToggleButton().props('icon')).toBe('chevron-down');
-      expect(findToggleButton().attributes('aria-expanded')).toBe('true');
+      expect(findToggleReplaceSectionButton().props('icon')).toBe('chevron-down');
+      expect(findToggleReplaceSectionButton().attributes('aria-expanded')).toBe('true');
 
       expect(findReplaceInput().exists()).toBe(true);
       expect(findReplaceButton().exists()).toBe(true);
@@ -582,8 +584,8 @@ describe('Markdown field header component', () => {
 
       await showFindAndReplace();
 
-      // Show the replace section
-      findToggleButton().vm.$emit('click');
+      // Show the replace form section
+      findToggleReplaceSectionButton().vm.$emit('click');
 
       findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
 
@@ -602,6 +604,34 @@ describe('Markdown field header component', () => {
 
       expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet lorem <img src="prompt">');
       expect(findAndReplaceMatchCount()).toBe('1 of 1');
+    });
+
+    it('replaces all matches when replace all button is clicked', async () => {
+      // This doesn't exist in the jest environment so mock it
+      document.execCommand = jest.fn();
+
+      await showFindAndReplace();
+
+      // Show the replace section
+      findToggleReplaceSectionButton().vm.$emit('click');
+
+      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+
+      // We need this one as well as keyup won't set the value
+      findFindInput().vm.$emit('input', 'lorem');
+      await nextTick();
+
+      findReplaceInput().vm.$emit('input', 'LOREM');
+      await nextTick();
+
+      findReplaceAllButton().trigger('click');
+      await nextTick();
+
+      // The second one is required for VUE_VERSION=3
+      await nextTick();
+
+      expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet LOREM <img src="prompt">');
+      expect(findAndReplaceMatchCount()).toBe('No records');
     });
   });
 });

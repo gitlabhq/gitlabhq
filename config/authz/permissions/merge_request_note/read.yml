@@ -1,0 +1,5 @@
+---
+name: read_merge_request_note
+description: Grants the ability to read merge request notes
+boundaries:
+  - project

@@ -4,8 +4,11 @@ module Packages
   module Helm
     class MetadataCache < ApplicationRecord
       include FileStoreMounter
+      include ObjectStorable
       include Packages::Downloadable
       include Packages::Destructible
+
+      STORE_COLUMN = :file_store
 
       enum :status, { default: 0, processing: 1, pending_destruction: 2, error: 3 }
 
@@ -40,3 +43,5 @@ module Packages
     end
   end
 end
+
+Packages::Helm::MetadataCache.prepend_mod

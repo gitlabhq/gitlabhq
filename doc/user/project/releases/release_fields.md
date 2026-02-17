@@ -178,7 +178,7 @@ stages:
 variables:
   # Package version can only contain numbers (0-9), and dots (.).
   # Must be in the format of X.Y.Z, and should match the /\A\d+\.\d+\.\d+\z/ regular expression.
-  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  # See https://docs.gitlab.com/user/packages/generic_packages/#publish-a-package
   PACKAGE_VERSION: "1.2.3"
   DARWIN_AMD64_BINARY: "myawesomerelease-darwin-amd64-${PACKAGE_VERSION}"
   LINUX_AMD64_BINARY: "myawesomerelease-linux-amd64-${PACKAGE_VERSION}"
@@ -234,14 +234,11 @@ release:
     - glab release create $env:CI_COMMIT_TAG --name "Release $env:CI_COMMIT_TAG" --notes "Release $env:CI_COMMIT_TAG" --ref $env:CI_COMMIT_TAG --assets-links=$env:assetsjson
 ```
 
-{{< alert type="note" >}}
-
-Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
-links to a release is not recommended, because artifacts are ephemeral and
-are used to pass data in the same pipeline. This means there's a risk that
-they could either expire or someone might manually delete them.
-
-{{< /alert >}}
+> [!note]
+> Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
+> links to a release is not recommended, because artifacts are ephemeral and
+> are used to pass data in the same pipeline. This means there's a risk that
+> they could either expire or someone might manually delete them.
 
 ### Number of new and total features
 

@@ -179,14 +179,21 @@ export default {
       );
       this.updatePins();
     },
-    destroyPin(itemId, itemTitle) {
+    destroyPin(itemId, itemTitle, source = {}) {
       this.changedPinnedItemIds.ids = this.changedPinnedItemIds.ids.filter((id) => id !== itemId);
       this.$toast.show(
         sprintf(this.$options.i18n.pinRemoved, {
           title: itemTitle,
         }),
       );
+
       this.updatePins();
+
+      if (source?.fromPinnedSection) {
+        this.$nextTick(() => {
+          this.$refs.pinnedSectionButton?.$el.querySelector('button')?.focus();
+        });
+      }
     },
     movePin(fromId, toId, isDownwards) {
       const fromIndex = this.changedPinnedItemIds.ids.indexOf(fromId);
@@ -248,6 +255,7 @@ export default {
     </ul>
     <pinned-section
       v-if="supportsPins"
+      ref="pinnedSectionButton"
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
       :was-pinned-nav="wasPinnedNav"

@@ -1,0 +1,8 @@
+---
+name: delete_environment
+description: Grants the ability to remove environments from a project
+boundaries:
+  - project
+permissions:
+  - delete_environment
+  - delete_environment_review_app

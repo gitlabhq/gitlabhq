@@ -11,6 +11,7 @@ module ReactiveCaching
 
   WORK_TYPE = {
     no_dependency: ReactiveCachingWorker,
+    no_dependency_low_urgency: ReactiveCaching::LowUrgencyWorker,
     external_dependency: ExternalServiceReactiveCachingWorker
   }.freeze
 
@@ -151,11 +152,18 @@ module ReactiveCaching
     def enqueuing_update(*args)
       yield
 
-      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class.name, id, *args)
+      background_update_worker.perform_in(self.class.reactive_cache_refresh_interval, self.class.name, id, *args)
     end
 
     def worker_class
       WORK_TYPE.fetch(self.class.reactive_cache_work_type.to_sym)
+    end
+
+    # Background refreshes use low urgency when worker has no dependencies
+    def background_update_worker
+      return worker_class unless self.class.reactive_cache_work_type.to_sym == :no_dependency
+
+      ReactiveCaching::LowUrgencyWorker
     end
 
     def reactive_cache_limit_enabled?

@@ -67,14 +67,13 @@ You are encouraged to leave your feedback about migrating by direct transfer in
 ## Migrating specific projects
 
 Migrating groups by using direct transfer in the GitLab UI migrates all projects in the group. If you want to migrate only specific projects in the group by using direct
-transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
+transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-project-migration).
 
 ## Known issues
 
 - Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
 - In GitLab 16.1 and earlier, you should not use direct transfer with
   [scheduled scan execution policies](../../application_security/policies/scan_execution_policies.md).
-- For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
 - In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
   `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
   is missing, but the note and the merge request are still imported.
@@ -85,6 +84,9 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-
   proposed in [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 - In GitLab 17.0, 17.1, and 17.2, imported epics and work items are mapped
   to the importing user rather than the original author.
+- Direct transfer does not support consolidating groups or projects from different source groups
+  into a single destination group. To consolidate groups or projects, either restructure on the
+  source instance before migration, or restructure on the destination instance [after placeholder user reassignment is complete](../../import/mapping.md#completing-the-reassignment). See [issue 589460](https://gitlab.com/gitlab-org/gitlab/-/work_items/589460).
 
 ## Estimating migration duration
 
@@ -136,59 +138,12 @@ Though it's difficult to predict migration duration, the following have been obs
 - 100 projects (19.9k issues, 83k merge requests, 100k+ pipelines) migrated in 8 hours.
 - 1926 projects (22k issues, 160k merge requests, 1.1 million pipelines) migrated in 34 hours.
 
-If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
-
-## Reducing migration duration
-
-These are some strategies for reducing the duration of migrations that use direct transfer.
-
-### Add Sidekiq workers to the destination instance
-
-A single direct transfer migration runs five entities (groups or projects) per import at a time,
-regardless of the number of workers available on the destination instance.
-More Sidekiq workers on the destination instance can reduce the time it takes to import each entity,
-as long as the instance has enough resources to handle additional concurrent jobs.
-In GitLab 16.8 and later, with the introduction of bulk import and export of relations,
-the number of available workers on the destination instance has become more critical.
-
-For more information about how to add Sidekiq workers to the destination instance, see information about
-[Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-
-### Redistribute large projects or start separate migrations
-
-The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
-delays and potential timeouts as the destination is waiting for exported data to become available.
-
-Distributing projects in different groups helps to avoid timeouts. If several large projects are in the same group, you can:
-
-1. Move large projects to different groups or subgroups.
-1. Start separate migrations each group and subgroup.
-
-The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.
+If you are migrating large projects and encounter problems with timeouts or duration of the migration, try
+[reducing migration duration](troubleshooting.md#migrations-are-slow-or-timing-out).
 
 ## Limits
 
-{{< history >}}
-
-- Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
-
-{{< /history >}}
-
-Hardcoded limits apply on migration by direct transfer.
-
-| Limit       | Description                                                                                                                                                                     |
-|:------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 6           | Maximum number of migrations permitted by a destination GitLab instance per minute per user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9. |
-| 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                                                            |
-| 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
-| 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
-
-[Configurable limits](../../../administration/settings/account_and_limit_settings.md) are also available.
-
-In GitLab 16.3 and later, the following previously hard-coded settings are [configurable](https://gitlab.com/gitlab-org/gitlab/-/issues/384976):
-
-- Maximum relation size that can be downloaded from the source instance (set to 5 GiB).
-- Maximum size of a decompressed archive (set to 10 GiB).
+For default limits, see [migration by direct transfer limits](../../../administration/instance_limits.md#direct-transfer-migration).
 
 You can test the maximum relation size limit using these APIs:
 

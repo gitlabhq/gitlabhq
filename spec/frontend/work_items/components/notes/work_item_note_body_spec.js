@@ -31,7 +31,7 @@ describe('Work Item Note Body', () => {
     expect(findNoteEditedText().exists()).toBe(false);
   });
 
-  it('emits "updateNote" event to update markdown when toggling checkbox', () => {
+  it('emits "update-note" event to update markdown when toggling checkbox', () => {
     const markdownBefore = `beginning
 
 - [ ] one
@@ -58,7 +58,7 @@ end`;
     checkbox.checked = true;
     checkbox.dispatchEvent(new CustomEvent('change', { bubbles: true }));
 
-    expect(wrapper.emitted('updateNote')).toEqual([
+    expect(wrapper.emitted('update-note')).toEqual([
       [{ commentText: markdownAfter, executeOptimisticResponse: false }],
     ]);
   });

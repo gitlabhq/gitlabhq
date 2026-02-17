@@ -112,27 +112,47 @@ module QA
         #   scopes: Any scope (user, project, group) to restrict the change to
         def set_and_verify(key, enable:, **scopes)
           msg = "#{enable ? 'En' : 'Dis'}abling feature: #{key}"
-          msg += " for scope \"#{scopes_to_s(**scopes)}\"" if scopes.present?
-          QA::Runtime::Logger.info(msg)
+          QA::Runtime::Logger.info(msg_with_scope(msg, **scopes))
+          Support::Retrier.retry_on_exception(sleep_interval: 2) { set_feature(key, enable, **scopes) }
 
-          Support::Retrier.retry_on_exception(sleep_interval: 2) do
-            set_feature(key, enable, **scopes)
+          enable ? verify_enabled(key, **scopes) : verify_disabled(key, **scopes)
+        end
 
-            is_enabled = nil
-
-            QA::Support::Waiter.wait_until(sleep_interval: 1) do
-              is_enabled = enabled?(key, **scopes)
-              is_enabled == enable || (!enable && scopes.present?)
-            end
-
-            if is_enabled == enable
-              QA::Runtime::Logger.info("Successfully #{enable ? 'en' : 'dis'}abled and verified feature flag: #{key}")
-            else
-              raise SetFeatureError, "#{key} was not #{enable ? 'en' : 'dis'}abled!" if enable
-
-              QA::Runtime::Logger.warn("Feature flag scope was removed but the flag is still enabled globally.")
-            end
+        def verify_enabled(key, **scopes)
+          QA::Support::Waiter.wait_until(
+            sleep_interval: 1,
+            message: timeout_message(key, "was not enabled", **scopes)
+          ) do
+            enabled?(key, **scopes)
           end
+
+          log_success(key, "enabled", **scopes)
+        end
+
+        def verify_disabled(key, **scopes)
+          QA::Support::Waiter.wait_until(
+            sleep_interval: 1,
+            message: timeout_message(key, "was not disabled", **scopes)
+          ) do
+            !enabled?(key, **scopes)
+          end
+
+          log_success(key, "disabled", **scopes)
+        end
+
+        def timeout_message(key, action, **scopes)
+          msg_with_scope("Feature flag #{key} #{action}", **scopes)
+        end
+
+        def msg_with_scope(msg, **scopes)
+          msg += " for scope \"#{scopes_to_s(**scopes)}\"" if scopes.present?
+          msg
+        end
+
+        def log_success(key, action, **scopes)
+          QA::Runtime::Logger.info(
+            msg_with_scope("Successfully #{action} and verified feature flag: #{key}", **scopes)
+          )
         end
 
         def set_feature(key, value, **scopes)

@@ -16,18 +16,19 @@ static-analysis:
     - .static-analysis-base
     - .static-analysis-cache
     - .static-analysis:rules:static-analysis
-    - .use-pg16
+    - .use-pg17
   needs:
     - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
     - job: cache:node-modules
       optional: true
-    - job: db:setup pg16
+    - job: db:setup pg17
       optional: true
   parallel: 2
   variables:
     SETUP_DB: "true"
+    OPENAPI_CHECK_DEBUG: "true"
   script:
     - yarn_install_script
     - scripts/install_frontend_islands
@@ -38,7 +39,7 @@ static-verification-with-database:
     - .static-analysis-base
     - .rubocop-job-cache
     - .static-analysis:rules:static-verification-with-database
-    - .use-pg16
+    - .use-pg17
   script:
     - bundle exec rake lint:static_verification_with_database
   variables:
@@ -385,7 +386,6 @@ ping-appsec-for-dependency-review:
   stage: lint
   variables:
     GIT_CHECKOUT: "false"
-    DISABLE_MENTIONS: "false"
     DISABLE_SCORING: "false"
     DISABLE_COMMENTING: "false"
     DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/product-security/appsec/tooling/depscore/master"
@@ -398,7 +398,7 @@ ping-appsec-for-dependency-review:
     - DEPENDENCY_REVIEW_BOT_UNAME=$(curl --header "PRIVATE-TOKEN:$DEPENDENCY_REVIEW_PAT" "https://gitlab.com/api/v4/user" | jq -r '.username')
     - echo "$DEPENDENCY_REVIEW_PAT" | docker login --password-stdin -u "$DEPENDENCY_REVIEW_BOT_UNAME" -- "$DEPENDENCY_REVIEW_BOT_CI_REG"
   script:
-    - docker run --interactive --rm "$DEPENDENCY_REVIEW_BOT_CI_REG:latest" -t "$DEPENDENCY_REVIEW_PAT" -p "$CI_PROJECT_ID" -m "$CI_MERGE_REQUEST_IID" -s "$DISABLE_SCORING" -a "$DISABLE_MENTIONS" -c "$DISABLE_COMMENTING"
+    - docker run --interactive --rm -e DEPSCORE_ANTHROPIC_KEY="$DEPSCORE_ANTHROPIC_KEY" "$DEPENDENCY_REVIEW_BOT_CI_REG:latest" -t "$DEPENDENCY_REVIEW_PAT" -p "$CI_PROJECT_ID" -m "$CI_MERGE_REQUEST_IID" -s "$DISABLE_SCORING" -c "$DISABLE_COMMENTING"
   allow_failure: true
 
 check-deprecated-files:

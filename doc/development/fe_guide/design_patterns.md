@@ -7,12 +7,9 @@ title: Design Patterns
 
 This page covers suggested design patterns and also anti-patterns.
 
-{{< alert type="note" >}}
-
-When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
-When adding a design anti-pattern, clearly state **the problem it prevents**.
-
-{{< /alert >}}
+> [!note]
+> When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
+> When adding a design anti-pattern, clearly state **the problem it prevents**.
 
 ## Patterns
 
@@ -27,11 +24,8 @@ generally be avoided.
 Throughout the GitLab codebase, there may be historic uses of these anti-patterns. [Use discretion](https://handbook.gitlab.com/handbook/engineering/development/principles/#balance-refactoring-and-velocity)
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
-{{< alert type="note" >}}
-
-For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
-
-{{< /alert >}}
+> [!note]
+> For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
 
 ### Shared Global Object
 

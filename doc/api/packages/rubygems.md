@@ -14,20 +14,14 @@ title: Ruby gems API
 
 Use this API to interact with the [Ruby gems and Bundler package manager clients](../../user/packages/rubygems_registry/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [Ruby gems and Bundler package manager clients](https://maven.apache.org/)
-and is generally not meant for manual consumption. This API is under development and is not ready
-for production use due to limited functionality.
-
-{{< /alert >}}
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the [Ruby gems and Bundler package manager clients](https://maven.apache.org/)
+> and is generally not meant for manual consumption. This API is under development and is not ready
+> for production use due to limited functionality.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [Ruby gems registry documentation](../../user/packages/rubygems_registry/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
 
 ## Enable the Ruby gems API
 
@@ -55,7 +49,7 @@ Feature.disable(:rubygem_packages, Project.find(2))
 
 ## Download a gem file
 
-Download a gem:
+Downloads a specified gem file for a project.
 
 ```plaintext
 GET projects/:id/packages/rubygems/gems/:file_name
@@ -79,9 +73,9 @@ curl --header "Authorization:<personal_access_token>" "https://gitlab.example.co
 
 This writes the downloaded file to `my_gem-1.0.0.gem` in the current directory.
 
-## Fetch a list of dependencies
+## Retrieve dependencies
 
-Fetch a list of dependencies for a list of gems.
+Retrieves a list of dependencies for specified gems.
 
 The response is a marshalled array of hashes for all versions of the requested gems.
 Because the response is marshalled, you can store it in a file.
@@ -136,7 +130,7 @@ $ ruby -ropen-uri -rpp -e \
 
 ## Upload a gem
 
-Upload a gem:
+Uploads a gem for a specified project.
 
 ```plaintext
 POST projects/:id/packages/rubygems/api/v1/gems

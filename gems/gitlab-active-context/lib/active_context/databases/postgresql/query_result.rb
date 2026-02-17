@@ -10,6 +10,8 @@ module ActiveContext
           return enum_for(:each) unless block_given?
 
           result.each do |row|
+            row = row.merge('score' => row['score'].to_f) if row.key?('score')
+
             yield row
           end
         end

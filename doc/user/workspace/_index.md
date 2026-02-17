@@ -31,14 +31,11 @@ A workspace can exist for a maximum of approximately one calendar year, `8760` h
 
 For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
 
-{{< alert type="note" >}}
-
-A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run `sudo` commands, or
-build and run containers in your workspace, there might be platform-specific requirements.
-
-For more information, see [Platform compatibility](configuration.md#platform-compatibility).
-
-{{< /alert >}}
+> [!note]
+> A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run `sudo` commands, or
+> build and run containers in your workspace, there might be platform-specific requirements.
+>
+> For more information, see [Platform compatibility](configuration.md#platform-compatibility).
 
 ## Workspaces and projects
 
@@ -67,12 +64,9 @@ To manage workspaces from a project:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
 
-{{< alert type="warning" >}}
-
-When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
-in that workspace. The data cannot be recovered.
-
-{{< /alert >}}
+> [!warning]
+> When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
+> in that workspace. The data cannot be recovered.
 
 ### Deleting resources associated with a workspace
 
@@ -102,12 +96,9 @@ To manage all workspaces associated with `agentk`:
 1. Select the **Workspaces** tab.
 1. From the list, you can restart, stop, or terminate an existing workspace.
 
-{{< alert type="warning" >}}
-
-When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
-in that workspace. The data cannot be recovered.
-
-{{< /alert >}}
+> [!warning]
+> When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
+> in that workspace. The data cannot be recovered.
 
 ### Identify an agent from a running workspace
 
@@ -152,12 +143,9 @@ components:
       image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:[VERSION_TAG]"
 ```
 
-{{< alert type="note" >}}
-
-This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
-[default `default_devfile.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml).
-
-{{< /alert >}}
+> [!note]
+> This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
+> [default `default_devfile.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml).
 
 The workspace default image includes development tools such as Ruby, Node.js, Rust, Go, Python,
 Java, PHP, GCC, and their corresponding package managers. These tools are updated regularly.
@@ -177,35 +165,25 @@ You can define a devfile in the following locations, relative to your project's 
 - /.devfile/{devfile_name}.yml
 ```
 
-{{< alert type="note" >}}
-
-Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
-For example, `.devfile/subfolder/devfile.yaml` is not recognized.
-
-{{< /alert >}}
+> [!note]
+> Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
+> For example, `.devfile/subfolder/devfile.yaml` is not recognized.
 
 ### Validation rules
 
-- `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
-- The devfile must have at least one component.
 - The devfile size must not exceed 3 MB.
-- For `components`:
-  - Names must not start with `gl-`.
-  - Only `container` and `volume` are supported.
-- For `commands`:
-  - IDs must not start with `gl-`.
-  - Only `exec` and `apply` command types are supported.
-  - For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.
-  - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
-- For `events`:
-  - Names must not start with `gl-`.
-  - Only `preStart` and `postStart` are supported.
-  - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
-- `parent`, `projects`, and `starterProjects` are not supported.
-- For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
-- For `attributes`:
-  - `pod-overrides` must not be set at the root level or in `components`.
-  - `container-overrides` must not be set in `components`.
+
+| Property        | Explicit Rule                                                                                                                                                                                                                                                                                                          |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `schemaVersion` | Must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).                                                                                                                                                                                                                                                       |
+| `components`    | - The devfile must have at least one component.<br/>- Names must not start with `gl-`.<br/>- Only `container` and `volume` are supported.<br/>- `mountSources` and `sourceMapping` are not supported.                                                                                                                  |
+| `commands`      | - IDs must not start with `gl-`.<br/>- Only `exec` and `apply` command types are supported.<br/>- For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.<br/>- When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`. |
+| `events`        | - Names must not start with `gl-`.<br/>- Only `preStart` and `postStart` are supported.<br/>- The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.                                                                        |
+| `parent`        | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `projects`           | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `starterProjects`     | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `variables`  | Keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.                                                                                                                                                                                                                                                                |
+| `attributes`       | - `pod-overrides` must not be set at the root level or in `components`.<br/>- `container-overrides` must not be set in `components`.                                                                                                                                                                                   |
 
 ### `container` component type
 
@@ -401,11 +379,8 @@ events:
     - setup-database
 ```
 
-{{< alert type="note" >}}
-
-This container `image` is for demonstration purposes only.
-
-{{< /alert >}}
+> [!note]
+> This container `image` is for demonstration purposes only.
 
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 
@@ -423,16 +398,13 @@ must meet the following system requirements:
 
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
 
-{{< alert type="note" >}}
-
-GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
-This image cannot be overridden.
-
-If you use a private container registry for your other images, GitLab fetches these
-specific images from the GitLab registry. This requirement may impact environments with strict network
-controls, such as offline environments.
-
-{{< /alert >}}
+> [!note]
+> GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
+> This image cannot be overridden.
+>
+> If you use a private container registry for your other images, GitLab fetches these
+> specific images from the GitLab registry. This requirement may impact environments with strict network
+> controls, such as offline environments.
 
 ## Workspace base image
 
@@ -601,12 +573,9 @@ The logs directory contains the following log files:
 | `start-sshd.log`       | SSH daemon startup         | Output from SSH daemon initialization, including server startup and configuration details. |
 | `clone-unshallow.log`  | Git repository conversion  | Logs from the background process that converts the shallow clone to a full clone and retrieves the complete Git history for the project. |
 
-{{< alert type="note" >}}
-
-Log files are recreated each time you restart a workspace. Previous log files are not preserved
-when you stop and restart a workspace.
-
-{{< /alert >}}
+> [!note]
+> Log files are recreated each time you restart a workspace. Previous log files are not preserved
+> when you stop and restart a workspace.
 
 ## Shallow cloning
 
@@ -630,7 +599,7 @@ This process is transparent and doesn't affect your development workflow.
 - [Create a workspace](configuration.md#create-a-workspace)
 - [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
-- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md)
 - [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
 - [GraphQL API reference](../../api/graphql/reference/_index.md)
 - [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)

@@ -14,15 +14,16 @@ module API
     end
 
     desc 'Get the current appearance' do
-      tags ['appearance']
+      tags ['instance']
       success Entities::Appearance
     end
+    route_setting :authorization, permissions: :read_application_appearance, boundary_type: :instance
     get "application/appearance" do
       present current_appearance, with: Entities::Appearance
     end
 
     desc 'Modify appearance' do
-      tags ['appearance']
+      tags ['instance']
       success Entities::Appearance
       consumes ['multipart/form-data']
     end
@@ -46,6 +47,7 @@ module API
       optional :message_font_color, type: String, desc: 'Font color for the system header / footer bar'
       optional :email_header_and_footer_enabled, type: Boolean, desc: 'Add header and footer to all outgoing emails if enabled'
     end
+    route_setting :authorization, permissions: :update_application_appearance, boundary_type: :instance
     put "application/appearance" do
       attrs = declared_params(include_missing: false)
 

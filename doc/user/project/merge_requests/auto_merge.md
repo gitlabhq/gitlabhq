@@ -17,14 +17,13 @@ title: Auto-merge
 
 - **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags/_index.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 - Renamed auto-merge feature [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
-- Enhanced auto-merge features [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flags `merge_when_checks_pass` and `additional_merge_when_checks_ready` on GitLab.com in GitLab 17.0.
-- [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
-- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
-- Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flag `merge_when_checks_pass` on GitLab Self-Managed by default in GitLab 17.4.
-- Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
-- Auto-merge [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
+- Enhanced auto-merge:
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
+  - [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
+- Auto-merge for merge trains:
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
 
 {{< /history >}}
 
@@ -66,7 +65,7 @@ when the merge request merges.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - If your project configuration requires it, all threads in the
   merge request must be resolved.
 - The merge request must have received all required approvals.
@@ -77,7 +76,7 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 To do this from the GitLab user interface:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
@@ -100,13 +99,13 @@ You can cancel auto-merge on a merge request.
 Prerequisites:
 
 - You must either be the author of the merge request, or a project member with
-  at least the Developer role.
+  the Developer, Maintainer, or Owner role.
 - The merge request's pipeline must still be in progress.
 
 To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select your desired merge request.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
@@ -142,7 +141,7 @@ CI providers with it.
 Prerequisites:
 
 - Ensure your project's CI/CD configuration runs a pipeline for every merge request.
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable this setting:
 
@@ -166,7 +165,7 @@ merge requests from merging.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To change this behavior:
 
@@ -191,12 +190,12 @@ however, depending on the satisfaction of other merge checks or the length of yo
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Select **Edit**.
 1. From the **Merge can start** dropdown list, select `After scheduled date`, then select a date and time.

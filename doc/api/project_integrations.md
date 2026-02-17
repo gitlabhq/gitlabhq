@@ -17,7 +17,7 @@ Use this API to manage [integrations](../user/project/integrations/_index.md) fo
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ## List all active integrations
 
@@ -650,6 +650,7 @@ Parameters:
 | `note_events` | boolean | no | Enable notifications for note events. |
 | `note_channel` | string | no | The webhook override to receive notifications for note events. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
 | `pipeline_channel` | string | no | The webhook override to receive notifications for pipeline events. |
 | `push_events` | boolean | no | Enable notifications for push events. |
@@ -1012,6 +1013,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `channel` | string | no | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `notify_only_default_branch` | boolean | no | **Deprecated**: This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `alert_events` | boolean | no | Enable notifications for alert events. |
@@ -1083,6 +1085,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | yes | The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `notify_only_default_branch` | boolean | no | **Deprecated**: This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
@@ -1568,6 +1571,7 @@ Parameters:
 | `token`   | string | yes | The Matrix access token (for example, `syt-zyx57W2v1u123ew11`). |
 | `room` | string | yes | Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `issues_events` | boolean | no | Enable notifications for issue events. |
@@ -1621,6 +1625,7 @@ Parameters:
 | `username` | string | no | Mattermost notifications username. |
 | `channel` | string | no | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `notify_only_default_branch` | boolean | no | **Deprecated**: This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `labels_to_be_notified` | string | no | Labels to send notifications for. Leave blank to receive notifications for all events. |
@@ -1724,6 +1729,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | yes | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `notify_only_default_branch` | boolean | no | **Deprecated**: This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
@@ -2131,6 +2137,7 @@ Parameters:
 | `username` | string | no | Slack notifications username. |
 | `channel` | string | no | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `notify_only_default_branch` | boolean | no | **Deprecated**: This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `labels_to_be_notified` | string | no | Labels to send notifications for. Leave blank to receive notifications for all events. |
@@ -2313,6 +2320,7 @@ Parameters:
 | `room` | string | yes | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
 | `thread` | integer | no | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | yes | Enable notifications for push events. |
 | `issues_events` | boolean | yes | Enable notifications for issue events. |
@@ -2364,6 +2372,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | yes | The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_when_pipeline_status_changes` | boolean | no | Send notifications only when the pipeline status for the ref changes. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `issues_events` | boolean | no | Enable notifications for issue events. |

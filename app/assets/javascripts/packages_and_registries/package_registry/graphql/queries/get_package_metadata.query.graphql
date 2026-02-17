@@ -1,3 +1,5 @@
+# @feature_category: package_registry
+
 query getPackageMetadata($id: PackagesPackageID!) {
   package(id: $id) {
     id

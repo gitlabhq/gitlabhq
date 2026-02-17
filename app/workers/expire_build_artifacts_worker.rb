@@ -13,6 +13,8 @@ class ExpireBuildArtifactsWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :job_artifacts
 
   def perform
+    return if Feature.enabled?(:bulk_delete_job_artifacts, :instance)
+
     artifacts_count = Ci::JobArtifacts::DestroyAllExpiredService.new.execute
 
     log_extra_metadata_on_done(:destroyed_job_artifacts_count, artifacts_count)

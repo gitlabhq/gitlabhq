@@ -1418,16 +1418,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
-  describe '#convert_to_type_column' do
-    it 'returns the name of the temporary column used to convert to bigint' do
-      expect(model.convert_to_type_column(:id, :int, :bigint)).to eq('id_convert_int_to_bigint')
-    end
-
-    it 'returns the name of the temporary column used to convert to uuid' do
-      expect(model.convert_to_type_column(:uuid, :string, :uuid)).to eq('uuid_convert_string_to_uuid')
-    end
-  end
-
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
       ActiveRecord::Migration.connection.execute(
@@ -1541,6 +1531,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     let_it_be(:issue_type) { table(:work_item_types).find_by(base_type: issue_base_type_enum) }
 
     let(:issue_class) do
+      type_id = build(:work_item_system_defined_type, :issue).id
+
       Class.new(ActiveRecord::Base) do
         include AtomicInternalId
 
@@ -1554,7 +1546,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           init: ->(s, _scope) { s&.project&.issues&.maximum(:iid) },
           presence: false
 
-        before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+        before_validation -> { self.work_item_type_id = type_id }
 
         def self.name
           'Issue'
@@ -1804,35 +1796,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
       it 'locks the tables' do
         expect(recorder.log).to include(/LOCK TABLE "p_ci_builds" IN ACCESS EXCLUSIVE MODE NOWAIT/)
-      end
-    end
-  end
-
-  describe '#column_is_nullable?' do
-    # This is defined as a private method of this module, and normally would not warrant
-    # dedicated test coverage. But that being said, it has no test coverage at all (it's
-    # only stubbed in the ConstraintsHelpers spec) so I'm adding testing here until we
-    # figure out how to test it properly through the public methods that use it.
-
-    context 'when a plain table name is passed' do
-      subject { model.send(:column_is_nullable?, 'table_name', 'column_name') }
-
-      it 'defaults to querying for the table defined in the current_schema' do
-        expect(model.connection).to receive(:select_value)
-          .with(/c\.table_schema = 'public'\s+AND c.table_name = 'table_name'\s+AND c.column_name = 'column_name'/)
-
-        subject
-      end
-    end
-
-    context 'when a table name is passed with a schema prefix' do
-      subject { model.send(:column_is_nullable?, 'schema_prefix.table_name', 'column_name') }
-
-      it 'correctly parses out the schema prefix and uses it instead of current_schema' do
-        expect(model.connection).to receive(:select_value)
-          .with(/c\.table_schema = 'schema_prefix'\s+AND c.table_name = 'table_name'\s+AND c.column_name = 'column_name'/)
-
-        subject
       end
     end
   end

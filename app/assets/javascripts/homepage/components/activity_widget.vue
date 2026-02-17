@@ -183,19 +183,13 @@ export default {
       </gl-collapsible-listbox>
     </div>
 
-    <gl-skeleton-loader v-if="isLoading" :width="200">
-      <rect width="5" height="3" rx="1" y="2" />
-      <rect width="160" height="3" rx="1" x="8" y="2" />
-      <rect width="20" height="3" rx="1" x="180" y="2" />
+    <div v-if="isLoading" class="gl-flex gl-flex-col gl-gap-y-4 gl-py-4">
+      <div v-for="i in 5" :key="i" class="gl-flex gl-items-center gl-justify-between">
+        <gl-skeleton-loader :width="300" :lines="1" :equal-width-lines="true" />
+        <gl-skeleton-loader :width="50" :lines="1" :equal-width-lines="true" />
+      </div>
+    </div>
 
-      <rect width="5" height="3" rx="1" y="9" />
-      <rect width="160" height="3" rx="1" x="8" y="9" />
-      <rect width="20" height="3" rx="1" x="180" y="9" />
-
-      <rect width="5" height="3" rx="1" y="16" />
-      <rect width="160" height="3" rx="1" x="8" y="16" />
-      <rect width="20" height="3" rx="1" x="180" y="16" />
-    </gl-skeleton-loader>
     <p v-else-if="hasError" class="gl-mb-0 gl-pt-3">
       {{
         s__(

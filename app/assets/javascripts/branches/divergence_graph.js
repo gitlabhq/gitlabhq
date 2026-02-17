@@ -8,6 +8,7 @@ import DivergenceGraph from './components/divergence_graph.vue';
 export function createGraphVueApp(el, data, maxCommits, defaultBranch) {
   return new Vue({
     el,
+    name: 'DivergenceGraphRoot',
     render(h) {
       return h(DivergenceGraph, {
         props: {

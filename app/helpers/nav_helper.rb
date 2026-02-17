@@ -11,10 +11,6 @@ module NavHelper
     header_links.include?(link)
   end
 
-  def extra_top_bar_classes
-    # overridden in ee
-  end
-
   def page_with_sidebar_class
     class_name = page_gutter_class
 
@@ -27,8 +23,6 @@ module NavHelper
   end
 
   def super_sidebar_loading_state_class
-    return '' unless project_studio_enabled?
-
     cookies['super_sidebar_collapsed'] == 'true' ? 'super-sidebar-is-icon-only' : ''
   end
 

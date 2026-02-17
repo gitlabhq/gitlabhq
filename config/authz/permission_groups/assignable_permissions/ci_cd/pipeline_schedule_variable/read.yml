@@ -1,7 +1,0 @@
----
-name: read_pipeline_schedule_variable
-description: Grants the ability to read pipeline schedule variables
-permissions:
-  - read_pipeline_schedule_variable
-boundaries:
-  - project

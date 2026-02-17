@@ -39,10 +39,9 @@ module Database
         return
       end
 
-      schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
-
-      unless ::Gitlab::Database::GitlabSchema.cross_joins_allowed?(schemas, tables)
+      unless ::Gitlab::Database::GitlabSchema.cross_joins_allowed?(tables)
         Thread.current[:has_cross_join_exception] = true
+        schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
         raise CrossJoinAcrossUnsupportedTablesError,
           "Unsupported cross-join across '#{tables.join(', ')}' querying '#{schemas.to_a.join(', ')}' discovered " \
           "when executing query '#{sql}'. Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-joins-between-main-and-non-main-tables for details on how to resolve this exception."

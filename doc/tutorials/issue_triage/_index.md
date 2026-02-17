@@ -32,7 +32,7 @@ To set up GitLab for issue triage in a project:
 
 ## Before you begin
 
-- If you're using an existing project for this tutorial, make sure you have at least the Reporter role
+- If you're using an existing project for this tutorial, make sure you have the Reporter, Developer, Maintainer, or Owner role
   for the project.
 - If you follow the steps below and later decide to create a parent group for your project, to make
   best use of labels, you'll have to promote the project labels to group labels.
@@ -108,13 +108,10 @@ used together.
 For example, if you add the `type::feature` label to an issue that already has `type::bug`, the
 previous one is removed.
 
-{{< alert type="note" >}}
-
-Scoped labels are available in the Premium and Ultimate tier.
-If you're on the Free tier, you can use regular labels instead.
-However, they aren't mutually exclusive.
-
-{{< /alert >}}
+> [!note]
+> Scoped labels are available in the Premium and Ultimate tier.
+> If you're on the Free tier, you can use regular labels instead.
+> However, they aren't mutually exclusive.
 
 To create each label:
 

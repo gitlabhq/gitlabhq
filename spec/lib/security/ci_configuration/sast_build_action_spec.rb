@@ -317,12 +317,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_with_no_variables_set_but_analyzers
     <<-CI_YML.strip_heredoc
     # You can override the included template(s) by including variable overrides
-    # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-    # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-    # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-    # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+    # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+    # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+    # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+    # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
     # Note that environment variables can be set in several places
-    # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+    # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
     stages:
     - test
     sast:
@@ -338,12 +338,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_with_no_variables_set
     <<-CI_YML.strip_heredoc
     # You can override the included template(s) by including variable overrides
-    # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-    # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-    # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-    # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+    # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+    # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+    # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+    # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
     # Note that environment variables can be set in several places
-    # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+    # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
     stages:
     - test
     sast:
@@ -356,12 +356,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_all_params
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security
@@ -380,12 +380,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def auto_devops_with_custom_stage
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - build
       - test
@@ -417,12 +417,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_two_includes
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security
@@ -443,12 +443,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_variable_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security
@@ -467,12 +467,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_sast_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security
@@ -492,12 +492,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_sast_variables_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security
@@ -517,12 +517,12 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   def sast_yaml_updated_stage
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-      # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+      # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+      # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+      # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+      # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
       # Note that environment variables can be set in several places
-      # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+      # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
       stages:
       - test
       - security

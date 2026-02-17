@@ -10,11 +10,11 @@
     .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
       #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if @rapid_diffs_presenter.present? && params[:to] != params[:from]
+- if rapid_diffs_presenter.present? && params[:to] != params[:from]
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list"
   .container-fluid
-    = render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter)
+    = render ::RapidDiffs::AppComponent.new(rapid_diffs_presenter)
 - else
   .container-fluid
     = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |card_instance|

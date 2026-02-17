@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organization, feature_category: :system_access do
+RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scopes) { 'api' }
@@ -15,6 +15,15 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
     end
 
     context 'authenticated and authorized user' do
+      it_behaves_like 'authorizing granular token permissions', :create_oauth_application do
+        let(:user) { admin }
+        let(:boundary_object) { :instance }
+        let(:request) do
+          post api(path, personal_access_token: pat),
+            params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
+        end
+      end
+
       it 'creates and returns an OAuth application' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
@@ -161,6 +170,12 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
   describe 'GET /applications' do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_oauth_application do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     it 'can list application' do
       get api(path, admin, admin_mode: true)
 
@@ -184,6 +199,12 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
     end
 
     context 'authenticated and authorized user' do
+      it_behaves_like 'authorizing granular token permissions', :delete_oauth_application do
+        let(:user) { admin }
+        let(:boundary_object) { :instance }
+        let(:request) { delete api("#{path}/#{application.id}", personal_access_token: pat) }
+      end
+
       it 'can delete an application' do
         expect do
           delete api("#{path}/#{application.id}", admin, admin_mode: true)
@@ -216,6 +237,12 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
     end
 
     context 'authenticated and authorized user' do
+      it_behaves_like 'authorizing granular token permissions', :renew_secret_oauth_application do
+        let(:user) { admin }
+        let(:boundary_object) { :instance }
+        let(:request) { post api(path, personal_access_token: pat) }
+      end
+
       it 'can renew a secret token' do
         application = Authn::OauthApplication.last
         post api(path, admin, admin_mode: true), params: {}

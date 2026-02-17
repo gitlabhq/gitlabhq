@@ -29,13 +29,10 @@ You can use this information if you have a complex environment to select an appr
 You might not require this level of detail, and you can assess the size of your environment by using the
 [information for less complex environments](_index.md).
 
-{{< alert type="note" >}}
-
-Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
-[Professional Services](https://about.gitlab.com/professional-services/) team can evaluate your specific architecture
-and provide tailored recommendations for performance, stability, and availability optimization.
-
-{{< /alert >}}
+> [!note]
+> Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
+> [Professional Services](https://about.gitlab.com/professional-services/) team can evaluate your specific architecture
+> and provide tailored recommendations for performance, stability, and availability optimization.
 
 To follow this documentation, you must have Prometheus monitoring deployed with the GitLab instance. Prometheus
 provides the accurate metrics required for proper sizing assessment.
@@ -53,9 +50,8 @@ If you can't configure Prometheus monitoring:
 
 - [Compare current environment](#analyze-current-environment-and-validate-recommendations) specifications to the nearest
   reference architecture to estimate sizing.
-- Use the [`get-rps.rb` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb)
-  for basic peak RPS extraction from logs. Log analysis has significant limitations. It provides less reliable data than
-  metrics and not available for cloud-native GitLab.
+- Use [GitLab RPS Analyzer](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/gitlab-rps-analyzer#gitlab-rps-analyzer)
+  to assess reference architecture size using GitLabSOS or KubeSOS logs. Note however, that this is less reliable than metrics.
 
 If migrating from other platforms, the following PromQL queries cannot be applied without existing GitLab metrics.
 However, the general assessment methodology remains valid:
@@ -90,19 +86,16 @@ If absolute peaks are rare anomalies, sizing for sustained load may be appropria
 
 Adjust time ranges in queries based on retention (change `[7d]` to `[30d]` if longer history available).
 
-{{< alert type="note" >}}
-
-For high-activity environments, `max_over_time` or `quantile_over_time` queries may time out.
-If this occurs, remove the outer aggregation function and visualize the inner query with a graph.
-For example, for API traffic peak, use:
-
-```prometheus
-sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))
-```
-
-Then visually identify the peak values from the graphed results over your monitoring period.
-
-{{< /alert >}}
+> [!note]
+> For high-activity environments, `max_over_time` or `quantile_over_time` queries may time out.
+> If this occurs, remove the outer aggregation function and visualize the inner query with a graph.
+> For example, for API traffic peak, use:
+>
+> ```prometheus
+> sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))
+> ```
+>
+> Then visually identify the peak values from the graphed results over your monitoring period.
 
 #### Query absolute peaks
 
@@ -114,7 +107,7 @@ To identify maximum observed RPS over the specified time period:
 
      ```prometheus
      max_over_time(
-       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*", action!="POST /api/jobs/request"}[1m]))[7d:1m]
      )
      ```
 
@@ -156,7 +149,7 @@ To identify typical high-load levels, filtering out rare spikes:
 
      ```prometheus
      quantile_over_time(0.95,
-       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*", action!="POST /api/jobs/request"}[1m]))[7d:1m]
      )
      ```
 
@@ -192,7 +185,7 @@ To identify typical high-load levels, filtering out rare spikes:
 
 To map traffic to reference architectures, using the results you recorded earlier:
 
-1. Consult the [initial sizing guide](_index.md#initial-sizing-guide) to see which reference architecture each traffic
+1. Consult the [available reference architectures](_index.md#available-reference-architectures) to see which reference architecture each traffic
    type suggests.
 1. Fill in an analysis table. Use the following table as a guide:
 
@@ -229,7 +222,7 @@ General guidelines:
 - Beyond 15%, start with the peak-based RA, then monitor and adjust if metrics support downsizing.
   - Example 1: Peak is 110 RPS, Large RA handles "up to 100 RPS" → 10% over → Large should suffice (Reference architectures have built-in headroom)
   - Example 2: Peak is 150 RPS, Large RA handles "up to 100 RPS" → 50% over → Use X-Large (up to 200 RPS)
-  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while majority of time load is <50 RPS. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
+  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while load is <50 RPS most of the time. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
 
 For environments under 40 RPS and where high availability (HA) is a requirement, consult the
 [high availability section](_index.md#high-availability-ha) to identify whether switching to the 60 RPS / 3,000 user
@@ -259,6 +252,52 @@ Reference architecture assessment summary:
 Highest RPS Peak timestamp for workload analysis: _____
 ```
 
+## Understanding RPS composition and workload patterns
+
+Total RPS is the primary sizing metric, but workload composition significantly impacts component resource requirements. Different request types stress different components with varying intensity.
+
+### RPS breakdown by request type
+
+Reference Architecture RPS targets assume typical workload composition based on production data:
+
+- **API requests** (~80% of total RPS) - Automation, integrations, webhooks, and API-driven tools
+- **Web requests** (~10% of total RPS) - UI interactions, page navigation, and user-driven actions
+- **Git operations** (~10% of total RPS) - Repository clones and pulls, with lower push rates
+
+**Atypical compositions** - Environments where one request type significantly exceeds typical proportions (may require component-specific adjustments even within target RPS ranges)
+
+### Identifying atypical workload patterns
+
+Use the RPS extraction queries from [Extract peak traffic metrics](#extract-peak-traffic-metrics) to understand your workload composition. Compare your distribution to typical patterns:
+
+**API-heavy workloads** (API >90% of total RPS):
+
+- Heavy automation, extensive integrations, or API-driven tooling
+- Primary impact: Rails (Webservice), PostgreSQL, Gitaly
+- Consider: Increased Webservice/Rails capacity, database read replicas
+
+**Web-heavy workloads** (Web >20% of total RPS):
+
+- Large active user base with extensive UI interaction
+- Primary impact: Rails (Webservice), PostgreSQL
+- Consider: Increased Webservice capacity, database optimization
+
+**Git-intensive workloads** (Git >15% of total RPS or pull rates notably above typical for your size):
+
+- Large teams with frequent pulls, monorepo patterns, or CI/CD-heavy workflows with repository clones
+- Primary impact: Gitaly, network bandwidth
+- Consider: Gitaly vertical scaling, repository optimization, network-enhanced VMs
+
+### Assessment approach
+
+1. Extract RPS breakdown using the provided PromQL queries
+1. Calculate percentage of total for each request type
+1. Identify if any type significantly exceeds typical proportions
+1. If atypical, see [Identify component adjustments](#identify-component-adjustments) for scaling guidance
+
+> [!note]
+> Small variations (5-10 RPS difference in any category) do not require architecture changes. Monitor actual component saturation metrics (CPU, memory, queue depths) from production rather than making decisions based solely on RPS comparisons. Components under 70% sustained utilization generally have sufficient capacity regardless of minor RPS variations.
+
 ## Identify component adjustments
 
 Workload assessment identifies specific usage patterns that require component adjustments beyond the base reference
@@ -274,14 +313,11 @@ Different workloads stress different parts of GitLab architecture:
 
 Using the peak timestamp from the earlier section, identify which endpoints received the most traffic during maximum load.
 
-{{< alert type="note" >}}
-
-If your RPS metrics show consistently high traffic during off-hours (>50% of peak), this suggests heavy automation
-beyond typical patterns. For example, peak traffic that reaches 100 RPS during business hours but maintains 50+ RPS during
-nights and weekends indicates significant automated workload. Consider this when
-[evaluating component adjustments](#determine-component-adjustments).
-
-{{< /alert >}}
+> [!note]
+> If your RPS metrics show consistently high traffic during off-hours (>50% of peak), this suggests heavy automation
+> beyond typical patterns. For example, peak traffic that reaches 100 RPS during business hours but maintains 50+ RPS during
+> nights and weekends indicates significant automated workload. Consider this when
+> [evaluating component adjustments](#determine-component-adjustments).
 
 1. Run this query with visualization enabled (bar chart for distribution over time, or pie chart for general distribution):
 
@@ -322,7 +358,7 @@ Based on the workload pattern identified earlier, different components require s
 
 | Workload type              | When to apply                                                                                                                                                                                | Components to scale |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------|
-| Database-intensive         | <ul><li>Heavy API usage for non-Git traffic (webhooks, issues, groups, and projects)</li><li>Known [extensive automation or integration workloads](_index.md#additional-workloads)</li></ul> | <ul><li>Increase Rails resources</li><li>[Database scaling](#database-scaling)</li><ul> |
+| Database-intensive         | <ul><li>Heavy API usage for non-Git traffic (webhooks, issues, groups, and projects)</li><li>Known [extensive automation or integration workloads](_index.md#additional-workloads)</li></ul> | <ul><li>Increase Rails resources</li><li>[Database scaling](#database-scaling)</li></ul> |
 | Sidekiq/Gitaly-intensive** | <ul><li>Heavy Git operations, CI/CD jobs, security scanning, import operations, and Git server hooks</li><li>Known CI/CD-heavy usage patterns</li></ul>                                      | <ul><li>Increase Sidekiq specifications</li><li>Gitaly vertical scaling</li><li>[Database scaling](#database-scaling)</li><li>Advanced: Configure specific [job classes](../sidekiq/processing_specific_job_classes.md)</li></ul> |
 
 #### Scaling guidance
@@ -512,7 +548,7 @@ Collect comprehensive environment data to establish the current state:
   - Node count and specifications for each component.
   - Custom configurations or deviations.
 
-### Identify nearest reference architecture
+### Identify the nearest reference architecture
 
 1. Compare the current environment to [available reference architectures](_index.md). Consider the following:
 

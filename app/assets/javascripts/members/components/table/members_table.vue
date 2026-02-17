@@ -14,7 +14,6 @@ import {
   canUpdate,
 } from 'ee_else_ce/members/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-// eslint-disable-next-line no-restricted-imports
 import {
   FIELD_KEY_ACTIONS,
   FIELDS,

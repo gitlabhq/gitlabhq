@@ -40,7 +40,7 @@ module API
         failure [
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
         is_array true
       end
       params do
@@ -57,7 +57,7 @@ module API
         failure [
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -77,7 +77,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 422, message: 'Unprocessable entity' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
@@ -113,7 +113,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 422, message: 'Unprocessable entity' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -160,7 +160,7 @@ module API
           { code: 400, message: 'Validation error' },
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -191,7 +191,7 @@ module API
         failure [
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -209,7 +209,7 @@ module API
         failure [
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         use :raw_file_params
@@ -227,7 +227,7 @@ module API
         failure [
           { code: 404, message: 'Not found' }
         ]
-        tags %w[project_snippets]
+        tags %w[snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'

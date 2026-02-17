@@ -39,7 +39,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(graphql_errors).to include(
-          a_hash_including('message' => "Work Item type with id #{non_existing_record_id} was not found")
+          a_hash_including('message' => "Work Item type #{work_item_type_id} was not found")
         )
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
 
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
-      end.to change { work_item.reload.work_item_type }.to(new_type)
+      end.to change { work_item.reload.work_item_type_id }.to(new_type.id)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(work_item.reload.work_item_type.base_type).to eq('incident')

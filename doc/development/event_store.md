@@ -311,13 +311,10 @@ end
 To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
 add a line like this to the `Gitlab::EventStore.configure!` method:
 
-{{< alert type="warning" >}}
-
-To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
-when registering subscriptions, the Sidekiq workers must be introduced in a previous deployment or we must
-use a feature flag.
-
-{{< /alert >}}
+> [!warning]
+> To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
+> when registering subscriptions, the Sidekiq workers must be introduced in a previous deployment or we must
+> use a feature flag.
 
 ```ruby
 module Gitlab
@@ -359,12 +356,9 @@ the condition is met.
 This technique can avoid scheduling Sidekiq jobs if the subscriber is interested in a
 small subset of events.
 
-{{< alert type="warning" >}}
-
-When using conditional dispatch it must contain only cheap conditions because they are
-executed synchronously every time the given event is published.
-
-{{< /alert >}}
+> [!warning]
+> When using conditional dispatch it must contain only cheap conditions because they are
+> executed synchronously every time the given event is published.
 
 For complex conditions it's best to subscribe to all the events and then handle the logic
 in the `handle_event` method of the subscriber worker.

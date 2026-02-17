@@ -114,11 +114,11 @@ describe('PipelineStageDropdown', () => {
       expect(findDropdownHeader().text()).toBe('Stage: build');
     });
 
-    it('emits miniGraphStageClick', async () => {
+    it('emits mini-graph-stage-click', async () => {
       await createComponent();
       await clickStageDropdown();
 
-      expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
+      expect(wrapper.emitted('mini-graph-stage-click')).toHaveLength(1);
     });
 
     it('has fired the stage query', async () => {
@@ -163,9 +163,9 @@ describe('PipelineStageDropdown', () => {
         expect(findJobDropdownItems()).toHaveLength(2);
       });
 
-      it('emits jobActionExecuted', () => {
-        findJobDropdownItems().at(0).vm.$emit('jobActionExecuted');
-        expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
+      it('emits job-action-executed', () => {
+        findJobDropdownItems().at(0).vm.$emit('job-action-executed');
+        expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
       });
 
       it('does not show search', () => {

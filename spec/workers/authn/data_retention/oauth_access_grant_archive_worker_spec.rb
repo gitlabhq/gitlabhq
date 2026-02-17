@@ -51,23 +51,7 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
       end
     end
 
-    context 'when the feature flag :archive_revoked_access_grants is disabled' do
-      before do
-        stub_feature_flags(archive_revoked_access_grants: false)
-      end
-
-      it 'does not delete any grants' do
-        expect { worker.perform }.not_to change { OauthAccessGrant.count }
-        expect(OauthAccessGrant.count).to eq(5)
-      end
-
-      it 'does not enqueue another job' do
-        expect(described_class).not_to receive(:perform_in)
-        worker.perform
-      end
-    end
-
-    context 'when the feature flag :archive_revoked_access_grants is enabled', :freeze_time do
+    context 'when there are revoked grants to delete', :freeze_time do
       context 'when there are revoked grants to delete' do
         it 'deletes only revoked grants created before cutoff date' do
           expect { worker.perform }.to change { OauthAccessGrant.count }.by(-2)

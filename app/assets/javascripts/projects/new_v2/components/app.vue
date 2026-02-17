@@ -1,9 +1,15 @@
 <script>
-import { GlButton, GlButtonGroup, GlFormGroup, GlIcon, GlAlert } from '@gitlab/ui';
+import {
+  GlButton,
+  GlButtonGroup,
+  GlFormGroup,
+  GlIcon,
+  GlAlert,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import { s__, sprintf, formatNumber } from '~/locale';
 import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
 
@@ -21,7 +27,7 @@ export default {
     GlFormGroup,
     GlIcon,
     GlAlert,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
     NewProjectDestinationSelect,
@@ -192,13 +198,13 @@ export default {
   <div>
     <breadcrumb :selected-project-type="additionalBreadcrumb" />
 
-    <multi-step-form-template
+    <gl-multi-step-form-template
       v-if="currentStep === 1"
       :title="__('Create new project')"
       :current-step="1"
       data-testid="new-project-step1"
     >
-      <template #form>
+      <template #default>
         <gl-form-group :label="s__('ProjectNew|Where do you want to create the new project?')">
           <gl-button-group class="gl-w-full">
             <gl-button
@@ -283,7 +289,7 @@ export default {
         <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>
         <command-line v-if="namespace.isPersonal" />
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
 
     <component
       :is="step2Component"

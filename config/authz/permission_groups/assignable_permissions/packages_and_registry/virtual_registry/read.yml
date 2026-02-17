@@ -1,0 +1,14 @@
+name: read_virtual_registry
+description: Grants the ability to read virtual registries
+boundaries:
+  - group
+  - instance
+permissions:
+  - read_container_virtual_registry
+  - read_container_virtual_registry_upstream
+  - read_container_virtual_registry_upstream_cache_entry
+  - read_maven_virtual_registry_upstream
+  - test_container_virtual_registry_upstream
+  - test_maven_virtual_registry_upstream
+  - read_maven_virtual_registry
+  - read_maven_virtual_registry_upstream_cache_entry

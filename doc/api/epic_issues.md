@@ -12,15 +12,12 @@ title: Epic Issues API (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+> and is planned for removal in v5 of the API.
+> From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
+> Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
+> This change is a breaking change.
 
 Every API call to the epic issues API endpoint must be authenticated.
 
@@ -30,9 +27,9 @@ results in a `404` status code.
 Epics are available only in GitLab [Premium and Ultimate](https://about.gitlab.com/pricing/).
 If the Epics feature is not available, a `403` status code is returned.
 
-## List issues for an epic
+## List all issues for an epic
 
-Lists all issues that are assigned to an epic and the authenticated user has access to.
+Lists all issues assigned to a specified epic.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
@@ -129,9 +126,9 @@ Example response:
 > [!note]
 > The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
-## Assign an issue to the epic
+## Assign an issue to an epic
 
-Creates an epic - issue association. If the issue in question belongs to another epic it is unassigned from that epic.
+Assigns an issue to a specified epic. If the issue already belongs to another epic, it is unassigned from that epic first.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/issues/:issue_id
@@ -238,9 +235,9 @@ Example response:
 > [!note]
 > The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
-## Remove an issue from the epic
+## Remove an issue from an epic
 
-Removes an epic - issue association.
+Removes an issue from a specified epic.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
@@ -250,7 +247,7 @@ DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
 | `epic_iid`          | integer or string   | yes        | The internal ID of the epic.                |
-| `epic_issue_id`     | integer or string   | yes        | The ID of the issue - epic association.     |
+| `epic_issue_id`     | integer or string   | yes        | The ID of the epic-issue association.     |
 
 ```shell
 curl --request DELETE \
@@ -348,9 +345,9 @@ Example response:
 > [!note]
 > The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
-## Update epic - issue association
+## Update an epic-issue association
 
-Updates an epic - issue association.
+Updates an epic-issue association.
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
@@ -360,9 +357,9 @@ PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
 | `epic_iid`          | integer or string   | yes        | The internal ID of the epic.                |
-| `epic_issue_id`     | integer or string   | yes        | The ID of the issue - epic association.     |
-| `move_before_id`    | integer or string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |
-| `move_after_id`     | integer or string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |
+| `epic_issue_id`     | integer or string   | yes        | The ID of the epic-issue association.     |
+| `move_before_id`    | integer or string   | no         | The ID of the epic-issue association that should be placed before the link in the question.     |
+| `move_after_id`     | integer or string   | no         | The ID of the epic-issue association that should be placed after the link in the question.     |
 
 ```shell
 curl --request PUT \

@@ -3,7 +3,6 @@ import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import InputsAnnouncementBanner from '~/ci/common/pipeline_inputs/inputs_announcement_banner.vue';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -65,7 +64,6 @@ export default {
     GlAlert,
     GlLoadingIcon,
     GlTabs,
-    InputsAnnouncementBanner,
     PipelineGraph,
     TextEditor,
     WalkthroughPopover,
@@ -190,7 +188,6 @@ export default {
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
-      <inputs-announcement-banner />
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"

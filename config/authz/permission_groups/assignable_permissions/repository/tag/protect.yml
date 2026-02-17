@@ -1,0 +1,8 @@
+---
+name: protect_tag
+description: Grants the ability to protect tags
+permissions:
+  - create_protected_tag
+  - delete_protected_tag
+boundaries:
+  - project

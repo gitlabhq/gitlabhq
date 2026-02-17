@@ -9,7 +9,6 @@ title: GitLab MCP server tools
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -197,7 +196,7 @@ Creates a new note (comment) on a GitLab work item.
 | `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `internal`      | boolean | No       | Marks the note as internal (visible only to users with at least the Reporter role for the project). Default is `false`. |
+| `internal`      | boolean | No       | Marks the note as internal (visible only to users with the Reporter, Developer, Maintainer, or Owner role for the project). Default is `false`. |
 | `discussion_id` | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). |
 
 Example:
@@ -267,6 +266,30 @@ Example:
 Search issues for "flaky test" across GitLab
 ```
 
+## `search_labels`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218121) in GitLab 18.9.
+
+{{< /history >}}
+
+Searches for labels in a GitLab project or group.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `full_path`  | string  | Yes      | Full path of the project or group (for example, `namespace/project`). |
+| `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
+| `search`     | string  | No       | Search term to filter labels by title. |
+
+When you search group labels, the results include labels from ancestor and descendant groups.
+
+Example:
+
+```plaintext
+Show me all labels in project gitlab-org/gitlab
+```
+
 ## `semantic_code_search`
 
 {{< history >}}
@@ -279,7 +302,8 @@ Search issues for "flaky test" across GitLab
 {{< /history >}}
 
 Searches for relevant code snippets in a GitLab project.
-For more information, see [semantic code search](../semantic_code_search.md).
+For more information, including setup and enablement,
+see [semantic code search](../semantic_code_search.md).
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|

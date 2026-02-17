@@ -5,7 +5,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
 
   before do
     project.add_maintainer(maintainer)
-    gitlab_sign_in(maintainer)
+    sign_in(maintainer)
     visit public_send("project_#{issuable_type}_path", project, issuable)
     wait_for_all_requests
   end

@@ -26,7 +26,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 405, message: 'Method not allowed' }
             ]
-            tags %w[personal_access_tokens]
+            tags %w[access_tokens]
           end
           params do
             requires :id, type: String, desc: "The #{source_type} ID"
@@ -35,6 +35,7 @@ module API
               desc: "The expiration date of the token",
               documentation: { example: '2021-01-31' }
           end
+          route_setting :authorization, permissions: :rotate_resource_access_token, boundary_type: source_type.to_sym
           post ':id/access_tokens/self/rotate' do
             not_allowed! unless access_token.is_a? PersonalAccessToken
             not_allowed! unless current_user.project_bot?

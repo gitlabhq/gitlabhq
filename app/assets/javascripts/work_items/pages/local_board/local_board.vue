@@ -92,7 +92,7 @@ export default {
             class="gl-relative gl-inline-block gl-h-full gl-w-[400px] gl-whitespace-normal gl-px-3 gl-align-top"
           >
             <div
-              class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-strong dark:gl-bg-subtle"
+              class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-lg gl-bg-strong dark:gl-bg-subtle"
             >
               <header class="gl-relative">
                 <h3 class="gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base">

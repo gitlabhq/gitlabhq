@@ -18,15 +18,12 @@ can query and modify the state of these mirrors with the remote mirror API.
 For security reasons, the `url` attribute in the API response is always scrubbed of username
 and password information.
 
-{{< alert type="note" >}}
+> [!note]
+> [Pull mirrors](../user/project/repository/mirror/pull.md) use
+> [a different API endpoint](project_pull_mirroring.md#update-project-pull-mirroring-settings) to
+> display and update them.
 
-[Pull mirrors](../user/project/repository/mirror/pull.md) use
-[a different API endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) to
-display and update them.
-
-{{< /alert >}}
-
-## List a project's remote mirrors
+## List all remote mirrors for a project
 
 {{< history >}}
 
@@ -34,7 +31,7 @@ display and update them.
 
 {{< /history >}}
 
-Get an array of remote mirrors and their statuses for a project.
+Lists all remote mirrors for a specified project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors
@@ -97,7 +94,7 @@ Example response:
 ]
 ```
 
-## Get a single project's remote mirror
+## Retrieve a remote mirror for a project
 
 {{< history >}}
 
@@ -105,7 +102,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single remote mirror and its status for a project.
+Retrieves a specified remote mirror for a project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id
@@ -165,7 +162,7 @@ Example response:
 }
 ```
 
-## Get a single project's remote mirror public key
+## Retrieve a public key for a remote mirror
 
 {{< history >}}
 
@@ -173,7 +170,7 @@ Example response:
 
 {{< /history >}}
 
-Get the public key of a remote mirror that uses SSH authentication.
+Retrieves the public key of a specified remote mirror that uses SSH authentication.
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id/public_key
@@ -211,7 +208,7 @@ Example response:
 
 ## Create a pull mirror
 
-Learn how to [configure a pull mirror](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) by using the
+Learn how to [configure a pull mirror](project_pull_mirroring.md#update-project-pull-mirroring-settings) by using the
 project pull mirroring API.
 
 ## Create a push mirror
@@ -224,6 +221,12 @@ project pull mirroring API.
 - Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
 
 {{< /history >}}
+
+{{< alert type="note" >}}
+
+Each project can have a maximum of 10 enabled push mirrors. For more information, see [Maximum number of project push mirrors](../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
+
+{{< /alert >}}
 
 Create a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror.
@@ -294,7 +297,7 @@ Example response:
 }
 ```
 
-## Update a remote mirror's attributes
+## Update a remote mirror in a project
 
 {{< history >}}
 
@@ -303,8 +306,7 @@ Example response:
 
 {{< /history >}}
 
-Update a remote mirror's configuration. Toggle a remote mirror on or off, or change which types of branches are
-mirrored.
+Updates the configuration or operational status of a specified remote mirror.
 
 ```plaintext
 PUT /projects/:id/remote_mirrors/:mirror_id
@@ -403,9 +405,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
 ```
 
-## Delete a remote mirror
+## Delete a remote mirror from a project
 
-Delete a remote mirror.
+Deletes a specified remote mirror from a project.
 
 ```plaintext
 DELETE /projects/:id/remote_mirrors/:mirror_id

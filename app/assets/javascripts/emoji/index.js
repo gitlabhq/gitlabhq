@@ -4,7 +4,6 @@ import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import createApolloClient from '~/lib/graphql';
 import { setAttributes } from '~/lib/utils/dom_utils';
-import { htmlEncode } from '~/lib/utils/html';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
@@ -366,7 +365,7 @@ const EMOJI_SHORTCODE_PATTERN = /(^|\s|[[(]):([a-zA-Z0-9_+-]+):(?=\s|$|[\])])/g;
  */
 export function processEmojiInTitle(title) {
   if (!title) return '';
-  return htmlEncode(title).replace(EMOJI_SHORTCODE_PATTERN, (match, prefix, emojiName) => {
+  return escape(title).replace(EMOJI_SHORTCODE_PATTERN, (match, prefix, emojiName) => {
     return prefix + glEmojiTag(emojiName);
   });
 }

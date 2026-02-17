@@ -499,3 +499,23 @@ table {
 .text-file .notes-content {
   @apply gl-rounded-b-none;
 }
+
+.immersive {
+  .md-write-holder {
+    @apply gl-min-h-80;
+  }
+
+  .gfm-form .note-textarea:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .gfm-form .note-textarea {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: var(--immersive-editor-text-width);
+    resize: none !important;
+    height: auto;
+    max-height: none !important;
+  }
+}

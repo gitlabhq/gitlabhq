@@ -18,6 +18,7 @@
             %strong
               = link_to user_path(@user) do
                 = @user.username
+          = render_if_exists 'admin/users/audit_events_link', user: @user
     -# Rendered on mobile only so order of cards can be different on desktop vs mobile
     %div{ class: "@md/panel:gl-hidden" }
       = render 'admin/users/profile', user: @user

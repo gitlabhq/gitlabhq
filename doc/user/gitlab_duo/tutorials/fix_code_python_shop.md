@@ -22,7 +22,7 @@ a [Python](https://www.python.org/) web application with a database backend
 that meets these requirements.
 
 You'll use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
-and [GitLab Duo Code Suggestions](../../project/repository/code_suggestions/_index.md)
+and [GitLab Duo Code Suggestions](../../duo_agent_platform/code_suggestions/_index.md)
 to help you:
 
 - Set up an organized Python project with standard directories and essential files.
@@ -123,7 +123,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat
 To use Code Suggestions:
 
 1. Open your Git project in a
-   [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
+   [supported IDE](../../duo_agent_platform/code_suggestions/supported_extensions.md#supported-editor-extensions).
 1. Add the project as a remote of your local repository using
    [`git remote add`](../../../topics/git/commands.md#git-remote-add).
 1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
@@ -141,7 +141,7 @@ To use Code Suggestions:
    - To reject a suggestion, press <kbd>Esc</kbd>.
    - To ignore a suggestion, keep typing as you usually would.
 
-For more information, see the [Code Suggestions documentation](../../project/repository/code_suggestions/_index.md).
+For more information, see the [Code Suggestions](../../duo_agent_platform/code_suggestions/_index.md) documentation.
 
 Now that you know how to use Chat and Code Suggestions, let's start building the
 web application. First, you will create an organized Python project structure.
@@ -342,7 +342,7 @@ what you're configuring and why.
 
    If you want to ask Chat what to adjust, do so in the IDE in the `setup.py`
    file, instead of in the GitLab UI. This provides Chat with
-   [the context you're working in](../../gitlab_duo/context.md#gitlab-duo-chat),
+   [the context you're working in](../../duo_agent_platform/context.md#gitlab-duo-chat-agentic),
    including the `setup.py` file you just created.
 
    ```plaintext
@@ -1403,7 +1403,7 @@ For more information, see [Using GitLab Duo /fix](https://youtu.be/agTqx__j6Ko?s
 
 - [GitLab Duo use cases](../use_cases.md)
 - [Get started with GitLab Duo](../../get_started/getting_started_gitlab_duo.md).
-- Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
+- Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
   <!-- Video published on 2025-06-02 -->

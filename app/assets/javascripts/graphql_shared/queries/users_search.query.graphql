@@ -2,7 +2,7 @@
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query projectUsersSearch($search: String!, $fullPath: ID!, $after: String, $first: Int) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     users: projectMembers(
       search: $search

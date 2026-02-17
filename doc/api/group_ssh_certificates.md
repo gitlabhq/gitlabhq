@@ -29,7 +29,7 @@ Prerequisites:
 
 ## List all group SSH certificates
 
-Lists all SSH certificates in a specified group.
+Lists all SSH certificates for a specified group.
 
 ```plaintext
 GET /groups/:id/ssh_certificates
@@ -72,7 +72,7 @@ Example response:
 
 ## Add a group SSH certificate
 
-Add an SSH certificate in a specified group.
+Adds a group SSH certificate for a specified group.
 
 ```plaintext
 POST /groups/:id/ssh_certificates
@@ -107,7 +107,7 @@ Example response:
 
 ## Delete a group SSH certificate
 
-Delete an SSH certificate from a specified group.
+Deletes a specified group SSH certificate.
 
 ```plaintext
 DELETE /groups/:id/ssh_certificate/:id

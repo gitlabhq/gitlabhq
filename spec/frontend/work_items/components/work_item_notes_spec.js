@@ -12,6 +12,7 @@ import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
@@ -31,7 +32,7 @@ import {
   WIDGET_TYPE_NOTES,
   WORK_ITEM_NOTES_SORT_ORDER_KEY,
 } from '~/work_items/constants';
-import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM, ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
@@ -73,6 +74,8 @@ const mockWorkItemNoteResponse = {
   data: {
     note: {
       id: mockDiscussions[0].notes.nodes[0].id,
+      noteableType: ISSUE_NOTEABLE_TYPE,
+      noteableId: getIdFromGraphQLId(mockWorkItemId),
       discussion: { id: mockDiscussions[0].id, notes: mockDiscussions[0].notes },
     },
   },
@@ -234,7 +237,7 @@ describe('WorkItemNotes component', () => {
       createComponent();
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
-      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).toHaveBeenCalled();
     });
 
     it('skips preview note if modal is open', async () => {
@@ -308,6 +311,16 @@ describe('WorkItemNotes component', () => {
       expect(findWorkItemDiscussionAtIndex(0).props('discussion')).toEqual(
         mockWorkItemNoteResponse.data.note.discussion,
       );
+    });
+
+    it('does not render note when noteable id does not match', async () => {
+      setWindowLocation('#note_174');
+
+      createComponent({ workItemId: 'gid://gitlab/WorkItem/9999999' });
+
+      await waitForPromises();
+
+      expect(findAllWorkItemDiscussions()).toHaveLength(0);
     });
   });
 
@@ -462,13 +475,13 @@ describe('WorkItemNotes component', () => {
     });
   });
 
-  it('should open delete modal confirmation when child discussion emits `deleteNote` event', async () => {
+  it('should open delete modal confirmation when child discussion emits `delete-note` event', async () => {
     createComponent({
       defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
     });
     await waitForPromises();
 
-    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: '1', isLastNote: false });
+    findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', { id: '1', isLastNote: false });
     expect(showModal).toHaveBeenCalled();
   });
 
@@ -483,7 +496,7 @@ describe('WorkItemNotes component', () => {
     it('sends the mutation with correct variables', () => {
       const noteId = 'some-test-id';
 
-      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: noteId });
+      findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', { id: noteId });
       findDeleteNoteModal().vm.$emit('primary');
 
       expect(deleteWorkItemNoteMutationSuccessHandler).toHaveBeenCalledWith({
@@ -496,7 +509,7 @@ describe('WorkItemNotes component', () => {
     it('successfully removes the note from the discussion', async () => {
       expect(findWorkItemDiscussionAtIndex(0).props('discussion').notes.nodes).toHaveLength(2);
 
-      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
+      findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', {
         id: mockDiscussions[0].notes.nodes[0].id,
       });
       findDeleteNoteModal().vm.$emit('primary');
@@ -511,7 +524,7 @@ describe('WorkItemNotes component', () => {
       expect(findAllWorkItemDiscussions()).toHaveLength(2);
       expect(secondDiscussion.props('discussion').notes.nodes).toHaveLength(1);
 
-      secondDiscussion.vm.$emit('deleteNote', {
+      secondDiscussion.vm.$emit('delete-note', {
         id: mockDiscussions[1].notes.nodes[0].id,
         discussion: { id: mockDiscussions[1].id },
       });
@@ -529,7 +542,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
+    findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', {
       id: mockDiscussions[0].notes.nodes[0].id,
     });
     findDeleteNoteModal().vm.$emit('primary');

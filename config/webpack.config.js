@@ -2,19 +2,21 @@
 const crypto = require('./helpers/patched_crypto');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
 if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
   throw new Error(
     `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
   );
 }
 const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
+const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
 
 if (USE_VUE3) {
   console.log('[V] Using Vue.js 3');
 } else {
   console.log('[V] Using Vue.js 2');
 }
-const VUE_LOADER_MODULE = USE_VUE3 ? 'vue-loader-vue3' : 'vue-loader';
+const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
 
 const fs = require('fs');
 const path = require('path');
@@ -35,6 +37,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const { isCustomElement } = require('./vue3migration/vue3_template_compiler');
 
 const {
   IS_EE,
@@ -143,6 +146,12 @@ const alias = {
   // load mjs version instead of cjs
   'markdown-it': path.join(ROOT_PATH, 'node_modules/markdown-it/index.mjs'),
 
+  // Alias portal-vue to resolve dynamically to pick proper vue version
+  'portal-vue$': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
+  ),
+
   // test-environment-only aliases duplicated from Jest config
   'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),
   ee_else_ce_jest: path.join(ROOT_PATH, 'spec/frontend'),
@@ -230,6 +239,9 @@ const vueLoaderOptions = {
     VUE_LOADER_VERSION,
     EXPLICIT_VUE_VERSION,
   ].join('|'),
+  compilerOptions: {
+    whitespace: 'preserve',
+  },
 };
 
 const shouldExcludeFromCompiling = (modulePath) => {
@@ -267,13 +279,43 @@ if (USE_VUE3) {
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
-    'portal-vue': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/portal_vue.js'),
     // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
     // use an alias to ensure vue-demi finds the right version
     'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),
+    'vendor/vue-virtual-scroller': path.join(
+      ROOT_PATH,
+      'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+    ),
+    'portal-vue-vue3-impl$': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
+    ),
   });
 
-  vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compiler.js');
+  if (USE_VUE3_COMPILER) {
+    vueLoaderOptions.compiler = path.join(
+      ROOT_PATH,
+      'config/vue3migration/vue3_template_compiler.js',
+    );
+    vueLoaderOptions.compilerOptions.compatConfig = {
+      MODE: 2,
+
+      COMPILER_V_BIND_OBJECT_ORDER: 'suppress-warning',
+      COMPILER_V_BIND_SYNC: 'suppress-warning',
+      COMPILER_V_IF_V_FOR_PRECEDENCE: 'suppress-warning',
+      COMPILER_V_ON_NATIVE: 'suppress-warning',
+    };
+    // Has no real effect here, since we're using thread-loader which serializes config passing to threads
+    // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
+    vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
+  }
+} else {
+  Object.assign(alias, {
+    'portal-vue-vue3-impl$': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
+    ),
+  });
 }
 
 const entriesState = {
@@ -927,6 +969,15 @@ module.exports = {
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
       'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
       'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
+      // Vue 3 feature flags - https://link.vuejs.org/feature-flags
+      // These are required for the esm-bundler build of Vue to enable proper tree-shaking
+      ...(USE_VUE3
+        ? {
+            __VUE_OPTIONS_API__: JSON.stringify(true),
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+          }
+        : {}),
     }),
 
     /* Pikaday has a optional dependency to moment.

@@ -3,14 +3,7 @@
 Rails/StrongParams:
   Exclude:
     - 'app/controllers/acme_challenges_controller.rb'
-    - 'app/controllers/activity_pub/projects/application_controller.rb'
     - 'app/controllers/admin/application_settings_controller.rb'
-    - 'app/controllers/admin/applications_controller.rb'
-    - 'app/controllers/admin/keys_controller.rb'
-    - 'app/controllers/admin/projects_controller.rb'
-    - 'app/controllers/admin/runners_controller.rb'
-    - 'app/controllers/admin/users_controller.rb'
-    - 'app/controllers/autocomplete_controller.rb'
     - 'app/controllers/banzai/uploads_controller.rb'
     - 'app/controllers/chaos_controller.rb'
     - 'app/controllers/concerns/access_tokens_actions.rb'
@@ -72,7 +65,6 @@ Rails/StrongParams:
     - 'app/controllers/groups/runners_controller.rb'
     - 'app/controllers/groups/settings/applications_controller.rb'
     - 'app/controllers/groups/settings/slacks_controller.rb'
-    - 'app/controllers/groups/shared_projects_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/health_controller.rb'

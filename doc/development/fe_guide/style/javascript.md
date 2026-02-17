@@ -11,11 +11,8 @@ linter to manage most of our JavaScript style guidelines.
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
 listed below.
 
-{{< alert type="note" >}}
-
-You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
-
-{{< /alert >}}
+> [!note]
+> You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
 
 ## Avoid `forEach`
 
@@ -103,11 +100,8 @@ class a {
 
 When converting strings to integers, `Number` is semantic and can be more readable. Both are allowable, but `Number` has a slight maintainability advantage.
 
-{{< alert type="warning" >}}
-
-`parseInt` **must** include the [radix argument](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt).
-
-{{< /alert >}}
+> [!warning]
+> `parseInt` **must** include the [radix argument](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt).
 
 ```javascript
 // bad (missing radix argument)
@@ -128,11 +122,8 @@ things.map(parseInt);
 things.map(Number);
 ```
 
-{{< alert type="note" >}}
-
-If the String could represent a non-integer (a number that includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
-
-{{< /alert >}}
+> [!note]
+> If the String could represent a non-integer (a number that includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
 
 ## CSS Selectors - Use `js-` prefix
 

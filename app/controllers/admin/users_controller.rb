@@ -14,20 +14,20 @@ class Admin::UsersController < Admin::ApplicationController
   PAGINATION_WITH_COUNT_LIMIT = 1000
 
   def index
-    return redirect_to admin_cohorts_path if params[:tab] == 'cohorts'
+    return redirect_to admin_cohorts_path if safe_params[:tab] == 'cohorts'
 
     @users = filter_users
 
-    if params[:search_query].present?
+    if safe_params[:search_query].present?
       # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- available only for self-managed instances
-      @users = @users.search(params[:search_query], with_private_emails: true, partial_email_search: !Gitlab.com?)
+      @users = @users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: !Gitlab.com?)
       # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
     end
 
     @users = users_with_included_associations(@users)
-    @sort = params[:sort].presence || sort_value_name
+    @sort = safe_params[:sort].presence || sort_value_name
     @users = @users.sort_by_attribute(@sort)
-    @users = @users.page(params[:page])
+    @users = @users.page(safe_params[:page])
     @users = @users.without_count if paginate_without_count?
   end
 
@@ -239,21 +239,16 @@ class Admin::UsersController < Admin::ApplicationController
   def update
     user_params_with_pass = user_params.dup
 
-    if params[:user][:password].present?
+    if permitted_user_password_params[:password].present?
       password_params = {
-        password: params[:user][:password],
-        password_confirmation: params[:user][:password_confirmation]
+        password: permitted_user_password_params[:password],
+        password_confirmation: permitted_user_password_params[:password_confirmation]
       }
 
       password_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user?
 
       user_params_with_pass.merge!(password_params)
     end
-
-    cc_validation_params = process_credit_card_validation_params(
-      user_params_with_pass.delete(:credit_card_validation_attributes)
-    )
-    user_params_with_pass.merge!(cc_validation_params)
 
     respond_to do |format|
       result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
@@ -267,7 +262,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.json { head :ok }
       else
         # restore username to keep form action url.
-        user.username = params[:id]
+        user.username = safe_params[:id]
         format.html { render "edit" }
         format.json { render json: [result[:message]], status: :internal_server_error }
       end
@@ -284,7 +279,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def remove_email
-    email = user.emails.find(params[:email_id])
+    email = user.emails.find(safe_params[:email_id])
     success = Emails::DestroyService.new(current_user, user: user).execute(email)
 
     respond_to do |format|
@@ -299,27 +294,6 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   protected
-
-  def process_credit_card_validation_params(cc_validation_params)
-    return unless cc_validation_params && cc_validation_params[:credit_card_validated_at]
-
-    cc_validation = cc_validation_params[:credit_card_validated_at]
-
-    if cc_validation == "1" && !user.credit_card_validated_at
-      {
-        credit_card_validation_attributes: {
-          credit_card_validated_at: Time.zone.now
-        }
-      }
-
-    elsif cc_validation == "0" && user.credit_card_validated_at
-      {
-        credit_card_validation_attributes: {
-          _destroy: true
-        }
-      }
-    end
-  end
 
   def paginate_without_count?
     counts = Gitlab::Database::Count.approximate_counts([User])
@@ -355,7 +329,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user
-    @user ||= find_routable!(User, params[:id], request.fullpath)
+    @user ||= find_routable!(User, safe_params[:id], request.fullpath)
   end
 
   def build_canonical_path(user)
@@ -385,6 +359,7 @@ class Admin::UsersController < Admin::ApplicationController
       :color_scheme_id,
       :discord,
       :email,
+      :email_otp_required_after,
       :extern_uid,
       :external,
       :force_random_password,
@@ -407,7 +382,6 @@ class Admin::UsersController < Admin::ApplicationController
       :username,
       :website_url,
       :github,
-      { credit_card_validation_attributes: [:credit_card_validated_at] },
       { organization_users_attributes: [:id, :organization_id, :access_level] }
     ]
   end
@@ -463,11 +437,29 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def filter_users
-    User.filter_items(params[:filter]).order_name_asc
+    User.filter_items(safe_params[:filter]).order_name_asc
   end
 
   def safe_params
-    params.permit(:personal_projects_page, :projects_page, :groups_page)
+    params.permit(
+      :id,
+      :email_id,
+      :personal_projects_page,
+      :projects_page,
+      :groups_page,
+      :tab,
+      :search_query,
+      :sort,
+      :page,
+      :filter
+    )
+  end
+
+  # WARNING: Only use permitted_user_password_params in contexts where password input has been
+  # explicitly provided by an admin through a secure form. Do not call this in contexts
+  # where params could be manipulated or in automated processes.
+  def permitted_user_password_params
+    params.require(:user).permit(:password, :password_confirmation)
   end
 end
 

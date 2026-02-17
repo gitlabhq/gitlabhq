@@ -47,7 +47,7 @@ GitLab provides two methods to compare revisions:
 To compare revisions:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Compare revisions**.
+1. In the left sidebar, select **Code** > **Compare revisions**.
 1. Select the **Source** revision:
 
    - To search for a branch, enter the branch name. Exact matches are shown first.
@@ -81,7 +81,7 @@ Prerequisites:
 To preview a file in its deployed environment:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Compare revisions**.
+1. In the left sidebar, select **Code** > **Compare revisions**.
 1. Select the **Source** and **Target** branches or commits you want to compare.
 1. In the file diff view, locate a file that's included in your route maps configuration.
 1. Select the **More actions** menu ({{< icon name="ellipsis_v" >}}) for the file.

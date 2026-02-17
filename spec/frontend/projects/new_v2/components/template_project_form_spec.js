@@ -1,6 +1,6 @@
+import { GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TemplateProjectForm from '~/projects/new_v2/components/template_project_form.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 describe('Template Project Form', () => {
   let wrapper;
@@ -20,7 +20,7 @@ describe('Template Project Form', () => {
     });
   };
 
-  const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findNextButton = () => wrapper.findByTestId('template-project-next-button');
   const findBackButton = () => wrapper.findByTestId('template-project-back-button');
 
@@ -28,8 +28,8 @@ describe('Template Project Form', () => {
     createComponent();
   });
 
-  it('passes the correct props to MultiStepFormTemplate', () => {
-    expect(findMultiStepFormTemplate().props()).toMatchObject({
+  it('passes the correct props to GlMultiStepFormTemplate', () => {
+    expect(findGlMultiStepFormTemplate().props()).toMatchObject({
       title: defaultProps.option.title,
       currentStep: 2,
       stepsTotal: 3,

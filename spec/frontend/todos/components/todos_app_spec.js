@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTabs, GlFormCheckbox } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -36,6 +36,7 @@ describe('TodosApp', () => {
   const todosCountsQuerySuccessHandler = jest.fn().mockResolvedValue(getPendingTodosCountResponse);
 
   const createComponent = ({
+    mountFn = shallowMountExtended,
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
   } = {}) => {
@@ -43,7 +44,7 @@ describe('TodosApp', () => {
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
     mockApollo.defaultClient.setRequestHandler(getPendingTodosCount, todosCountsQueryHandler);
 
-    wrapper = shallowMountExtended(TodosApp, {
+    wrapper = mountFn(TodosApp, {
       apolloProvider: mockApollo,
     });
   };
@@ -58,6 +59,17 @@ describe('TodosApp', () => {
   const findPagination = () => wrapper.findComponent(TodosPagination);
 
   ignoreConsoleMessages([/\[Vue warn\]: \(deprecation TRANSITION_GROUP_ROOT\)/]);
+
+  it('renders gl-tab with correct href attributes', async () => {
+    createComponent({ mountFn: mountExtended });
+    await nextTick();
+
+    const links = wrapper.findAll('.nav-link');
+
+    expect(links.at(0).attributes('href')).toBe('/');
+    expect(links.at(1).attributes('href')).toBe('?state=snoozed');
+    expect(links.at(2).attributes('href')).toBe('?state=done');
+  });
 
   it('should have a tracking event for each tab', () => {
     expect(STATUS_BY_TAB).toHaveLength(INSTRUMENT_TAB_LABELS.length);

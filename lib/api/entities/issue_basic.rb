@@ -33,6 +33,7 @@ module API
       expose(:merge_requests_count) { |issue, options| issuable_metadata.merge_requests_count }
       expose(:upvotes)              { |issue, options| issuable_metadata.upvotes }
       expose(:downvotes)            { |issue, options| issuable_metadata.downvotes }
+      expose :start_date, documentation: { type: 'Date', example: '2022-11-18' }
       expose :due_date, documentation: { type: 'Date', example: '2022-11-20' }
       expose :confidential, documentation: { type: 'Boolean' }
       expose :discussion_locked, documentation: { type: 'Boolean' }

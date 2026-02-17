@@ -3,6 +3,7 @@ import RollbackModalManager from './components/rollback_modal_manager.vue';
 
 const mountConfirmRollbackModal = (optionalProps) =>
   new Vue({
+    name: 'RollbackModalManagerRoot',
     render(h) {
       return h(RollbackModalManager, {
         props: {

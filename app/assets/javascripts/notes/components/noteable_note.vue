@@ -523,7 +523,7 @@ export default {
           @handleEdit="editHandler"
           @handleDelete="deleteHandler"
           @handleResolve="resolveHandler"
-          @startReplying="$emit('startReplying')"
+          @start-replying="$emit('start-replying')"
           @updateAssignees="assigneesUpdate"
         />
       </div>

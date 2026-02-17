@@ -21,7 +21,7 @@ To set up the Google Cloud integration:
 
 To set up the integration, you must:
 
-- Have a GitLab project where you have at least the Maintainer role.
+- Have a GitLab project where you have the Maintainer or Owner role.
 - Have the [Owner](https://cloud.google.com/iam/docs/understanding-roles#owner) IAM role on the
   Google Cloud projects that you want to use.
 - Have [billing enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project).

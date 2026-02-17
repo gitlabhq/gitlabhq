@@ -2,7 +2,7 @@
 
 class ForceRestartBuildsMetadataMigrationsForSelfManaged < Gitlab::Database::Migration[2.3]
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
-  milestone '18.8'
+  milestone '18.9'
   disable_ddl_transaction!
 
   MIGRATION = 'MoveCiBuildsMetadataSelfManaged'

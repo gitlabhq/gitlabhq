@@ -158,7 +158,7 @@ describe('InviteMembersModal', () => {
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
   const findCelebrationEmoji = () => wrapper.findComponent(GlEmoji);
   const triggerOpenModal = async ({ mode = 'default', source } = {}) => {
-    eventHub.$emit('openModal', { mode, source });
+    eventHub.$emit('open-modal', { mode, source });
     await nextTick();
   };
   const triggerMembersTokenSelect = async (val) => {

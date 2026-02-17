@@ -109,42 +109,36 @@ Quote script commands and variable values to prevent YAML and shell parsing erro
       - gcc $COMPILE_FLAGS main.c  # Expands to: gcc -Wall -Werror -O2 main.c
   ```
 
-## Pass an environment variable to another job
+## Pass environment variables to later jobs
 
-You can create a new environment variable in a job, and pass it to another job
-in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline
-(for example with the [`rules` keyword](../yaml/_index.md#rules)), but they can be used in job scripts.
+You can define environment variables in a job script and pass them to other jobs
+in later stages using [`dotenv` reports](../yaml/artifacts_reports.md#artifactsreportsdotenv).
 
-To pass a job-created environment variable to other jobs:
+Environment variables from `dotenv` reports can only be used in job scripts, not to configure pipelines.
+The variables [take precedence](_index.md#cicd-variable-precedence) over job variables defined in the `.gitlab-ci.yml` file.
 
-1. In the job script, save the variable as a `.env` file.
-   - The format of the file must be one variable definition per line.
-   - Each line must be formatted as: `VARIABLE_NAME=ANY VALUE HERE`.
-   - Values can be wrapped in quotes, but cannot contain newline characters.
-1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
-   artifact.
-1. Jobs in later stages can then use the variable in scripts, unless
-   [jobs are configured to not receive `dotenv` variables](#control-which-jobs-receive-dotenv-variables).
+To pass `dotenv` variables to later jobs:
 
-For example:
+1. In the job script, save the variable as a `.env` file with the format `VARIABLE_NAME=value`. For example:
 
-```yaml
-build-job:
-  stage: build
-  script:
-    - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
-  artifacts:
-    reports:
-      dotenv: build.env
+   ```yaml
+      build-job:
+        stage: build
+        script:
+          - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
+        artifacts:
+          reports:
+            dotenv: build.env
+   ```
 
-test-job:
-  stage: test
-  script:
-    - echo "$BUILD_VARIABLE"  # Output is: 'value_from_build_job'
-```
+1. In later stage jobs, use the variable in scripts. For example:
 
-Variables from `dotenv` reports [take precedence](_index.md#cicd-variable-precedence) over
-certain types of new variable definitions such as job defined variables.
+   ```yaml
+   test-job:
+     stage: test
+     script:
+       - echo "$BUILD_VARIABLE"  # Output is: 'value_from_build_job'
+   ```
 
 You can also [pass `dotenv` variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 

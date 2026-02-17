@@ -16,9 +16,9 @@ description: The GitLab Users API can create, modify, search and delete user acc
 Use this API to interact with user accounts on GitLab. These endpoints can help manage [your account](../user/profile/_index.md)
 or [accounts for other users](../administration/administer_users.md).
 
-## List users
+## List all users
 
-Get a list of users.
+Lists all users.
 
 Takes [pagination parameters](rest/_index.md#offset-based-pagination) `page` and `per_page` to restrict the list of users.
 
@@ -365,13 +365,13 @@ You can use the `created_by` parameter to see if a user account was created:
 
 If the returned value is `null`, the account was created by a user who registered an account themselves.
 
-## Get a single user
+## Retrieve a single user
 
-Get a single user.
+Retrieves a single user.
 
-### As a regular user
+### Retrieve a single user as a regular user
 
-Get a single user as a regular user.
+Retrieves a single user as a regular user.
 
 Prerequisites:
 
@@ -436,7 +436,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single user as an administrator.
+Retrieves a single user as an administrator.
 
 ```plaintext
 GET /users/:id
@@ -571,13 +571,13 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## Get the current user
+## Retrieve the current user
 
-Get the current user.
+Retrieves the current user.
 
 ### As a regular user
 
-Get your user details.
+Retrieves your user details.
 
 ```plaintext
 GET /user
@@ -653,7 +653,7 @@ Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 {{< /history >}}
 
-Get your user details, or the details of another user.
+Retrieves your user details, or the details of another user.
 
 ```plaintext
 GET /user
@@ -737,19 +737,16 @@ parameters:
 
 {{< /history >}}
 
-Create a user.
+Creates a user.
 
 Prerequisites:
 
 - You must be an administrator.
 
-{{< alert type="note" >}}
-
-`private_profile` defaults to the value of the
-[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)
-setting. `bio` defaults to `""` instead of `null`.
-
-{{< /alert >}}
+> [!note]
+> `private_profile` defaults to the value of the
+> [Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)
+> setting. `bio` defaults to `""` instead of `null`.
 
 ```plaintext
 POST /users
@@ -874,7 +871,7 @@ For example, when renaming the email address to an existing one.
 
 {{< /details >}}
 
-Delete a user.
+Deletes a user.
 
 Prerequisites:
 
@@ -897,9 +894,9 @@ Supported attributes:
 | `id`          | integer | yes      | ID of a user |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, and also groups owned solely by this user. |
 
-## Get your user status
+## Retrieve your user status
 
-Get your user status.
+Retrieves your user status.
 
 Prerequisites:
 
@@ -928,9 +925,9 @@ Example response:
 }
 ```
 
-## Get the status of a user
+## Retrieve the status of a user
 
-Get the status of a user. You can access this endpoint without authentication.
+Retrieves the status of a user. You can access this endpoint without authentication.
 
 ```plaintext
 GET /users/:id_or_username/status
@@ -962,7 +959,7 @@ Example response:
 
 ## Set your user status
 
-Set your user status.
+Sets your user status.
 
 Prerequisites:
 
@@ -1010,9 +1007,9 @@ Example response:
 }
 ```
 
-## Get your user preferences
+## Retrieve your user preferences
 
-Get your user preferences.
+Retrieves your user preferences.
 
 Prerequisites:
 
@@ -1036,7 +1033,7 @@ Example response:
 
 ## Update your user preferences
 
-Update your user preferences.
+Updates your user preferences.
 
 Prerequisites:
 
@@ -1072,7 +1069,7 @@ Supported attributes:
 
 {{< /history >}}
 
-Upload an avatar for yourself.
+Uploads an avatar for yourself.
 
 Prerequisites:
 
@@ -1123,9 +1120,9 @@ Returns:
 - `200` if successful.
 - `400 Bad Request` for file sizes greater than 200 KiB.
 
-## Get a count of your assigned issues, merge requests, and reviews
+## Retrieve a count of your assigned issues, merge requests, and reviews
 
-Get a count of your assigned issues, merge requests, and reviews.
+Retrieves a count of your assigned issues, merge requests, and reviews.
 
 Prerequisites:
 
@@ -1164,9 +1161,9 @@ Example response:
 }
 ```
 
-## Get a count of a user's projects, groups, issues, and merge requests
+## Retrieve a count of a user's projects, groups, issues, and merge requests
 
-Get a list of a user's count of:
+Retrieves a list of a user's count of:
 
 - Projects.
 - Groups.
@@ -1392,7 +1389,9 @@ Returns:
 
 {{< /details >}}
 
-Create a runner linked to the current user.
+Creates a runner linked to the current user. The user is listed as the owner for audit
+purposes, but runner availability is based on `runner_type`. For more information,
+see [Manage runners](../ci/runners/runners_scope.md).
 
 Prerequisites:
 
@@ -1451,7 +1450,7 @@ Example response:
 
 {{< /details >}}
 
-Delete a user's authentication identity using the provider name associated with that identity.
+Deletes a user's authentication identity using the provider name associated with that identity.
 
 Prerequisites:
 

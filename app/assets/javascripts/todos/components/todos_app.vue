@@ -332,6 +332,11 @@ export default {
       else this.unselectAll();
     },
   },
+  tabLinkAttributes: {
+    default: { href: window.location.pathname },
+    snoozed: { href: '?state=snoozed' },
+    done: { href: '?state=done' },
+  },
 };
 </script>
 
@@ -346,7 +351,7 @@ export default {
         nav-class="gl-border-0"
         @input="tabChanged"
       >
-        <gl-tab>
+        <gl-tab :title-link-attributes="$options.tabLinkAttributes.default">
           <template #title>
             <span>{{ s__('Todos|To Do') }}</span>
             <gl-badge pill size="sm" class="gl-tab-counter-badge" data-testid="pending-todos-count">
@@ -354,19 +359,19 @@ export default {
             </gl-badge>
           </template>
         </gl-tab>
-        <gl-tab>
+        <gl-tab :title-link-attributes="$options.tabLinkAttributes.snoozed">
           <template #title>
             <span>{{ s__('Todos|Snoozed') }}</span>
           </template>
         </gl-tab>
-        <gl-tab>
+        <gl-tab :title-link-attributes="$options.tabLinkAttributes.done">
           <template #title>
             <span>{{ s__('Todos|Done') }}</span>
           </template>
         </gl-tab>
       </gl-tabs>
 
-      <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
+      <div class="gl-my-3 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
         <gl-button
           id="todo-refresh-btn"
           v-gl-tooltip.hover

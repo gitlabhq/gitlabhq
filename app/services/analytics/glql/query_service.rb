@@ -33,7 +33,7 @@ module Analytics
 
           query_result = {
             data: result&.dig('data'),
-            errors: result&.dig('errors'),
+            errors: normalize_errors(result&.dig('errors')),
             complexity_score: extract_complexity_score,
             duration_s: Gitlab::Metrics::System.monotonic_time - start_time,
             timeout_occurred: false,
@@ -213,6 +213,15 @@ module Analytics
           nil # Rate limited queries are not considered errors for SLI
         else
           :other
+        end
+      end
+
+      # Normalize GraphQL errors to use symbol keys consistently
+      def normalize_errors(errors)
+        return unless errors
+
+        errors.map do |error|
+          error.is_a?(Hash) && error.key?("message") ? { message: error["message"] } : error
         end
       end
     end

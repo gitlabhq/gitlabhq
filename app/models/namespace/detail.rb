@@ -11,6 +11,8 @@ class Namespace::Detail < ApplicationRecord
   validates :state_metadata, json_schema: { filename: 'namespace_detail_state_metadata', size_limit: 64.kilobytes },
     if: :state_metadata_changed?
 
+  ignore_column :deleted_at, remove_with: '18.11', remove_after: '2026-03-21'
+
   jsonb_accessor :state_metadata,
     last_updated_at: :datetime,
     last_changed_by_user_id: :integer,
@@ -21,18 +23,6 @@ class Namespace::Detail < ApplicationRecord
   cache_markdown_field :description, pipeline: :description
 
   self.primary_key = :namespace_id
-
-  # This method should not be called directly. Instead, it is available on the namespace via delegation and should
-  # be called after the namespace is saved. Failure to do so will result in errors due to a database trigger that
-  # automatically creates the namespace_details after a namespace is created. If we attempt to build the namespace
-  # details before the namespace is saved, the trigger will fire and rails will subsequently try to create the
-  # namespace_details which will result in an error due to a primary key conflict. Any other modifications to the
-  # namespace details should be performed after the associated namespace is saved for the same reason.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958/diffs#diff-content-c02244956d423e6837379548e5f9b1fa093bb289
-  def add_creator(user)
-    update_attribute(:creator, user)
-  end
 end
 # rubocop:enable Gitlab/BoundedContexts
 

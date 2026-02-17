@@ -43,7 +43,7 @@ authorization service.
 
 Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`. Read more about the logs GitLab keeps in
-the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
+the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs/).
 
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
@@ -87,11 +87,8 @@ To allow authorization with deploy tokens and keys:
    - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
-
-{{< /alert >}}
+> [!warning]
+> If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
 
 ## How GitLab connects to an external authorization service
 

@@ -19,6 +19,7 @@ export default function initBranchMoreActions(el) {
 
   return new Vue({
     el,
+    name: 'DeleteBranchButtonRoot',
     render: (createElement) =>
       createElement(DeleteBranchButton, {
         props: {

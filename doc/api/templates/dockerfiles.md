@@ -32,9 +32,9 @@ In [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/) tiers, GitLa
 administrators can override templates in the
 [**Admin** area](../../administration/settings/instance_template_repository.md).
 
-## List Dockerfile templates
+## List all Dockerfile templates
 
-Get all Dockerfile templates.
+Lists all Dockerfile templates.
 
 ```plaintext
 GET /templates/dockerfiles
@@ -125,9 +125,9 @@ Example response:
 ]
 ```
 
-## Single Dockerfile template
+## Retrieve a single Dockerfile template
 
-Get a single Dockerfile template.
+Retrieves a single Dockerfile template.
 
 ```plaintext
 GET /templates/dockerfiles/:key

@@ -64,7 +64,7 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 - Familiarity with [GitLab CI/CD pipelines](../pipelines/_index.md)
 - Familiarity with [GitLab environments and deployments](../environments/_index.md)
-- At least the Developer role for the project to configure CI/CD pipelines.
+- the Developer, Maintainer, or Owner role for the project to configure CI/CD pipelines.
 
 ## Process modes
 
@@ -81,7 +81,7 @@ The following modes are supported:
 ### Change the process mode
 
 To change the process mode of a resource group, you must use the API and
-send a request to [edit an existing resource group](../../api/resource_groups.md#edit-an-existing-resource-group)
+send a request to [edit an existing resource group](../../api/resource_groups.md#update-a-resource-group)
 by specifying the `process_mode`:
 
 - `unordered`

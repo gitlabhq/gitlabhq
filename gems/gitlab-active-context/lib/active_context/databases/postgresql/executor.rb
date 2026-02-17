@@ -220,6 +220,42 @@ module ActiveContext
             connection.drop_table(collection.name, if_exists: true)
           end
         end
+
+        def do_add_field(collection, field)
+          return if RESERVED_FIELDS.include?(field.name.to_s)
+
+          strategy = PartitionStrategy.new(
+            name: collection.name,
+            number_of_partitions: collection.number_of_partitions
+          )
+
+          adapter.client.with_connection do |connection|
+            add_column_to_existing_table(connection, strategy.collection_name, field)
+          end
+
+          create_indices(strategy, [field])
+        end
+
+        def add_column_to_existing_table(connection, table_name, field)
+          return if connection.column_exists?(table_name, field.name)
+
+          case field
+          when Field::Bigint
+            connection.add_column(table_name, field.name, :bigint, **field.options.except(:index))
+          when Field::Integer
+            connection.add_column(table_name, field.name, :integer, **field.options.except(:index))
+          when Field::Smallint
+            connection.add_column(table_name, field.name, :integer, limit: 2, **field.options.except(:index))
+          when Field::Boolean
+            connection.add_column(table_name, field.name, :boolean, **field.options.except(:index))
+          when Field::Keyword, Field::Text
+            connection.add_column(table_name, field.name, :text, **field.options.except(:index))
+          when Field::Vector
+            connection.add_column(table_name, field.name, "vector(#{field.options[:dimensions]})")
+          else
+            raise ArgumentError, "Unknown field type: #{field.class}"
+          end
+        end
       end
     end
   end

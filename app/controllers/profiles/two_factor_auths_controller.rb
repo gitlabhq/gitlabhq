@@ -8,7 +8,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     if: :current_password_required?
   before_action :update_current_user_otp!, only: [:show]
 
-  helper_method :current_password_required?, :passkey_via_2fa_enabled?
+  helper_method :current_password_required?
 
   feature_category :system_access
 
@@ -38,8 +38,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute! do |user|
         @codes = user.generate_otp_backup_codes!
       end
-
-      helpers.dismiss_two_factor_auth_recovery_settings_check
 
       render 'create'
     else
@@ -71,10 +69,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         redirect_to profile_two_factor_auth_path, notice: notice
       else
 
-        Users::UpdateService.new(current_user, user: current_user).execute! do |user|
+        Users::UpdateService.new(current_user, user: current_user).execute! do |_user|
           @codes = current_user.generate_otp_backup_codes!
         end
-        helpers.dismiss_two_factor_auth_recovery_settings_check
         flash[:notice] = notice
         render 'create'
       end
@@ -91,8 +88,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def codes
     Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
-
-      helpers.dismiss_two_factor_auth_recovery_settings_check
     end
   end
 

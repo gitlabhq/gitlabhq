@@ -28,7 +28,7 @@ When planning the upgrade:
 1. If you're using Geo:
    - Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
    - Review Geo-specific information in the [GitLab upgrade notes](versions/_index.md).
-   - Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+   - Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-geo-instance).
    - Create an upgrade and rollback plan for each Geo site (primary and each secondary).
 1. Determine the appropriate [upgrade path](upgrade_paths.md) for your instance, including any required upgrade stops.
    Upgrade stops might require you to perform multiple upgrades.

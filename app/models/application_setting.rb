@@ -11,6 +11,9 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
+  ignore_column :lock_duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
+  ignore_column :namespace_deletion_settings, remove_with: '18.11', remove_after: '2026-03-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -581,6 +584,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :integrations, json_schema: { filename: "application_setting_integrations" }
 
+  jsonb_accessor :topology_service_settings,
+    topology_service_concurrency_limit: [:integer, { default: 200 }]
+
+  validates :topology_service_settings, json_schema: { filename: "application_setting_topology_service_settings" }
+
   with_options(presence: true, if: :slack_app_enabled?) do
     validates :slack_app_id
     validates :slack_app_secret
@@ -639,7 +647,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_unauthenticated_packages_api_period_in_seconds,
       :throttle_unauthenticated_packages_api_requests_per_period,
       :throttle_unauthenticated_period_in_seconds,
-      :throttle_unauthenticated_requests_per_period
+      :throttle_unauthenticated_requests_per_period,
+      :topology_service_concurrency_limit
   end
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
@@ -756,7 +765,8 @@ class ApplicationSetting < ApplicationRecord
     silent_admin_exports_enabled: [:boolean, { default: false }],
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
     allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
-    relation_export_batch_size: [:integer, { default: 50 }]
+    relation_export_batch_size: [:integer, { default: 50 }],
+    allow_s3_compatible_storage_for_offline_transfer: [:boolean, { default: false }]
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
@@ -898,8 +908,7 @@ class ApplicationSetting < ApplicationRecord
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
       :lock_maven_package_requests_forwarding,
-      :pages_unique_domain_default_enabled,
-      :allow_immediate_namespaces_deletion
+      :pages_unique_domain_default_enabled
     )
   end
 
@@ -1013,15 +1022,6 @@ class ApplicationSetting < ApplicationRecord
   validates :bulk_import_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
-
-  jsonb_accessor :namespace_deletion_settings,
-    allow_immediate_namespaces_deletion: [:boolean, { default: true }]
-
-  validates :namespace_deletion_settings, json_schema: { filename: "application_setting_namespace_deletion_settings" }
-
-  validates :allow_immediate_namespaces_deletion,
-    inclusion: { in: [false], message: N_('cannot be enabled on Dedicated') },
-    if: :gitlab_dedicated_instance
 
   validates :allow_runner_registration_token,
     allow_nil: false,

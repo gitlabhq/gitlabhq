@@ -1,7 +1,14 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormInput,
+  GlSprintf,
+  GlLink,
+  GlAlert,
+  GlMultiStepFormTemplate,
+} from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 
@@ -13,7 +20,7 @@ export default {
     GlSprintf,
     GlLink,
     GlAlert,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     MultipleChoiceSelector,
     MultipleChoiceSelectorItem,
   },
@@ -67,12 +74,12 @@ export default {
 };
 </script>
 <template>
-  <multi-step-form-template
+  <gl-multi-step-form-template
     :title="s__('Runners|Create instance runner')"
     :current-step="currentStep"
     :steps-total="stepsTotal"
   >
-    <template #form>
+    <template #default>
       <gl-alert
         v-if="isValidationAlertVisible"
         :dismissible="false"
@@ -137,5 +144,5 @@ export default {
         {{ __('Next step') }}
       </gl-button>
     </template>
-  </multi-step-form-template>
+  </gl-multi-step-form-template>
 </template>

@@ -1,3 +1,4 @@
+# @feature_category: source_code_management
 query getPermalinkPath($fullPath: ID!, $path: String!, $ref: String!) {
   project(fullPath: $fullPath) {
     id

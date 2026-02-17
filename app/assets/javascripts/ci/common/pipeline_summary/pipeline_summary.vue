@@ -197,7 +197,7 @@ export default {
           :pipeline-path="pipelinePath"
           :pipeline-stages="pipelineStages"
           :upstream-pipeline="upstreamPipeline"
-          @jobActionExecuted="onJobActionExecuted"
+          @job-action-executed="onJobActionExecuted"
         />
       </div>
     </div>

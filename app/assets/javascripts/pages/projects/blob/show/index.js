@@ -14,7 +14,7 @@ import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import App from '~/repository/components/app.vue';
+import RepositoryApp from '~/repository/components/app.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateHistoryUrl } from '~/repository/utils/url_utility';
@@ -54,6 +54,7 @@ const initLastCommitApp = (router) => {
 
   return new Vue({
     el: lastCommitEl,
+    name: 'BlobLastCommitRoot',
     router,
     apolloProvider,
     render(h) {
@@ -115,6 +116,7 @@ if (viewBlobEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: viewBlobEl,
+    name: 'RepositoryAppRoot',
     store: createStore(),
     router,
     apolloProvider,
@@ -130,7 +132,7 @@ if (viewBlobEl) {
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {
-      return createElement(App, {
+      return createElement(RepositoryApp, {
         props: {
           path: blobPath,
           projectPath,
@@ -166,6 +168,7 @@ const initForkInfo = () => {
   } = forkEl.dataset;
   return new Vue({
     el: forkEl,
+    name: 'BlobForkInfoRoot',
     apolloProvider,
     render(h) {
       return h(ForkInfo, {
@@ -194,6 +197,7 @@ if (commitPipelineStatusEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: commitPipelineStatusEl,
+    name: 'BlobCommitPipelineStatusRoot',
     components: {
       CommitPipelineStatus,
     },
@@ -231,6 +235,7 @@ if (tableContentsEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: tableContentsEl,
+    name: 'BlobTableOfContentsRoot',
     render(h) {
       return h(TableOfContents);
     },
@@ -242,6 +247,7 @@ const initTreeHistoryLinkApp = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'BlobTreeHistoryLink',
     router: new VueRouter({ mode: 'history' }),
     render(h) {
       const url = generateHistoryUrl(

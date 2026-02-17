@@ -34,6 +34,7 @@ export default class ProtectedTagEditList {
 
     return new Vue({
       el,
+      name: 'ProtectedTagEditRoot',
       render(createElement) {
         return createElement(ProtectedTagEdit, {
           props: {

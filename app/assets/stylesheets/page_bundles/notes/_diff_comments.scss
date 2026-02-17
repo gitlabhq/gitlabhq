@@ -72,7 +72,7 @@
 .disabled-comment {
   @apply gl-text-disabled;
   @apply gl-bg-subtle;
-  @apply gl-rounded-base;
+  @apply gl-rounded-lg;
   @apply gl-py-3;
   @apply gl-px-0;
 
@@ -310,8 +310,8 @@
   .diff-grid-comments:last-child {
     .notes-content {
       border-bottom-width: 0;
-      border-bottom-left-radius: $gl-border-radius-base-inner;
-      border-bottom-right-radius: $gl-border-radius-base-inner;
+      border-bottom-left-radius: $gl-border-radius-lg-inner;
+      border-bottom-right-radius: $gl-border-radius-lg-inner;
     }
   }
 }
@@ -344,7 +344,7 @@
 
   .discussion-reply-holder {
     border-top: 0;
-    @apply gl-rounded-t-base;
+    @apply gl-rounded-t-lg;
     position: relative;
 
     .discussion-form {
@@ -363,7 +363,7 @@
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
   @apply gl-bg-subtle;
-  @apply gl-rounded-b-base;
+  @apply gl-rounded-b-lg;
 
   li.note-comment {
     padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;

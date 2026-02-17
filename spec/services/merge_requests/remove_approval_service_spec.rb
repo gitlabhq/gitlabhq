@@ -60,6 +60,26 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
         let(:merge_request) { create(:merge_request, :merged, source_project: project) }
 
         it_behaves_like 'no-op call'
+
+        it 'does not call log_approval_deletion_on_merged_or_locked_mr' do
+          expect(merge_request).not_to receive(:log_approval_deletion_on_merged_or_locked_mr)
+
+          execute!
+        end
+      end
+
+      context 'when the merge request is locked' do
+        let(:merge_request) { create(:merge_request, :locked, source_project: project, reviewers: [user]) }
+        let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
+
+        it 'calls log_approval_deletion_on_merged_or_locked_mr' do
+          expect(merge_request).to receive(:log_approval_deletion_on_merged_or_locked_mr).with(
+            source: 'MergeRequests::RemoveApprovalService',
+            current_user: user
+          )
+
+          execute!
+        end
       end
 
       it 'removes the approval' do

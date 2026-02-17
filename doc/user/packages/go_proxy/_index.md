@@ -19,14 +19,11 @@ title: Go proxy for GitLab
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+> See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
@@ -87,13 +84,10 @@ and add the following text. Replace the variables in `< >` with your values.
 
 If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 
-{{< alert type="warning" >}}
-
-If you use an environment variable called `NETRC`, Go uses its value
-as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in
-the GitLab CI do not use `NETRC` as an environment variable name.
-
-{{< /alert >}}
+> [!warning]
+> If you use an environment variable called `NETRC`, Go uses its value
+> as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in
+> the GitLab CI do not use `NETRC` as an environment variable name.
 
 ```plaintext
 machine <url> login <username> password <token>

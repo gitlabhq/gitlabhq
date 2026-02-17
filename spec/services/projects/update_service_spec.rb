@@ -948,18 +948,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
       end
 
-      context 'when pages_access_control_forced_by_ancestor is false' do
-        before do
-          stub_pages_setting(access_control: true)
-        end
-
-        it 'does not validate pages access level' do
-          result = update_project(project, user, pages_access_level: 'public')
-
-          expect(result[:status]).to eq(:success)
-        end
-      end
-
       context 'when pages access control is false' do
         before do
           stub_pages_setting(access_control: false)
@@ -1054,6 +1042,44 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
                 visibility_level: new_visibility_level,
                 pages_access_level: pages_access_level
               )
+
+              expect(result[:status]).to eq(result_status)
+              expect(result[:message]).to include(error_message) if error_message
+            end
+          end
+        end
+      end
+
+      context 'when pages_access_control_forced_by_ancestor is false' do
+        using RSpec::Parameterized::TableSyntax
+
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        describe 'with different project visibilities and pages access levels' do
+          where(:visibility_level, :pages_access_level, :result_status, :error_message) do
+            Gitlab::VisibilityLevel::PRIVATE  | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'enabled'  | :api_error | 'Pages access level is not allowed for the project visibility level'
+            Gitlab::VisibilityLevel::PRIVATE  | 'public'   | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'enabled'  | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'public'   | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'enabled'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'public'   | :api_error | 'Pages access level is not allowed for the project visibility level'
+          end
+
+          with_them do
+            before do
+              project.update!(visibility_level: visibility_level)
+            end
+
+            it 'validates pages access level correctly' do
+              result = update_project(project, user, pages_access_level: pages_access_level)
 
               expect(result[:status]).to eq(result_status)
               expect(result[:message]).to include(error_message) if error_message

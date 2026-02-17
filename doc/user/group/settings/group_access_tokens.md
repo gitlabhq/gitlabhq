@@ -50,24 +50,15 @@ configured for personal access tokens.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
-- Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring group access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Group access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 ### With the UI
 
@@ -90,13 +81,10 @@ To create a group access token:
 
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
-{{< alert type="warning" >}}
-
-Group access tokens are treated as internal users.
-If an internal user creates a group access token, that token is able to access
-all projects that have visibility level set to Internal.
-
-{{< /alert >}}
+> [!warning]
+> Group access tokens are treated as internal users.
+> If an internal user creates a group access token, that token is able to access
+> all projects that have visibility level set to Internal.
 
 ### With the Rails console
 
@@ -133,9 +121,9 @@ If you are an administrator, you can create group access tokens in the Rails con
 
    1. Use the group access token in the `PRIVATE-TOKEN` header with GitLab REST APIs. For example:
 
-      - [Create an epic](../../../api/epics.md#new-epic) in the group.
+      - [Create an epic](../../../api/epics.md#create-an-epic) in the group.
       - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline) in one of the group's projects.
-      - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
+      - [Create an issue](../../../api/issues.md#create-an-issue) in one of the group's projects.
 
    1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.

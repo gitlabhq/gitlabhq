@@ -20,6 +20,7 @@ export const initRunnerEdit = (selector) => {
 
   return new Vue({
     el,
+    name: 'RunnerEditAppRoot',
     apolloProvider,
     render(h) {
       return h(RunnerEditApp, {

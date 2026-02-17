@@ -16,7 +16,7 @@ How to set up the local development environment to run [GitLab Duo Agent Platfor
 ## Prerequisites
 
 - [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
-- [Vertex access](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#use-the-existing-project): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
+- [Vertex access](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai#set-up-google-cloud-platform): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
   - If you do not have Vertex access for any reason, you should unset `DUO_WORKFLOW__VERTEX_PROJECT_ID` in the GitLab Duo Agent Platform Service and set `ANTHROPIC_API_KEY` to a regular Anthropic API key
 - Various settings and feature flags, which are enabled for you by the [GDK setup script](#development-setup-for-backend-components)
 
@@ -26,15 +26,15 @@ Agent Platform consists of four separate services:
 
 1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
 1. GitLab Duo Agent Platform Service, which is part of [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/)
-1. [GitLab Duo Agent Platform Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/)
+1. [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/tree/main/packages/cli) (Node/TypeScript executor from `gitlab-lsp`)
 1. [GitLab Duo Agent Platform Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
 
 ### Development Setup for Backend Components
 
-You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
-to run local versions of GitLab, GitLab Duo Agent Platform Service, and Executor.
+You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/)
+to run local versions of GitLab and the GitLab Duo Agent Platform Service.
 
-This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) or [GitLab Duo CLI](https://www.npmjs.com/package/@gitlab/duo-cli).
 
 #### Testing Agentic GitLab Duo Chat in Web UI
 

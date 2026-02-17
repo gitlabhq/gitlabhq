@@ -257,7 +257,8 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
         expect(other_cacheable_tag).to receive(:lazy_cached_signature)
         expect(non_cacheable_tag).to receive_message_chain(:signed_tag, :signature_data)
 
-        tags_finder.execute(batch_load_signatures: true)
+        tags = tags_finder.execute
+        described_class.batch_load_tag_signature_data(tags)
       end
 
       context 'when there is a search term' do
@@ -268,8 +269,18 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
           expect(other_cacheable_tag).to receive(:lazy_cached_signature)
           expect(non_cacheable_tag).not_to receive(:signed_tag)
 
-          tags_finder.execute(batch_load_signatures: true)
+          tags = tags_finder.execute
+          described_class.batch_load_tag_signature_data(tags)
         end
+      end
+
+      it 'can be called on a subset of tags' do
+        expect(cacheable_tag).to receive(:lazy_cached_signature)
+        expect(other_cacheable_tag).not_to receive(:lazy_cached_signature)
+        expect(non_cacheable_tag).not_to receive(:lazy_cached_signature)
+
+        tags_finder.execute
+        described_class.batch_load_tag_signature_data([cacheable_tag])
       end
     end
   end

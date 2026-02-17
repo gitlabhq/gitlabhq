@@ -50,11 +50,11 @@ describe('AbuseReportApp', () => {
     expect(findAlert().exists()).toBe(false);
   });
 
-  describe('when emitting the showAlert event from the report header', () => {
+  describe('when emitting the show-alert event from the report header', () => {
     const message = 'alert message';
 
     beforeEach(() => {
-      findReportHeader().vm.$emit('showAlert', SUCCESS_ALERT, message);
+      findReportHeader().vm.$emit('show-alert', SUCCESS_ALERT, message);
     });
 
     it('shows the alert', () => {

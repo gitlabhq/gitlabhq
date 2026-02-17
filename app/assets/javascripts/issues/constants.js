@@ -33,8 +33,8 @@ export const TYPE_MERGE_REQUEST = 'merge_request';
 export const TYPE_MILESTONE = 'milestone';
 export const TYPE_TEST_CASE = 'test_case';
 
-export const WORKSPACE_GROUP = 'group';
-export const WORKSPACE_PROJECT = 'project';
+export const NAMESPACE_GROUP = 'group';
+export const NAMESPACE_PROJECT = 'project';
 
 export const issuableStatusText = {
   [STATUS_UPCOMING]: __('Upcoming'),

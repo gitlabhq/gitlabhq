@@ -263,12 +263,39 @@ RSpec.describe CommitsHelper do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    it 'returns data for cherry picking into a project' do
-      expect(helper.cherry_pick_projects_data(forked_project)).to match_array(
-        [
-          { id: project.id.to_s, name: project.full_path, refsUrl: refs_project_path(project) },
-          { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
-        ])
+    context 'when user has push permissions to both projects' do
+      it 'returns data for both the original and forked project' do
+        expect(helper.cherry_pick_projects_data(forked_project)).to match_array(
+          [
+            { id: project.id.to_s, name: project.full_path, refsUrl: refs_project_path(project) },
+            { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
+          ])
+      end
+    end
+
+    context 'when user lacks push permissions to the original project' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'only returns data for the forked project' do
+        expect(helper.cherry_pick_projects_data(forked_project)).to match_array(
+          [
+            { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
+          ])
+      end
+    end
+
+    context 'when user lacks push permissions to both projects' do
+      let(:other_user) { create(:user) }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(other_user)
+      end
+
+      it 'returns an empty array' do
+        expect(helper.cherry_pick_projects_data(forked_project)).to eq([])
+      end
     end
   end
 

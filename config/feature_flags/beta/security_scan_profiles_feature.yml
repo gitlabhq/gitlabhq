@@ -1,0 +1,10 @@
+---
+name: security_scan_profiles_feature
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216214
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/589566
+milestone: '18.9'
+group: group::security platform management
+type: beta
+default_enabled: true

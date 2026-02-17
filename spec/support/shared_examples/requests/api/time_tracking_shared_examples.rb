@@ -40,6 +40,13 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['time_estimate']).to eq(7200)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :"create_#{issuable_name}_time_estimate" do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", personal_access_token: pat), params: { duration: duration }
+        end
+      end
     end
 
     describe 'updating the current estimate' do
@@ -81,6 +88,13 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['time_estimate']).to eq(0)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :"reset_#{issuable_name}_time_estimate" do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_time_estimate", personal_access_token: pat)
+      end
     end
   end
 
@@ -135,6 +149,13 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :"add_#{issuable_name}_spent_time" do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", personal_access_token: pat), params: { duration: '2h' }
+      end
+    end
+
     if issuable_name == 'merge_request'
       it 'calls update service with :use_specialized_service param' do
         expect(::MergeRequests::UpdateService).to receive(:new).with(
@@ -180,6 +201,13 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['total_time_spent']).to eq(0)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :"reset_#{issuable_name}_spent_time" do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
@@ -191,6 +219,13 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['total_time_spent']).to eq(1800)
       expect(json_response['time_estimate']).to eq(3600)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :"read_#{issuable_name}_time_statistic" do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", personal_access_token: pat)
+      end
     end
   end
 end

@@ -25,6 +25,7 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
 
   return new Vue({
     el,
+    name: 'AdminRunnerShowAppRoot',
     apolloProvider,
     render(h) {
       return h(AdminRunnerShowApp, {

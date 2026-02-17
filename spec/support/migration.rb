@@ -22,7 +22,11 @@ RSpec.configure do |config|
         "Run with `RUN_ALL_MIGRATION_TESTS=1 bundle exec rspec <spec> if you need to run this spec."
     end
 
-    schema_migrate_down!
+    if background_migration?
+      migrate_down_on_each_database_if_finalized!
+    else
+      schema_migrate_down!
+    end
   end
 
   config.after(:context, :migration) do
@@ -55,6 +59,9 @@ RSpec.configure do |config|
 
   # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
+    # BBM's don't change the schema, so we can skip this to improve test performance
+    next if background_migration?
+
     use_fake_application_settings
 
     schema_migrate_down!

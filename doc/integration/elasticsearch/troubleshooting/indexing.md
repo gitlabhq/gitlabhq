@@ -90,6 +90,23 @@ If the results:
 
 See [Elasticsearch Index Scopes](../../advanced_search/elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
+## No search results after enabling advanced search with low concurrency
+
+After you enable advanced search, you might find that documents
+are not being indexed and code is not searchable.
+You might see a message in Sidekiq logs similar to the following:
+
+```json
+"job_status":"concurrency_limit","message":"Search::Elastic::CommitIndexerWorker JID-352e0b9ee88af9f455c69b81: concurrency_limit: paused"
+```
+
+To resolve this issue:
+
+1. Use the Rake task `gitlab-rake gitlab:elastic:info` to check the status of **Indexing queues**.
+1. If **Concurrency limit code queue** is non-zero, check the **Code indexing concurrency** value.
+   Values that are too low can prevent indexing from progressing.
+   Consider increasing this value and checking progress with the Rake task.
+
 ## No search results after switching Elasticsearch servers
 
 To reindex the database, repositories, and wikis, [index the instance](../../advanced_search/elasticsearch.md#index-the-instance).
@@ -373,6 +390,10 @@ you can adjust advanced search worker settings in GitLab.
 For **Requeue indexing workers**, the default value is `false`.
 For **Number of shards for non-code indexing**, the default value is `2`.
 These settings limit indexing to 2000 documents per minute.
+
+Prerequisites:
+
+- Administrator access.
 
 To adjust worker settings:
 

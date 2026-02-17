@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillCiRunnersAllowedPlanNameUids
+description: Backfill allowed_plan_name_uids column in ci_runners table from allowed_plan_ids
+feature_category: runner_core
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217075
+milestone: '18.9'
+queued_migration_version: 20260115115100

@@ -57,7 +57,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :markdow
   #
   # The blank line causes markdown to process `    else` as a code block.
   # Which could lead to an orphaned node being replaced and failing
-  context "when <pre><code> is a child of <pre><code> which is a child of a div " do
+  context "when <pre><code> is a child of <pre><code> which is a child of a div" do
     it "captures all text and doesn't fail trying to replace a node with no parent" do
       text = "<div>\n<pre><code>\nsomething\n<pre><code>else\n</code></pre></code></pre>\n</div>"
       result = filter(text)

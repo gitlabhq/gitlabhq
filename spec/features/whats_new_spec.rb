@@ -90,20 +90,6 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
         end
       end
     end
-
-    it 'renders two feature cards in the drawer' do
-      visit root_dashboard_path
-
-      within_testid('super-sidebar') do
-        click_on "What's new"
-      end
-
-      expect(page).to have_css("[data-testid='whats-new-featured-card-first']")
-
-      find_by_testid('card-carousel-next-button').click
-
-      expect(page).to have_css("[data-testid='whats-new-featured-card-second']")
-    end
   end
 
   context 'when items in the latest release does not populate the infinite scroll fully', :saas do

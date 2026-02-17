@@ -311,4 +311,3 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/pipeline_process_worker_spec.rb'
     - 'spec/workers/pipeline_schedule_worker_spec.rb'
     - 'spec/workers/project_cache_worker_spec.rb'
-    - 'spec/workers/stage_update_worker_spec.rb'

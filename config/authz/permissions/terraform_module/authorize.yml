@@ -1,0 +1,5 @@
+---
+name: authorize_terraform_module
+description: Grants the ability to authorize Terraform module uploads
+boundaries:
+  - project

@@ -24,7 +24,7 @@ module Mutations
       def resolve(attributes)
         work_item = authorized_find!(id: attributes[:id])
 
-        work_item_type = find_work_item_type!(attributes[:work_item_type_id])
+        work_item_type = find_work_item_type!(attributes[:work_item_type_id], work_item)
         authorize_work_item_type!(work_item, work_item_type)
 
         update_result = ::WorkItems::UpdateService.new(
@@ -44,12 +44,12 @@ module Mutations
 
       private
 
-      def find_work_item_type!(gid)
-        work_item_type = ::WorkItems::Type.find_by_id(gid.model_id)
+      def find_work_item_type!(gid, work_item)
+        work_item_type = ::WorkItems::TypesFramework::Provider.new(work_item.namespace).find_by_gid(gid)
 
         return work_item_type if work_item_type.present?
 
-        message = format(_('Work Item type with id %{id} was not found'), id: gid.model_id)
+        message = format(_('Work Item type %{gid} was not found'), gid: gid)
         raise_resource_not_available_error! message
       end
 

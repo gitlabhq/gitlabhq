@@ -151,6 +151,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_collection_schema
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_webhook do
+        let(:boundary_object) { resource }
+        let(:request) { get api(collection_uri, personal_access_token: pat) }
+      end
     end
 
     context "when user is forbidden" do
@@ -213,6 +218,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         expect(response).to match_hook_schema
 
         expect(json_response['url']).to eq(hook.url)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_webhook do
+        let(:boundary_object) { resource }
+        let(:request) { get api(hook_uri, personal_access_token: pat) }
       end
 
       it "returns a 404 error if hook id is not available" do
@@ -302,6 +312,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       expect(json_response).not_to include('token')
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_webhook do
+      let(:boundary_object) { resource }
+      let(:request) { post api(collection_uri, personal_access_token: pat), params: hook_creation_params }
+    end
+
     it "adds the token without including it in the response" do
       token = "secret token"
 
@@ -366,6 +381,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       update_params.each do |k, v|
         expect(json_response[k.to_s]).to eq(v)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_webhook do
+      let(:boundary_object) { resource }
+      let(:request) { put api(hook_uri, personal_access_token: pat), params: update_params }
     end
 
     it 'updates the URL variables' do
@@ -441,6 +461,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       end.to change { hooks_count }.by(-1)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :delete_webhook do
+      let(:boundary_object) { resource }
+      let(:request) { delete api(hook_uri, personal_access_token: pat) }
+    end
+
     it "returns a 404 error when deleting non existent hook" do
       delete api(hook_uri(non_existing_record_id), user, admin_mode: user.admin?)
 
@@ -505,6 +530,13 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_webhook_url_variable do
+      let(:boundary_object) { resource }
+      let(:request) do
+        put api("#{hook_uri}/url_variables/abc", personal_access_token: pat), params: { value: 'some secret value' }
+      end
+    end
   end
 
   describe "DELETE #{prefix}/hooks/:hook_id/url_variables/:key", :aggregate_failures do
@@ -532,6 +564,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       delete api(hook_uri(non_existing_record_id) + "/url_variables/abc", user, admin_mode: user.admin?)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_webhook_url_variable do
+      let(:boundary_object) { resource }
+      let(:request) { delete api("#{hook_uri}/url_variables/abc", personal_access_token: pat) }
     end
   end
 
@@ -632,6 +669,13 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_webhook_custom_header do
+      let(:boundary_object) { resource }
+      let(:request) do
+        put api("#{hook_uri}/custom_headers/abc", personal_access_token: pat), params: { value: 'some secret value' }
+      end
+    end
   end
 
   describe "DELETE #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
@@ -659,6 +703,11 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       delete api(hook_uri(non_existing_record_id) + "/custom_headers/abc", user, admin_mode: user.admin?)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_webhook_custom_header do
+      let(:boundary_object) { resource }
+      let(:request) { delete api("#{hook_uri}/custom_headers/abc", personal_access_token: pat) }
     end
   end
 end
@@ -895,6 +944,11 @@ RSpec.shared_examples 'test web-hook endpoint' do
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Error response')
     end
+
+    it_behaves_like 'authorizing granular token permissions', :test_webhook do
+      let(:boundary_object) { resource }
+      let(:request) { post api("#{hook_uri}/test/push_events", personal_access_token: pat) }
+    end
   end
 end
 
@@ -959,6 +1013,11 @@ RSpec.shared_examples 'resend web-hook event endpoint' do
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('The hook URL has changed. This log entry cannot be retried.')
     end
+  end
+
+  it_behaves_like 'authorizing granular token permissions', :resend_webhook_event do
+    let(:boundary_object) { resource }
+    let(:request) { post api("#{hook_uri}/events/#{log.id}/resend", personal_access_token: pat) }
   end
 end
 
@@ -1055,6 +1114,11 @@ RSpec.shared_examples 'get web-hook event endpoint' do
             expect(json_response['error']).to eq('status does not have a valid value')
           end
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_webhook_event do
+        let(:boundary_object) { resource }
+        let(:request) { get api(path, personal_access_token: pat) }
       end
     end
 

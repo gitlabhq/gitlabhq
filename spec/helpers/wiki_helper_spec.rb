@@ -53,6 +53,37 @@ RSpec.describe WikiHelper, feature_category: :wiki do
     end
   end
 
+  describe '#wiki_breadcrumb_items' do
+    let(:wiki) { build_stubbed(:wiki) }
+
+    before do
+      helper.instance_variable_set(:@wiki, wiki)
+    end
+
+    it 'builds breadcrumb items for each parent page' do
+      items = helper.wiki_breadcrumb_items('home/Core-DevOps/CI-CD')
+
+      expect(items).to eq(
+        [
+          { text: 'Home', href: wiki_page_path(wiki, 'home') },
+          { text: 'Core DevOps', href: wiki_page_path(wiki, 'home/Core-DevOps') }
+        ]
+      )
+    end
+
+    it 'returns an empty array when page_slug is empty' do
+      items = helper.wiki_breadcrumb_items('')
+
+      expect(items).to eq([])
+    end
+
+    it 'returns an empty array for malformed slugs' do
+      items = helper.wiki_breadcrumb_items('///home///')
+
+      expect(items).to eq([])
+    end
+  end
+
   describe '#wiki_attachment_upload_url' do
     let_it_be(:wiki) { build_stubbed(:project_wiki) }
 
@@ -143,6 +174,47 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   context 'for wiki subpages' do
     it_behaves_like 'wiki endpoint helpers' do
       let_it_be(:page) { create(:wiki_page, title: 'foo/bar') }
+    end
+  end
+
+  describe '#wiki_sidebar_toggle_button' do
+    let_it_be(:wiki) { build(:project_wiki) }
+
+    subject { helper.wiki_sidebar_toggle_button }
+
+    before do
+      @wiki = wiki
+      allow(Pajamas::ButtonComponent).to receive(:new).and_call_original
+    end
+
+    describe 'when wiki_floating_sidebar_toggle is enabled' do
+      before do
+        stub_feature_flags({ wiki_floating_sidebar_toggle: true })
+      end
+
+      it 'shows the sidebar icon and is hidden on large screens' do
+        subject
+
+        expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
+          expect(kwargs[:icon]).to eq('sidebar')
+          expect(kwargs[:button_options][:class]).to include('@lg/panel:gl-hidden')
+        end
+      end
+    end
+
+    describe 'when wiki_floating_sidebar_toggle is disabled' do
+      before do
+        stub_feature_flags({ wiki_floating_sidebar_toggle: false })
+      end
+
+      it 'shows the list_bulleted icon and is visible on large screens' do
+        subject
+
+        expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
+          expect(kwargs[:icon]).to eq('list-bulleted')
+          expect(kwargs[:button_options][:class]).not_to include('@lg/panel:gl-hidden')
+        end
+      end
     end
   end
 end

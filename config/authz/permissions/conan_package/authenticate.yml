@@ -1,0 +1,6 @@
+---
+name: authenticate_conan_package
+description: Grants the ability to authenticate with the Conan package registry
+boundaries:
+  - project
+  - instance

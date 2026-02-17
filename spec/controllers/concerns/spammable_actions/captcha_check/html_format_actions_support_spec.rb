@@ -14,7 +14,7 @@ RSpec.describe SpammableActions::CaptchaCheck::HtmlFormatActionsSupport do
   let(:spammable) { double(:spammable) }
 
   before do
-    allow(Gitlab::Recaptcha).to receive(:load_configurations!) { true }
+    allow(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
     routes.draw { get 'create' => 'anonymous#create' }
     allow(controller).to receive(:spammable) { spammable }
     expect(spammable).to receive(:render_recaptcha?).at_least(:once) { render_recaptcha }

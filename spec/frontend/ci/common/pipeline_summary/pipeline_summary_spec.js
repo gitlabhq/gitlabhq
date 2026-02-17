@@ -167,7 +167,7 @@ describe('PipelineSummary', () => {
     it('resets poll interval on job action executed', async () => {
       expect(getPollInterval()).toBeGreaterThan(PIPELINE_POLL_INTERVAL_DEFAULT);
 
-      findPipelineMiniGraph().vm.$emit('jobActionExecuted');
+      findPipelineMiniGraph().vm.$emit('job-action-executed');
       await nextTick();
 
       expect(getPollInterval()).toBe(PIPELINE_POLL_INTERVAL_DEFAULT);

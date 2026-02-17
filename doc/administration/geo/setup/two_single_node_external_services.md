@@ -44,7 +44,7 @@ Prerequisites:
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -288,13 +288,10 @@ After the initial replication process is complete, follow the steps to
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-{{< alert type="note" >}}
-
-Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the **Admin** area should be made in the primary site, because the
-secondary site is a read-only copy.
-
-{{< /alert >}}
+> [!note]
+> Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
+> Any change that requires access to the **Admin** area should be made in the primary site, because the
+> secondary site is a read-only copy.
 
 #### Add the secondary site
 
@@ -309,7 +306,7 @@ secondary site is a read-only copy.
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<secondary_site_name_here>'
    ```
@@ -428,15 +425,12 @@ to grant additional roles to your tracking database user (by default, this is
 Additional roles are needed for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-{{< alert type="note" >}}
-
-If you want to use Amazon RDS as a tracking database, make sure it has access to
-the secondary database. Unfortunately, just assigning the same security group is not enough as
-outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
-rule to the read-replica's security group allowing any TCP traffic from
-the tracking database on port 5432.
-
-{{< /alert >}}
+> [!note]
+> If you want to use Amazon RDS as a tracking database, make sure it has access to
+> the secondary database. Unfortunately, just assigning the same security group is not enough as
+> outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
+> rule to the read-replica's security group allowing any TCP traffic from
+> the tracking database on port 5432.
 
 ### Create the tracking database
 

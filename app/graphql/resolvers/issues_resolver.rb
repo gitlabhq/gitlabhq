@@ -28,7 +28,7 @@ module Resolvers
     end
 
     def self.project_associations
-      [:namespace]
+      [:namespace, :organization]
     end
 
     def ready?(**args)

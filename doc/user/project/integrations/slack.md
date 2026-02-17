@@ -14,13 +14,10 @@ title: Slack notifications (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/435909) in GitLab 15.9
-and is planned for removal in 19.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/435909) in GitLab 15.9
+> and is planned for removal in 19.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+> This change is a breaking change.
 
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
@@ -63,6 +60,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 1. Optional. In **Username**, enter the username of the Slack bot that sends
    the notifications.
 1. Select the **Notify only broken pipelines** checkbox to notify only on failures.
+1. Select the **Notify only when status changes** checkbox to send notifications only when the pipeline status for the ref changes.
 1. In the **Branches for which notifications are to be sent** dropdown list, select which types of branches
    to send notifications for.
 1. Leave the **Labels to be notified** field blank to get all notifications, or
@@ -77,23 +75,23 @@ Your Slack team now starts receiving GitLab event notifications as configured.
 
 The following triggers are available for Slack notifications:
 
-| Trigger name                                                             | Trigger event                                        |
-|--------------------------------------------------------------------------|------------------------------------------------------|
-| **Push**                                                                 | A push to the repository.                            |
-| **Issue**                                                                | An issue is created, closed, or reopened.            |
-| **Incident**                                                             | An incident is created, closed, or reopened.         |
-| **Confidential issue**                                                   | A confidential issue is created, closed, or reopened.|
-| **Merge request**                                                        | A merge request is created, merged, closed, or reopened.|
-| **Note**                                                                 | A comment is added.                                  |
-| **Confidential note**                                                    | An internal note or comment on a confidential issue is added.|
-| **Tag push**                                                             | A new tag is pushed to the repository or removed.    |
-| **Pipeline**                                                             | A pipeline status changed.                           |
-| **Wiki page**                                                            | A wiki page is created or updated.                   |
-| **Deployment**                                                           | A deployment starts or finishes.                     |
-| **Alert**                                                                | A new, unique alert is recorded.                     |
-| **[Group mention](#trigger-notifications-for-group-mentions) in public**                                              | A group is mentioned in a public context.            |
-| **[Group mention](#trigger-notifications-for-group-mentions) in private**                                             | A group is mentioned in a confidential context.      |
-| [**Vulnerability**](../../application_security/vulnerabilities/_index.md) | A new, unique vulnerability is recorded.             |
+| Trigger name                                                              | Trigger event |
+| ------------------------------------------------------------------------- | ------------- |
+| **Push**                                                                  | A push to the repository. |
+| **Issue**                                                                 | An issue is created, closed, or reopened. |
+| **Incident**                                                              | An incident is created, closed, or reopened. |
+| **Confidential issue**                                                    | A confidential issue is created, closed, or reopened. |
+| **Merge request**                                                         | A merge request is created, merged, approved, closed, or reopened. |
+| **Note**                                                                  | A comment is added. |
+| **Confidential note**                                                     | An internal note or comment on a confidential issue is added. |
+| **Tag push**                                                              | A new tag is pushed to the repository or removed. |
+| **Pipeline**                                                              | A pipeline status changed. |
+| **Wiki page**                                                             | A wiki page is created or updated. |
+| **Deployment**                                                            | A deployment starts or finishes. |
+| **Alert**                                                                 | A new, unique alert is recorded. |
+| **[Group mention](#trigger-notifications-for-group-mentions) in public**  | A group is mentioned in a public context. |
+| **[Group mention](#trigger-notifications-for-group-mentions) in private** | A group is mentioned in a confidential context. |
+| [**Vulnerability**](../../application_security/vulnerabilities/_index.md) | A new, unique vulnerability is recorded. |
 
 ## Trigger notifications for group mentions
 
@@ -171,11 +169,8 @@ the GitLab OpenSSL trust store is incorrect. Typical causes are:
 To disable notifications for all projects that have Slack integration enabled,
 [start a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and use a script similar to the following:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 # Grab all projects that have the Slack notifications enabled

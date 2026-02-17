@@ -61,7 +61,7 @@ Now you have successfully created a GitGuardian API token that you can use to fo
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 After you have created and copied your API token, configure GitLab to reject commits:
 

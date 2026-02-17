@@ -63,6 +63,11 @@ export default {
       required: false,
       default: '',
     },
+    isAnimating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -123,13 +128,15 @@ export default {
     fileTreeBrowserIsPeekOn() {
       this.$nextTick(() => this.observeItemVisibility());
     },
-    currentRouterPath(newPath, oldPath) {
+    async currentRouterPath(newPath, oldPath) {
       if (newPath && newPath !== oldPath) this.expandPathAncestors(newPath);
+      await this.$nextTick();
+      this.scrollFileRowIntoView(this.currentRouterPath);
     },
   },
   mounted() {
     this.observeItemVisibility();
-    this.expandPathAncestors(this.currentRouterPath || '/');
+    this.loadInitialPath();
     this.mousetrap = new Mousetrap();
 
     if (!this.shortcutsDisabled) {
@@ -141,6 +148,11 @@ export default {
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
+    async loadInitialPath() {
+      await this.expandPathAncestors(this.currentRouterPath || '/');
+      await this.$nextTick();
+      this.scrollFileRowIntoView(this.currentRouterPath, 'center');
+    },
     observeItemVisibility() {
       this.itemObserver?.disconnect();
       const rootElement = this.fileTreeBrowserIsPeekOn
@@ -167,18 +179,20 @@ export default {
 
       trees.forEach((tree, index) => {
         const treePath = normalizePath(tree.path || tree.name);
+        const routerPath = buildURLwithRefType({
+          path: joinPaths(
+            '/-/tree',
+            this.escapedRef,
+            treePath.split('/').map(encodeURIComponent).join('/'),
+          ),
+          refType: this.refType,
+        });
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
           parentPath: path,
-          routerPath: buildURLwithRefType({
-            path: joinPaths(
-              '/-/tree',
-              this.escapedRef,
-              treePath.split('/').map(encodeURIComponent).join('/'),
-            ),
-            refType: this.refType,
-          }),
+          routerPath,
+          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
           type: 'tree',
           name: tree.name,
           level,
@@ -202,19 +216,23 @@ export default {
 
       blobs.forEach((blob, index) => {
         const blobPath = normalizePath(blob.path);
+        const routerPath = buildURLwithRefType({
+          path: joinPaths(
+            '/-/blob',
+            this.escapedRef,
+            blobPath.split('/').map(encodeURIComponent).join('/'),
+          ),
+          refType: this.refType,
+        });
+
         filesList.push({
           id: `${blobPath}-${blob.id}-${index}`,
+          type: 'blob',
           fileHash: blob.sha,
           path: blobPath,
           parentPath: path,
-          routerPath: buildURLwithRefType({
-            path: joinPaths(
-              '/-/blob',
-              this.escapedRef,
-              blobPath.split('/').map(encodeURIComponent).join('/'),
-            ),
-            refType: this.refType,
-          }),
+          routerPath,
+          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
           name: blob.name,
           mode: blob.mode,
           level,
@@ -237,6 +255,7 @@ export default {
           path: submodulePath,
           parentPath: path,
           webUrl: submodule.webUrl,
+          href: submodule.webUrl,
           name: submodule.name,
           submodule: true,
           level,
@@ -517,6 +536,27 @@ export default {
       this.activeItemId = nextItem.dataset?.itemId;
       nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
+    handleNavigate(itemPath, routerPath) {
+      if (!routerPath || this.isCurrentPath(itemPath)) return;
+      this.$router.push(routerPath);
+    },
+    scrollFileRowIntoView(path, block = 'nearest') {
+      const item = this.flatFilesList.find((i) => i.path === path);
+      if (!item) return;
+      const element = this.$el.querySelector(`[data-item-id="${item.id}"]`);
+      if (!element) return;
+      element.scrollIntoView({
+        behavior: 'instant',
+        block,
+      });
+    },
+    onFileClick() {
+      this.trackEvent('click_file_tree_browser_on_repository_page');
+    },
+    onTreeClick(item) {
+      this.toggleDirectory(item.path, { toggleClose: false });
+      this.handleNavigate(item.path, item.routerPath);
+    },
   },
   searchLabel: s__('Repository|Search files (*.vue, *.rb...)'),
 };
@@ -525,7 +565,11 @@ export default {
 <template>
   <section aria-labelledby="tree-list-heading" class="gl-flex gl-h-full gl-flex-col">
     <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
-      <file-tree-browser-toggle id="file-tree-browser-toggle" ref="toggle" />
+      <file-tree-browser-toggle
+        id="file-tree-browser-toggle"
+        ref="toggle"
+        :is-animating="isAnimating"
+      />
       <user-callout-dismisser feature-name="file_tree_browser_popover">
         <template #default="{ dismiss, shouldShowCallout }">
           <file-tree-browser-popover
@@ -540,7 +584,7 @@ export default {
       </h3>
     </div>
 
-    <div class="gl-relative gl-flex">
+    <div class="gl-relative gl-flex gl-pr-3">
       <gl-button
         ref="filterInput"
         icon="search"
@@ -574,7 +618,7 @@ export default {
       <ul
         v-if="flatFilesList.length"
         ref="fileTreeList"
-        class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2"
+        class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2 gl-pr-3"
         role="tree"
         @keydown="onTreeKeydown"
       >
@@ -598,21 +642,21 @@ export default {
           <file-row
             v-if="appearedItems[item.id]"
             :file="item"
-            :file-url="item.routerPath"
             :level="item.level"
             :opened="item.opened"
             :loading="item.loading"
             show-tree-toggle
             roving-tabindex
-            :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
             }"
-            :file-classes="isCurrentPath(item.path) ? 'gl-font-bold' : 'gl-text-subtle'"
+            :bold-text="isCurrentPath(item.path)"
             class="gl-relative !gl-mx-0"
-            truncate-middle
-            @clickTree="(options) => toggleDirectory(item.path, options)"
-            @clickSubmodule="handleClickSubmodule"
+            @clickTree="onTreeClick(item)"
+            @toggleTree.stop="toggleDirectory(item.path)"
+            @clickSubmodule="handleClickSubmodule(item.webUrl)"
+            @clickFile="handleNavigate(item.path, item.routerPath)"
+            @clickRow="onFileClick"
             @showMore="handleShowMore(item.parentPath, $event)"
           />
           <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>

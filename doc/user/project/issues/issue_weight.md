@@ -43,7 +43,7 @@ You can view the issue weight on:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can set the issue weight when you create or edit an issue.
 
@@ -61,7 +61,7 @@ number under **Weight**.
 To set the issue weight from an existing issue:
 
 1. Go to the issue.
-1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. In the right sidebar, in the **Weight** section, select **Edit**.
 1. Enter the new weight.
 1. Select any area outside the dropdown list.
 
@@ -71,7 +71,7 @@ To set the issue weight when you [edit an issue from an issue board](../issue_bo
 
 1. Go to your issue board.
 1. Select an issue card (not its title).
-1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. In the right sidebar, in the **Weight** section, select **Edit**.
 1. Enter the new weight.
 1. Select any area outside the dropdown list.
 
@@ -85,7 +85,7 @@ To set the issue weight when you [edit an issue from an issue board](../issue_bo
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To remove the issue weight, follow the same steps as when you [set the issue weight](#set-the-issue-weight),
 and select **remove weight**.

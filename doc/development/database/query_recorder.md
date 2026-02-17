@@ -42,7 +42,8 @@ end
 ```
 
 In some cases, the query count might change slightly between runs for unrelated reasons.
-In this case you might need to test `issue_same_number_of_queries_as(control_count + acceptable_change)`,
+In this case you might need to test
+`issue_same_number_of_queries_as(control).with_threshold(acceptable_change)`,
 but this should be avoided if possible.
 
 If this test fails, and the control was passed as a `QueryRecorder`, then the

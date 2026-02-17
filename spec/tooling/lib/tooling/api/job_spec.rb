@@ -24,7 +24,7 @@ RSpec.describe Tooling::API::Job, feature_category: :tooling do
       end
     end
 
-    it 'will fetch job logs' do
+    it 'fetches job logs' do
       uri = URI("https://gitlab.com/api/v4/projects/project_id/jobs/job_id/trace")
 
       response_double = instance_double(Net::HTTPOK, body: log)

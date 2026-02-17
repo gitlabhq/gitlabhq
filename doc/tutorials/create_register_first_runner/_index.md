@@ -112,7 +112,7 @@ After you register the runner, the configuration and runner authentication token
 The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 You can use the `config.toml` to
-define more [advanced runner configurations](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+define more [advanced runner configurations](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 
 Here's what your `config.toml` should look like after you register and start the runner:
 

@@ -391,6 +391,12 @@ RSpec.shared_examples 'handling project level terraform module download requests
 
       subject
     end
+
+    it_behaves_like 'authorizing granular token permissions', :download_terraform_module do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_headers(user.username, pat.token) }
+      let(:request) { subject }
+    end
   end
 
   context 'with non-existent module version' do

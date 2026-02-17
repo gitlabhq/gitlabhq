@@ -63,7 +63,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
 
 ```yaml
 variables:

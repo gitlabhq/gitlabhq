@@ -13,6 +13,7 @@ export default function initRefSwitcherBadges() {
 
     return new Vue({
       el: element,
+      name: 'RefSelectorRoot',
       render(createElement) {
         return createElement(RefSelector, {
           props: {

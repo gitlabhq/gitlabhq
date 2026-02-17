@@ -16,6 +16,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'UsageTrendsAppRoot',
     apolloProvider,
     render(h) {
       return h(UsageTrendsApp);

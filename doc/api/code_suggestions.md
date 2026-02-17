@@ -1,12 +1,12 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Documentation for the REST API for Code Suggestions.
 title: Code Suggestions API
 ---
 
-Use this API to access the [GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
+Use this API to access the [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../user/project/repository/code_suggestions/_index.md) feature.
 
 ## Generate code completions
 
@@ -36,7 +36,7 @@ POST /code_suggestions/completions
 Use the AI abstraction layer to generate code completions.
 
 Requests to this endpoint are proxied to the
-[AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
+[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
 
 Parameters:
 
@@ -145,7 +145,7 @@ curl --request POST \
     }'
 ```
 
-## Fetch direct connection details for the AI gateway
+## Fetch direct connection details for the AI Gateway
 
 {{< history >}}
 
@@ -162,7 +162,7 @@ POST /code_suggestions/direct_access
 > This endpoint rate-limits each user to 10 requests per 5-minute window.
 
 Returns user-specific connection details which can be used by IDEs/clients to send `completion` requests directly to
-AI gateway, including headers that must be proxied to the AI gateway as well as the required authentication token.
+AI Gateway, including headers that must be proxied to the AI Gateway as well as the required authentication token.
 
 Example request:
 

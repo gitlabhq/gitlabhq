@@ -23,7 +23,7 @@ module Integrations
 
       included do
         def metrics(_environment)
-          Gitlab::Json.parse(File.read(Rails.root.join('spec/fixtures/metrics.json')))
+          Gitlab::Json.safe_parse(File.read(Rails.root.join('spec/fixtures/metrics.json')))
         end
 
         def testable?

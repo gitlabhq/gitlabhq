@@ -3,7 +3,10 @@ import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
+import { routeForWorkItemTypeName } from '~/work_items/router/utils';
+
 import {
   NAME_TO_ENUM_MAP,
   NAME_TO_TEXT_LOWERCASE_MAP,
@@ -11,6 +14,7 @@ import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   ROUTES,
   WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -26,6 +30,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,
@@ -262,7 +267,15 @@ export default {
                 issueAsWorkItem: true,
               })
             ) {
-              this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
+              const { useWorkItemUrl } = this.glFeatures;
+              const workItemTypeName = workItem?.workItemType?.name.toLowerCase();
+              const workItemTypeParameter = useWorkItemUrl
+                ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
+                : routeForWorkItemTypeName(workItemTypeName);
+              this.$router.push({
+                name: 'workItem',
+                params: { iid: workItem.iid, type: workItemTypeParameter },
+              });
             } else {
               visitUrl(workItem.webUrl);
             }

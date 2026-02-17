@@ -99,7 +99,7 @@ export default {
     </div>
 
     <div
-      class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-subtle @lg/panel:gl-justify-start"
+      class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-subtle @md/panel:gl-justify-start"
     >
       <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-strong gl-px-2">
         <gl-icon

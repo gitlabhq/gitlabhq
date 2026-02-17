@@ -74,7 +74,7 @@ module Import
 
     class << self
       def from_serialized(serialized_reference)
-        deserialized = Gitlab::Json.parse(serialized_reference)
+        deserialized = Gitlab::Json.safe_parse(serialized_reference)
 
         raise SerializationError if deserialized.size != SERIALIZABLE_ATTRIBUTES.size
 

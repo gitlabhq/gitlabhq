@@ -19,13 +19,10 @@ title: Ruby gems in the package registry
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can publish Ruby gems to your project's package registry. Then, you can download them from the UI or with the API.
 
@@ -70,7 +67,7 @@ In this example:
 
 To authenticate with a CI/CD job token:
 
-- Create or edit your  `.gitlab-ci.yml` file, and add:
+- Create or edit your `.gitlab-ci.yml` file, and add:
 
   ```yaml
   # assuming a my_gem.gemspec file is present in the repository with the version currently set to 0.0.1

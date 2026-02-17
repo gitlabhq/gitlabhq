@@ -67,10 +67,13 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     it 'returns a hash with the parent table and detachable partition info' do
       expect(dictionary.find_detach_allowed_partitions).to include(
         {
-          foo_table_100: { bounds_clause: "FOR VALUES IN ('100')",
-                           required_constraint: "(partition_id = 100)",
-                           parent_table: "p_foo_table",
-                           parent_schema: "public" }
+          foo_table_100: {
+            bounds_clause: "FOR VALUES IN ('100')",
+            required_constraint: "(partition_id = 100)",
+            parent_table: "p_foo_table",
+            parent_schema: "public",
+            lock_tables: nil
+          }
         }
       )
     end

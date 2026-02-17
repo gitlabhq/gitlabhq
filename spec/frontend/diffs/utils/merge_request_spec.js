@@ -1,9 +1,4 @@
-import {
-  updateChangesTabCount,
-  getDerivedMergeRequestInformation,
-  extractFileHash,
-} from '~/diffs/utils/merge_request';
-import { ZERO_CHANGES_ALT_DISPLAY } from '~/diffs/constants';
+import { getDerivedMergeRequestInformation, extractFileHash } from '~/diffs/utils/merge_request';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
 describe('Merge Request utilities', () => {
@@ -28,56 +23,6 @@ describe('Merge Request utilities', () => {
     id: undefined,
     ...noVersion,
   };
-
-  describe('updateChangesTabCount', () => {
-    let dummyTab;
-    let badge;
-
-    beforeEach(() => {
-      dummyTab = document.createElement('div');
-      dummyTab.classList.add('js-diffs-tab');
-      dummyTab.insertAdjacentHTML('afterbegin', '<span class="gl-badge">ERROR</span>');
-      badge = dummyTab.querySelector('.gl-badge');
-    });
-
-    afterEach(() => {
-      dummyTab.remove();
-      dummyTab = null;
-      badge = null;
-    });
-
-    it('uses the alt hyphen display when the new changes are falsey', () => {
-      updateChangesTabCount({ count: 0, badge });
-
-      expect(dummyTab.textContent).toBe(ZERO_CHANGES_ALT_DISPLAY);
-
-      updateChangesTabCount({ badge });
-
-      expect(dummyTab.textContent).toBe(ZERO_CHANGES_ALT_DISPLAY);
-
-      updateChangesTabCount({ count: false, badge });
-
-      expect(dummyTab.textContent).toBe(ZERO_CHANGES_ALT_DISPLAY);
-    });
-
-    it('uses the actual value for display when the value is truthy', () => {
-      updateChangesTabCount({ count: 42, badge });
-
-      expect(dummyTab.textContent).toBe('42');
-
-      updateChangesTabCount({ count: '999+', badge });
-
-      expect(dummyTab.textContent).toBe('999+');
-    });
-
-    it('selects the proper element to modify by default', () => {
-      document.body.insertAdjacentElement('afterbegin', dummyTab);
-
-      updateChangesTabCount({ count: 42 });
-
-      expect(dummyTab.textContent).toBe('42');
-    });
-  });
 
   describe('getDerivedMergeRequestInformation', () => {
     const bare = diffMetadata.latest_version_path;

@@ -655,3 +655,136 @@ export const filtersMap = {
     },
   },
 };
+
+export const savedViewFilters = {
+  assigneeUsernames: {
+    type: TOKEN_TYPE_ASSIGNEE,
+    operator: OPERATOR_IS,
+  },
+  assigneeWildcardId: {
+    type: TOKEN_TYPE_ASSIGNEE,
+    operator: OPERATOR_IS,
+  },
+  authorUsername: {
+    type: TOKEN_TYPE_AUTHOR,
+    operator: OPERATOR_IS,
+  },
+  closedAfter: {
+    type: TOKEN_TYPE_CLOSED,
+    operator: OPERATOR_AFTER,
+  },
+  closedBefore: {
+    type: TOKEN_TYPE_CLOSED,
+    operator: OPERATOR_BEFORE,
+  },
+  confidential: {
+    type: TOKEN_TYPE_CONFIDENTIAL,
+    operator: OPERATOR_IS,
+  },
+  createdAfter: {
+    type: TOKEN_TYPE_CREATED,
+    operator: OPERATOR_AFTER,
+  },
+  createdBefore: {
+    type: TOKEN_TYPE_CREATED,
+    operator: OPERATOR_BEFORE,
+  },
+  crmContactId: {
+    type: TOKEN_TYPE_CONTACT,
+    operator: OPERATOR_IS,
+  },
+  crmOrganizationId: {
+    type: TOKEN_TYPE_ORGANIZATION,
+    operator: OPERATOR_IS,
+  },
+  dueAfter: {
+    type: TOKEN_TYPE_DUE_DATE,
+    operator: OPERATOR_AFTER,
+  },
+  dueBefore: {
+    type: TOKEN_TYPE_DUE_DATE,
+    operator: OPERATOR_BEFORE,
+  },
+  fullPath: {
+    type: TOKEN_TYPE_GROUP,
+    operator: OPERATOR_IS,
+  },
+  labelName: {
+    type: TOKEN_TYPE_LABEL,
+    operator: OPERATOR_IS,
+  },
+  milestoneTitle: {
+    type: TOKEN_TYPE_MILESTONE,
+    operator: OPERATOR_IS,
+  },
+  milestoneWildcardId: {
+    type: TOKEN_TYPE_MILESTONE,
+    operator: OPERATOR_IS,
+  },
+  myReactionEmoji: {
+    type: TOKEN_TYPE_MY_REACTION,
+    operator: OPERATOR_IS,
+  },
+  releaseTag: {
+    type: TOKEN_TYPE_RELEASE,
+    operator: OPERATOR_IS,
+  },
+  releaseTagWildcardId: {
+    type: TOKEN_TYPE_RELEASE,
+    operator: OPERATOR_IS,
+  },
+  search: {
+    type: FILTERED_SEARCH_TERM,
+    operator: undefined,
+  },
+  state: {
+    type: TOKEN_TYPE_STATE,
+    operator: OPERATOR_IS,
+  },
+  subscribed: {
+    type: TOKEN_TYPE_SUBSCRIBED,
+    operator: OPERATOR_IS,
+  },
+  types: {
+    type: TOKEN_TYPE_TYPE,
+    operator: OPERATOR_IS,
+  },
+  updatedAfter: {
+    type: TOKEN_TYPE_UPDATED,
+    operator: OPERATOR_AFTER,
+  },
+  updatedBefore: {
+    type: TOKEN_TYPE_UPDATED,
+    operator: OPERATOR_BEFORE,
+  },
+  healthStatusFilter: {
+    type: TOKEN_TYPE_HEALTH,
+    operator: OPERATOR_IS,
+  },
+  iterationId: {
+    type: TOKEN_TYPE_ITERATION,
+    operator: OPERATOR_IS,
+  },
+  iterationWildcardId: {
+    type: TOKEN_TYPE_ITERATION,
+    operator: OPERATOR_IS,
+  },
+  status: {
+    type: TOKEN_TYPE_STATUS,
+    operator: OPERATOR_IS,
+  },
+  weight: {
+    type: TOKEN_TYPE_WEIGHT,
+    operator: OPERATOR_IS,
+  },
+  weightWildcardId: {
+    type: TOKEN_TYPE_WEIGHT,
+    operator: OPERATOR_IS,
+  },
+  iterationCadenceId: {
+    type: TOKEN_TYPE_ITERATION,
+    operator: OPERATOR_IS,
+  },
+};
+
+export const NEW_SAVED_VIEWS_GID = 'gid://gitlab/WorkItems::SavedViews::SavedView/new';

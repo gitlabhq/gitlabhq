@@ -21,6 +21,9 @@ module Oauth
         ],
         authorization_servers: [
           Gitlab.config.gitlab.url
+        ],
+        scopes_supported: [
+          Gitlab::Auth::MCP_SCOPE.to_s
         ]
       }
     end

@@ -136,6 +136,82 @@ RSpec.describe Gitlab::Database::NamespaceEachBatch, feature_category: :database
     end
   end
 
+  context 'when batching over project namespaces only' do
+    let(:namespace_class) { Namespaces::ProjectNamespace }
+
+    it 'returns only project namespace ids' do
+      expect(collected_ids).to eq([
+        project3.project_namespace_id,
+        project4.project_namespace_id,
+        project5.project_namespace_id,
+        project1.project_namespace_id,
+        project2.project_namespace_id
+      ])
+    end
+
+    context 'when batch size is 1' do
+      let(:batch_size) { 1 }
+
+      it 'returns only project namespace ids' do
+        expect(collected_ids).to eq([
+          project3.project_namespace_id,
+          project4.project_namespace_id,
+          project5.project_namespace_id,
+          project1.project_namespace_id,
+          project2.project_namespace_id
+        ])
+      end
+    end
+
+    context 'when querying a subgroup with projects' do
+      let(:namespace_id) { subsubgroup3.id }
+
+      it 'returns only project namespace ids within the subgroup' do
+        expect(collected_ids).to eq([
+          project4.project_namespace_id,
+          project5.project_namespace_id
+        ])
+      end
+    end
+
+    context 'when querying a subgroup without projects' do
+      let(:namespace_id) { subsubgroup1.id }
+
+      it 'returns empty array' do
+        expect(collected_ids).to eq([])
+      end
+    end
+
+    context 'when stopping the iteration in the middle and resuming' do
+      it 'returns the correct ids' do
+        ids = []
+        cursor = { current_id: namespace_id, depth: [namespace_id] }
+
+        iterator = described_class.new(namespace_class: namespace_class, cursor: cursor)
+        # rubocop:disable Lint/UnreachableLoop -- Testing resuming of iteration
+        iterator.each_batch(of: 3) do |batch_ids, new_cursor|
+          ids.concat(batch_ids)
+          cursor = new_cursor
+          break
+        end
+        # rubocop:enable Lint/UnreachableLoop
+
+        iterator = described_class.new(namespace_class: namespace_class, cursor: cursor)
+        iterator.each_batch(of: 500) do |batch_ids|
+          ids.concat(batch_ids)
+        end
+
+        expect(ids).to eq([
+          project3.project_namespace_id,
+          project4.project_namespace_id,
+          project5.project_namespace_id,
+          project1.project_namespace_id,
+          project2.project_namespace_id
+        ])
+      end
+    end
+  end
+
   context 'when the cursor is invalid' do
     context 'when non-integer current id is given' do
       it 'raises error' do

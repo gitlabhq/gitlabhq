@@ -16,7 +16,7 @@ title: Hosted runners on Windows
 Hosted runners on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
 [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
-developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
+developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom/).
 Hosted runners on Windows are in [beta](../../../policy/development_stages_support.md#beta).
 
 GitLab keeps iterating to get Windows runners in a stable state and

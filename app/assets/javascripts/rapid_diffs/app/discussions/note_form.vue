@@ -5,6 +5,8 @@ import { clearDraft } from '~/lib/utils/autosave';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { COMMENT_FORM } from '~/notes/i18n';
+import { createAlert } from '~/alert';
+import { getNoteFormErrorMessages } from '~/notes/utils';
 
 export default {
   name: 'NoteForm',
@@ -79,6 +81,11 @@ export default {
       required: false,
       default: false,
     },
+    saveNoteErrorMessages: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -120,7 +127,8 @@ export default {
     cancel(shouldConfirm = false) {
       // prevent closing the form when trying to close autocomplete
       if (this.$refs.form.querySelector('textarea.at-who-active')) return;
-      this.$emit('cancel', shouldConfirm, this.noteBody !== this.editedNoteBody);
+      clearDraft(this.autosaveKey);
+      this.$emit('cancel', shouldConfirm && this.noteBody !== this.editedNoteBody);
     },
     handleKeySubmit(shiftPressed = false) {
       this.handleUpdate(shiftPressed);
@@ -136,6 +144,12 @@ export default {
         await this.saveNote(this.editedNoteBody, shiftPressed);
         this.editedNoteBody = '';
         clearDraft(this.autosaveKey);
+      } catch (error) {
+        createAlert({
+          message: getNoteFormErrorMessages(error.response, this.saveNoteErrorMessages),
+          parent: this.$el,
+          error,
+        });
       } finally {
         this.isSubmitting = false;
       }

@@ -9,23 +9,21 @@ description: Create and manage virtual registries for the container registry, an
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548794) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of these endpoints is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of these endpoints is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to:
 
@@ -35,6 +33,9 @@ Use this API to:
 
 For information about pulling container images through a virtual registry, see
 [Container virtual registry](../user/packages/virtual_registry/container/_index.md).
+
+> [!note]
+> Cloud provider registries are not supported, but [issue 20919](https://gitlab.com/groups/gitlab-org/-/work_items/20919) proposes to change this behavior.
 
 ## Manage virtual registries
 
@@ -118,9 +119,9 @@ Example response:
 }
 ```
 
-### Get a virtual registry
+### Retrieve a virtual registry
 
-Gets a specific container virtual registry.
+Retrieves a specified container virtual registry.
 
 ```plaintext
 GET /virtual_registries/container/registries/:id
@@ -162,7 +163,7 @@ Example response:
 
 ### Update a virtual registry
 
-Updates a specific container virtual registry.
+Updates a specified container virtual registry.
 
 ```plaintext
 PATCH /virtual_registries/container/registries/:id
@@ -194,7 +195,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 > [!warning]
 > When you delete a virtual registry, you also delete all associated upstream registries that are not shared with other virtual registries, along with their cached container images and manifests.
 
-Deletes a specific container virtual registry.
+Deletes a specified container virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/container/registries/:id
@@ -219,6 +220,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
 
 {{< /history >}}
 
@@ -289,6 +291,67 @@ Example response:
 ]
 ```
 
+### Test connection before creating an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578679) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
+
+{{< /history >}}
+
+Tests the connection to a container upstream registry that has not been added to the virtual registry yet. This endpoint validates connectivity and credentials before creating the upstream registry.
+
+```plaintext
+POST /groups/:id/-/virtual_registries/container/upstreams/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:-----|:---------|:------------|
+| `id` | string or integer | Yes | The group ID or full-group path. Must be a top-level group. |
+| `url` | string | Yes | The URL of the upstream registry. |
+| `password` | string | No | The password of the upstream registry. |
+| `username` | string | No | The username of the upstream registry. |
+
+> [!note]
+> You must include both the `username` and `password` in the request, or neither. If not set, a public (anonymous) request is used to access the upstream.
+
+#### Test workflow
+
+The `test` endpoint sends a HEAD request to the provided upstream URL using a test path to validate connectivity and authentication. The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Description | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success. Upstream accessible | `{ "success": true }` |
+| 404 | Success. Upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/container/upstreams/test"
+     --data '{"url": "https://registry-1.docker.io", "username": "<your_username>", "password": "<your_password>"}' \
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
+
+> [!note]
+> Both `2XX` (found) and `404 Not Found` HTTP status codes from the upstream registry are considered successful responses, as they indicate the upstream is reachable and properly configured.
+
 ### List all upstream registries for a virtual registry
 
 Lists all upstream registries for a container virtual registry.
@@ -336,7 +399,7 @@ Example response:
 
 ### Create an upstream registry
 
-Adds an upstream container registry to a container virtual registry.
+Creates an upstream container registry for a specified container virtual registry.
 
 ```plaintext
 POST /virtual_registries/container/registries/:id/upstreams
@@ -352,16 +415,13 @@ POST /virtual_registries/container/registries/:id/upstreams
 | `password` | string | No | The password of the upstream registry. |
 | `username` | string | No | The username of the upstream registry. |
 
-{{< alert type="note" >}}
-
-You must include both the `username` and `password` in the request, or not at all. If not set, a public (anonymous) request is used to access the upstream.
+> [!note]
+> You must include both the `username` and `password` in the request, or not at all. If not set, a public (anonymous) request is used to access the upstream.
 
 You cannot add two upstreams with the same URL and credentials (`username` and `password`) to the same top-level group. Instead, you can either:
 
 - Set different credentials for each upstream with the same URL.
 - Associate an upstream with multiple virtual registries.
-
-{{< /alert >}}
 
 > [!note]
 > You can add a maximum of 5 upstream registries to each virtual registry.
@@ -396,9 +456,9 @@ Example response:
 }
 ```
 
-### Get an upstream registry
+### Retrieve an upstream registry
 
-Gets a specific upstream container registry for a container virtual registry.
+Retrieves a specified upstream container registry.
 
 ```plaintext
 GET /virtual_registries/container/upstreams/:id
@@ -443,7 +503,7 @@ Example response:
 
 ### Update an upstream registry
 
-Updates a specific upstream container registry for a container virtual registry.
+Updates a specified upstream container registry.
 
 ```plaintext
 PATCH /virtual_registries/container/upstreams/:id
@@ -459,13 +519,10 @@ PATCH /virtual_registries/container/upstreams/:id
 | `url` | string | No | The URL of the upstream registry. |
 | `username` | string | No | The username of the upstream registry. |
 
-{{< alert type="note" >}}
-
-You must provide at least one of the optional parameters in your request.
-
-The `username` and `password` must be provided together, or not at all. If not set, a public (anonymous) request is used to access the upstream.
-
-{{< /alert >}}
+> [!note]
+> You must provide at least one of the optional parameters in your request.
+>
+> The `username` and `password` must be provided together, or not at all. If not set, a public (anonymous) request is used to access the upstream.
 
 Example request:
 
@@ -504,7 +561,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 ### Delete an upstream registry
 
-Deletes a specific upstream container registry for a container virtual registry.
+Deletes a specified upstream container registry.
 
 ```plaintext
 DELETE /virtual_registries/container/upstreams/:id
@@ -526,7 +583,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 ### Associate an upstream with a registry
 
-Associates an existing upstream container registry with a container virtual registry.
+Associates a specified upstream container registry with a specified container virtual registry.
 
 ```plaintext
 POST /virtual_registries/container/registry_upstreams
@@ -564,7 +621,7 @@ Example response:
 
 ### Disassociate an upstream from a registry
 
-Removes the association between an upstream container registry and a container virtual registry.
+Removes the association between a specified upstream container registry and a specified container virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/container/registry_upstreams/:id
@@ -591,10 +648,11 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
 
 {{< /history >}}
 
-Schedules all cache entries for deletion for a specific upstream registry in a container virtual registry.
+Schedules all cache entries for deletion for a specified upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/container/upstreams/:id/cache
@@ -613,6 +671,103 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
+### Test connection to an upstream registry with override parameters
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578679) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
+
+{{< /history >}}
+
+Tests the connection to an existing container upstream registry with optional parameter overrides.
+
+This way, you can test changes to the URL, username, or password before updating the upstream registry configuration.
+
+```plaintext
+POST /virtual_registries/container/upstreams/:id/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the upstream registry. |
+| `password` | string | No | The override password for testing. |
+| `url` | string | No | The override URL for testing. If provided, tests connection to this URL instead of the upstream's configured URL. |
+| `username` | string | No | The override username for testing. |
+
+#### How the test works
+
+The endpoint performs a HEAD request to the upstream URL using a test path to validate connectivity and authentication. If the upstream has a cached artifact, the relative path of the upstream is used for testing. Otherwise, a placeholder path is used.
+
+The test behavior depends on the parameters provided:
+
+- No parameters: Tests the upstream with its current configuration (existing URL, username, and password)
+- URL override: Tests connectivity to the new URL (username and password must be provided together or not at all)
+- Credential override: Tests the existing URL with new credentials
+
+The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Meaning | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success. Upstream accessible | `{ "success": true }` |
+| 404 | Success. Upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection or timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+> [!note]
+> Both `2XX` (found) and `404 Not Found` responses indicate successful connectivity and authentication to the upstream registry. The test does not validate whether a specific artifact exists.
+
+Example request (test existing configuration):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with URL override and no credentials):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "https://registry-1.docker.io"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with URL and credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "https://registry-1.docker.io", "username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
 
 ## Manage cache entries
 
@@ -668,7 +823,7 @@ Example response:
 
 ### Delete an upstream registry cache entry
 
-Deletes a specific cached container image or manifest for a container upstream registry.
+Deletes a specified cached container image or manifest for an upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/container/cache_entries/*id

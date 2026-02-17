@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ActiveRecord
-        class Count < Column
+        class Count < MetricDefinition
           def initialize(name = 'total', type = :integer, formatter: nil, description: nil)
             super
           end

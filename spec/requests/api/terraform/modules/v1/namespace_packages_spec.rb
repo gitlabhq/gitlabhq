@@ -83,6 +83,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    it_behaves_like 'authorizing granular token permissions', :read_terraform_module do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+      let(:request) { get_versions }
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download' do
@@ -163,6 +173,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token', :found
     it_behaves_like 'allowing anyone to pull public terraform modules', :found
+
+    it_behaves_like 'authorizing granular token permissions', :download_terraform_module, expected_success_status: :redirect do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+      let(:request) { get_download }
+    end
 
     context 'for semver sorting' do
       let(:headers) { build_headers_for_auth_type(:personal_access_token) }
@@ -254,6 +274,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    it_behaves_like 'authorizing granular token permissions', :read_terraform_module do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+      let(:request) { get_module }
+    end
 
     context 'for semver sorting' do
       let(:headers) { build_headers_for_auth_type(:personal_access_token) }
@@ -347,6 +377,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    it_behaves_like 'authorizing granular token permissions', :read_terraform_module do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+      let(:request) { get_module_version }
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/download' do
@@ -410,6 +450,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    it_behaves_like 'authorizing granular token permissions', :download_terraform_module do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+      let(:request) { subject }
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/file' do
@@ -522,6 +572,16 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'updating personal access token last used' do
       let(:token) { tokens[:personal_access_token] }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_terraform_module do
+      before_all do
+        group.add_developer(user)
+      end
+
+      let(:boundary_object) { group }
+      let(:token) { ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = pat.id }.encoded }
+      let(:request) { get_file }
     end
   end
 end

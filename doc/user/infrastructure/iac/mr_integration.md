@@ -21,17 +21,14 @@ you can expose details from `tofu plan` runs directly into a merge request widge
 enabling you to see statistics about the resources that OpenTofu creates,
 modifies, or destroys.
 
-{{< alert type="warning" >}}
-
-Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
-Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
-files include sensitive data like passwords, access tokens, or certificates, you should
-encrypt the plan output or modify the project visibility settings. You should also **disable**
-[public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
-This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Reporter role.
-
-{{< /alert >}}
+> [!warning]
+> Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
+> Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
+> files include sensitive data like passwords, access tokens, or certificates, you should
+> encrypt the plan output or modify the project visibility settings. You should also **disable**
+> [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
+> and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
+> This setting ensures artifacts are accessible only to GitLab administrators and project members with the Reporter, Developer, Maintainer, or Owner role.
 
 ## Configure OpenTofu report artifacts
 
@@ -68,14 +65,11 @@ To manually configure a GitLab OpenTofu Report artifact:
      - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
    ```
 
-   {{< alert type="note" >}}
-
-   In distributions that use Bash (for example, Ubuntu), `alias` statements are not
-   expanded in non-interactive mode. If your pipelines fail with the error
-   `convert_report: command not found`, alias expansion can be activated explicitly
-   by adding a `shopt` command to your script:
-
-   {{< /alert >}}
+   > [!note]
+   > In distributions that use Bash (for example, Ubuntu), `alias` statements are not
+   > expanded in non-interactive mode. If your pipelines fail with the error
+   > `convert_report: command not found`, alias expansion can be activated explicitly
+   > by adding a `shopt` command to your script:
 
    ```yaml
    before_script:
@@ -105,13 +99,10 @@ To manually configure a GitLab OpenTofu Report artifact:
 
    ![merge request Terraform widget](img/terraform_plan_widget_v13_2.png)
 
-   {{< alert type="note" >}}
-
-   The maximum number of changes reported by the widget is 999,999 for
-   each action. This limitation is only for display purposes, plans that
-   change a higher number of resources can be applied as intended.
-
-   {{< /alert >}}
+   > [!note]
+   > The maximum number of changes reported by the widget is 999,999 for
+   > each action. This limitation is only for display purposes, plans that
+   > change a higher number of resources can be applied as intended.
 
 1. In the widget, select **View Full Log** to go to the
    plan output present in the pipeline logs:

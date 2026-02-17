@@ -138,7 +138,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
           aggregations: [:mean_duration, :rate_of_success],
           sort: 'mean_duration_desc',
           source: 'push',
-          ref: 'master',
+          ref: 'main',
           from_time: 1.day.ago,
           to_time: Time.current,
           name_search: 'compile'
@@ -210,6 +210,28 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
     it 'applies project filter' do
       expect(finder.to_sql).to include(project.project_namespace.traversal_path)
+    end
+
+    context 'when deduplication migration is in progress' do
+      before do
+        allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
+          .to receive(:backfill_in_progress?).and_return(true)
+      end
+
+      it 'uses the deduplicated finder' do
+        is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
+      end
+    end
+
+    context 'when deduplication migration is not in progress' do
+      before do
+        allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
+          .to receive(:backfill_in_progress?).and_return(false)
+      end
+
+      it 'uses the regular finder' do
+        is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
+      end
     end
   end
 

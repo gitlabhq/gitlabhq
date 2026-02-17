@@ -3,7 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate through a manifest file
-description: "Import multiple repositories to GitLab with manifest files."
+description: "Import repositories to GitLab by using manifest files."
 ---
 
 {{< details >}}
@@ -38,7 +38,7 @@ repositories like the Android Open Source Project (AOSP).
   by default on GitLab.com.
 - GitLab must use PostgreSQL for its database, because [subgroups](../../group/subgroups/_index.md) are needed for the manifest import
   to work. Read more about the [database requirements](../../../install/requirements.md#postgresql).
-- At least the Maintainer role on the destination group to import to.
+- The Maintainer or Owner role on the destination group to import to.
 
 ## Manifest format
 

@@ -149,7 +149,7 @@ module Issues
     end
 
     def error_too_many
-      ServiceResponse.error(payload: issue, message: _("You can only add up to %{max_contacts} contacts at one time" % { max_contacts: MAX_ADDITIONAL_CONTACTS }))
+      ServiceResponse.error(payload: issue, message: _("You can only add up to %{max_contacts} contacts at one time") % { max_contacts: MAX_ADDITIONAL_CONTACTS })
     end
   end
 end

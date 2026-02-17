@@ -88,7 +88,7 @@ RSpec.describe Types::GlobalIDType do
           .to raise_error(GraphQL::CoercionError, /Expected a Project ID/)
       end
 
-      it 'will not coerce invalid input, even if its a valid GID' do
+      it 'does not coerce invalid input, even if its a valid GID' do
         expect { type.coerce_isolated_input(gid.to_s) }
           .to raise_error(GraphQL::CoercionError, /does not represent an instance of Project/)
       end

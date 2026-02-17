@@ -9,7 +9,7 @@ module Gitlab
 
           attr_reader :definition, :configuration
 
-          delegate :name, :type, to: :definition
+          delegate :name, :type, :identifier, to: :definition
 
           validate :validate_definition_presence
           validate -> { definition&.validate_part(self) }

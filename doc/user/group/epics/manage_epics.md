@@ -237,9 +237,9 @@ Prerequisites:
 
 To change the assignee on an epic:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**, then select your epic to view it.
-1. On the right sidebar, in the **Assignees** section, select **Edit**.
+1. In the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
 
@@ -292,10 +292,10 @@ Prerequisites:
 
 To change an epic's color:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 1. Select **New epic** or select an existing epic.
-1. On the right sidebar, in the **Color** section, select **Edit**.
+1. In the right sidebar, in the **Color** section, select **Edit**.
 1. Select an existing color or enter an RGB or hex value.
 1. Select any area outside the dialog.
 
@@ -528,14 +528,11 @@ or newest items to be shown first.
 
 If you're working on items that contain private information, you can make an epic confidential.
 
-{{< alert type="note" >}}
-
-A confidential epic can only contain [confidential issues](../../project/issues/confidential_issues.md)
-and confidential child epics. However, merge requests are public, if created in a public project.
-Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
-to learn how to create a confidential merge request.
-
-{{< /alert >}}
+> [!note]
+> A confidential epic can only contain [confidential issues](../../project/issues/confidential_issues.md)
+> and confidential child epics. However, merge requests are public, if created in a public project.
+> Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
+> to learn how to create a confidential merge request.
 
 Prerequisites:
 

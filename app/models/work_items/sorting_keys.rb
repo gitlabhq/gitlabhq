@@ -75,7 +75,7 @@ module WorkItems
       end
 
       def widgets_sorting_keys
-        ::WorkItems::WidgetDefinition.widget_classes
+        widget_definition_class.widget_classes
           .map(&:sorting_keys)
           .reduce({}, :merge)
       end
@@ -87,6 +87,16 @@ module WorkItems
 
         DEFAULT_SORTING_KEYS.key?(key) ||
           widget_list.any? { |widget| widget.sorting_keys.key?(key) }
+      end
+
+      private
+
+      def widget_definition_class
+        if Feature.enabled?(:work_item_system_defined_type, :instance)
+          ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+        else
+          ::WorkItems::WidgetDefinition
+        end
       end
     end
   end

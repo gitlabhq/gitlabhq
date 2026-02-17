@@ -84,7 +84,7 @@ Configure review apps when you want to provide a preview environment of your app
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - You must have CI/CD pipelines available in the project.
 - You must set up the infrastructure to host and deploy the review apps.
 
@@ -249,7 +249,7 @@ Other examples of review apps:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
-- [Review apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
+- [Review apps for Android](https://about.gitlab.com/blog/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route maps
 
@@ -347,16 +347,13 @@ To view a mapped page from a file:
 To view mapped pages from a commit:
 
 1. Go to a commit that has a review app deployment:
-   - For branch pipelines: Select **Code** > **Commits** and select a commit with a pipeline badge.
+   - For branch pipelines: In the left sidebar, select **Code** > **Commits** and select a commit with a pipeline badge.
    - For merge request pipelines: In your merge request, select the **Commits** tab and select a commit.
    - For merged results pipelines: In your merge request, select the **Pipelines** tab and select the pipeline commit.
 1. Select the review app icon ({{< icon name="external-link" >}}) next to a filename that matches your route map.
    The icon opens the corresponding page in your review app.
 
-{{< alert type="note" >}}
-
-Merged results pipelines create an internal commit that merges your branch with the target branch.
-To access review app links for these pipelines, use the commit from the **Pipelines** tab,
-not the **Commits** tab.
-
-{{< /alert >}}
+> [!note]
+> Merged results pipelines create an internal commit that merges your branch with the target branch.
+> To access review app links for these pipelines, use the commit from the **Pipelines** tab,
+> not the **Commits** tab.

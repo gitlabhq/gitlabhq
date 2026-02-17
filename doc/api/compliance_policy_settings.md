@@ -27,9 +27,9 @@ Prerequisites:
 - You must have administrator access to the instance.
 - Your instance must have the Ultimate tier to use security policies.
 
-## Get security policy settings
+## Retrieve security policy settings
 
-Gets the current security policy settings for this GitLab instance.
+Retrieves the current security policy settings for this GitLab instance.
 
 ```plaintext
 GET /admin/security/compliance_policy_settings

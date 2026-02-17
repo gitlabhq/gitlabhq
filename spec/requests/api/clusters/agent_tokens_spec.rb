@@ -16,8 +16,15 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
 
   describe 'GET /projects/:id/cluster_agents/:agent_id/tokens' do
     context 'with authorized user' do
+      let(:path) { "/projects/#{project.id}/cluster_agents/#{agent.id}/tokens" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster_agent_token do
+        let(:boundary_object) { project }
+        let(:request) { get api(path, personal_access_token: pat) }
+      end
+
       it 'only returns active agent tokens' do
-        get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", user)
+        get api(path, user)
 
         aggregate_failures "testing response" do
           expect(response).to have_gitlab_http_status(:ok)
@@ -65,6 +72,14 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
 
   describe 'GET /projects/:id/cluster_agents/:agent_id/tokens/:token_id' do
     context 'with authorized user' do
+      it_behaves_like 'authorizing granular token permissions', :read_cluster_agent_token do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{agent_token_one.id}",
+            personal_access_token: pat)
+        end
+      end
+
       it 'returns an agent token' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{agent_token_one.id}", user)
 
@@ -120,12 +135,16 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
   end
 
   describe 'POST /projects/:id/cluster_agents/:agent_id/tokens' do
+    let(:path) { "/projects/#{project.id}/cluster_agents/#{agent.id}/tokens" }
+    let(:params) { { name: 'test-token', description: 'Test description' } }
+
+    it_behaves_like 'authorizing granular token permissions', :create_cluster_agent_token do
+      let(:boundary_object) { project }
+      let(:request) { post api(path, personal_access_token: pat), params: params }
+    end
+
     it 'creates a new agent token' do
-      params = {
-        name: 'test-token',
-        description: 'Test description'
-      }
-      post(api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", user), params: params)
+      post(api(path, user), params: params)
 
       aggregate_failures "testing response" do
         expect(response).to have_gitlab_http_status(:created)
@@ -188,8 +207,15 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
   end
 
   describe 'DELETE /projects/:id/cluster_agents/:agent_id/tokens/:token_id' do
+    let(:path) { "/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{agent_token_one.id}" }
+
+    it_behaves_like 'authorizing granular token permissions', :revoke_cluster_agent_token do
+      let(:boundary_object) { project }
+      let(:request) { delete api(path, personal_access_token: pat) }
+    end
+
     it 'revokes agent token' do
-      delete api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{agent_token_one.id}", user)
+      delete api(path, user)
 
       expect(response).to have_gitlab_http_status(:no_content)
       expect(agent_token_one.reload).to be_revoked

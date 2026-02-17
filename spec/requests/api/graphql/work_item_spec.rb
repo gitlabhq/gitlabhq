@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
+RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   include_context 'with work item request context'
 
   let_it_be(:user) { create(:user) }
@@ -139,14 +139,13 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       end
     end
 
-    context 'when querying widgets' do
+    context 'when querying features' do
       describe 'description widget' do
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDescription {
+            features {
+              description {
                 description
                 descriptionHtml
                 edited
@@ -167,9 +166,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'DESCRIPTION',
+            'features' => {
+              'description' => {
                 'description' => work_item.description,
                 'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {}),
                 'edited' => true,
@@ -182,8 +180,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                   'completedCount' => 1,
                   'count' => 1
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -192,9 +190,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetHierarchy {
+            features {
+              hierarchy {
                 parent {
                   id
                 }
@@ -229,9 +226,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'HIERARCHY',
+            'features' => {
+              'hierarchy' => {
                 'parent' => nil,
                 'children' => { 'nodes' => match_array(
                   [
@@ -256,8 +252,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     'depthLimitReached' => false
                   )
                 ])
-              )
-            )
+              }
+            }
           )
         end
 
@@ -272,8 +268,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           let(:work_item_fields) do
             <<~GRAPHQL
               id
-              widgets {
-                ... on WorkItemWidgetHierarchy {
+              features {
+                hierarchy {
                   parent {
                     id
                   }
@@ -315,9 +311,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           it 'filters out not accessible children or parent' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => include(
-                hash_including(
-                  'type' => 'HIERARCHY',
+              'features' => {
+                'hierarchy' => hash_including({
                   'parent' => nil,
                   'children' => { 'nodes' => match_array(
                     [
@@ -325,8 +320,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     ]) },
                   'hasChildren' => true,
                   'hasParent' => false
-                )
-              )
+                })
+              }
             )
           end
         end
@@ -338,15 +333,14 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           it 'returns parent information' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => include(
-                hash_including(
-                  'type' => 'HIERARCHY',
+              'features' => {
+                'hierarchy' => hash_including({
                   'parent' => hash_including('id' => parent_link.work_item_parent.to_gid.to_s),
                   'children' => { 'nodes' => match_array([]) },
                   'hasChildren' => false,
                   'hasParent' => true
-                )
-              )
+                })
+              }
             )
           end
         end
@@ -357,8 +351,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           let_it_be(:newest_link) { create(:parent_link, work_item_parent: work_item, work_item: newest_child) }
           let_it_be(:oldest_link) { create(:parent_link, work_item_parent: work_item, work_item: oldest_child) }
 
-          let(:hierarchy_widget) { work_item_data['widgets'].find { |widget| widget['type'] == 'HIERARCHY' } }
-          let(:hierarchy_children) { hierarchy_widget['children']['nodes'] }
+          let(:hierarchy_children) { work_item_data.dig('features', 'hierarchy', 'children', 'nodes') }
 
           it 'places the oldest child item to the beginning of the children list' do
             expect(hierarchy_children.first['id']).to eq(oldest_child.to_gid.to_s)
@@ -397,9 +390,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetAssignees {
+            features {
+              assignees {
                 allowsMultipleAssignees
                 canInviteMembers
                 assignees {
@@ -416,9 +408,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information, assignees are ordered by name ASC id DESC' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'ASSIGNEES',
+            'features' => {
+              'assignees' => {
                 'allowsMultipleAssignees' => boolean,
                 'canInviteMembers' => boolean,
                 'assignees' => {
@@ -428,8 +419,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     { 'id' => assignees[0].to_gid.to_s, 'username' => assignees[0].username }
                   ]
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -441,9 +432,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetLabels {
+            features {
+              labels {
                 labels {
                   nodes {
                     id
@@ -458,16 +448,15 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'LABELS',
+            'features' => {
+              'labels' => {
                 'labels' => {
                   'nodes' => match_array(
                     labels.map { |a| { 'id' => a.to_gid.to_s, 'title' => a.title } }
                   )
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -476,9 +465,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetStartAndDueDate {
+            features {
+              startAndDueDate {
                 startDate
                 dueDate
               }
@@ -489,13 +477,12 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'START_AND_DUE_DATE',
+            'features' => {
+              'startAndDueDate' => {
                 'startDate' => work_item.start_date.to_s,
                 'dueDate' => work_item.due_date.to_s
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -504,9 +491,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetMilestone {
+            features {
+              milestone {
                 milestone {
                   id
                 }
@@ -518,14 +504,13 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'MILESTONE',
+            'features' => {
+              'milestone' => {
                 'milestone' => {
                   'id' => work_item.milestone.to_gid.to_s
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -534,9 +519,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetNotifications {
+            features {
+              notifications {
                 subscribed
               }
             }
@@ -546,12 +530,11 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'NOTIFICATIONS',
+            'features' => {
+              'notifications' => {
                 'subscribed' => work_item.subscribed?(current_user, project)
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -575,9 +558,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetCurrentUserTodos {
+            features {
+              currentUserTodos {
                 currentUserTodos {
                   nodes {
                     id
@@ -593,16 +575,15 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           it 'returns widget information' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => include(
-                hash_including(
-                  'type' => 'CURRENT_USER_TODOS',
+              'features' => {
+                'currentUserTodos' => {
                   'currentUserTodos' => {
                     'nodes' => match_array(
                       [done_todo, pending_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
                     )
                   }
-                )
-              )
+                }
+              }
             )
           end
         end
@@ -611,9 +592,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           let(:work_item_fields) do
             <<~GRAPHQL
               id
-              widgets {
-                type
-                ... on WorkItemWidgetCurrentUserTodos {
+              features {
+                currentUserTodos {
                   currentUserTodos(state: done) {
                     nodes {
                       id
@@ -628,16 +608,15 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           it 'returns widget information' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => include(
-                hash_including(
-                  'type' => 'CURRENT_USER_TODOS',
+              'features' => {
+                'currentUserTodos' => {
                   'currentUserTodos' => {
                     'nodes' => match_array(
                       [done_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
                     )
                   }
-                )
-              )
+                }
+              }
             )
           end
         end
@@ -651,9 +630,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetAwardEmoji {
+            features {
+              awardEmoji {
                 upvotes
                 downvotes
                 newCustomEmojiPath
@@ -670,9 +648,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'AWARD_EMOJI',
+            'features' => {
+              'awardEmoji' => {
                 'upvotes' => work_item.upvotes,
                 'downvotes' => work_item.downvotes,
                 'newCustomEmojiPath' => Gitlab::Routing.url_helpers.new_group_custom_emoji_path(group),
@@ -681,8 +658,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     [emoji, upvote, downvote].map { |e| { 'name' => e.name } }
                   )
                 }
-              )
-            )
+              }
+            }
           )
         end
 
@@ -719,9 +696,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetLinkedItems {
+            features {
+              linkedItems {
                 linkedItems {
                   nodes {
                     linkId
@@ -740,9 +716,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
         it 'returns widget information' do
           expect(work_item_data).to include(
-            'widgets' => include(
-              hash_including(
-                'type' => 'LINKED_ITEMS',
+            'features' => {
+              'linkedItems' => {
                 'linkedItems' => { 'nodes' => match_array(
                   [
                     hash_including(
@@ -757,8 +732,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     )
                   ]
                 ) }
-              )
-            )
+              }
+            }
           )
         end
 
@@ -770,7 +745,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           end
 
           it 'returns only items that the user has access to' do
-            expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
+            expect(graphql_dig_at(work_item_data, :features, "linkedItems", "linkedItems", "nodes", "linkId"))
               .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
           end
 
@@ -784,7 +759,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             it 'returns only items that the user has access to' do
               post_graphql(query, current_user: current_user)
 
-              expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
+              expect(graphql_dig_at(work_item_data, :features, "linkedItems", "linkedItems", "nodes", "linkId"))
                 .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
             end
           end
@@ -796,12 +771,12 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
             let(:first_param) { 1 }
             let(:all_records) { [link2, link1] }
-            let(:data_path) { %w[workItem widgets linkedItems] }
+            let(:data_path) { %w[workItem features linkedItems linkedItems] }
 
             def widget_fields(args)
               query_graphql_field(
-                :widgets, {}, query_graphql_field(
-                  '... on WorkItemWidgetLinkedItems', {}, query_graphql_field(
+                :features, {}, query_graphql_field(
+                  'linkedItems', {}, query_graphql_field(
                     'linkedItems', args, "#{page_info} nodes { linkId }"
                   )
                 )
@@ -821,9 +796,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         context 'when filtering by link type' do
           let(:work_item_fields) do
             <<~GRAPHQL
-              widgets {
-                type
-                ... on WorkItemWidgetLinkedItems {
+              features {
+                linkedItems {
                   linkedItems(filter: RELATED) {
                     nodes {
                       linkType
@@ -835,7 +809,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           end
 
           it 'returns items with specified type' do
-            widget_data = work_item_data["widgets"].find { |widget| widget.key?("linkedItems") }["linkedItems"]
+            widget_data = work_item_data.dig('features', 'linkedItems', 'linkedItems')
 
             expect(widget_data["nodes"].size).to eq(1)
             expect(widget_data.dig("nodes", 0, "linkType")).to eq('relates_to')
@@ -853,9 +827,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetLinkedResources {
+            features {
+              linkedResources {
                 linkedResources {
                   nodes {
                     url
@@ -869,9 +842,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'LINKED_RESOURCES',
+            'features' => {
+              'linkedResources' => {
                 'linkedResources' => {
                   'nodes' => containing_exactly(
                     hash_including(
@@ -879,8 +851,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     )
                   )
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -946,13 +918,14 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
     end
 
     describe 'notes widget' do
+      let(:notes_widget) { graphql_dig_at(work_item_data, :features, :notes) }
+
       context 'when fetching award emoji from notes' do
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetNotes {
+            features {
+              notes {
                 discussions(filter: ALL_NOTES, first: 10) {
                   nodes {
                     id
@@ -1010,8 +983,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             let_it_be(:sys_note2) { create(:resource_state_event, user: developer, issue: work_item, state: :closed) }
 
             it 'returns resolve note permission' do
-              all_widgets = graphql_dig_at(work_item_data, :widgets)
-              notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
               discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
 
               expect(discussions).to include(
@@ -1049,8 +1020,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         it 'returns award emoji data' do
-          all_widgets = graphql_dig_at(work_item_data, :widgets)
-          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
 
           note_with_emoji = notes.find { |n| n['id'] == note.to_gid.to_s }
@@ -1070,8 +1039,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         it 'returns author contributor status and max access level' do
-          all_widgets = graphql_dig_at(work_item_data, :widgets)
-          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
 
           expect(notes).to include(
@@ -1084,8 +1051,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
           post_graphql(query, current_user: developer)
 
-          all_widgets = graphql_dig_at(work_item_data, :widgets)
-          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           note = graphql_dig_at(notes_widget['notes'], :nodes).last
 
           expect(note).to include(
@@ -1125,9 +1090,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets(onlyTypes: [NOTES]) {
-              type
-              ... on WorkItemWidgetNotes {
+            features {
+              notes {
                 discussions(filter: ALL_NOTES, first: 3, sort: CREATED_DESC) {
                   nodes {
                     id
@@ -1139,8 +1103,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         it 'returns latest discussions' do
-          all_widgets = graphql_dig_at(work_item_data, :widgets)
-          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
 
           expect(discussions).to include(
@@ -1163,8 +1125,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
       let(:work_item_fields) do
         query_graphql_field(
-          :widgets, {}, query_graphql_field(
-            'type ... on WorkItemWidgetDesigns', {}, query_graphql_field(
+          :features, {}, query_graphql_field(
+            :designs, {}, query_graphql_field(
               :design_collection, nil, design_collection_fields
             )
           )
@@ -1175,7 +1137,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
       let(:post_query) { post_graphql(query, current_user: current_user) }
 
-      let(:design_collection_data) { work_item_data['widgets'].find { |w| w['type'] == 'DESIGNS' }['designCollection'] }
+      let(:design_collection_data) { work_item_data.dig('features', 'designs', 'designCollection') }
 
       before do
         project.add_developer(developer)
@@ -1410,11 +1372,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           post_query
 
           expect(epic&.work_item_type&.base_type).not_to match('issue')
-          expect(work_item_data['widgets']).not_to include(
-            hash_including(
-              'type' => 'DESIGNS'
-            )
-          )
+          expect(work_item_data['features']['designs']).to be_nil
         end
       end
     end
@@ -1427,9 +1385,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 relatedMergeRequests {
                   nodes {
                     id
@@ -1460,17 +1417,16 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
             expect(work_item_data).to include(
               'id' => work_item.to_global_id.to_s,
-              'widgets' => array_including(
-                hash_including(
-                  'type' => 'DEVELOPMENT',
+              'features' => {
+                'development' => {
                   'relatedMergeRequests' => {
                     'nodes' => [
                       hash_including('id' => merge_request2.to_gid.to_s, 'iid' => merge_request2.iid.to_s),
                       hash_including('id' => merge_request1.to_gid.to_s, 'iid' => merge_request1.iid.to_s)
                     ]
                   }
-                )
-              )
+                }
+              }
             )
           end
 
@@ -1501,9 +1457,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 willAutoCloseByMergeRequest
                 closingMergeRequests {
                   count
@@ -1546,9 +1501,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           it 'returns related merge requests in the response' do
             expect(work_item_data).to include(
               'id' => work_item.to_global_id.to_s,
-              'widgets' => array_including(
-                hash_including(
-                  'type' => 'DEVELOPMENT',
+              'features' => {
+                'development' => {
                   'willAutoCloseByMergeRequest' => true,
                   'closingMergeRequests' => {
                     'count' => 2,
@@ -1565,8 +1519,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                       )
                     )
                   }
-                )
-              )
+                }
+              }
             )
           end
 
@@ -1599,9 +1553,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         let(:work_item_fields) do
           <<~GRAPHQL
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 relatedBranches  {
                   nodes {
                     name
@@ -1645,9 +1598,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
             expect(work_item_data).to include(
               'id' => work_item.to_global_id.to_s,
-              'widgets' => array_including(
-                hash_including(
-                  'type' => 'DEVELOPMENT',
+              'features' => {
+                'development' => {
                   'relatedBranches' => {
                     'nodes' => containing_exactly(
                       hash_including(
@@ -1661,8 +1613,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                       )
                     )
                   }
-                )
-              )
+                }
+              }
             )
           end
         end
@@ -1677,9 +1629,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       let(:work_item_fields) do
         <<~GRAPHQL
           id
-          widgets {
-            type
-            ... on WorkItemWidgetEmailParticipants {
+          features {
+            emailParticipants {
               emailParticipants {
                 nodes {
                   email
@@ -1692,9 +1643,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
       it 'contains the email' do
         expect(work_item_data).to include(
-          'widgets' => array_including(
-            hash_including(
-              'type' => 'EMAIL_PARTICIPANTS',
+          'features' => {
+            'emailParticipants' => {
               'emailParticipants' => {
                 'nodes' => containing_exactly(
                   hash_including(
@@ -1702,8 +1652,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                   )
                 )
               }
-            )
-          )
+            }
+          }
         )
       end
 
@@ -1712,9 +1662,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
         it 'contains the obfuscated email' do
           expect(work_item_data).to include(
-            'widgets' => array_including(
-              hash_including(
-                'type' => 'EMAIL_PARTICIPANTS',
+            'features' => {
+              'emailParticipants' => {
                 'emailParticipants' => {
                   'nodes' => containing_exactly(
                     hash_including(
@@ -1722,8 +1671,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     )
                   )
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -1757,9 +1706,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       let(:work_item_fields) do
         <<~GRAPHQL
           id
-          widgets {
-            type
-            ... on WorkItemWidgetCrmContacts {
+          features {
+            crmContacts {
               contactsAvailable
               contacts {
                 nodes {
@@ -1774,15 +1722,14 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       context 'when no contacts are available' do
         it 'returns expected data' do
           expect(work_item_data).to include(
-            'widgets' => array_including(
-              hash_including(
-                'type' => 'CRM_CONTACTS',
+            'features' => {
+              'crmContacts' => {
                 'contactsAvailable' => false,
                 'contacts' => {
                   'nodes' => be_empty
                 }
-              )
-            )
+              }
+            }
           )
         end
       end
@@ -1793,9 +1740,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
         it 'returns expected data' do
           expect(work_item_data).to include(
-            'widgets' => array_including(
-              hash_including(
-                'type' => 'CRM_CONTACTS',
+            'features' => {
+              'crmContacts' => {
                 'contactsAvailable' => true,
                 'contacts' => {
                   'nodes' => containing_exactly(
@@ -1804,8 +1750,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                     )
                   )
                 }
-              )
-            )
+              }
+            }
           )
         end
       end

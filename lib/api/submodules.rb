@@ -28,6 +28,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update existing submodule reference in repository' do
         success code: 200, model: Entities::CommitDetail
+        tags ['submodules']
         failure [
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' },

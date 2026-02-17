@@ -4,6 +4,13 @@ module Gitlab
   class SnippetSearchResults < SearchResults
     include SnippetsHelper
 
+    attr_reader :organization_id
+
+    def initialize(current_user, query, organization_id: nil)
+      @organization_id = organization_id
+      super(current_user, query)
+    end
+
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
       paginated_objects(snippet_titles, page, per_page)
     end
@@ -36,7 +43,7 @@ module Gitlab
     end
 
     def finder_params
-      {}
+      { organization_id: organization_id }
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+name: read_sbom_occurrence
+description: Grants the ability to read SBOM occurrences
+boundaries:
+  - project

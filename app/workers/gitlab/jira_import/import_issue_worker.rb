@@ -9,13 +9,15 @@ module Gitlab
 
       sidekiq_options retry: 3
       include Gitlab::JiraImport::QueueOptions
-      include Gitlab::Import::DatabaseHelpers
       include Gitlab::Import::NotifyUponDeath
 
       loggable_arguments 3
 
       def perform(project_id, jira_issue_id, issue_attributes, waiter_key)
-        create_issue(issue_attributes, project_id)
+        project = Project.find_by_id(project_id)
+        return unless project
+
+        create_issue(project, issue_attributes)
       rescue StandardError => ex
         # Todo: Record jira issue id(or better jira issue key),
         # so that we can report the list of failed to import issues to the user
@@ -32,48 +34,17 @@ module Gitlab
 
       private
 
-      def create_issue(issue_attributes, project_id)
-        label_ids = issue_attributes.delete('label_ids')
-        assignee_ids = issue_attributes.delete('assignee_ids')
-        issue_id = insert_and_return_id(issue_attributes, Issue)
+      def create_issue(project, issue_attributes)
+        label_ids = issue_attributes.delete('label_ids').to_a.map(&:to_i)
+        import_label_id = JiraImport.get_import_label_id(project.id)
+        label_ids << import_label_id.to_i if import_label_id
 
-        label_issue(project_id, issue_id, label_ids, issue_attributes['namespace_id'])
-        assign_issue(project_id, issue_id, assignee_ids)
+        attributes = issue_attributes.symbolize_keys.merge(
+          label_ids: label_ids,
+          importing: true
+        )
 
-        issue_id
-      end
-
-      def label_issue(project_id, issue_id, label_ids, namespace_id)
-        label_link_attrs = label_ids.to_a.map do |label_id|
-          build_label_attrs(issue_id, label_id.to_i, namespace_id)
-        end
-
-        import_label_id = JiraImport.get_import_label_id(project_id)
-        return unless import_label_id
-
-        label_link_attrs << build_label_attrs(issue_id, import_label_id.to_i, namespace_id)
-
-        ApplicationRecord.legacy_bulk_insert(LabelLink.table_name, label_link_attrs) # rubocop:disable Gitlab/BulkInsert
-      end
-
-      def assign_issue(project_id, issue_id, assignee_ids)
-        return if assignee_ids.blank?
-
-        assignee_attrs = assignee_ids.map { |user_id| { issue_id: issue_id, user_id: user_id } }
-
-        ApplicationRecord.legacy_bulk_insert(IssueAssignee.table_name, assignee_attrs) # rubocop:disable Gitlab/BulkInsert
-      end
-
-      def build_label_attrs(issue_id, label_id, namespace_id)
-        time = Time.current
-        {
-          label_id: label_id,
-          target_id: issue_id,
-          target_type: 'Issue',
-          created_at: time,
-          updated_at: time,
-          namespace_id: namespace_id
-        }
+        project.issues.create!(attributes)
       end
     end
   end

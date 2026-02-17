@@ -92,7 +92,8 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
         visit(merge_request_path(merge_request))
       end
 
-      it 'shows diverged commits count', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408223' do
+      it 'shows diverged commits count',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9495' do
         expect(page).not_to have_content(/([0-9]+ commits? behind)/)
       end
     end

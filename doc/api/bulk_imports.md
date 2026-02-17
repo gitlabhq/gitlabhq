@@ -19,9 +19,9 @@ Prerequisites:
 
 - See [prerequisites for migrating groups by direct transfer](../user/group/import/direct_transfer_migrations.md#prerequisites).
 
-## Start a new group or project migration
+## Start a group or project migration
 
-Use this endpoint to start a new group or project migration.
+Starts a new group or project migration.
 To migrate a project, specify `entities[project_entity]`.
 
 ```plaintext
@@ -77,6 +77,8 @@ curl --request POST \
 
 ## List all group or project migrations
 
+Lists all group or project migrations.
+
 ```plaintext
 GET /bulk_imports
 ```
@@ -124,7 +126,9 @@ curl --request GET \
 ]
 ```
 
-## List all group or project migrations' entities
+## List all group or project migration entities
+
+Lists all group or project migration entities.
 
 ```plaintext
 GET /bulk_imports/entities
@@ -219,7 +223,9 @@ curl --request GET \
 ]
 ```
 
-## Get group or project migration details
+## Retrieve a group or project migration
+
+Retrieves details of a group or project migration.
 
 ```plaintext
 GET /bulk_imports/:id
@@ -243,6 +249,8 @@ curl --request GET \
 ```
 
 ## List group or project migration entities
+
+Lists group or project migration entities for a specific migration.
 
 ```plaintext
 GET /bulk_imports/:id/entities
@@ -316,7 +324,9 @@ curl --request GET \
 ]
 ```
 
-## Get group or project migration entity details
+## Retrieve a group or project migration entity
+
+Retrieves details of a group or project migration entity.
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id
@@ -374,13 +384,15 @@ curl --request GET \
 }
 ```
 
-## Get list of failed import records for group or project migration entity
+## List failed import records for a migration entity
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
 
 {{< /history >}}
+
+Lists failed import records for a group or project migration entity.
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id/failures
@@ -411,7 +423,7 @@ curl --request GET \
 
 {{< /history >}}
 
-Cancel a direct transfer migration.
+Cancels a direct transfer migration.
 
 ```plaintext
 POST /bulk_imports/:id/cancel

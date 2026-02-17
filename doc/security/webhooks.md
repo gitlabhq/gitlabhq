@@ -16,7 +16,7 @@ To protect against the risk of data loss and exposure, GitLab administrators can
 
 ## Secure webhooks and integrations
 
-Users with at least the Maintainer role can set up [webhooks](../user/project/integrations/webhooks.md) that are
+Users with the Maintainer or Owner role can set up [webhooks](../user/project/integrations/webhooks.md) that are
 triggered when specific changes occur in a project or group. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
 usually configured to send data to a specific external web service, which processes the data in an appropriate way.
 
@@ -111,6 +111,13 @@ When this checkbox is selected, requests to the following are still not blocked:
 - Object storage.
 - IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
+When this setting is enabled, GitLab may perform DNS resolution on URLs included in other objects,
+such as Release Links.
+If DNS resolution fails, the request fails.
+To resolve this issue, add the hostname to the
+[allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains),
+even if GitLab never needs to make an outbound connection to that host.
+
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
 Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
 rules.
@@ -202,4 +209,4 @@ This error can occur when outbound requests to the GitLab cloud server are not a
 1. Select **Save Changes**.
 1. After GitLab has access to the [cloud server](../user/gitlab_duo/_index.md), [manually synchronize your license](../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)
 
-For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).
+For more information, see the troubleshooting documentation for [Code Suggestions](../user/duo_agent_platform/code_suggestions/troubleshooting.md) or [Code Suggestions (Classic)](../user/project/repository/code_suggestions/troubleshooting.md).

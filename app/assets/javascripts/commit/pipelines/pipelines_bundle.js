@@ -26,6 +26,7 @@ export default () => {
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({
+        name: 'CommitPipelinesTableRoot',
         components: {
           CommitPipelinesTable: () =>
             import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue'),

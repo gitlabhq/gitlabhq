@@ -3,7 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_projects do
+  include GlFilteredSearchHelpers
   let_it_be(:user) { create(:user) }
+
+  it 'renders all expected tabs', :aggregate_failures do
+    visit(explore_groups_path)
+
+    expect(page).to have_selector('.gl-tab-nav-item', text: _('Active'))
+    expect(page).to have_selector('.gl-tab-nav-item', text: _('Inactive'))
+  end
 
   context 'when there are groups to show' do
     let_it_be(:group) { create(:group, created_at: 5.days.ago) }
@@ -36,85 +44,94 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       expect(page).not_to have_content(private_group.full_name)
     end
 
-    it 'resets search when user cleans the input' do
-      search(group.name)
-      click_button 'Search'
-      wait_for_requests
-
-      expect(page).to have_content(group.full_name)
-      expect(page).not_to have_content(public_group.full_name)
-
-      click_button 'Clear'
-      wait_for_requests
-
-      expect(page).to have_content(group.full_name)
-      expect(page).to have_content(public_group.full_name)
-      expect(page).not_to have_content(private_group.full_name)
-      expect(page.all('[data-testid="nested-groups-projects-list"] .groups-list li').length).to eq 2
-    end
-
-    it 'shows non-archived projects count' do
-      # Initially project is not archived
-      expect(
-        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
-      ).to have_text("1")
-
-      # Archive project
-      ::Projects::UpdateService.new(empty_project, user, archived: true).execute
-      visit explore_groups_path
-
-      # Check project count
-      expect(
-        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
-      ).to have_text("0")
-
-      # Unarchive project
-      ::Projects::UpdateService.new(empty_project, user, archived: false).execute
-      visit explore_groups_path
-
-      # Check project count
-      expect(
-        find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
-      ).to have_text("1")
-    end
-
     it 'renders page description' do
       expect(page).to have_content(
         'Below you will find all the groups that are public or internal. Contribute by requesting to join a group.'
       )
     end
 
-    context 'when using pagination' do
+    context 'when `explore_groups_vue` flag is disabled' do
       before do
-        group.add_owner(user)
-        public_group.add_owner(user)
+        stub_feature_flags(explore_groups_vue: false)
 
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-        sign_in(user)
         visit explore_groups_path
         wait_for_requests
       end
 
-      it 'loads results for next page' do
-        expect(page).to have_selector('.gl-pagination a', count: 3)
-
-        # Check first page
-        expect(page).to have_content(public_group.full_name)
-        expect(page).to have_selector("#group-#{public_group.id}")
-        expect(page).not_to have_content(group.full_name)
-        expect(page).not_to have_selector("#group-#{group.id}")
-
-        # Go to next page
-        find_by_testid('gl-pagination-next').click
-
+      it 'resets search when user cleans the input' do
+        search(group.name)
+        click_button 'Search'
         wait_for_requests
 
-        # Check second page
         expect(page).to have_content(group.full_name)
-        expect(page).to have_selector("#group-#{group.id}")
         expect(page).not_to have_content(public_group.full_name)
-        expect(page).not_to have_selector("#group-#{public_group.id}")
+
+        click_button 'Clear'
+        wait_for_requests
+
+        expect(page).to have_content(group.full_name)
+        expect(page).to have_content(public_group.full_name)
+        expect(page).not_to have_content(private_group.full_name)
+        expect(page.all('[data-testid="nested-groups-projects-list"] .groups-list li').length).to eq 2
+      end
+
+      it 'shows non-archived projects count' do
+        # Initially project is not archived
+        expect(
+          find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
+        ).to have_text("1")
+
+        # Archive project
+        ::Projects::UpdateService.new(empty_project, user, archived: true).execute
+        visit explore_groups_path
+
+        # Check project count
+        expect(
+          find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
+        ).to have_text("0")
+
+        # Unarchive project
+        ::Projects::UpdateService.new(empty_project, user, archived: false).execute
+        visit explore_groups_path
+
+        # Check project count
+        expect(
+          find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
+        ).to have_text("1")
+      end
+
+      context 'when using pagination' do
+        before do
+          group.add_owner(user)
+          public_group.add_owner(user)
+
+          allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+
+          sign_in(user)
+          visit explore_groups_path
+          wait_for_requests
+        end
+
+        it 'loads results for next page' do
+          expect(page).to have_selector('.gl-pagination a', count: 3)
+
+          # Check first page
+          expect(page).to have_content(public_group.full_name)
+          expect(page).to have_selector("#group-#{public_group.id}")
+          expect(page).not_to have_content(group.full_name)
+          expect(page).not_to have_selector("#group-#{group.id}")
+
+          # Go to next page
+          find_by_testid('gl-pagination-next').click
+
+          wait_for_requests
+
+          # Check second page
+          expect(page).to have_content(group.full_name)
+          expect(page).to have_selector("#group-#{group.id}")
+          expect(page).not_to have_content(public_group.full_name)
+          expect(page).not_to have_selector("#group-#{public_group.id}")
+        end
       end
     end
   end
@@ -122,20 +139,29 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
   context 'when there are no groups to show' do
     before do
       sign_in(user)
-
-      visit explore_groups_path
-      wait_for_requests
     end
 
-    it 'shows empty state' do
-      expect(page).to have_content(_('No public or internal groups'))
+    it 'shows empty state', :aggregate_failures do
+      visit explore_groups_path
+      wait_for_requests
+
+      expect(page).to have_content(s_('Projects|Explore active groups'))
+      expect(page).to have_content(s_('Projects|Browse groups to learn from and contribute to.'))
+    end
+
+    context 'when `explore_groups_vue` is disabled' do
+      it 'shows empty state' do
+        stub_feature_flags(explore_groups_vue: false)
+
+        visit explore_groups_path
+        wait_for_requests
+
+        expect(page).to have_content(_('No public or internal groups'))
+      end
     end
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

@@ -114,6 +114,15 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
     # rubocop:enable RSpec/NoExpectationExample
   end
 
+  # aliases for pipeline notification integration shared examples
+  shared_examples 'triggered PipelinesEmail integration' do
+    it_behaves_like 'sending email'
+  end
+
+  shared_examples 'untriggered PipelinesEmail integration' do
+    it_behaves_like 'not sending email'
+  end
+
   describe '#test' do
     def run
       subject.test(data)
@@ -243,6 +252,10 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
         end
       end
 
+      context 'with pipeline and ref status' do
+        it_behaves_like 'pipeline notification integration', 'PipelinesEmail'
+      end
+
       context 'when the pipeline failed' do
         context 'on default branch' do
           it_behaves_like 'sending email'
@@ -276,12 +289,12 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
           end
 
           context 'when notifications are enabled only for protected branch',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
+            quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17045' do
             it_behaves_like 'sending email', branches_to_be_notified: "protected"
           end
 
           context 'when notifications are enabled only for default and protected branches',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
+            quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17045' do
             it_behaves_like 'sending email', branches_to_be_notified: "default_and_protected"
           end
 

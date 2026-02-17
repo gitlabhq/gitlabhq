@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.pipeline_authoring.unique_users_visiting_ci_catalog_weekly
 description: Unique self managed and .com users visiting CI/CD Catalog page weekly count.
 product_group: pipeline_authoring
+product_categories:
+- component_catalog
 performance_indicator_type: []
 value_type: number
 status: active

@@ -13,7 +13,11 @@ RSpec.describe Authn::IamService::JwksClient, :use_clean_rails_redis_caching, fe
   end
 
   before do
-    allow(Gitlab::Auth::Iam).to receive_messages(service_url: service_url, issuer: service_url)
+    allow(Gitlab.config.authn.iam_service).to receive_messages(
+      enabled: true,
+      url: service_url,
+      audience: 'gitlab-rails'
+    )
     allow(Gitlab::HTTP).to receive(:get).and_return(success_response)
   end
 
@@ -22,7 +26,7 @@ RSpec.describe Authn::IamService::JwksClient, :use_clean_rails_redis_caching, fe
       client.fetch_keys
       client.fetch_keys
 
-      expect(Gitlab::HTTP).to have_received(:get).with("#{service_url}/.well-known/jwks.json", timeout: 10).once
+      expect(Gitlab::HTTP).to have_received(:get).with("#{service_url}/.well-known/jwks.json", timeout: 5).once
     end
 
     it 'returns a JWT::JWK::Set instance with the correct keys' do
@@ -51,9 +55,9 @@ RSpec.describe Authn::IamService::JwksClient, :use_clean_rails_redis_caching, fe
     end
 
     it 'raises error when service URL not configured' do
-      allow(Gitlab::Auth::Iam).to receive(:service_url).and_return(nil)
+      allow(Gitlab.config.authn.iam_service).to receive(:url).and_return(nil)
 
-      expect { client.fetch_keys }.to raise_error(Gitlab::Auth::Iam::ConfigurationError, /not configured/)
+      expect { client.fetch_keys }.to raise_error(Authn::IamService::JwksClient::ConfigurationError, /not configured/)
     end
 
     it 'raises error when format is invalid' do

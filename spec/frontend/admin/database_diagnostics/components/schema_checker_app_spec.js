@@ -16,7 +16,6 @@ describe('SchemaCheckerApp component', () => {
   const findRunButton = () => wrapper.findByTestId('run-diagnostics-button');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findByTestId('error-alert');
-  const findNoResultsMessage = () => wrapper.findByTestId('no-results-message');
   const findLastRun = () => wrapper.findByTestId('last-run');
   const findSchemaResultsContainer = () => wrapper.findComponent(SchemaResultsContainer);
 
@@ -60,7 +59,7 @@ describe('SchemaCheckerApp component', () => {
     it('renders the title', () => {
       expect(findTitle().text()).toBe('Schema health check');
       expect(wrapper.text()).toContain(
-        'Detect database schema inconsistencies and structural issues',
+        'Detect database schema inconsistencies and structural issues.',
       );
     });
 
@@ -68,9 +67,6 @@ describe('SchemaCheckerApp component', () => {
       await waitForPromises();
       expect(findLastRun().exists()).toBe(false);
       expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findNoResultsMessage().text()).toBe(
-        'Select "Run Schema Check" to analyze your database schema for potential issues.',
-      );
     });
 
     it('enables the run button after loading completes', async () => {

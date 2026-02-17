@@ -37,7 +37,7 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 
 Prerequisites:
 
-- Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-relative-url-for-gitlab).
+- Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab).
 - **For Jira Cloud**:
   - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
   - If you've enabled
@@ -90,12 +90,9 @@ To configure your project settings in GitLab:
    in the **Jira issues** section:
    1. Select the **View Jira issues** checkbox.
 
-      {{< alert type="warning" >}}
-
-      When you enable this setting, all users with access to your GitLab project
-      can view all issues from the Jira projects you've specified.
-
-      {{< /alert >}}
+      > [!warning]
+      > When you enable this setting, all users with access to your GitLab project
+      > can view all issues from the Jira projects you've specified.
 
    1. Enter one or more Jira project keys.
       Leave blank to include all available keys.
@@ -103,11 +100,8 @@ To configure your project settings in GitLab:
    in the **Jira issues for vulnerabilities** section:
    1. Select the **Create Jira issues for vulnerabilities** checkbox.
 
-      {{< alert type="note" >}}
-
-      You can enable this setting only for individual projects and groups.
-
-      {{< /alert >}}
+      > [!note]
+      > You can enable this setting only for individual projects and groups.
 
    1. Enter a Jira project key.
    1. Select **Fetch issue types for this project key** ({{< icon name="retry" >}}),

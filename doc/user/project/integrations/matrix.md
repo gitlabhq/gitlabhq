@@ -22,6 +22,12 @@ You can configure GitLab to send notifications to a Matrix room.
 
 ## Set up the Matrix integration in GitLab
 
+Prerequisites:
+
+- Administrator access for instance enablement.
+- The Owner role for group enablement.
+- The Maintainer or Owner role for project enablement.
+
 After you join to a Matrix room, you can configure GitLab to send notifications:
 
 1. To enable the integration:
@@ -40,6 +46,8 @@ After you join to a Matrix room, you can configure GitLab to send notifications:
    - In **Room identifier**, paste the Matrix room identifier.
    - Optional. Select the **Notify only broken pipelines** checkbox
      to receive notifications for failed pipelines only.
+   - Optional. Select the **Notify only when status changes** checkbox
+     to receive notifications only when the pipeline status for the ref changes.
    - Optional. From the **Branches for which notifications are to be sent** dropdown list,
      select the branches you want to receive notifications for.
 1. Optional. Select **Test settings**.

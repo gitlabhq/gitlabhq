@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require_relative '../../../../scripts/coverage/path_normalizer'
 
 module QA
   module Support
@@ -93,15 +94,20 @@ module QA
         def save_coverage_data
           return if full_coverage_by_example.empty?
 
-          # Derive test mapping from full coverage data
-          test_mapping = full_coverage_by_example.transform_values(&:keys)
+          # Normalize paths in coverage data (Coverband returns absolute paths)
+          normalized_coverage = full_coverage_by_example.transform_values do |coverage_data|
+            normalize_coverage_paths(coverage_data)
+          end
+
+          # Derive test mapping from normalized coverage data
+          test_mapping = normalized_coverage.transform_values(&:keys)
 
           mapping_file = "tmp/test-code-paths-mapping-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
           File.write(mapping_file, test_mapping.to_json)
           logger.info("Saved test coverage mapping data to #{mapping_file}")
 
           coverage_file = "tmp/coverband-coverage-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
-          File.write(coverage_file, full_coverage_by_example.to_json)
+          File.write(coverage_file, normalized_coverage.to_json)
           logger.info("Saved full Coverband coverage data to #{coverage_file}")
         rescue StandardError => e
           logger.error("Failed to save coverage data, error: #{e}")
@@ -110,6 +116,13 @@ module QA
         private
 
         attr_reader :full_coverage_by_example, :logger, :headers_access_token, :cov_api_endpoint
+
+        # Normalizes file paths from Coverband API to clean relative paths.
+        # Coverband returns absolute paths like /builds/gitlab-org/gitlab/app/models/user.rb
+        # This normalizes to: app/models/user.rb
+        def normalize_coverage_paths(coverage_data)
+          coverage_data.transform_keys { |path| PathNormalizer.normalize(path) }
+        end
       end
     end
   end

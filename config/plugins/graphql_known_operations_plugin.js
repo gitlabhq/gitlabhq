@@ -16,36 +16,60 @@ const isGraphqlModule = (module) => {
 };
 
 /**
- * Returns graphql operation names we can parse from the given module
+ * Extracts directive value from GraphQL source
+ *
+ * Looks for directives in the format: # @directiveName: value
+ */
+const extractDirective = (source, directiveName) => {
+  const regex = new RegExp(`#\\s*@${directiveName}:\\s*([^\\\\]+)`);
+  const match = source.match(regex);
+  return match ? match[1].trim() : null;
+};
+
+/**
+ * Returns graphql operation metadata we can parse from the given module
  *
  * Since webpack gives us the source **after** the graphql-tag/loader runs,
  * we can look for specific lines we're guaranteed to have from the
  * graphql-tag/loader.
  */
-const getOperationNames = (module) => {
+const getOperationMetadata = (module) => {
   const originalSource = module.originalSource();
 
   if (!originalSource) {
-    return [];
+    return {};
   }
 
-  const { exports: moduleExports } = evaluateModuleFromSource(originalSource.source().toString(), {
+  const sourceString = originalSource.source().toString();
+
+  const { exports: moduleExports } = evaluateModuleFromSource(sourceString, {
     // what: stub require(...) when evaluating the graphql module
     // why: require(...) is used to fetch fragments. We only need operation metadata, so it's fine to stub these out.
     require: () => ({ definitions: [] }),
   });
 
-  const names = moduleExports.definitions
-    .filter((x) => SUPPORTED_OPS.includes(x.operation))
-    .map((x) => x.name?.value)
-    // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
-    .filter(Boolean);
+  const metadata = {};
 
-  return names;
+  moduleExports.definitions
+    .filter((x) => SUPPORTED_OPS.includes(x.operation))
+    .forEach((x) => {
+      const operationName = x.name?.value;
+      // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
+      if (operationName) {
+        metadata[operationName] = {
+          feature_category: extractDirective(sourceString, 'feature_category'),
+          urgency: extractDirective(sourceString, 'urgency') || 'default',
+        };
+      }
+    });
+
+  return metadata;
 };
 
 const createFileContents = (knownOperations) => {
-  const sourceData = Array.from(knownOperations.values()).sort((a, b) => a.localeCompare(b));
+  const sourceData = Object.fromEntries(
+    [...knownOperations.entries()].sort(([a], [b]) => a.localeCompare(b)),
+  );
 
   return yaml.dump(sourceData);
 };
@@ -73,7 +97,10 @@ const onSucceedModule = ({ module, knownOperations }) => {
     return;
   }
 
-  getOperationNames(module).forEach((name) => knownOperations.add(name));
+  const metadata = getOperationMetadata(module);
+  Object.entries(metadata).forEach(([name, data]) => {
+    knownOperations.set(name, data);
+  });
 };
 
 const onCompilerEmit = ({ compilation, knownOperations, filename }) => {
@@ -101,7 +128,7 @@ class GraphqlKnownOperationsPlugin {
   }
 
   apply(compiler) {
-    const knownOperations = new Set();
+    const knownOperations = new Map();
 
     compiler.hooks.emit.tap(PLUGIN_NAME, (compilation) => {
       onCompilerEmit({

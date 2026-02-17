@@ -221,4 +221,84 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
       end
     end
   end
+
+  describe 'state machine transitions' do
+    context 'with logging' do
+      let(:error_event) { StandardError.new('timeout') }
+      let_it_be(:pending_job) { create(job_factory, :pending) }
+
+      it 'logs state transitions' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :job_transition,
+          record: pending_job,
+          previous_state: :pending,
+          new_state: :succeeded,
+          error: nil
+        )
+
+        pending_job.succeed!
+      end
+
+      it 'logs state transitions with errors' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :job_transition,
+          record: pending_job,
+          previous_state: :succeeded,
+          new_state: :failed,
+          error: error_event
+        )
+
+        pending_job.failure!(error: error_event)
+      end
+    end
+  end
+
+  describe '#time_efficiency' do
+    subject { job.time_efficiency }
+
+    let_it_be(:worker) { create(worker_factory, interval: 120.seconds) }
+    let(:job) { create(job_factory, :succeeded, worker: worker, worker_partition: worker.partition) }
+
+    context 'when job has not yet succeeded' do
+      let(:job) { create(job_factory, :running, worker: worker, worker_partition: worker.partition) }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when finished_at is not set' do
+      before do
+        job.update_column(:finished_at, nil)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when started_at is not set' do
+      before do
+        job.update_column(:started_at, nil)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when job has finished', :freeze_time do
+      it 'returns ratio of duration to interval, here: 0.5' do
+        job.update_columns(started_at: Time.current - (worker.interval / 2), finished_at: Time.current)
+
+        expect(subject).to eq(0.5)
+      end
+
+      it 'returns ratio of duration to interval, here: 1' do
+        job.update_columns(started_at: Time.current - worker.interval, finished_at: Time.current)
+
+        expect(subject).to eq(1)
+      end
+    end
+  end
 end

@@ -34,6 +34,17 @@ module ActiveContext
           drop_collection_record(collection)
         end
 
+        def add_field(collection_name, &block)
+          full_name = adapter.full_collection_name(collection_name)
+          collection = adapter.connection.collections.find_by(name: full_name)
+          raise "Collection #{full_name} not found" unless collection
+
+          builder = ActiveContext::Databases::CollectionBuilder.new
+          yield(builder) if block
+
+          builder.fields.each { |field| do_add_field(collection, field) }
+        end
+
         private
 
         def create_collection_record(name, number_of_partitions, options)
@@ -54,6 +65,10 @@ module ActiveContext
         end
 
         def do_drop_collection(...)
+          raise NotImplementedError
+        end
+
+        def do_add_field(...)
           raise NotImplementedError
         end
       end

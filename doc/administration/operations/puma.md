@@ -29,13 +29,13 @@ To stop uncontrolled memory growth, the GitLab Rails application runs a supervis
 that automatically restarts workers if they exceed a given resident set size (RSS) threshold
 for a certain amount of time.
 
-GitLab sets a default of `1200Mb` for the memory limit. To override the default value,
+GitLab sets a default of `1500Mb` for the memory limit. To override the default value,
 set `per_worker_max_memory_mb` to the new RSS limit in megabytes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   puma['per_worker_max_memory_mb'] = 1024 # 1 GB
+   puma['per_worker_max_memory_mb'] = 1200 # 1.2 GB
    ```
 
 1. Reconfigure GitLab:
@@ -51,7 +51,7 @@ Worker count is calculated based on CPU cores. A small GitLab deployment
 with 4-8 workers might experience performance issues if workers are being restarted
 too often (once or more per minute).
 
-A higher value of `1200` or more could be beneficial if the server has free memory.
+A higher `per_worker_max_memory_mb` value could be beneficial if the server has free memory.
 
 ## Plan the database connections
 
@@ -83,7 +83,8 @@ The following is an example of one of these log events in `/var/log/gitlab/gitla
 ```
 
 `memwd_rss_bytes` is the actual amount of memory consumed, and `memwd_max_rss_bytes` is the
-RSS limit set through `per_worker_max_memory_mb`.
+RSS limit set through `per_worker_max_memory_mb` or defined by
+[`DEFAULT_PUMA_WORKER_RSS_LIMIT_MB`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/memory/watchdog/configurator.rb).
 
 ## Change the worker timeout
 
@@ -110,14 +111,11 @@ To change the worker timeout to 600 seconds:
 
 ## Disable Puma clustered mode in memory-constrained environments
 
-{{< alert type="warning" >}}
-
-This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature
-is not ready for production use. If you want to use this feature, you should test
-outside of production first. See the [known issues](#puma-single-mode-known-issues)
-for additional details.
-
-{{< /alert >}}
+> [!warning]
+> This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature
+> is not ready for production use. If you want to use this feature, you should test
+> outside of production first. See the [known issues](#puma-single-mode-known-issues)
+> for additional details.
 
 In a memory-constrained environment with less than 4 GB of RAM available, consider disabling Puma
 [clustered mode](https://github.com/puma/puma#clustered-mode).
@@ -164,13 +162,10 @@ steps below:
 1. Generate an SSL certificate key-pair for the address where Puma will
    listen. For the example below, this is `127.0.0.1`.
 
-   {{< alert type="note" >}}
-
-   If using a self-signed certificate from a custom Certificate Authority (CA),
-   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
-   to make them trusted by other GitLab components.
-
-   {{< /alert >}}
+   > [!note]
+   > If using a self-signed certificate from a custom Certificate Authority (CA),
+   > follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
+   > to make them trusted by other GitLab components.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -190,16 +185,13 @@ steps below:
    sudo gitlab-ctl reconfigure
    ```
 
-{{< alert type="note" >}}
-
-In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
-providing metrics to be scraped by Prometheus. It is not possible to
-make Prometheus scrape them over HTTPS, and support for it is being discussed
-[in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
-Hence, it is not technically possible to turn off this HTTP listener without
-losing Prometheus metrics.
-
-{{< /alert >}}
+> [!note]
+> In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
+> providing metrics to be scraped by Prometheus. It is not possible to
+> make Prometheus scrape them over HTTPS, and support for it is being discussed
+> [in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
+> Hence, it is not technically possible to turn off this HTTP listener without
+> losing Prometheus metrics.
 
 ### Using an encrypted SSL key
 
@@ -271,12 +263,9 @@ configure this:
 
 ## Switch from Unicorn to Puma
 
-{{< alert type="note" >}}
-
-For Helm-based deployments, see the
-[`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
-
-{{< /alert >}}
+> [!note]
+> For Helm-based deployments, see the
+> [`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
 
 Puma is the default web server and Unicorn is no longer supported.
 

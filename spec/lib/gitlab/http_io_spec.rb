@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HttpIO, feature_category: :shared do
+RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
   include HttpIOHelpers
 
   let(:http_io) { described_class.new(url, size) }

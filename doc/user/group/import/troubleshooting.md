@@ -34,7 +34,35 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 ```
 
 You can also see all migrated entities with any failures related to them using an
-[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
+[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migration-entities).
+
+## Migrations are slow or timing out
+
+If you're experiencing very slow migrations or [timeouts](../../../administration/instance_limits.md#direct-transfer-migration)
+during migrations, use these strategies to reduce migration duration.
+
+### Add Sidekiq workers to the destination instance
+
+If migrating to a GitLab Self-Managed instance, to speed up migrations, you can add Sidekiq workers to the destination
+instance. When increasing the number of Sidekiq workers, you must take into account that:
+
+- A single direct transfer migration migrates five groups or projects at a time, regardless of the number of Sidekiq
+  workers available on the destination instance.
+- The destination instance must have the capacity to handle more concurrent jobs. If so, adding more Sidekiq workers can
+  reduce the time it takes to import each group or project.
+
+For more information about how to add Sidekiq workers to the destination instance, see
+[Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+
+### Start separate migrations
+
+You can experience delays and potential timeouts if the source instance doesn't have the resources to export five
+groups in parallel. When the source instance is under-resourced, the destination instance must wait for exported data to
+become available.
+
+To reduce delays caused by parallel exports, start a separate migration for each group instead of
+all groups and projects at the same time. Because the GitLab UI can only migrate top-level groups, you might need to
+use the API to migrate projects in their subgroups.
 
 ## Stale imports
 
@@ -178,13 +206,15 @@ When importing records, you might get the following error:
 PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
 ```
 
-This error might occur when a Sidekiq worker processing the import
-restarts due to high memory or CPU usage during import.
+This error can occur when:
 
-To reduce Sidekiq memory or CPU issues during import:
-
-- Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-- Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
+- A Sidekiq worker processing the import restarts due to high memory or CPU usage.
+  To reduce Sidekiq resource issues during import:
+  - Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+  - Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
+- You are [consolidating groups or projects from different source groups into a single destination group](_index.md#known-issues).
+  When epics from different source groups have the same internal ID (which are only unique within a single group), importing them to a single destination group
+  causes conflicts. This conflict causes `PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint` errors referencing `index_issues_on_namespace_id_iid_unique` or `index_epics_on_group_id_and_iid`.
 
 ## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
 

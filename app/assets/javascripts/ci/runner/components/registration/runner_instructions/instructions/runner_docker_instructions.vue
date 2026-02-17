@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 export default {
   components: {

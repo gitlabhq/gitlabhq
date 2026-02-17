@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
+RSpec.describe Gitlab::Doctor::Secrets, feature_category: :system_access do
   let!(:user) { create(:user, otp_secret: "test") }
   let!(:group) { create(:group, :allow_runner_registration_token, runners_token: "test") }
   let!(:project) { create(:project) }

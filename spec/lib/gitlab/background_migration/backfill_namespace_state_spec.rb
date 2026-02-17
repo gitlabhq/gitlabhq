@@ -994,7 +994,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceState, feature_cate
 
   def create_namespace(type:, parent_id: nil, state: nil)
     path = "namespace_#{SecureRandom.hex(4)}"
-    namespaces.create!(
+    namespace = namespaces.create!(
       name: path,
       path: path,
       type: type,
@@ -1002,6 +1002,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceState, feature_cate
       state: state,
       organization_id: organization.id
     )
+    namespace_details.insert({
+      namespace_id: namespace.id,
+      created_at: Time.current,
+      updated_at: Time.current
+    })
+    namespace
   end
 
   def create_project(namespace_id:, project_namespace_id:, **attrs)

@@ -42,7 +42,7 @@ To learn how you can optimize your license utilization,
 see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).
 
 To learn more about GitLab Duo and SDLC trends, see the blog post
-[Developing GitLab Duo: AI impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
+[Developing GitLab Duo: AI impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
 
 For a click-through demo, see the [GitLab Duo and SDLC trends product tour](https://gitlab.navattic.com/ai-impact).
 
@@ -65,6 +65,13 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 ## Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
+
+The change percentage compares the first full month of available statistics to the last completed month, excluding the current month.
+
+Values in green indicate positive changes, and values in red indicate negative changes.
+The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
+
+Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
 
 ### GitLab Duo usage metrics
 
@@ -222,7 +229,7 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 
 Prerequisites:
 
-- [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
+- [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. On the top bar, select **Search or go to** and find your project or group.

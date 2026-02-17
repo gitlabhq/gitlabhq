@@ -34,19 +34,17 @@ To enable the plugin:
 
 After you install the extension, connect it to your GitLab account.
 
-### Create a personal access token
-
-If you are on GitLab Self-Managed, create a personal access token.
-
-1. In GitLab, in the upper-right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
-1. Select **Add new token**.
-1. Enter a name, description, and expiration date.
-1. Select the `api` scope.
-1. Select **Create personal access token**.
-
 ### Authenticate with GitLab
+
+Prerequisites:
+
+- For GitLab Self-Managed and GitLab Dedicated authentication using OAuth:
+  - GitLab Duo plugin for JetBrains 3.30.30 and later.
+  - The application ID for an instance-wide [OAuth application for JetBrains IDEs](../../administration/settings/editor_extensions.md#jetbrains-ides).
+- For authentication using PAT, a [personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
+  with the `api` scope.
+- For authentication with 1Password, completion of the [steps to integrate with 1Password](_index.md#integrate-with-1password-cli)
+  and the secret reference.
 
 After you configure the plugin in your IDE, connect it to your GitLab account:
 
@@ -54,10 +52,12 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
    If you don't see the plugin listed, restart your IDE.
 1. Provide the **URL to GitLab instance**. For GitLab.com, use `https://gitlab.com`.
-1. Select an authentication method:
-   - For GitLab.com, select **OAuth** and follow the prompts to authenticate.
-   - For GitLab Self-Managed and GitLab Dedicated, select **PAT** and paste your personal access
-     token. The token value is not displayed or accessible to others.
+1. Select an authentication method, **OAuth**, **PAT**, or **1Password CLI**.
+   - For OAuth, follow the prompts to sign in and authenticate.
+   - For PAT, enter your personal access token.
+     The token value is not displayed or accessible to others.
+   - For 1Password, select **Integrate with 1Password CLI**, select your account, and, optionally,
+     enter the secret reference.
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
 
@@ -65,16 +65,21 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 
 Prerequisites:
 
-- You have the GitLab Duo add-on and a seat assigned.
-- You open a project that is linked to a remote repository on GitLab, or you set a
-  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
+- You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
+- You open a project that is linked to a remote repository on GitLab, or you set a default GitLab Duo
+  namespace in the extension.
 
-To enable GitLab Duo Chat and GitLab Duo Code Suggestions, review the prerequisites and
-setup steps for each feature:
+To enable GitLab Duo features:
 
-- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides)
-- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides)
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md)
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Find the feature you want to enable and select the checkbox.
+1. Restart your IDE, if prompted.
+
+For GitLab Duo Code Suggestions, review the additional prerequisites and setup steps:
+
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
+- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 
 ## Set the default namespace
 
@@ -99,9 +104,8 @@ To install a pre-release build, either:
 - [Add the `alpha` plugin repository](https://www.jetbrains.com/help/idea/managing-plugins.html#add_plugin_repos)
   to your IDE. For the repository URL, use `https://plugins.jetbrains.com/plugins/alpha/list`.
 
-  {{< alert type="note" >}}
-  To see the alpha release after adding the `alpha` plugin repository, you might need to uninstall and reinstall the GitLab Duo plugin.
-  {{< /alert >}}
+  > [!note]
+  > To see the alpha release after adding the `alpha` plugin repository, you might need to uninstall and reinstall the GitLab Duo plugin.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a video tutorial of this process, see

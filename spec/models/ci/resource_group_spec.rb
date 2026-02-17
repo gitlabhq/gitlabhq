@@ -174,20 +174,6 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
         end
       end
     end
-
-    describe '#waiting_processables' do
-      subject { resource_group.waiting_processables }
-
-      where(:mode) { [:unordered, :oldest_first, :newest_first, :newest_ready_first] }
-
-      with_them do
-        let(:process_mode) { mode }
-
-        it 'returns waiting_for_resource jobs in an indeterministic order' do
-          expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
-        end
-      end
-    end
   end
 
   describe '#current_processable' do

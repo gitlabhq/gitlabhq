@@ -83,6 +83,98 @@ RSpec.describe SessionsController, feature_category: :system_access do
   end
 
   describe '#create' do
+    shared_examples '2FA sign-in with passkeys' do
+      context 'with passkeys' do
+        let!(:passkey) { create_passkey(user) }
+
+        let(:device_response) { device_response_after_authentication(user, passkey) }
+
+        let(:session_params) { { otp_user_id: user.id, challenge: challenge } }
+        let(:user_params) { { device_response: device_response } }
+
+        def authenticate_2fa_with_passkeys
+          post(:create, params: { user: user_params }, session: session_params)
+        end
+
+        it 'allows a passkey to be used for 2FA' do
+          allow_next_instance_of(User) do |instance|
+            expect(instance).to receive(:get_all_webauthn_credential_ids)
+          end
+
+          authenticate_2fa_with_passkeys
+        end
+
+        context 'when authenticated with a passkey' do
+          it 'calls 2 passkey interval events (status: attempt & success)' do
+            expect(controller).to receive(:track_passkey_internal_event).twice
+
+            authenticate_2fa_with_passkeys
+          end
+
+          it 'authenticates successfully' do
+            authenticate_2fa_with_passkeys
+
+            expect(response).to redirect_to(root_path)
+            expect(request.env['warden']).to be_authenticated
+            expect(subject.current_user).to eq user
+          end
+        end
+
+        context 'when failed to authenticate with a passkey' do
+          let(:device_response) { 'invalid_response' }
+
+          it 'calls 2 passkey interval events (status: attempt & failure)' do
+            expect(controller).to receive(:track_passkey_internal_event).twice
+
+            authenticate_2fa_with_passkeys
+          end
+
+          it 'shows a flash alert from the authenticate service' do
+            authenticate_2fa_with_passkeys
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(subject.current_user).to be_nil
+            expect(flash[:alert]).to be_present
+          end
+        end
+
+        context 'when passkey authentication is disabled for user' do
+          before do
+            allow_next_found_instance_of(User) do |instance|
+              allow(instance).to receive(:allow_passkey_authentication?).and_return(false)
+            end
+          end
+
+          it 'does not allow passkeys to be used for 2FA' do
+            allow_next_instance_of(User) do |instance|
+              expect(instance).not_to receive(:get_all_webauthn_credential_ids)
+            end
+
+            authenticate_2fa_with_passkeys
+          end
+
+          it 'does not call a passkey interval event' do
+            expect(controller).not_to receive(:track_passkey_internal_event)
+
+            authenticate_2fa_with_passkeys
+          end
+
+          it 'does not authenticate the user', :aggregate_failures do
+            authenticate_2fa_with_passkeys
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(subject.current_user).to be_nil
+          end
+
+          it 'returns generic error message' do
+            authenticate_2fa_with_passkeys
+
+            expect(flash[:alert]).to eq(_('Failed to connect to your device. Try again.'))
+          end
+        end
+      end
+    end
+
     it_behaves_like 'known sign in' do
       let(:user) { create(:user) }
       let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
@@ -727,6 +819,8 @@ RSpec.describe SessionsController, feature_category: :system_access do
           expect(response.body).to match('gon.api_version')
         end
       end
+
+      it_behaves_like '2FA sign-in with passkeys'
     end
 
     context 'when using two-factor authentication via WebAuthn device' do
@@ -799,80 +893,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
         expect(AuthenticationEvent.last.provider).to eq("two-factor-via-webauthn-device")
       end
 
-      context 'with passkeys' do
-        let(:user) { create(:user, :two_factor_via_webauthn) }
-        let!(:passkey) { create_passkey(user) }
-
-        let(:device_response) { device_response_after_authentication(user, passkey) }
-
-        let(:session_params) { { otp_user_id: user.id, challenge: challenge } }
-        let(:user_params) { { device_response: device_response } }
-
-        def authenticate_2fa_with_passkeys
-          post(:create, params: { user: user_params }, session: session_params)
-        end
-
-        context 'when the :passkeys Feature Flag is enabled' do
-          it 'allows both passkeys & second_factor_authenticators to be used for 2FA' do
-            expect(user).to receive(:get_all_webauthn_credential_ids)
-
-            controller.send(:setup_webauthn_authentication, user)
-          end
-
-          context 'when authenticated with a passkey' do
-            it 'calls 2 passkey interval events (status: attempt & success)' do
-              expect(controller).to receive(:track_passkey_internal_event).twice
-
-              authenticate_2fa_with_passkeys
-            end
-
-            it 'authenticates successfully' do
-              authenticate_2fa_with_passkeys
-
-              expect(response).to redirect_to(root_path)
-              expect(request.env['warden']).to be_authenticated
-              expect(subject.current_user).to eq user
-            end
-          end
-
-          context 'when failed to authenticate with a passkey' do
-            let(:device_response) { 'invalid_response' }
-
-            it 'calls 2 passkey interval events (status: attempt & failure)' do
-              expect(controller).to receive(:track_passkey_internal_event).twice
-
-              authenticate_2fa_with_passkeys
-            end
-
-            it 'shows a flash alert from the authenticate service' do
-              authenticate_2fa_with_passkeys
-
-              expect(request.env['warden']).not_to be_authenticated
-              expect(subject.current_user).to be_nil
-              expect(flash[:alert]).to be_present
-            end
-          end
-        end
-
-        context 'when the :passkeys Feature Flag is disabled' do
-          before do
-            stub_feature_flags(passkeys: false)
-          end
-
-          it 'allows for only second_factor_authenticators to be used for 2FA' do
-            expect(user).not_to receive(:get_all_webauthn_credential_ids)
-            expect(user).to receive(:second_factor_webauthn_registrations)
-
-            controller.send(:setup_webauthn_authentication, user)
-          end
-
-          it 'does not call a passkey interval event' do
-            expect(controller).not_to receive(:track_passkey_internal_event)
-
-            authenticate_2fa_with_passkeys
-          end
-        end
-      end
+      it_behaves_like '2FA sign-in with passkeys'
     end
 
     context 'when the user is locked and submits a valid verification token' do

@@ -1,0 +1,6 @@
+---
+name: test_webhook
+description: Grants the ability to test webhooks
+boundaries:
+  - group
+  - project

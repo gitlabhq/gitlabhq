@@ -13,6 +13,8 @@ module API
         params do
           requires :value, type: String, desc: 'The value of the custom header'
         end
+        route_setting :authorization, permissions: :update_webhook_custom_header,
+          boundary_type: configuration[:boundary_type]
         put ":key" do
           hook = find_hook
           key = params.delete(:key)
@@ -25,6 +27,8 @@ module API
         end
 
         desc 'Un-Set a custom header'
+        route_setting :authorization, permissions: :delete_webhook_custom_header,
+          boundary_type: configuration[:boundary_type]
         delete ":key" do
           hook = find_hook
           key = params.delete(:key)

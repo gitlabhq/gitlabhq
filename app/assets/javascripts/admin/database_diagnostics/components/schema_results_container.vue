@@ -34,13 +34,13 @@ export default {
     >
       <gl-card class="gl-w-full">
         <template #header>
-          <span class="gl-font-bold">
+          <h3 class="gl-heading-5 !gl-mb-0">
             <gl-sprintf :message="s__('DatabaseDiagnostics|Database: %{name}')">
               <template #name>
                 {{ database.name }}
               </template>
             </gl-sprintf>
-          </span>
+          </h3>
         </template>
 
         <schema-issues-section :database-results="database.results" />

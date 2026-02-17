@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module AutoDevopsHelper
-  def show_auto_devops_callout?(project)
-    Feature.disabled?(:auto_devops_banner_disabled) &&
-      show_callout?('auto_devops_settings_dismissed') &&
-      can?(current_user, :admin_pipeline, project) &&
-      project.has_auto_devops_implicitly_disabled? &&
-      !project.has_ci_config_file? &&
-      !project.ci_integration
-  end
-
   def badge_for_auto_devops_scope(auto_devops_receiver)
     return unless auto_devops_receiver.auto_devops_enabled?
 

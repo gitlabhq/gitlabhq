@@ -22,12 +22,12 @@ where you manage [on-call schedules](oncall_schedules.md).
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 - You must have an [on-call schedule](oncall_schedules.md).
 
 To create an escalation policy:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Add an escalation policy**.
 1. Enter the policy's name and description, and
@@ -53,7 +53,7 @@ The time specified for an escalation rule must be between 0 and 1440 minutes.
 
 To update an escalation policy:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Edit escalation policy** ({{< icon name="pencil" >}}).
 1. Edit the information.
@@ -63,7 +63,7 @@ To update an escalation policy:
 
 To delete an escalation policy:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Escalation Policies**.
 1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete escalation policy**.

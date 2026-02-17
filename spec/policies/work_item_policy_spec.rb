@@ -47,9 +47,6 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let_it_be(:support_bot) { Users::Internal.in_organization(private_project.organization_id).support_bot }
 
       it_behaves_like 'checks abilities for project level work items'
-      it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :work_item do
-        let_it_be(:project) { private_project }
-      end
 
       it 'checks non-member abilities' do
         # disallowed
@@ -96,9 +93,6 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let_it_be(:support_bot) { Users::Internal.in_organization(public_project.organization_id).support_bot }
 
       it_behaves_like 'checks abilities for project level work items'
-      it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :work_item do
-        let_it_be(:project) { public_project }
-      end
 
       it 'checks non-member abilities' do
         # allowed

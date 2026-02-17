@@ -88,11 +88,12 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
               params do
                 use :terraform_get
               end
+              route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
               get do
                 present_package_file
               end
@@ -110,11 +111,12 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not found' }
                   ]
-                  tags %w[terraform_registry]
+                  tags %w[terraform]
                 end
                 params do
                   use :terraform_get
                 end
+                route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
                 get format: false do
                   present_package_file
                 end
@@ -132,9 +134,10 @@ module API
                     failure [
                       { code: 403, message: 'Forbidden' }
                     ]
-                    tags %w[terraform_registry]
+                    tags %w[terraform]
                   end
 
+                  route_setting :authorization, permissions: :authorize_terraform_module, boundary_type: :project
                   put :authorize do
                     authorize_workhorse!(**authorize_workhorse_params)
                   end
@@ -149,7 +152,7 @@ module API
                       { code: 404, message: 'Not found' }
                     ]
                     consumes %w[multipart/form-data]
-                    tags %w[terraform_registry]
+                    tags %w[terraform]
                   end
 
                   params do
@@ -158,6 +161,7 @@ module API
                       documentation: { type: 'file' }
                   end
 
+                  route_setting :authorization, permissions: :upload_terraform_module, boundary_type: :project
                   put do
                     authorize_upload!(authorized_user_project)
 

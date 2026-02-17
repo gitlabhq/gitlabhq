@@ -27,10 +27,11 @@ for this API.
 | `read_api`        | Allows read access to the repository files. |
 | `read_repository` | Allows read-access to the repository files. |
 
-## Get file from repository
+## Retrieve a file from a repository
 
-Allows you to receive information about file in repository like name, size, and
-content. File content is Base64 encoded. You can access this endpoint
+Retrieves information about a specified file in a repository. This
+includes information like the name, size, and the file contents.
+File content is Base64 encoded. You can access this endpoint
 without authentication, if the repository is publicly accessible.
 
 For blobs larger than 10 MB, this endpoint has a rate limit of 5 requests per minute.
@@ -126,9 +127,9 @@ X-Gitlab-Execute-Filemode: false
 ...
 ```
 
-## Get file blame from repository
+## Retrieve file blame history from a repository
 
-Retrieve blame information. Each blame range contains lines and their corresponding commit information.
+Retrieves blame history for a specified file in a repository. Each blame range contains lines and their corresponding commit information.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame
@@ -252,7 +253,9 @@ Example response:
 ]
 ```
 
-## Get raw file from repository
+## Retrieve a raw file from a repository
+
+Retrieves the raw file contents on a specified file in a repository.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/raw
@@ -273,9 +276,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 > [!note]
-> Like [Get file from repository](repository_files.md#get-file-from-repository), you can use `HEAD` to get just file metadata.
+> Like [Retrieve a file from a repository](repository_files.md#retrieve-a-file-from-a-repository), you can use `HEAD` to get just file metadata.
 
-## Create new file in repository
+## Create a file in a repository
 
 {{< history >}}
 
@@ -283,7 +286,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-Allows you to create a single file. For creating multiple files with a single request,
+Creates a file in a specified repository. To create multiple files with a single request,
 see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
@@ -334,7 +337,7 @@ Example response:
 }
 ```
 
-## Update existing file in repository
+## Update a file in a repository
 
 {{< history >}}
 
@@ -342,8 +345,8 @@ Example response:
 
 {{< /history >}}
 
-Allows you to update a single file. For updating multiple files with a single request,
-refer to the [commits API](commits.md#create-a-commit).
+Updates a specified file in a repository. To update multiple files with a single request,
+see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 PUT /projects/:id/repository/files/:file_path
@@ -403,9 +406,9 @@ error message. Possible causes for a failed commit include:
 
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/) has a Boolean return code, preventing GitLab from specifying the error.
 
-## Delete existing file in repository
+## Delete a file in a repository
 
-Deletes a single file. To delete multiple files with a single request,
+Deletes a specified file in a repository. To delete multiple files with a single request,
 see the [commits API](commits.md#create-a-commit).
 
 ```plaintext

@@ -8,6 +8,10 @@
 module Gitlab
   module BackgroundMigration
     class <%= class_name %> < BatchedMigrationJob
+      # Cursor strategy is the default for batched migrations.
+      # For composite primary keys, use: cursor :column1, :column2
+      cursor :id
+
       # operation_name :my_operation # This is used as the key on collecting metrics
       feature_category :<%= feature_category %>
 

@@ -41,13 +41,10 @@ local repository, GitLab stops updating the branch. This prevents data loss.
 Deleted branches and tags in the upstream repository are not reflected in the
 downstream repository.
 
-{{< alert type="note" >}}
-
-Items deleted from the downstream pull mirror repository, but still in the upstream repository,
-are restored upon the next pull. For example: a branch deleted only in the mirrored repository
-reappears after the next pull.
-
-{{< /alert >}}
+> [!note]
+> Items deleted from the downstream pull mirror repository, but still in the upstream repository,
+> are restored upon the next pull. For example: a branch deleted only in the mirrored repository
+> reappears after the next pull.
 
 ## How pull mirroring works
 
@@ -83,12 +80,9 @@ Prerequisites:
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**.
 
-   {{< alert type="note" >}}
-
-   To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
-   or `https://gitlab.com/gitlab-org/gitlab.git`.
-
-   {{< /alert >}}
+   > [!note]
+   > To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
+   > or `https://gitlab.com/gitlab-org/gitlab.git`.
 
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. For more information, see
@@ -111,11 +105,8 @@ To always update your local branches with remote versions, even if they have
 diverged from the remote, select **Overwrite diverged branches** when you
 create a mirror.
 
-{{< alert type="warning" >}}
-
-For mirrored branches, enabling this option results in the loss of local changes.
-
-{{< /alert >}}
+> [!warning]
+> For mirrored branches, enabling this option results in the loss of local changes.
 
 ### Trigger pipelines for mirror updates
 
@@ -133,11 +124,17 @@ the remote repository updates branches or tags. Before you enable this feature:
   - Make an update to the remote repository that attempts to fetch stored CI/CD variable values when the pipeline runs.
   - Could push commits to your mirrored project if the [**Allow Git push requests to the repository**](../../../../ci/jobs/ci_job_token.md#allow-git-push-requests-to-your-project-repository) setting is enabled.
 
-{{< alert type="warning" >}}
+> [!warning]
+> Only enable this feature for your own projects or those with trusted maintainers.
 
-Only enable this feature for your own projects or those with trusted maintainers.
+## Pull mirroring with SSO enforcement
 
-{{< /alert >}}
+When [SSO enforcement](../../../group/saml_sso/_index.md#sso-enforcement) is enabled for your group,
+the user who created the mirror must maintain an active SSO session or the mirror fails.
+
+To configure mirroring without SSO session dependency, you can [use the API](../../../../api/project_pull_mirroring.md)
+with a [project access token](../../settings/project_access_tokens.md), [group access token](../../../group/settings/group_access_tokens.md),
+or [personal access token](../../../profile/personal_access_tokens.md) for service accounts.
 
 ## Trigger an update by using the API
 
@@ -190,4 +187,4 @@ end
 
 - [Troubleshooting](troubleshooting.md) for repository mirroring.
 - [Pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
-- [Project pull mirroring API](../../../../api/project_pull_mirroring.md#configure-pull-mirroring-for-a-project)
+- [Project pull mirroring API](../../../../api/project_pull_mirroring.md#update-project-pull-mirroring-settings)

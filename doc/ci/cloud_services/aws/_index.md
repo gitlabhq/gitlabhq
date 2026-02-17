@@ -12,12 +12,9 @@ title: Configure OpenID Connect in AWS to retrieve temporary credentials
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-`CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
-
-{{< /alert >}}
+> [!warning]
+> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial shows you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without storing secrets.
 To do this, you must configure OpenID Connect (OIDC) for ID federation between GitLab and AWS. For background and requirements for integrating GitLab using OIDC, see [Connect to cloud services](../_index.md).
@@ -41,12 +38,9 @@ Include the following information:
   - In AWS OIDC integrations, this typically matches the audience value configured in your IAM OIDC identity provider (often `sts.amazonaws.com` or your GitLab instance URL).
   - This value is validated by AWS to ensure the token was intended for your specific identity provider.
 
-  {{< alert type="note" >}}
-
-  Using `https://gitlab.com` or your GitLab instance URL might work if the AWS identity provider reference matches it, but this is semantically misleading.
-  The audience should represent the service that validates and accepts the token.
-
-  {{< /alert >}}
+  > [!note]
+  > Using `https://gitlab.com` or your GitLab instance URL might work if the AWS identity provider reference matches it, but this is semantically misleading.
+  > The audience should represent the service that validates and accepts the token.
 
 ## Configure a role and trust
 
@@ -126,16 +120,13 @@ assume role:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This workaround is an advanced configuration option with security considerations to understand.
-You must be careful to correctly sync the OpenID configuration and the public keys from your private
-GitLab Self-Managed instance to a publicly available location such as an S3 bucket.
-You must also ensure that the S3 bucket and files inside are properly secured.
-Failing to properly secure the S3 bucket could lead to the takeover of any cloud accounts
-associated with this OpenID Connect identity.
-
-{{< /alert >}}
+> [!warning]
+> This workaround is an advanced configuration option with security considerations to understand.
+> You must be careful to correctly sync the OpenID configuration and the public keys from your private
+> GitLab Self-Managed instance to a publicly available location such as an S3 bucket.
+> You must also ensure that the S3 bucket and files inside are properly secured.
+> Failing to properly secure the S3 bucket could lead to the takeover of any cloud accounts
+> associated with this OpenID Connect identity.
 
 If your GitLab instance is not publicly accessible, configuring OpenID Connect in AWS
 is not possible by default. You can use a workaround to make some specific configuration publicly
@@ -171,8 +162,10 @@ accessible, enabling OpenID Connect configuration for the instance:
    1. Edit `/etc/gitlab/gitlab.rb`:
 
       ```ruby
-      gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+      gitlab_rails['ci_id_tokens_issuer_url'] = '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -192,8 +185,10 @@ accessible, enabling OpenID Connect configuration for the instance:
       global:
         appConfig:
           ciIdTokens:
-            issuerUrl: 'public_url_with_openid_configuration_and_keys'
+            issuerUrl: '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and apply the new values:
 
@@ -213,8 +208,10 @@ accessible, enabling OpenID Connect configuration for the instance:
         gitlab:
           environment:
             GITLAB_OMNIBUS_CONFIG: |
-              gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+              gitlab_rails['ci_id_tokens_issuer_url'] = '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and restart GitLab:
 
@@ -231,8 +228,10 @@ accessible, enabling OpenID Connect configuration for the instance:
       ```yaml
        production: &base
          ci_id_tokens:
-           issuer_url: 'public_url_with_openid_configuration_and_keys'
+           issuer_url: '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#self-compiled-installations)
       for the changes to take effect.

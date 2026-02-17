@@ -25,12 +25,9 @@ enabled for analytics.
 
 ## Adding new event for tracking
 
-{{< alert type="note" >}}
-
-If you prefer to follow along an example, see [MR 197139](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197139) which contains all the required steps to add a new
-event to the AI tracking system.
-
-{{< /alert >}}
+> [!note]
+> If you prefer to follow along an example, see [MR 197139](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197139) which contains all the required steps to add a new
+> event to the AI tracking system.
 
 To add a new event you must first declare the corresponding event in the `InternalEvents` subsystem.
 See [Internal Event Quick Start guide](../internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)
@@ -42,11 +39,8 @@ After you have defined the event, you must register it for AI tracking:
    events(troubleshoot_job: 7)
    ```
 
-   {{< alert type="note" >}}
-
-   The event type ID must be unique and will be stored in databases. If you change the ID for an existing event, ensure proper migration of existing data.
-
-   {{< /alert >}}
+   > [!note]
+   > The event type ID must be unique and will be stored in databases. If you change the ID for an existing event, ensure proper migration of existing data.
 
    If your event has additional metadata that should be stored, you need to declare the event with a transformation.
 
@@ -58,21 +52,15 @@ After you have defined the event, you must register it for AI tracking:
 
    You can declare additional transformation blocks with the `transformation` method.
 
-   {{< alert type="note" >}}
-
-   Your transformation blocks must return a serializable hash, because it will be serialized to the `jsonb` column in the database.
-
-   {{< /alert >}}
+   > [!note]
+   > Your transformation blocks must return a serializable hash, because it will be serialized to the `jsonb` column in the database.
 
 1. Invoke `InternalEvents.track_event` with your new event in appropriate codebase places to trigger the event.
 
 ## Removing an event from AI usage tracking
 
-{{< alert type="note" >}}
-
-If you like to be guided by example you can check [MR 199111](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199111) which contains all required steps to remove an event from AI tracking system.
-
-{{< /alert >}}
+> [!note]
+> If you like to be guided by example you can check [MR 199111](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199111) which contains all required steps to remove an event from AI tracking system.
 
 To remove your event from the AI usage tracking system:
 
@@ -106,8 +94,5 @@ when tracking for events outside of Rails app. For example in IDE extension. Ext
 curl "https://gitlab.com/api/v4/usage_data/track_event" --request POST --header "Authorization: Bearer glpat-XXX" --header 'Content-Type: application/json' --data '{"event": "code_suggestion_accepted_in_ide", "additional_properties": {"language": "javascript", "suggestion_size": 9, "timestamp": "2025-07-02 12:55:11 UTC", "branch_name": "my-new-feature"}, "project_id": 4}'
 ```
 
-{{< alert type="note" >}}
-
-Since external events can pass any data in `additional_properties` hash, it's recommended to allowlist related attributes in your event transformation block.
-
-{{< /alert >}}
+> [!note]
+> Since external events can pass any data in `additional_properties` hash, it's recommended to allowlist related attributes in your event transformation block.

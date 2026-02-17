@@ -117,11 +117,8 @@ Complete the following steps to identify the compute and RAM resources needed:
 
    This script runs a detached container with the image built. The container ID is then used to collect its `CPU` and `Memory` usage until the container exits upon successful completion. The metrics collected are saved in a file called `metrics.log`.
 
-   {{< alert type="note" >}}
-
-   In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
-
-   {{< /alert >}}
+   > [!note]
+   > In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
 
 1. Analyze the `metrics.log` file to identify the peak usage of the test container.
 
@@ -215,7 +212,7 @@ Implementing this pattern reduces the number of separate runner configurations y
 - In the job definition (`.gitlab-ci.yml`), specify the right limit needed by the jobs.
   - If not specified, the default values set in the `config.toml` file is used.
   - If a container exceeds its memory limit, the system automatically terminates it using the Out of Memory (OOM) kill process.
-- Use the feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`. For more details, see the [feature flags documentation](https://docs.gitlab.com/runner/configuration/feature-flags.html).
+- Use the feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`. For more details, see the [feature flags documentation](https://docs.gitlab.com/runner/configuration/feature-flags/).
 
 ## Deploy the runner on GKE
 
@@ -372,7 +369,7 @@ In the previous configuration:
 
 - The `pod_spec` parameter allows us to set a node selector for the pod running GitLab Runner. In the configuration, the node selector is set to `"app" = "gitlab-runner"` to ensure that GitLab Runner is installed on the runner-manager node pool.
 - The `config_template` parameters provides a default limit for all jobs run by the GitLab Runner Manager. It also allows an overwrite of those limits as long as the value set is not greater than the default values.
-- The feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`are also set to ease debugging in the event of a job failure. See the [feature flag documentation](https://docs.gitlab.com/runner/configuration/feature-flags.html) for more details.
+- The feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`are also set to ease debugging in the event of a job failure. See the [feature flag documentation](https://docs.gitlab.com/runner/configuration/feature-flags/) for more details.
 
 ### Real life applications for a hypothetical use case
 
@@ -492,43 +489,43 @@ The `.gitlab-ci.yml` file looks similar to this:
 
 - For medium jobs:
 
-```yaml
-variables:
-  KUBERNETES_CPU_LIMIT: "200m"
-  KUBERNETES_MEMORY_LIMIT: "100Mi"
-  KUBERNETES_HELPER_CPU_LIMIT: "100m"
-  KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
+  ```yaml
+  variables:
+    KUBERNETES_CPU_LIMIT: "200m"
+    KUBERNETES_MEMORY_LIMIT: "100Mi"
+    KUBERNETES_HELPER_CPU_LIMIT: "100m"
+    KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
-tests:
-  image: some-image:latest
-  script:
-  - command_1
-  - command_2
-  # ...
-  - command_n
-  tags:
-    - my-custom-tag
-```
+  tests:
+    image: some-image:latest
+    script:
+    - command_1
+    - command_2
+    # ...
+    - command_n
+    tags:
+      - my-custom-tag
+  ```
 
 - For CPU-intensive jobs:
 
-```yaml
-variables:
-  KUBERNETES_CPU_LIMIT: "0.75"
-  KUBERNETES_MEMORY_LIMIT: "900Mi"
-  KUBERNETES_HELPER_CPU_LIMIT: "150m"
-  KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
+  ```yaml
+  variables:
+    KUBERNETES_CPU_LIMIT: "0.75"
+    KUBERNETES_MEMORY_LIMIT: "900Mi"
+    KUBERNETES_HELPER_CPU_LIMIT: "150m"
+    KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
-tests:
-  image: custom-cpu-intensive-image:latest
-  script:
-  - cpu_intensive_command_1
-  - cpu_intensive_command_2
-  # ...
-  - cpu_intensive_command_n
-  tags:
-    - my-custom-tag
-```
+  tests:
+    image: custom-cpu-intensive-image:latest
+    script:
+    - cpu_intensive_command_1
+    - cpu_intensive_command_2
+    # ...
+    - cpu_intensive_command_n
+    tags:
+      - my-custom-tag
+  ```
 
 > [!note]
 > For an easier configuration, use one GitLab Runner per cluster for job profile. This approach is recommended until GitLab supports either multiple GitLab Runner installations on the same cluster or multiple `[[runners]]` section in the `config.toml` template.

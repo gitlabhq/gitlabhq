@@ -7,17 +7,17 @@ title: GitLab Duoのトラブルシューティング
 
 GitLab Duoの使用中に、問題が発生することがあります。
 
-[ヘルスチェックの実行](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo)から開始して、お使いのインスタンスがGitLab Duoを使用するための要件を満たしているかどうかを判断してください。
+[ヘルスチェックの実行](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo)から開始して、お使いのインスタンスがGitLab Duoを使用するための要件を満たしているかどうかを判断してください。
 
 GitLab Duoのトラブルシューティングの詳細については、以下を参照してください:
 
 - [コード提案のトラブルシューティング](../project/repository/code_suggestions/troubleshooting.md)。
-- [GitLab Duo Chat](../gitlab_duo_chat/troubleshooting.md)のトラブルシューティング。
+- [GitLab Duo Chatのトラブルシューティング](../gitlab_duo_chat/troubleshooting.md)。
 - [GitLab Duo Self-Hostedのトラブルシューティング](../../administration/gitlab_duo_self_hosted/troubleshooting.md)。
 
 ヘルスチェックで問題が解決しない場合は、次のトラブルシューティングの手順を確認してください。
 
-## GitLab Duo機能がセルフマネージドで動作しない {#gitlab-duo-features-do-not-work-on-self-managed}
+## GitLab Duo機能がSelf-Managedで動作しない {#gitlab-duo-features-do-not-work-on-self-managed}
 
 [GitLab Duoの機能がオンになっていることを確認する](turn_on_off.md)ことに加えて、次のこともできます:
 
@@ -69,7 +69,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
 
    {{< /tabs >}}
 
-1. GitLabインスタンスが[必要なGitLab.comエンドポイント](setup.md)に到達できることを確認します。接続を確認するには、`curl`などのコマンドラインツールを使用できます。
+1. GitLabインスタンスが[必要なGitLab.comエンドポイント](../../administration/gitlab_duo/configure/gitlab_self_managed.md)に到達できることを確認します。接続を確認するには、`curl`などのコマンドラインツールを使用できます。
 
    ```shell
    curl --verbose "https://cloud.gitlab.com"
@@ -77,7 +77,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
    curl --verbose "https://customers.gitlab.com"
    ```
 
-   GitLabインスタンスに対してHTTP/Sプロキシが構成されている場合は、`proxy`パラメータを`curl`コマンドに含めます。
+   GitLabインスタンスに対してHTTP/Sプロキシが設定されている場合は、`proxy`パラメータを`curl`コマンドに含めます。
 
    ```shell
    # https proxy for curl
@@ -85,68 +85,68 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
    curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
    ```
 
-1. オプション。GitLabアプリケーションとパブリックインターネットの間に[プロキシサーバー](../../administration/gitlab_duo/setup.md#allow-outbound-connections-from-the-gitlab-instance)を使用している場合は、[DNSリバインディング保護を無効にします](../../security/webhooks.md#enforce-dns-rebinding-attack-protection)。
+1. オプション。GitLabアプリケーションとパブリックインターネットの間に[プロキシサーバー](../../administration/gitlab_duo/configure/gitlab_self_managed.md#allow-outbound-connections-from-the-gitlab-instance)を使用している場合は、[DNSリバインディング保護を無効にします](../../security/webhooks.md#enforce-dns-rebinding-attack-protection)。
 
-1. [サブスクリプションデータ](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)を手動で同期する。
+1. [サブスクリプションデータを手動で同期します](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)。
    - GitLabインスタンスが[サブスクリプションデータをGitLabと同期している](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/)ことを確認します。
 
-## エラー: `Webview didn't initialize in 10000ms`{#error-webview-didnt-initialize-in-10000ms}
+## エラー: `Webview didn't initialize in 10000ms` {#error-webview-didnt-initialize-in-10000ms}
 
-VS Code Remote SSHまたはWSLセッションでGitLab Duoチャットを使用すると、このエラーが発生する可能性があります。拡張機能が`127.0.0.1`アドレスに誤って接続しようとする場合もあります。
+VS Code Remote SSHまたはWSLセッションでGitLab Duo Chatを使用すると、このエラーが発生する可能性があります。拡張機能が`127.0.0.1`アドレスに誤って接続しようとする場合もあります。
 
 この問題は、リモート環境でレイテンシーが発生し、GitLab VS Code Extension 6.8.0以降にハードコードされた10秒のタイムアウトを超える場合に発生します。
 
-この問題を解決するには、以下を実行します:
+この問題を解決するには:
 
-1. VS Codeで、**コード** > **設定** > **設定**を選択します。
-1. **Open Settings (JSON)**（設定を開く（JSON））を選択して、`settings.json`ファイルを編集します。または、<kbd>F1</kbd>キーを押して、**設定を開く（JSON）を入力します: 設定を開く（JSON）**を選択します。
+1. VS Codeで、**Code** > **Preferences** > **Settings**を選択します。
+1. **Open Settings (JSON)**を選択して、`settings.json`ファイルを編集します。または、<kbd>F1</kbd>キーを押して、**Preferences: Open Settings (JSON)**と入力して、それを選択します。
 1. この設定を追加します:
 
    ```json
    "gitlab.featureFlags.languageServerWebviews": false
    ```
 
-1. 保存してVS Codeをリロードします。
+1. 保存してVS Codeを再読み込みします。
 
-## GitLab DedicatedでのGitLab Duoのトラブルシューティング {#troubleshooting-gitlab-duo-on-gitlab-dedicated}
+## GitLab DedicatedでGitLab Duoをトラブルシューティングする {#troubleshooting-gitlab-duo-on-gitlab-dedicated}
 
 PremiumおよびUltimateプランのお客様の場合、GitLab 18.3以降では、GitLab Duo Coreがすぐに使用できるはずです。
 
-プレ本番環境GitLab Dedicatedインスタンスは、設計上、GitLab Duo Coreをサポートしていません。
+本番環境前のGitLab Dedicatedインスタンスは、設計上、GitLab Duo Coreをサポートしていません。
 
 ### 管理者エリアにGitLab Duoの設定が表示されない {#gitlab-duo-settings-not-visible-in-admin-area}
 
 次の問題が1つ以上発生する可能性があります:
 
-- **GitLab Duo**セクションが管理者エリアに表示されません。
-- 設定オプションが見つかりません。
-- APIコールが`"addOnPurchases": []`を返します。
+- **GitLab Duo**セクションが管理者エリアに表示されない。
+- 設定オプションが見つからない。
+- APIコールが`"addOnPurchases": []`を返す。
 
 これらの問題は、ライセンスがインスタンスと適切に同期されていない場合に発生します。
 
-この問題を解決するには、サブスクリプションの同期を確認するためのサポートチケットを作成してください。サポートは、同期ステータスを確認し、必要に応じて新しいライセンスの生成をリクエストできます。
+この問題を解決するには、ライセンス同期を確認するためのサポートチケットを作成してください。サポートは、同期ステータスを確認し、必要に応じて新しいライセンスの生成をリクエストできます。
 
-### エラー: `GitLab-workflow failed: the GitLab Language server failed to start in 10 seconds`{#error-gitlab-workflow-failed-the-gitlab-language-server-failed-to-start-in-10-seconds}
+### エラー: `GitLab-workflow failed: the GitLab Language server failed to start in 10 seconds` {#error-gitlab-workflow-failed-the-gitlab-language-server-failed-to-start-in-10-seconds}
 
-Web IDEでGitLab Duoチャットを使用すると、このエラーが発生する可能性があります。`Platform is missing!`に関するコンソールエラーも表示される場合があります
+Web IDEでGitLab Duo Chatを使用すると、このエラーが発生する可能性があります。`Platform is missing!`に関するコンソールエラーも表示される場合があります
 
 この問題は、`cloud.gitlab.com`および`customers.gitlab.com`へのネットワーキング接続がネットワーク設定によってブロックされている場合に発生します。
 
-この問題を解決するには、以下を実行します:
+この問題を解決するには:
 
 1. `cloud.gitlab.com:443`および`customers.gitlab.com:443`への送信接続を確認します。
-1. 必要に応じて、[許可リストにCloudflare IP範囲](https://www.cloudflare.com/ips/)を追加します。
-1. [プライベートリンク](../../administration/dedicated/configure_instance/network_security.md#aws-private-link-connectivity)で、許可リストまたはファイアウォールの制限を確認してください。
-1. [送信リクエストのフィルタリング](../../security/webhooks.md#gitlab-duo-functionality-is-blocked)に従って、接続の問題をトラブルシュートします。
+1. 必要に応じて、許可リストに[Cloudflare IP範囲](https://www.cloudflare.com/ips/)を追加します。
+1. [プライベートリンク](../../administration/dedicated/configure_instance/network_security.md#aws-private-link-connectivity)で、許可リストまたはファイアウォールの制限を確認します。
+1. [送信リクエストのフィルタリング](../../security/webhooks.md#gitlab-duo-functionality-is-blocked)に従って、接続の問題を解決します。
 1. インスタンスからの接続をテストします。
 
-### エラー: `Unable to resolve resource`{#error-unable-to-resolve-resource}
+### エラー: `Unable to resolve resource` {#error-unable-to-resolve-resource}
 
-Web IDEの読み込むに失敗すると、このエラーが発生する可能性があります。CORSエラーのブラウザーログを確認してください：`failed to load because it violates the following Content Security policy`。
+Web IDEの読み込みに失敗すると、このエラーが発生する可能性があります。CORSエラー: `failed to load because it violates the following Content Security policy`のブラウザーログを確認してください。
 
 この問題は、CORSポリシーがリクエストされたリソースをブロックすると発生します。
 
-この問題を解決するには、以下を実行します:
+この問題を解決するには:
 
 1. GitLab Workflow Extensionバージョン6.35.1以降にアップデートします。
 1. CORSポリシーに`https://*.cdn.web-ide.gitlab-static.net`を追加します。
@@ -154,13 +154,13 @@ Web IDEの読み込むに失敗すると、このエラーが発生する可能�
 
 詳細については、[CORSの問題](../../user/project/web_ide/_index.md#cors-issues)を参照してください。
 
-## ユーザーが利用できないGitLab Duo機能 {#gitlab-duo-features-not-available-for-users}
+## GitLab Duo機能をユーザーが利用できない {#gitlab-duo-features-not-available-for-users}
 
-[GitLab Duo機能をオンにする](turn_on_off.md)ことに加えて、次のこともできます:
+[GitLab Duo機能をオンにする](turn_on_off.md)ことに加えて、次も実行できます:
 
 - GitLab Duo Coreをお持ちの場合は、以下があることを確認してください:
   - PremiumまたはUltimateサブスクリプション。
-  - [IDE機能をオンにしました](turn_on_off.md#turn-gitlab-duo-core-on-or-off)。
+  - [IDE機能をオンにしている](turn_on_off.md#turn-gitlab-duo-core-on-or-off)。
 - GitLab Duo ProまたはEnterpriseをお持ちの場合:
   - [サブスクリプションアドオンが購入されている](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo)ことを確認します。
   - [シートがユーザーに割り当てられている](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)ことを確認します。

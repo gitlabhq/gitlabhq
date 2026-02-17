@@ -18,6 +18,7 @@ title: Check migrations before upgrade
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191722) in GitLab 18.5.
 - [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
+- [Enhanced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222806) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -28,6 +29,8 @@ migrations when the Admin UI is not available, such as during downtime upgrades 
 All Rake tasks work across all databases (main and ci) and use a unified migration ID format: `{database}_{id}`.
 For example, `main_85` refers to migration ID 85 in the main database, and `ci_10` refers to migration ID 10
 in the ci database.
+
+For active migrations, the `progress` column includes an estimated time remaining when available (for example, `42.50% (estimated time remaining: 5 minutes)`).
 
 ### List all background migrations
 
@@ -44,16 +47,16 @@ sudo gitlab-rake gitlab:background_migrations:list
 Example output:
 
 ```plaintext
-id      | table_name                                              | job_class_name                                              | status
---------|---------------------------------------------------------|-------------------------------------------------------------|----------
-main_1  | namespace_settings                                      | UpdateRequireDpopForManageApiEndpointsToFalse               | finished
-main_2  | resource_iteration_events                               | BackfillResourceIterationEventsNamespaceId                  | finalized
-main_3  | identities                                              | DeleteTwitterIdentities                                     | finalized
-main_4  | software_license_policies                               | BackfillLicensesOutsideSpdxCatalogue                        | finalized
-main_5  | security_policies                                       | BackfillPipelineExecutionPoliciesMetadata                   | finished
-ci_1    | ci_runners                                              | MarkAdminBotRunnersAsHosted                                 | finalized
-ci_2    | p_ci_build_trace_metadata                               | BackfillUpsertedCiBuildTraceMetadataProjectId               | finalized
-ci_3    | ci_runners                                              | BackfillOrganizationIdOnCiRunners                           | finalized
+id      | table_name                       | job_class_name                                | status    | progress
+--------|----------------------------------|-----------------------------------------------|-----------|----------------------------------------------------------
+main_1  | namespace_settings               | UpdateRequireDpopForManageApiEndpointsToFalse | finished  | 100.00%
+main_2  | resource_iteration_events        | BackfillResourceIterationEventsNamespaceId    | finalized | 100.00%
+main_3  | identities                       | DeleteTwitterIdentities                       | finalized | 100.00%
+main_4  | software_license_policies        | BackfillLicensesOutsideSpdxCatalogue          | finalized | 100.00%
+main_5  | security_policies                | BackfillPipelineExecutionPoliciesMetadata     | active    | 42.50% (estimated time remaining: 5 minutes)
+ci_1    | ci_runners                       | MarkAdminBotRunnersAsHosted                   | finalized | 100.00%
+ci_2    | p_ci_build_trace_metadata        | BackfillUpsertedCiBuildTraceMetadataProjectId | finalized | 100.00%
+ci_3    | ci_runners                       | BackfillOrganizationIdOnCiRunners             | active    | 78.30% (estimated time remaining: about 1 hour)
 ```
 
 {{< /tab >}}
@@ -125,12 +128,9 @@ For example:
 sudo gitlab-rake gitlab:background_migrations:pause[main_85]
 ```
 
-{{< alert type="note" >}}
-
-You can only pause migrations with an `active` status. Attempting to pause a migration in any other
-state results in an error.
-
-{{< /alert >}}
+> [!note]
+> You can only pause migrations with an `active` status. Attempting to pause a migration in any other
+> state results in an error.
 
 ### Resume a migration
 
@@ -146,12 +146,9 @@ For example:
 sudo gitlab-rake gitlab:background_migrations:resume[main_85]
 ```
 
-{{< alert type="note" >}}
-
-You can only resume migrations with a `paused` status. Attempting to resume a migration in any other
-state results in an error.
-
-{{< /alert >}}
+> [!note]
+> You can only resume migrations with a `paused` status. Attempting to resume a migration in any other
+> state results in an error.
 
 ### Execute a migration
 
@@ -181,13 +178,10 @@ Executing background migration `ci_10`...
 Done.
 ```
 
-{{< alert type="warning" >}}
-
-This task executes the migration synchronously in the foreground. The migration runs until completion
-or failure. This can take a significant amount of time for large migrations and may impact database
-performance. Use this task during maintenance windows when possible.
-
-{{< /alert >}}
+> [!warning]
+> This task executes the migration synchronously in the foreground. The migration runs until completion
+> or failure. This can take a significant amount of time for large migrations and may impact database
+> performance. Use this task during maintenance windows when possible.
 
 The task prompts for confirmation before executing. If the migration fails to complete, check the
 migration status with `gitlab:background_migrations:show[<migration_id>]` for more details.
@@ -237,13 +231,10 @@ Do not remove the two-space nesting.
   [ci_10]: Done.
   ```
 
-{{< alert type="warning" >}}
-
-This task executes all unfinished migrations synchronously in the foreground. This can take a very
-long time and significantly impact database performance. Only use this task during planned maintenance
-windows. The task continues even if individual migrations fail, but reports failures in the output.
-
-{{< /alert >}}
+> [!warning]
+> This task executes all unfinished migrations synchronously in the foreground. This can take a very
+> long time and significantly impact database performance. Only use this task during planned maintenance
+> windows. The task continues even if individual migrations fail, but reports failures in the output.
 
 The task:
 
@@ -349,12 +340,9 @@ advanced users who understand the risks of doing so.
 
 #### Pause batched background migrations
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to each feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to each feature's history for more details.
 
 To pause an ongoing batched background migration,
 disable the batched background migrations feature.
@@ -414,12 +402,9 @@ Use the following database queries to see the state of the current batched backg
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to this feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to this feature's history for more details.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
@@ -433,12 +418,9 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to this feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to this feature's history for more details.
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
@@ -573,13 +555,10 @@ use the information in the failure error logs or the database:
 
 #### Mark a failed migration finished
 
-{{< alert type="warning" >}}
-
-[Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
-these instructions. This action can cause data loss, and make your instance fail
-in ways that are difficult to recover from.
-
-{{< /alert >}}
+> [!warning]
+> [Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
+> these instructions. This action can cause data loss, and make your instance fail
+> in ways that are difficult to recover from.
 
 There can be cases where the background migration fails: when jumping too many version upgrades,
 or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).
@@ -732,9 +711,6 @@ If you're on a long upgrade path and have many pending migrations, you might wan
 Another option is to ignore the pending migrations and [reindex the instance](../integration/advanced_search/elasticsearch.md#index-the-instance) after you upgrade GitLab to the target version.
 You can also disable advanced search during this process with the [**Search with advanced search**](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
 
-{{< alert type="warning" >}}
-
-Indexing large instances comes with risks.
-For more information, see [index large instances efficiently](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently).
-
-{{< /alert >}}
+> [!warning]
+> Indexing large instances comes with risks.
+> For more information, see [index large instances efficiently](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently).

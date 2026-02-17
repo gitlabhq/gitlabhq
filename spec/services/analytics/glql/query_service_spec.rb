@@ -114,12 +114,53 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
         allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
       end
 
-      it 'returns result with errors' do
+      it 'returns result with errors normalized to symbol keys' do
         result = service.execute(query: query, variables: variables, context: context)
 
         expect(result).to include(
           data: nil,
-          errors: [{ 'message' => 'Field not found' }],
+          errors: [{ message: 'Field not found' }],
+          timeout_occurred: false,
+          rate_limited: false
+        )
+      end
+    end
+
+    context 'when GraphQL execution returns nil' do
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(nil)
+      end
+
+      it 'handles nil result gracefully' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: nil,
+          errors: nil,
+          timeout_occurred: false,
+          rate_limited: false
+        )
+      end
+    end
+
+    context 'when GraphQL errors contain non-hash elements' do
+      let(:graphql_result) do
+        {
+          'data' => nil,
+          'errors' => ['Simple string error', { 'message' => 'Hash error' }]
+        }
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
+      end
+
+      it 'preserves non-hash errors and normalizes hash errors' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result).to include(
+          data: nil,
+          errors: ['Simple string error', { message: 'Hash error' }],
           timeout_occurred: false,
           rate_limited: false
         )
@@ -139,12 +180,12 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
         allow(RequestStore).to receive(:store).and_return({ graphql_logs: [{ complexity: 8 }] })
       end
 
-      it 'returns both data and errors' do
+      it 'returns both data and errors normalized to symbol keys' do
         result = service.execute(query: query, variables: variables, context: context)
 
         expect(result).to include(
           data: { 'user' => { 'id' => '1' } },
-          errors: [{ 'message' => 'Field error' }],
+          errors: [{ message: 'Field error' }],
           complexity_score: 8,
           timeout_occurred: false,
           rate_limited: false

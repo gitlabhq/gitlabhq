@@ -297,12 +297,9 @@ return new Vue({
 });
 ```
 
-{{< alert type="note" >}}
-
-When adding an `id` attribute to mount a Vue application, make sure this `id` is unique
-across the codebase.
-
-{{< /alert >}}
+> [!note]
+> When adding an `id` attribute to mount a Vue application, make sure this `id` is unique
+> across the codebase.
 
 For more information on why we explicitly declare the data being passed into the Vue app,
 refer to our [Vue style guide](style/vue.md#basic-rules).

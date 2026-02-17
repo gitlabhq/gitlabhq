@@ -13,7 +13,13 @@ namespace :explore do
     end
   end
 
-  resources :groups, only: [:index]
+  resources :groups, only: [:index] do
+    collection do
+      get :active, to: 'groups#index', as: :active
+      get :inactive, to: 'groups#index', as: :inactive
+    end
+  end
+
   scope :catalog do
     get '/' => 'catalog#index', as: :catalog_index
     get '/*full_path' => 'catalog#show', as: :catalog, constraints: { full_path: /.*/ }

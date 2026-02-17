@@ -250,7 +250,7 @@ In these examples:
   For example:
   - `password`: Accesses the `password` field.
   - `api_key`: Accesses the `api_key` field.
-  `token`: Specifies which ID token to use for authentication. If not specified, the runner looks for a token named `AWS_ID_TOKEN`.
+  - `token`: Specifies which ID token to use for authentication. If not specified, the runner looks for a token named `AWS_ID_TOKEN`.
 - `version_id`: Is the unique identifier of a specific version of the secret.
   If you don't specify either `version_id` or `version_stage`, AWS Secrets Manager returns the `AWSCURRENT` version.
 - `version_stage`: The staging label of the version of the secret to retrieve (such as `AWSCURRENT` or `AWSPENDING`).

@@ -30,6 +30,7 @@ export const initCommentTemplates = ({
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'CommentTemplatesAppRoot',
     router,
     apolloProvider,
     provide: {

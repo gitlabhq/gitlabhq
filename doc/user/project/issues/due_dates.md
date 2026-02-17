@@ -59,7 +59,7 @@ All users with permission to view the issue can view its due date.
 
 ### When creating an issue
 
-If you have at least the Planner role, when creating an issue, select **Due date** to show a calendar.
+If you have the Planner, Reporter, Developer, Maintainer, or Owner role, when creating an issue, select **Due date** to show a calendar.
 This date uses the server's time zone, not the current user's time zone.
 
 To remove the date, select the date text, then delete the text.
@@ -68,13 +68,13 @@ To remove the date, select the date text, then delete the text.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select the title of your issue to view it.
-1. On the right sidebar, next to **Due date**, select **Edit** to display a calendar.
+1. In the right sidebar, next to **Due date**, select **Edit** to display a calendar.
 1. Select your desired date, then select again, outside the calendar, to save your changes.
 
 ### With a quick action

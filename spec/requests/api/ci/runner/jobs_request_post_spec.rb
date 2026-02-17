@@ -6,6 +6,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
+  include Ci::PipelineVariableHelpers
 
   let(:instance_id) { 'test-instance-id' }
   let(:instance_uuid) { 'test-instance-uuid' }
@@ -396,7 +397,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'specifies refspecs' do
@@ -455,7 +456,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'specifies refspecs' do
@@ -541,7 +542,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when GIT_DEPTH is specified' do
               before do
-                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+                create_or_replace_pipeline_variables(pipeline, { key: 'GIT_DEPTH', value: 1 })
               end
 
               it 'returns the overwritten git depth for merge request refspecs' do
@@ -581,9 +582,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'with run keyword' do
-            let(:execution_config) { create(:ci_builds_execution_configs, :with_step_and_script) }
+            let(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
 
-            context 'when job has execution_config with run_steps' do
+            context 'when job has run_steps' do
               let(:job) do
                 create(
                   :ci_build,
@@ -593,7 +594,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   name: 'spinach',
                   stage: 'test',
                   stage_idx: 0,
-                  execution_config: execution_config
+                  temp_job_definition: job_definition
                 )
               end
 
@@ -601,7 +602,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 request_job
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(json_response['run']).to eq(execution_config.run_steps.to_json)
+                expect(json_response['run']).to eq(job_definition.config[:run_steps].to_json)
               end
 
               it 'returns nil for the steps' do
@@ -944,7 +945,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             context 'when variables are stored in pipeline_variables' do
               before do
-                create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+                create_or_replace_pipeline_variables(pipeline, { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' })
               end
 
               it_behaves_like 'expected variables behavior'

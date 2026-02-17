@@ -378,12 +378,9 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This operation is dangerous and can result in data-loss. Proceed with extreme caution.
-You must have knowledge about GitLab internals before you perform this operation.
-
-{{< /alert >}}
+> [!warning]
+> This operation is dangerous and can result in data-loss. Proceed with extreme caution.
+> You must have knowledge about GitLab internals before you perform this operation.
 
 In some cases, encrypted tokens can no longer be recovered and cause issues.
 Most often, runner registration tokens for groups and projects might be broken on very large instances.

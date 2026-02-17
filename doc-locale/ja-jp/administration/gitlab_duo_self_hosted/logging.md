@@ -17,12 +17,12 @@ title: セルフホストモデルのロギングを有効にする
 {{< history >}}
 
 - GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
-- GitLab 17.6の[GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176)で有効になりました。
+- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
 - GitLab 17.6以降、GitLab Duoアドオンが必須となりました。
-- GitLab 17.8で機能フラグ`ai_custom_model`は削除されました。
+- 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供となりました。
 - GitLabバージョン17.9で、UIからロギングのオン/オフを切り替える機能が追加されました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -30,36 +30,34 @@ GitLab Duo Self-Hostedの詳細なロギングにより、セルフホストモ�
 
 ## ロギングを有効にする {#enable-logging}
 
-前提要件: 
+前提条件: 
 
 - 管理者である必要があります。
-- PremiumまたはUltimateプランのサブスクリプションが必要です。
-- GitLab Duo Enterpriseアドオンが必要です。
 
 ロギングを有効にするには:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **GitLab Duo**を選択します。
-1. **設定の変更**セクションで、設定の変更を選択します。
-1. **AIログの有効化**で、**Capture detailed information about AI-related activities and requests**（AI関連のアクティビティーとリクエストに関する詳細情報をキャプチャ）を選択します。
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **AIログの有効化**で、**AI関連のアクティビティーとリクエストに関する詳細情報をキャプチャ**を選択します。
 1. **変更を保存**を選択します。
 
-これで、GitLabインスタンスのログにアクセスできるようになりました。
+これで、GitLabインストールのログにアクセスできるようになりました。
 
-## GitLabインスタンスのログ {#logs-in-your-gitlab-installation}
+## GitLabインストールのログ {#logs-in-your-gitlab-installation}
 
 ロギングの設定は、システムの操作に関する透明性を維持しながら、機密情報を保護するように設計されており、次のコンポーネントで構成されています:
 
 - GitLabインスタンスへのリクエストをキャプチャするログ。
 - ロギングの制御。
-- `llm.log`ファイル
+- `llm.log`ファイル。
 
 ### GitLabインスタンスへのリクエストをキャプチャするログ {#logs-that-capture-requests-to-the-gitlab-instance}
 
-とりわけ、`application.json`、`production_json.log`、`production.log`ファイルへのロギングは、GitLabインスタンスへのリクエストをキャプチャします:
+`application.json`、`production_json.log`、`production.log`ファイルへのロギングは、GitLabインスタンスへのリクエストをキャプチャします:
 
-- **Filtered Requests**（フィルタリングされたリクエスト）: これらのファイルのリクエストをログに記録しますが、（入力パラメータなどの）機密情報が**フィルタリング済み**されていることを確認します。これは、リクエストのメタデータ（たとえば、リクエストの種類、エンドポイント、応答ステータス）がキャプチャされる一方で、機密情報の漏洩を防ぐために、実際の入力データ（たとえば、クエリパラメータ、変数、コンテンツ）はログに記録されないことを意味します。
-- **Example 1**（例1）: コード提案の補完リクエストの場合、ログは機密情報をフィルタリングしながら、リクエストの詳細をキャプチャします:
+- **フィルタリングされたリクエスト**: これらのファイルのリクエストをログに記録しますが、（入力パラメータなどの）機密情報が**フィルタリング済み**であることを確認します。これは、リクエストのメタデータ（たとえば、リクエストの種類、エンドポイント、応答ステータス）がキャプチャされる一方で、実際の入力データ（例えば、クエリパラメータ、変数、コンテンツ）は機密情報の漏洩を防ぐためにログに記録されないことを意味します。
+- **例1**: コード提案の補完リクエストの場合、ログは機密情報をフィルタリングしながら、リクエストの詳細をキャプチャします:
 
   ```json
   {
@@ -83,7 +81,7 @@ GitLab Duo Self-Hostedの詳細なロギングにより、セルフホストモ�
 
   示されているように、エラー情報とリクエストの一般的な構造がログに記録されている一方で、機密情報の入力パラメータは`[FILTERED]`としてマークされています。
 
-- **Example 2**（例2）: コード提案の補完リクエストの場合、ログは機密情報をフィルタリングしながら、リクエストの詳細もキャプチャします:
+- **例2**: コード提案の補完リクエストの場合、ログは機密情報をフィルタリングしながら、リクエストの詳細もキャプチャします:
 
   ```json
   {
@@ -103,18 +101,18 @@ GitLab Duo Self-Hostedの詳細なロギングにより、セルフホストモ�
 
 ### ロギング制御 {#logging-control}
 
-Duoの設定ページから[AIログ](#enable-logging)のオンとオフを切り替えることで、これらのログのサブセットを制御できます。AIログをオフにすると、特定の操作のロギングが無効になります。
+[AIログ](#enable-logging)をオン/オフにすることで、これらのログのサブセットをGitLab Duo設定ページで制御します。AIログをオフにすると、特定の操作のロギングが無効になります。
 
 ### `llm.log`ファイル {#the-llmlog-file}
 
-[AIログ](#enable-logging)が有効になっている場合、GitLab Self-Managedインスタンスを通じて発生したコード生成イベントとチャットイベントは、[`llm.log`ログファイル](../logs/_index.md#llmlog)にキャプチャされます。ログファイルは、有効になっていない場合は何もキャプチャしません。コード補完のログは、AIゲートウェイに直接キャプチャされます。これらのログはGitLabに送信されず、GitLab Self-Managedインスタンスのインフラストラクチャでのみ表示されます。
+[AIログ](#enable-logging)が有効になっている場合、GitLab Self-Managedインスタンスを通じて発生したコード生成イベントとChatイベントは、[`llm.log`ファイル](../logs/_index.md#llmlog)にキャプチャされます。ログファイルは、有効になっていない場合は何もキャプチャしません。コード補完ログは、AIゲートウェイで直接キャプチャされます。これらのログはGitLabに送信されず、GitLab Self-Managedインスタンスのインフラストラクチャでのみ表示されます。
 
 - [`llm.log`内のログをローテーション、管理、エクスポート、および視覚化します](../logs/_index.md)。
 - [ログファイルの場所を表示します（たとえば、ログを削除できるようにするため）。](../logs/_index.md#llm-input-and-output-logging)
 
-### AIゲートウェイコンテナのログ {#logs-in-your-ai-gateway-container}
+### AIゲートウェイコンテナ内のログ {#logs-in-your-ai-gateway-container}
 
-AIゲートウェイとGitLab DuoエージェントPlatformによって生成されたログの場所を指定するには、次を実行します:
+AIゲートウェイとGitLab Duo Agent Platformによって生成されたログの場所を指定するには、次を実行します:
 
 ```shell
 docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
@@ -148,9 +146,9 @@ docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
 -e AIGW_LOGGING__ENABLE_LITELLM_LOGGING=true
 ```
 
-ファイル名を指定しない場合、ログは出力にストリーミングされ、Dockerログを使用して管理することもできます。詳細については、[Docker Logsドキュメント](https://docs.docker.com/reference/cli/docker/container/logs/)を参照してください。
+ファイル名を指定しない場合、ログは出力にストリーミングされ、Dockerログを使用して管理することもできます。詳細については、[Dockerログのドキュメント](https://docs.docker.com/reference/cli/docker/container/logs/)を参照してください。
 
-さらに、AIゲートウェイの実行の出力は、問題のデバッグに役立ちます。それらにアクセスするには:
+さらに、AIゲートウェイの実行の出力は、デバッグのイシューに役立ちます。それらにアクセスするには:
 
 - Dockerを使用する場合:
 
@@ -168,13 +166,13 @@ docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
 
 ### ログ構造 {#logs-structure}
 
-POSTリクエストが作成された場合（たとえば、`/chat/completions`エンドポイント）、サーバーはリクエストをログに記録します:
+POSTリクエストが作成された場合（たとえば、`/chat/completions`エンドポイントへ）、サーバーはリクエストをログに記録します:
 
 - ペイロード
 - ヘッダー
 - メタデータ
 
-#### 1\.リクエストペイロード {#1-request-payload}
+#### 1. リクエストペイロード {#1-request-payload}
 
 JSONペイロードには通常、次のフィールドが含まれています:
 
@@ -208,7 +206,7 @@ JSONペイロードには通常、次のフィールドが含まれています:
 }
 ```
 
-#### 2\.リクエストヘッダー {#2-request-headers}
+#### 2. リクエストヘッダー {#2-request-headers}
 
 リクエストヘッダーは、リクエストを行うクライアントに関する追加のコンテキストを提供します。キーヘッダーには、以下が含まれる場合があります:
 
@@ -232,7 +230,7 @@ JSONペイロードには通常、次のフィールドが含まれています:
 }
 ```
 
-#### 3\.リクエストメタデータ {#3-request-metadata}
+#### 3. リクエストメタデータ {#3-request-metadata}
 
 メタデータには、リクエストのコンテキストを記述するさまざまなフィールドが含まれています:
 
@@ -255,7 +253,7 @@ JSONペイロードには通常、次のフィールドが含まれています:
 
 ### レスポンス例 {#example-response}
 
-サーバーは構造化されたモデル応答で応答します。次に例を示します: 
+サーバーは構造化されたモデルレスポンスで応答します。例: 
 
 ```python
 Response: ModelResponse(
@@ -290,19 +288,19 @@ Response: ModelResponse(
 
 GitLabは、推論サービスプロバイダーによって生成されたログを管理しません。ログの使用方法については、推論サービスプロバイダーのドキュメントを参照してください。
 
-## GitLabとAIゲートウェイ環境でのロギングの動作 {#logging-behavior-in-gitlab-and-ai-gateway-environments}
+## GitLabとAIゲートウェイ環境でのログ記録の動作 {#logging-behavior-in-gitlab-and-ai-gateway-environments}
 
-GitLabは、`llm.log`を使用してAI関連のアクティビティーのロギング機能を提供します。これは、入力、出力、およびその他の関連情報をキャプチャします。ただし、ロギングの動作は、GitLabインスタンスとAIゲートウェイが**self-hosted**（セルフホスト）であるか、**cloud-connected**（クラウド接続）されているかによって異なります。
+GitLabは、`llm.log`を使用してAI関連のアクティビティーのロギング機能を提供します。これは、入力、出力、およびその他の関連情報をキャプチャします。ただし、ログ記録の動作は、GitLabインスタンスとAIゲートウェイが**self-hosted**か**cloud-connected**かによって異なります。
 
 デフォルトでは、AI機能データの[データ保持ポリシー](../../user/gitlab_duo/data_usage.md#data-retention)をサポートするため、LLMのプロンプト入力と応答出力はログに含まれません。
 
 ## ロギングシナリオ {#logging-scenarios}
 
-### GitLab Self-ManagedインスタンスとセルフホストモデルAIゲートウェイ {#gitlab-self-managed-and-self-hosted-ai-gateway}
+### GitLabセルフマネージドとセルフホストAIゲートウェイ {#gitlab-self-managed-and-self-hosted-ai-gateway}
 
-この設定では、GitLabとAIゲートウェイの両方が顧客によってホストされています。
+この設定では、GitLabとAIゲートウェイの両方が顧客によってホストされます。
 
-- **Logging Behavior**（ロギングの動作）: 完全なロギングが有効になり、すべてのプロンプト、入力、および出力がインスタンスの`llm.log`に記録されます。
+- **ロギングの動作**: 完全なロギングが有効になり、すべてのプロンプト、入力、および出力がインスタンスの`llm.log`に記録されます。
 - [AIログ](#enable-logging)が有効になっている場合、次の追加のデバッグ情報がログに記録されます:
   - 前処理されたプロンプト。
   - 最終的なプロンプト。
@@ -313,17 +311,17 @@ GitLabは、`llm.log`を使用してAI関連のアクティビティーのロギ
 
   {{< alert type="note" >}}
 
-  AI機能がGitLab AIサードパーティベンダーモデルを使用している場合、[AIログが有効になっている](#enable-logging)場合でも、GitLabホストのAIゲートウェイに詳細なログは生成されません。これにより、機密情報の意図しない漏洩を防ぎます。
+  AI機能がGitLab AIサードパーティベンダーモデルを使用している場合、[AIログが有効](#enable-logging)になっていても、GitLabホストAIゲートウェイでは詳細なログは生成されません。これにより、機密情報の意図しない漏洩を防ぎます。
 
   {{< /alert >}}
 
-### GitLab Self-ManagedインスタンスとGitLab管理のAIゲートウェイ（クラウド接続） {#gitlab-self-managed-and-gitlab-managed-ai-gateway-cloud-connected}
+### GitLabセルフマネージドとGitLabマネージドAIゲートウェイ（クラウド接続） {#gitlab-self-managed-and-gitlab-managed-ai-gateway-cloud-connected}
 
-このシナリオでは、顧客はGitLabをホストしますが、AI処理のためにGitLab管理のAIゲートウェイに依存しています。
+このシナリオでは、顧客はGitLabをホストしますが、AI処理のためにGitLabが管理するAIゲートウェイに依存します。
 
-- **Logging Behavior**（ロギングの動作）: AIゲートウェイに送信されるプロンプトと入力は、個人を特定できる情報（PII）などの機密情報の漏洩を防ぐために、クラウド接続されたAIゲートウェイでは**not logged**（ログに記録されません）。
-- **Expanded Logging**（拡張ロギング）: [AIログが有効になっている](#enable-logging)場合でも、機密情報の意図しない漏洩を回避するために、GitLab管理のAIゲートウェイに詳細なログは生成されません。
-  - この設定では、ロギングは**minimal**（最小限）のままであり、拡張ロギング機能はデフォルトで無効になっています。
+- **ロギングの動作**: クラウド接続されたAIゲートウェイを使用する場合のGitLabによるAIプロンプトと応答データの処理方法については、[GitLab Duoのデータ使用量](../../user/gitlab_duo/data_usage.md#data-retention)を参照してください。
+- **拡張ロギング**: [AIログが有効](#enable-logging)になっていても、機密情報が意図せずに漏洩するのを防ぐため、GitLabが管理するAIゲートウェイでは詳細なログは生成されません。
+  - この設定では、ロギングは**最小限**のままであり、拡張ロギング機能はデフォルトで無効になっています。
 - **プライバシー**: この設定は、クラウド環境で機密情報がログに記録されないように設計されています。
 
 ## AIログ {#ai-logs}
@@ -332,24 +330,24 @@ GitLabは、`llm.log`を使用してAI関連のアクティビティーのロギ
 
 ### デプロイ設定による動作 {#behavior-by-deployment-setup}
 
-- **GitLab Self-Managed and self-hosted AI gateway**（GitLab Self-ManagedインスタンスとセルフホストモデルAIゲートウェイ）:
-  - この設定により、セルフホストモデルインスタンスとAIゲートウェイの両方で`llm.log`への詳細なロギングが可能になり、AIモデルの入力と出力がキャプチャされます。
-  - 機能がGitLabサードパーティベンダーモデルを使用している場合でも、クラウド接続されたAIゲートウェイでは、機密情報を保護するためにロギングは無効のままです。
-- **GitLab Self-Managed and GitLab-managed AI gateway**（GitLab Self-ManagedインスタンスとGitLab管理のAIゲートウェイ）:
+- **GitLab Self-Managed and self-hosted AI Gateway**:
+  - この設定により、セルフホストインスタンスとAIゲートウェイの両方で`llm.log`への詳細なログ記録が有効になり、AIモデルの入力と出力がキャプチャされます。
+  - 機能がGitLabサードパーティベンダーモデルを使用している場合でも、クラウド接続されたAIゲートウェイでは、機密情報を保護するためにログ記録は無効のままです。
+- **GitLab Self-Managed and GitLab-managed AI Gateway**:
   - この設定により、GitLab Self-Managedインスタンスの`llm.log`への詳細なロギングが可能になります。
-  - この設定は、GitLab管理のAIゲートウェイの拡張ロギングを有効に**not**（しません）。機密情報を保護するために、クラウド接続されたAIゲートウェイのロギングは無効のままです。
+  - この設定は、GitLabが管理するAIゲートウェイの**not**ログ記録をアクティブにしません。機密データを保護するために、クラウド接続されたAIゲートウェイではログ記録は無効のままです。
 
-### クラウド接続されたAIゲートウェイでのロギング {#logging-in-cloud-connected-ai-gateways}
+### クラウド接続されたAIゲートウェイでのログ記録 {#logging-in-cloud-connected-ai-gateways}
 
-機密情報の潜在的なデータ漏洩を防ぐために、クラウド接続されたAIゲートウェイを使用する場合、拡張ロギング（プロンプトと入力を含む）は意図的に無効になっています。PIIの漏洩を防ぐことが優先事項です。
+クラウド接続されたAIゲートウェイを使用する場合のGitLabによるAIプロンプトと応答データの処理方法については、[GitLab Duoのデータ使用量](../../user/gitlab_duo/data_usage.md#data-retention)を参照してください。
 
 ### AIゲートウェイとGitLab間のログの相互参照 {#cross-referencing-logs-between-the-ai-gateway-and-gitlab}
 
 プロパティ`correlation_id`はすべてのリクエストに割り当てられ、リクエストに応答するさまざまなコンポーネント間でやり取りされます。詳細については、[相関IDを使用したログの検索に関するドキュメント](../logs/tracing_correlation_id.md)を参照してください。
 
-相関IDは、AIゲートウェイとGitLabログにあります。ただし、モデルプロバイダーのログには存在しません。
+相関IDは、AIゲートウェイログとGitLabログにあります。ただし、モデルプロバイダーのログには存在しません。
 
 #### 関連トピック {#related-topics}
 
-- [jqを使用したGitLabログの解析中](../logs/log_parsing.md)
+- [jqを使用したGitLabログの解析](../logs/log_parsing.md)
 - [相関IDのログの検索](../logs/tracing_correlation_id.md#searching-your-logs-for-the-correlation-id)

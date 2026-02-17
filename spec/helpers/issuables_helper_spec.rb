@@ -30,27 +30,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#group_dropdown_label' do
-    let(:group) { create(:group) }
-    let(:default) { 'default label' }
-
-    it 'returns default group label when group_id is nil' do
-      expect(group_dropdown_label(nil, default)).to eq('default label')
-    end
-
-    it 'returns "any group" when group_id is 0' do
-      expect(group_dropdown_label('0', default)).to eq('Any group')
-    end
-
-    it 'returns group full path when a group was found for the provided id' do
-      expect(group_dropdown_label(group.id, default)).to eq(group.full_name)
-    end
-
-    it 'returns default label when a group was not found for the provided id' do
-      expect(group_dropdown_label(non_existing_record_id, default)).to eq('default label')
-    end
-  end
-
   describe '#assignees_label' do
     let(:issuable) { build(:merge_request) }
     let(:assignee1) { build_stubbed(:user, name: 'Jane Doe') }

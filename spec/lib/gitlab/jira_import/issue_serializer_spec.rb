@@ -11,7 +11,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer, feature_category: :team_plan
     let_it_be(:group_label) { create(:group_label, group: group, title: 'dev') }
     let_it_be(:current_user) { create(:user) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:issue_type) { WorkItems::Type.default_issue_type }
+    let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
 
     let(:iid) { 5 }
     let(:key) { 'PROJECT-5' }
@@ -342,7 +342,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer, feature_category: :team_plan
     let(:serializer) { described_class.new(project, jira_issue, current_user.id, issue_type) }
     let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:issue_type) { WorkItems::Type.default_issue_type }
+    let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
     let(:jira_issue) { double(fields: {}) }
 
     context 'with non-Hash nodes' do
@@ -428,7 +428,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer, feature_category: :team_plan
     let(:serializer) { described_class.new(project, jira_issue, current_user.id, issue_type) }
     let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:issue_type) { WorkItems::Type.default_issue_type }
+    let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
     let(:jira_issue) { double(fields: {}) }
 
     context 'with blank ADF' do
@@ -538,7 +538,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer, feature_category: :team_plan
     let(:serializer) { described_class.new(project, jira_issue, current_user.id, issue_type) }
     let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:issue_type) { WorkItems::Type.default_issue_type }
+    let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
     let(:jira_issue) { double(fields: {}) }
 
     context 'with non-Hash nodes' do

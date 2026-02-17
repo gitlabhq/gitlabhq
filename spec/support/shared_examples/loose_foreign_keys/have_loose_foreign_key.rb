@@ -69,28 +69,28 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
   it 'cleans up (delete or nullify) the model' do
     expect(foreign_key_definition.on_delete).to eq(on_delete.to_sym) if on_delete.present?
 
-    puts("##+ Additional Debug Logs for LFK flakiness +##")
-    puts("## Parent: #{parent.inspect} ##")
+    lfk_debug_log("##+ Additional Debug Logs for LFK flakiness +##")
+    lfk_debug_log("## Parent: #{parent.inspect} ##")
     parent.delete
-    puts("## Parent deleted ##")
+    lfk_debug_log("## Parent deleted ##")
 
     expect(find_model).to be_present
 
     begin
       if find_model
-        puts("## Find Model: #{find_model.inspect} ##")
+        lfk_debug_log("## Find Model: #{find_model.inspect} ##")
       else
-        puts("## Find Model not present ##")
+        lfk_debug_log("## Find Model not present ##")
       end
     rescue NoMethodError
-      puts("## Inspect causes an NoMethodError for this class. Find Model: #{find_model.class} #{find_model.id} ##")
+      lfk_debug_log("## Inspect causes an NoMethodError for this class. Find Model: #{find_model.class} #{find_model.id} ##")
     end
 
     debug_print_outstanding_lfk_records
 
     start_process_loose_foreign_key_deletions = Time.now
     process_loose_foreign_key_deletions(record: parent, worker_class: foreign_key_definition.options[:worker_class])
-    puts("## LFK's processed for parent in #{Time.now - start_process_loose_foreign_key_deletions} seconds##")
+    lfk_debug_log("## LFK's processed for parent in #{Time.now - start_process_loose_foreign_key_deletions} seconds##")
 
     debug_print_outstanding_lfk_records
 
@@ -100,11 +100,20 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
       expect(find_model[foreign_key_definition.column]).to eq(nil)
     end
 
-    puts("##- Additional Debug Logs for LFK flakiness end -##")
+    lfk_debug_log("##- Additional Debug Logs for LFK flakiness end -##")
   end
 
-  # + Debug code to be removed.
+  def lfk_debug_enabled?
+    ENV['LFK_DEBUG'] == 'true'
+  end
+
+  def lfk_debug_log(message)
+    puts(message) if lfk_debug_enabled?
+  end
+
   def debug_print_outstanding_lfk_records
+    return unless lfk_debug_enabled?
+
     Gitlab::Database::SharedModel.using_connection(parent.connection) do
       lfk_deleted_records = []
       Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
@@ -112,11 +121,10 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
         lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
       end
       lfk_deleted_records.flatten!
-      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
-      puts("## #{lfk_deleted_records.inspect} ##")
+      lfk_debug_log("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
+      lfk_debug_log("## #{lfk_deleted_records.inspect} ##")
     end
   end
-  # - Debug code to be removed.
 
   # rubocop:disable Cop/AvoidReturnFromBlocks -- Intentional Short Circuit
   def any_outstanding_lfk_records?(parent)

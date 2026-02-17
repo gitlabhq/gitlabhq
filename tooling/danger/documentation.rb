@@ -7,32 +7,24 @@ module Tooling
       DEVELOPMENT_LABELS = ['development guidelines'].freeze
 
       ANY_MAINTAINER_CAN_MERGE_MESSAGE_TEMPLATE = <<~MSG
-        This MR contains docs in the /%<directory>s directory, but any Maintainer can merge.
-        You do not need tech writer review.
+        This MR contains docs in the /%<directory>s directory, but any Maintainer can merge. You do not need tech writer review.
       MSG
 
       SOLUTIONS_MESSAGE = <<~MSG
-        This MR contains docs in the /doc/solutions directory and should be reviewed by a Solutions Architect approver.
-        You do not need tech writer review.
+        This MR contains docs in the /doc/solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
       MSG
 
       LOCALIZATION_MESSAGE = <<~MSG
-        This MR contains files in the /doc-locale directory. These files are translations maintained through a separate
-        process and should not be edited directly. If you are not part of the Localization team, please remove the
-        changes to these files from your MR.
+        This MR contains files in the /doc-locale directory. These files are translations maintained through a separate process and should not be edited directly. If you are not part of the Localization team, please remove the changes to these files from your MR.
       MSG
 
       DOCS_LONG_PIPELINE_MESSAGE = <<~MSG
-        This merge request contains documentation files that require a tier-3 code pipeline before merge. After you
-        complete all needed documentation reviews with short docs pipelines, see the [instructions for running a long
-        pipeline](https://docs.gitlab.com/development/documentation/workflow/#pipelines-and-branch-naming) to this merge
-        request.
+        This merge request contains documentation files that require a tier-3 code pipeline before merge. After you complete all needed documentation reviews with short docs pipelines, see the [instructions for running a long pipeline](https://docs.gitlab.com/development/documentation/workflow/#pipelines-and-branch-naming) to this merge request.
       MSG
 
       # For regular pages, prompt for a TW review
       DOCS_UPDATE_SHORT_MESSAGE = <<~MSG
-        This merge request adds or changes documentation files and requires Technical Writing review. The review should
-        happen before merge, but can be post-merge if the merge request is time sensitive.
+        This merge request adds or changes documentation files and requires Technical Writing review. The review should happen before merge, but can be post-merge if the merge request is time sensitive.
       MSG
 
       DOCS_UPDATE_LONG_MESSAGE_TEMPLATE = <<~MSG
@@ -44,29 +36,19 @@ module Tooling
 
         The review does not need to block merging this merge request. See the:
 
-        - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've
-          changed. The first few lines of each `*.md` file identify the stage and group most closely associated with
-          your docs change.
-        - The
-          [Technical Writer assigned](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-          for that stage and group.
-        - [Documentation workflows](https://docs.gitlab.com/development/documentation/workflow/) for information on when
-          to assign a merge request for review.
+        - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
+        - The [Technical Writer assigned](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
+        - [Documentation workflows](https://docs.gitlab.com/development/documentation/workflow/) for information on when to assign a merge request for review.
       MSG
 
       # Documentation should be updated for feature::addition and feature::enhancement
       DOCUMENTATION_UPDATE_MISSING = <<~MSG
-        ~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider
-        adding a documentation update or confirming the documentation plan with the
-        [Technical Writer counterpart](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
+        ~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
         For more information, see:
 
-        - The Handbook page on
-          [merge request types](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
-        - The
-          [definition of done](https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done)
-          documentation.
+        - The Handbook page on [merge request types](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
+        - The [definition of done](https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done) documentation.
       MSG
 
       # Some docs do not need a review from a Technical Writer.

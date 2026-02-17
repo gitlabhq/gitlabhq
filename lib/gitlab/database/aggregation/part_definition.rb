@@ -29,6 +29,12 @@ module Gitlab
           # no-op by default
         end
 
+        # definitions are not parameterized by default. use `ParameterizedDefinition` module
+        # to enable parameters if needed
+        def parameterized?
+          false
+        end
+
         # part identifier. Must be unique across all part definitions.
         def identifier
           name

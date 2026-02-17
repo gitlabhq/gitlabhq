@@ -3,7 +3,6 @@
 - notification_message = _('Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}' class='!gl-text-link'>".html_safe, closingTag: '</a>'.html_safe}
 - public_email_message = _('Your public email will be displayed on your public profile.')
 - commit_email_message = _('Used for web based operations, such as edits and merges.')
-- @force_desktop_expanded_sidebar = true
 
 = render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Email addresses')) do |c|
   - c.with_description do

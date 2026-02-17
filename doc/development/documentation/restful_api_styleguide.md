@@ -12,8 +12,10 @@ resource has its own Markdown file, which is linked from
 [`api_resources.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/api_resources.md).
 
 When modifying the Markdown or API code, also update the corresponding
-[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi), by running `bin/rake gitlab:openapi:generate`.
-To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:check_docs`.
+[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi), by running
+`bin/rake gitlab:openapi:v2:generate` and `bin/rake gitlab:openapi:v3:generate`.
+To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:v2:check_docs` and
+`bin/rake gitlab:openapi:v3:check_docs`.
 This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
 
 The Markdown topic for an API resource must include:
@@ -30,6 +32,34 @@ The Markdown topic for an API resource must include:
 - A response body example (in JSON format).
 
 After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry).
+
+## Page metadata
+
+When you create a new page, include a `description` metadata field
+in the front matter that follows these guidelines for consistency:
+
+- Start with "REST API to"
+- Use action verbs that describe what users can do with the API
+- Avoid words ending in -ing
+- Keep to one sentence, ideally under 100 characters
+- End with a period
+
+For example:
+
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: REST API to create, update, and delete issues.
+title: Example page title
+---
+```
+
+Additional examples:
+
+- `description: REST API to retrieve CI/CD job details, retry and cancel jobs, run manual jobs, and access job logs.`
+- `description: REST API to create, manage, and monitor CI/CD pipelines.`
 
 ## API topic template
 
@@ -182,7 +212,7 @@ the operation. For example:
 
 - `List all project access tokens` -> `Lists all project access tokens.`
 - `Delete an SSH key` -> `Deletes an SSH key from your user account.`
-- `Get details on an enterprise user` -> `Gets details on a specified enterprise user.`
+- `Retrieve an enterprise user` -> `Retrieves details on a specified enterprise user.`
 
 ## Request attributes
 

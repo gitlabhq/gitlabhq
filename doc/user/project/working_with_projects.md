@@ -60,11 +60,8 @@ You can access a project by using its ID instead of its name at `https://gitlab.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
-{{< alert type="note" >}}
-
-In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
 
 ## Find the Project ID
 
@@ -239,6 +236,15 @@ To leave a project:
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave project**, then **Leave project** again.
 
+To leave a project from the **Your work** list view directly:
+
+1. On the top bar, select **Search or go to**.
+1. Select **View all my projects**.
+1. In the **Member** tab, find the project you want to leave and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Leave project**.
+
+This action is also available on other list pages.
+
 ## Edit a project
 
 Use the project general settings to edit your project details.
@@ -262,13 +268,10 @@ Prerequisites:
 
 - You must be an administrator or have the Maintainer or Owner role for the project.
 
-{{< alert type="note" >}}
-
-When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
-For more information on redirect duration and its side-effects, see
-[redirects when renaming repositories](repository/_index.md#repository-path-changes).
-
-{{< /alert >}}
+> [!note]
+> When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
+> For more information on redirect duration and its side-effects, see
+> [redirects when renaming repositories](repository/_index.md#repository-path-changes).
 
 To rename a repository:
 
@@ -358,11 +361,8 @@ the deletion job instead restores the project, and the project is no longer sche
 
 When a project is marked for deletion, scheduled CI/CD pipelines stop running.
 
-{{< alert type="warning" >}}
-
-If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
-
-{{< /alert >}}
+> [!warning]
+> If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
 
 You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
 
@@ -370,19 +370,10 @@ You can also [delete projects using the Rails console](troubleshooting.md#delete
 
 {{< history >}}
 
-- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561680) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
-- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow immediate deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
-
-{{< alert type="warning" >}}
-
-On GitLab.com and GitLab Dedicated, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
-If you must delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
-
-{{< /alert >}}
 
 If you do not want to wait for the configured retention period to delete a project,
 you can delete the project immediately.
@@ -392,12 +383,12 @@ Prerequisites:
 - You must have the Owner role for a project.
 - You have [scheduled the project for deletion](#delete-a-project).
 
-To immediately delete a project scheduled for deletion:
+To permanently delete a project scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete immediately**.
+1. In the **Delete project** section, select **Delete permanently**.
 1. On the confirmation dialog, enter the project name and select **Confirm**.
 
 This action deletes the project and all related resources, including issues and merge requests.
@@ -455,8 +446,8 @@ To archive a project:
 To archive a project from the **Your work** list view directly:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my projects**.
-1. In the **Member** tab, find the project you want to archive and select ({{< icon name="ellipsis_v" >}}).
+1. From the dropdown, select **View all my projects**.
+1. In the **Member** tab, find the project you want to archive and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
 
 This action is also available on other list pages.
@@ -473,11 +464,8 @@ When you unarchive a project:
 Projects that were archived as part of group archiving cannot be unarchived individually.
 You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
 
-{{< alert type="note" >}}
-
-Deployed Pages are not automatically restored. You must rerun the pipeline to restore Pages.
-
-{{< /alert >}}
+> [!note]
+> Deployed Pages are not automatically restored. You must rerun the pipeline to restore Pages.
 
 Prerequisites:
 
@@ -487,7 +475,7 @@ To unarchive a project:
 
 1. Find the archived project.
    1. On the top bar, select **Search or go to**.
-   1. Select **View all my projects**.
+   1. From the dropdown, select **View all my projects**.
    1. In the **Inactive** tab, select your project.
 1. On the left sidebar, select **Settings** > **General**.
 1. Under **Advanced**, select **Expand**.
@@ -496,8 +484,8 @@ To unarchive a project:
 To unarchive a project from the **Your work** list view directly:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my projects**.
-1. In the **Inactive** tab, find the project you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
+1. From the dropdown, select **View all my projects**.
+1. In the **Inactive** tab, find the project you want to unarchive and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
 
 This action is also available on other list pages.
@@ -506,63 +494,29 @@ This action is also available on other list pages.
 
 {{< history >}}
 
-- Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
-- Support for transferring projects with container images within the same top-level namespace [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
 
 {{< /history >}}
 
-Transfer a project to move it to a different group.
-A project transfer includes:
+Transfer a project to move it to a different group. Project transfers
+move individual projects between any namespace in the same GitLab
+instance.
 
-- Project components:
-  - Issues
-  - Merge requests
-  - Pipelines
-  - Dashboards
-- Project members:
-  - Direct members
-  - Membership invitations
+You can transfer a project from:
 
-   {{< alert type="note" >}}
-
-   Members with [inherited membership](members/_index.md#membership-types)
-   in the project lose access unless they are also members of the target group.
-   The project inherits new member permissions from the group you transfer it to.
-
-   {{< /alert >}}
-
-The project's [path also changes](repository/_index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
-
-New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
-
-If a project contains issues assigned to an epic, and that epic is not available in the target
-group, GitLab creates a copy of the epic in the target group. When you transfer multiple projects
-with issues assigned to the same epic, GitLab creates a separate copy of that epic in the target
-group for each project.
-
-{{< alert type="warning" >}}
-
-Errors during the transfer process may lead to data loss of the project's components or dependencies of end users.
-
-{{< /alert >}}
+- A personal namespace to a group
+- A group to another group
+- A group to a personal namespace
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../group/_index.md#create-a-group) you are transferring to.
-- You must be the Owner of the project you transfer.
-- The group must allow creation of new projects.
-- For projects where the container registry is enabled:
-  - On GitLab.com: You can only transfer projects within the same top-level namespace.
-    Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
-  - On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
-- The project must not have a security policy.
-  If a security policy is assigned to the project, it is automatically unassigned during the transfer.
-- If the root namespace changes, you must remove npm packages that follow the [naming convention](../packages/npm_registry/_index.md#naming-convention) from the project.
-  After you transfer the project you can either:
+- The Maintainer or Owner role for the target group.
+- The Owner role of the project you want to transfer.
+- Enable project creation for the target group.
 
-  - Update the package scope with the new root namespace path, and publish it again to the project.
-  - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
-    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../packages/npm_registry/_index.md#install-from-an-instance).
+> [!note]
+> You cannot transfer a project if it's archived or pending deletion.
 
 To transfer a project:
 
@@ -573,12 +527,72 @@ To transfer a project:
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [repository path changes](repository/_index.md#repository-path-changes).
+You are directed to the new project page and the previous
+URL is redirected to the new project URL.
 
-{{< alert type="note" >}}
-Administrators can also transfer projects from the [Admin area](../../administration/admin_area.md#administering-projects).
+After you transfer a project, make sure you:
 
-{{< /alert >}}
+- Update local repository remotes to the new URLs.
+- Verify project member access and permissions.
+- Update package configurations and republish if necessary.
+- Test CI/CD pipelines and integrations.
+- Review and reassign security policies if necessary.
+
+Administrators can transfer projects from the [Admin area](../../administration/admin_area.md#administering-projects).
+
+### What data gets transferred
+
+A project transfer includes:
+
+- Project components:
+  - Issues, merge requests, and issue threads
+  - CI/CD pipelines and configurations
+  - Dashboards and wikis
+  - Repository code and Git history
+  - Project access tokens
+- Project members:
+  - Direct project members and their roles
+  - Pending membership invitations
+- Automated adjustments:
+  - New project labels are created if matching group labels do not exist
+  - Epic copies are created in the target group if necessary, with separate copies per project
+    - When you transfer multiple projects
+with issues assigned to the same epic, separate copies of that epic are created in the target
+group for each project.
+
+> [!warning]
+> Errors during the transfer process might cause data loss of project components or dependencies of end users.
+
+### Known issues
+
+When transferring a project, keep the
+following restrictions in mind.
+
+For projects with inherited memberships:
+
+- Members with [inherited membership](members/_index.md#membership-types)
+in the project lose access unless they are also members of the target group.
+- The project inherits new member permissions from the target group.
+
+For projects where the container registry is enabled:
+
+- On GitLab.com: You can only transfer projects within the same top-level group.
+- On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
+- Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
+
+For projects that use the package registry:
+
+- If the root namespace changes, you must remove npm packages that follow the [naming convention](../packages/npm_registry/_index.md#naming-convention) from the project. After you transfer the project, you can either:
+  - Update the package scope with the new root namespace path, and publish it again to the project.
+  - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention. If you republish the package without updating the root namespace path, it is not available for the [instance endpoint](../packages/npm_registry/_index.md#install-from-an-instance).
+
+For projects with a security policy:
+
+- The project must not have a security policy. If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+
+When you transfer a project:
+
+- The project [path changes](repository/_index.md#repository-path-changes). Make sure you change the URLs to the project components where necessary.
 
 ### Transfer a GitLab.com project to a different subscription tier
 
@@ -599,8 +613,9 @@ Prerequisites:
 
 To manage projects with the **Actions** menu:
 
-1. On the top bar, select **Search or go to** > **View all my projects**.
-1. On the **Projects** page, find your project and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. On the top bar, select **Search or go to**.
+1. From the dropdown, select **View all my projects**.
+1. On the **Projects** page, find your project and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select an action.
 
 The following actions are available
@@ -610,7 +625,7 @@ depending on the state of your project:
 |----------|-------------------------|
 | Active   | **Copy project ID**, **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
 | Archived | **Copy project ID**, **Unarchive**, **Leave project**, **Delete** |
-| Pending deletion | **Copy project ID**, **Restore**, **Leave project**, **Delete immediately** |
+| Pending deletion | **Copy project ID**, **Restore**, **Leave project**, **Delete permanently** |
 
 ## Add a compliance framework to a project
 

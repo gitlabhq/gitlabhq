@@ -1,0 +1,9 @@
+---
+name: search_scope_work_item
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/16459
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219860
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587248
+milestone: '18.9'
+group: group::global search
+type: beta
+default_enabled: false

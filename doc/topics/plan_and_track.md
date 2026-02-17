@@ -19,7 +19,7 @@ For a thorough demo of Plan features, see
 In this video, Gabe describes a use case of a multi-team organization that uses GitLab
 with Scaled Agile Framework (SAFe).
 Alternatively, to learn how to map the SAFe to what you can do in GitLab see
-[SAFe without silos in GitLab](https://about.gitlab.com/blog/2025/04/08/safe-without-silos-in-gitlab/).
+[SAFe without silos in GitLab](https://about.gitlab.com/blog/safe-without-silos-in-gitlab/).
 
 <!-- vale gitlab_base.Spelling = YES -->
 

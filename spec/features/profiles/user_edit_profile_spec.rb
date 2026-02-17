@@ -124,7 +124,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       user.send_reset_password_instructions
     end
 
-    it 'will prompt to confirm my password' do
+    it 'prompts to confirm my password' do
       expect(user.reset_password_token?).to be true
 
       update_user_email

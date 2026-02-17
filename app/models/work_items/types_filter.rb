@@ -15,7 +15,7 @@ module WorkItems
       end
 
       def base_types
-        ::WorkItems::Type.base_types.keys.map(&:to_s)
+        ::WorkItems::TypesFramework::Provider.unfiltered_base_types.map(&:to_s)
       end
       strong_memoize_attr :base_types
     end
@@ -36,7 +36,6 @@ module WorkItems
       base_types.to_set
         .then { |types| filter_resource_parent_type(types) }
         .then { |types| filter_disabled_workflows(types) }
-        .then { |types| filter_service_desk(types) }
         .then { |types| filter_epic(types) } # overridden in EE
         .then { |types| filter_okr(types) } # overridden in EE
     end
@@ -64,12 +63,6 @@ module WorkItems
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183399#note_2394091541
     def filter_disabled_workflows(types)
       types.subtract(DISABLED_WORKFLOW_TYPES)
-    end
-
-    def filter_service_desk(types)
-      return types if Feature.enabled?(:service_desk_ticket) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- legacy feature flag
-
-      types.subtract(%w[ticket])
     end
 
     # overridden in EE: epic is not available on FOSS

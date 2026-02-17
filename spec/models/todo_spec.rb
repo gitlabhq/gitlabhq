@@ -433,7 +433,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
     context 'when the todo is coming from an issue' do
       let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
+      let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       context 'when coming from the issue itself' do
         let_it_be(:todo) { create(:todo, project: project, user: user, target: issue) }
@@ -598,48 +598,6 @@ RSpec.describe Todo, feature_category: :notifications do
 
     it 'returns false for todos with state pending' do
       expect(todo1.done?).to be_falsey
-    end
-  end
-
-  describe '#self_assigned?' do
-    let(:user_1) { build(:user) }
-
-    context 'when self_added' do
-      before do
-        subject.user = user_1
-        subject.author = user_1
-      end
-
-      it 'returns true for ASSIGNED' do
-        subject.action = Todo::ASSIGNED
-
-        expect(subject).to be_self_assigned
-      end
-
-      it 'returns true for REVIEW_REQUESTED' do
-        subject.action = Todo::REVIEW_REQUESTED
-
-        expect(subject).to be_self_assigned
-      end
-
-      it 'returns false for other action' do
-        subject.action = Todo::MENTIONED
-
-        expect(subject).not_to be_self_assigned
-      end
-    end
-
-    context 'when todo is not self_added' do
-      before do
-        subject.user = user_1
-        subject.author = build(:user)
-      end
-
-      it 'returns false' do
-        subject.action = Todo::ASSIGNED
-
-        expect(subject).not_to be_self_assigned
-      end
     end
   end
 

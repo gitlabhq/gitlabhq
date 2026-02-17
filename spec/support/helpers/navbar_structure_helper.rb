@@ -159,18 +159,12 @@ module NavbarStructureHelper
   end
 
   def insert_contribution_analytics_nav
-    insert_before_sub_nav_item(
-      _('Data explorer'),
-      within: _('Analyze'),
-      new_sub_nav_item_name: _('Contribution analytics')
-    )
-  end
-
-  def insert_visual_ci_editor_nav
-    insert_after_sub_nav_item(
-      _('Artifacts'),
-      within: _('Build'),
-      new_sub_nav_item_name: s_('Pipelines|Visual CI Editor')
+    insert_after_nav_item(
+      _('Operate'),
+      new_nav_item: {
+        nav_item: _("Analyze"),
+        nav_sub_items: [_("Contribution analytics")]
+      }
     )
   end
 
@@ -189,9 +183,16 @@ module NavbarStructureHelper
       _('CI/CD analytics'),
       _('Repository analytics'),
       (_('Code review analytics') if Gitlab.ee?),
-      _('Model experiments'),
-      (_('Data explorer') if Gitlab.ee?)
+      _('Model experiments')
     ]
+  end
+
+  def insert_work_items_settings_nav
+    insert_after_sub_nav_item(
+      _('CI/CD'),
+      within: _('Settings'),
+      new_sub_nav_item_name: s_('WorkItem|Work items')
+    )
   end
 end
 

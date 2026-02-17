@@ -34,7 +34,7 @@ To set up GitLab for a complex group with subgroups for issue triage:
 
 ## Before you begin
 
-- If you're using an existing project for this tutorial, make sure you have at least the Reporter role
+- If you're using an existing project for this tutorial, make sure you have the Reporter, Developer, Maintainer, or Owner role
   for the project.
   - If your existing project does not have a parent group, create a group and [promote the project labels to group labels](../../user/project/labels.md#promote-a-project-label-to-a-group-label).
 
@@ -136,13 +136,10 @@ used together.
 For example, if you add the `type::feature` label to an issue that already has `type::bug`, the
 previous one is removed.
 
-{{< alert type="note" >}}
-
-Scoped labels are available in the Premium and Ultimate tier.
-If you're on the Free tier, you can use regular labels instead.
-However, they aren't mutually exclusive.
-
-{{< /alert >}}
+> [!note]
+> Scoped labels are available in the Premium and Ultimate tier.
+> If you're on the Free tier, you can use regular labels instead.
+> However, they aren't mutually exclusive.
 
 To make labels available to all projects across every subgroup, first go to the parent group that
 contains your subgroups. If you want labels to be available to only projects in a certain subgroup,
@@ -259,14 +256,11 @@ To create an issue from your **Issue triage (by severity)** board:
    - `Feedback and ratings`
    - `Settings and preferences`
 
-{{< alert type="note" >}}
-
-Issues in one project's issue board can't be seen from other project's issue board.
-Similarly, issues in projects in one subgroup can only be seen on that subgroup's
-issue board. To view all issues across every project in a parent group, you must be in
-the parent group's issue board.
-
-{{< /alert >}}
+> [!note]
+> Issues in one project's issue board can't be seen from other project's issue board.
+> Similarly, issues in projects in one subgroup can only be seen on that subgroup's
+> issue board. To view all issues across every project in a parent group, you must be in
+> the parent group's issue board.
 
 Your first triage issue board is ready!
 Try it out by dragging some issues from the **Open** list to one of the label lists to add one of

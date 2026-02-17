@@ -229,6 +229,7 @@ export const I18N_ROLE_SAVE_ERROR = s__('MemberRole|Could not update role.');
 export const CONTEXT_TYPE = Object.freeze({
   PROJECT: 'PROJECT',
   GROUP: 'GROUP',
+  USER: 'USER',
 });
 
 export const BYPASS_CONFIRMATION_TYPE_ADMIN = 'admin';

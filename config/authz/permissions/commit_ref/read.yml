@@ -1,0 +1,5 @@
+---
+name: read_commit_ref
+description: Grants the ability to read commit references
+boundaries:
+  - project

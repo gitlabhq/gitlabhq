@@ -58,12 +58,9 @@ Prerequisites:
    - Developers.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
-is enabled, administrators must enter Admin Mode to create new projects.
-
-{{< /alert >}}
+> [!note]
+> If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
+> is enabled, administrators must enter Admin Mode to create new projects.
 
 ## Restrict project deletion to administrators
 
@@ -95,21 +92,12 @@ To disable the restriction:
 
 {{< history >}}
 
-- Enabled delayed deletion for projects by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Changed to default behavior for groups](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) on the Premium and Ultimate tier in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Instance setting](#immediate-deletion) to allow immediate deletion for groups or projects scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5. Enabled by default. Disabled on GitLab.com and Dedicated.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-These protections help guard against accidental deletion of groups and projects on your instance.
+Deletion protection prevents accidental deletion of groups and projects on your instance.
 
 ### Retention period
 
@@ -118,54 +106,19 @@ the retention period is 30 days, but you can change it to a value between `1` an
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access.
 
 To configure deletion protection for groups and projects:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
-1. Scroll to **Deletion protection** and set the retention period to a value between `1` and `90` days.
+1. Scroll to **Retention period** and set the retention period to a value between `1` and `90` days.
 1. Select **Save changes**.
 
-### Immediate deletion
+### Override defaults and delete permanently
 
-{{< history >}}
-
-- Instance setting to allow immediate deletion for groups or projects scheduled for deletion
-  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5
-  [with a flag](../feature_flags/_index.md) named `allow_immediate_namespaces_deletion`.
-  Enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-By default, immediate deletion is allowed for groups and projects marked for deletion. This allows users
-to effectively bypass the configured retention period and delete groups or projects immediately.
-
-This can be disabled, so that groups and projects are only deleted automatically after the configured retention period:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **Visibility and access controls**.
-1. Scroll to **Immediate deletion** and uncheck the checkbox.
-1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-Administrators can always immediately delete groups and projects through the Admin pages.
-
-{{< /alert >}}
-
-### Override defaults and delete immediately
-
-To override the delay, and immediately delete a project marked for removal:
+To override the delay, and permanently delete a project marked for removal:
 
 1. [Restore the project](../../user/project/working_with_projects.md#restore-a-project).
 1. Delete the project as described in the
@@ -257,21 +210,18 @@ Prerequisites:
 1. Expand **Visibility and access controls**.
 1. For **Restricted visibility levels**, select the desired visibility levels to restrict.
    - If you restrict the **Public** level:
-      - Only administrators can create public groups, projects, and snippets.
-      - User profiles are visible to only authenticated users through the Web interface.
-      - User attributes are not visible through the GraphQL API.
+     - Only administrators can create public groups, projects, and snippets.
+     - User profiles are visible to only authenticated users through the Web interface.
+     - User attributes are not visible through the GraphQL API.
    - If you restrict the **Internal** level:
      - Only administrators can create internal groups, projects, and snippets.
    - If you restrict the **Private** level:
      - Only administrators can create private groups, projects, and snippets.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-You cannot restrict a visibility level that is set as the default for new projects or groups.
-Conversely, you cannot set a restricted visibility level as the default for new projects or groups.
-
-{{< /alert >}}
+> [!note]
+> You cannot restrict a visibility level that is set as the default for new projects or groups.
+> Conversely, you cannot set a restricted visibility level as the default for new projects or groups.
 
 ## Configure enabled Git access protocols
 
@@ -301,13 +251,10 @@ Prerequisites:
    - Only HTTP(S).
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-GitLab [allows the HTTP(S) protocol](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
-for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md).
-This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jobs require this setting.
-
-{{< /alert >}}
+> [!warning]
+> GitLab [allows the HTTP(S) protocol](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
+> for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md).
+> This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jobs require this setting.
 
 ## Customize Git clone URL for HTTP(S)
 
@@ -412,11 +359,8 @@ Prerequisites:
 Administrators can prevent non-administrators from inviting users to all groups or projects on the instance.
 When you configure this setting, only administrators can invite users to groups or projects on the instance.
 
-{{< alert type="note" >}}
-
-Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/import/_index.md) can still allow access to these groups and projects.
-
-{{< /alert >}}
+> [!note]
+> Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/import/_index.md) can still allow access to these groups and projects.
 
 Prerequisites:
 
@@ -430,22 +374,12 @@ To prevent invitations:
 1. Select the **Prevent group member invitations** checkbox.
 1. Select **Save changes**.
 
+> [!NOTE]
+> When you turn on this setting, [flows](../../user/duo_agent_platform/flows/_index.md)
+> cannot add their service accounts to projects and do not run until you turn off this setting.
+> For more information, see [allow members to be added to projects](../../user/duo_agent_platform/troubleshooting.md#allow-members-to-be-added-to-projects).
+
 ## Display GitLab Credits user data
-
-{{< history >}}
-
-- Instance setting to allow the display of user data
-  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
-  [with a flag](../feature_flags/_index.md) named `usage_billing_dev`.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 {{< details >}}
 
@@ -453,6 +387,14 @@ For more information, see the history.
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< history >}}
+
+- Instance setting to allow the display of user data
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
+  [with a flag](../feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+
+{{< /history >}}
 
 Prerequisites:
 

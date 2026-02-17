@@ -1,7 +1,6 @@
 - breadcrumb_title _("Preferences")
 - page_title _("Preferences")
 - add_page_specific_style 'page_bundles/settings'
-- @force_desktop_expanded_sidebar = true
 
 %div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_application_settings_preferences_pageload' } }
 
@@ -79,11 +78,11 @@
   - c.with_body do
     = render 'sidekiq_job_limits'
 
-= render ::Layouts::SettingsBlockComponent.new(s_('TerraformLimits|Terraform limits'),
+= render ::Layouts::SettingsBlockComponent.new(s_('TerraformSettings|Terraform state'),
   id: 'js-terraform-limits-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = s_('TerraformLimits|Limits for Terraform features')
-    = link_to s_('TerraformLimits|Learn more about Terraform limits.'), help_page_path('administration/settings/terraform_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = s_('TerraformSettings|Configure Terraform state settings and limits.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/terraform_state_settings.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'terraform_limits'

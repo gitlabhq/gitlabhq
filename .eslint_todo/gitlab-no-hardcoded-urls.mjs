@@ -112,6 +112,7 @@ export default {
     'app/assets/javascripts/repository/log_tree.js',
     'app/assets/javascripts/repository/pages/blob_edit_header.vue',
     'app/assets/javascripts/repository/router.js',
+    'app/assets/javascripts/repository/utils/blob_edit_redirect_utils.js',
     'app/assets/javascripts/repository/utils/ref_switcher_utils.js',
     'app/assets/javascripts/search/sidebar/components/author_filter/index.vue',
     'app/assets/javascripts/search/sidebar/components/source_branch_filter/index.vue',

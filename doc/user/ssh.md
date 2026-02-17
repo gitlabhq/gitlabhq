@@ -129,9 +129,15 @@ If you do not have an existing SSH key pair, generate a new one:
    ```
 
    A confirmation is displayed, including information about where your files are stored.
+   A public and private key are generated.
 
-A public and private key are generated. [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account)
-and keep the private key secure.
+1. Add the private SSH key to `ssh-agent`.
+
+   For example, for ED25519:
+
+   ```shell
+   ssh-add ~/.ssh/id_ed25519
+   ```
 
 ## Add an SSH key to your GitLab account
 
@@ -215,7 +221,7 @@ Verify that your SSH key was added correctly, and that you can connect to the Gi
      where `gitlab.example.com` is the GitLab instance URL.
 
 By default, connections use the `git` username, but GitLab Self-Managed or GitLab Dedicated administrators
-can [change the username](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
+can [change the username](https://docs.gitlab.com/omnibus/settings/configuration/#change-the-name-of-the-git-user-or-group).
 
 1. On your first connection, you might need to verify the authenticity of the GitLab host.
    Follow the on-screen prompts if you see a message like:

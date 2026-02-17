@@ -153,7 +153,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
         stub_env('GITLAB_BACKUP_PGHOST', 'test.invalid.')
       end
 
-      it 'will override database.yml configuration' do
+      it 'overrides database.yml configuration' do
         # Expect an error because we can't connect to test.invalid.
         expect do
           Dir.mktmpdir { |dir| databases.dump(dir, backup_id) }

@@ -23,14 +23,14 @@ describe('resolveDiscussionButton', () => {
     });
   });
 
-  it('should emit a onClick event on button click', async () => {
+  it('should emit a on-click event on button click', async () => {
     const button = wrapper.findComponent(GlButton);
 
     button.vm.$emit('click');
 
     await nextTick();
     expect(wrapper.emitted()).toEqual({
-      onClick: [[]],
+      'on-click': [[]],
     });
   });
 

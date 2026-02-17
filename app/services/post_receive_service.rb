@@ -79,13 +79,7 @@ class PostReceiveService
   private
 
   def schedule_post_receive_worker
-    worker = if project && repository && Feature.enabled?(:rename_post_receive_worker, project,
-      type: :gitlab_com_derisk)
-               Repositories::PostReceiveWorker
-             else
-               PostReceive
-             end
-
+    worker = Repositories::PostReceiveWorker
     worker_params = { 'gitaly_context' => params[:gitaly_context] }
 
     worker.perform_async(params[:gl_repository], params[:identifier],

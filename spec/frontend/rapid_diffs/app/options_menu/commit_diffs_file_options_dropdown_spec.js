@@ -17,6 +17,7 @@ describe('CommitDiffFileOptionsDropdown', () => {
     wrapper = mountExtended(CommitDiffFileOptionsDropdown, {
       propsData: {
         items: [{ text: 'View file', href: '/file' }],
+        fileId: 'file-abc123',
         oldPath: 'file.js',
         newPath: 'file.js',
         ...props,
@@ -32,12 +33,17 @@ describe('CommitDiffFileOptionsDropdown', () => {
     store = useDiffDiscussions();
   });
 
-  describe('when file has no discussions', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+  it('passes fileId, oldPath, and newPath to dropdown', () => {
+    createComponent();
+    const dropdown = wrapper.findComponent(DiffFileOptionsDropdown);
+    expect(dropdown.props('fileId')).toBe('file-abc123');
+    expect(dropdown.props('oldPath')).toBe('file.js');
+    expect(dropdown.props('newPath')).toBe('file.js');
+  });
 
+  describe('when file has no discussions', () => {
     it('passes groups with only base items', () => {
+      createComponent();
       const dropdown = wrapper.findComponent(DiffFileOptionsDropdown);
       expect(dropdown.props('items')).toHaveLength(1);
       expect(dropdown.props('items')[0].items).toEqual([{ text: 'View file', href: '/file' }]);

@@ -1,0 +1,12 @@
+---
+API/ParameterDocumentation:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/group_repository_storage_moves.rb'
+    - 'lib/api/admin/broadcast_messages.rb'
+    - 'lib/api/environments.rb'
+    - 'lib/api/group_import.rb'
+    - 'lib/api/groups.rb'
+    - 'lib/api/project_repository_storage_moves.rb'
+    - 'lib/api/snippet_repository_storage_moves.rb'
+    - 'lib/api/topics.rb'

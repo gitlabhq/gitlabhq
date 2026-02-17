@@ -134,4 +134,79 @@ RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
       end
     end
   end
+
+  describe '#check_migration_type_on_stable_branch' do
+    subject(:check_migration_type) do
+      database.check_migration_type_on_stable_branch(file_names)
+    end
+
+    context 'when no migrations are added' do
+      let(:file_names) { ['app/models/user.rb', 'lib/utils.rb'] }
+
+      it 'does not warn' do
+        expect(database).not_to receive(:warn)
+        check_migration_type
+      end
+    end
+
+    context 'when migrations are added' do
+      let(:file_names) do
+        [
+          'db/migrate/20250128120000_add_column_to_users.rb',
+          'app/models/user.rb'
+        ]
+      end
+
+      it 'warns about migration type' do
+        expect(database).to receive(:warn)
+          .with(described_class::MIGRATION_TYPE_WARNING_MESSAGE)
+        check_migration_type
+      end
+    end
+
+    context 'when post migrations are added' do
+      let(:file_names) do
+        [
+          'db/post_migrate/20250128120000_remove_column_from_users.rb',
+          'app/models/user.rb'
+        ]
+      end
+
+      it 'warns about migration type' do
+        expect(database).to receive(:warn)
+          .with(described_class::MIGRATION_TYPE_WARNING_MESSAGE)
+        check_migration_type
+      end
+    end
+
+    context 'when geo migrations are added' do
+      let(:file_names) do
+        [
+          'ee/db/geo/migrate/20250128120000_add_column_to_geo_table.rb',
+          'app/models/user.rb'
+        ]
+      end
+
+      it 'warns about migration type' do
+        expect(database).to receive(:warn)
+          .with(described_class::MIGRATION_TYPE_WARNING_MESSAGE)
+        check_migration_type
+      end
+    end
+
+    context 'when geo post migrations are added' do
+      let(:file_names) do
+        [
+          'ee/db/geo/post_migrate/20250128120000_remove_column_from_geo_table.rb',
+          'app/models/user.rb'
+        ]
+      end
+
+      it 'warns about migration type' do
+        expect(database).to receive(:warn)
+          .with(described_class::MIGRATION_TYPE_WARNING_MESSAGE)
+        check_migration_type
+      end
+    end
+  end
 end

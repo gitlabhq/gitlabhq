@@ -1,0 +1,8 @@
+---
+name: read_resource_access_token
+description: Grants the ability to read resource access tokens
+permissions:
+  - read_resource_access_token
+boundaries:
+  - project
+  - group

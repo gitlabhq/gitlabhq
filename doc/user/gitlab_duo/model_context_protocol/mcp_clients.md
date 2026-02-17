@@ -9,7 +9,6 @@ title: GitLab MCP clients
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -42,8 +41,7 @@ The same MCP configuration file works across all supported IDEs.
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
 - [GitLab Duo Chat (Agentic)](../../../user/gitlab_duo_chat/agentic_chat.md)
-- [Foundational flows](../../../user/duo_agent_platform/flows/foundational_flows/_index.md)
-- [Custom flows](../../../user/duo_agent_platform/flows/custom.md)
+- The [Software Development Flow](../../../user/duo_agent_platform/flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
 
@@ -157,12 +155,9 @@ Both configuration files use the same JSON format, with the details in the `mcpS
 }
 ```
 
-{{< alert type="note" >}}
-
-For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
-For GitLab, use `mcpServers` instead.
-
-{{< /alert >}}
+> [!note]
+> For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
+> For GitLab, use `mcpServers` instead.
 
 ### Configure tool approval
 
@@ -348,7 +343,7 @@ When a GitLab Duo feature calls an external tool to answer a question,
 you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
-1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.

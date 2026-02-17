@@ -50,11 +50,8 @@ You can configure one of the following as an identity provider:
 - [Azure Active Directory](#configure-microsoft-entra-id-formerly-azure-active-directory).
 - [Okta](#configure-okta).
 
-{{< alert type="note" >}}
-
-Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
-
-{{< /alert >}}
+> [!note]
+> Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Microsoft Entra ID (formerly Azure Active Directory)
 
@@ -73,12 +70,9 @@ The SAML application created during [single sign-on](_index.md) set up for
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
-{{< alert type="note" >}}
-
-You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
-and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
-
-{{< /alert >}}
+> [!note]
+> You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
+> and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
 
 To configure Microsoft Entra ID for SCIM:
 
@@ -102,11 +96,8 @@ Under the **Mappings** section, first provision the groups:
    GitLab. Leaving group provisioning enabled does not break the SCIM user provisioning, but it causes errors in the
    Entra ID SCIM provisioning log that may be confusing and misleading.
 
-   {{< alert type="note" >}}
-
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
-
-   {{< /alert >}}
+   > [!note]
+   > Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
 
 1. Select **Save**.
 
@@ -142,21 +133,15 @@ Under the **Settings** section:
 
 After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
-{{< alert type="warning" >}}
-
-Once synchronized, changing the field mapped to `id` and `externalId` may cause errors. These include
-provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> Once synchronized, changing the field mapped to `id` and `externalId` may cause errors. These include
+> provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
 
 #### Configure attribute mappings
 
-{{< alert type="note" >}}
-
-While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
-your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
+> your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
 While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
 attribute mappings. For an example, see [example configuration](example_saml_config.md#scim-mapping).
@@ -239,6 +224,24 @@ During the synchronization process, all new users:
 - Are welcomed to their groups with an invitation email.
   You can [bypass email confirmation with a verified domain](_index.md#bypass-user-email-confirmation-with-verified-domains).
 
+### Provisioning behavior with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When [restricted access](../manage.md#restricted-access) is enabled and no subscription seats are available, users provisioned through SCIM are assigned the Minimal Access role.
+
+When this happens, users are successfully created with Minimal Access (response `HTTP 201 Created`), and the user's `roles` attribute reflects this assignment. Subsequent role update operations may fail if no seats are available.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+
 The following diagram describes what happens when you add users to your SCIM app:
 
 ```mermaid
@@ -302,11 +305,8 @@ the user's membership is revoked and they lose access.
 When you enable SCIM, this does not automatically remove existing users who do
 not have a SAML identity.
 
-{{< alert type="note" >}}
-
-Deprovisioning does not delete the GitLab user account.
-
-{{< /alert >}}
+> [!note]
+> Deprovisioning does not delete the GitLab user account.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

@@ -17,11 +17,8 @@ and pulling packages, request forwarding, managing duplicates, and authenticatio
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Not all package manager formats are ready for production use.
-
-{{< /alert >}}
+> [!warning]
+> Not all package manager formats are ready for production use.
 
 The package registry supports the following package manager types:
 
@@ -265,16 +262,13 @@ for a given package manager:
 | [Go](../go_proxy/_index.md)                            | Personal access, job tokens, project access                            |
 | [Ruby gems](../rubygems_registry/_index.md)            | Personal access, job tokens, deploy (project or group)                 |
 
-{{< alert type="note" >}}
-
-When you configure authentication to the package registry:
-
-- If the **Package registry** project setting is [turned off](_index.md#turn-off-the-package-registry), you receive a `403 Forbidden` error when you interact with the package registry, even if you have the Owner role.
-- If [external authorization](../../../administration/settings/external_authorization.md) is turned on, you can't access the package registry with a deploy token.
-- If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
-- If you are publishing a package by using CI/CD pipelines, you must use a CI/CD job token.
-
-{{< /alert >}}
+> [!note]
+> When you configure authentication to the package registry:
+> 
+> - If the **Package registry** project setting is [turned off](_index.md#turn-off-the-package-registry), you receive a `403 Forbidden` error when you interact with the package registry, even if you have the Owner role.
+> - If [external authorization](../../../administration/settings/external_authorization.md) is turned on, you can't access the package registry with a deploy token.
+> - If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
+> - If you are publishing a package by using CI/CD pipelines, you must use a CI/CD job token.
 
 ### Authentication protocols
 

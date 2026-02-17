@@ -11,7 +11,7 @@ RSpec.describe Projects::ReadmeRendererService, '#execute', feature_category: :g
 
   let(:opts) { { default_branch: 'master' } }
 
-  it 'renders the an ERB readme template' do
+  it 'renders the ERB readme template' do
     expect(service.execute).to start_with(<<~MARKDOWN)
       # My Project
 
@@ -25,7 +25,7 @@ RSpec.describe Projects::ReadmeRendererService, '#execute', feature_category: :g
 
       ## Add your files
 
-      * [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+      * [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
       * [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
 
       ```

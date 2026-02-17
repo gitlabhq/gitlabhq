@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 
 export default normalizeRender({
   name: 'WorkItemMetadataProvider',
@@ -10,7 +11,6 @@ export default normalizeRender({
     // We provide the metadata values as computed properties
     // so that they can be reactive and update when the Apollo query updates.
     return {
-      hasDesignManagementFeature: computed(() => this.metadata.hasDesignManagementFeature),
       hasIssueWeightsFeature: computed(() => this.metadata.hasIssueWeightsFeature),
       hasIterationsFeature: computed(() => this.metadata.hasIterationsFeature),
       hasOkrsFeature: computed(() => this.metadata.hasOkrsFeature),
@@ -45,7 +45,7 @@ export default normalizeRender({
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
-      canBulkEditEpics: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
+      canBulkAdminEpic: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
       calendarPath: computed(() => this.metadata.calendarPath),
       rssPath: computed(() => this.metadata.rssPath),
@@ -56,9 +56,7 @@ export default normalizeRender({
       releasesPath: computed(() => this.metadata.releasesPath),
       projectImportJiraPath: computed(() => this.metadata.projectImportJiraPath),
       exportCsvPath: computed(() => this.metadata.exportCsvPath),
-      canBulkUpdate: computed(() => Boolean(this.metadata?.adminIssue)),
       canAdminIssue: computed(() => Boolean(this.metadata?.adminIssue)),
-      canEdit: computed(() => Boolean(this.metadata?.adminProject)),
       canAdminProject: computed(() => Boolean(this.metadata?.adminProject)),
       canImportWorkItems: computed(() => Boolean(this.metadata?.importWorkItems)),
       groupId: computed(() => this.metadata?.groupId),
@@ -74,6 +72,11 @@ export default normalizeRender({
       canReadCrmOrganization: computed(() => Boolean(this.metadata?.readCrmOrganization)),
       canReadCrmContact: computed(() => Boolean(this.metadata?.readCrmContact)),
       projectNamespaceFullPath: computed(() => this.metadata?.namespaceFullPath),
+      getWorkItemTypeConfiguration: computed(() => (typeName) => {
+        return this.workItemTypesConfiguration[typeName];
+      }),
+      workItemTypesConfiguration: computed(() => this.workItemTypesConfiguration),
+      subscribedSavedViewLimit: computed(() => this.metadata.subscribedSavedViewLimit),
     };
   },
   props: {
@@ -85,6 +88,7 @@ export default normalizeRender({
   data() {
     return {
       metadata: {},
+      workItemTypesConfiguration: {},
     };
   },
   apollo: {
@@ -103,7 +107,23 @@ export default normalizeRender({
           ...(namespace.userPermissions || {}),
           ...(namespace.metadata || {}),
           id: namespace.id,
+          subscribedSavedViewLimit: namespace.subscribedSavedViewLimit,
         };
+      },
+    },
+    workItemTypesConfiguration: {
+      query: workItemTypesConfigurationQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        const nodes = data?.namespace?.workItemTypes?.nodes || [];
+        // Transform array to hash keyed by type name
+        return nodes.reduce((acc, type) => {
+          return { ...acc, [type.name]: type };
+        }, {});
       },
     },
   },

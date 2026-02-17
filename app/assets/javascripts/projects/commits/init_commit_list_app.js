@@ -24,6 +24,7 @@ export default function initCommitListApp() {
   // eslint-disable-next-line no-new
   new Vue({
     el: commitListEl,
+    name: 'CommitListAppRoot',
     router: createRouter(basePath, escapedRef),
     provide: {
       projectFullPath,

@@ -115,12 +115,11 @@ module Gitlab
         end
 
         def work_item_type_id
-          return ::WorkItems::Type.default_issue_type.id unless Feature.enabled?(:service_desk_ticket, project)
+          provider = ::WorkItems::TypesFramework::Provider.new(project)
 
           # Find type by `service_desk` configuration in the future.
-          # Likely use the provider abstraction then.
           # See https://gitlab.com/groups/gitlab-org/-/epics/19879
-          ::WorkItems::Type.default_by_type(:ticket).id
+          provider.find_by_base_type(:ticket).id
         end
 
         def create_work_item!

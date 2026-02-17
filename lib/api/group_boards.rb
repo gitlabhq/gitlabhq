@@ -26,11 +26,12 @@ module API
         desc 'Get all group boards' do
           detail 'This feature was introduced in 10.6'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_issue_board, boundary_type: :group
         get '/' do
           authorize!(:read_issue_board, user_group)
           present paginate(board_parent.boards.with_associations), with: Entities::Board
@@ -39,8 +40,9 @@ module API
         desc 'Find a group board' do
           detail 'This feature was introduced in 10.6'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
+        route_setting :authorization, permissions: :read_issue_board, boundary_type: :group
         get '/:board_id' do
           authorize!(:read_issue_board, user_group)
           present board, with: Entities::Board
@@ -49,11 +51,12 @@ module API
         desc 'Update a group board' do
           detail 'This feature was introduced in 11.0'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :update_params
         end
+        route_setting :authorization, permissions: :update_issue_board, boundary_type: :group
         put '/:board_id' do
           authorize!(:admin_issue_board, board_parent)
 
@@ -68,11 +71,12 @@ module API
         desc 'Get the lists of a group board' do
           detail 'Does not include backlog and closed lists. This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_issue_board_list, boundary_type: :group
         get '/lists' do
           authorize!(:read_issue_board, user_group)
           present paginate(board_lists), with: Entities::List
@@ -81,11 +85,12 @@ module API
         desc 'Get a list of a group board' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a list'
         end
+        route_setting :authorization, permissions: :read_issue_board_list, boundary_type: :group
         get '/lists/:list_id' do
           authorize!(:read_issue_board, user_group)
           present board_lists.find(params[:list_id]), with: Entities::List
@@ -94,11 +99,12 @@ module API
         desc 'Create a new board list' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :list_creation_params
         end
+        route_setting :authorization, permissions: :create_issue_board_list, boundary_type: :group
         post '/lists' do
           authorize!(:admin_issue_board_list, user_group)
 
@@ -108,12 +114,13 @@ module API
         desc 'Moves a board list to a new position' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id,  type: Integer, desc: 'The ID of a list'
           requires :position, type: Integer, desc: 'The position of the list'
         end
+        route_setting :authorization, permissions: :update_issue_board_list, boundary_type: :group
         put '/lists/:list_id' do
           list = board_lists.find(params[:list_id])
 
@@ -125,11 +132,12 @@ module API
         desc 'Delete a board list' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a board list'
         end
+        route_setting :authorization, permissions: :delete_issue_board_list, boundary_type: :group
         delete "/lists/:list_id" do
           authorize!(:admin_issue_board_list, user_group)
           list = board_lists.find(params[:list_id])

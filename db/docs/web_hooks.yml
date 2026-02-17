@@ -16,4 +16,5 @@ sharding_key:
   project_id: projects
   group_id: namespaces
   organization_id: organizations
+organization_transfer_support: todo
 table_size: small

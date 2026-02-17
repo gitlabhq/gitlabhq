@@ -9,13 +9,15 @@ describe('performance bar app', () => {
   const store = new PerformanceBarStore();
   store.addRequest('123', 'https://gitlab.com', '', {}, 'GET');
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(PerformanceBarApp, {
       propsData: {
         store,
         env: 'development',
         requestId: '123',
         statsUrl: 'https://log.gprd.gitlab.net/app/dashboards#/view/',
+        simulateSaas: false,
+        ...props,
       },
       stubs: {
         GlEmoji: { template: '<div/>' },
@@ -25,11 +27,9 @@ describe('performance bar app', () => {
 
   const findInfoApp = () => wrapper.findComponent(InfoApp);
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   describe('info section', () => {
+    beforeEach(() => createComponent());
+
     it('renders the info section button', () => {
       expect(findInfoApp().exists()).toBe(true);
     });
@@ -40,6 +40,8 @@ describe('performance bar app', () => {
   });
 
   describe('flamegraph buttons', () => {
+    beforeEach(() => createComponent());
+
     const flamegraphDiv = () => wrapper.find('#peek-flamegraph');
     const flamegraphLinks = () => flamegraphDiv().findAllComponents(GlLink);
 
@@ -55,6 +57,8 @@ describe('performance bar app', () => {
   });
 
   describe('memory report button', () => {
+    beforeEach(() => createComponent());
+
     const memoryReportDiv = () => wrapper.find('#peek-memory-report');
     const memoryReportLink = () => memoryReportDiv().findComponent(GlLink);
 
@@ -65,11 +69,17 @@ describe('performance bar app', () => {
     });
   });
 
-  it('sets the class to match the environment', () => {
-    expect(wrapper.element.getAttribute('class')).toContain('development');
+  describe('environment class', () => {
+    beforeEach(() => createComponent());
+
+    it('sets the class to match the environment', () => {
+      expect(wrapper.element.getAttribute('class')).toContain('development');
+    });
   });
 
   describe('changeCurrentRequest', () => {
+    beforeEach(() => createComponent());
+
     it('emits a change-request event', () => {
       expect(wrapper.emitted('change-request')).toBeUndefined();
 
@@ -77,6 +87,27 @@ describe('performance bar app', () => {
 
       expect(wrapper.emitted('change-request')).toBeDefined();
       expect(wrapper.emitted('change-request')[0]).toEqual(['123']);
+    });
+  });
+
+  describe('SaaS indicator', () => {
+    const findSaasIndicator = () => wrapper.find('[data-testid="simulate-saas-indicator"]');
+
+    describe('when simulateSaas is false', () => {
+      beforeEach(() => createComponent());
+
+      it('does not render', () => {
+        expect(findSaasIndicator().exists()).toBe(false);
+      });
+    });
+
+    describe('when simulateSaas is true', () => {
+      beforeEach(() => createComponent({ simulateSaas: true }));
+
+      it('renders', () => {
+        expect(findSaasIndicator().exists()).toBe(true);
+        expect(findSaasIndicator().text()).toBe('SaaS');
+      });
     });
   });
 });

@@ -33,6 +33,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
 
   return new Vue({
     el,
+    name: 'GroupRunnersAppRoot',
     apolloProvider,
     provide: {
       ...runnersAppProvide(el.dataset),

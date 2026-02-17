@@ -15,13 +15,10 @@ title: Use Microsoft Azure as an OAuth 2.0 authentication provider
 You can enable the Microsoft Azure OAuth 2.0 OmniAuth provider and sign in to
 GitLab with your Microsoft Azure credentials.
 
-{{< alert type="note" >}}
-
-If you're integrating GitLab with Azure/Entra ID for the first time,
-configure the [OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
-which uses the Microsoft identity platform (v2.0) endpoint.
-
-{{< /alert >}}
+> [!note]
+> If you're integrating GitLab with Azure/Entra ID for the first time,
+> configure the [OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
+> which uses the Microsoft identity platform (v2.0) endpoint.
 
 ## Migrate to Generic OpenID Connect configuration
 
@@ -61,13 +58,10 @@ Alternatively, add the `User.Read.All` application permission.
 
 ## Enable Microsoft OAuth in GitLab
 
-{{< alert type="note" >}}
-
-For new projects, you should use the
-[OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
-which uses the Microsoft identity platform (v2.0) endpoint.
-
-{{< /alert >}}
+> [!note]
+> For new projects, you should use the
+> [OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
+> which uses the Microsoft identity platform (v2.0) endpoint.
 
 1. On your GitLab server, open the configuration file.
 

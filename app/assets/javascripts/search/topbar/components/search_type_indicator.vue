@@ -13,7 +13,6 @@ import {
   SEARCH_LEVEL_GROUP,
 } from '~/search/store/constants';
 
-// eslint-disable-next-line no-restricted-imports
 import { SCOPE_BLOB } from '../../sidebar/constants';
 
 export default {
@@ -126,7 +125,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-inline gl-text-subtle">
+  <div class="gl-text-subtle">
     <div v-if="isBasicSearch" data-testid="basic">
       <div v-if="isFallBacktoBasicSearch" :data-testid="`${searchTypeAvailableTestId}-disabled`">
         <gl-sprintf :message="disabledMessage">
@@ -144,7 +143,7 @@ export default {
         </gl-sprintf>
       </div>
     </div>
-    <div v-else :data-testid="`${searchTypeTestId}-enabled`" class="gl-inline">
+    <div v-else :data-testid="`${searchTypeTestId}-enabled`">
       <gl-sprintf :message="enabledMessage">
         <template #link="{ content }">
           <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }}</gl-link>

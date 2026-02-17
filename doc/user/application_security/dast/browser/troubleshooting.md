@@ -126,7 +126,7 @@ This usually happens when the server exists, but:
 
 #### Target responded with HTTP 5xx error
 
-You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like  `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
+You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
 
 You might see server errors when:
 
@@ -172,7 +172,7 @@ DAST cannot scan correctly when:
 Understanding how your application works is vital to figuring out why a DAST scan isn't working. For example, the following situations
 may require additional configuration settings.
 
-- Is there a popup modal that hides elements?
+- Is there a popup dialog that hides elements?
 - Does a loaded page change dramatically after a certain period of time?
 - Is the application especially slow or fast to load?
 - Is the target application jerky while loading?
@@ -336,12 +336,9 @@ For example, the following output shows that four anchor links discovered during
 
 ## Chromium DevTools logging
 
-{{< alert type="warning" >}}
-
-Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords and authentication tokens.
-The output is uploaded to the GitLab server and may be visible in job logs.
-
-{{< /alert >}}
+> [!warning]
+> Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords and authentication tokens.
+> The output is uploaded to the GitLab server and may be visible in job logs.
 
 The DAST Browser-based scanner orchestrates a Chromium browser using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 Logging DevTools messages helps provide transparency into what the browser is doing. For example, if selecting a button does not work, a DevTools message might show that the cause is a CORS error in a browser console log.

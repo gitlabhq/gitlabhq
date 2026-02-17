@@ -130,7 +130,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'respects the settings of a parent group' do
-      context 'when a parent group has disabled diff previews ' do
+      context 'when a parent group has disabled diff previews' do
         it 'returns false for all users' do
           new_project = create(:project, group: create(:group))
           new_project.group.update_attribute(:show_diff_preview_in_email, false)
@@ -779,45 +779,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#show_terraform_banner?' do
-    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
-    let_it_be(:hcl) { create(:programming_language, name: 'HCL') }
-
-    subject { helper.show_terraform_banner?(project) }
-
-    before do
-      create(:repository_language, project: project, programming_language: language, share: 1)
-    end
-
-    context 'the project does not contain terraform files' do
-      let(:language) { ruby }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'the project contains terraform files' do
-      let(:language) { hcl }
-
-      it { is_expected.to be_truthy }
-
-      context 'the project already has a terraform state' do
-        before do
-          create(:terraform_state, project: project)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'the :show_terraform_banner feature flag is disabled' do
-        before do
-          stub_feature_flags(show_terraform_banner: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe '#show_lfs_misconfiguration_banner?' do
     before do
       allow(project).to receive(:lfs_enabled?).and_return(true)
@@ -1381,9 +1342,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#show_inactive_project_deletion_banner?' do
+  describe '#show_dormant_project_deletion_banner?' do
     shared_examples 'does not show the banner' do |pass_project: true|
-      it { expect(helper.show_inactive_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
+      it { expect(helper.show_dormant_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
     end
 
     context 'with no project' do
@@ -1415,7 +1376,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         it_behaves_like 'does not show the banner'
       end
 
-      context 'with an inactive project' do
+      context 'with a dormant project' do
         before do
           project.statistics.storage_size = 1.megabyte
           project.last_activity_at = 1.year.ago
@@ -1423,13 +1384,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it 'shows the banner' do
-          expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
+          expect(helper.show_dormant_project_deletion_banner?(project)).to be(true)
         end
       end
     end
   end
 
-  describe '#inactive_project_deletion_date' do
+  describe '#dormant_project_deletion_date' do
     let(:tracker) { instance_double(::Gitlab::DormantProjectsDeletionWarningTracker) }
 
     before do
@@ -1441,7 +1402,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'returns the deletion date' do
-      expect(helper.inactive_project_deletion_date(project)).to eq('2022-03-01')
+      expect(helper.dormant_project_deletion_date(project)).to eq('2022-03-01')
     end
   end
 
@@ -1602,7 +1563,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       Gitlab::Access::NO_ACCESS           | _('No access')
       Gitlab::Access::MINIMAL_ACCESS      | _("Minimal Access")
       Gitlab::Access::GUEST               | _('Guest')
+      Gitlab::Access::PLANNER             | _('Planner')
       Gitlab::Access::REPORTER            | _('Reporter')
+      Gitlab::Access::SECURITY_MANAGER    | _('Security Manager')
       Gitlab::Access::DEVELOPER           | _('Developer')
       Gitlab::Access::MAINTAINER          | _('Maintainer')
       Gitlab::Access::OWNER               | _('Owner')
@@ -1611,6 +1574,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     with_them do
       it 'with correct key' do
         expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
+      end
+    end
+    context 'when security manager is disabled', :disable_security_manager do
+      it 'does not include Security Manager role' do
+        expect(helper.localized_project_human_access(Gitlab::Access::SECURITY_MANAGER)).to be_blank
       end
     end
   end
@@ -2103,14 +2071,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when project and ancestor is not archived' do
       it { is_expected.to be(false) }
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
     end
   end
 end

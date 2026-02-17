@@ -88,9 +88,9 @@ deploy:
   - echo "hello world"
 ```
 
-## Validate a new CI/CD configuration
+## Validate CI/CD configuration
 
-Validates a new `.gitlab-ci.yml` configuration for a specified project.
+Validates `.gitlab-ci.yml` configuration for a specified project.
 This endpoint validates the CI/CD configuration in the context of the
 project, including:
 
@@ -164,7 +164,7 @@ Example responses:
   }
   ```
 
-## Validate an existing CI/CD configuration
+## Validate existing CI/CD configuration
 
 {{< history >}}
 
@@ -173,7 +173,7 @@ Example responses:
 
 {{< /history >}}
 
-Validates an existing `.gitlab-ci.yml` configuration for a specified project.
+Validates the existing `.gitlab-ci.yml` configuration for a specified project.
 This endpoint validates the CI/CD configuration in the context of the
 project, including:
 

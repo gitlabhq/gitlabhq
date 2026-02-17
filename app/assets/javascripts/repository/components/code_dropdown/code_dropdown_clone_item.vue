@@ -85,6 +85,7 @@ export default {
         :label="label"
         readonly
         select-on-click
+        input-class="!gl-border"
       >
         <template #append>
           <gl-button

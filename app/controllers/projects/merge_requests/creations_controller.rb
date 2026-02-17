@@ -16,6 +16,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   feature_category :continuous_integration, [:pipelines]
 
+  helper_method :rapid_diffs_presenter
+
   urgency :low, [
     :new,
     :create,
@@ -33,14 +35,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def new
     define_new_vars
-
-    @rapid_diffs_presenter = ::RapidDiffs::MergeRequestCreationPresenter.new(
-      @merge_request,
-      project,
-      diff_view,
-      diff_options,
-      { merge_request: merge_request_params }
-    )
   end
 
   def create
@@ -114,11 +108,24 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render layout: false
   end
 
-  def diffs_resource(options = {})
-    @merge_request&.compare&.diffs(options)
-  end
-
   private
+
+  def rapid_diffs_presenter
+    return unless @merge_request.can_be_created
+
+    @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestCreationPresenter.new(
+      @merge_request,
+      project: project,
+      diff_view: diff_view,
+      diff_options: diff_options,
+      request_params: {
+        merge_request: merge_request_params,
+        file_path: params[:file_path],
+        old_path: params[:old_path],
+        new_path: params[:new_path]
+      }
+    )
+  end
 
   def define_new_vars
     @noteable = @merge_request

@@ -19,12 +19,9 @@ title: Debian packages in the package registry
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
-work and timelines to make it production ready. Support for [Debian packages is an experiment](../package_registry/supported_functionality.md), and has known security vulnerabilities.
-
-{{< /alert >}}
+> [!warning]
+> The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
+> work and timelines to make it production ready. Support for [Debian packages is an experiment](../package_registry/supported_functionality.md), and has known security vulnerabilities.
 
 Publish Debian packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -54,11 +51,8 @@ disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags/_index.md)
 can opt to enable it.
 
-{{< alert type="warning" >}}
-
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
-
-{{< /alert >}}
+> [!warning]
+> Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 
@@ -76,11 +70,8 @@ Feature.disable(:debian_packages)
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
 
-{{< alert type="warning" >}}
-
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
-
-{{< /alert >}}
+> [!warning]
+> Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 

@@ -3,14 +3,14 @@ import {
   GlButton,
   GlFilteredSearchToken,
   GlLoadingIcon,
-  GlTooltipDirective,
   GlIcon,
+  GlTooltipDirective,
   GlSkeletonLoader,
   GlModalDirective,
   GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { isEmpty, unionBy } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -23,9 +23,12 @@ import {
   deriveSortKey,
   getDefaultWorkItemTypes,
   getFilterTokens,
+  getSavedViewFilterTokens,
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
+  saveSavedView,
+  subscribeToSavedView,
 } from 'ee_else_ce/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -34,8 +37,8 @@ import {
   STATUS_ALL,
   STATUS_CLOSED,
   STATUS_OPEN,
-  WORKSPACE_GROUP,
-  WORKSPACE_PROJECT,
+  NAMESPACE_GROUP,
+  NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
@@ -57,13 +60,15 @@ import {
 } from '~/work_items/list/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { setPageFullWidth, setPageDefaultWidth, isLoggedIn } from '~/lib/utils/common_utils';
-import { __, s__, n__, formatNumber } from '~/locale';
+import { __, s__, n__, formatNumber, sprintf } from '~/locale';
 import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
@@ -109,23 +114,28 @@ import {
   TOKEN_TYPE_PARENT,
   TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
-import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
-import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
-import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
+import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
+import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
-import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
-import WorkItemListHeading from '../components/work_item_list_heading.vue';
-import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
-import WorkItemListActions from '../components/work_item_list_actions.vue';
-import WorkItemsSavedViewsSelectors from '../components/shared/work_items_saved_views_selectors.vue';
+import HealthStatus from '../list/components/health_status.vue';
+import WorkItemListHeading from '../list/components/work_item_list_heading.vue';
+import WorkItemUserPreferences from '../list/components/work_item_user_preferences.vue';
+import WorkItemListActions from '../list/components/work_item_list_actions.vue';
+import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
+import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
+import WorkItemsSavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
+import WorkItemsSavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
+import WorkItemsSavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -136,14 +146,16 @@ import {
   WORK_ITEM_TYPE_NAME_TICKET,
   METADATA_KEYS,
   WORK_ITEM_CREATE_SOURCES,
+  ROUTES,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
-import { findHierarchyWidget } from '../utils';
+import { combineWorkItemLists, findHierarchyWidget } from '../utils';
 import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
+const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 const GroupToken = () =>
@@ -182,9 +194,9 @@ export default {
     IssueCardStatistics,
     IssueCardTimeInfo,
     WorkItemBulkEditSidebar: () =>
-      import('~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue'),
+      import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
     WorkItemDrawer,
-    WorkItemHealthStatus,
+    HealthStatus,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     EmptyStateWithAnyTickets,
@@ -199,6 +211,11 @@ export default {
     NewResourceDropdown,
     WorkItemsSavedViewsSelectors,
     GlAlert,
+    WorkItemsNewSavedViewModal,
+    WorkItemsOnboardingModal,
+    UserCalloutDismisser,
+    WorkItemsSavedViewsNotFoundModal,
+    WorkItemsSavedViewsLimitWarningModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -207,8 +224,8 @@ export default {
   mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
-    'canBulkUpdate',
-    'canBulkEditEpics',
+    'canAdminIssue',
+    'canBulkAdminEpic',
     'canCreateProjects',
     'canCreateWorkItem',
     'hasBlockedIssuesFeature',
@@ -239,6 +256,7 @@ export default {
     'newIssuePath',
     'workItemPlanningViewEnabled',
     'workItemsSavedViewsEnabled',
+    'subscribedSavedViewLimit',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -265,14 +283,18 @@ export default {
     return {
       error: undefined,
       bulkEditInProgress: false,
+      subscribedSavedViews: [],
       filterTokens: [],
-      hasAnyIssues: false,
+      initialViewTokens: [],
       isInitialLoadComplete: false,
       pageInfo: {},
       pageParams: {},
       pageSize: DEFAULT_PAGE_SIZE,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
+      initialSortKey: CREATED_DESC,
+      initialViewSortKey: null,
+      initialPreferences: null,
       state: STATUS_OPEN,
       workItemsFull: [],
       workItemsSlim: [],
@@ -283,11 +305,17 @@ export default {
       showLocalBoard: false,
       namespaceId: null,
       displaySettings: {},
+      localDisplaySettings: {},
+      initialViewDisplaySettings: {},
       workItemTypes: [],
       isLoggedIn: isLoggedIn(),
       isSortKeyInitialized: !this.isLoggedIn,
-      hasWorkItems: null,
-      workItemsCount: null,
+      hasWorkItems: false,
+      workItemsCount: 0,
+      isNewViewModalVisible: false,
+      savedView: null,
+      showSavedViewNotFoundModal: false,
+      showLimitWarningModal: false,
     };
   },
   apollo: {
@@ -300,6 +328,7 @@ export default {
         return {
           namespace: this.rootPageFullPath,
           workItemTypeId: this.workItemTypeId,
+          userPreferencesOnly: this.isSavedView,
         };
       },
       update(data) {
@@ -321,7 +350,7 @@ export default {
           this.showIssueRepositioningMessage();
           sortKey = this.state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
         }
-        this.sortKey = sortKey;
+        if (!this.isSavedView) this.sortKey = sortKey;
         this.isSortKeyInitialized = true;
       },
       skip() {
@@ -333,58 +362,11 @@ export default {
         Sentry.captureException(error);
       },
     },
-    workItemsFull: {
-      context: {
-        featureCategory: 'portfolio_management',
-      },
-      query() {
-        return getWorkItemsQuery;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        return data?.namespace?.workItems.nodes ?? [];
-      },
-      skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading;
-      },
-      result({ data }) {
-        this.namespaceId = data?.namespace?.id;
-        this.handleListDataResults(data);
-      },
-      error(error) {
-        this.error = s__(
-          'WorkItem|Something went wrong when fetching work items. Please try again.',
-        );
-        Sentry.captureException(error);
-      },
+    workItemsFull() {
+      return this.createWorkItemQuery(getWorkItemsQuery);
     },
-    workItemsSlim: {
-      context: {
-        featureCategory: 'portfolio_management',
-      },
-      query() {
-        return getWorkItemsSlimQuery;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        return data?.namespace?.workItems.nodes ?? [];
-      },
-      skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading;
-      },
-      result({ data }) {
-        this.handleListDataResults(data);
-      },
-      error(error) {
-        this.error = s__(
-          'WorkItem|Something went wrong when fetching work items. Please try again.',
-        );
-        Sentry.captureException(error);
-      },
+    workItemsSlim() {
+      return this.createWorkItemQuery(getWorkItemsSlimQuery);
     },
     workItemsCount: {
       query() {
@@ -413,7 +395,12 @@ export default {
         return data?.[this.namespace]?.workItemStateCounts ?? {};
       },
       skip() {
-        return this.isPlanningViewsEnabled || isEmpty(this.pageParams) || this.metadataLoading;
+        return (
+          (this.isPlanningViewsEnabled && !this.isServiceDeskList) ||
+          isEmpty(this.pageParams) ||
+          this.metadataLoading ||
+          this.shouldSkipDueToSavedViewState
+        );
       },
       error(error) {
         Sentry.captureException(error);
@@ -435,10 +422,8 @@ export default {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
-      result({ data }) {
-        const count = data?.namespace?.workItems.nodes.length || 0;
+      result() {
         if (!this.isInitialLoadComplete) {
-          this.hasAnyIssues = Boolean(count);
           this.isInitialLoadComplete = true;
           this.initialLoadWasFiltered = this.filterTokens.length > 0;
         }
@@ -458,22 +443,129 @@ export default {
         Sentry.captureException(error);
       },
     },
+    savedView: {
+      query: namespaceSavedViewQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+          id: this.savedViewId,
+        };
+      },
+      skip() {
+        return !this.isSavedView;
+      },
+      update(data) {
+        return data?.namespace?.savedViews?.nodes[0];
+      },
+      async result({ data }) {
+        try {
+          const savedView = data?.namespace?.savedViews?.nodes[0];
+          const limit = data?.namespace?.subscribedSavedViewLimit;
+          const count = data?.namespace?.currentSavedViews?.nodes.length;
+          if (!savedView) {
+            this.$router.push({ name: ROUTES.index, query: { sv_not_found: true } });
+            return;
+          }
+          if (!savedView.subscribed) {
+            if (count >= limit) {
+              this.$router.push({ name: ROUTES.index, query: { sv_limit_id: savedView.id } });
+            } else {
+              const success = await this.attemptSubscription(savedView);
+              if (success) {
+                this.$toast.show(s__('WorkItem|View added to your list.'));
+                // simple way to just restart the flow once we're subscribed.
+                this.$apollo.queries.savedView.refetch();
+                this.$apollo.queries.subscribedSavedViews.refetch();
+              } else {
+                throw new Error(
+                  `Unable to subscribe to view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
+                );
+              }
+            }
+          } else {
+            const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+            const tokens = this.getFilterTokensFromSavedView(savedView?.filters || {});
+            this.initialViewTokens = tokens;
+            this.initialViewSortKey = savedView?.sort;
+            this.initialViewDisplaySettings = {
+              commonPreferences: { ...this.displaySettings.commonPreferences },
+              namespacePreferences: savedView.displaySettings,
+            };
+
+            if (draft) {
+              this.restoreViewDraft();
+            } else {
+              this.filterTokens = tokens;
+              this.sortKey = savedView?.sort;
+              this.localDisplaySettings = {
+                commonPreferences: { ...this.displaySettings.commonPreferences },
+                namespacePreferences: savedView.displaySettings,
+              };
+            }
+          }
+        } catch (error) {
+          Sentry.captureException(error);
+        }
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+    subscribedSavedViews: {
+      query: getNamespaceSavedViewsQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+          subscribedOnly: true,
+          sort: 'RELATIVE_POSITION',
+        };
+      },
+      update(data) {
+        return data?.namespace?.savedViews?.nodes ?? [];
+      },
+      skip() {
+        return !this.workItemsSavedViewsEnabled;
+      },
+      error(e) {
+        Sentry.captureException(e);
+      },
+    },
   },
   computed: {
+    isSubscribedToSavedView() {
+      return this.isSavedView && this.savedView.subscribed;
+    },
+    savedViewId() {
+      return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
+    },
+    savedViewNotFound() {
+      return this.isSavedView && !this.savedView;
+    },
+    shouldSkipDueToSavedViewState() {
+      if (!this.isSavedView) {
+        return false;
+      }
+      return this.savedViewNotFound || !this.isSubscribedToSavedView;
+    },
+    displaySettingsSoT() {
+      return this.isSavedView ? this.localDisplaySettings : this.displaySettings;
+    },
+    isSavedView() {
+      return this.$route.name === ROUTES.savedView;
+    },
     isInfoBannerVisible() {
       return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
     },
     workItems() {
-      if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
-        return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
-      }
-
-      return this.workItemsSlim;
+      return combineWorkItemLists(
+        this.workItemsSlim,
+        this.workItemsFull,
+        Boolean(this.glFeatures.workItemFeaturesField),
+      );
     },
     shouldShowList() {
       return (
         this.hasWorkItems === true ||
-        this.hasAnyIssues ||
         this.error ||
         this.initialLoadWasFiltered ||
         this.workItems.length > 0 ||
@@ -488,12 +580,15 @@ export default {
     },
     allowBulkEditing() {
       if (this.isEpicsList) {
-        return this.canBulkEditEpics;
+        return this.canBulkAdminEpic;
       }
-      if (this.isGroup) {
-        return this.canBulkUpdate && this.hasGroupBulkEditFeature;
+      if (!this.isGroup) {
+        return this.canAdminIssue;
       }
-      return this.canBulkUpdate;
+      // Groups require EE bulk edit feature, or CE planning view with projects
+      const hasCEBulkEdit =
+        this.workItemPlanningViewEnabled && this.hasProjects && !this.hasEpicsFeature;
+      return this.canAdminIssue && (this.hasGroupBulkEditFeature || hasCEBulkEdit);
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {
@@ -528,7 +623,7 @@ export default {
       return this.state === STATUS_OPEN;
     },
     namespace() {
-      return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
@@ -547,6 +642,7 @@ export default {
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
         excludeGroupWorkItems: this.isGroupIssuesList,
+        useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
       };
     },
     csvExportQueryVariables() {
@@ -893,7 +989,7 @@ export default {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
     hiddenMetadataKeys() {
-      return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+      return this.displaySettingsSoT?.namespacePreferences?.hiddenMetadataKeys || [];
     },
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.workItems.length > 0;
@@ -941,11 +1037,76 @@ export default {
     isBulkEditDisabled() {
       return this.showBulkEditSidebar || this.workItems.length === 0;
     },
+    preferencesChanged() {
+      if (!this.initialPreferences) return false;
+
+      const currentPreferences = {
+        hiddenMetadataKeys: this.displaySettingsSoT?.namespacePreferences?.hiddenMetadataKeys ?? [],
+      };
+      const viewPreferences = {
+        hiddenMetadataKeys:
+          this.initialViewDisplaySettings?.namespacePreferences?.hiddenMetadataKeys ?? [],
+      };
+      const comparePreferences = this.isSavedView ? viewPreferences : this.initialPreferences;
+
+      return !isEqual(currentPreferences, comparePreferences);
+    },
+    filtersChanged() {
+      const filteredTokens = this.filterTokens
+        .filter((token) => {
+          if (token.type === 'filtered-search-term') {
+            return Boolean(token.value?.data);
+          }
+
+          return true;
+        })
+        .map(({ id, ...rest }) => rest);
+
+      const compareFilters = !this.isSavedView
+        ? this.allItemsDefaultFilterTokens
+        : this.initialViewTokens;
+
+      return !isEqual(filteredTokens, compareFilters);
+    },
+    sortChanged() {
+      const compareSort = !this.isSavedView ? this.initialSortKey : this.initialViewSortKey;
+      return this.sortKey !== compareSort;
+    },
+    allItemsDefaultFilterTokens() {
+      return [
+        {
+          type: TOKEN_TYPE_STATE,
+          value: {
+            data: STATUS_OPEN,
+            operator: OPERATOR_IS,
+          },
+        },
+      ];
+    },
+    viewConfigChanged() {
+      return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+    },
+    savedViewDraftStorageKey() {
+      return `${this.rootPageFullPath}-saved-view-${this.$route.params.view_id}`;
+    },
+    viewDraftData() {
+      return {
+        filterTokens: this.filterTokens,
+        sortKey: this.sortKey,
+        displaySettings: this.localDisplaySettings,
+      };
+    },
+    isSubscriptionLimitReached() {
+      return (
+        this.subscribedSavedViewLimit &&
+        this.subscribedSavedViews.length >= this.subscribedSavedViewLimit
+      );
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
       // Only reset isInitialLoadComplete when there's no issues to minimize unmounting IssuableList
-      if (!this.hasAnyIssues) {
+      if (!this.hasWorkItems) {
         this.isInitialLoadComplete = false;
       }
       this.$apollo.queries.workItemStateCounts.refetch();
@@ -955,7 +1116,7 @@ export default {
       this.$apollo.queries.workItemsCount.refetch();
     },
     $route(newValue, oldValue) {
-      if (newValue.fullPath !== oldValue.fullPath) {
+      if (newValue.fullPath !== oldValue.fullPath && !this.isSavedView) {
         this.updateData(getParameterByName(PARAM_SORT));
       }
       if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME] && !this.detailLoading) {
@@ -963,6 +1124,7 @@ export default {
       } else {
         this.activeItem = null;
       }
+      if (this.isSavedView) this.restoreViewDraft();
     },
     isGroup(value) {
       if (this.isPlanningViewsEnabled && value) {
@@ -979,10 +1141,44 @@ export default {
         });
       }
     },
+    eeSearchTokens() {
+      if (this.isSavedView && Boolean(this.savedView)) {
+        const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+        const tokens = this.getFilterTokensFromSavedView(this.savedView.filters);
+        this.initialViewTokens = tokens;
+        if (draft) {
+          this.restoreViewDraft();
+        } else {
+          this.filterTokens = tokens;
+        }
+      }
+    },
+    displaySettings: {
+      immediate: true,
+      handler(value) {
+        if (!this.initialPreferences && value) {
+          this.initialPreferences = {
+            commonPreferences: {
+              shouldOpenItemsInSidePanel: value.commonPreferences?.shouldOpenItemsInSidePanel,
+            },
+            namespacePreferences: {
+              hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
+            },
+          };
+        }
+        if (isEmpty(this.localDisplaySettings) || !this.isSavedView) {
+          this.localDisplaySettings = { ...this.value };
+        }
+      },
+    },
   },
   created() {
-    this.updateData(getParameterByName(PARAM_SORT));
-    this.addStateToken();
+    if (this.isSavedView) {
+      this.pageParams = getInitialPageParams(this.pageSize);
+    } else {
+      this.updateData(getParameterByName(PARAM_SORT));
+      this.addStateToken();
+    }
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
     this.releasesCache = [];
@@ -990,31 +1186,76 @@ export default {
   },
   mounted() {
     setPageFullWidth();
+    if (this.$route.query.sv_limit_id) {
+      this.showLimitWarningModal = true;
+    }
+    if (this.$route.query.sv_not_found) {
+      this.showSavedViewNotFoundModal = true;
+    }
   },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
     setPageDefaultWidth();
   },
   methods: {
-    combineSlimAndFullLists(slim, full) {
-      const findSlimItem = (id) => slim.find((item) => item.id === id);
-
-      return full.map((fullItem) => {
-        const slimVersion = findSlimItem(fullItem.id);
-        const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
-        return {
-          ...fullItem,
-          widgets: combinedWidgets.reduce((acc, widget) => {
-            const slimWidget = slimVersion?.widgets.find((w) => w.type === widget.type);
-            if (slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length) {
-              acc.push(slimWidget);
-            } else {
-              acc.push(widget);
-            }
-            return acc;
-          }, []),
-        };
+    createWorkItemQuery(query) {
+      return {
+        query,
+        context: {
+          featureCategory: 'portfolio_management',
+        },
+        variables() {
+          return this.queryVariables;
+        },
+        update(data) {
+          return data?.namespace?.workItems.nodes ?? [];
+        },
+        skip() {
+          return (
+            isEmpty(this.pageParams) || this.metadataLoading || this.shouldSkipDueToSavedViewState
+          );
+        },
+        result({ data }) {
+          this.namespaceId = data?.namespace?.id;
+          this.handleListDataResults(data);
+        },
+        error(error) {
+          this.error = s__(
+            'WorkItem|Something went wrong when fetching work items. Please try again.',
+          );
+          Sentry.captureException(error);
+        },
+      };
+    },
+    async attemptSubscription(view) {
+      try {
+        await subscribeToSavedView({ view, cache: this.$apollo, fullPath: this.rootPageFullPath });
+        return true;
+      } catch (e) {
+        this.error = s__(
+          'WorkItem|An error occurred while subscribing to the view. Please try again.',
+        );
+        return false;
+      }
+    },
+    getFilterTokensFromSavedView(savedViewFilters) {
+      const tokens = getSavedViewFilterTokens(savedViewFilters, {
+        includeStateToken: true,
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        convertTypeTokens: true,
       });
+      const availableTokenTypes = this.searchTokens.map((token) => token.type);
+      return tokens.filter((token) => availableTokenTypes.includes(token.type));
+    },
+
+    async handleLocalDisplayPreferencesUpdate(newSettings) {
+      this.localDisplaySettings = {
+        ...this.localDisplaySettings,
+        namespacePreferences: {
+          hiddenMetadataKeys: [...newSettings.hiddenMetadataKeys],
+        },
+      };
+      this.persistDraft();
     },
     handleListDataResults(listData) {
       this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
@@ -1042,6 +1283,9 @@ export default {
     },
     calculateDocumentTitle(data) {
       const middleCrumb = data.namespace.name;
+      if (this.isServiceDeskList) {
+        return `${__('Service Desk')} · ${middleCrumb} · GitLab`;
+      }
       if (this.isPlanningViewsEnabled) {
         return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
@@ -1099,13 +1343,21 @@ export default {
       this.state = state;
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
       this.hasStateToken = this.checkIfStateTokenExists();
       this.updateState(tokens);
       this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.updateRouterQueryParams();
+      this.persistDraft();
+    },
+    updateRouterQueryParams() {
+      if (this.isSavedView) {
+        return;
+      }
 
       this.$router.push({ query: this.urlParams }).catch((error) => {
         if (error.name !== 'NavigationDuplicated') {
@@ -1120,14 +1372,14 @@ export default {
       };
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handlePreviousPage() {
       this.pageParams = {
@@ -1136,7 +1388,7 @@ export default {
       };
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     showIssueRepositioningMessage() {
       createAlert({
@@ -1163,7 +1415,8 @@ export default {
         this.saveSortPreference(sortKey);
       }
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
+      this.persistDraft();
     },
     async saveSortPreference(sortKey) {
       try {
@@ -1441,6 +1694,111 @@ export default {
         },
       });
     },
+    resetToDefaultView() {
+      this.filterTokens = [
+        {
+          type: TOKEN_TYPE_STATE,
+          value: {
+            data: STATUS_OPEN,
+            operator: OPERATOR_IS,
+          },
+        },
+      ];
+      this.state = STATUS_OPEN;
+      this.pageParams = getInitialPageParams(this.pageSize);
+      this.sortKey = CREATED_DESC;
+
+      this.$router.push({ name: ROUTES.index, query: this.urlParams }).catch((error) => {
+        if (error.name !== 'NavigationDuplicated') {
+          throw error;
+        }
+      });
+    },
+    async confirmViewChanges() {
+      const title = sprintf(s__('WorkItem|Save changes to %{viewName}?'), {
+        viewName: this.savedView?.name,
+      });
+
+      const message = `
+        <span class="saved-view-confirm-modal">
+          ${s__('WorkItem|Changes will be applied for anyone else who has access to the view.')}
+        </span>
+      `;
+
+      const confirmation = await confirmAction(null, {
+        title,
+        modalHtmlMessage: message,
+        primaryBtnText: s__('WorkItem|Save changes'),
+      });
+
+      if (confirmation) {
+        const mutationKey = 'workItemSavedViewUpdate';
+        try {
+          const { data } = await saveSavedView({
+            isEdit: true,
+            isForm: false,
+            namespacePath: this.rootPageFullPath,
+            id: this.savedView?.id,
+            name: this.savedView?.name,
+            description: this.savedView?.description,
+            isPrivate: this.savedView?.isPrivate,
+            filters: this.apiFilterParams,
+            displaySettings: this.displaySettingsSoT?.namespacePreferences || {},
+            sort: this.sortKey,
+            userPermissions: this.savedView?.userPermissions,
+            subscribed: this.savedView?.subscribed,
+            mutationKey,
+            apolloClient: this.$apollo,
+          });
+
+          if (data[mutationKey].errors?.length) {
+            this.error = s__('WorkItem|Something went wrong while saving the view');
+            return;
+          }
+
+          this.$toast.show(s__('WorkItem|View has been saved.'));
+          this.clearLocalSavedViewsConfig();
+        } catch (e) {
+          Sentry.captureException(e);
+          this.error = s__('WorkItem|Something went wrong while saving the view');
+        }
+      }
+    },
+    async resetToViewDefaults() {
+      this.filterTokens = [...this.initialViewTokens];
+      this.sortKey = this.initialViewSortKey;
+      this.localDisplaySettings = this.initialViewDisplaySettings;
+      this.clearLocalSavedViewsConfig();
+    },
+    restoreViewDraft() {
+      const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+      if (!draft) return;
+
+      const parsedData = JSON.parse(draft);
+
+      this.filterTokens = parsedData.filterTokens;
+      this.sortKey = parsedData.sortKey;
+      this.localDisplaySettings = parsedData.displaySettings;
+    },
+    handleError(error, message) {
+      Sentry.captureException(error);
+
+      // if custom message is provided, use it
+      if (message) this.error = message;
+    },
+    persistDraft() {
+      if (!this.isSavedView) return;
+
+      if (!this.viewConfigChanged) {
+        this.clearLocalSavedViewsConfig();
+        return;
+      }
+
+      localStorage.setItem(this.savedViewDraftStorageKey, JSON.stringify(this.viewDraftData));
+    },
+    clearLocalSavedViewsConfig() {
+      localStorage.removeItem(this.savedViewDraftStorageKey);
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1451,7 +1809,32 @@ export default {
 <template>
   <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="shouldShowList" :class="{ 'work-item-list-container': isPlanningViewsEnabled }">
+  <div
+    v-else-if="shouldShowList"
+    :class="{ 'work-item-list-container': isPlanningViewsEnabled && !isServiceDeskList }"
+  >
+    <user-callout-dismisser
+      v-if="isPlanningViewsEnabled && workItemsSavedViewsEnabled"
+      feature-name="work_items_onboarding_modal"
+    >
+      <template #default="{ dismiss, shouldShowCallout }">
+        <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
+      </template>
+    </user-callout-dismisser>
+    <template v-if="workItemsSavedViewsEnabled">
+      <work-items-saved-views-not-found-modal
+        :show="showSavedViewNotFoundModal"
+        data-testid="view-not-found-modal"
+        @hide="showSavedViewNotFoundModal = false"
+      />
+      <work-items-saved-views-limit-warning-modal
+        :show="showLimitWarningModal"
+        :view-id="$route.query.sv_limit_id"
+        :full-path="rootPageFullPath"
+        data-testid="view-limit-warning-modal"
+        @hide="showLimitWarningModal = false"
+      />
+    </template>
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>
@@ -1511,13 +1894,16 @@ export default {
       >
         <template #user-preference>
           <work-item-user-preferences
-            :display-settings="displaySettings"
+            :namespace-preferences="displaySettingsSoT.namespacePreferences"
+            :common-preferences="displaySettings.commonPreferences"
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
             :is-service-desk-list="isServiceDeskList"
             :work-item-type-id="workItemTypeId"
             :sort-key="sortKey"
+            :prevent-auto-submit="isSavedView"
+            @local-update="handleLocalDisplayPreferencesUpdate"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled && !isServiceDeskList" #nav-actions>
@@ -1568,97 +1954,168 @@ export default {
           </div>
         </template>
 
-        <template #list-header>
-          <template v-if="isPlanningViewsEnabled">
-            <div v-if="error" class="gl-mt-5">
-              <gl-alert variant="danger" :dismissible="hasWorkItems" @dismiss="error = undefined">
-                {{ error }}
-              </gl-alert>
-            </div>
-            <template v-if="!workItemsSavedViewsEnabled">
-              <work-item-list-heading>
-                <div class="gl-flex gl-justify-end gl-gap-3">
-                  <gl-button
-                    v-if="enableClientSideBoardsExperiment"
-                    data-testid="show-local-board-button"
-                    @click="showLocalBoard = true"
-                  >
-                    {{ __('Launch board') }}
-                  </gl-button>
-                  <gl-button
-                    v-if="allowBulkEditing"
-                    :disabled="isBulkEditDisabled"
-                    data-testid="bulk-edit-start-button"
-                    @click="showBulkEditSidebar = true"
-                  >
-                    {{ __('Bulk edit') }}
-                  </gl-button>
-                  <create-work-item-modal
-                    v-if="showProjectNewWorkItem"
-                    :always-show-work-item-type-select="!isEpicsList"
-                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                    :full-path="rootPageFullPath"
-                    :is-group="isGroup"
-                    :preselected-work-item-type="preselectedWorkItemType"
-                    :is-epics-list="isEpicsList"
-                    :show-project-selector="!hasEpicsFeature"
-                    @workItemCreated="handleWorkItemCreated"
-                  />
-                  <new-resource-dropdown
-                    v-if="isGroupIssuesList"
-                    :query="$options.searchProjectsQuery"
-                    :query-variables="newIssueDropdownQueryVariables"
-                    :extract-projects="extractProjects"
-                    :group-id="groupId"
-                  />
-                  <work-item-list-actions
-                    :can-export="canExport"
-                    :show-work-item-by-email-button="showWorkItemByEmail"
-                    :work-item-count="workItemsCount"
-                    :query-variables="csvExportQueryVariables"
-                    :full-path="rootPageFullPath"
-                    :url-params="urlParams"
-                    :is-epics-list="isEpicsList"
-                    :is-group-issues-list="isGroupIssuesList"
-                  />
-                </div>
-              </work-item-list-heading>
-            </template>
+        <template v-if="isPlanningViewsEnabled && !isServiceDeskList" #list-header>
+          <div v-if="error" class="gl-mt-5">
+            <gl-alert variant="danger" :dismissible="hasWorkItems" @dismiss="error = undefined">
+              {{ error }}
+            </gl-alert>
+          </div>
+          <template v-if="!workItemsSavedViewsEnabled">
+            <work-item-list-heading>
+              <div class="gl-flex gl-justify-end gl-gap-3">
+                <gl-button
+                  v-if="enableClientSideBoardsExperiment"
+                  data-testid="show-local-board-button"
+                  @click="showLocalBoard = true"
+                >
+                  {{ __('Launch board') }}
+                </gl-button>
+                <gl-button
+                  v-if="allowBulkEditing"
+                  :disabled="isBulkEditDisabled"
+                  data-testid="bulk-edit-start-button"
+                  @click="showBulkEditSidebar = true"
+                >
+                  {{ __('Bulk edit') }}
+                </gl-button>
+                <create-work-item-modal
+                  v-if="showProjectNewWorkItem"
+                  :always-show-work-item-type-select="!isEpicsList"
+                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                  :full-path="rootPageFullPath"
+                  :is-group="isGroup"
+                  :preselected-work-item-type="preselectedWorkItemType"
+                  :is-epics-list="isEpicsList"
+                  :show-project-selector="!hasEpicsFeature"
+                  @workItemCreated="handleWorkItemCreated"
+                />
+                <new-resource-dropdown
+                  v-if="isGroupIssuesList"
+                  :query="$options.searchProjectsQuery"
+                  :query-variables="newIssueDropdownQueryVariables"
+                  :extract-projects="extractProjects"
+                  :group-id="groupId"
+                />
+                <work-item-list-actions
+                  :can-export="canExport"
+                  :show-work-item-by-email-button="showWorkItemByEmail"
+                  :work-item-count="workItemsCount"
+                  :query-variables="csvExportQueryVariables"
+                  :full-path="rootPageFullPath"
+                  :url-params="urlParams"
+                  :is-epics-list="isEpicsList"
+                  :is-group-issues-list="isGroupIssuesList"
+                />
+              </div>
+            </work-item-list-heading>
+          </template>
 
-            <template v-if="workItemsSavedViewsEnabled">
-              <work-items-saved-views-selectors :full-path="rootPageFullPath">
-                <template #header-area>
-                  <work-item-list-actions
-                    :can-export="canExport"
-                    :show-work-item-by-email-button="showWorkItemByEmail"
-                    :work-item-count="currentTabCount"
-                    :query-variables="csvExportQueryVariables"
-                    :full-path="rootPageFullPath"
-                    :url-params="urlParams"
-                    :is-epics-list="isEpicsList"
-                    :is-group-issues-list="isGroupIssuesList"
-                  />
-                  <create-work-item-modal
-                    v-if="showProjectNewWorkItem"
-                    :always-show-work-item-type-select="!isEpicsList"
-                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                    :full-path="rootPageFullPath"
-                    :is-group="isGroup"
-                    :preselected-work-item-type="preselectedWorkItemType"
-                    :is-epics-list="isEpicsList"
-                    :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                    @workItemCreated="handleWorkItemCreated"
-                  />
-                </template>
-              </work-items-saved-views-selectors>
-            </template>
+          <template v-if="workItemsSavedViewsEnabled">
+            <work-items-saved-views-selectors
+              :selected-saved-view="savedView"
+              :full-path="rootPageFullPath"
+              :saved-views="subscribedSavedViews"
+              :sort-key="sortKey"
+              :filters="apiFilterParams"
+              :display-settings="displaySettingsSoT.namespacePreferences"
+              @reset-to-default-view="resetToDefaultView"
+              @error="handleError"
+            >
+              <template #header-area>
+                <work-item-list-actions
+                  :can-export="canExport"
+                  :show-work-item-by-email-button="showWorkItemByEmail"
+                  :work-item-count="currentTabCount"
+                  :query-variables="csvExportQueryVariables"
+                  :full-path="rootPageFullPath"
+                  :url-params="urlParams"
+                  :is-epics-list="isEpicsList"
+                  :is-group-issues-list="isGroupIssuesList"
+                />
+                <create-work-item-modal
+                  v-if="showProjectNewWorkItem"
+                  :always-show-work-item-type-select="!isEpicsList"
+                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                  :full-path="rootPageFullPath"
+                  :is-group="isGroup"
+                  :preselected-work-item-type="preselectedWorkItemType"
+                  :is-epics-list="isEpicsList"
+                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
+                  @workItemCreated="handleWorkItemCreated"
+                />
+              </template>
+            </work-items-saved-views-selectors>
           </template>
         </template>
 
-        <template v-if="isPlanningViewsEnabled" #before-list-items>
+        <template v-if="isPlanningViewsEnabled && !isServiceDeskList" #before-list-items>
           <!-- state-count -->
-          <div class="gl-border-b gl-py-3" data-testid="work-item-count">
-            {{ workItemTotalStateCount }}
+          <div class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3">
+            <div class="gl-flex gl-items-center">
+              <span data-testid="work-item-count" class="gl-mr-3">{{
+                workItemTotalStateCount
+              }}</span>
+              <gl-button
+                v-if="workItemsSavedViewsEnabled && allowBulkEditing"
+                size="small"
+                category="primary"
+                variant="default"
+                :disabled="isBulkEditDisabled"
+                data-testid="bulk-edit-start-button"
+                @click="showBulkEditSidebar = true"
+              >
+                {{ __('Bulk edit') }}
+              </gl-button>
+            </div>
+
+            <template v-if="workItemsSavedViewsEnabled">
+              <template v-if="!isSavedView">
+                <gl-button
+                  v-if="viewConfigChanged"
+                  size="small"
+                  category="primary"
+                  variant="default"
+                  data-testid="save-view-button"
+                  @click="isNewViewModalVisible = true"
+                >
+                  {{ s__('WorkItem|Save view') }}
+                </gl-button>
+                <work-items-new-saved-view-modal
+                  v-model="isNewViewModalVisible"
+                  :full-path="rootPageFullPath"
+                  :title="s__('WorkItem|Save view')"
+                  :sort-key="sortKey"
+                  :filters="apiFilterParams"
+                  :display-settings="displaySettingsSoT.namespacePreferences"
+                  :show-subscription-limit-warning="isSubscriptionLimitReached"
+                  @hide="isNewViewModalVisible = false"
+                />
+              </template>
+              <template v-else>
+                <div v-if="viewConfigChanged" class="gl-flex">
+                  <gl-button
+                    size="small"
+                    category="tertiary"
+                    class="!gl-text-sm"
+                    variant="link"
+                    data-testid="reset-view-button"
+                    @click="resetToViewDefaults"
+                  >
+                    {{ s__('WorkItem|Reset to defaults') }}
+                  </gl-button>
+                  <div class="gl-border-r gl-mx-4 gl-h-full gl-w-1 gl-border-r-subtle"></div>
+                  <gl-button
+                    size="small"
+                    category="primary"
+                    variant="default"
+                    data-testid="update-view-button"
+                    @click="confirmViewChanges"
+                  >
+                    {{ s__('WorkItem|Save changes') }}
+                  </gl-button>
+                </div>
+              </template>
+            </template>
           </div>
         </template>
 
@@ -1683,7 +2140,7 @@ export default {
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
             <template v-if="isServiceDeskList">
               <empty-state-with-any-tickets
-                v-if="hasAnyIssues"
+                v-if="hasWorkItems"
                 :has-search="hasSearch"
                 :is-open-tab="isOpenTab"
               />
@@ -1691,7 +2148,7 @@ export default {
             </template>
 
             <empty-state-with-any-issues
-              v-else-if="hasAnyIssues"
+              v-else-if="hasWorkItems"
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"
@@ -1774,7 +2231,7 @@ export default {
         </template>
 
         <template #health-status="{ issuable = {} }">
-          <work-item-health-status
+          <health-status
             v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.HEALTH)"
             :issue="issuable"
           />

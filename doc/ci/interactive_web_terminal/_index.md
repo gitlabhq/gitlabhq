@@ -19,22 +19,19 @@ shell access to the environment where [GitLab Runner](https://docs.gitlab.com/ru
 is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
 taken to protect the users.
 
-{{< alert type="note" >}}
-
-[Instance runners on GitLab.com](../runners/_index.md) do not
-provide an interactive web terminal. Follow
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
-adding support. For groups and projects hosted on GitLab.com, interactive web
-terminals are available when using your own group or project runner.
-
-{{< /alert >}}
+> [!note]
+> [Instance runners on GitLab.com](../runners/_index.md) do not
+> provide an interactive web terminal. Follow
+> [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
+> adding support. For groups and projects hosted on GitLab.com, interactive web
+> terminals are available when using your own group or project runner.
 
 ## Configuration
 
 Two things need to be configured for the interactive web terminal to work:
 
 - The runner needs to have
-  [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+  [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section)
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
@@ -53,21 +50,15 @@ Support for fixing these limitations is tracked in the following issues:
 
 ## Debugging a running job
 
-{{< alert type="note" >}}
-
-Not all executors are
-[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The `docker` executor does not keep running
-after the build script is finished. At that point, the terminal automatically
-disconnects and does not wait for the user to finish. Follow
-[this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
-improving this behavior.
-{{< /alert >}}
+> [!note]
+> Not all executors are
+> [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+>
+> The `docker` executor does not keep running
+> after the build script is finished. At that point, the terminal automatically
+> disconnects and does not wait for the user to finish. Follow
+> [this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
+> improving this behavior.
 
 Sometimes, when a job is running, things don't go as you expect. It
 would be helpful if one can have a shell to aid debugging. When a job runs,
@@ -83,7 +74,7 @@ the terminal and type commands like in a standard shell.
 
 If your terminal is open after the job completes,
 the job doesn't finish until after the configured
-[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section)
 duration. To avoid this, you can close the terminal after the job finishes.
 
 ![Job complete with active terminal session](img/finished_job_with_terminal_open_v11_2.png)

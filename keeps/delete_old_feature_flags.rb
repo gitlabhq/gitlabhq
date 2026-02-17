@@ -37,12 +37,19 @@ module Keeps
     def each_identified_change
       each_feature_flag do |feature_flag|
         identifiers = build_ff_identifiers(feature_flag)
-        latest_feature_flag_status = get_latest_feature_flag_status(feature_flag)
-        next unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
+        next unless matches_filter_identifiers?(identifiers)
+
+        rollout_issue = fetch_rollout_issue(feature_flag)
+        latest_feature_flag_status = extract_feature_flag_status(feature_flag, rollout_issue)
+        next unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status, rollout_issue)
 
         change = ::Gitlab::Housekeeper::Change.new
         change.identifiers = identifiers
-        change.context = { feature_flag: feature_flag, latest_feature_flag_status: latest_feature_flag_status }
+        change.context = {
+          feature_flag: feature_flag,
+          latest_feature_flag_status: latest_feature_flag_status,
+          rollout_issue: rollout_issue
+        }
         yield change
       end
     end
@@ -59,11 +66,11 @@ module Keeps
       nil
     end
 
-    def can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
+    def can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status, rollout_issue)
       return false unless valid_feature_flag_status?(feature_flag, latest_feature_flag_status)
 
       # Check if feature flag has ready for removal label - this bypasses most validation checks
-      if has_ready_for_removal_label?(feature_flag)
+      if has_ready_for_removal_label?(rollout_issue)
         @logger.puts "#{feature_flag.name} has 'feature flag::ready for removal' label, bypassing validation checks"
         return true
       end
@@ -127,8 +134,8 @@ module Keeps
     end
 
     # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
-    def build_description(feature_flag, latest_feature_flag_status)
-      ready_for_removal = has_ready_for_removal_label?(feature_flag)
+    def build_description(feature_flag, latest_feature_flag_status, rollout_issue)
+      ready_for_removal = has_ready_for_removal_label?(rollout_issue)
 
       introduction_text = if ready_for_removal
                             "This feature flag was introduced in #{feature_flag.milestone} and has been " \
@@ -182,11 +189,32 @@ module Keeps
       [self.class.name.demodulize, feature_flag.name]
     end
 
+    def build_change_title(feature_flag, latest_feature_flag_status)
+      # Determine the action based on what code will be kept
+      if latest_feature_flag_status == :enabled
+        # New code is active (being kept)
+        if feature_flag.default_enabled
+          # New code is already the default, just removing the flag
+          "Remove the `#{feature_flag.name}` feature flag"
+        else
+          # Enabling the new code to make it default
+          "Enable and remove the `#{feature_flag.name}` feature flag"
+        end
+      elsif feature_flag.default_enabled
+        # Old code is active but new code is the default, disabling the feature
+        "Disable and remove the `#{feature_flag.name}` feature flag"
+      else
+        # Old code is active and already the default, just removing the flag
+        "Remove the `#{feature_flag.name}` feature flag"
+      end
+    end
+
     def prepare_change(change)
       feature_flag = change.context[:feature_flag]
       latest_feature_flag_status = change.context[:latest_feature_flag_status]
-      change.changelog_type = 'removed'
-      change.title = "Delete the `#{feature_flag.name}` feature flag"
+      rollout_issue = change.context[:rollout_issue]
+      change.changelog_type = determine_changelog_type(feature_flag, latest_feature_flag_status, rollout_issue)
+      change.title = build_change_title(feature_flag, latest_feature_flag_status)
 
       FileUtils.rm(feature_flag.path)
       change.changed_files = [feature_flag.path]
@@ -200,7 +228,7 @@ module Keeps
         return change
       end
 
-      change.description = build_description(feature_flag, latest_feature_flag_status)
+      change.description = build_description(feature_flag, latest_feature_flag_status, rollout_issue)
       change.labels = [
         'automation:feature-flag-removal',
         'maintenance::removal',
@@ -208,8 +236,7 @@ module Keeps
         feature_flag.group
       ]
 
-      change.description = build_description(feature_flag, latest_feature_flag_status)
-      change.assignees = assignees(feature_flag.rollout_issue_url)
+      change.assignees = assignees(rollout_issue)
 
       if change.assignees.empty?
         group_data = groups_helper.group_for_group_label(feature_flag.group)
@@ -258,7 +285,7 @@ module Keeps
       end
 
       files_to_patch.each do |file|
-        flag_enabled = get_latest_feature_flag_status(feature_flag) == :enabled
+        flag_enabled = change.context[:latest_feature_flag_status] == :enabled
         user_message = remove_feature_flag_prompts.fetch(feature_flag, file, flag_enabled)
 
         unless user_message
@@ -328,12 +355,17 @@ module Keeps
       feature_flag.rollout_issue_url || MISSING_URL_PLACEHOLDER
     end
 
-    def assignees(rollout_issue_url)
-      rollout_issue = get_rollout_issue(rollout_issue_url)
-
+    def assignees(rollout_issue)
       return unless rollout_issue && rollout_issue[:assignees]
 
       rollout_issue[:assignees].pluck(:username) # rubocop:disable CodeReuse/ActiveRecord -- We need to collect the usernames from array of hashes.
+    end
+
+    def fetch_rollout_issue(feature_flag)
+      rollout_issue_url = feature_flag_rollout_issue_url(feature_flag)
+      return if rollout_issue_url == MISSING_URL_PLACEHOLDER
+
+      get_rollout_issue(rollout_issue_url)
     end
 
     def get_rollout_issue(rollout_issue_url)
@@ -353,33 +385,23 @@ module Keeps
         return
       end
 
-      Gitlab::Json.parse(response.body, symbolize_names: true)
+      Gitlab::Json.safe_parse(response.body, symbolize_names: true)
     end
 
-    def has_ready_for_removal_label?(feature_flag)
-      rollout_issue_url = feature_flag_rollout_issue_url(feature_flag)
-      return false if rollout_issue_url == MISSING_URL_PLACEHOLDER
-
-      rollout_issue = get_rollout_issue(rollout_issue_url)
+    def has_ready_for_removal_label?(rollout_issue)
       return false unless rollout_issue
 
       rollout_issue[:labels].any?('feature flag::ready for removal')
     rescue StandardError => e
-      @logger.puts "Error checking ready for removal label for #{feature_flag.name}: #{e.message}"
+      @logger.puts "Error checking ready for removal label: #{e.message}"
       false
     end
 
-    def get_latest_feature_flag_status(feature_flag)
-      return :enabled if feature_flag.default_enabled
-
-      rollout_issue_url = feature_flag_rollout_issue_url(feature_flag)
-      if rollout_issue_url == MISSING_URL_PLACEHOLDER
+    def extract_feature_flag_status(feature_flag, rollout_issue)
+      unless rollout_issue
         @logger.puts "Can't fetch ff status for #{feature_flag.name} due to absence of rollout issue."
         return
       end
-
-      rollout_issue = get_rollout_issue(rollout_issue_url)
-      return unless rollout_issue
 
       state_label = rollout_issue[:labels].find { |label| label.start_with?('feature flag state::') }
 
@@ -420,7 +442,7 @@ module Keeps
     end
 
     def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+      ::Keeps::Helpers::Groups.instance
     end
 
     def milestones_helper
@@ -433,6 +455,48 @@ module Keeps
 
     def ai_helper
       ::Keeps::Helpers::AiEditor.new
+    end
+
+    def determine_changelog_type(feature_flag, latest_feature_flag_status, rollout_issue)
+      if latest_feature_flag_status == :enabled
+        # Feature flag is currently enabled (new code is active)
+        if feature_flag.default_enabled
+          # New code is the default, keeping new code
+          'other'
+        else
+          # Old code is the default, keeping new code (new feature)
+          type_label = get_type_label_from_rollout_issue(rollout_issue)
+          map_type_label_to_changelog_type(type_label)
+        end
+      elsif feature_flag.default_enabled
+        # Feature flag is currently disabled and IS default_enabled
+        # New code is the default but flag is disabled, keeping old code (removal of feature)
+        'removed'
+      else
+        # Feature flag is currently disabled and NOT default_enabled
+        # Old code is the default, keeping old code
+        'other'
+      end
+    end
+
+    def get_type_label_from_rollout_issue(rollout_issue)
+      return unless rollout_issue
+
+      rollout_issue[:labels].find { |label| label.start_with?('type::') }
+    rescue StandardError => e
+      @logger.puts "Error fetching type label: #{e.message}"
+      nil
+    end
+
+    def map_type_label_to_changelog_type(type_label)
+      case type_label
+      when 'type::feature'
+        'added'
+      when 'type::bug'
+        'fixed'
+      else
+        'other'
+      end
     end
 
     def git_patterns(feature_flag_name)

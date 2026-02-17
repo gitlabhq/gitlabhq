@@ -15,6 +15,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Input, feature_category
 
       expect(lexeme.value).to eq('environment')
     end
+
+    it 'handles input names with hyphens' do
+      lexeme = described_class.build('$[[ inputs.kebab-case-name ]]')
+
+      expect(lexeme.value).to eq('kebab-case-name')
+    end
   end
 
   describe '.type' do
@@ -49,6 +55,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Input, feature_category
 
       expect(inputs_hash[:inputs]).not_to receive(:with_indifferent_access)
       expect(lexeme.evaluate(inputs_hash)).to eq 'production'
+    end
+
+    context 'with boolean input values' do
+      it 'returns boolean values as-is' do
+        expect(lexeme.evaluate(inputs: { 'environment' => true })).to be true
+        expect(lexeme.evaluate(inputs: { 'environment' => false })).to be false
+      end
     end
   end
 

@@ -1,0 +1,7 @@
+---
+name: delete_release
+description: Grants the ability to delete releases
+permissions:
+  - delete_release
+boundaries:
+  - project

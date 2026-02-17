@@ -2,7 +2,6 @@
 <script>
 import GcpRegionsList from '../gcp_regions/list.vue';
 import GoogleCloudMenu from '../components/google_cloud_menu.vue';
-import IncubationBanner from '../components/incubation_banner.vue';
 import RevokeOauth from '../components/revoke_oauth.vue';
 import ServiceAccountsList from '../service_accounts/list.vue';
 
@@ -10,7 +9,6 @@ export default {
   components: {
     GcpRegionsList,
     GoogleCloudMenu,
-    IncubationBanner,
     RevokeOauth,
     ServiceAccountsList,
   },
@@ -57,8 +55,6 @@ export default {
 
 <template>
   <div>
-    <incubation-banner />
-
     <google-cloud-menu
       active="configuration"
       :configuration-url="configurationUrl"

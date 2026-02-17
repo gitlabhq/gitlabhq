@@ -80,12 +80,9 @@ module Snippets
     end
 
     def file_paths_to_commit
-      paths = []
-      snippet_actions.to_commit_actions.each do |action|
-        paths << { path: action[:file_path] }
+      snippet_actions.to_commit_actions.map do |action|
+        { path: action[:file_path] }
       end
-
-      paths
     end
 
     def files_to_commit(snippet)

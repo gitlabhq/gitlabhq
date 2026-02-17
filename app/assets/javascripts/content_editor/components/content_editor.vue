@@ -314,8 +314,6 @@ export default {
       this.latestMarkdown = this.contentEditor.getSerializedContent();
 
       this.$emit('change', {
-        empty: this.contentEditor.empty,
-        changed: this.contentEditor.changed,
         markdown: this.latestMarkdown,
       });
     },

@@ -18,6 +18,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::RakeTask, feature_category
     end
   end
 
+  # rubocop:disable Layout/LineLength -- Testing output from the cli task
   describe '#print_table' do
     it 'returns nil when data is nil' do
       expect(task.print_table(nil)).to be_nil
@@ -29,41 +30,40 @@ RSpec.describe Gitlab::Database::BackgroundMigration::RakeTask, feature_category
 
     it 'prints provided data as a table with headers' do
       data = [
-        %w[id table_name job_class_name],
-        %w[main_1 namespace_settings UpdateRequireDpopForManageApiEndpointsToFalse],
-        %w[main_11 timelogs FixNonExistingTimelogUsers]
+        %w[id table_name job_class_name progress],
+        ['main_1', 'namespace_settings', 'UpdateRequireDpopForManageApiEndpointsToFalse', '50.00% (estimated time remaining: 2 minutes)'],
+        ['main_11', 'timelogs', 'FixNonExistingTimelogUsers', '100.00%']
       ]
 
-      # rubocop:disable Layout/TrailingWhitespace -- The trailing whitespace is needed
-      expected = <<~TABLE
-
-      id      | table_name         | job_class_name                               
-      --------|--------------------|----------------------------------------------
-      main_1  | namespace_settings | UpdateRequireDpopForManageApiEndpointsToFalse
-      main_11 | timelogs           | FixNonExistingTimelogUsers                   
-
-      TABLE
-      # rubocop:enable Layout/TrailingWhitespace
+      expected = [
+        "",
+        "id      | table_name         | job_class_name                                | progress                                    ",
+        "--------|--------------------|-----------------------------------------------|---------------------------------------------",
+        "main_1  | namespace_settings | UpdateRequireDpopForManageApiEndpointsToFalse | 50.00% (estimated time remaining: 2 minutes)",
+        "main_11 | timelogs           | FixNonExistingTimelogUsers                    | 100.00%                                     ",
+        "",
+        ""
+      ].join("\n")
 
       expect { task.print_table(data) }.to output(expected).to_stdout
     end
 
     it 'prints provided data as a table without headers when asked' do
       data = [
-        %w[main_1 namespace_settings UpdateRequireDpopForManageApiEndpointsToFalse],
-        %w[main_11 timelogs FixNonExistingTimelogUsers]
+        ['main_1', 'namespace_settings', 'UpdateRequireDpopForManageApiEndpointsToFalse', '50.00% (estimated time remaining: 2 minutes)'],
+        ['main_11', 'timelogs', 'FixNonExistingTimelogUsers', '100.00%']
       ]
 
-      # rubocop:disable Layout/TrailingWhitespace -- The trailing whitespace is needed
-      expected = <<~TABLE
-
-      main_1  | namespace_settings | UpdateRequireDpopForManageApiEndpointsToFalse
-      main_11 | timelogs           | FixNonExistingTimelogUsers                   
-
-      TABLE
-      # rubocop:enable Layout/TrailingWhitespace
+      expected = [
+        "",
+        "main_1  | namespace_settings | UpdateRequireDpopForManageApiEndpointsToFalse | 50.00% (estimated time remaining: 2 minutes)",
+        "main_11 | timelogs           | FixNonExistingTimelogUsers                    | 100.00%                                     ",
+        "",
+        ""
+      ].join("\n")
 
       expect { task.print_table(data, headers: false) }.to output(expected).to_stdout
     end
   end
+  # rubocop:enable Layout/LineLength
 end

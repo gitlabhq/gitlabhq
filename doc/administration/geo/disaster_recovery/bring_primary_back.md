@@ -47,24 +47,18 @@ To bring the former **primary** site up to date:
    sudo gitlab-ctl start
    ```
 
-   {{< alert type="note" >}}
-
-   If you [disabled the **primary** site permanently](_index.md#step-2-permanently-disable-the-primary-site),
-   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
-   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
-   the GitLab instance from scratch and set it up as a **secondary** site by
-   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
-
-   {{< /alert >}}
-
-   {{< alert type="note" >}}
-
-   If you [changed the DNS records](_index.md#step-4-optional-updating-the-primary-domain-dns-record)
-   for this site during disaster recovery procedure you may need to
-   [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
-   during this procedure.
-
-   {{< /alert >}}
+   > [!note]
+   > Additionally:
+   >
+   > - If you [disabled the **primary** site permanently](_index.md#step-2-permanently-disable-the-primary-site),
+   >   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
+   >   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
+   >   the GitLab instance from scratch and set it up as a **secondary** site by
+   >   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
+   > - If you [changed the DNS records](_index.md#step-4-optional-updating-the-primary-domain-dns-record)
+   >   for this site during disaster recovery procedure you may need to
+   >   [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
+   >   during this procedure.
 
 1. [Set up Geo](../setup/_index.md). In this case, the **secondary** site
    refers to the former **primary** site.

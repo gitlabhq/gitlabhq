@@ -710,11 +710,24 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findContentEditor().props().immersive).toBe(false);
   });
 
-  it('passes on immersive mode to content editor', async () => {
-    buildWrapper({ propsData: { immersive: true } });
-    await enableContentEditor();
-    await nextTick();
+  describe('immersive mode', () => {
+    beforeEach(() => {
+      buildWrapper({ propsData: { immersive: true } });
+    });
 
-    expect(findContentEditor().props().immersive).toBe(true);
+    it('passes on immersive mode to content editor', async () => {
+      await enableContentEditor();
+      await nextTick();
+
+      expect(findContentEditor().props().immersive).toBe(true);
+    });
+
+    it('passes on immersive mode to plain text editor', () => {
+      expect(findMarkdownField().props().immersive).toBe(true);
+    });
+
+    it('removes the focus outline on the textarea', () => {
+      expect(findTextarea().classes()).toContain('focus:gl-outline-none');
+    });
   });
 });

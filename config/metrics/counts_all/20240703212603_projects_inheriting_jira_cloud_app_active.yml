@@ -2,6 +2,8 @@
 key_path: counts.projects_inheriting_jira_cloud_app_active
 description: Count of active projects inheriting integrations for Jira Cloud App
 product_group: import
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "17.2"

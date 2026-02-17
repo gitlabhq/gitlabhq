@@ -19,7 +19,7 @@ module Gitlab
         Config::Yaml::Tags::TagError
       ].freeze
 
-      attr_reader :root, :context, :source_ref_path, :source, :logger, :inject_edge_stages, :pipeline_policy_context
+      attr_reader :root, :context, :source_ref_path, :source, :logger, :inject_edge_stages, :pipeline_policy_context, :spec
 
       # rubocop: disable Metrics/ParameterLists
       def initialize(
@@ -179,7 +179,18 @@ module Gitlab
           yaml_context = Config::Yaml::Context.new(
             variables: @context.variables
           )
-          Config::Yaml.load!(config, yaml_context, inputs, @context)
+          loader = Config::Yaml::Loader.new(config, inputs: inputs, context: yaml_context, external_context: @context)
+          yaml_result = loader.load_uninterpolated_yaml
+
+          # Store spec for later instrumentation before it gets stripped during interpolation
+          @spec = yaml_result.spec
+
+          loader.load.then do |result|
+            raise result.error_class, result.error if !result.valid? && result.error_class.present?
+            raise Config::Yaml::LoadError, result.error unless result.valid?
+
+            result.content
+          end
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do

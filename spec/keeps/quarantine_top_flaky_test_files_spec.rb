@@ -21,7 +21,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
   describe '#each_identified_change' do
     let(:flaky_test_file_issue) do
       {
-        'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321',
+        'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1',
         'description' => <<~DESC
           | Spec file | spec/models/user_spec.rb |
         DESC
@@ -64,10 +64,11 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
   describe '#make_change!' do
     let(:flaky_test_file_issue) do
       {
-        'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321',
+        'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1',
         'description' => <<~DESC
           | Spec file | spec/models/user_spec.rb |
           spec/models/user_spec.rb:4
+          **Product Group:** development_analytics\n
         DESC
       }
     end
@@ -104,12 +105,12 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
 
       updated_content = File.read(spec_file_path)
       expect(updated_content).to include(
-        "quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321', type: 'flaky' }"
+        "quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1', type: 'flaky' }"
       )
 
       expect(change.title).to eq('Quarantine flaky user_spec.rb')
       expect(change.changed_files).to eq(['spec/models/user_spec.rb'])
-      expect(change.labels).to include('quarantine', 'quarantine::flaky')
+      expect(change.labels).to include('quarantine', 'quarantine::flaky', 'group::development analytics')
       expect(change.description).to include('spec/models/user_spec.rb')
       expect(change.description).to include(flaky_test_file_issue['web_url'])
     end
@@ -130,7 +131,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       end
 
       let(:flaky_test_file_issue) do
-        { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+        { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
       end
 
       before do
@@ -142,7 +143,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
         result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
         expect(result).to include(
-          "quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321', type: 'flaky' }"
+          "quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1', type: 'flaky' }"
         )
       end
     end
@@ -159,7 +160,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       end
 
       let(:flaky_test_file_issue) do
-        { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+        { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
       end
 
       before do
@@ -171,8 +172,35 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
         result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
         expect(result).to include(
-          "quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321', type: 'flaky' }"
+          "quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1', type: 'flaky' }"
         )
+      end
+    end
+
+    context 'when file content did not change' do
+      let(:spec_content) do
+        <<~RUBY
+          # frozen_string_literal: true
+
+          RSpec.describe User do
+            p 'dummy line'
+          end
+        RUBY
+      end
+
+      let(:flaky_test_file_issue) do
+        { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
+      end
+
+      before do
+        File.write(spec_file_path, spec_content)
+      end
+
+      it 'returns nil' do
+        failing_tests = ['spec/models/user_spec.rb:4']
+        result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
+
+        expect(result).to be_nil
       end
     end
   end
@@ -235,7 +263,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
     end
 
     let(:flaky_test_file_issue) do
-      { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+      { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
     end
 
     before do
@@ -247,7 +275,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       expect(result).to include(
-        "quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321', type: 'flaky' }"
+        "quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1', type: 'flaky' }"
       )
     end
 
@@ -256,7 +284,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       expect(result).to include(
-        "quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321', type: 'flaky' }"
+        "quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1', type: 'flaky' }"
       )
     end
   end
@@ -275,7 +303,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
     end
 
     let(:flaky_test_file_issue) do
-      { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+      { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
     end
 
     before do
@@ -287,7 +315,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       # File should not be modified since line 999 doesn't exist
-      expect(result).not_to include('quarantine')
+      expect(result).to be_nil
     end
 
     it 'skips tests with negative line numbers' do
@@ -295,7 +323,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       # File should not be modified since line 0 is invalid
-      expect(result).not_to include('quarantine')
+      expect(result).to be_nil
     end
   end
 
@@ -313,7 +341,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
     end
 
     let(:flaky_test_file_issue) do
-      { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+      { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
     end
 
     before do
@@ -325,7 +353,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       # File should not be modified since line 5 is not an it block
-      expect(result).not_to include('quarantine')
+      expect(result).to be_nil
     end
   end
 
@@ -343,7 +371,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
     end
 
     let(:flaky_test_file_issue) do
-      { 'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321' }
+      { 'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1' }
     end
 
     before do
@@ -358,7 +386,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
       result = keep.send(:update_file_content_per_test, spec_file_path, flaky_test_file_issue, failing_tests)
 
       # File should not be modified since quarantine line was not found
-      expect(result).not_to include('quarantine')
+      expect(result).to be_nil
     end
   end
 
@@ -377,10 +405,11 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
 
     let(:flaky_test_file_issue) do
       {
-        'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321',
+        'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1',
         'description' => <<~DESC
           | Spec file | qa/spec/models/user_spec.rb |
           qa/spec/models/user_spec.rb:4
+          **Product Group:** development_analytics\n
         DESC
       }
     end
@@ -426,7 +455,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
 
     let(:flaky_test_file_issue) do
       {
-        'web_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/54321',
+        'web_url' => 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1',
         'description' => <<~DESC
           | Spec file | spec/models/user_spec.rb |
         DESC

@@ -56,7 +56,7 @@ export default {
           data-testid="resolve-discussion-button"
           :is-resolving="isResolving"
           :button-title="resolveButtonTitle"
-          @onClick="$emit('resolve')"
+          @on-click="$emit('resolve')"
         />
       </div>
       <resolve-with-issue-button

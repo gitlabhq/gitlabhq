@@ -37,6 +37,11 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_resource_group do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/resource_groups", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/resource_groups/:key' do
@@ -100,11 +105,14 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_resource_group do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/resource_groups/#{key}", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/resource_groups/:key/current_job' do
-    subject(:perform_request) { get api("/projects/#{project.id}/resource_groups/#{key}/current_job", user) }
-
     let_it_be(:resource_group, freeze: true) { create(:ci_resource_group, project: project) }
     let_it_be(:current_processable, freeze: true) { create(:ci_build, :running) }
     let_it_be(:resource, freeze: true) do
@@ -116,6 +124,9 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
     end
 
     let(:key) { resource_group.key }
+    let(:path) { "/projects/#{project.id}/resource_groups/#{key}/current_job" }
+
+    subject(:perform_request) { get api(path, user) }
 
     it 'returns current job of resource group', :aggregate_failures do
       perform_request
@@ -169,16 +180,22 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', %i[read_resource_group read_job] do
+      let(:boundary_object) { project }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/resource_groups/:key/upcoming_jobs' do
-    subject { get api("/projects/#{project.id}/resource_groups/#{key}/upcoming_jobs", user) }
-
     let_it_be(:resource_group) { create(:ci_resource_group, project: project) }
     let_it_be(:processable) { create(:ci_processable, resource_group: resource_group) }
     let_it_be(:upcoming_processable) { create(:ci_processable, :waiting_for_resource, resource_group: resource_group) }
 
+    let(:path) { "/projects/#{project.id}/resource_groups/#{key}/upcoming_jobs" }
     let(:key) { resource_group.key }
+
+    subject { get api(path, user) }
 
     it 'returns upcoming jobs of resource group', :aggregate_failures do
       subject
@@ -228,6 +245,11 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', %i[read_resource_group read_job] do
+      let(:boundary_object) { project }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
   end
 
   describe 'PUT /projects/:id/resource_groups/:key' do
@@ -272,6 +294,13 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
         subject
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_resource_group do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/resource_groups/#{key}", personal_access_token: pat), params: params
       end
     end
   end

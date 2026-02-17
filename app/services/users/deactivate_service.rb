@@ -9,18 +9,21 @@ module Users
 
     def execute(user)
       unless allowed?
-        return ::ServiceResponse.error(message: _('You are not authorized to perform this action'),
-          reason: :forbidden)
+        message = _('You are not authorized to perform this action')
+        log_error(message, user, :forbidden)
+        return ::ServiceResponse.error(message: message, reason: :forbidden)
       end
 
       if user.blocked?
-        return ::ServiceResponse.error(message: _('Error occurred. A blocked user cannot be deactivated'),
-          reason: :forbidden)
+        message = _('Error occurred. A blocked user cannot be deactivated')
+        log_error(message, user, :forbidden)
+        return ::ServiceResponse.error(message: message, reason: :forbidden)
       end
 
       if user.internal?
-        return ::ServiceResponse.error(message: _('Internal users cannot be deactivated'),
-          reason: :forbidden)
+        message = _('Internal users cannot be deactivated')
+        log_error(message, user, :forbidden)
+        return ::ServiceResponse.error(message: message, reason: :forbidden)
       end
 
       return ::ServiceResponse.success(message: _('User has already been deactivated')) if user.deactivated?
@@ -32,12 +35,14 @@ module Users
 
         deactivation_error_message = format(message,
           minimum_inactive_days: Gitlab::CurrentSettings.deactivate_dormant_users_period)
+        log_error(deactivation_error_message, user, :forbidden)
         return ::ServiceResponse.error(message: deactivation_error_message, reason: :forbidden)
       end
 
       unless user.deactivate
-        return ::ServiceResponse.error(message: user.errors.full_messages.to_sentence,
-          reason: :bad_request)
+        message = user.errors.full_messages.to_sentence
+        log_error(message, user, :bad_request)
+        return ::ServiceResponse.error(message: message, reason: :bad_request)
       end
 
       log_event(user)
@@ -63,6 +68,19 @@ module Users
     def log_event(user)
       Gitlab::AppLogger.info(
         message: 'User deactivated',
+        username: user.username.to_s,
+        user_id: user.id,
+        email: user.email.to_s,
+        deactivated_by: current_user.username.to_s,
+        ip_address: current_user.current_sign_in_ip.to_s
+      )
+    end
+
+    def log_error(error_message, user, reason)
+      Gitlab::AppLogger.error(
+        message: 'User deactivation failed',
+        error: error_message,
+        reason: reason.to_s,
         username: user.username.to_s,
         user_id: user.id,
         email: user.email.to_s,

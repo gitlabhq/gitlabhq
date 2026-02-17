@@ -149,6 +149,11 @@ export default {
       required: false,
       default: () => [],
     },
+    immersive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -230,6 +235,7 @@ export default {
     textareaValue: {
       immediate: true,
       handler(textareaValue, oldVal) {
+        this.hidePreview();
         const all = /@all([^\w._-]|$)/;
         const hasAll = all.test(textareaValue);
         const hadAll = all.test(oldVal);
@@ -374,29 +380,49 @@ export default {
   <div
     ref="gl-form"
     class="js-vue-markdown-field md-area gfm-form !gl-relative"
+    :class="{ 'immersive !gl-border-none !gl-bg-inherit': immersive, 'gl-relative': !immersive }"
     :data-uploads-path="uploadsPath"
   >
-    <markdown-header
-      :editor-ai-actions="editorAiActions"
-      :preview-markdown="previewMarkdown"
-      :line-content="lineContent"
-      :can-suggest="canSuggest"
-      :enable-preview="enablePreview"
-      :show-suggest-popover="showSuggestPopover"
-      :suggestion-start-index="suggestionsStartIndex"
-      :uploads-path="uploadsPath"
-      :markdown-preview-path="markdownPreviewPath"
-      :new-comment-template-paths-prop="newCommentTemplatePaths"
-      :drawio-enabled="drawioEnabled"
-      :supports-quick-actions="supportsQuickActions"
-      data-testid="markdownHeader"
-      :restricted-tool-bar-items="restrictedToolBarItems"
-      @showPreview="showPreview"
-      @hidePreview="hidePreview"
-      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+    <div
+      :class="{ 'gl-sticky gl-top-0 gl-z-3 gl-bg-default': immersive }"
+      data-testid="header-container"
     >
-      <template #header-buttons><slot name="header-buttons"></slot></template>
-    </markdown-header>
+      <slot v-if="immersive" name="header"></slot>
+      <markdown-header
+        :editor-ai-actions="editorAiActions"
+        :preview-markdown="previewMarkdown"
+        :line-content="lineContent"
+        :can-suggest="canSuggest"
+        :enable-preview="enablePreview"
+        :show-suggest-popover="showSuggestPopover"
+        :suggestion-start-index="suggestionsStartIndex"
+        :uploads-path="uploadsPath"
+        :markdown-preview-path="markdownPreviewPath"
+        :new-comment-template-paths-prop="newCommentTemplatePaths"
+        :drawio-enabled="drawioEnabled"
+        :supports-quick-actions="supportsQuickActions"
+        data-testid="markdownHeader"
+        :restricted-tool-bar-items="restrictedToolBarItems"
+        :immersive="immersive"
+        @showPreview="showPreview"
+        @hidePreview="hidePreview"
+        @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+      >
+        <template #header-buttons>
+          <slot name="header-buttons"></slot>
+          <div class="gl-grow">
+            <markdown-toolbar
+              v-if="immersive"
+              :markdown-docs-path="markdownDocsPath"
+              :can-attach-file="canAttachFile"
+              :show-comment-tool-bar="showCommentToolBar"
+              :show-content-editor-switcher="showContentEditorSwitcher"
+              @enableContentEditor="$emit('enableContentEditor')"
+            />
+          </div>
+        </template>
+      </markdown-header>
+    </div>
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
@@ -408,15 +434,19 @@ export default {
           :aria-label="__('Exit full screen')"
           ><gl-icon variant="subtle" :size="24" name="minimize"
         /></a>
-        <markdown-toolbar
-          :markdown-docs-path="markdownDocsPath"
-          :can-attach-file="canAttachFile"
-          :show-comment-tool-bar="showCommentToolBar"
-          :show-content-editor-switcher="showContentEditorSwitcher"
-          @enableContentEditor="$emit('enableContentEditor')"
-        >
-          <template #toolbar><slot name="toolbar"></slot></template>
-        </markdown-toolbar>
+        <div class="gl-border-t">
+          <markdown-toolbar
+            v-if="!immersive"
+            :markdown-docs-path="markdownDocsPath"
+            :can-attach-file="canAttachFile"
+            :show-comment-tool-bar="showCommentToolBar"
+            :show-content-editor-switcher="showContentEditorSwitcher"
+            :class="{ showContentEditorSwitcher: 'gl-border-t' }"
+            @enableContentEditor="$emit('enableContentEditor')"
+          >
+            <template #toolbar><slot name="toolbar"></slot></template>
+          </markdown-toolbar>
+        </div>
       </div>
     </div>
     <div

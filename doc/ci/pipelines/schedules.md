@@ -35,14 +35,14 @@ and use the [CI/CD job token](../jobs/ci_job_token.md) based on your access leve
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
   you must have merge permissions for the target branch.
 - Your `.gitlab-ci.yml` file must have valid syntax. You can [validate your configuration](../yaml/lint.md) before scheduling.
 
 To create a pipeline schedule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Select **New schedule**.
 1. Complete the fields.
@@ -66,7 +66,7 @@ delete unused schedules before adding another.
 Prerequisites:
 
 - You must be the schedule owner or take ownership of the schedule.
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 - For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
   you must have merge permissions for the target branch.
 - For schedules that run on [protected tags](../../user/project/protected_tags.md#configure-protected-tags),
@@ -74,7 +74,7 @@ Prerequisites:
 
 To edit a pipeline schedule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}).
 1. Make your changes, then select **Save changes**.
@@ -86,7 +86,7 @@ When you run a scheduled pipeline manually, it uses your permissions instead of 
 
 To trigger a pipeline schedule immediately instead of waiting for the next scheduled time:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Run** ({{< icon name="play" >}}).
 
@@ -98,11 +98,11 @@ Scheduled pipelines execute with the permissions of the user who owns the schedu
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To take ownership of a schedule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Take ownership**.
 

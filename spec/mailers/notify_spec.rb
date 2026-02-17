@@ -198,15 +198,15 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
           it 'includes the reason in the footer' do
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::ASSIGNED, format: :html)
-            is_expected.to have_body_text(text)
+            is_expected.to have_body_text(CGI.unescapeHTML(text))
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee1.id], current_user.id, NotificationReason::MENTIONED)
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::MENTIONED, format: :html)
-            expect(new_subject).to have_body_text(text)
+            expect(new_subject).to have_body_text(CGI.unescapeHTML(text))
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee1.id], current_user.id, nil)
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, format: :html)
-            expect(new_subject).to have_body_text(text)
+            expect(new_subject).to have_body_text(CGI.unescapeHTML(text))
           end
         end
       end
@@ -691,6 +691,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains an introduction' do
           issuable_url = "project_#{note.noteable_type.underscore}_url"
           issuable_url = "project_wiki_url" if note.for_wiki_page?
+          issuable_url = "project_work_item_url" if note.noteable.try(:use_work_item_url?)
           anchor = "note_#{note.id}"
 
           is_expected.to have_body_text(
@@ -1131,6 +1132,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         create(:issue_email_participant, issue: ticket, email: 'service.desk@example.com')
       end
 
+      let_it_be(:support_bot) { create(:support_bot) }
+
       describe 'thank you email', feature_category: :service_desk do
         subject { described_class.service_desk_thank_you_email(ticket.id) }
 
@@ -1155,7 +1158,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it 'uses service bot name by default' do
-          expect_sender(Users::Internal.support_bot)
+          expect_sender(support_bot)
         end
 
         it 'has legacy Issue headers' do
@@ -1180,7 +1183,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
 
           it 'uses service bot name' do
-            expect_sender(Users::Internal.support_bot)
+            expect_sender(support_bot)
           end
         end
 
@@ -1203,7 +1206,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           end
 
           it 'uses custom email and service bot name in "from" header' do
-            expect_sender(Users::Internal.support_bot, sender_email: 'supersupport@example.com')
+            expect_sender(support_bot, sender_email: 'supersupport@example.com')
           end
 
           it 'uses SMTP delivery method and has correct settings' do

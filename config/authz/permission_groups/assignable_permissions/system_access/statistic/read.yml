@@ -1,0 +1,7 @@
+---
+name: read_statistic
+description: Grants the ability to read statistics
+boundaries:
+  - project
+permissions:
+  - read_statistic

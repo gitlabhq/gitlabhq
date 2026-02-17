@@ -21,8 +21,6 @@ module Operations
 
     # strategies exists only for the second version
     has_many :strategies, class_name: 'Operations::FeatureFlags::Strategy'
-    has_many :feature_flag_issues
-    has_many :issues, through: :feature_flag_issues, inverse_of: :feature_flags
 
     validates :project, presence: true
     validates :name,
@@ -93,17 +91,6 @@ module Operations
         .then { |reference_base| "#{self.class.reference_prefix}#{reference_base}#{iid}#{self.class.reference_postfix}" }
     end
 
-    def related_issues(current_user, preload:)
-      issues = ::Issue
-        .select('issues.*, operations_feature_flags_issues.id AS link_id')
-        .joins(:feature_flag_issues)
-        .where(operations_feature_flags_issues: { feature_flag_id: id })
-        .order('operations_feature_flags_issues.id ASC')
-        .includes(preload)
-
-      Ability.issues_readable_by_user(issues, current_user)
-    end
-
     def path
       Gitlab::Routing.url_helpers.edit_project_feature_flag_path(project, self)
     end
@@ -118,3 +105,5 @@ module Operations
     end
   end
 end
+
+Operations::FeatureFlag.prepend_mod_with("Operations::FeatureFlag")

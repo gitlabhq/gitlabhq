@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers, feature_category: :shared do
+RSpec.describe API::Helpers, feature_category: :api do
   using RSpec::Parameterized::TableSyntax
 
   subject(:helper) { Class.new.include(described_class).new }
@@ -886,11 +886,53 @@ RSpec.describe API::Helpers, feature_category: :shared do
       it_behaves_like 'namespace finder'
     end
 
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project) }
+
+      it 'returns nil by id by default' do
+        expect(helper.find_namespace(project.project_namespace.id)).to be_nil
+      end
+
+      it 'returns nil by full path by default' do
+        expect(helper.find_namespace(project.full_path)).to be_nil
+      end
+
+      context 'when project namespaces are allowed' do
+        it 'returns the project namespace by id' do
+          expect(helper.find_namespace(project.project_namespace.id, allow_project_namespaces: true)).to eq(project.project_namespace)
+        end
+
+        it 'returns the project namespace by full path' do
+          expect(helper.find_namespace(project.full_path, allow_project_namespaces: true)).to eq(project.project_namespace)
+        end
+      end
+    end
+
     context 'when ID is a negative number' do
       let(:existing_id) { namespace.id }
       let(:non_existing_id) { -1 }
 
       it_behaves_like 'namespace finder'
+    end
+  end
+
+  describe '#find_namespace_by_path' do
+    context 'when project namespaces are allowed' do
+      let_it_be(:project) { create(:project, :private) }
+
+      it 'falls back to the project namespace when not found via namespace lookup' do
+        expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
+        expect(::Project).to receive(:find_by_full_path).with(project.full_path).and_call_original
+
+        expect(helper.find_namespace_by_path(project.full_path, allow_project_namespaces: true))
+          .to eq(project.project_namespace)
+      end
+
+      it 'returns nil when no namespace or project matches the path' do
+        path = "nonexistent/#{non_existing_record_id}"
+
+        expect(helper.find_namespace_by_path(path, allow_project_namespaces: true)).to be_nil
+      end
     end
   end
 
@@ -952,6 +994,126 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it_behaves_like 'user namespace finder'
+
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project, :private) }
+      let(:current_user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:initial_current_user).and_return(current_user)
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      it 'renders namespace not found by default' do
+        expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+        helper.find_namespace!(project.project_namespace.id)
+      end
+
+      context 'when project namespaces are allowed' do
+        context 'when user has project access' do
+          let_it_be(:developer_user) { create(:user) }
+          let(:current_user) { developer_user }
+
+          before do
+            project.add_developer(current_user)
+          end
+
+          it 'returns the project namespace' do
+            expect(helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true))
+              .to eq(project.project_namespace)
+          end
+        end
+
+        context 'when user lacks project access' do
+          let_it_be(:non_member_user) { create(:user) }
+          let(:current_user) { non_member_user }
+
+          it 'renders project not found' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(false)
+            expect(helper).to receive(:not_found!).with('Project').and_return(nil)
+
+            helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+          end
+
+          it 'renders unauthorized when non-public authentication is required' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(true)
+            expect(helper).to receive(:unauthorized!).and_return(nil)
+
+            helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+          end
+        end
+      end
+
+      context 'when project namespaces are not allowed' do
+        it 'renders namespace not found' do
+          expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+          helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: false)
+        end
+      end
+    end
+  end
+
+  describe '#find_namespace_by_path!' do
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project, :private) }
+      let(:current_user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:initial_current_user).and_return(current_user)
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      it 'renders namespace not found by default' do
+        expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+        helper.find_namespace_by_path!(project.full_path)
+      end
+
+      context 'when project namespaces are allowed' do
+        context 'when user has project access' do
+          let_it_be(:developer_user) { create(:user) }
+          let(:current_user) { developer_user }
+
+          before do
+            project.add_developer(current_user)
+          end
+
+          it 'returns the project namespace' do
+            expect(helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true))
+              .to eq(project.project_namespace)
+          end
+        end
+
+        context 'when user lacks project access' do
+          let_it_be(:non_member_user) { create(:user) }
+          let(:current_user) { non_member_user }
+
+          it 'renders project not found' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(false)
+            expect(helper).to receive(:not_found!).with('Project').and_return(nil)
+
+            helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true)
+          end
+
+          it 'renders unauthorized when non-public authentication is required' do
+            allow(helper).to receive(:authenticate_non_public?).and_return(true)
+            expect(helper).to receive(:unauthorized!).and_return(nil)
+
+            helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: true)
+          end
+        end
+      end
+
+      context 'when project namespaces are not allowed' do
+        it 'renders namespace not found' do
+          expect(helper).to receive(:not_found!).with('Namespace').and_return(nil)
+
+          helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: false)
+        end
+      end
+    end
   end
 
   describe '#authorized_project_scope?' do
@@ -1856,6 +2018,109 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#boundaries_for_endpoint' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
+
+    before do
+      allow(helper).to receive(:params).and_return({ id: project.id, group_id: group.id })
+      allow(helper).to receive(:find_project).and_return(project)
+      allow(helper).to receive(:find_group).and_return(group)
+      allow(helper).to receive(:access_token).and_return(access_token)
+    end
+
+    context 'with :boundary authorization setting' do
+      subject(:boundary) { helper.send(:boundaries_for_endpoint) }
+
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({ boundary: boundary_setting })
+        allow(helper).to receive(:project).and_return(project)
+      end
+
+      context 'when setting value responds to call' do
+        let(:boundary_setting) { -> { project } }
+
+        it 'evaluates the Proc and returns the boundary' do
+          expect(boundary).to be_a(Authz::Boundary::ProjectBoundary)
+        end
+
+        context 'when Proc returns a value that does not correspond to a valid boundary' do
+          let(:boundary_setting) { -> { 'not a boundary' } }
+
+          it 'returns nil' do
+            expect(boundary).to be_nil
+          end
+        end
+
+        context 'when Proc returns nil' do
+          let(:boundary_setting) { -> { nil } }
+
+          it 'returns nil' do
+            expect(boundary).to be_nil
+          end
+        end
+      end
+
+      context 'when setting value does not respond to call' do
+        let(:boundary_setting) { :project }
+
+        it 'returns nil' do
+          expect(boundary).to be_nil
+        end
+      end
+    end
+
+    context 'when boundaries are defined in different order' do
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :instance },
+            { boundary_type: :user },
+            { boundary_type: :group },
+            { boundary_type: :project }
+          ]
+        })
+      end
+
+      it 'returns an array of boundaries' do
+        boundary = helper.send(:boundaries_for_endpoint)
+
+        expect(boundary.to_a.map(&:class)).to eq([
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::GroupBoundary,
+          Authz::Boundary::ProjectBoundary
+        ])
+
+        expect(boundary.to_a[0].access).to eq(Authz::GranularScope::Access::INSTANCE)
+        expect(boundary.to_a[1].access).to eq(Authz::GranularScope::Access::USER)
+      end
+    end
+
+    context 'when project boundary returns nil' do
+      before do
+        allow(helper).to receive(:find_project).and_return(nil)
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :instance },
+            { boundary_type: :project },
+            { boundary_type: :group }
+          ]
+        })
+      end
+
+      it 'returns an array of valid boundaries' do
+        boundary = helper.send(:boundaries_for_endpoint)
+
+        expect(boundary.to_a.map(&:class)).to eq([
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::GroupBoundary
+        ])
+      end
+    end
+  end
+
   describe '#authenticate_by_gitlab_shell_or_workhorse_token!' do
     include GitlabShellHelpers
     include WorkhorseHelpers
@@ -1927,6 +2192,104 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
           helper.authenticate_by_gitlab_shell_or_workhorse_token!
         end
+      end
+    end
+  end
+
+  describe '#authorize_granular_token?' do
+    let(:token) { instance_double(PersonalAccessToken) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:access_token).and_return(token)
+      allow(helper).to receive(:initial_current_user).and_return(nil)
+      allow(helper).to receive(:params).and_return({})
+      allow(helper).to receive(:env).and_return({})
+      allow(helper).to receive(:scopes_registered_for_endpoint).and_return(nil)
+      allow(helper).to receive(:validate_and_save_access_token!).and_return(token)
+    end
+
+    context 'when access token is not granular' do
+      before do
+        allow(token).to receive(:granular?).and_return(false)
+      end
+
+      it 'returns false' do
+        allow(helper).to receive(:authorization_settings).and_return({})
+
+        expect(helper.send(:authorize_granular_token?)).to be(false)
+      end
+
+      it 'does not authorize granular tokens' do
+        expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        helper.current_user
+      end
+    end
+
+    context 'when access token is granular' do
+      before do
+        allow(token).to receive(:granular?).and_return(true)
+      end
+
+      context 'when skip_granular_token_authorization is not set' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return({})
+        end
+
+        it 'returns true' do
+          expect(helper.send(:authorize_granular_token?)).to be(true)
+        end
+
+        it 'authorizes granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).to receive(:new).and_call_original
+
+          helper.current_user
+        end
+      end
+
+      context 'when skip_granular_token_authorization is false' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return(skip_granular_token_authorization: false)
+        end
+
+        it 'returns true' do
+          expect(helper.send(:authorize_granular_token?)).to be(true)
+        end
+
+        it 'authorizes granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).to receive(:new).and_call_original
+
+          helper.current_user
+        end
+      end
+
+      context 'when skip_granular_token_authorization is true' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return(skip_granular_token_authorization: true)
+        end
+
+        it 'returns false' do
+          expect(helper.send(:authorize_granular_token?)).to be(false)
+        end
+
+        it 'does not authorize granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+          helper.current_user
+        end
+      end
+    end
+
+    context 'when access token is nil' do
+      before do
+        allow(helper).to receive(:access_token).and_return(nil)
+      end
+
+      it 'returns falsey' do
+        allow(helper).to receive(:authorization_settings).and_return({})
+
+        expect(helper.send(:authorize_granular_token?)).to be_falsey
       end
     end
   end

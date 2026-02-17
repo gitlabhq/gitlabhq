@@ -148,7 +148,7 @@ export default {
           :internal-note="isDiscussionInternal"
           :class="{ '!gl-border-t-0': isFileDiscussion }"
           @handleDeleteNote="$emit('deleteNote')"
-          @startReplying="$emit('startReplying')"
+          @start-replying="$emit('start-replying')"
         >
           <template #discussion-resolved-text>
             <note-edited-text

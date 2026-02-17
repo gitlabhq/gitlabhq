@@ -9,13 +9,19 @@ title: Troubleshooting the GitLab MCP server
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
 
 When working with GitLab MCP server, you might encounter the following issues.
+
+## `404 Not Found` when starting the GitLab MCP server
+
+You might get a `404 Not Found` error when you try to start the GitLab MCP server.
+This error occurs when GitLab Duo Core or beta and experimental features are turned off.
+
+To resolve this issue, ensure you meet all [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
 
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 
@@ -67,11 +73,8 @@ to update their client implementation.
 
 1. Optional. If you encounter version-specific bugs, pin the version of the `mcp-remote` module to a specific version. For example, use `mcp-remote@0.1.26` to pin the version to `0.1.26`.
 
-   {{< alert type="note" >}}
-
-   For security reasons, you should not pin versions if possible.
-
-   {{< /alert >}}
+   > [!note]
+   > For security reasons, you should not pin versions if possible.
 
 ## Troubleshoot GitLab MCP Server with Claude Desktop
 

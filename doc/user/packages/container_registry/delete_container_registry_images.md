@@ -22,12 +22,9 @@ for deleting container images from specific projects.
 To delete specific container images from a project or group, you can use [the GitLab UI](#use-the-gitlab-ui)
 or [GitLab API](#use-the-gitlab-api).
 
-{{< alert type="warning" >}}
-
-Deleting container images is a destructive action and can't be undone. To restore
-a deleted container image, you must rebuild and re-upload it.
-
-{{< /alert >}}
+> [!warning]
+> Deleting container images is a destructive action and can't be undone. To restore
+> a deleted container image, you must rebuild and re-upload it.
 
 ## Garbage collection
 
@@ -78,13 +75,10 @@ information, see the following endpoints:
 
 ## Use GitLab CI/CD
 
-{{< alert type="note" >}}
-
-GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
-third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
-For assistance with this third-party tool, see [the issue tracker for regclient](https://github.com/regclient/regclient/issues).
-
-{{< /alert >}}
+> [!note]
+> GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
+> third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
+> For assistance with this third-party tool, see [the issue tracker for regclient](https://github.com/regclient/regclient/issues).
 
 The following example defines two stages: `build`, and `clean`. The `build_image` job builds a container
 image for the branch, and the `delete_image` job deletes it. The `reg` executable is downloaded and used to
@@ -131,12 +125,9 @@ delete_image:
     - regctl tag rm $IMAGE
 ```
 
-{{< alert type="note" >}}
-
-You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
-the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
-
-{{< /alert >}}
+> [!note]
+> You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
+> the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
 
 ## Use a cleanup policy
 

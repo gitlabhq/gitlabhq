@@ -17,12 +17,11 @@ describe('CollationCheckerApp component', () => {
   const findRunButton = () => wrapper.findByTestId('run-diagnostics-button');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findByTestId('error-alert');
-  const findNoResultsMessage = () => wrapper.findByTestId('no-results-message');
   const findLastRun = () => wrapper.findByTestId('last-run');
 
   // Database components
   const findDiagnosticResults = () => wrapper.findAllComponents(DbDiagnosticResults);
-  const findIssuesCta = () => wrapper.findComponent(DbIssuesCta);
+  const findIssuesCta = () => wrapper.findAllComponents(DbIssuesCta).length > 0;
 
   const runCollationCheckUrl = '/admin/database_diagnostics/run_collation_check.json';
   const collationCheckResultsUrl = '/admin/database_diagnostics/collation_check_results.json';
@@ -32,6 +31,15 @@ describe('CollationCheckerApp component', () => {
       provide: {
         runCollationCheckUrl,
         collationCheckResultsUrl,
+      },
+      stubs: {
+        DbDiagnosticResults: false,
+        DbCollationMismatches: false,
+        DbCorruptedIndexes: false,
+        DbSkippedIndexes: false,
+        DbIssuesCta: false,
+        GlCard: false,
+        NumberToHumanSize: true,
       },
     });
   };
@@ -64,7 +72,7 @@ describe('CollationCheckerApp component', () => {
     it('renders the title', () => {
       expect(findTitle().text()).toBe('Collation health check');
       expect(wrapper.text()).toContain(
-        'Detect collation-related index corruption issues that might occur after OS upgrade',
+        'Detect collation-related index corruption issues that might occur after OS upgrade.',
       );
     });
 
@@ -72,9 +80,6 @@ describe('CollationCheckerApp component', () => {
       await waitForPromises();
       expect(findLastRun().exists()).toBe(false);
       expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findNoResultsMessage().text()).toBe(
-        'No diagnostics have been run yet. Click "Run Collation Check" to analyze your database for potential collation issues.',
-      );
     });
 
     it('enables the run button after loading completes', async () => {
@@ -115,7 +120,10 @@ describe('CollationCheckerApp component', () => {
     });
 
     it('displays the issues CTA when corrupted indexes are found', () => {
-      expect(findIssuesCta().exists()).toBe(true);
+      const results = findDiagnosticResults();
+      const mainDbData = results.at(0).props('dbDiagnosticResult');
+      expect(mainDbData.corrupted_indexes).toBeDefined();
+      expect(mainDbData.corrupted_indexes.length).toBeGreaterThan(0);
     });
   });
 
@@ -133,7 +141,7 @@ describe('CollationCheckerApp component', () => {
     });
 
     it('does not display the issues CTA', () => {
-      expect(findIssuesCta().exists()).toBe(false);
+      expect(findIssuesCta()).toBe(false);
     });
   });
 

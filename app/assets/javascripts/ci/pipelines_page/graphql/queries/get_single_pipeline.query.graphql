@@ -1,0 +1,35 @@
+# @feature_category: continuous_integration
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
+
+query getSinglePipeline($fullPath: ID!, $id: CiPipelineID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(id: $id) {
+      ...PipelineDetails
+      downstream {
+        nodes {
+          id
+          iid
+          name
+          path
+          detailedStatus {
+            ...CiIcon
+            tooltip
+            label
+          }
+          project {
+            id
+            fullPath
+            name
+          }
+          sourceJob {
+            id
+            name
+            retried
+          }
+        }
+      }
+    }
+  }
+}

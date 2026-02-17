@@ -1,0 +1,5 @@
+---
+name: read_repository_file_blame
+description: Grants the ability to read blame information for repository files
+boundaries:
+  - project

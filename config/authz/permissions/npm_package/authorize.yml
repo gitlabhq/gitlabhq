@@ -1,0 +1,5 @@
+---
+name: authorize_npm_package
+description: Grants the ability to authorize NPM package uploads
+boundaries:
+  - project

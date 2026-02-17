@@ -40,6 +40,8 @@ module API
 
               package_file = distribution_from!(project).package_files.with_file_name(params[:file_name]).last!
 
+              track_package_event('pull_package', :debian, project: project)
+
               present_package_file!(package_file)
             end
 
@@ -106,9 +108,9 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
-
+            route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'Release.gpg' do
               distribution_from!(project_or_group).file_signature
             end
@@ -124,9 +126,9 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
-
+            route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'Release' do
               distribution = distribution_from!(project_or_group)
               present_carrierwave_file!(distribution.file)
@@ -143,9 +145,9 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
-
+            route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'InRelease' do
               distribution = distribution_from!(project_or_group)
               present_carrierwave_file!(distribution.signed_file)
@@ -175,9 +177,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Packages' do
                   present_index_file!(:di_packages)
                 end
@@ -196,9 +198,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:di_packages)
                 end
@@ -219,9 +221,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Sources' do
                   present_index_file!(:sources)
                 end
@@ -240,9 +242,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:sources)
                 end
@@ -267,9 +269,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Packages' do
                   present_index_file!(:packages)
                 end
@@ -288,9 +290,9 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
-
+                route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:packages)
                 end

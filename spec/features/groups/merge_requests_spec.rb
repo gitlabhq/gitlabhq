@@ -61,7 +61,7 @@ RSpec.describe 'Group merge requests page', :js, feature_category: :code_review_
       expect_no_suggestion(user2.name)
     end
 
-    it 'will still show the navbar with no results' do
+    it 'shows the navbar with no results' do
       search_term = 'some-search-term-that-produces-zero-results'
 
       submit_search_term search_term

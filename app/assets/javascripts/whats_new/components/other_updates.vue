@@ -43,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['bottomReached'],
+  emits: ['bottom-reached'],
   data() {
     return {
       initialListPopulated: false,
@@ -70,7 +70,7 @@ export default {
   methods: {
     ...mapActions(['setReadArticles']),
     bottomReached() {
-      this.$emit('bottomReached');
+      this.$emit('bottom-reached');
     },
     showUnread(index) {
       return index <= this.totalArticlesToRead && !this.readArticles.includes(index);
@@ -92,6 +92,7 @@ export default {
 <template>
   <div>
     <template v-if="features.length || !fetching">
+      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <gl-infinite-scroll
         ref="infiniteScroll"
         :fetched-items="features.length"
@@ -109,6 +110,7 @@ export default {
           />
         </template>
       </gl-infinite-scroll>
+      <!-- eslint-enable vue/v-on-event-hyphenation -->
     </template>
     <div v-else class="gl-mt-5">
       <skeleton-loader />

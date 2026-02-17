@@ -21,7 +21,7 @@ Pipeline notifications triggered by blocked users are not delivered.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or the Owner role for the group.
+- You must have the Maintainer or Owner role for the project or the Owner role for the group.
 
 To enable pipeline status emails:
 
@@ -32,5 +32,7 @@ To enable pipeline status emails:
    Invalid email addresses are automatically filtered out and will not receive notifications.
 1. Optional. To receive notifications for broken pipelines only, select
    **Notify only broken pipelines**.
+1. Optional. To receive notifications only when a pipeline's status changes, select
+   **Notify only when status changes**.
 1. Select the branches to send notifications for.
 1. Select **Save changes**.

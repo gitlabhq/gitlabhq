@@ -71,6 +71,10 @@ The service accounts page displays information about service accounts in your to
 
 {{< tab title="Instance-wide service accounts" >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To view service accounts for the entire instance:
 
 1. In the upper-right corner, select **Admin**.
@@ -179,7 +183,7 @@ To fork a project using a service account:
 ### Delete a service account
 
 When you delete a service account, any contributions made by the account are retained and ownership
-is transferred to a system-wide ghost user account. These contributions can include activity such as
+is transferred to a ghost user. These contributions can include activity such as
 merge requests, issues, projects, and groups.
 
 To delete a service account:
@@ -246,11 +250,8 @@ To create a personal access token for a service account:
 
 You can rotate a personal access token to invalidate the current token and generate a new value.
 
-{{< alert type="warning" >}}
-
-This cannot be undone. Any services that rely on the rotated token will stop working.
-
-{{< /alert >}}
+> [!warning]
+> This cannot be undone. Services that rely on the rotated token stop working.
 
 To rotate a personal access token for a service account:
 
@@ -265,11 +266,8 @@ To rotate a personal access token for a service account:
 
 You can rotate a personal access token to invalidate the current token.
 
-{{< alert type="warning" >}}
-
-This cannot be undone. Any services that rely on the revoked token will stop working.
-
-{{< /alert >}}
+> [!warning]
+> This cannot be undone. Services that rely on the revoked token stop working.
 
 To revoke a personal access token for a service account:
 

@@ -20,33 +20,33 @@ This guide helps you choose the right access token type for your needs within th
 ```mermaid
 flowchart TD
     A[Need GitLab API Access?] --> B{Running in CI/CD pipeline?}
-    
+
     B -->|Yes| C{Need only limited API access?<br/>Git repos, packages, releases,<br/>specific endpoints}
     C -->|Yes| D[CI Job Token<br/>Auto-rotates<br/>No manual management<br/>Limited API endpoints only]
     C -->|No| E{Access to multiple projects?}
-    
+
     E -->|No| F[Project Access Token<br/>Single project scope<br/>Full API access<br/>Email notifications]
     E -->|Yes| G[Service Account PAT<br/>Add to specific projects only<br/>Precise permission control<br/>API manageable]
-    
+
     B -->|No| H{Single Project Only?}
     H -->|Yes| I{Need administrative actions<br/>like creating tokens?}
     I -->|No| J[Project Access Token<br/>Scoped to one project<br/>Email notifications<br/>API manageable]
     I -->|Yes| K[Service Account PAT<br/>Admin permissions possible<br/>Add to specific project<br/>Better than Group token]
-    
+
     H -->|No| L{Multiple projects needed?}
     L -->|Yes| M{Large group with many projects<br/>like gitlab-org?}
     M -->|Yes| N[Service Account PAT<br/>Add to specific projects only<br/>Avoid overpermissive group tokens<br/>Granular control]
     M -->|No| O{Small, well-defined group?}
     O -->|Yes| P[Consider Group Access Token<br/>Only for small groups<br/>High privilege risk]
     O -->|No| Q[Service Account PAT<br/>Selective project membership<br/>Better security boundary]
-    
+
     L -->|No| R{Can create Service Account?}
     R -->|Yes| S[Service Account PAT<br/>API manageable<br/>Proper user separation<br/>Precise permissions]
     R -->|No| T[Bot User PAT<br/>Manual rotation required<br/>Use shared email for notifications<br/>Last resort option]
-    
+
     style D fill:#d4f6d4
     style F fill:#d4f6d4
-    style G fill:#d4f6d4  
+    style G fill:#d4f6d4
     style J fill:#d4f6d4
     style K fill:#d4f6d4
     style N fill:#d4f6d4

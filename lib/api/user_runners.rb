@@ -15,7 +15,7 @@ module API
         detail 'Create a new runner'
         success Entities::Ci::RunnerRegistrationDetails
         failure [[400, 'Bad Request'], [403, 'Forbidden']]
-        tags %w[user runners]
+        tags %w[users runners]
       end
       params do
         requires :runner_type, type: String, values: ::Ci::Runner.runner_types.keys,
@@ -45,6 +45,7 @@ module API
         optional :maximum_timeout, type: Integer,
           desc: 'Maximum timeout that limits the amount of time (in seconds) that runners can run jobs'
       end
+      route_setting :authorization, permissions: :create_runner, boundary_type: :user
       post 'runners', urgency: :low, feature_category: :fleet_visibility do
         attributes = attributes_for_keys(
           %i[runner_type group_id project_id description maintenance_note paused locked run_untagged tag_list

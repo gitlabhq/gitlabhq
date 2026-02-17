@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_projects do
+RSpec.describe Projects::AutocompleteService, :with_current_organization, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:owner) { create(:user, owner_of: project) }
@@ -384,6 +384,19 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
           ))
         end
       end
+    end
+  end
+
+  describe '#snippets' do
+    let_it_be(:user) { create(:user) }
+
+    it 'passes organization_id to SnippetsFinder' do
+      expect(SnippetsFinder).to receive(:new).with(
+        user,
+        hash_including(organization_id: current_organization.id)
+      ).and_call_original
+
+      described_class.new(project, user, { organization_id: current_organization.id }).snippets
     end
   end
 end

@@ -120,7 +120,7 @@ To configure the provider:
       ```
 
    1. Put the following content in a file named `oauth2_generic.yaml` for use as a
-      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
       ```yaml
       name: "oauth2_generic"

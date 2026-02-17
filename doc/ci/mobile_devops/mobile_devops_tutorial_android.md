@@ -133,7 +133,7 @@ Signed builds can be uploaded to the Google Play Store by using the Mobile DevOp
 
 1. [Create a Google service account](https://docs.fastlane.tools/actions/supply/#setup) in Google Cloud Platform and grant that account access to the project in Google Play.
 1. Enable the Google Play integration:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Integrations**.
    1. Select **Google Play**.
    1. Under **Enable integration**, select the **Active** checkbox.
@@ -180,4 +180,4 @@ a merge request to trigger your first pipeline.
 See the Mobile DevOps [Android Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/android_demo)
 project for a complete build, sign, and release pipeline example for Android.
 
-For additional reference materials, see the [DevOps section](https://about.gitlab.com/blog/categories/devops/) of the GitLab blog.
+For additional reference materials, see the [DevSecOps section](https://about.gitlab.com/blog/categories/devsecops/) of the GitLab blog.

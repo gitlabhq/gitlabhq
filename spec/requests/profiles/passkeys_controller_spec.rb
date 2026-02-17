@@ -86,6 +86,14 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
     end
   end
 
+  shared_examples 'page is forbidden' do
+    it 'returns a 403 status code' do
+      go
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
+
   shared_examples 'prepares the .setup_passkey_registration_page' do
     it 'renders relevant view variables', :freeze_time do
       stored_passkey = create(:webauthn_registration, :passkey, user: user)
@@ -144,6 +152,16 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
     end
   end
 
+  shared_examples 'when passkey authentication is not allowed' do
+    context 'when a user is forbidden from accessing(:new) & creating(:create) passkeys' do
+      before do
+        allow(user).to receive(:allow_passkey_authentication?).and_return(false)
+      end
+
+      it_behaves_like 'page is forbidden'
+    end
+  end
+
   context 'when passkeys flag is off' do
     before do
       stub_feature_flags(passkeys: false)
@@ -188,6 +206,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       it_behaves_like 'successfully loads the page'
       it_behaves_like 'tracks a passkey interval event'
+      it_behaves_like 'when passkey authentication is not allowed'
     end
 
     describe 'POST create' do
@@ -243,6 +262,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
       end
 
       it_behaves_like 'user must enter a valid current password'
+      it_behaves_like 'when passkey authentication is not allowed'
 
       context 'when wrong password is entered' do
         it 'shows an error message' do

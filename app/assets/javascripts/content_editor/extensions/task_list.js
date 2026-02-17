@@ -1,7 +1,7 @@
 import { mergeAttributes } from '@tiptap/core';
 import { TaskList } from '@tiptap/extension-task-list';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
-import { getMarkdownSource } from '../services/markdown_sourcemap';
+import { getMarkdownSource } from '../services/markdown_source';
 
 export default TaskList.extend({
   addOptions() {

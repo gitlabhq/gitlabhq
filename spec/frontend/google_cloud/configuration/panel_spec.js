@@ -1,6 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Panel from '~/google_cloud/configuration/panel.vue';
-import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
 import GoogleCloudMenu from '~/google_cloud/components/google_cloud_menu.vue';
 import ServiceAccountsList from '~/google_cloud/service_accounts/list.vue';
 import GcpRegionsList from '~/google_cloud/gcp_regions/list.vue';
@@ -23,11 +22,6 @@ describe('google_cloud/configuration/panel', () => {
 
   beforeEach(() => {
     wrapper = shallowMountExtended(Panel, { propsData: props });
-  });
-
-  it('contains incubation banner', () => {
-    const target = wrapper.findComponent(IncubationBanner);
-    expect(target.exists()).toBe(true);
   });
 
   it('contains google cloud menu with `configuration` active', () => {

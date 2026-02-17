@@ -1,6 +1,5 @@
 - add_page_specific_style 'page_bundles/profile'
 - page_title _('Account')
-- @force_desktop_expanded_sidebar = true
 
 - content_for :after_flash_content do
   .flash-container.flash-container-page.sticky
@@ -16,7 +15,7 @@
     - c.with_description do
       = s_("ProfilesAuthentication|Increase your account's security by enabling passkeys and two-factor authentication.")
     - c.with_body do
-      = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_two_factor_auth_path) do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_two_factor_auth_path, button_options: { data: { testid: 'manage-authentication-button' }}) do
         = s_('ProfilesAuthentication|Manage authentication')
 - else
   = render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Two-factor authentication')) do |c|

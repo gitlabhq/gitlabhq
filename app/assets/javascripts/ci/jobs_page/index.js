@@ -23,6 +23,7 @@ export default (containerId = 'js-jobs-table') => {
 
   return new Vue({
     el: containerEl,
+    name: 'JobsTableAppRoot',
     apolloProvider,
     provide: {
       fullPath,

@@ -1,8 +1,7 @@
 import { nextTick } from 'vue';
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportFromGiteaApp from '~/import/gitea/import_from_gitea_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -30,7 +29,7 @@ describe('Import from Gitea app', () => {
     createComponent();
   });
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findForm = () => wrapper.find('form');
   const findGiteaHostUrlInput = () => wrapper.findByTestId('gitea-host-url-input');
   const findPersonalAccessTokenInput = () => wrapper.findByTestId('personal-access-token-input');

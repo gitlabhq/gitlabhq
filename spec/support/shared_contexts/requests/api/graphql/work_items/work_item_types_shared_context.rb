@@ -38,8 +38,8 @@ RSpec.shared_context 'with work item types request context' do
   end
 
   def expected_work_item_type_response(resource_parent, user, work_item_type = nil)
-    base_scope = WorkItems::Type.all
-    base_scope = base_scope.id_in(work_item_type.id) if work_item_type
+    base_scope = WorkItems::TypesFramework::Provider.new(resource_parent)
+    base_scope = base_scope.by_ids(work_item_type.id) if work_item_type
 
     base_scope.map do |type|
       hash_including(

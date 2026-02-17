@@ -1,0 +1,5 @@
+---
+name: delete_container_repository
+description: Grants the ability to delete container repositories
+boundaries:
+  - project

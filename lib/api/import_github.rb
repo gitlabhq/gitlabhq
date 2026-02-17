@@ -22,7 +22,7 @@ module API
         { code: 422, message: 'Unprocessable entity' },
         { code: 503, message: 'Service unavailable' }
       ]
-      tags ['project_import_github']
+      tags ['project_import']
     end
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
@@ -35,8 +35,10 @@ module API
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
         desc: 'Strategy for behavior on timeouts'
-      optional :pagination_limit, type: Integer, desc: 'Pagination limit', values: ->(v) { v > 0 && v <= 100 }
+      optional :pagination_limit, type: Integer, desc: 'Pagination limit', values: 1..100
     end
+    route_setting :authorization, permissions: :create_github_import,
+      boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)
       if result[:status] == :success
@@ -57,11 +59,12 @@ module API
         { code: 404, message: 'Not found' },
         { code: 503, message: 'Service unavailable' }
       ]
-      tags ['project_import_github']
+      tags ['project_import']
     end
     params do
       requires :project_id, type: Integer, desc: 'ID of importing project to be canceled'
     end
+    route_setting :authorization, permissions: :cancel_github_import, boundary_type: :user
     post 'import/github/cancel' do
       project = Project.imported_from(provider.to_s).find(params[:project_id])
       result = Import::Github::CancelProjectImportService.new(project, current_user).execute
@@ -87,6 +90,7 @@ module API
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
     end
+    route_setting :authorization, permissions: :create_github_gist_import, boundary_type: :user
     post 'import/github/gists' do
       authorize! :create_snippet
 

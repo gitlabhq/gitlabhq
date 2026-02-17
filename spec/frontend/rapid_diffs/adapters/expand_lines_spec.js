@@ -3,11 +3,14 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { getLines } from '~/rapid_diffs/adapters/expand_lines/get_lines';
 import { DiffLineRow } from '~/rapid_diffs/adapters/expand_lines/diff_line_row';
 import { createAlert } from '~/alert';
+import { EXPANDED_LINES } from '~/rapid_diffs/adapter_events';
 
 jest.mock('~/alert');
 jest.mock('~/rapid_diffs/adapters/expand_lines/get_lines');
 
 describe('expandLinesAdapter', () => {
+  let trigger;
+
   const getExpandButton = (direction = 'up') =>
     document.querySelector(`[data-expand-direction="${direction}"]`);
   const getFirstInsertedRow = () => document.querySelector('[data-hunk-lines="3"]');
@@ -22,6 +25,7 @@ describe('expandLinesAdapter', () => {
     return {
       data: { diffLinesPath: '/lines', viewer: 'text_parallel' },
       diffElement: getDiffElement(),
+      trigger,
     };
   };
   const click = (direction, context = getDiffFileContext()) => {
@@ -39,6 +43,7 @@ describe('expandLinesAdapter', () => {
     `.trim();
 
   beforeEach(() => {
+    trigger = jest.fn();
     setHTMLFixture(`
       <div id="diffElement">
         <div data-file-body>
@@ -95,6 +100,7 @@ describe('expandLinesAdapter', () => {
       expect(getLastInsertedRow()).not.toBe(null);
       expect(getExpandButton(direction)).toBe(null);
       expect(getDiffElement().style.getPropertyValue('--virtual-total-rows')).toBe('6');
+      expect(trigger).toHaveBeenCalledWith(EXPANDED_LINES);
     });
   });
 

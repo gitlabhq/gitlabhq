@@ -13,7 +13,23 @@ module Gitlab
           @options = options
         end
 
-        # TODO: add interface for paginating
+        def limit(limit_value)
+          self.class.new(
+            engine,
+            plan,
+            query.limit(limit_value),
+            **options
+          )
+        end
+
+        def offset(offset_value)
+          self.class.new(
+            engine,
+            plan,
+            query.offset(offset_value),
+            **options
+          )
+        end
 
         delegate :to_a, :[], :each, to: :loaded_results
 

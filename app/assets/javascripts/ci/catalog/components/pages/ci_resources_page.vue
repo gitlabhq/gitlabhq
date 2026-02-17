@@ -14,7 +14,7 @@ import getCatalogResources from '../../graphql/queries/get_ci_catalog_resources.
 import getCurrentPage from '../../graphql/queries/client/get_current_page.query.graphql';
 import updateCurrentPageMutation from '../../graphql/mutations/client/update_current_page.mutation.graphql';
 import getCatalogResourcesCount from '../../graphql/queries/get_ci_catalog_resources_count.query.graphql';
-import { DEFAULT_SORT_VALUE, SCOPE } from '../../constants';
+import { DEFAULT_SORT_VALUE, SCOPE, TAB_NAME } from '../../constants';
 
 export default {
   name: 'CiResourcesPage',
@@ -35,12 +35,16 @@ export default {
 
     return {
       catalogResources: [],
-      catalogResourcesCount: { all: 0, namespaces: 0 },
+      catalogResourcesCount: { all: 0, namespaces: 0, analytics: 0 },
       currentPage: 1,
       pageInfo: {},
-      scope: SCOPE.all,
       searchTerm,
       sortValue: DEFAULT_SORT_VALUE,
+      tabData: {
+        name: TAB_NAME.all,
+        scope: SCOPE.all,
+        minAccessLevel: null,
+      },
     };
   },
   apollo: {
@@ -51,10 +55,11 @@ export default {
           searchTerm: this.searchTerm,
         };
       },
-      update({ namespaces, all }) {
+      update({ namespaces, all, analytics }) {
         return {
           namespaces: namespaces.count,
           all: all.count,
+          analytics: analytics.count,
         };
       },
       error(e) {
@@ -67,7 +72,8 @@ export default {
       query: getCatalogResources,
       variables() {
         return {
-          scope: this.scope,
+          scope: this.tabData.scope,
+          minAccessLevel: this.tabData.minAccessLevel || null,
           searchTerm: this.searchTerm,
           sortValue: this.sortValue,
           first: ciCatalogResourcesItemsCount,
@@ -115,7 +121,7 @@ export default {
 
         this.decrementPage();
       } catch (e) {
-        // Ensure that the current query is properly stoped if an error occurs.
+        // Ensure that the current query is properly stopped if an error occurs.
         this.$apollo.queries.catalogResources.stop();
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
       }
@@ -130,16 +136,14 @@ export default {
 
         this.incrementPage();
       } catch (e) {
-        // Ensure that the current query is properly stoped if an error occurs.
+        // Ensure that the current query is properly stopped if an error occurs.
         this.$apollo.queries.catalogResources.stop();
 
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
       }
     },
-    handleSetScope(scope) {
-      if (this.scope === scope) return;
-
-      this.scope = scope;
+    handleTabChange(tabData) {
+      this.tabData = tabData;
     },
     updatePageCount(pageNumber) {
       this.$apollo.mutate({
@@ -177,7 +181,7 @@ export default {
     <catalog-tabs
       :is-loading="isLoadingCounts"
       :resource-counts="catalogResourcesCount"
-      @setScope="handleSetScope"
+      @tab-change="handleTabChange"
     />
     <catalog-search
       :initial-search-term="searchTerm"
@@ -185,13 +189,14 @@ export default {
       @update-sorting="onUpdateSorting"
     />
     <catalog-list-skeleton-loader v-if="isLoading" class="gl-mt-3 gl-w-full" />
-    <empty-state v-else-if="!hasResources" :search-term="searchTerm" />
+    <empty-state v-else-if="!hasResources" :search-term="searchTerm" :current-tab="tabData.name" />
     <template v-else>
       <ci-resources-list
         :page-info="pageInfo"
         :resources="catalogResources"
-        @onPrevPage="handlePrevPage"
-        @onNextPage="handleNextPage"
+        :current-tab="tabData.name"
+        @on-prev-page="handlePrevPage"
+        @on-next-page="handleNextPage"
       />
     </template>
   </div>

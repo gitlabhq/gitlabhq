@@ -1,5 +1,5 @@
 ---
 name: star_project
-description: Grants the ability to star and unstar projects
+description: Grants the ability to star projects
 boundaries:
   - project

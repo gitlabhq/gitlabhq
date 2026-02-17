@@ -20,21 +20,15 @@ description: Namespace hierarchy.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 {{< alert type="disclaimer" />}}
 
-{{< alert type="note" >}}
-
-Organizations is in development.
-
-{{< /alert >}}
+> [!note]
+> Organizations is in development.
 
 Organizations will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:

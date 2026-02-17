@@ -30,7 +30,7 @@ You can create an issue in many ways in GitLab:
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create an issue:
 
@@ -53,7 +53,7 @@ to the projects in the group.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project in the group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project in the group.
 
 To create an issue from a group:
 
@@ -77,7 +77,7 @@ You can create a new issue from an existing one. The two issues can then be mark
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create an issue from another issue:
 
@@ -97,7 +97,7 @@ You can create a new issue from an [issue board](../issue_board.md).
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create an issue from a project issue board:
 
@@ -135,7 +135,7 @@ Prerequisites:
 - Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
   configured with [email sub-addressing or catch-all mailbox](../../../administration/incoming_email.md#requirements).
 - There must be at least one issue in the issue list.
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To email an issue to a project:
 
@@ -150,13 +150,10 @@ To email an issue to a project:
 A new issue is created, with your user as the author.
 You can save this address as a contact in your email client to use it again.
 
-{{< alert type="warning" >}}
-
-The email address you see is a private email address, generated just for you.
-**Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
-were you.
-
-{{< /alert >}}
+> [!warning]
+> The email address you see is a private email address, generated just for you.
+> **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
+> were you.
 
 To regenerate the email address:
 

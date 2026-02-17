@@ -28,6 +28,9 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Gitlab::Runtime.sidekiq? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
     GITALY_METADATA_FILENAME = '.gitaly-metadata'
+    CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS = 4
+    CLIENT_RETRY_DEFAULT_MAX_BACKOFF = 1.4
+    CLIENT_RETRY_DEFAULT_INITIAL_BACKOFF = 0.4
 
     MUTEX = Mutex.new
 
@@ -55,24 +58,39 @@ module Gitlab
     private_class_method :interceptors
 
     def self.retry_policy
-      ## Default max retry time is 6 seconds:
-      ##  0.4 +
-      ##  (0.4 * 2) = 0.8 +
-      ##  (0.8 * 2) = 1.6 +
-      ##  (1.6 * 2) = 3.2
-      ##  ==
-      ##  0.4 + 0.8 + 1.6 + 3.2 = 6
+      # We cap to 5 max_attempts because this limit is enforced by the gRPC library.
+      # See here: https://github.com/grpc/grpc-node/issues/2326
+      max_attempts = [Gitlab.config.gitaly.try(:client_max_attempts) || CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS, 5].min
+      max_backoff = Gitlab.config.gitaly.try(:client_max_backoff) || "#{CLIENT_RETRY_DEFAULT_MAX_BACKOFF}s"
+
+      # Parse max_backoff string to extract float value
+      # Example: '1.4s' => float(1.4)
+      max_backoff_value = max_backoff.to_s.delete_suffix('s').to_f
+
+      # Our backoffMultiplier (see below) is hardcoded to 2.
+      # Which means that between each retry, we double the delay
+      # before retrying.
+      # Hence, we can compute the initial_backoff with:
+      initial_backoff = max_backoff_value / (2**max_attempts)
+
+      # If 'max_attempts' and 'max_backoff' have default values
+      # we set 'initial_backoff' back to its default value, overwriting
+      # the computation above.
+      initial_backoff = CLIENT_RETRY_DEFAULT_INITIAL_BACKOFF if
+        max_attempts == CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS &&
+          (max_backoff_value - CLIENT_RETRY_DEFAULT_MAX_BACKOFF).abs < Float::EPSILON
+
       {
-        maxAttempts: Gitlab.config.gitaly.try(:client_max_attempts) || 4,
-        initialBackoff: '0.4s',
-        maxBackoff: Gitlab.config.gitaly.try(:client_max_backoff) || '1.4s',
+        maxAttempts: max_attempts,
+        initialBackoff: "#{initial_backoff}s",
+        maxBackoff: max_backoff,
         backoffMultiplier: 2,
         retryableStatusCodes: %w[UNAVAILABLE ABORTED]
       }
     end
 
-    def self.channel_args
-      {
+    def self.channel_args(storage = nil)
+      args = {
         # These keepalive values match the go Gitaly client
         # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
         'grpc.keepalive_time_ms': 20000,
@@ -195,11 +213,44 @@ module Gitlab
           ]
         }.to_json
       }
+
+      # Add TLS-specific channel arguments if storage is provided and TLS is enabled
+      if storage
+        uri = URI(address(storage))
+
+        # For dns+tls:// scheme, extract hostname for SNI override
+        # This ensures proper certificate validation during TLS handshake when using DNS resolution
+        # Extract hostname from different URI formats:
+        # - dns+tls:///gitaly.example.com:8075 -> path is /gitaly.example.com:8075
+        # - dns+tls://1.1.1.1/gitaly.example.com:8075 -> path is /gitaly.example.com:8075
+        # - dns+tls:localhost:9876 -> opaque is localhost:9876
+        if uri.scheme == 'dns+tls'
+          host_port = if uri.opaque.present?
+                        uri.opaque
+                      elsif uri.path.present? && uri.path != '/'
+                        uri.path.sub(%r{^/}, '')
+                      end
+
+          if host_port.present?
+            target = URI.parse("//#{host_port}")
+            server_name = target.host
+            args['grpc.ssl_target_name_override'] = server_name if server_name.present?
+          end
+        end
+      end
+
+      args
     end
     private_class_method :channel_args
 
     def self.stub_creds(storage)
-      if URI(address(storage)).scheme == 'tls'
+      uri = URI(address(storage))
+
+      # Check if TLS is enabled via URI scheme
+      # Supported TLS schemes:
+      # - tls://host:port
+      # - dns+tls://authority/host:port or dns+tls:///host:port
+      if uri.scheme == 'tls' || uri.scheme == 'dns+tls'
         GRPC::Core::ChannelCredentials.new ::Gitlab::X509::Certificate.ca_certs_bundle
       else
         :this_channel_is_insecure
@@ -215,7 +266,7 @@ module Gitlab
     end
 
     def self.stub_address(storage)
-      address(storage).sub(%r{^tcp://|^tls://}, '')
+      address(storage).sub(%r{^tcp://|^tls://}, '').sub(%r{^dns\+tls:}, 'dns:')
     end
 
     # Cache gRPC servers by storage. All the client stubs in the same process can share the underlying connection to the
@@ -224,7 +275,7 @@ module Gitlab
     def self.create_channel(storage)
       @channels ||= {}
       @channels[storage] ||= GRPC::ClientStub.setup_channel(
-        nil, stub_address(storage), stub_creds(storage), channel_args
+        nil, stub_address(storage), stub_creds(storage), channel_args(storage)
       )
     end
 
@@ -249,8 +300,8 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless %w[tcp unix tls dns].include?(URI(address).scheme)
-        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls' or 'dns'"
+      unless %w[tcp unix tls dns dns+tls].include?(URI(address).scheme)
+        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls' or 'dns' or 'dns+tls'"
       end
 
       address

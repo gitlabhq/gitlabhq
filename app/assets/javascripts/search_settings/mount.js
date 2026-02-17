@@ -5,6 +5,7 @@ import { expandSection, closeSection, isExpanded } from '~/settings_panels';
 const mountSearch = ({ el }) =>
   new Vue({
     el,
+    name: 'SearchSettingsRoot',
     render: (h) =>
       h(SearchSettings, {
         ref: 'searchSettings',

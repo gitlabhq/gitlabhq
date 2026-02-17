@@ -3,10 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CheckManifestCoherenceService, :aggregate_failures, feature_category: :package_registry do
-  # Use `let` instead of `let_it_be` because the "with auto corrected version"
-  # context modifies `package.version` in before blocks. With `let_it_be`, the
-  # same package instance is reused across examples, causing the mutation to
-  # leak to other tests.
+  # Use `let` with `build` - non-persisted objects don't benefit from `let_it_be`.
   let(:package) { build(:npm_package) }
 
   let(:tar_header) { Gem::Package::TarHeader.new(name: 'json', size: package_json.size, mode: 0o644, prefix: '') }

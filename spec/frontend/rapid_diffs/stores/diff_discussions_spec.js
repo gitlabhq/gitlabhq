@@ -104,6 +104,16 @@ describe('diffDiscussions store', () => {
     });
   });
 
+  describe('updateNoteTextById', () => {
+    it('updates note text by id', () => {
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc', note: 'Hello!' }] },
+      ];
+      useDiffDiscussions().updateNoteTextById('foo', 'Updated text');
+      expect(useDiffDiscussions().discussions[0].notes[0].note).toBe('Updated text');
+    });
+  });
+
   describe('editNote', () => {
     it('updates existing note', () => {
       const value = 'edit';
@@ -146,12 +156,21 @@ describe('diffDiscussions store', () => {
   });
 
   describe('setEditingMode', () => {
-    it('sets editing mode', () => {
+    it('sets editing mode to true', () => {
       const note = { id: 'foo', isEditing: false };
       const discussion = { id: 'efg', notes: [note] };
       useDiffDiscussions().discussions = [discussion];
       useDiffDiscussions().setEditingMode(useDiffDiscussions().discussions[0].notes[0], true);
       expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(true);
+    });
+
+    it('clears editedNote when setting editing mode to false', () => {
+      const note = { id: 'foo', isEditing: true, editedNote: 'some text' };
+      const discussion = { id: 'efg', notes: [note] };
+      useDiffDiscussions().discussions = [discussion];
+      useDiffDiscussions().setEditingMode(useDiffDiscussions().discussions[0].notes[0], false);
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
+      expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeUndefined();
     });
   });
 
@@ -603,6 +622,32 @@ describe('diffDiscussions store', () => {
       });
 
       expect(discussions).toHaveLength(0);
+    });
+  });
+
+  describe('getImageDiscussions', () => {
+    it('returns discussions with matching image position type', () => {
+      useDiffDiscussions().discussions = [
+        {
+          id: 1,
+          notes: [{ note: 'text note' }],
+        },
+        {
+          id: 2,
+          notes: [
+            {
+              position: {
+                position_type: 'image',
+                old_path: 'old.png',
+                new_path: 'new.png',
+              },
+            },
+          ],
+        },
+      ];
+      expect(useDiffDiscussions().getImageDiscussions('old.png', 'new.png')).toMatchObject([
+        useDiffDiscussions().discussions[1],
+      ]);
     });
   });
 });

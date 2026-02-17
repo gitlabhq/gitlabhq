@@ -5,17 +5,26 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokensApp from '~/personal_access_tokens/components/app.vue';
 import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
 import PersonalAccessTokenDrawer from '~/personal_access_tokens/components/personal_access_token_drawer.vue';
-import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
+import CreatePersonalAccessTokenDropdown from '~/personal_access_tokens/components/create_personal_access_token_dropdown.vue';
 import PersonalAccessTokenStatistics from '~/personal_access_tokens/components/personal_access_token_statistics.vue';
+import PersonalAccessTokenActions from '~/personal_access_tokens/components/personal_access_token_actions.vue';
+import RotatedPersonalAccessToken from '~/personal_access_tokens/components/rotated_personal_access_token.vue';
 import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
 import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
 import { mockTokens, mockPageInfo, mockQueryResponse } from '../mock_data';
 
 jest.mock('~/alert');
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  setUrlParams: jest.fn(() => '/-/personal_access_tokens'),
+  updateHistory: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -42,9 +51,11 @@ describe('PersonalAccessTokensApp', () => {
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findTable = () => wrapper.findComponent(PersonalAccessTokensTable);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findCreateButton = () => wrapper.findComponent(CreatePersonalAccessTokenButton);
+  const findCreateDropdown = () => wrapper.findComponent(CreatePersonalAccessTokenDropdown);
   const findDrawer = () => wrapper.findComponent(PersonalAccessTokenDrawer);
   const findStatistics = () => wrapper.findComponent(PersonalAccessTokenStatistics);
+  const findActions = () => wrapper.findComponent(PersonalAccessTokenActions);
+  const findRotatedToken = () => wrapper.findComponent(RotatedPersonalAccessToken);
 
   beforeEach(() => {
     createComponent();
@@ -63,8 +74,8 @@ describe('PersonalAccessTokensApp', () => {
     });
   });
 
-  it('renders the create button', () => {
-    expect(findCreateButton().exists()).toBe(true);
+  it('renders the create dropdown', () => {
+    expect(findCreateDropdown().exists()).toBe(true);
   });
 
   it('renders the table component', () => {
@@ -86,6 +97,13 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        1,
+        { sort: 'expires_asc', state: 'active' },
+        { url: 'http://test.host/', clearParams: true, decodeParams: true },
+      );
+      expect(updateHistory).toHaveBeenCalled();
     });
 
     it('passes tokens to the table', async () => {
@@ -120,11 +138,15 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(2, { sort: 'expires_asc' }, expect.anything());
     });
 
     it('refetches when date field with less than operator is set', async () => {
       findFilteredSearch().vm.$emit('input', [
         { type: 'expires', value: { data: '2026-01-20', operator: '<' } },
+        { type: 'created', value: { data: '2026-01-20', operator: '<' } },
+        { type: 'lastUsed', value: { data: '2026-01-20', operator: '<' } },
       ]);
 
       findFilteredSearch().vm.$emit('submit');
@@ -139,12 +161,27 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
         expiresBefore: '2026-01-20',
+        createdBefore: '2026-01-20',
+        lastUsedBefore: '2026-01-20',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        {
+          sort: 'expires_asc',
+          expires_before: '2026-01-20',
+          created_before: '2026-01-20',
+          last_used_before: '2026-01-20',
+        },
+        expect.anything(),
+      );
     });
 
     it('refetches when date field with greater than or equal to operator is set', async () => {
       findFilteredSearch().vm.$emit('input', [
         { type: 'expires', value: { data: '2026-01-20', operator: '≥' } },
+        { type: 'created', value: { data: '2026-01-20', operator: '≥' } },
+        { type: 'lastUsed', value: { data: '2026-01-20', operator: '≥' } },
       ]);
 
       findFilteredSearch().vm.$emit('submit');
@@ -159,7 +196,20 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
         expiresAfter: '2026-01-20',
+        createdAfter: '2026-01-20',
+        lastUsedAfter: '2026-01-20',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        {
+          sort: 'expires_asc',
+          expires_after: '2026-01-20',
+          created_after: '2026-01-20',
+          last_used_after: '2026-01-20',
+        },
+        expect.anything(),
+      );
     });
 
     it('refetches when when search term is set', async () => {
@@ -180,6 +230,12 @@ describe('PersonalAccessTokensApp', () => {
         before: null,
         search: 'token name',
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_asc', search: 'token name' },
+        expect.anything(),
+      );
     });
 
     it('refetches when filter is submitted', async () => {
@@ -202,6 +258,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_asc', state: 'inactive', revoked: 'true' },
+        expect.anything(),
+      );
     });
 
     it('does not refetch if submit button is not clicked', async () => {
@@ -233,6 +295,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'name_asc', state: 'active' },
+        expect.anything(),
+      );
     });
 
     it('updates sort direction when changed', async () => {
@@ -248,6 +316,12 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+
+      expect(setUrlParams).toHaveBeenNthCalledWith(
+        2,
+        { sort: 'expires_desc', state: 'active' },
+        expect.anything(),
+      );
     });
   });
 
@@ -363,6 +437,67 @@ describe('PersonalAccessTokensApp', () => {
         after: null,
         last: null,
         before: null,
+      });
+    });
+  });
+
+  describe('actions', () => {
+    it('renders the actions component', () => {
+      expect(findActions().exists()).toBe(true);
+    });
+
+    it('handles successful token rotation from drawer', async () => {
+      await findDrawer().vm.$emit('rotate', mockTokens[0]);
+
+      expect(findActions().props()).toMatchObject({
+        token: mockTokens[0],
+        action: 'rotate',
+      });
+    });
+
+    it('handles successful token rotation from table', async () => {
+      await findTable().vm.$emit('rotate', mockTokens[0]);
+
+      expect(findActions().props()).toMatchObject({
+        token: mockTokens[0],
+        action: 'rotate',
+      });
+    });
+
+    it('passes rotated token to `RotatedPersonalAccessToken` component', async () => {
+      const tokenValue = 'xx';
+
+      await findActions().vm.$emit('rotated', tokenValue);
+
+      expect(findRotatedToken().props('value')).toBe(tokenValue);
+    });
+
+    it('clears the selected token on modal close', async () => {
+      await findTable().vm.$emit('rotate', mockTokens[0]);
+
+      await findActions().vm.$emit('close');
+
+      expect(findActions().props()).toMatchObject({
+        token: null,
+        action: null,
+      });
+    });
+
+    it('handles successful token revocation from drawer', async () => {
+      await findDrawer().vm.$emit('revoke', mockTokens[1]);
+
+      expect(findActions().props()).toMatchObject({
+        token: mockTokens[1],
+        action: 'revoke',
+      });
+    });
+
+    it('handles successful token revocation from table', async () => {
+      await findTable().vm.$emit('revoke', mockTokens[1]);
+
+      expect(findActions().props()).toMatchObject({
+        token: mockTokens[1],
+        action: 'revoke',
       });
     });
   });

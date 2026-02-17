@@ -53,6 +53,8 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
       post_graphql(query, current_user: current_user)
 
       expect(note_data['id']).to eq(global_id_of(note).to_s)
+      expect(note_data['noteableType']).to eq(note.noteable_type)
+      expect(note_data['noteableId']).to eq(note.noteable_id)
     end
 
     context 'when it is a system note' do
@@ -102,8 +104,7 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
 
     context 'and notes widget is not available' do
       before do
-        WorkItems::Type.default_by_type(:issue).widget_definitions
-          .find_by_widget_type(:notes).update!(disabled: true)
+        stub_all_work_item_widgets(notes: false)
       end
 
       it 'returns nil' do

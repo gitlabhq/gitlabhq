@@ -21,15 +21,13 @@ RSpec.describe RepositoryForkWorker, feature_category: :source_code_management d
 
     shared_examples 'RepositoryForkWorker performing' do |branch|
       def expect_fork_repository(success:, branch:)
-        allow(::Gitlab::GitalyClient::RepositoryService).to receive(:new).and_call_original
-        expect_next_instance_of(::Gitlab::GitalyClient::RepositoryService, forked_project.repository.raw) do |svc|
-          exp = expect(svc).to receive(:fork_repository).with(project.repository.raw, branch)
+        allow(Project).to receive(:find).and_call_original
+        allow(Project).to receive(:find).with(forked_project.id).and_return(forked_project)
 
-          if success
-            exp.and_return(true)
-          else
-            exp.and_raise(GRPC::BadStatus, 'Fork failed in tests')
-          end
+        if success
+          expect(forked_project.repository).to receive(:fork_from).with(project.repository, branch).and_return(true)
+        else
+          expect(forked_project.repository).to receive(:fork_from).with(project.repository, branch).and_raise(Gitlab::Git::CommandError, 'Fork failed in tests')
         end
       end
 

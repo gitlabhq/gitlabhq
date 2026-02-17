@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Keys::CreateService, feature_category: :source_code_management do
   let(:organization) { create(:organization) }
   let(:user) { create(:user, organization: organization) }
-  let(:params) { attributes_for(:key) }
+  let(:params) { attributes_for(:key, user: user) }
 
   subject { described_class.new(user, params) }
 

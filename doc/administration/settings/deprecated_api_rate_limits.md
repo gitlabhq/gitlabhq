@@ -23,7 +23,7 @@ restrictive rate limit on deprecated endpoints.
 This rate limit does not include all deprecated API endpoints, just the ones that are likely to
 affect performance:
 
-- [`GET /groups/:id`](../../api/groups.md#get-a-single-group) without the `with_projects=0` query parameter.
+- [`GET /groups/:id`](../../api/groups.md#retrieve-a-group) without the `with_projects=0` query parameter.
 
 ## Define deprecated API rate limits
 

@@ -15,12 +15,9 @@ description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
-and is planned for removal in 19.0. This is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+> and is planned for removal in 19.0. This is a breaking change.
 
 ## Getting started
 
@@ -250,13 +247,10 @@ Use the following customization options to optimize coverage-guided fuzz testing
 
 Use the following variables to configure coverage-guided fuzz testing in your CI/CD pipeline.
 
-{{< alert type="warning" >}}
-
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results, including
-a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All customization of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results, including
+> a large number of false positives.
 
 | CI/CD variable            | Description                                                                     |
 |---------------------------|---------------------------------------------------------------------------------|

@@ -1,0 +1,9 @@
+---
+name: delete_member
+description: Grants the ability to delete members
+boundaries:
+  - group
+  - project
+permissions:
+  - delete_billable_member
+  - delete_member

@@ -1,0 +1,7 @@
+---
+name: create_project_relation_import
+description: Grants the ability to import relations into a project
+permissions:
+  - create_project_relation_import
+boundaries:
+  - project

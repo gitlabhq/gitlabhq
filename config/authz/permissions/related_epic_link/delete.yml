@@ -1,0 +1,5 @@
+---
+name: delete_related_epic_link
+description: Grants the ability to delete related epic links
+boundaries:
+  - group

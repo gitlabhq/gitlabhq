@@ -51,7 +51,7 @@ This installation and management method follows the [Kubernetes Operator pattern
 
 Use if your infrastructure is on Kubernetes or [OpenShift](openshift_and_gitlab/_index.md), and you're familiar with how Operators work.
 
-This installation method provides additional functionality beyond the Helm chart installation method, including automation of the [GitLab upgrade steps](https://docs.gitlab.com/operator/gitlab_upgrades.html). The considerations for the Helm chart also apply here.
+This installation method provides additional functionality beyond the Helm chart installation method, including automation of the [GitLab upgrade steps](https://docs.gitlab.com/operator/gitlab_upgrades/). The considerations for the Helm chart also apply here.
 
 Consider the Helm chart installation method if you are limited by [GitLab Operator known issues](https://docs.gitlab.com/operator/#known-issues).
 
@@ -77,7 +77,7 @@ For more information, see [self-compiled installation](self_compiled/_index.md).
 
 [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#documentation) is a set of opinionated Terraform and Ansible scripts.
 
-Use to deploy a [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers.
+You can use GET to deploy scaled GitLab environments following the [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers (GCP, AWS, and Azure).
 
 This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 

@@ -14,7 +14,9 @@ title: Resource group API
 
 Use this API to interact with [resource groups](../ci/resource_groups/_index.md).
 
-## Get all resource groups for a project
+## List all resource groups
+
+Lists all resource groups for a specified project.
 
 ```plaintext
 GET /projects/:id/resource_groups
@@ -25,8 +27,9 @@ GET /projects/:id/resource_groups
 | `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
 ```
 
 Example of response
@@ -43,7 +46,9 @@ Example of response
 ]
 ```
 
-## Get a specific resource group
+## Retrieve a resource group
+
+Retrieves a specified resource group for a project.
 
 ```plaintext
 GET /projects/:id/resource_groups/:key
@@ -55,8 +60,9 @@ GET /projects/:id/resource_groups/:key
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
 Example of response
@@ -71,13 +77,15 @@ Example of response
 }
 ```
 
-## Get current job for a specific resource group
+## Retrieve current job for a resource group
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572135) in GitLab 18.6.
 
 {{< /history >}}
+
+Retrieves the current job for a specified resource group in a project.
 
 ```plaintext
 GET /projects/:id/resource_groups/:key/current_job
@@ -89,7 +97,9 @@ GET /projects/:id/resource_groups/:key/current_job
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
 ```
 
 Example of response
@@ -181,8 +191,9 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
 ```
 
 Example of response
@@ -264,7 +275,7 @@ Example of response
 ]
 ```
 
-## Edit an existing resource group
+## Update a resource group
 
 Updates an existing resource group's properties.
 

@@ -32,7 +32,6 @@ export default {
   <aside
     :class="{ 'right-sidebar-expanded': expanded, 'right-sidebar-collapsed': !expanded }"
     class="issues-bulk-update right-sidebar"
-    aria-live="polite"
   >
     <div class="gl-border-b gl-flex gl-justify-between gl-p-4">
       <slot name="bulk-edit-actions"></slot>

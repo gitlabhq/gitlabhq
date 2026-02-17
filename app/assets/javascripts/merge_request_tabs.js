@@ -90,6 +90,7 @@ function mountPipelines() {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
   const { mrWidgetData } = gl;
   const table = new Vue({
+    name: 'MergeRequestPipelinesTableRoot',
     components: {
       MergeRequestPipelinesTable: () => {
         return gon.features.mrPipelinesGraphql
@@ -523,7 +524,7 @@ export default class MergeRequestTabs {
         commitsDiv.innerHTML += html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
-        scrollToContainer('#commits');
+        scrollToElement('#commits');
 
         const loadMoreButton = document.querySelector('.js-load-more-commits');
 

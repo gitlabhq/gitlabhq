@@ -50,12 +50,9 @@ You can query a subset of users in a GitLab instance by using:
 
 1. Select **Play**.
 
-{{< alert type="note" >}}
-
-[The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
-It also expects a GlobalID as an input rather than a single integer.
-
-{{< /alert >}}
+> [!note]
+> [The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
+> It also expects a GlobalID as an input rather than a single integer.
 
 This query returns the specified information for the three users with the listed username.
 

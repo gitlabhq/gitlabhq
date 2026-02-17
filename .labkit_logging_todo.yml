@@ -1,0 +1,265 @@
+# LabKit Logging Field Standardization TODO
+# AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
+#
+# This file tracks deprecated logging fields that need to be migrated to standard fields.
+# Each offense represents a file using a deprecated field that should be replaced.
+#
+# === HOW TO FIX ===
+#
+# 1. Replace the deprecated field with the standard field constant
+# 2. Remove the deprecated field entirely (adding the new field is not enough)
+# 3. Run your tests - the offense will be automatically removed
+#
+# Example:
+#   # Before
+#   logger.info(user_id: 123)
+#
+#   # After
+#   logger.info(Labkit::Fields::GL_USER_ID => 123)
+#
+# === ADDING OFFENSES (if fixing is not immediately possible) ===
+#
+# Run: LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec <spec_file>
+#
+# === REGENERATE ENTIRE TODO ===
+#
+# Delete this file and run: LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec
+
+---
+offenses:
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/concerns/namespaces/stateful/transition_logging.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/concerns/users/email_otp_enrollment.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/member.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/user.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::GraphqlLogger
+  callsite: app/services/analytics/glql/logging_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuthLogger
+  callsite: app/services/auth/container_registry_authentication_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_processing/atomic_processing_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/notification_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/spam/spam_verdict_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/activate_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/approve_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/banned_user_base_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/deactivate_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/refresh_authorized_projects_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/reject_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/users/reset_feed_token_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/anti_abuse/ban_duplicate_users_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/delete_user_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::GithubImport::Logger
+  callsite: app/workers/gitlab/github_gists_import/import_gist_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/members/prune_deletions_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/observability/create_group_o11y_setting_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/personal_access_tokens/expiring_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/controllers/ee/sessions_controller.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/controllers/registrations/welcome_controller.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::Llm::Logger
+  callsite: ee/app/graphql/mutations/ai/action.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/virtual_registries/packages/maven.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/arkose/record_user_data_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/authz/user_group_member_roles/destroy_for_group_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/authz/user_group_member_roles/update_for_group_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/ci/minutes/track_live_consumption_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/groups/enterprise_users/base_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/groups/sync_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::Llm::Logger
+  callsite: ee/app/services/llm/base_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::UpdateMirrorServiceJsonLogger
+  callsite: ee/app/services/projects/update_mirror_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/orchestration/create_bot_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/policy_commit_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/users/compromised_passwords/detect_and_notify_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/users/compromised_passwords/resolve_detection_for_user_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/users/signup_service.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/gitlab_subscriptions/add_on_purchases/cleanup_user_add_on_assignment_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/namespaces/remove_dormant_members_worker.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/ee/api/internal/base.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Import::Framework::Logger
+  callsite: ee/lib/gitlab/import_export/project/custom_template_restorer_helper.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab_subscriptions/member_management/seat_aware_provisioning.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/identity_verification/user_risk_profile.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/users/identity_verification/authorize_ci.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/api/helpers/authz/postfiltering_helpers.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuthLogger
+  callsite: lib/gitlab/application_rate_limiter.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuditJsonLogger
+  callsite: lib/gitlab/audit/auditor.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuthLogger
+  callsite: lib/gitlab/auth.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuthLogger
+  callsite: lib/gitlab/auth/unique_ips_limiter.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/background_migration/recalculate_two_factor_enforcement_on_users.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Import::Framework::Logger
+  callsite: lib/gitlab/import/placeholder_user_creator.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Import::Framework::Logger
+  callsite: lib/gitlab/import_export/members_mapper.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AuthLogger
+  callsite: lib/gitlab/metrics/subscribers/rack_attack.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/seeders/ci/runner/runner_fleet_seeder.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: spec/workers/process_commit_worker_spec.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID

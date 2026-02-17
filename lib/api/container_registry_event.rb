@@ -30,7 +30,7 @@ module API
         failure [
           { code: 401, message: 'Invalid Token' }
         ]
-        tags %w[container_registry_event]
+        tags %w[container_registry]
       end
 
       rescue_from ContainerRegistry::Path::InvalidRegistryPathError do

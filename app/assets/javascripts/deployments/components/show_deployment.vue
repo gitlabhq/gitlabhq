@@ -9,23 +9,20 @@ import releaseQuery from '../graphql/queries/release.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
 import DeploymentAside from './deployment_aside.vue';
 import DeploymentDeployBlock from './deployment_deploy_block.vue';
-import DetailsFeedback from './details_feedback.vue';
 
 const DEPLOYMENT_QUERY_POLLING_INTERVAL = 3000;
 
 export default {
+  name: 'ShowDeployment',
   components: {
     GlAlert,
     GlSprintf,
     DeploymentHeader,
     DeploymentAside,
     DeploymentDeployBlock,
-    DetailsFeedback,
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
-    ApprovalsEmptyState: () =>
-      import('ee_else_ce/deployments/components/approvals_empty_state.vue'),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName', 'graphqlEtagKey'],
   apollo: {
@@ -124,7 +121,6 @@ export default {
           :release="release"
           :loading="isLoading"
         />
-        <details-feedback class="gl-mt-6" />
         <deployment-approvals
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
@@ -137,7 +133,6 @@ export default {
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
         />
-        <approvals-empty-state v-if="!isLoading" :approval-summary="deployment.approvalSummary" />
       </div>
       <deployment-aside
         v-if="!hasError"

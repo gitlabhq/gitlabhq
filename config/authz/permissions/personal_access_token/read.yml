@@ -1,0 +1,5 @@
+---
+name: read_personal_access_token
+description: Grants the ability to view personal access tokens
+boundaries:
+  - user

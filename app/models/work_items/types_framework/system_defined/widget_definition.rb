@@ -61,10 +61,17 @@ module WorkItems
           end
 
           # List of all available widgets as classes
+
           def available_widgets
-            widget_types.map do |type|
-              new(widget_type: type).widget_class
+            widget_types.filter_map do |type|
+              WorkItems::Widgets.const_get(type.camelize, false)
+            rescue NameError
+              nil
             end
+          end
+
+          def widget_classes
+            all.filter_map(&:widget_class).uniq
           end
         end
 

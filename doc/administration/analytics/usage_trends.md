@@ -34,6 +34,10 @@ Usage trends data refreshes daily.
 
 ## View usage trends
 
+Prerequisites:
+
+- Administrator access.
+
 To view usage trends:
 
 1. In the upper-right corner, select **Admin**.

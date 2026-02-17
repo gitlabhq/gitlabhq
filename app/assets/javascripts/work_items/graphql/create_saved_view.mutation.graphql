@@ -1,0 +1,21 @@
+# @feature_category: portfolio_management
+
+mutation workItemSavedViewCreate($input: WorkItemSavedViewCreateInput!) {
+  workItemSavedViewCreate(input: $input) {
+    savedView {
+      id
+      name
+      description
+      subscribed
+      isPrivate: private
+      displaySettings
+      filters
+      sort
+      userPermissions {
+        updateSavedView
+        deleteSavedView
+      }
+    }
+    errors
+  }
+}

@@ -115,7 +115,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         end
       end
 
-      it 'shows data on each stage', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509194' do
+      it 'shows data on each stage', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16769' do
         expect_issue_to_be_present
 
         click_stage('Plan')

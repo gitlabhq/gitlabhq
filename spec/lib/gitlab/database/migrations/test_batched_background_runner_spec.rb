@@ -102,8 +102,8 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         let(:params) { { version: nil, connection: connection } }
         let(:migration_name) { 'CopyColumnUsingBackgroundMigrationJob' }
         let(:migration_result_dir) { result_dir.join(migration_name) }
-        let(:migration_file_path) {  migration_result_dir.join('details.json') }
-        let(:json_file) { Gitlab::Json.parse(File.read(migration_file_path)) }
+        let(:details_file_path) { migration_result_dir.join('details.json') }
+        let(:json_file) { Gitlab::Json.parse(File.read(details_file_path)) }
 
         let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
 
@@ -168,6 +168,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
       context 'with jobs to run' do
         let(:migration_name) { 'TestBackgroundMigration' }
+        let(:migration_result_dir) { result_dir.join(migration_name) }
+        let(:details_file_path) { migration_result_dir.join('details.json') }
+        let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
 
         it 'samples jobs' do
           calls = []
@@ -216,21 +219,17 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           expect(calls.size).to eq(1)
         end
 
-        it 'does not sample a job if there are zero rows to sample' do
+        it 'creates a details.json file with migration attributes' do
           calls = []
-          define_background_migration(migration_name, scoping: ->(relation) {
-            relation.none
-          }) do |*args|
+          define_background_migration(migration_name, with_base_class: true) do |*args|
             calls << args
           end
 
           queue_migration(
             migration_name,
-            table_name,
-            :id,
+            table_name, :id,
             job_interval: 5.minutes,
-            batch_size: num_rows_in_table * 2,
-            sub_batch_size: num_rows_in_table * 2
+            batch_size: 100
           )
 
           described_class.new(
@@ -239,7 +238,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
             from_id: from_id
           ).run_jobs(for_duration: 3.minutes)
 
-          expect(calls.count).to eq(0)
+          expect(details_file_path).to exist
+          parsed_json = Gitlab::Json.parse(File.read(details_file_path))
+          expect(parsed_json.keys).to match_array(expected_file_keys)
         end
 
         context 'with multiple jobs to run' do
@@ -290,6 +291,98 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
               ).run_jobs(for_duration: 5.seconds)
             end
           end
+
+          it 'creates a details.json file for each migration' do
+            define_background_migration(migration_name, with_base_class: true)
+            queue_migration(
+              migration_name,
+              table_name,
+              :id,
+              job_interval: 5.minutes,
+              batch_size: 100
+            )
+
+            last_id
+            define_background_migration('NewMigration', with_base_class: true) { travel 1.second }
+            queue_migration(
+              'NewMigration',
+              table_name,
+              :id,
+              job_interval: 5.minutes,
+              batch_size: 10,
+              sub_batch_size: 5
+            )
+
+            described_class.new(
+              result_dir: result_dir,
+              connection: connection,
+              from_id: last_id
+            ).run_jobs(for_duration: 5.seconds)
+
+            # Check details.json for NewMigration
+            new_migration_details = result_dir.join('NewMigration', 'details.json')
+            expect(new_migration_details).to exist
+            parsed_json = Gitlab::Json.parse(File.read(new_migration_details))
+            expect(parsed_json.keys).to match_array(expected_file_keys)
+          end
+        end
+      end
+
+      context 'with no jobs to run' do
+        let(:migration_name) { 'TestBackgroundMigration' }
+        let(:migration_result_dir) { result_dir.join(migration_name) }
+        let(:details_file_path) { migration_result_dir.join('details.json') }
+        let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
+
+        before do
+          define_background_migration(migration_name, scoping: ->(relation) {
+            relation.none
+          }) do |*args|
+            # no-op
+          end
+
+          queue_migration(
+            migration_name,
+            table_name,
+            :id,
+            job_interval: 5.minutes,
+            batch_size: num_rows_in_table * 2,
+            sub_batch_size: num_rows_in_table * 2
+          )
+        end
+
+        subject(:run_migration) do
+          described_class.new(
+            result_dir: result_dir,
+            connection: connection,
+            from_id: from_id
+          ).run_jobs(for_duration: 3.minutes)
+        end
+
+        it 'does not sample a job if there are zero rows to sample' do
+          run_migration
+
+          # Verify no jobs were created
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by!(job_class_name: migration_name)
+            expect(migration.batched_jobs.count).to eq(0)
+          end
+        end
+
+        it 'creates a details.json file even when no jobs are sampled' do
+          run_migration
+
+          expect(details_file_path).to exist
+          parsed_json = Gitlab::Json.parse(File.read(details_file_path))
+          expect(parsed_json.keys).to match_array(expected_file_keys)
+        end
+
+        it 'calls observe_no_batches_processed when no jobs are run' do
+          expect_next_instance_of(Gitlab::Database::Migrations::Instrumentation) do |instrumentation|
+            expect(instrumentation).to receive(:observe_no_batches_processed).and_call_original
+          end
+
+          run_migration
         end
       end
 
@@ -366,8 +459,8 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
       context 'running a real background migration' do
         let(:migration_name) { background_migration_job_class.name.demodulize }
         let(:migration_result_dir) { result_dir.join(migration_name) }
-        let(:migration_file_path) { migration_result_dir.join('details.json') }
-        let(:json_file) { Gitlab::Json.parse(File.read(migration_file_path)) }
+        let(:details_file_path) { migration_result_dir.join('details.json') }
+        let(:json_file) { Gitlab::Json.parse(File.read(details_file_path)) }
         let(:params) { { version: nil, connection: connection } }
         let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
 

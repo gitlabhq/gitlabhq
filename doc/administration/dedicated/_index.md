@@ -33,8 +33,7 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 
 | Feature | Description | Set up with |
 |------------|-------------|---------------------|
-| [Instance sizing](create_instance/data_residency_high_availability.md#availability-and-scalability) | You select an instance size based on your user count. GitLab provisions and maintains the infrastructure. | Onboarding |
-| [AWS data regions](create_instance/data_residency_high_availability.md#primary-regions) | You choose regions for primary operations, disaster recovery, and backup. GitLab replicates your data across these regions. | Onboarding |
+| [AWS data regions](create_instance/data_residency_high_availability.md#region-selection) | You choose regions for primary operations, disaster recovery, and backup. GitLab replicates your data across these regions. | Onboarding |
 | [Maintenance windows](maintenance.md#maintenance-windows) | You select a weekly 4-hour maintenance window. GitLab performs updates, configuration changes, and security patches during this time. | Onboarding |
 | [Release management](releases.md#release-rollout-schedule) | GitLab updates your instance monthly with new features and security patches. | Available by <br>default |
 | [Geo disaster recovery](disaster_recovery.md) | You choose the secondary region during onboarding. GitLab maintains a replicated secondary site in your chosen region using Geo. | Onboarding |

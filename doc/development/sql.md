@@ -435,15 +435,12 @@ User.connection.execute(Gitlab::SQL::Union.new([scope1, scope2]).to_sql)
 
 ## Ordering by Creation Date (`created_at`)
 
-{{< alert type="warning" >}}
-
-With the [Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/),
-ordering by `id` no longer reliably reflects creation order. Each Cell has a [provisioned database sequence range](cells/_index.md#database-sequences).
-When data moves between Cells, records retain their original IDs from the source Cell.
-
-For accurate sorting by creation date, use `ORDER BY created_at, id` with appropriate indexing.
-
-{{< /alert >}}
+> [!warning]
+> With the [Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/),
+> ordering by `id` no longer reliably reflects creation order. Each Cell has a [provisioned database sequence range](cells/_index.md#database-sequences).
+> When data moves between Cells, records retain their original IDs from the source Cell.
+> 
+> For accurate sorting by creation date, use `ORDER BY created_at, id` with appropriate indexing.
 
 In short, you should prefer `ORDER BY id` over `ORDER BY created_at` unless you
 are sure it is going to cause problems for your feature.
@@ -625,11 +622,8 @@ Limit  (cost=817.27..818.12 rows=1 width=4)
               Index Cond: (id = group_ids.id)
 ```
 
-{{< alert type="note" >}}
-
-Due to their complexity, using CTEs should be the last resort. Use CTEs only when simpler query changes don't produce a favorable execution plan.
-
-{{< /alert >}}
+> [!note]
+> Due to their complexity, using CTEs should be the last resort. Use CTEs only when simpler query changes don't produce a favorable execution plan.
 
 ## `.find_or_create_by` is not atomic
 
@@ -896,8 +890,5 @@ PersonalAccessToken
   .update_all(revoked: true)
 ```
 
-{{< alert type="note" >}}
-
-Avoid updating large volumes of unbounded data. If there are no [application limits](application_limits.md) on the data, or you are unsure about the data volume, you should [update the data in batches](database/iterating_tables_in_batches.md).
-
-{{< /alert >}}
+> [!note]
+> Avoid updating large volumes of unbounded data. If there are no [application limits](application_limits.md) on the data, or you are unsure about the data volume, you should [update the data in batches](database/iterating_tables_in_batches.md).

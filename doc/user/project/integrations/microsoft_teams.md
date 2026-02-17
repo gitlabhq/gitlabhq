@@ -23,13 +23,10 @@ in Microsoft Teams. To integrate the services, you must:
 
 ## Configure Microsoft Teams
 
-{{< alert type="warning" >}}
-
-New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
-existing integrations must be transitioned to workflow apps by December 2025.
-Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
-
-{{< /alert >}}
+> [!warning]
+> New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
+> existing integrations must be transitioned to workflow apps by December 2025.
+> Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
 
 To configure Microsoft Teams to listen for notifications from GitLab:
 
@@ -66,6 +63,8 @@ GitLab to send the notifications:
    [configured Microsoft Teams](#configure-microsoft-teams).
 1. Optional. If you enable the pipeline trigger, select the
    **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
+1. Optional. If you enable the pipeline trigger, select the
+   **Notify only when status changes** checkbox to send notifications only when the pipeline status for the ref changes.
 1. Select the branches you want to send notifications for.
 1. Select **Save changes**.
 

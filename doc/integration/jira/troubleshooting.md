@@ -156,7 +156,7 @@ The error occurs because the Jira certificate is not publicly trusted or the cer
 Until this issue is resolved, GitLab does not connect to Jira.
 
 To resolve this issue, see
-[Common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#common-ssl-errors).
+[Common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#common-ssl-errors).
 
 ## Change all Jira projects to instance-level or group-level values
 
@@ -322,14 +322,11 @@ The credentials for accessing Jira are not allowed to access the data.
 Check your Jira issues integration credentials and try again.
 ```
 
-{{< alert type="warning" >}}
-
-Atlassian deprecated the older JQL search endpoints (`GET/POST /rest/api/2/search`) for Jira Cloud
-on October 31, 2024, with removal scheduled for May 1, 2025.
-Jira Server and Data Center continue to use the `/rest/api/2/search` endpoint.
-For more information, see the [Atlassian deprecation notice](https://developer.atlassian.com/changelog/#CHANGE-2046).
-
-{{< /alert >}}
+> [!warning]
+> Atlassian deprecated the older JQL search endpoints (`GET/POST /rest/api/2/search`) for Jira Cloud
+> on October 31, 2024, with removal scheduled for May 1, 2025.
+> Jira Server and Data Center continue to use the `/rest/api/2/search` endpoint.
+> For more information, see the [Atlassian deprecation notice](https://developer.atlassian.com/changelog/#CHANGE-2046).
 
 To resolve this issue, ensure the Jira user you configured in the Jira issues integration has permission to view issues
 associated with the specified Jira project key.

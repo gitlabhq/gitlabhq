@@ -147,45 +147,29 @@ RSpec.describe Gitlab::Database::SharedModel, feature_category: :database do
   end
 
   describe '.ensure_connection_set!' do
-    context 'when feature flag is disabled' do
+    context 'when overriding_connection is set' do
+      let(:new_connection) { double('connection') }
+
       before do
-        stub_feature_flags(enforce_explicit_connection_for_partitioned_shared_models: false)
+        allow(Gitlab::Database).to receive(:gitlab_schemas_for_connection)
+          .with(new_connection)
+          .and_return([:gitlab_shared])
       end
 
       it 'does not raise an error' do
-        expect { described_class.ensure_connection_set! }.not_to raise_error
+        described_class.using_connection(new_connection) do
+          expect { described_class.ensure_connection_set! }.not_to raise_error
+        end
       end
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(enforce_explicit_connection_for_partitioned_shared_models: true)
-      end
-
-      context 'when overriding_connection is set' do
-        let(:new_connection) { double('connection') }
-
-        before do
-          allow(Gitlab::Database).to receive(:gitlab_schemas_for_connection)
-            .with(new_connection)
-            .and_return([:gitlab_shared])
-        end
-
-        it 'does not raise an error' do
-          described_class.using_connection(new_connection) do
-            expect { described_class.ensure_connection_set! }.not_to raise_error
-          end
-        end
-      end
-
-      context 'when overriding_connection is not set' do
-        it 'raises an error' do
-          expect { described_class.ensure_connection_set! }.to raise_error(
-            'Connection not set for SharedModel partition strategy. ' \
-              'Use SharedModel.using_connection() to set the correct connection. ' \
-              'Using the default database is dangerous.'
-          )
-        end
+    context 'when overriding_connection is not set' do
+      it 'raises an error' do
+        expect { described_class.ensure_connection_set! }.to raise_error(
+          'Connection not set for SharedModel partition strategy. ' \
+            'Use SharedModel.using_connection() to set the correct connection. ' \
+            'Using the default database is dangerous.'
+        )
       end
     end
   end

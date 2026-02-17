@@ -80,14 +80,15 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
     end
 
     context 'when upload request does not returns 200' do
-      it do
+      it 'raises StreamError with response code' do
         stub_request(:get, download_url).to_return(status: 200, body: 'ABC', headers: { 'Content-Length' => 3 })
         stub_request(:post, upload_url).to_return(status: 403)
 
-        expect { subject.execute }.to raise_error(
-          Gitlab::ImportExport::RemoteStreamUpload::StreamError,
-          "Invalid response code while uploading file. Code: 403"
-        )
+        expect { subject.execute }.to raise_error do |error|
+          expect(error).to be_a(Gitlab::ImportExport::RemoteStreamUpload::StreamError)
+          expect(error.message).to eq("Invalid response code while uploading file. Code: 403")
+          expect(error.response_code).to eq('403')
+        end
       end
     end
 

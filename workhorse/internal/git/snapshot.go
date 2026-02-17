@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -23,9 +23,8 @@ type snapshotParams struct {
 	GetSnapshotRequest string
 }
 
-var (
-	SendSnapshot = &snapshot{"git-snapshot:"}
-)
+// SendSnapshot is a senddata.Injector for handling Git snapshot requests
+var SendSnapshot = &snapshot{"git-snapshot:"}
 
 func (s *snapshot) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params snapshotParams

@@ -17,12 +17,10 @@ RSpec.describe Gitlab::AssetProxy do
 
   context 'when asset proxy is enabled' do
     before do
-      stub_asset_proxy_setting(allowlist: %w[gitlab.com *.mydomain.com])
-      stub_asset_proxy_setting(
-        enabled: true,
+      stub_asset_proxy_enabled(
         url: 'https://assets.example.com',
         secret_key: 'shared-secret',
-        domain_regexp: Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(Gitlab.config.asset_proxy.allowlist)
+        allowlist: %w[gitlab.com *.mydomain.com]
       )
     end
 

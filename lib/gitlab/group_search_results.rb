@@ -2,6 +2,8 @@
 
 module Gitlab
   class GroupSearchResults < SearchResults
+    extend ::Gitlab::Utils::Override
+
     attr_reader :group
 
     def initialize(current_user, query, limit_projects = nil, group:, **opts)

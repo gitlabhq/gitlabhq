@@ -12,7 +12,7 @@ import {
   convertToCamelCase,
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
-import { sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -94,7 +94,7 @@ export default {
     },
     noteableDisplayName() {
       const displayNameMap = {
-        [constants.ISSUE_NOTEABLE_TYPE]: this.$options.i18n.issue,
+        [constants.ISSUE_NOTEABLE_TYPE]: __('ticket'),
         [constants.EPIC_NOTEABLE_TYPE]: this.$options.i18n.epic,
         [constants.MERGE_REQUEST_NOTEABLE_TYPE]: this.$options.i18n.mergeRequest,
         [constants.INCIDENT_NOTEABLE_TYPE]: this.$options.i18n.incident,

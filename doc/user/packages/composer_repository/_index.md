@@ -13,13 +13,10 @@ title: Composer packages in the package registry
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Composer package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
+> [!warning]
+> The Composer package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
+> work and timelines to make it production ready.
 
 Publish [Composer](https://getcomposer.org/) packages in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -114,11 +111,8 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 1. Above the file list, select **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 
-{{< alert type="warning" >}}
-
-Do not save unless you want to overwrite the existing CI/CD file.
-
-{{< /alert >}}
+> [!warning]
+> Do not save unless you want to overwrite the existing CI/CD file.
 
 ## Publishing packages with the same name or version
 
@@ -291,13 +285,10 @@ To install a package:
    composer config --unset gitlab-domains
    ```
 
-   {{< alert type="note" >}}
-
-   On GitLab.com, Composer uses the GitLab token from `auth.json` as a private token by default.
-   Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
-   as basic-auth, with the token as a username and a blank password. This results in a 401 error.
-
-   {{< /alert >}}
+   > [!note]
+   > On GitLab.com, Composer uses the GitLab token from `auth.json` as a private token by default.
+   > Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
+   > as basic-auth, with the token as a username and a blank password. This results in a 401 error.
 
 1. With the `composer.json` and `auth.json` files configured, you can install the package by running:
 
@@ -311,14 +302,11 @@ To install a package:
    composer req <package-name>:<package-version>
    ```
 
-{{< alert type="warning" >}}
-
-Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
-consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
-stored in a [GitLab CI/CD variable](../../../ci/variables/_index.md) or in
-[HashiCorp Vault](../../../ci/secrets/_index.md).
-
-{{< /alert >}}
+> [!warning]
+> Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
+> consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
+> stored in a [GitLab CI/CD variable](../../../ci/variables/_index.md) or in
+> [HashiCorp Vault](../../../ci/secrets/_index.md).
 
 ### Install from source
 

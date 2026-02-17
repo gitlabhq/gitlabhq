@@ -1,0 +1,5 @@
+---
+name: update_resource_group
+description: Grants the ability to update CI resource groups
+boundaries:
+  - project

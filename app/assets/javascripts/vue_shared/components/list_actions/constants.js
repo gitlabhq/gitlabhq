@@ -59,7 +59,7 @@ export const DEFAULT_ACTION_ITEM_DEFINITIONS = {
     variant: 'danger',
   },
   [ACTION_DELETE_IMMEDIATELY]: {
-    text: __('Delete immediately'),
+    text: __('Delete permanently'),
     variant: 'danger',
   },
 };

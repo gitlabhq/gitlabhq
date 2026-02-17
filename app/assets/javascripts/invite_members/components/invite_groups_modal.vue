@@ -3,10 +3,15 @@ import { GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
+import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { GROUP_FILTERS, GROUP_MODAL_LABELS } from '../constants';
+import {
+  GROUP_FILTERS,
+  GROUP_MODAL_LABELS,
+  INVITE_GROUP_MODAL_TRACKING_CATEGORY,
+} from '../constants';
 import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
@@ -24,6 +29,7 @@ export default {
     InviteGroupNotification,
     GlAlert,
   },
+  mixins: [Tracking.mixin({ category: INVITE_GROUP_MODAL_TRACKING_CATEGORY })],
   props: {
     id: {
       type: String,
@@ -125,16 +131,17 @@ export default {
       displaySuccessfulInvitationAlert();
     }
 
-    eventHub.$on('openGroupModal', () => {
-      this.openModal();
+    eventHub.$on('open-group-modal', (options) => {
+      this.openModal(options);
     });
   },
   methods: {
     showInvalidFeedbackMessage(response) {
       this.invalidFeedbackMessage = getInvalidFeedbackMessage(response);
     },
-    openModal() {
+    openModal({ source = 'unknown' }) {
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
+      this.track('render', { label: source });
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);

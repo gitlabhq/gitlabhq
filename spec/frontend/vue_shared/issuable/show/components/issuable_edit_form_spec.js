@@ -74,8 +74,8 @@ describe('IssuableEditForm', () => {
 
         await nextTick();
 
-        expect(wrapper.vm.title).toBe('Foo');
-        expect(wrapper.vm.description).toBe('Foobar');
+        expect(wrapper.vm.issuableMeta.issuableTitle).toBe('Foo');
+        expect(wrapper.vm.issuableMeta.issuableDescription).toBe('Foobar');
       });
 
       it('sets title and description to empty string when `issuable.title` and `issuable.description` is unavailable', async () => {
@@ -89,8 +89,8 @@ describe('IssuableEditForm', () => {
 
         await nextTick();
 
-        expect(wrapper.vm.title).toBe('');
-        expect(wrapper.vm.description).toBe('');
+        expect(wrapper.vm.issuableMeta.issuableTitle).toBe('');
+        expect(wrapper.vm.issuableMeta.issuableDescription).toBe('');
       });
     });
   });
@@ -189,8 +189,8 @@ describe('IssuableEditForm', () => {
         expect(wrapper.emitted('keydown-title')[0]).toMatchObject([
           eventObj,
           {
-            issuableTitle: wrapper.vm.title,
-            issuableDescription: wrapper.vm.description,
+            issuableTitle: wrapper.vm.issuableMeta.issuableTitle,
+            issuableDescription: wrapper.vm.issuableMeta.issuableDescription,
           },
         ]);
       });
@@ -203,8 +203,8 @@ describe('IssuableEditForm', () => {
         expect(wrapper.emitted('keydown-description')[0]).toMatchObject([
           eventObj,
           {
-            issuableTitle: wrapper.vm.title,
-            issuableDescription: wrapper.vm.description,
+            issuableTitle: wrapper.vm.issuableMeta.issuableTitle,
+            issuableDescription: wrapper.vm.issuableMeta.issuableDescription,
           },
         ]);
       });

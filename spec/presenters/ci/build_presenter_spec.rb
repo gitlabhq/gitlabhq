@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -25,7 +27,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     it 'forwards missing methods to build' do
-      expect(presenter.ref).to eq('master')
+      expect(presenter.ref).to eq('main')
     end
   end
 
@@ -126,10 +128,13 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
       end
 
       context 'when variable is stored in ci_pipeline_variables' do
-        let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
+        before do
+          create_or_replace_pipeline_variables(pipeline, { key: 'TEST_VAR', value: 'test_value' })
+        end
 
         it 'returns variables' do
-          expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
+          expect(presenter.trigger_variables).to eq([pipeline.variables.last.to_hash_variable])
+          pipeline.clear_memoization(:variables)
         end
       end
     end

@@ -194,11 +194,12 @@ describe('CompareApp component', () => {
   describe('merge request buttons', () => {
     const findProjectMrButton = () => wrapper.findByTestId('projectMrButton');
     const findCreateMrButton = () => wrapper.findByTestId('createMrButton');
+    const findMrStatusMessage = () => wrapper.findByTestId('mrStatusMessage');
 
     it('does not have merge request buttons', () => {
-      createComponent();
       expect(findProjectMrButton().exists()).toBe(false);
       expect(findCreateMrButton().exists()).toBe(false);
+      expect(findMrStatusMessage().exists()).toBe(false);
     });
 
     it('has "View open merge request" button', () => {
@@ -207,6 +208,7 @@ describe('CompareApp component', () => {
       });
       expect(findProjectMrButton().exists()).toBe(true);
       expect(findCreateMrButton().exists()).toBe(false);
+      expect(findMrStatusMessage().exists()).toBe(false);
     });
 
     it('has "Create merge request" button', () => {
@@ -215,6 +217,121 @@ describe('CompareApp component', () => {
       });
       expect(findProjectMrButton().exists()).toBe(false);
       expect(findCreateMrButton().exists()).toBe(true);
+      expect(findMrStatusMessage().exists()).toBe(false);
+    });
+
+    describe('when branch selection changes', () => {
+      describe.each`
+        mrPathType                   | propsData
+        ${'projectMergeRequestPath'} | ${{ projectMergeRequestPath: 'some/project/merge/request/path' }}
+        ${'createMrPath'}            | ${{ createMrPath: 'some/create/mr/path' }}
+      `('with $mrPathType', ({ propsData }) => {
+        beforeEach(() => {
+          createComponent(propsData);
+        });
+
+        it.each`
+          changeType          | action
+          ${'source branch'}  | ${() => findSourceRevisionCard().vm.$emit('selectRevision', { direction: 'to', revision: 'new-source-branch' })}
+          ${'target branch'}  | ${() => findTargetRevisionCard().vm.$emit('selectRevision', { direction: 'from', revision: 'new-target-branch' })}
+          ${'swap revisions'} | ${() => wrapper.findByTestId('swapRevisionsButton').vm.$emit('click')}
+        `('replaces button with message when $changeType changes', async ({ action }) => {
+          expect(findProjectMrButton().exists() || findCreateMrButton().exists()).toBe(true);
+          expect(findMrStatusMessage().exists()).toBe(false);
+
+          action();
+          await nextTick();
+
+          expect(findProjectMrButton().exists()).toBe(false);
+          expect(findCreateMrButton().exists()).toBe(false);
+          expect(findMrStatusMessage().exists()).toBe(true);
+          expect(findMrStatusMessage().text()).toBe(
+            'Select Compare to check for an existing merge request',
+          );
+        });
+
+        it('shows button again when branches are changed back to original values', async () => {
+          findSourceRevisionCard().vm.$emit('selectRevision', {
+            direction: 'to',
+            revision: 'different-branch',
+          });
+          await nextTick();
+          expect(findProjectMrButton().exists()).toBe(false);
+          expect(findCreateMrButton().exists()).toBe(false);
+          expect(findMrStatusMessage().exists()).toBe(true);
+
+          findSourceRevisionCard().vm.$emit('selectRevision', {
+            direction: 'to',
+            revision: defaultProps.paramsTo,
+          });
+          await nextTick();
+
+          expect(findProjectMrButton().exists() || findCreateMrButton().exists()).toBe(true);
+          expect(findMrStatusMessage().exists()).toBe(false);
+        });
+      });
+
+      describe('when page loads without MR paths (same source/target)', () => {
+        beforeEach(() => {
+          createComponent({
+            projectMergeRequestPath: '',
+            createMrPath: '',
+          });
+        });
+
+        it('shows message when branches change to be different', async () => {
+          expect(findProjectMrButton().exists()).toBe(false);
+          expect(findCreateMrButton().exists()).toBe(false);
+          expect(findMrStatusMessage().exists()).toBe(false);
+
+          findSourceRevisionCard().vm.$emit('selectRevision', {
+            direction: 'to',
+            revision: 'new-branch',
+          });
+
+          await nextTick();
+
+          expect(findMrStatusMessage().exists()).toBe(true);
+          expect(findMrStatusMessage().text()).toBe(
+            'Select Compare to check for an existing merge request',
+          );
+        });
+      });
+
+      describe('when branches have same value', () => {
+        beforeEach(() => {
+          createComponent({
+            paramsFrom: 'main',
+            paramsTo: 'main',
+            projectMergeRequestPath: '',
+            createMrPath: '',
+          });
+        });
+
+        it('does not show message when swapping identical branches', async () => {
+          expect(findMrStatusMessage().exists()).toBe(false);
+
+          wrapper.findByTestId('swapRevisionsButton').vm.$emit('click');
+
+          await nextTick();
+
+          expect(findMrStatusMessage().exists()).toBe(false);
+        });
+
+        it('shows message when changing to a different branch', async () => {
+          findSourceRevisionCard().vm.$emit('selectRevision', {
+            direction: 'to',
+            revision: 'feature-branch',
+          });
+
+          await nextTick();
+
+          expect(findMrStatusMessage().exists()).toBe(true);
+          expect(findMrStatusMessage().text()).toBe(
+            'Select Compare to check for an existing merge request',
+          );
+        });
+      });
     });
   });
 });

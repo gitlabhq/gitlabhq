@@ -13,19 +13,16 @@ title: Install GitLab under a relative URL
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Configuring a relative URL for GitLab has [known issues with Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/456427) and
-[testing limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/439943).
-
-{{< /alert >}}
+> [!warning]
+> Configuring a relative URL for GitLab has [known issues with Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/456427) and
+> [testing limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/439943).
 
 While you should install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
 This document describes how to run GitLab under a relative URL for installations
-from source. Check the relative URL documentation for the [Linux package](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab)
+from source. Check the relative URL documentation for the [Linux package](https://docs.gitlab.com/omnibus/settings/configuration/#configuring-a-relative-url-for-gitlab)
 or for [GitLab chart](https://docs.gitlab.com/charts/charts/globals/#configure-a-relative-url-root)
 to enable relative URLs if you are not installing from source.
 
@@ -61,12 +58,9 @@ See the [requirements](requirements.md) document for more information.
 
 ## Enable relative URL in GitLab
 
-{{< alert type="note" >}}
-
-Do not make any changes to your web server configuration file regarding
-relative URL. The relative URL support is implemented by GitLab Workhorse.
-
-{{< /alert >}}
+> [!note]
+> Do not make any changes to your web server configuration file regarding
+> relative URL. The relative URL support is implemented by GitLab Workhorse.
 
 ---
 
@@ -128,12 +122,9 @@ To enable relative URLs in GitLab:
    -authBackend http://127.0.0.1:8080/gitlab
    ```
 
-   {{< alert type="note" >}}
-
-   If you are using a custom init script, make sure to edit the previous
-   GitLab Workhorse setting as needed.
-
-   {{< /alert >}}
+   > [!note]
+   > If you are using a custom init script, make sure to edit the previous
+   > GitLab Workhorse setting as needed.
 
 1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 

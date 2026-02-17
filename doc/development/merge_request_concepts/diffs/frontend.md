@@ -229,13 +229,10 @@ Previously, we had to request two different formats for inline and side-by-side.
 then uses this standard format to render the diff line data. With this standard format, the user
 can then switch between inline and side-by-side without the need to re-fetch any data.
 
-{{< alert type="note" >}}
-
-For this component, a lot of the data used and rendered gets memoized and cached, based on
-various conditions. It is possible that data sometimes gets cached between each different
-component render.
-
-{{< /alert >}}
+> [!note]
+> For this component, a lot of the data used and rendered gets memoized and cached, based on
+> various conditions. It is possible that data sometimes gets cached between each different
+> component render.
 
 ### Vuex store
 
@@ -336,13 +333,10 @@ formatting happens in a computed property inside the `diff_content.vue` componen
 
 ### Render queue
 
-{{< alert type="note" >}}
-
-This might not be required any more. Some investigation work is required to decide
-the future of the render queue. The virtual scroll bar we created has probably removed
-any performance benefit we got from this approach.
-
-{{< /alert >}}
+> [!note]
+> This might not be required any more. Some investigation work is required to decide
+> the future of the render queue. The virtual scroll bar we created has probably removed
+> any performance benefit we got from this approach.
 
 To render diffs quickly, we have a render queue that allows the diffs to render only if the
 browser is idle. This saves the browser getting frozen when rendering a lot of large diffs at once,

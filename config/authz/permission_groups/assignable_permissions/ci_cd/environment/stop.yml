@@ -1,0 +1,8 @@
+---
+name: stop_environment
+description: Grants the ability to stop environments in a project
+boundaries:
+  - project
+permissions:
+  - stop_environment
+  - stop_stale_environment

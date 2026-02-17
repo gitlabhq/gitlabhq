@@ -36,12 +36,13 @@ Read more about the [built-in limits for merge requests and diffs](instance_limi
 
 ## Configure diff limits
 
-{{< alert type="warning" >}}
+> [!warning]
+> These settings are experimental. An increased maximum increases resource
+> consumption of your instance. Keep this in mind when adjusting the maximum.
 
-These settings are experimental. An increased maximum increases resource
-consumption of your instance. Keep this in mind when adjusting the maximum.
+Prerequisites:
 
-{{< /alert >}}
+- Administrator access.
 
 To set maximum values for diff display in merge requests:
 

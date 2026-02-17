@@ -75,12 +75,14 @@ for details on managing SSL certificates and configuring NGINX.
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../ci/environments/_index.md#web-terminals-deprecated) support requires
-  your load balancer to correctly handle WebSocket connections. When using
-  HTTP or HTTPS proxying, this means your load balancer must be configured
-  to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-  [web terminal](integration/terminal.md) integration guide for
-  more details.
+- (*1*): Your load balancer must support WebSocket connections for features
+  like [Duo Chat (Classic)](../user/gitlab_duo_chat/_index.md), real-time label
+  updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
+  Load balancers that do not support WebSockets (for example, AWS Classic Load
+  Balancers) are not compatible with GitLab for these features. When using HTTP
+  or HTTPS proxying, your load balancer must be configured to forward the
+  `Connection` and `Upgrade` hop-by-hop headers to the backend servers. This
+  refers to HTTP header forwarding, not Direct Server Return (DSR) mode.
 - (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
@@ -122,11 +124,8 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when using Puma, because there is a brief period during a restart where Puma doesn't accept requests.
 
-{{< alert type="warning" >}}
-
-Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 15.8 may cause [increased Praefect memory usage](https://gitlab.com/gitlab-org/gitaly/-/issues/4751) and lead to memory errors.
-
-{{< /alert >}}
+> [!warning]
+> Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 15.8 may cause [increased Praefect memory usage](https://gitlab.com/gitlab-org/gitaly/-/issues/4751) and lead to memory errors.
 
 ## Troubleshooting
 

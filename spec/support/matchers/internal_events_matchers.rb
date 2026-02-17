@@ -255,11 +255,28 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
       category.to_s,
       event_name,
       include(
-        context: contain_exactly(
-          standard_context,
-          service_ping_context_for(event_name)
-        ),
+        context: expected_contexts_for(event_name),
         **@additional_properties.slice(:label, :property, :value).compact
+      )
+    )
+  end
+
+  def expected_contexts_for(event_name)
+    base_contexts = [standard_context, service_ping_context_for(event_name)]
+    extra_properties = @additional_properties.except(:label, :property, :value)
+
+    if extra_properties.present? && Gitlab::Tracking::EventDefinition.find(event_name)&.duo_event?
+      match_array(base_contexts + [ai_context])
+    else
+      match_array(base_contexts)
+    end
+  end
+
+  def ai_context
+    have_attributes(
+      class: SnowplowTracker::SelfDescribingJson,
+      to_json: include(
+        schema: Gitlab::Tracking::AiContext::SCHEMA_URL
       )
     )
   end

@@ -20,6 +20,36 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
           scheme: "bearer"
         )
       ]
+
+      config.excluded_api_classes = ['TestApis::ExcludedApi']
+    end
+  end
+
+  describe '#initialize' do
+    context 'when excluded_api_classes contains invalid values' do
+      [
+        [true, 'boolean true'],
+        [false, 'boolean false'],
+        [123, 'integer'],
+        [45.67, 'float'],
+        [nil, 'nil'],
+        [:symbol_value, 'symbol'],
+        [{ key: 'value' }, 'hash'],
+        [%w[nested array], 'array'],
+        ['NonExistent::ApiClass', 'non-existent class name'],
+        ['', 'empty string'],
+        [[], 'empty array']
+      ].each do |invalid_value, description|
+        context "with #{description}" do
+          before do
+            Gitlab::GrapeOpenapi.configuration.excluded_api_classes = [invalid_value]
+          end
+
+          it 'does not filter out any valid api classes' do
+            expect(generator.instance_variable_get(:@api_classes)).to eq(api_classes)
+          end
+        end
+      end
     end
   end
 
@@ -36,6 +66,14 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
 
     it 'returns the correct security output' do
       expect(generator.generate[:security]).to eq([{ 'http' => [] }])
+    end
+
+    context 'when excluded_api_classes contains valid values' do
+      let(:api_classes) { [TestApis::UsersApi, TestApis::ExcludedApi] }
+
+      it 'removes excluded api classes' do
+        expect(generator.generate[:paths].keys).not_to include("/api/v1/internal")
+      end
     end
 
     describe 'tags sorting' do

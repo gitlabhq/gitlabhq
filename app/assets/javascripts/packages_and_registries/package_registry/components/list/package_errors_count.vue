@@ -4,7 +4,7 @@ import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
-import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { ERRORED_PACKAGE_TEXT } from '~/packages_and_registries/package_registry/constants';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import getPackageErrorsCountQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_errors_count.query.graphql';
@@ -77,7 +77,7 @@ export default {
       );
     },
     graphqlResource() {
-      return this.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+      return this.isGroupPage ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
     },
     singleErrorPackage() {
       if (this.errorPackagesCount === 1) {

@@ -34,7 +34,7 @@ module API
           { code: 404, message: 'Project Not Found' }
         ]
         is_array true
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         use :pagination
@@ -54,8 +54,8 @@ module API
           desc: 'Return packages with specified status'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages,
-        allow_public_access_for_enabled_project_features: :package_registry
+      route_setting :authorization, permissions: :read_package, boundary_type: :project,
+        job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages' do
         packages = ::Packages::PackagesFinder.new(
           user_project,
@@ -72,14 +72,14 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages,
-        allow_public_access_for_enabled_project_features: :package_registry
+      route_setting :authorization, permissions: :read_package, boundary_type: :project,
+        job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id' do
         render_api_error!('Package not found', 404) unless package.detailed_info?
 
@@ -94,7 +94,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         use :pagination
@@ -106,8 +106,8 @@ module API
           values: 1..20
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_pipelines,
-        allow_public_access_for_enabled_project_features: :package_registry
+      route_setting :authorization, permissions: :read_package_pipeline, boundary_type: :project,
+        job_token_policies: :read_pipelines, allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id/pipelines' do
         not_found!('Package not found') unless package.detailed_info?
 
@@ -131,13 +131,14 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :admin_packages
+      route_setting :authorization, permissions: :delete_package, boundary_type: :project,
+        job_token_policies: :admin_packages
       delete ':id/packages/:package_id' do
         authorize_destroy_package!(user_project)
 

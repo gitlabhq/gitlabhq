@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/labkit/correlation"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -55,7 +55,7 @@ func TestHandleLimitErr(t *testing.T) {
 				ErrorMessage: "concurrency queue wait time reached",
 				RetryAfter:   durationpb.New(0)})
 
-			handleLimitErr(fmt.Errorf("wrapped error: %w", err), &body, ctx, tc.errWriter)
+			handleLimitErr(ctx, fmt.Errorf("wrapped error: %w", err), &body, tc.errWriter)
 			require.Equal(t, tc.expectedBytes, body.Bytes())
 		})
 	}
@@ -63,10 +63,10 @@ func TestHandleLimitErr(t *testing.T) {
 	t.Run("non LimitError", func(t *testing.T) {
 		var body bytes.Buffer
 		err := status.Error(codes.Internal, "some internal error")
-		handleLimitErr(fmt.Errorf("wrapped error: %w", err), &body, ctx, writeUploadPackError)
+		handleLimitErr(ctx, fmt.Errorf("wrapped error: %w", err), &body, writeUploadPackError)
 		require.Equal(t, []byte(nil), body.Bytes(), expectedCorrelationID)
 
-		handleLimitErr(fmt.Errorf("wrapped error: %w", err), &body, ctx, writeReceivePackError)
+		handleLimitErr(ctx, fmt.Errorf("wrapped error: %w", err), &body, writeReceivePackError)
 		require.Equal(t, []byte(nil), body.Bytes(), expectedCorrelationID)
 	})
 }

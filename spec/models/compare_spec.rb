@@ -119,6 +119,28 @@ RSpec.describe Compare, feature_category: :source_code_management do
     end
   end
 
+  describe '#diff_stats' do
+    it 'returns diff stats' do
+      stats = subject.diff_stats
+
+      expect(stats).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(stats.count).to be > 0
+    end
+
+    it 'calls repository.diff_stats with correct parameters' do
+      expect(project.repository).to receive(:diff_stats).with(subject.diff_refs.base_sha,
+        subject.diff_refs.head_sha).and_call_original
+
+      subject.diff_stats
+    end
+
+    it 'returns nil when diff_refs is nil' do
+      allow(subject).to receive(:diff_refs).and_return(nil)
+
+      expect(subject.diff_stats).to be_nil
+    end
+  end
+
   describe '#changed_paths' do
     subject(:changed_paths) { compare.changed_paths }
 

@@ -141,14 +141,14 @@ To do so, follow these steps:
    1. Upload the service account credentials JSON file to the VM instance (e.g. `scp ~/Downloads/gitlab-qa-resources-abc123.json <your-username>@VM-IP:/home/<your-username>`).
 1. Create a storage bucket for the shared cache in [the `gitlab-qa-resources` GCP project](https://console.cloud.google.com/storage/browser?project=gitlab-qa-resources).
 1. SSH into the VM instance (using GCP's Web interface).
-1. Follow [the installation steps for auto-scaled runners manager](https://docs.gitlab.com/runner/executors/docker_machine.html#preparing-the-environment):
-   1. [Install `gitlab-runner`](https://docs.gitlab.com/runner/install/linux-repository.html#installing-gitlab-runner).
+1. Follow [the installation steps for auto-scaled runners manager](https://docs.gitlab.com/runner/executors/docker_machine/#preparing-the-environment):
+   1. [Install `gitlab-runner`](https://docs.gitlab.com/runner/install/linux-repository/#installing-gitlab-runner).
    1. [Install Docker Machine](https://web.archive.org/web/20210619101324/https://docs.docker.com/machine/install-machine/).
    1. [Register the runner](https://docs.gitlab.com/runner/register/#linux)
       1. Make sure to set a specific tag for the runner.
       1. Set `docker+machine` as the runner executor.
    1. Move the service account credentials JSON file to its final destination (using `sudo`): `sudo mv home/<your-username>/gitlab-qa-resources-abc123.json /etc/gitlab-runner/service-account.json`
-   1. Edit the runner manager with something like the following configuration (make sure to check the [`[runners.machine]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section) documentation):
+   1. Edit the runner manager with something like the following configuration (make sure to check the [`[runners.machine]`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersmachine-section) documentation):
 
    ```toml
    concurrent = 500

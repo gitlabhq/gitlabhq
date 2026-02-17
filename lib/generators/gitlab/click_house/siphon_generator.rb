@@ -13,7 +13,7 @@ module Gitlab
         from a matching PostgreSQL table.
 
         Example:
-          rails generate gitlab:click_house:siphon PG_TABLE_NAME
+          rails generate gitlab:click_house:siphon PG_TABLE_NAME --with-traversal-path
 
         This will create:
           db/clickhouse/migrate/main/TIMESTAMP_create_siphon_PG_TABLE_NAME.rb
@@ -21,13 +21,17 @@ module Gitlab
 
       argument :table_name, type: :string, required: true, desc: "The PG table to be cloned"
 
+      class_option :with_traversal_path, type: :boolean, required: false, default: false,
+        desc: "Adds an extra `traversal_path` column to the table which will be automatically " \
+          "populated based on the configured sharding keys"
+
       # Data types table
       # Postgresql OID reference - https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/core/Oid.html
       PG_TYPE_MAP = {
         16 => 'Bool',
         17 => 'String',
         20 => 'Int64',
-        21 => 'Int8',
+        21 => 'Int16',
         23 => 'Int64',
         25 => 'String',
         869 => 'String', # ip address type
@@ -37,6 +41,16 @@ module Gitlab
         1184 => "DateTime64(6, 'UTC')",
         1114 => "DateTime64(6, 'UTC')",
         3802 => "String" # JSONB
+      }.freeze
+
+      # The generator needs to look up traversal_path values from parent entities (organizations,
+      # namespaces, or projects).
+      # Instead of expensive JOINs, ClickHouse uses dictionaries for O(1) lookups.
+      # Organization, Namespace and Project are the only entities that have traversal_ids/traversal_path in PostgreSQL.
+      DICTIONARIES = {
+        'projects' => 'project_traversal_paths_dict',
+        'namespaces' => 'namespace_traversal_paths_dict',
+        'organizations' => 'organization_traversal_paths_dict'
       }.freeze
 
       PG_TO_CH_DEFAULT_MAP = {
@@ -89,30 +103,73 @@ module Gitlab
       end
 
       def table_definition
+        definitions = [
+          *table_columns,
+          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1))",
+          "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))",
+          *table_projection
+        ].flatten.compact.join(",\n        ")
+
+        settings_str = table_settings.any? ? "\n      SETTINGS #{table_settings.join(', ')}" : ""
+
         <<-TEXT.chomp
 CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
       (
-      #{table_fields},
-        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
-        _siphon_deleted Bool DEFAULT FALSE
+        #{definitions}
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
-      PRIMARY KEY id
+      PRIMARY KEY (#{primary_keys.join(', ')})#{settings_str}
         TEXT
       end
 
-      def table_fields
-        fields =
-          pg_fields_metadata.map do |field|
-            ch_field_type = ch_type_for(field)
+      def build_traversal_path_field
+        db_yml = Rails.root.join('db', 'docs', "#{table_name}.yml")
+        raise "Unknown PostgreSQL table, table definition is missing: #{db_yml}" unless File.exist?(db_yml)
 
-            "#{field['field_name']} #{ch_field_type}"
-          end
+        table_yml = YAML.safe_load_file(db_yml)
+        raise "No sharding_key definition present for table '#{table_name}'" if Array(table_yml["sharding_key"]).empty?
 
-        <<-TEXT.chomp
-  #{fields[0]},
-        #{fields[1..].join(",\n        ")}
-        TEXT
+        conditions = table_yml["sharding_key"].map do |column, parent_table|
+          null_to_zero = "coalesce(#{column}, 0)"
+          dictionary = DICTIONARIES.fetch(parent_table)
+          "#{null_to_zero} != 0, dictGetOrDefault('#{dictionary}', 'traversal_path', #{column}, '0/')"
+        end
+        conditions << "'0/'"
+
+        "traversal_path String DEFAULT multiIf(#{conditions.join(', ')}) CODEC(ZSTD(3))"
+      end
+
+      def primary_keys
+        return pg_primary_keys unless hierarchy_denormalization?
+
+        ['traversal_path'] + pg_primary_keys
+      end
+
+      def table_columns
+        cols = pg_fields_metadata.map do |field|
+          [
+            field['field_name'],
+            ch_type_for(field),
+            compression_for(field)
+          ].compact.join(' ')
+        end
+
+        cols << build_traversal_path_field if hierarchy_denormalization?
+
+        cols
+      end
+
+      def table_projection
+        return unless hierarchy_denormalization?
+
+        [primary_key_projection]
+      end
+
+      def table_settings
+        # Lower value is faster for IN queries doing primary key lookups (default: 8192)
+        @table_settings ||= ['index_granularity = 2048'].tap do |array|
+          array << "deduplicate_merge_projection_mode = 'rebuild'" if hierarchy_denormalization?
+        end
       end
 
       def ch_type_for(pg_field)
@@ -154,8 +211,63 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
             JOIN
                 pg_catalog.pg_type ON pg_catalog.pg_type.typname = information_schema.columns.udt_name
             WHERE
-                table_name = '#{table_name}';
+                table_name = '#{table_name}' AND
+                table_catalog = '#{ApplicationRecord.connection.current_database}';
         SQL
+      end
+
+      def pg_primary_keys
+        @pg_primary_keys ||= begin
+          primary_keys = ApplicationRecord.connection.execute <<~SQL
+                                 SELECT kcu.column_name AS column
+                                 FROM
+                                     information_schema.table_constraints AS tc
+                                 JOIN
+                                     information_schema.key_column_usage AS kcu
+                                     ON tc.constraint_name = kcu.constraint_name
+                                     AND tc.table_schema = kcu.table_schema
+                                 WHERE
+                                     tc.constraint_type = 'PRIMARY KEY'
+                                     AND tc.table_catalog = '#{ApplicationRecord.connection.current_database}'
+                                     AND tc.table_name = '#{table_name}'
+                                 ORDER BY
+                                     kcu.ordinal_position;
+          SQL
+          primary_keys.pluck('column') # rubocop: disable CodeReuse/ActiveRecord -- getting the primary key values
+        end
+      end
+
+      def hierarchy_denormalization?
+        options['with_traversal_path']
+      end
+
+      def primary_key_projection
+        primary_keys = pg_primary_keys.join(', ')
+        <<-TEXT.chomp
+PROJECTION pg_pkey_ordered (
+          SELECT *
+          ORDER BY #{primary_keys}
+        )
+        TEXT
+      end
+
+      def compression_for(field)
+        ch_type = PG_TYPE_MAP[field['field_type_id']]
+        is_pk   = pg_primary_keys.include?(field['field_name'])
+
+        if is_pk
+          return 'CODEC(DoubleDelta, ZSTD)' if ch_type.start_with?('Int', 'DateTime64')
+          return 'CODEC(ZSTD(3))' if ch_type == 'String'
+
+          return
+        end
+
+        # Bool can be compressed in any case
+        return 'CODEC(ZSTD(1))' if ch_type == 'Bool'
+
+        return 'CODEC(Delta, ZSTD(1))' if field['field_name'] == 'created_at' || field['field_name'] == 'updated_at'
+
+        nil
       end
     end
   end

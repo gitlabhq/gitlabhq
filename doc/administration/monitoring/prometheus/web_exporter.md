@@ -29,12 +29,9 @@ this data available to a Prometheus scraper by running one or more Prometheus ex
 A Prometheus exporter is an HTTP server that serializes metric data into a format the
 Prometheus scraper understands.
 
-{{< alert type="note" >}}
-
-This page is about web application metrics.
-To export background job metrics, learn how to [configure the Sidekiq metrics server](../../sidekiq/_index.md#configure-the-sidekiq-metrics-server).
-
-{{< /alert >}}
+> [!note]
+> This page is about web application metrics.
+> To export background job metrics, learn how to [configure the Sidekiq metrics server](../../sidekiq/_index.md#configure-the-sidekiq-metrics-server).
 
 We provide two mechanisms by which web application metrics can be exported:
 

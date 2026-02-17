@@ -61,15 +61,12 @@ To turn GitLab Duo on or off for a group or subgroup:
 In GitLab 17.7, follow these instructions to turn GitLab Duo on or off
 for a group, including its subgroups and projects.
 
-{{< alert type="note" >}}
-
-In GitLab 17.7:
-
-- For GitLab.com, the GitLab Duo settings page is only available for top-level groups, not for subgroups.
-
-- For GitLab Self-Managed, the GitLab Duo settings page is not available for groups or subgroups.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.7:
+> 
+> - For GitLab.com, the GitLab Duo settings page is only available for top-level groups, not for subgroups.
+> 
+> - For GitLab Self-Managed, the GitLab Duo settings page is not available for groups or subgroups.
 
 Prerequisites:
 
@@ -90,15 +87,12 @@ To turn GitLab Duo on or off for a top-level group:
 In GitLab 17.4 to 17.6, follow these instructions to turn GitLab Duo on or off
 for a group and its subgroups and projects.
 
-{{< alert type="note" >}}
-
-In GitLab 17.4 to 17.6:
-
-- For GitLab.com, the GitLab Duo settings page is only available for top-level groups, not for subgroups.
-
-- For GitLab Self-Managed, the GitLab Duo settings page is not available for groups or subgroups.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.4 to 17.6:
+> 
+> - For GitLab.com, the GitLab Duo settings page is only available for top-level groups, not for subgroups.
+> 
+> - For GitLab Self-Managed, the GitLab Duo settings page is not available for groups or subgroups.
 
 Prerequisites:
 

@@ -204,6 +204,10 @@ Administrator can also change the limits for a specific top-level group.
 
 ### Change the policy limits for an instance
 
+Prerequisites:
+
+- Administrator access.
+
 To change the maximum number of policies your organization can store in a security policy project:
 
 1. In the upper-right corner, select **Admin**.
@@ -218,6 +222,10 @@ Group limits can exceed the configured or default instance limits. To change the
 
 > [!note]
 > Increasing these limits can affect system performance, especially if you apply a large number of complex policies.
+
+Prerequisites:
+
+- Administrator access.
 
 To adjust the limit for a top-level group:
 

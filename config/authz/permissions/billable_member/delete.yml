@@ -1,0 +1,5 @@
+---
+name: delete_billable_member
+description: Grants the ability to remove billable members from a group
+boundaries:
+  - group

@@ -99,6 +99,17 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       let(:request) { authorize_upload_file(workhorse_headers.merge(job_token_header(target_job.token))) }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :authorize_generic_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        authorize_upload_file(workhorse_headers.merge(personal_access_token_header(pat.token)))
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
+
     context 'with valid project' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -298,6 +309,17 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       let(:request) { upload_file(params, workhorse_headers.merge(job_token_header(target_job.token))) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_generic_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        upload_file(params, workhorse_headers.merge(personal_access_token_header(pat.token)))
+      end
+
+      before do
+        project.add_developer(user)
+      end
     end
 
     context 'authentication' do
@@ -893,6 +915,17 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :download_generic_package do
+      let(:boundary_object) { project }
+      let(:request) do
+        download_file(personal_access_token_header(pat.token))
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
+
     context 'authentication' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -1176,14 +1209,16 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           "response-content-disposition=attachment%3B%20filename%3D%22#{package_file.file_name}"
         end
 
+        let(:content_type_param) { 'response-content-type=application%2Fgzip' }
+
         before do
           stub_package_file_object_storage
         end
 
-        it 'includes response-content-disposition and filename in the redirect file URL' do
+        it 'includes response-content-disposition, response-content-type and filename in the redirect file URL' do
           download
 
-          expect(response.parsed_body).to include(disposition_param)
+          expect(response.parsed_body).to include(disposition_param, content_type_param)
           expect(response).to have_gitlab_http_status(:redirect)
         end
       end
@@ -1199,7 +1234,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             allowed_endpoints: [],
             response_headers: {
               'Content-Disposition' => disposition_header,
-              'X-Checksum-SHA256' => package_file.file_sha256
+              'X-Checksum-SHA256' => package_file.file_sha256,
+              'Content-Type' => 'application/gzip'
             },
             ssrf_filter: true
           }
@@ -1209,10 +1245,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           stub_package_file_object_storage(proxy_download: true)
         end
 
-        it 'sends a file with response-content-disposition, filename, and X-Checksum-SHA256 header' do
+        it 'sends a file with expected headers' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
-            .with(instance_of(String), expected_headers)
-            .and_call_original
+            .with(instance_of(String), expected_headers).and_call_original
 
           download
 

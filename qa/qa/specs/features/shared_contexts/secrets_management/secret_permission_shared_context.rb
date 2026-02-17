@@ -9,8 +9,7 @@ module QA
     end
 
     def project
-      @project ||= create(:project, :with_readme, name: 'secrets-manager-test-project',
-        api_client: Runtime::User::Store.admin_api_client)
+      @project ||= create(:project, :with_readme, name: 'secrets-manager-test-project')
     end
 
     before(:context) do

@@ -126,12 +126,9 @@ For server-side controls and enforcement of best practices, see
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
-{{< alert type="note" >}}
-
-Push options are not available for merge request pipelines. For more information,
-see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
-
-{{< /alert >}}
+> [!note]
+> Push options are not available for merge request pipelines. For more information,
+> see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

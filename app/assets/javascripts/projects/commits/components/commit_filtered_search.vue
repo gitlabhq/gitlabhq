@@ -34,6 +34,7 @@ export default {
           icon: 'pencil',
           token: UserToken,
           dataType: 'user',
+          valueField: 'name',
           defaultUsers: [],
           operators: OPERATORS_IS_NOT_OR,
           fullPath: this.projectFullPath,

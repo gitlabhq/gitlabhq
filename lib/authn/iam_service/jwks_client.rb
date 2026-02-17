@@ -6,6 +6,7 @@ module Authn
       include Gitlab::Utils::StrongMemoize
 
       JwksFetchFailedError = Class.new(StandardError)
+      ConfigurationError = Class.new(StandardError)
 
       JWKS_PATH = '/.well-known/jwks.json'
       DEFAULT_CACHE_TTL = 1.hour
@@ -28,7 +29,7 @@ module Authn
       private
 
       def fetch_and_cache_keys
-        response = Gitlab::HTTP.get(endpoint, timeout: 10)
+        response = Gitlab::HTTP.get(endpoint, timeout: 5)
 
         unless response.success?
           raise JwksFetchFailedError,
@@ -60,15 +61,18 @@ module Authn
       end
 
       def endpoint
-        url = Gitlab::Auth::Iam.service_url
-        raise Gitlab::Auth::Iam::ConfigurationError, 'IAM service URL is not configured' if url.nil?
-
-        URI.join(url, JWKS_PATH).to_s
+        URI.join(service_url, JWKS_PATH).to_s
       end
 
       def cache_key
-        issuer_hash = Digest::SHA256.hexdigest(Gitlab::Auth::Iam.issuer)[0..8]
-        "iam:jwks:#{issuer_hash}"
+        "iam:jwks:#{service_url}"
+      end
+
+      def service_url
+        url = Gitlab.config.authn.iam_service.url
+        raise ConfigurationError, 'IAM service URL is not configured' if url.nil?
+
+        url
       end
     end
   end

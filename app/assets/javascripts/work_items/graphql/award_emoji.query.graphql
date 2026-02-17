@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "~/work_items/graphql/award_emoji.fragment.graphql"
 
+# @feature_category: team_planning
 query projectWorkItemAwardEmojis($fullPath: ID!, $iid: String!, $after: String, $pageSize: Int) {
   namespace(fullPath: $fullPath) {
     id

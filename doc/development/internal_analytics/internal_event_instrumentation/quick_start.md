@@ -109,11 +109,8 @@ track_internal_event(
 )
 ```
 
-{{< alert type="warning" >}}
-
-Make sure the additional properties don't contain any sensitive information. For more information, see the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard/).
-
-{{< /alert >}}
+> [!warning]
+> Make sure the additional properties don't contain any sensitive information. For more information, see the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard/).
 
 #### Controller and API helpers
 
@@ -216,12 +213,9 @@ expect { subject }
   .and change { mr.notes.count }.by(1)
 ```
 
-{{< alert type="note" >}}
-
-Debugging tip: If your new tests are failing due to metrics not being incremented when you expect them to be,
-you may need to apply the `:clean_gitlab_redis_shared_state` trait to clear the Redis cache between examples.
-
-{{< /alert >}}
+> [!note]
+> Debugging tip: If your new tests are failing due to metrics not being incremented when you expect them to be,
+> you may need to apply the `:clean_gitlab_redis_shared_state` trait to clear the Redis cache between examples.
 
 To test that an event was not triggered, you can use the `not_trigger_internal_events` matcher. It does not accept message chains.
 
@@ -332,12 +326,9 @@ Sometimes we want to send internal events when the component is rendered or load
 
 You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not suitable or descriptive for your use-case.
 
-{{< alert type="note" >}}
-
-Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
-Getting the URL from `window.location` does not pseudonymize project and namespace information [as documented](https://metrics.gitlab.com/identifiers).
-
-{{< /alert >}}
+> [!note]
+> Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
+> Getting the URL from `window.location` does not pseudonymize project and namespace information [as documented](https://metrics.gitlab.com/identifiers).
 
 For Vue Mixin:
 
@@ -596,5 +587,5 @@ For more information, see [Usage Data API documentation](../../../api/usage_data
 
 Apart from the GitLab codebase, we are using Internal Events for the systems listed below.
 
-1. [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)
+1. [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)
 1. [Switchboard](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/switchboard/-/blob/main/docs/internal_events.md)

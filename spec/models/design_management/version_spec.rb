@@ -45,7 +45,7 @@ RSpec.describe DesignManagement::Version do
       it "only returns versions related to the specified designs" do
         _other_version = create(:design_version)
         designs = [create(:design, versions: [version_1]),
-                   create(:design, versions: [version_2])]
+          create(:design, versions: [version_2])]
 
         expect(described_class.for_designs(designs))
           .to contain_exactly(version_1, version_2)

@@ -47,17 +47,10 @@ end
   The `token_field_digest` column needs to exist.
 - `insecure: true`: Stores the token as-is (not encrypted nor digested) in the database. We strongly discourage the usage of this strategy.
 
-{{< alert type="note" >}}
-
 By default, the `SHA256` digest of the tokens are stored in the database, if no storage strategy is chosen.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The `token_field_encrypted` column should always be indexed, because it is used to perform uniqueness checks and lookups on the token.
-
-{{< /alert >}}
+> [!note]
+> The `token_field_encrypted` column should always be indexed, because it is used to perform uniqueness checks and lookups on the token.
 
 ### Other options
 

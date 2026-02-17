@@ -13,6 +13,12 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
   describe 'GET /keys/:uid' do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_ssh_key do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api(path)
@@ -49,6 +55,12 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
     let_it_be(:path) { "/keys?fingerprint=#{fingerprint_md5}" }
 
     it_behaves_like 'GET request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :read_ssh_key do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
 
     it 'returns authentication error' do
       get api(path, admin_mode: true)

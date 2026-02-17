@@ -2,6 +2,8 @@
 key_path: counts.count_total_visit_after_push_link_or_create_mr_banner
 description: Total count of visited after push links or created MRs from banner
 product_group: acquisition
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

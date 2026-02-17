@@ -17,7 +17,8 @@ Flows use agents to execute tasks.
 - Flows executed in an IDE run locally.
 
 You can configure the environment where flows use CI/CD to execute.
-You can also [use your own runners](#configure-runners).
+You can also choose to [use your own runners](#configure-runners), and
+[specify variables in your jobs](execution_variables.md).
 
 ## Flow security
 
@@ -31,7 +32,21 @@ By default, the runner environment allows network access to the GitLab instance 
 though [you can change this](#change-the-default-docker-image).
 This separate environment protects from unintended consequences of running shell commands.
 
-To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](../../gitlab_duo/turn_on_off.md).
+To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+
+## Executor architecture
+
+When a flow runs in CI/CD, the runner:
+
+1. Downloads the `@gitlab/duo-cli` package from the npm registry.
+1. Runs the GitLab Duo CLI, which uses WebSocket to connect to the GitLab Duo Workflow Service.
+1. Executes tools (file operations, Git commands) as directed by the AI model.
+
+The executor version is managed by GitLab and updated as part of regular releases.
+
+> [!note]
+> The `@gitlab/duo-cli` npm package is labeled "Experimental" for standalone CLI usage.
+> When used within flows, the relevant capabilities are covered by the same support level as flows.
 
 ## Configure CI/CD execution
 
@@ -39,8 +54,9 @@ You can customize how flows are executed in CI/CD by creating an agent configura
 
 > [!note]
 > You cannot use predefined CI/CD variables in this scenario.
+> See [the list of available variables](execution_variables.md#available-variables).
 
-### Create the configuration file
+## Create the configuration file
 
 1. In your project's repository, create a `.gitlab/duo/` folder if it doesn't exist.
 1. In the folder, create a configuration file named `agent-config.yml`.
@@ -89,6 +105,9 @@ Most base images include these commands by default. However, minimal images (lik
 might require you to install them explicitly. If needed, you can install missing commands in the
 [setup script configuration](#configure-setup-scripts).
 
+> [!note]
+> There is [an issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) with the latest version of `git` in custom images. Use Git version `2.43.7` or earlier in your custom image.
+
 Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
 
 For example, if you use an Alpine-based image:
@@ -98,6 +117,16 @@ image: python:3.11-alpine
 setup_script:
   - apk add --update git nodejs npm
 ```
+
+> [!note]
+> When you use a custom Docker image, the
+> [environment sandbox](../environment_sandbox.md) is not applied. Your flow
+> can access any domain reachable from the runner and the full filesystem.
+> If you require network isolation with custom images, configure network-level
+> controls on your runner (for example, firewall rules or network policies).
+> If you include the `@gitlab-org/duo-cli` npm package in your custom image,
+> the flow startup skips the npm download step and reduces job startup time
+> by approximately 15-20 seconds.
 
 ### Configure setup scripts
 
@@ -117,6 +146,13 @@ These commands:
 - Run before the main workflow commands.
 - Execute in the order specified.
 - Can be a single command or an array of commands.
+
+> [!note]
+> The user context for `setup_script` depends on the Docker image. The default
+> GitLab image runs as `root`. Custom images run as the user defined in the
+> image's `USER` directive. If your `setup_script` requires root access (for
+> example, to install system packages), ensure your custom image is configured
+> accordingly.
 
 ### Configure caching
 
@@ -233,9 +269,14 @@ In addition, runners on GitLab Self-Managed:
   If you aren't using custom models, this traffic goes to `duo-workflow-svc.runway.gitlab.net`, port `443`.
 - Must be able to download the default image from `registry.gitlab.com`
   or be able to access [the Docker image you specified](#change-the-default-docker-image).
-- Might have to be [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers),
-  depending on what the flow does. For example, a flow that builds Docker images
-  needs a privileged runner.
+
+> [!note]
+> The runner's connection to the GitLab Duo Workflow Service is routed through the
+> GitLab instance. Runners do not connect directly to
+> `duo-workflow-svc.runway.gitlab.net`. The firewall requirement for
+> `duo-workflow-svc.runway.gitlab.net` on port `443` applies to the GitLab
+> instance, not the runner. Your runner network configuration must allow
+> outbound HTTPS traffic to the GitLab instance.
 
 On GitLab.com, flows can use:
 
@@ -247,3 +288,15 @@ from sandboxing you must:
 1. Enable [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)
    mode by setting `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 1. Use GitLab Duo Agent Platform default base [image](#change-the-default-docker-image).
+
+### Runner privileged mode
+
+Privileged mode is required only when you use the default GitLab-provided image
+with [environment sandbox](../environment_sandbox.md) protection. If you use a
+custom Docker image, privileged mode is not required because the sandbox is not
+applied.
+
+| Configuration | Privileged mode required | Sandbox active |
+|---------------|------------------------|----------------|
+| Default image | Yes | Yes |
+| Custom image | No | No |

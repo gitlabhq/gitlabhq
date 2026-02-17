@@ -17,6 +17,7 @@ const mountGitlabVersionCheckBadge = (el) => {
 
     return new Vue({
       el,
+      name: 'GitlabVersionCheckBadgeRoot',
       render(createElement) {
         return createElement(GitlabVersionCheckBadge, {
           props: {
@@ -40,6 +41,7 @@ const mountSecurityPatchUpgradeAlertModal = (el) => {
 
     return new Vue({
       el,
+      name: 'SecurityPatchUpgradeAlertModalRoot',
       render(createElement) {
         return createElement(SecurityPatchUpgradeAlertModal, {
           props: {

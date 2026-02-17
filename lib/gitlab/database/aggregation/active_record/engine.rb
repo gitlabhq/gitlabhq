@@ -21,7 +21,7 @@ module Gitlab
           override :dimensions_mapping
           def self.dimensions_mapping
             {
-              column: Column,
+              column: DimensionDefinition,
               date_bucket: DateBucketDimension
             }
           end

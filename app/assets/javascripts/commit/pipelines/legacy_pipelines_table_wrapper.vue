@@ -101,13 +101,11 @@ export default {
           mergeRequestIid: String(this.mergeRequestId),
         };
       },
+      context: {
+        featureCategory: 'continuous_integration',
+      },
       skip() {
-        return (
-          !this.isRealtimePipelineCreationRequestsEnabled ||
-          !this.isMergeRequestTable ||
-          !this.mergeRequestId ||
-          !this.targetProjectFullPath
-        );
+        return !this.isMergeRequestTable || !this.mergeRequestId || !this.targetProjectFullPath;
       },
       update(data) {
         if (data.project?.mergeRequest) {
@@ -126,11 +124,7 @@ export default {
           };
         },
         skip() {
-          return (
-            !this.isRealtimePipelineCreationRequestsEnabled ||
-            !this.isMergeRequestTable ||
-            !this.mergeRequest.id
-          );
+          return !this.isMergeRequestTable || !this.mergeRequest.id;
         },
         updateQuery: (previousResult, { subscriptionData }) => {
           if (!subscriptionData.data?.ciPipelineCreationRequestsUpdated) return previousResult;
@@ -168,9 +162,6 @@ export default {
   },
 
   computed: {
-    isRealtimePipelineCreationRequestsEnabled() {
-      return this.glFeatures.ciPipelineCreationRequestsRealtime;
-    },
     shouldRenderTable() {
       return !this.isLoading && this.state.pipelines.length > 0 && !this.hasError;
     },
@@ -234,7 +225,7 @@ export default {
       return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
     },
     showRunPipelineButtonLoader() {
-      return this.isMergeRequestTable && this.isRealtimePipelineCreationRequestsEnabled
+      return this.isMergeRequestTable
         ? this.hasInProgressCreationRequests
         : this.state.isRunningMergeRequestPipeline;
     },
@@ -317,9 +308,7 @@ export default {
      *
      */
     onClickRunPipeline() {
-      if (this.isRealtimePipelineCreationRequestsEnabled) {
-        this.startDebouncedPipelineLoader();
-      }
+      this.startDebouncedPipelineLoader();
       eventHub.$emit('runMergeRequestPipeline', {
         projectId: this.projectId,
         mergeRequestId: this.mergeRequestId,
@@ -516,7 +505,7 @@ export default {
     <div v-else-if="shouldRenderTable">
       <div
         v-if="canRenderPipelineButton"
-        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @lg/panel:gl-hidden"
+        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @md/panel:gl-hidden"
       >
         <gl-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"

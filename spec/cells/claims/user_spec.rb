@@ -27,4 +27,14 @@ RSpec.describe 'Claim for User', feature_category: :cell do
 
     include_context 'with claims records for User'
   end
+
+  context 'when claims feature is disabled' do
+    before do
+      stub_feature_flags(cells_claims_emails: false)
+      stub_feature_flags(cells_claims_users: false)
+    end
+
+    it_behaves_like 'not creating claims'
+    it_behaves_like 'not deleting claims'
+  end
 end

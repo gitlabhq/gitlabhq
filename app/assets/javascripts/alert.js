@@ -146,6 +146,7 @@ export const createAlert = ({
 
   return new Vue({
     el,
+    name: 'GlAlertRoot',
     components: {
       GlAlert,
     },

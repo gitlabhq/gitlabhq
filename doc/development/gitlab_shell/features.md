@@ -36,6 +36,24 @@ It limits the set of commands to predefined Git commands:
 - `git pull`
 - `git push`
 
+### Git operation timeout (`gitlab_shell_git_timeout`)
+
+The `gitlab_shell_git_timeout` setting controls the timeout, in seconds, for Git import and fetch operations executed by GitLab Shell. This includes repository synchronization performed by Geo secondary nodes.
+
+#### Default value
+
+The default timeout is **10800 seconds (3 hours)**.
+
+#### When to adjust this setting
+
+You may need to increase this value when:
+
+- Synchronizing large repositories, [especially in Geo deployments](../../administration/geo/replication/troubleshooting/synchronization_verification.md#error-fetch-remote-signal-terminated-context-deadline-exceeded-at-exactly-3-hours)
+- Operating over slow or constrained network connections
+- Git operations fail with timeout-related errors after several hours
+
+If the timeout is too low, Git operations may terminate before completion, even though data transfer is still progressing.
+
 ## Generate new 2FA recovery codes
 
 Enables users to
@@ -187,9 +205,6 @@ To configure PAT settings in GitLab Shell:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-These settings only affect PAT generation with SSH and do not
-impact PATs created through the web interface.
-
-{{< /alert >}}
+> [!note]
+> These settings only affect PAT generation with SSH and do not
+> impact PATs created through the web interface.

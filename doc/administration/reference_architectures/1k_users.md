@@ -78,13 +78,10 @@ monitor .[#7FFFD4,norank]--> redis
 
 Before proceeding, review the [requirements](_index.md#requirements) for the reference architectures.
 
-{{< alert type="warning" >}}
-
-The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment.
-If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and contact us if required for further guidance.
-
-{{< /alert >}}
+> [!warning]
+> The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment.
+> If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and contact us if required for further guidance.
 
 ## Testing methodology
 
@@ -97,7 +94,7 @@ The 20 RPS / 1k user reference architecture is designed to accommodate most comm
 | Git (Pull)    | 2 RPS             |
 | Git (Push)    | 1 RPS             |
 
-These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
@@ -150,8 +147,5 @@ For environments that serve fewer users or a lower RPS, you can lower the node s
 
 Now you have a fresh GitLab environment with core functionality configured accordingly. You might want to configure additional optional GitLab features depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.
-
-{{< /alert >}}
+> [!note]
+> Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.

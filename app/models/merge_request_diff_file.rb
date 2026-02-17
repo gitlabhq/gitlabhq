@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MergeRequestDiffFile < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
-
   include BulkInsertSafe
   include Gitlab::EncodingHelper
   include DiffFile

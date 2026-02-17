@@ -27,6 +27,10 @@ Permissions-Policy: interest-cohort=()
 This header prevents users from being tracked and categorized in any GitLab instance.
 The header is compatible with the Topics API and the deprecated FLoC system.
 
+Prerequisites:
+
+- Administrator access.
+
 To enable user tracking for interest-based advertising:
 
 1. In the upper-right corner, select **Admin**.

@@ -33,17 +33,14 @@ or email OTP.
 
 ### Register an OTP authenticator
 
-{{< alert type="warning" >}}
-
-If you lose access to your OTP authenticator, you might be locked out of your account.
-
-To minimize this risk:
-
-- Enable cloud backup in your authenticator app.
-- Save your backup passwords, secret keys, or recovery credentials in a secure location.
-- Review the documentation for your specific OTP authenticator.
-
-{{< /alert >}}
+> [!warning]
+> If you lose access to your OTP authenticator, you might be locked out of your account.
+> 
+> To minimize this risk:
+> 
+> - Enable cloud backup in your authenticator app.
+> - Save your backup passwords, secret keys, or recovery credentials in a secure location.
+> - Review the documentation for your specific OTP authenticator.
 
 To register an OTP authenticator:
 
@@ -128,11 +125,8 @@ If this is the first time you have set up 2FA, you
 must [download recovery codes](#recovery-codes) so you can recover access to your
 account if you lose access.
 
-{{< alert type="warning" >}}
-
-You can lose access to your account if you clear your browser data.
-
-{{< /alert >}}
+> [!warning]
+> You can lose access to your account if you clear your browser data.
 
 ### Enable email OTP
 
@@ -143,23 +137,17 @@ You can lose access to your account if you clear your browser data.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Email OTP allows you to verify your identity by sending a six-digit verification code to your email address.
 
-{{< alert type="note" >}}
-
-You might be unable to use email OTP if:
-
-- Your group policy requires the use of other two-factor authentication methods.
-- Your account uses an external identity provider.
-- Your account is scheduled for automatic enablement at a future date.
-
-{{< /alert >}}
+> [!note]
+> You might be unable to use email OTP if:
+> 
+> - Your group policy requires the use of other two-factor authentication methods.
+> - Your account uses an external identity provider.
+> - Your account is scheduled for automatic enablement at a future date.
 
 To enable email OTP for your account:
 
@@ -243,13 +231,10 @@ For more information, see the [Cisco Duo API documentation](https://duo.com/docs
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_authenticator`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
+> [enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_authenticator`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
 
 You can use FortiAuthenticator as an OTP provider in GitLab. Users must:
 
@@ -314,14 +299,11 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_token_cloud`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
+> [enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_token_cloud`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 You can use FortiToken Cloud as an OTP provider in GitLab. Users must:
 
@@ -380,12 +362,10 @@ these recovery codes to sign in to your account.
 You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
 
-{{< alert type="note" >}}
-
-- You can use each code only once to sign in to your account.
-- Recovery codes are not generated for WebAuthn devices.
-
-{{< /alert >}}
+> [!note]
+>
+> - You can use each code only once to sign in to your account.
+> - Recovery codes are not generated for WebAuthn devices.
 
 For information on regenerating or restoring your recovery codes, see
 [recovery options and 2FA reset](two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).

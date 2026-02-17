@@ -1,0 +1,5 @@
+---
+name: retry_external_status_check
+description: Grants the ability to retry external status checks
+boundaries:
+  - project

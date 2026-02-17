@@ -1,10 +1,10 @@
 <script>
-import { GlIcon, GlAlert, GlTableLite } from '@gitlab/ui';
+import { GlIcon, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   name: 'DbCollationMismatches',
-  components: { GlIcon, GlAlert, GlTableLite },
+  components: { GlIcon, GlTableLite },
   props: {
     collationMismatches: {
       type: Array,
@@ -34,36 +34,30 @@ export default {
 
 <template>
   <section>
-    <p>
+    <h4 class="gl-heading-5 gl-flex gl-items-center gl-gap-3">
       <gl-icon v-bind="iconAttrs" />
-      <strong>{{ __('Collation mismatches') }}</strong>
-    </p>
+      {{ __('Collation mismatches') }}
+    </h4>
 
     <template v-if="hasMismatches">
-      <gl-alert
-        variant="info"
-        data-testid="collation-info-alert"
-        :dismissible="false"
-        class="gl-mb-3"
-      >
+      <p class="gl-text-sm gl-text-subtle" data-testid="collation-info-alert">
         {{
           s__(
             'DatabaseDiagnostics|Collation mismatches are informational and might not indicate a problem.',
           )
         }}
-      </gl-alert>
+      </p>
       <gl-table-lite
         :items="collationMismatches"
         :fields="$options.collationMismatchFields"
-        bordered
         stacked="md"
         data-testid="collation-mismatches-table"
       />
     </template>
     <template v-else>
-      <gl-alert variant="success" data-testid="no-collation-mismatches-alert" :dismissible="false">
+      <p class="gl-text-sm gl-text-subtle" data-testid="no-collation-mismatches-alert">
         {{ __('No collation mismatches detected.') }}
-      </gl-alert>
+      </p>
     </template>
   </section>
 </template>

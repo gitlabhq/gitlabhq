@@ -15,7 +15,7 @@ title: Markdown uploads API
 Use this API to manage [Markdown uploads](../security/user_file_uploads.md) that can be referenced
 in Markdown text in issues, merge requests, snippets, or wiki pages.
 
-## Upload a file
+## Create an upload
 
 {{< history >}}
 
@@ -74,11 +74,11 @@ In the response, the:
 
 {{< /history >}}
 
-Get all uploads of the project sorted by `created_at` in descending order.
+Lists all uploads of a project sorted by `created_at` in descending order.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads
@@ -129,11 +129,11 @@ Example response:
 
 {{< /history >}}
 
-Download an uploaded file by ID.
+Downloads an uploaded file by ID.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads/:upload_id
@@ -166,7 +166,7 @@ Download an uploaded file by secret and filename.
 
 Prerequisites:
 
-- At least the Guest role.
+- the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads/:secret/:filename
@@ -196,11 +196,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /history >}}
 
-Delete an uploaded file by ID.
+Deletes an uploaded file by ID.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 DELETE /projects/:id/uploads/:upload_id
@@ -229,11 +229,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 {{< /history >}}
 
-Delete an uploaded file by secret and filename.
+Deletes an uploaded file by secret and filename.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 DELETE /projects/:id/uploads/:secret/:filename

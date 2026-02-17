@@ -18,4 +18,8 @@ class WebauthnRegistration < ApplicationRecord
 
   scope :passkey, -> { passwordless }
   scope :second_factor_authenticator, -> { second_factor }
+
+  def passkey?
+    passwordless?
+  end
 end

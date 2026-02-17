@@ -49,6 +49,7 @@ module API
         end
         params do
           use :optional_scope
+          optional :ref, type: String, desc: 'The branch name (ref) to filter jobs by', documentation: { example: 'feature-branch' }
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
@@ -60,7 +61,8 @@ module API
           authorize_read_builds!
 
           builds = user_project.builds.order(id: :desc)
-          builds = filter_builds(builds, params[:scope])
+          builds = filter_builds_by_scope(builds, params[:scope])
+          builds = filter_builds_by_ref(builds, params[:ref])
           builds = builds.eager_load_for_api
 
           present paginate_with_strategies(builds, user_project, paginator_params: { without_count: true }), with: Entities::Ci::Job
@@ -234,6 +236,8 @@ module API
             requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
             requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
           end
+          optional :job_inputs,
+            type: Hash, desc: 'Input values for the job', documentation: { example: { environment: 'production' } }
         end
 
         route_setting :authorization, permissions: :play_job, boundary_type: :project
@@ -246,7 +250,11 @@ module API
 
           bad_request!("Unplayable Job") unless job.playable?
 
-          job.play(current_user, params[:job_variables_attributes])
+          result = job.play(current_user, params[:job_variables_attributes], params[:job_inputs] || {})
+
+          bad_request!(result.message) if result.error?
+
+          job = result.payload[:job]
 
           status 200
 
@@ -336,7 +344,7 @@ module API
 
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
-        def filter_builds(builds, scope)
+        def filter_builds_by_scope(builds, scope)
           return builds if scope.nil? || scope.empty?
 
           available_statuses = ::CommitStatus::AVAILABLE_STATUSES
@@ -347,6 +355,12 @@ module API
           builds.where(status: available_statuses && scope)
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        def filter_builds_by_ref(builds, ref)
+          return builds if ref.blank?
+
+          builds.with_ref(ref)
+        end
 
         def validate_current_authenticated_job
           # current_authenticated_job will be nil if user is using

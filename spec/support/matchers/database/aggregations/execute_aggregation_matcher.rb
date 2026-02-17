@@ -11,6 +11,7 @@ RSpec::Matchers.define :execute_aggregation do |request|
   end
 
   match do |engine|
+    request = Gitlab::Database::Aggregation::Request.new(**request) if request.is_a?(Hash)
     response = engine.execute(request)
 
     @actual_data = response[:data]&.to_a&.map(&:with_indifferent_access)

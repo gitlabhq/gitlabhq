@@ -81,7 +81,11 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  inject: ['hasOkrsFeature'],
+  inject: {
+    getWorkItemTypeConfiguration: {
+      default: () => {},
+    },
+  },
   props: {
     fullPath: {
       type: String,
@@ -258,7 +262,7 @@ export default {
         return data.namespace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;
+        return !this.canUpdateMetadata;
       },
     },
     workItemNotificationsSubscribed: {
@@ -325,8 +329,17 @@ export default {
         workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
       });
     },
+    workItemTypeConfiguration() {
+      return this.getWorkItemTypeConfiguration(this.workItemType);
+    },
     canPromoteToObjective() {
-      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
+      // User permissions
+      if (!this.canUpdateMetadata) return false;
+
+      return (
+        this.workItemTypeConfiguration?.canPromoteToObjective ||
+        this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT
+      );
     },
     confidentialItem() {
       return {
@@ -379,13 +392,25 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     showChangeType() {
-      return !this.isEpic && this.canUpdateMetadata;
+      if (!this.canUpdateMetadata) {
+        return false;
+      }
+
+      const currentType = this.workItemTypes.find((type) => type.name === this.workItemType);
+      return currentType?.supportedConversionTypes?.length > 0;
     },
     showStateItem() {
       return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);
     },
     showMoveButton() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
+      return (
+        (this.workItemTypeConfiguration?.supportsMoveAction ||
+          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
+        this.canMove
+      );
+    },
+    showProjectSelector() {
+      return this.workItemTypeConfiguration?.showProjectSelector || !this.isEpic;
     },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
@@ -833,7 +858,7 @@ export default {
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
       :preselected-work-item-type="workItemType"
-      :show-project-selector="!isEpic"
+      :show-project-selector="showProjectSelector"
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import Translate from '~/vue_shared/translate';
-import { apolloProvider } from '../graphql/client';
+import { apolloProvider as createApolloProvider } from '../graphql/client';
 import EnvironmentsFolderApp from './environments_folder_app.vue';
 
 Vue.use(Translate);
@@ -15,6 +15,7 @@ export default () => {
 
   Vue.use(VueRouter);
 
+  const apolloProvider = createApolloProvider();
   const environmentsData = el.dataset;
   const folderPath = environmentsData.endpoint.replace('.json', '');
   const { projectPath, folderName, helpPagePath } = environmentsData;
@@ -45,6 +46,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'RouterViewRoot',
     provide: {
       projectPath,
       helpPagePath,

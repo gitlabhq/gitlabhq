@@ -29,13 +29,10 @@ Prerequisites:
 - You must complete the setup steps in [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
 - The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set.
 
-  {{< alert type="note" >}}
-
-  If you disable the `remote_development` module on an agent that has active workspaces,
-  those workspaces become unusable. For more information, see
-  [workspace settings](settings.md#enabled).
-
-  {{< /alert >}}
+  > [!note]
+  > If you disable the `remote_development` module on an agent that has active workspaces,
+  > those workspaces become unusable. For more information, see
+  > [workspace settings](settings.md#enabled).
 - The agent must be allowed in a group for the purpose of creating workspaces. During workspace creation, users can select allowed agents that are associated with any parent group of the workspace project.
 - The workspace creator must have the Developer role to the project of the agent.
 
@@ -109,12 +106,9 @@ To remove an allowed cluster agent from a group:
 
 GitLab updates the status of the selected agent to **Blocked**, and removes the agent from the **Allowed agents** tab.
 
-{{< alert type="note" >}}
-
-Removing an allowed cluster agent from a group does not immediately stop running workspaces using
-the agent. Running workspaces stop when they are automatically terminated or manually stopped.
-
-{{< /alert >}}
+> [!note]
+> Removing an allowed cluster agent from a group does not immediately stop running workspaces using
+> the agent. Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Allow a cluster agent for workspaces on the instance
 
@@ -157,12 +151,9 @@ To remove an allowed cluster agent from the instance:
 1. Expand **Available agents for workspaces**.
 1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.
 
-{{< alert type="note" >}}
-
-Removing an allowed cluster agent from an instance does not immediately stop running workspaces using
-the agent. Running workspaces stop when they are automatically terminated or manually stopped.
-
-{{< /alert >}}
+> [!note]
+> Removing an allowed cluster agent from an instance does not immediately stop running workspaces using
+> the agent. Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Legacy agent authorization strategy
 
@@ -172,7 +163,7 @@ You can use any agent in the top-level group of a workspace project to create a 
 if both of the following are true:
 
 - The remote development module is enabled.
-- You have at least the Developer role for the top-level group.
+- You have the Developer, Maintainer, or Owner role for the top-level group.
 
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-level-group` and in any of its subgroups.

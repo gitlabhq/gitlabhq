@@ -161,8 +161,8 @@ export default {
         @keydown-title="handleKeydownTitle"
         @keydown-description="handleKeydownDescription"
       >
-        <template #edit-form-actions="issuableMeta">
-          <slot name="edit-form-actions" v-bind="issuableMeta"></slot>
+        <template #edit-form-actions="{ issuableMeta }">
+          <slot name="edit-form-actions" v-bind="{ issuableMeta }"></slot>
         </template>
       </issuable-edit-form>
       <template v-else>

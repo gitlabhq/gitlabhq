@@ -57,12 +57,9 @@ response attributes:
 If push rules were never configured for the project, returns HTTP `200 OK` with the literal string
 `"null"` as the response body.
 
-{{< alert type="note" >}}
-
-This differs from the [group push rules API](group_push_rules.md#get-the-push-rules-of-a-group),
-which returns `404 Not Found` error.
-
-{{< /alert >}}
+> [!note]
+> This differs from the [group push rules API](group_push_rules.md#get-the-push-rules-of-a-group),
+> which returns `404 Not Found` error.
 
 Example request:
 

@@ -340,6 +340,9 @@ class ProjectPolicy < BasePolicy
   rule { admin }.policy do
     enable :update_max_artifacts_size
     enable :read_storage_disk_path
+    enable :read_custom_attribute
+    enable :delete_custom_attribute
+    enable :update_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
@@ -510,6 +513,14 @@ class ProjectPolicy < BasePolicy
     enable :destroy_design
   end
 
+  rule { can?(:security_manager_access) }.policy do
+    enable :access_security_and_compliance
+    enable :cancel_build
+    enable :create_build
+    enable :read_runners
+    enable :read_security_configuration
+  end
+
   # We define `:public_user_access` separately because there are cases in gitlab-ee
   # where we enable or prevent it based on other coditions.
   rule { (~anonymous & public_project) | internal_access }.policy do
@@ -628,6 +639,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:developer_access) }.policy do
     enable :create_package
     enable :admin_issue_board
+    enable :access_security_and_compliance
     enable :admin_merge_request
     enable :update_merge_request
     enable :reopen_merge_request
@@ -653,6 +665,7 @@ class ProjectPolicy < BasePolicy
     enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
     enable :read_cluster_agent
     enable :create_release
+    enable :read_security_configuration
     enable :update_release
     enable :destroy_release
     enable :publish_catalog_version
@@ -736,7 +749,6 @@ class ProjectPolicy < BasePolicy
     enable :manage_merge_request_settings
     enable :manage_protected_tags
     enable :change_restrict_user_defined_variables
-    enable :create_protected_branch
     enable :create_branch_rule
     enable :admin_protected_branch
     enable :admin_protected_environments
@@ -747,7 +759,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_runners
     enable :read_runners
     enable :read_runners_registration_token
-    enable :register_project_runners
     enable :update_runners_registration_token
   end
 
@@ -756,6 +767,13 @@ class ProjectPolicy < BasePolicy
     enable :create_protected_tags
     enable :update_protected_tags
     enable :destroy_protected_tags
+  end
+
+  rule { can?(:admin_protected_branch) }.policy do
+    enable :read_protected_branch
+    enable :create_protected_branch
+    enable :update_protected_branch
+    enable :destroy_protected_branch
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
@@ -1111,10 +1129,6 @@ class ProjectPolicy < BasePolicy
     enable :read_vulnerability_merge_request_link
   end
 
-  rule { can?(:developer_access) }.policy do
-    enable :read_security_configuration
-  end
-
   rule { can?(:guest_access) & can?(:download_code) }.policy do
     enable :create_merge_request_in
   end
@@ -1215,17 +1229,11 @@ class ProjectPolicy < BasePolicy
     prevent :access_security_and_compliance
   end
 
-  rule { can?(:developer_access) }.policy do
-    enable :access_security_and_compliance
-  end
-
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
-    prevent :register_project_runners
     prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do
-    prevent :register_project_runners
     prevent :read_runners_registration_token
     prevent :update_runners_registration_token
   end

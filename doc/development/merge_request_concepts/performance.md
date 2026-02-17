@@ -211,11 +211,8 @@ with the `MATERIALIZED` keyword. By default CTEs are inlined then [optimized by 
 When building CTE statements, use the `Gitlab::SQL::CTE` class.
 By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword.
 
-{{< alert type="warning" >}}
-
-Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
-
-{{< /alert >}}
+> [!warning]
+> Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 ## Cached Queries
 
@@ -476,7 +473,7 @@ We can consider the following types of storages:
   This is the type of storage that you should ideally use for all your temporary tasks.
   The fact that each node has its own temporary storage makes scaling significantly easier.
   This storage is also very often SSD-based, thus is significantly faster.
-  The local storage can easily be configured for the application with
+  The local storage can be configured for the application with
   the usage of `TMPDIR` variable.
 
 - **Shared temporary storage** (short-term storage) This type of storage is network-based temporary storage,
@@ -485,7 +482,7 @@ We can consider the following types of storages:
   it does not really mean that you can use more. The shared temporary storage is shared by
   all nodes. Thus, the job that uses significant amount of that space or performs a lot
   of operations creates a contention on execution of all other jobs and request
-  across the whole application, this can easily impact stability of the whole GitLab.
+  across the whole application, this can impact stability of the whole GitLab.
   Be respectful of that.
 
 - **Shared persistent storage** (long-term storage) This type of storage uses

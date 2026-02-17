@@ -1,0 +1,8 @@
+# @feature_category: system_access
+
+mutation rotatePersonalAccessToken($id: PersonalAccessTokenID!) {
+  personalAccessTokenRotate(input: { id: $id }) {
+    token
+    errors
+  }
+}

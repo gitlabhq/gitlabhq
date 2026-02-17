@@ -5,12 +5,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Local setup and debugging
 ---
 
-{{< alert type="note" >}}
-
-To track user interactions in the browser, browser settings, such as privacy filters (for example,
-AdBlock, uBlock) and Do-Not-Track (DNT). For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
-
-{{< /alert >}}
+> [!note]
+> To track user interactions in the browser, browser settings, such as privacy filters (for example,
+> AdBlock, uBlock) and Do-Not-Track (DNT). For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
 
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools to test frontend and backend events:
 
@@ -48,7 +45,7 @@ The monitor can show two tables:
   The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
 
 - The `SNOWPLOW EVENTS` table lists a selection of properties from only Snowplow events fired after the monitor was started and those that match the event name.
-  For this table to be visible, you can either enable event tracking (**Admin area** > **Settings** > **Metrics and profiling** > **Event tracking**, then select "Enable event tracking" & save changes) or configure GDK to run with [Snowplow Micro](#snowplow-micro).
+  For this table to be visible, you can either enable event tracking (**Admin** > **Settings** > **Metrics and profiling** > **Event tracking**, then select "Enable event tracking" & save changes) or configure GDK to run with [Snowplow Micro](#snowplow-micro).
 
 If a new `i_code_review_user_create_mr` event is fired, the metrics values get updated and a new event appears in the `SNOWPLOW EVENTS` table.
 

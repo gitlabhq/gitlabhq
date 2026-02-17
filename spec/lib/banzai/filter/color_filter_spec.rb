@@ -9,8 +9,8 @@ RSpec.describe Banzai::Filter::ColorFilter, :lib, feature_category: :markdown do
   let(:color_chip_selector) { 'code > span.gfm-color_chip > span' }
 
   ['#123', '#1234', '#123456', '#12345678',
-   'rgb(0,0,0)', 'RGB(0, 0, 0)', 'rgba(0,0,0,1)', 'RGBA(0,0,0,0.7)',
-   'hsl(270,30%,50%)', 'HSLA(270, 30%, 50%, .7)'].each do |color|
+    'rgb(0,0,0)', 'RGB(0, 0, 0)', 'rgba(0,0,0,1)', 'RGBA(0,0,0,0.7)',
+    'hsl(270,30%,50%)', 'HSLA(270, 30%, 50%, .7)'].each do |color|
     it "inserts color chip for supported color format #{color}" do
       content = code_tag(color)
       doc = filter(content)
@@ -23,8 +23,8 @@ RSpec.describe Banzai::Filter::ColorFilter, :lib, feature_category: :markdown do
   end
 
   ['\#123', '\#1234', '\#123456', '\#12345678',
-   '\rgb(0,0,0)', '\RGB(0, 0, 0)', '\rgba(0,0,0,1)', '\RGBA(0,0,0,0.7)',
-   '\hsl(270,30%,50%)', '\HSLA(270, 30%, 50%, .7)'].each do |escaped_color|
+    '\rgb(0,0,0)', '\RGB(0, 0, 0)', '\rgba(0,0,0,1)', '\RGBA(0,0,0,0.7)',
+    '\hsl(270,30%,50%)', '\HSLA(270, 30%, 50%, .7)'].each do |escaped_color|
     it "does not insert color chip and unescapes escaped color #{escaped_color}" do
       content = code_tag(escaped_color)
       doc = filter(content)

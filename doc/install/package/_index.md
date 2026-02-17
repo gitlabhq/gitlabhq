@@ -55,12 +55,9 @@ We may discontinue package builds before vendor EOL due to:
 
 We aim to provide at least 6 months' notice before discontinuing support for any operating system version. When technical limitations or vendor constraints require shorter notice, we will communicate changes as soon as possible.
 
-{{< alert type="note" >}}
-
-`amd64` and `x86_64` refer to the same 64-bit architecture. The names `arm64` and `aarch64` are also interchangeable
-and refer to the same architecture.
-
-{{< /alert >}}
+> [!note]
+> `amd64` and `x86_64` refer to the same 64-bit architecture. The names `arm64` and `aarch64` are also interchangeable
+> and refer to the same architecture.
 
 | Operating system                                                                   | First supported GitLab version | Architecture          | Operating system EOL | Proposed last supported GitLab version  | Upstream release notes                                                                                        |
 |------------------------------------------------------------------------------------|--------------------------------|-----------------------|----------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------|
@@ -160,13 +157,10 @@ database, configuration) or remove all of them:
    sudo gitlab-ctl stop && sudo gitlab-ctl remove-accounts
    ```
 
-   {{< alert type="note" >}}
-
-   If you have a problem removing accounts or groups, run `userdel` or `groupdel` manually
-   to delete them. You might also want to manually remove the leftover user home directories
-   from `/home/`.
-
-   {{< /alert >}}
+   > [!note]
+   > If you have a problem removing accounts or groups, run `userdel` or `groupdel` manually
+   > to delete them. You might also want to manually remove the leftover user home directories
+   > from `/home/`.
 
 1. Choose whether to keep your data or remove all of them:
 
@@ -232,13 +226,10 @@ database, configuration) or remove all of them:
 
 ### Ubuntu 22.04 FIPS
 
-{{< alert type="warning" >}}
-
-Known compatibility issues currently exist between GitLab FIPS mode and Ubuntu 22.04. Administrators should refrain from upgrading their host operating system to Ubuntu 22.04 until further notice.
-
-This advisory will be updated once the issues have been identified and resolved.
-
-{{< /alert >}}
+> [!warning]
+> Known compatibility issues currently exist between GitLab FIPS mode and Ubuntu 22.04. Administrators should refrain from upgrading their host operating system to Ubuntu 22.04 until further notice.
+>
+> This advisory will be updated once the issues have been identified and resolved.
 
 In GitLab 18.4 and later, FIPS builds are available for Ubuntu 22.04.
 

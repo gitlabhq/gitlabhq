@@ -3,7 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate from Bitbucket Cloud
-description: "Import projects from Bitbucket Cloud to GitLab."
+description: "Migrate from Bitbucket Cloud to GitLab."
 ---
 
 {{< details >}}
@@ -77,7 +77,7 @@ repository is imported under the namespace of the user who started the import pr
   ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
 - You must enable the [Bitbucket Cloud import source](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   or ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
-- You must have at least the Maintainer role on the destination group to import to.
+- You must have the Maintainer or Owner role on the destination group to import to.
 - Pull requests in Bitbucket must have the same source and destination project and not be from a fork of a project.
   Otherwise, the pull requests are imported as empty merge requests.
 
@@ -90,6 +90,11 @@ For user contributions to be mapped, each user must complete the following befor
 1. Connect your Bitbucket account in [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
 ### Generate a Bitbucket Cloud app password
+
+> [!warning]
+> Support for app passwords was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 18.9
+> and is planned for removal in 19.0. Use [user API tokens](https://support.atlassian.com/organization-administration/docs/understand-user-api-tokens/)
+> instead.
 
 If you want to use the import API to import a Bitbucket Cloud repository, you must create a Bitbucket Cloud app password.
 
@@ -149,7 +154,7 @@ their Bitbucket account in the [GitLab profile service sign-in](https://gitlab.c
 To fix this issue, the user must verify that their Bitbucket external UID in the GitLab database matches their
 current Bitbucket public name, and reconnect if there's a mismatch:
 
-1. [Use the API to get the authenticated user](../../api/users.md#as-a-regular-user-2).
+1. [Use the API to get the authenticated user](../../api/users.md#retrieve-the-current-user).
 1. In the API response, the `identities` attribute contains the Bitbucket account that exists in the GitLab database.
    If the `extern_uid` doesn't match the current Bitbucket public name, the user should reconnect their Bitbucket account
    in the [GitLab profile service sign-in](https://gitlab.com/-/profile/account).

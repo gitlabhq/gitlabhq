@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_managed_cluster_applications
 description: ''
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 value_type: number
 status: removed
 milestone: '14.3'

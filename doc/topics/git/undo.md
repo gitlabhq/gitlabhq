@@ -221,12 +221,9 @@ The commits are now `A-B-C-D-E`.
 Alternatively, [cherry-pick](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
 that commit into a new merge request.
 
-{{< alert type="note" >}}
-
-Another solution is to reset to `B` and commit `E`. However, this solution results in `A-B-E`,
-which clashes with what others have locally. Don't use this solution if your branch is shared.
-
-{{< /alert >}}
+> [!note]
+> Another solution is to reset to `B` and commit `E`. However, this solution results in `A-B-E`,
+> which clashes with what others have locally. Don't use this solution if your branch is shared.
 
 ### Recover undone commits
 
@@ -338,12 +335,9 @@ and delete commits.
 # Empty commits are commented out
 ```
 
-{{< alert type="note" >}}
-
-If you decide to stop a rebase, do not close your editor.
-Instead, remove all uncommented lines and save.
-
-{{< /alert >}}
+> [!note]
+> If you decide to stop a rebase, do not close your editor.
+> Instead, remove all uncommented lines and save.
 
 Use `git rebase` carefully on shared and remote branches.
 Experiment locally before you push to the remote repository.

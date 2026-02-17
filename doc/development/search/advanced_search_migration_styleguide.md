@@ -7,11 +7,8 @@ title: Advanced search migration style guide
 
 ## Create a new advanced search migration
 
-{{< alert type="note" >}}
-
-This functionality is only supported for indices created in GitLab 13.0 and later.
-
-{{< /alert >}}
+> [!note]
+> This functionality is only supported for indices created in GitLab 13.0 and later.
 
 ### With a script
 
@@ -136,12 +133,9 @@ Validate that an Elasticsearch query contains the specified fields.
 
 #### `assert_named_queries`
 
-{{< alert type="warning" >}}
-
-This method requires sending a search request to Elasticsearch. Use `assert_names_in_query` to test
-the queries generated directly.
-
-{{< /alert >}}
+> [!warning]
+> This method requires sending a search request to Elasticsearch. Use `assert_names_in_query` to test
+> the queries generated directly.
 
 Validate that a request was made to Elasticsearch with [named queries](https://www.elastic.co/guide/en/elasticsearch/reference/8.18/query-dsl-bool-query.html#named-queries)
 Use `without` to validate the named query was not in the request.
@@ -204,6 +198,11 @@ Requirements:
 - The field must always have a value. If the field can be null, use `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
 - For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
 - For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
+
+> [!note]
+> This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
+> result limit. This constraint significantly impacts performance when backfilling large datasets,
+> as the migration must iterate slowly through the data in smaller batches.
 
 Single field example:
 
@@ -392,11 +391,8 @@ Requires:
 - The `target_class` and `document_type` methods
 - Mappings and index settings for the class
 
-{{< alert type="warning" >}}
-
-You must perform a follow-up migration to populate the index in the same milestone.
-
-{{< /alert >}}
+> [!warning]
+> You must perform a follow-up migration to populate the index in the same milestone.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -470,13 +466,14 @@ end
 Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
 
 Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
-The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+The index mapping must have a `schema_version` integer field in a `YYVV` (year/version) format.
 
-{{< alert type="note" >}}
+This migration helper uses the scroll API to handle larger batches (potentially >10,000 records)
+more efficiently, while the queue threshold prevents overwhelming downstream processing by pausing
+the migration when the bookkeeping queue exceeds capacity.
 
-Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
-
-{{< /alert >}}
+> [!note]
+> Previously index mapping `schema_version` used `YYMM` or `YYWW` format. New versions should use the `YYVV` format.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -507,13 +504,10 @@ end
 Deletes all documents in the index that stores the specified document type and has `schema_version` less than the given value.
 
 Requires the `DOCUMENT_TYPE` constant and `schema_version` method.
-The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+The index mapping must have a `schema_version` integer field in a `YYVV` (year/version) format.
 
-{{< alert type="note" >}}
-
-Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
-
-{{< /alert >}}
+> [!note]
+> Previously index mapping `schema_version` used `YYMM` or `YYWW` format. New versions should use the `YYVV` format.
 
 ```ruby
 class MigrationName < Elastic::Migration

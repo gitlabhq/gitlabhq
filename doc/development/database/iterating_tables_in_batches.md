@@ -106,14 +106,11 @@ end
 
 The query above iterates over the project creators and prints them out without duplications.
 
-{{< alert type="note" >}}
-
-In case the column is not unique (no unique index definition), calling the `distinct` method on
-the relation is necessary. Using not unique column without `distinct` may result in `each_batch`
-falling into an endless loop as described in following
-[issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
-
-{{< /alert >}}
+> [!note]
+> In case the column is not unique (no unique index definition), calling the `distinct` method on
+> the relation is necessary. Using not unique column without `distinct` may result in `each_batch`
+> falling into an endless loop as described in following
+> [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
 
 ## `EachBatch` in data migrations
 
@@ -257,11 +254,8 @@ the actual table to find the first matching row.
 
 ![Reading the index with extra filter](img/each_batch_users_table_filter_v13_7.png)
 
-{{< alert type="note" >}}
-
-The number of scanned rows depends on the data distribution in the table.
-
-{{< /alert >}}
+> [!note]
+> The number of scanned rows depends on the data distribution in the table.
 
 - Best case scenario: the first user was never logged in. The database reads only one row.
 - Worst case scenario: all users were logged in at least once. The database reads all rows.
@@ -301,12 +295,9 @@ To address this problem, we have two options:
 - Create another, conditional index to cover the new query.
 - Replace the index with a more generalized configuration.
 
-{{< alert type="note" >}}
-
-Having multiple indexes on the same table and on the same columns could be a performance bottleneck
-when writing data.
-
-{{< /alert >}}
+> [!note]
+> Having multiple indexes on the same table and on the same columns could be a performance bottleneck
+> when writing data.
 
 Let's consider the following index (avoid):
 
@@ -383,11 +374,8 @@ constant "load" on the query which often ends up in statement timeouts. We have 
 of [confidential issues](../../user/project/issues/confidential_issues.md), the execution time
 and the accessed database rows depend on the data distribution in the `issues` table.
 
-{{< alert type="note" >}}
-
-Using subqueries works only when the subquery returns a small number of rows.
-
-{{< /alert >}}
+> [!note]
+> Using subqueries works only when the subquery returns a small number of rows.
 
 #### Improving Subqueries
 
@@ -625,11 +613,8 @@ iterator.each_batch(of: 100) do |records|
 end
 ```
 
-{{< alert type="note" >}}
-
-To keep the iteration stable and predictable, avoid updating the columns in the `ORDER BY` clause.
-
-{{< /alert >}}
+> [!note]
+> To keep the iteration stable and predictable, avoid updating the columns in the `ORDER BY` clause.
 
 ### Iterate over the `merge_request_diff_commits` table
 

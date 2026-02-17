@@ -1,0 +1,5 @@
+---
+name: update_issue_note
+description: Grants the ability to update issue notes
+boundaries:
+  - project

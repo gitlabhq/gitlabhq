@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_user_jetbrains_bundled_api_request_monthly
 description: Count of unique users per month who use the bundled GitLab plugin in JetBrains IDEs
 product_group: code_review
+product_categories:
+- editor_extensions
 value_type: number
 status: active
 milestone: "16.1"

@@ -16,7 +16,7 @@ title: ClickHouse
 
 [ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
 
-GitLab uses Clickhouse as a secondary data store to enable advanced analytics features such as GitLab Duo, SDLC trends, and CI Analytics. GitLab only stores data that supports these features in Clickhouse.
+GitLab uses ClickHouse as a secondary data store to enable advanced analytics features such as GitLab Duo, SDLC trends, and CI Analytics. GitLab only stores data that supports these features in ClickHouse.
 
 You should use [ClickHouse Cloud](https://clickhouse.com/cloud) to connect ClickHouse to GitLab.
 
@@ -44,9 +44,8 @@ The supported ClickHouse version differs depending on your GitLab version:
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
-{{< alert type="warning" >}}
-If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
-{{< /alert >}}
+> [!warning]
+> If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
 
 ## Set up ClickHouse
 
@@ -87,9 +86,8 @@ To set up ClickHouse Cloud:
    - Username
    - Password
 
-{{< alert type="note" >}}
-ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse). 
-{{< /alert >}}
+> [!note]
+> ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse).
 
 After you create your ClickHouse Cloud service, you then [create the GitLab database and user](#create-database-and-user).
 
@@ -104,9 +102,8 @@ Prerequisites:
 - Enable network connectivity from your GitLab instance to ClickHouse.
 - Be an Administrator for both ClickHouse and your GitLab instance.
 
-{{< alert type="warning" >}}
-For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades, security patches, and backups. For more information, see [Upgrade ClickHouse](#upgrade-clickhouse).
-{{< /alert >}}
+> [!warning]
+> For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades, security patches, and backups. For more information, see [Upgrade ClickHouse](#upgrade-clickhouse).
 
 #### Configure High Availability
 
@@ -182,9 +179,8 @@ Before configuring the database, verify ClickHouse is installed and accessible:
    clickhouse-client --host your-clickhouse-host --port 9440 --secure --user default --password 'your-password'
    ```
 
-   {{< alert type="note" >}}
-   If you have not configured TLS yet, use port `9000` without the `--secure` flag for initial testing.
-   {{< /alert >}}
+   > [!note]
+   > If you have not configured TLS yet, use port `9000` without the `--secure` flag for initial testing.
 
 ### Create database and user
 
@@ -302,9 +298,8 @@ To provide GitLab with ClickHouse credentials:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-For production deployments, configure TLS/SSL on your ClickHouse instance and use `https://` URLs. For GitLab Self-Managed installations, see the [Network Security](#network-security) documentation.
-{{< /alert >}}
+> [!note]
+> For production deployments, configure TLS/SSL on your ClickHouse instance and use `https://` URLs. For GitLab Self-Managed installations, see the [Network Security](#network-security) documentation.
 
 ### Verify the connection
 
@@ -343,7 +338,7 @@ sudo gitlab-rake gitlab:clickhouse:migrate
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Migrations are executed automatically using the GitLab-Migrations chart.
+Migrations are executed automatically with the [GitLab-Migrations chart](https://docs.gitlab.com/charts/charts/gitlab/migrations/).
 
 Alternatively, you can run migrations by executing the following command in the Toolbox pod:
 
@@ -367,7 +362,7 @@ Prerequisites:
 
 To enable ClickHouse for Analytics:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Select **Enable ClickHouse for Analytics**.
@@ -383,15 +378,14 @@ Prerequisites:
 
 To disable:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Clear the **Enable ClickHouse for Analytics** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-Disabling ClickHouse for Analytics stops GitLab from querying ClickHouse but does not delete any data from your ClickHouse instance. Analytics features that rely on ClickHouse will fall back to alternative data sources or become unavailable.
-{{< /alert >}}
+> [!note]
+> Disabling ClickHouse for Analytics stops GitLab from querying ClickHouse but does not delete any data from your ClickHouse instance. Analytics features that rely on ClickHouse will fall back to alternative data sources or become unavailable.
 
 ## Upgrade ClickHouse
 
@@ -401,9 +395,8 @@ ClickHouse Cloud automatically handles version upgrades and security patches. No
 
 For information about upgrade scheduling and maintenance windows, see the [ClickHouse Cloud documentation](https://clickhouse.com/docs/cloud/manage/updates).
 
-{{< alert type="note" >}}
-ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
-{{< /alert >}}
+> [!note]
+> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
 
 ### ClickHouse for GitLab Self-Managed (BYOC)
 
@@ -429,9 +422,8 @@ To upgrade ClickHouse:
    - Wait for the node to rejoin the cluster.
    - Verify cluster health before proceeding to the next node.
 
-{{< alert type="warning" >}}
-Always ensure the ClickHouse version remains compatible with your GitLab version. Incompatible versions might cause indexing to pause and features to fail. For more information, see [supported ClickHouse versions](#supported-clickhouse-versions)
-{{< /alert >}}
+> [!warning]
+> Always ensure the ClickHouse version remains compatible with your GitLab version. Incompatible versions might cause indexing to pause and features to fail. For more information, see [supported ClickHouse versions](#supported-clickhouse-versions)
 
 For detailed upgrade procedures, see the [ClickHouse documentation on updates](https://clickhouse.com/docs/manage/updates).
 
@@ -445,7 +437,7 @@ Prerequisites:
 
 To check the status of ClickHouse migrations:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Review the **Migration status** section if available.
@@ -474,9 +466,8 @@ If a ClickHouse migration fails:
    bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
    ```
 
-{{< alert type="note" >}}
-Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
-{{< /alert >}}
+> [!note]
+> Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
 
 ## ClickHouse Rake tasks
 
@@ -493,9 +484,8 @@ The following Rake tasks are available:
 | [`sudo gitlab-rake gitlab:clickhouse:schema:dump`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Dumps the current database schema to a file for backup or version control. |
 | [`sudo gitlab-rake gitlab:clickhouse:schema:load`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Loads the database schema from a dump file. |
 
-{{< alert type="note" >}}
-For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
-{{< /alert >}}
+> [!note]
+> For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
 
 ### Common task examples
 
@@ -527,9 +517,8 @@ bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
 
 #### Reset the database
 
-{{< alert type="warning" >}}
-This deletes all data in your ClickHouse database. Use only in development or when troubleshooting.
-{{< /alert >}}
+> [!warning]
+> This deletes all data in your ClickHouse database. Use only in development or when troubleshooting.
 
 To drop and recreate the database:
 
@@ -553,9 +542,8 @@ You can use environment variables to control Rake task behavior:
 
 ## Performance tuning
 
-{{< alert type="note" >}}
-For resource sizing and deployment recommendations based on your user count, see [system requirements](#system-requirements).
-{{< /alert >}}
+> [!note]
+> For resource sizing and deployment recommendations based on your user count, see [system requirements](#system-requirements).
 
 For information about ClickHouse architecture and performance tuning, see the [ClickHouse documentation on architecture](https://clickhouse.com/docs/architecture/introduction).
 
@@ -814,15 +802,14 @@ HA setup becomes cost effective only at 10k users or above.
 
 ### Database schema migrations on GitLab 18.0.0 and earlier
 
-{{< alert type="warning" >}}
-On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
-
-```plaintext
-Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
-```
-
-Without running all migrations, the ClickHouse integration will not work.
-{{< /alert >}}
+> [!warning]
+> On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
+>
+> ```plaintext
+> Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
+> ```
+>
+> Without running all migrations, the ClickHouse integration will not work.
 
 To work around this issue and run the migrations:
 
@@ -879,3 +866,17 @@ DB::Exception: gitlab: Not enough privileges.
 ```
 
 After granting the permission, the migration can be safely retried (ideally, wait 1-2 hours until the distributed migration lock clears).
+
+### ClickHouse CI job data materialized view data inconsistencies
+
+In GitLab 18.5 and earlier, duplicate data could be inserted into ClickHouse tables
+(such as `ci_finished_pipelines` and `ci_finished_builds`) when Sidekiq workers
+retried after network timeouts. This issue caused materialized views to display incorrect
+aggregated metrics in analytics dashboards, including the runner fleet dashboard.
+
+This issue was fixed in GitLab 18.9 and backported to 18.6, 18.7, and 18.8.
+To resolve this issue, upgrade to GitLab 18.6 or later.
+
+If you have existing duplicate data, a fix to rebuild the affected materialized views is planned
+for GitLab 18.10 in [issue 586319](https://gitlab.com/gitlab-org/gitlab/-/issues/586319).
+For assistance, contact GitLab Support.

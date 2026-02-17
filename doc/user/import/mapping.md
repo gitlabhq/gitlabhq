@@ -29,113 +29,97 @@ title: Post-migration contribution and membership mapping
 
 {{< /history >}}
 
-{{< alert type="note" >}}
+With post-migration mapping, user contributions and memberships from source instances are initially assigned to
+placeholder users rather than real users on the destination instance.
 
-To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
+Because you can defer assigning to real users, you have time to review the import and reassign contributions to the
+correct users. This process ensures accurate attribution while maintaining control over the mapping process.
 
-{{< /alert >}}
+Post-migration user contribution and membership mapping is available by default for migrations from:
 
-When you import groups or projects into GitLab with post-migration mapping, user contributions and memberships from the
-source instance are initially assigned to placeholder users rather than real users on the destination instance. This
-gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while
-maintaining control over the mapping process.
-
-With post-migration mapping, you can:
-
-- Reassign contributions and memberships from placeholder users to existing users.
-- Create new users for reassignment.
-- Keep certain contributions assigned to placeholder users to preserve historical context.
-
-Post-migration user contribution and membership mapping is available on GitLab.com and GitLab Self-Managed by default for
-migrations from:
-
-- [GitLab by direct transfer](../group/import/_index.md)
+- [GitLab when using direct transfer](../group/import/_index.md)
 - [GitHub](../project/import/github.md)
 - [Bitbucket Server](bitbucket_server.md)
 - [Gitea](gitea.md)
 
+When you import projects to a [personal namespace](../namespace/_index.md#types-of-namespaces), user contribution mapping
+and membership mapping is not supported and all contributions are assigned to the personal namespace owner. These
+contributions cannot be reassigned.
+
+## Prerequisites
+
+- Plan for the number of users, according to the [user limits](#placeholder-user-limits).
+- If you import to GitLab.com, set up your paid namespace.
+- If you import to GitLab.com and use [SAML SSO for GitLab.com groups](../group/saml_sso/_index.md),
+  ensure all users link their SAML identity to their GitLab.com account.
+
 ## Post-migration mapping workflow
 
-Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
-These placeholders are created on the destination instance even if
-users with the same email addresses exist on the source instance.
-Until you reassign contributions on the destination instance,
-all contributions display as associated with placeholders.
+When using post-migration mapping, GitLab maps any memberships and contributions you import to
+[placeholder users](#placeholder-users). Placeholder users are created on the destination instance even if users with
+the same email addresses exist on the source instance. Until you reassign contributions on the destination instance, all
+contributions are associated with placeholder users.
 
-{{< alert type="note" >}}
+After the import is complete and you've reviewed the results, you can update the mappings as follows:
 
-Contributions from a deleted user on the source instance are
-mapped automatically to that user on the destination instance.
+- Reassign memberships and contributions to existing users on the destination instance.
+  You can map memberships and contributions for users with different email addresses on source and destination instances.
+- Create new users on the destination instance and reassign memberships and contributions to them.
 
-{{< /alert >}}
+You can also keep certain contributions assigned to placeholder users to preserve historical context.
 
-After the import has completed, you can:
+When you reassign contributions to a user on the destination instance, the user can either:
 
-- Reassign memberships and contributions to existing users on the destination instance
-  after you review the results.
-  You can map memberships and contributions for users with different email addresses
-  on source and destination instances.
-- Create new users on the destination instance to reassign memberships and contributions to.
+- Accept the reassignment. The reassignment process might take a few minutes. In subsequent imports from the same source
+  instance to the same top-level group or subgroup on the destination instance, contributions are mapped automatically
+  to the user.
+- Reject the reassignment.
 
-When you reassign contributions to a user on the destination instance, the user can
-[accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
-When the user accepts the reassignment:
+### Enterprise users
 
-- Contributions are reassigned. This process might take a few minutes.
-- In subsequent imports from the same source instance to the same top-level group or subgroup
-  on the destination instance, contributions are mapped automatically to the user.
+{{< history >}}
 
-[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group
-has at least one [enterprise user](../enterprise_user/_index.md), you can reassign contributions
-only to enterprise users in your organization in the UI or by using a CSV file.
-This feature is meant to prevent accidental reassignment to users outside your organization.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510673) in GitLab 18.0.
 
-{{< alert type="note" >}}
+{{< /history >}}
 
-When you use a supported method to import projects to a
-[personal namespace](../namespace/_index.md#types-of-namespaces),
-user contribution mapping is not supported.
-When you import to a personal namespace, all contributions are assigned to the
-personal namespace owner and they cannot be reassigned.
+If your top-level group has at least one [enterprise user](../enterprise_user/_index.md), you can reassign contributions
+only to enterprise users in your organization.
 
-{{< /alert >}}
+This means you cannot accidentally reassign to users outside your organization.
 
-## Requirements
+### Deleted users
 
-- You must be able to create enough users, subject to [user limits](#placeholder-user-limits).
-- If you import to GitLab.com, you must set up your paid namespace before the import.
-- If you import to GitLab.com and use [SAML SSO for GitLab.com groups](../group/saml_sso/_index.md),
-  all users must link their SAML identity to their GitLab.com account before you can
-  [reassign contributions and memberships](#reassign-contributions-and-memberships).
+Contributions on the source instance that were made by a now deleted user are mapped on the destination instance to
+[a ghost user](../../administration/internal_users.md), except when:
 
-## Placeholder users
+- The contribution was never properly detached from the deleted user on the source instance.
+- Migrating from Bitbucket Server.
 
-Instead of immediately assigning contributions and memberships to users on the destination instance, a
-placeholder user is created for any active, inactive, or bot user with imported contributions or memberships.
-For deleted users on the source instance, placeholders are created
-without all [placeholder user attributes](#placeholder-user-attributes).
-You should [keep these users as placeholders](#keep-as-placeholder).
-For more information, see [issue 506432](https://gitlab.com/gitlab-org/gitlab/-/issues/506432).
+### Placeholder users
 
-Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
+With contribution and membership mapping, you don't immediately assign contributions and memberships to users on the
+destination instance. Instead, a placeholder user is created for any active, inactive, or bot user with imported
+contributions or memberships.
+
+Both contributions and memberships are initially assigned to these placeholder users and can be reassigned after import
 to existing users on the destination instance.
-Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
-do not display in member lists.
+
+Until they are reassigned, contributions are associated with the placeholder. Placeholder memberships do not display in
+member lists.
 
 Placeholder users do not count towards license limits.
 
-### Exceptions
+#### Exceptions
 
-A placeholder user is created for each user on the source instance, except in the following scenarios:
+A placeholder user is not created in these scenarios:
 
-- You're importing a project from [Gitea](gitea.md), and the user was deleted on Gitea before the import.
-  Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
-- You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
-  mapped to a single non-functional user called `Import User`.
-- You're importing to a [personal namespace](../namespace/_index.md#types-of-namespaces)
-  Contributions are assigned to the personal namespace owner.
+- You're importing a project from [Gitea](gitea.md) with contributions from deleted users.
+  Contributions from these users are mapped to the user who imported the project.
+- You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users are
+  mapped to an import user.
 
-### Placeholder user attributes
+#### Placeholder user attributes
 
 Placeholder users are different to regular users and cannot:
 
@@ -159,7 +143,7 @@ To preserve historical context, the placeholder user name and username are deriv
 - Placeholder user's name is `Placeholder <source user name>`.
 - Placeholder user's username is `%{source_username}_placeholder_user_%{incremental_number}`.
 
-### View placeholder users
+#### View placeholder users
 
 Prerequisites:
 
@@ -173,7 +157,7 @@ To view placeholder users created during imports to a top-level group and its su
 1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 
-### Filter for placeholder users
+#### Filter for placeholder users
 
 {{< details >}}
 
@@ -198,7 +182,7 @@ To filter for placeholder users created during imports for an entire instance:
 1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
-### Creating placeholder users
+#### Creating placeholder users
 
 Placeholder users are created per import source and per top-level group:
 
@@ -207,23 +191,20 @@ Placeholder users are created per import source and per top-level group:
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
 
-{{< alert type="note" >}}
-
-Placeholder users are associated only with the top-level group.
-When you delete a subgroup or project, their placeholder users
-no longer reference any contributions in the top-level group.
-For testing, you should use a designated top-level group.
-Deleting placeholder users is proposed in [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391)
-and [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
-
-{{< /alert >}}
+> [!note]
+> Placeholder users are associated only with the top-level group.
+> When you delete a subgroup or project, their placeholder users
+> no longer reference any contributions in the top-level group.
+> For testing, you should use a designated top-level group.
+> Deleting placeholder users is proposed in [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391)
+> and [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
 
 When a user [accepts the reassignment](#accept-contribution-reassignment),
 subsequent imports from the same source instance to the same top-level group or
 subgroup on the destination instance do not create placeholder users.
 Instead, contributions are mapped automatically to the user.
 
-### Placeholder user deletion
+#### Placeholder user deletion
 
 {{< history >}}
 
@@ -237,15 +218,12 @@ This process might take some time to complete.
 However, placeholder users remain in the system if
 they're also associated with other projects or groups.
 
-{{< alert type="note" >}}
+> [!note]
+> There is no other way to delete placeholder users, but support for improvements is proposed in
+> [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
+> [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
 
-There is no other way to delete placeholder users, but support for improvements is proposed in
-[issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
-[issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
-
-{{< /alert >}}
-
-### Placeholder user limits
+#### Placeholder user limits
 
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 

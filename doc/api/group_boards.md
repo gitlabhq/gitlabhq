@@ -20,7 +20,7 @@ request results in `404` status code.
 
 ## List all group issue boards in a group
 
-Lists issue boards in the given group.
+Lists all group issue boards for a specified group.
 
 ```plaintext
 GET /groups/:id/boards
@@ -31,7 +31,9 @@ GET /groups/:id/boards
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards"
 ```
 
 Example response:
@@ -139,9 +141,9 @@ Example response:
 ]
 ```
 
-## Single group issue board
+## Retrieve a group issue board
 
-Gets a single group issue board.
+Retrieves a specified group issue board.
 
 ```plaintext
 GET /groups/:id/boards/:board_id
@@ -153,7 +155,9 @@ GET /groups/:id/boards/:board_id
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1"
 ```
 
 Example response:
@@ -266,7 +270,7 @@ Example response:
 
 {{< /details >}}
 
-Creates a group issue board.
+Creates a group issue board for a specified group.
 
 ```plaintext
 POST /groups/:id/boards
@@ -278,7 +282,9 @@ POST /groups/:id/boards
 | `name` | string | yes | The name of the new board. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards?name=newboard"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards?name=newboard"
 ```
 
 Example response:
@@ -305,7 +311,7 @@ Example response:
 
 ## Update a group issue board
 
-Updates a group issue board.
+Updates a specified group issue board.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id
@@ -324,7 +330,9 @@ PUT /groups/:id/boards/:board_id
 | `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to. Premium and Ultimate only. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4"
 ```
 
 Example response:
@@ -382,7 +390,7 @@ Example response:
 
 {{< /details >}}
 
-Deletes a group issue board.
+Deletes a specified group issue board.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id
@@ -394,13 +402,14 @@ DELETE /groups/:id/boards/:board_id
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1"
 ```
 
 ## List group issue board lists
 
-Get a list of the board's lists.
-Does not include `open` and `closed` lists
+Lists all group issue board lists for a specified board. Does not include `open` and `closed` lists.
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists
@@ -412,7 +421,9 @@ GET /groups/:id/boards/:board_id/lists
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists"
 ```
 
 Example response:
@@ -449,9 +460,9 @@ Example response:
 ]
 ```
 
-## Single group issue board list
+## Retrieve a group issue board list
 
-Get a single board list.
+Retrieves a specified group issue board list.
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists/:list_id
@@ -464,7 +475,9 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
 ```
 
 Example response:
@@ -481,9 +494,9 @@ Example response:
 }
 ```
 
-## New group issue board list
+## Create a group issue board list
 
-Creates an issue board list.
+Creates a group issue board list for a specified board.
 
 ```plaintext
 POST /groups/:id/boards/:board_id/lists
@@ -499,7 +512,9 @@ POST /groups/:id/boards/:board_id/lists
 | `iteration_id` | integer | no | The ID of a iteration. Premium and Ultimate only. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/12/lists?milestone_id=7"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/12/lists?milestone_id=7"
 ```
 
 Example response:
@@ -525,9 +540,9 @@ Example response:
 }
 ```
 
-## Edit group issue board list
+## Update a group issue board list
 
-Updates an existing issue board list. This call is used to change list position.
+Updates a specified group issue board list. This call is used to change list position.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id/lists/:list_id
@@ -541,7 +556,9 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 | `position` | integer | yes | The position of the list. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1?position=2"
 ```
 
 Example response:
@@ -560,7 +577,7 @@ Example response:
 
 ## Delete a group issue board list
 
-Only for administrators and group owners. Deletes the board list in question.
+Deletes a specified group issue board list. Only for administrators and group owners.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id/lists/:list_id
@@ -573,5 +590,7 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
 ```

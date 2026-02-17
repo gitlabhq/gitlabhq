@@ -20,7 +20,11 @@ export function initImportByUrl() {
     newProjectFormPath,
     userNamespaceId,
     userNamespaceFullPath,
+    namespaceId,
+    namespaceFullPath,
   } = el.dataset;
+
+  const namespace = { id: namespaceId, fullPath: namespaceFullPath };
 
   const provide = {
     importByUrlValidatePath,
@@ -41,7 +45,9 @@ export function initImportByUrl() {
     }),
     provide,
     render(createElement) {
-      return createElement(ImportByUrl);
+      return createElement(ImportByUrl, {
+        props: { namespace },
+      });
     },
   });
 }

@@ -1,0 +1,8 @@
+---
+name: update_job_artifact
+description: Grants the ability to update job artifacts
+boundaries:
+  - project
+permissions:
+  - preserve_job_artifact
+

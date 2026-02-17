@@ -4,8 +4,7 @@ module API
   class SystemHooks < ::API::Base
     include PaginationParams
 
-    system_hooks_tags = %w[system_hooks]
-
+    system_hooks_tags = %w[hooks]
     feature_category :webhooks
 
     before do
@@ -41,8 +40,8 @@ module API
     end
 
     resource :hooks do
-      mount ::API::Hooks::UrlVariables
-      mount ::API::Hooks::CustomHeaders
+      mount ::API::Hooks::UrlVariables, with: { boundary_type: :instance }
+      mount ::API::Hooks::CustomHeaders, with: { boundary_type: :instance }
 
       desc 'List system hooks' do
         detail 'Get a list of all system hooks'
@@ -53,6 +52,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance
       get do
         present paginate(SystemHook.all), with: Entities::Hook
       end
@@ -68,6 +68,7 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
       end
+      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance
       get ":hook_id" do
         present find_hook, with: Entities::Hook
       end
@@ -86,6 +87,7 @@ module API
         use :requires_url
         use :hook_parameters
       end
+      route_setting :authorization, permissions: :create_webhook, boundary_type: :instance
       post do
         hook_params = create_hook_params
 
@@ -108,6 +110,7 @@ module API
         ]
         tags system_hooks_tags
       end
+      route_setting :authorization, permissions: :update_webhook, boundary_type: :instance
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
         use :optional_url
@@ -140,6 +143,7 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
       end
+      route_setting :authorization, permissions: :delete_webhook, boundary_type: :instance
       delete ":hook_id" do
         hook = find_hook
 

@@ -1,7 +1,0 @@
----
-name: read_pipeline_test_report_summary
-description: Grants the ability to read pipeline test report summaries
-permissions:
-  - read_pipeline_test_report_summary
-boundaries:
-  - project

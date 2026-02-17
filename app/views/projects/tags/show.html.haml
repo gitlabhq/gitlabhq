@@ -6,7 +6,7 @@
 - breadcrumb_title @tag.name
 - page_title @tag.name, s_('TagsPage|Tags')
 
-.top-area.multi-line.gl-flex-wrap
+.top-area.multi-line.gl-border-b-0
   .nav-text
     .title
       %span.item-title.ref-name{ data: { testid: 'tag-name-content' } }
@@ -58,9 +58,9 @@
     - if can?(current_user, :admin_tag, @project)
       = render 'projects/buttons/remove_tag', project: @project, tag: @tag
 
-  - if @tag.message.present?
-    %pre.wrap{ data: { testid: 'tag-message-content' } }
-      = strip_signature(@tag.message)
+- if @tag.message.present?
+  %pre.wrap{ data: { testid: 'tag-message-content' } }
+    = strip_signature(@tag.message)
 
 - if can?(current_user, :admin_tag, @project)
   .js-delete-tag-modal

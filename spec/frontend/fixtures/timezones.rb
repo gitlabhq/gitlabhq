@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TimeZoneHelper, '(JavaScript fixtures)' do
+RSpec.describe TimeZoneHelper, '(JavaScript fixtures)', feature_category: :internationalization do
   include JavaScriptFixturesHelpers
   include described_class
 

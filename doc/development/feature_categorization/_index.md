@@ -48,11 +48,8 @@ For example, `capybara` is defined in both `Gemfile` and `qa/Gemfile` to run tes
 
 ### Shared feature category
 
-{{< alert type="warning" >}}
-
-The `:shared` feature category is **no longer supported** for gems.
-
-{{< /alert >}}
+> [!warning]
+> The `:shared` feature category is **no longer supported** for gems.
 
 As part of efforts to provide good maintenance of gems, all gems must
 use a specific feature category.
@@ -119,11 +116,8 @@ class MyBackgroundMigrationJob < BatchedMigrationJob
 end
 ```
 
-{{< alert type="note" >}}
-
-[`RuboCop::Cop::BackgroundMigration::FeatureCategory`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid `feature_category` is defined.
-
-{{< /alert >}}
+> [!note]
+> [`RuboCop::Cop::BackgroundMigration::FeatureCategory`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid `feature_category` is defined.
 
 ## Rails controllers
 
@@ -254,11 +248,8 @@ For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-o
 
 ### Shared feature category
 
-{{< alert type="warning" >}}
-
-The `:shared` feature category is **no longer supported** for tests.
-
-{{< /alert >}}
+> [!warning]
+> The `:shared` feature category is **no longer supported** for tests.
 
 As part of efforts to [streamline automating flaky and quarantined tests](https://gitlab.com/groups/gitlab-org/quality/-/epics/195), all specs must use a specific feature category. If you are uncertain about the ownership of a spec, please reach out to the [`#g_test_governance`](https://app.slack.com/client/T02592416/C064M4S0FU5) team for help. For migrating existing tests with `shared` ownership, please see [this issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3997) for details.
 

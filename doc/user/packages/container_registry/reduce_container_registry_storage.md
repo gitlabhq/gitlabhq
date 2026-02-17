@@ -55,8 +55,8 @@ To view storage usage for a project:
 
 You can also use:
 
-- The [Projects API](../../../api/projects.md#get-a-single-project) to get total container registry storage for a project.
-- The [Registry API](../../../api/container_registry.md#get-details-of-a-single-repository) to get size data for a specific repository.
+- Use the Projects API to get total container registry storage for a project. For more information, see [Get a single project](../../../api/projects.md#retrieve-a-project).
+- Use the Container registry API to get size data for a specific repository. For more information, see [Retrieve details of a single repository](../../../api/container_registry.md#retrieve-details-of-a-single-repository).
 
 ### For a group
 
@@ -85,16 +85,13 @@ Storage data updates occur:
 - Immediately when you push or delete container images.
 - In real-time when you:
   - View the repository image tags in the UI.
-  - Use the Container registry API to [get details of a single repository](../../../api/container_registry.md#get-details-of-a-single-repository).
+  - Use the Container registry API to [Retrieve details of a single repository](../../../api/container_registry.md#retrieve-details-of-a-single-repository).
 - When you push or delete tags in a project's container repository.
 - Every 5 minutes for groups.
 
-{{< alert type="note" >}}
-
-For GitLab Self-Managed instances, storage data becomes available after an administrator enables the metadata database.
-On GitLab.com, the metadata database is enabled by default.
-
-{{< /alert >}}
+> [!note]
+> For GitLab Self-Managed instances, storage data becomes available after an administrator enables the metadata database.
+> On GitLab.com, the metadata database is enabled by default.
 
 ## How container registry usage is calculated
 
@@ -161,12 +158,9 @@ To delete the underlying layers and images that aren't associated with any tags,
 
 ### Enable the cleanup policy
 
-{{< alert type="warning" >}}
-
-For performance reasons, enabled cleanup policies are automatically disabled for projects on
-GitLab.com that don't have a container image.
-
-{{< /alert >}}
+> [!warning]
+> For performance reasons, enabled cleanup policies are automatically disabled for projects on
+> GitLab.com that don't have a container image.
 
 ### How the cleanup policy works
 
@@ -189,26 +183,20 @@ The cleanup policy:
 1. Excludes [immutable tags](immutable_container_tags.md).
 1. Deletes the remaining tags in the list from the container registry.
 
-{{< alert type="warning" >}}
-
-On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
-the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
-It may take multiple runs to delete all tags.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-GitLab Self-Managed instances support third-party container registries that comply with the
-[Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
-specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
-workaround to delete tags when interacting with third-party container registries. Refer to
-issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
-for more information. Due to possible implementation variations, this workaround is not guaranteed
-to work with all third-party registries in the same predictable way. If you use the GitLab Container
-Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
-this case, you can expect cleanup policies to be consistent and predictable.
-{{< /alert >}}
+> [!warning]
+> On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
+> the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
+> It may take multiple runs to delete all tags.
+>
+> GitLab Self-Managed instances support third-party container registries that comply with the
+> [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
+> specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
+> workaround to delete tags when interacting with third-party container registries. Refer to
+> issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
+> for more information. Due to possible implementation variations, this workaround is not guaranteed
+> to work with all third-party registries in the same predictable way. If you use the GitLab Container
+> Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
+> this case, you can expect cleanup policies to be consistent and predictable.
 
 #### Example cleanup policy workflow
 
@@ -268,21 +256,15 @@ To create a cleanup policy in the UI:
    | **Remove tags older than** | Remove only tags older than X days. |
    | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
-   {{< alert type="note" >}}
-
-   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
-
-   {{< /alert >}}
+   > [!note]
+   > Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
 
 1. Select **Save**.
 
 The policy runs on the scheduled interval you selected.
 
-{{< alert type="note" >}}
-
-If you edit the policy and select **Save** again, the interval is reset.
-
-{{< /alert >}}
+> [!note]
+> If you edit the policy and select **Save** again, the interval is reset.
 
 ### Regex pattern examples
 

@@ -65,11 +65,8 @@ separate transactions.
 
 Adding a foreign key to an existing database column requires database structure changes and potential data changes.
 
-{{< alert type="note" >}}
-
-In case the table is in use, we should always assume that there is inconsistent data.
-
-{{< /alert >}}
+> [!note]
+> In case the table is in use, we should always assume that there is inconsistent data.
 
 Adding a FK constraint to an existing column is a multi-milestone process:
 
@@ -82,15 +79,12 @@ Adding a FK constraint to an existing column is a multi-milestone process:
    3. If it was a background migration, then the FK can be validated only after the BBM is finalized.
       This is required so that the FK validation won't happen while the data migration is still running in background.
 
-{{< alert type="note" >}}
-
-Adding a foreign-key constraint to either an existing or a new column
-needs an index on the column.
-
-If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait till
-the index gets added in the `structure.sql`.
-
-{{< /alert >}}
+> [!note]
+> Adding a foreign-key constraint to either an existing or a new column
+> needs an index on the column.
+> 
+> If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait till
+> the index gets added in the `structure.sql`.
 
 This is **required** for all foreign-keys, for example, to support efficient cascading
 deleting: when a lot of rows in a table get deleted, the referenced records need
@@ -172,12 +166,9 @@ short lock on the table before being able to enforce the constraint on new data.
 
 Also `add_concurrent_foreign_key` will add the constraint only if it's not existing.
 
-{{< alert type="warning" >}}
-
-Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
-once per migration file, unless the source and target tables are identical.
-
-{{< /alert >}}
+> [!warning]
+> Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
+> once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
 
@@ -212,12 +203,9 @@ class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-The MR that adds this data migration should have ~data-deletion label applied.
-Refer [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
-
-{{< /alert >}}
+> [!note]
+> The MR that adds this data migration should have ~data-deletion label applied.
+> Refer [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
 
 #### Validate the foreign key
 
@@ -316,14 +304,11 @@ add the migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-{{< alert type="warning" >}}
-
-Verify that the foreign key is valid in production before merging a second
-migration with `validate_foreign_key`. If the second migration is deployed
-before the validation has been executed, the foreign key is validated
-synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the foreign key is valid in production before merging a second
+> migration with `validate_foreign_key`. If the second migration is deployed
+> before the validation has been executed, the foreign key is validated
+> synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/

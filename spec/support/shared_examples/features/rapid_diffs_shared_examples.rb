@@ -125,7 +125,7 @@ RSpec.shared_examples 'Rapid Diffs application' do
 
   describe 'file browser' do
     let(:tree) { page.find('[data-testid="tree-list-scroll"]') }
-    let(:tree_item_selector) { 'button[data-file-row]' }
+    let(:tree_item_selector) { 'button[data-file-row], a[data-file-row]' }
 
     it 'has matching diff file order' do
       browser_item_titles = page.find_all(tree_item_selector).map { |element| tree_item_title(element) }

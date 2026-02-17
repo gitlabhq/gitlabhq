@@ -162,8 +162,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       let(:request_params) do
         {
           note: {
-            note: 'This is a timeline discussion',
-            type: 'DiscussionNote'
+            note: 'This is a timeline discussion'
           }
         }
       end
@@ -180,6 +179,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         discussion = json_response['discussion']
         expect(discussion).to have_key('id')
         expect(discussion).to have_key('notes')
+        expect(discussion[:individual_note]).to be_falsy
         expect(discussion['notes'].first['note']).to eq('This is a timeline discussion')
       end
     end
@@ -213,6 +213,32 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         discussion = json_response['discussion']
         expect(discussion['diff_discussion']).to be true
         expect(discussion['notes'].first['note']).to eq('This is a positioned discussion')
+      end
+
+      context 'with image comment' do
+        let(:position_data) do
+          {
+            new_path: diff_file.new_path,
+            old_path: diff_file.old_path,
+            position_type: 'image',
+            width: 10,
+            height: 10,
+            x: 5,
+            y: 2
+          }
+        end
+
+        it 'creates a positioned discussion successfully' do
+          expect { send_request }.to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+
+          discussion = json_response['discussion']
+          expect(discussion['diff_discussion']).to be true
+          expect(discussion['notes'].first['note']).to eq('This is a positioned discussion')
+          expect(discussion['notes'].first['position']['position_type']).to eq('image')
+        end
       end
 
       context 'on a deleted line' do
@@ -339,16 +365,13 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
-  describe '#rapid_diffs' do
+  describe '#show' do
     let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
     let_it_be(:commit) { project.commit_by(oid: sha) }
     let_it_be(:diff_view) { :inline }
 
     let(:params) do
-      {
-        rapid_diffs: 'true',
-        view: diff_view
-      }
+      { view: diff_view }
     end
 
     subject(:send_request) { get project_commit_path(project, commit, params: params) }
@@ -361,14 +384,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       send_request
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to include('data-page="projects:commit:rapid_diffs"')
-    end
-
-    it 'uses show action when rapid_diffs query parameter doesnt exist' do
-      get project_commit_path(project, commit)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to include('data-page="projects:commit:show"')
+      expect(response.body).to include('data-rapid-diffs')
     end
 
     it 'shows only first 5 files' do
@@ -383,10 +399,12 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       expect(response).to render_template(:rapid_diffs)
     end
 
-    it 'assigns files_changed_count' do
+    it 'renders legacy template' do
+      stub_feature_flags(rapid_diffs_on_commit_show: false)
       send_request
 
-      expect(assigns(:files_changed_count)).to eq(commit.stats.files)
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:show)
     end
   end
 
@@ -564,19 +582,18 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
     context 'with whitespace-only diffs' do
       let(:ignore_whitespace_changes) { true }
-      let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
 
       before do
         allow(diff_file).to receive(:whitespace_only?).and_return(true)
       end
 
-      it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
-        expect_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:diffs_resource).and_return(diffs_collection)
+      it 'makes a call to presenter diff_files with ignore_whitespace_change: false' do
+        expect_next_instance_of(RapidDiffs::CommitPresenter) do |presenter|
+          allow(presenter).to receive(:diff_files).and_return([diff_file])
 
-          expect(instance).to receive(:diffs_resource).with(
+          expect(presenter).to receive(:diff_files).with(
             hash_including(ignore_whitespace_change: false)
-          ).and_return(diffs_collection)
+          ).and_return([diff_file])
         end
 
         send_request

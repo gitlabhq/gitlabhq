@@ -83,7 +83,7 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
     end
 
     it 'assigns partition_id to variables' do
-      variables_partition_ids = pipeline.variables.map(&:partition_id).uniq
+      variables_partition_ids = pipeline.association(:variables).reader.map(&:partition_id).uniq
 
       expect(pipeline.variables.size).to eq(2)
       expect(variables_partition_ids).to eq([current_partition_id])

@@ -1,0 +1,5 @@
+---
+name: read_commit_sequence
+description: Grants the ability to read commit sequence counts
+boundaries:
+  - project

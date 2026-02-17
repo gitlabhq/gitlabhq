@@ -1,0 +1,7 @@
+---
+name: delete_repository
+description: Grants the ability to delete repositories
+boundaries:
+  - project
+permissions:
+  - delete_repository_file

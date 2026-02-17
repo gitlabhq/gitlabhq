@@ -1,0 +1,8 @@
+---
+name: rotate_resource_access_token
+description: Grants the ability to rotate resource access tokens
+permissions:
+  - rotate_resource_access_token
+boundaries:
+  - project
+  - group

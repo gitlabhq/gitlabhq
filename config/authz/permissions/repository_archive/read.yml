@@ -1,0 +1,5 @@
+---
+name: read_repository_archive
+description: Grants the ability to read repository archives
+boundaries:
+  - project

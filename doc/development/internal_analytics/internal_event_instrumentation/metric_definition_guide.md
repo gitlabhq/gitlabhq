@@ -129,7 +129,7 @@ Each internal event based metric should have a least one event selection rule wi
 | Property           | Required | Additional information                                                                                                                                        |
 |--------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `name`             | yes      | Name of the event                                                                                                                                             |
-| `unique`           | no       | Used if the metric should count the distinct number of users, projects, namespaces, or count the unique values for additional properties present in the event. Valid values are `user.id`, `project.id` and `namespace.id`. Additionally `label`, `property`, and `value` may also be used in reference to any [additional properties](quick_start.md#additional-properties) included with the event. |
+| `unique`           | no       | Used if the metric should count the distinct number of users, projects, namespaces, or count the unique values for additional properties present in the event. Valid values are `user.id`, `project.id` and `namespace.id`. Additionally `label`, `property`, `value`, and any custom additional properties may also be used in reference to [additional properties](quick_start.md#additional-properties) included with the event. |
 | `filter`           | no       | Used when only a subset of events should be included in the metric. Only additional properties can be used for filtering.                                     |
 
 An example of a single event selection rule which updates a unique count metric when an event called `pull_package` with additional property `label` with the value `rubygems` occurs:
@@ -171,6 +171,19 @@ Filters support also [custom additional properties](quick_start.md#additional-pr
 ```
 
 Filters only support matching of exact values and not wildcards or regular expressions.
+
+### Custom additional properties as unique identifiers
+
+You can use custom additional properties as unique identifiers for counting distinct values. This is useful when you need to count unique values that are not standard identifiers like `user.id`, `project.id`, or `namespace.id`.
+
+For example, to count unique values of a custom property called `merge_request_iid`:
+
+```yaml
+- name: merge_request_action
+  unique: merge_request_iid
+```
+
+The value of the custom property is hashed before being stored in Redis HyperLogLog, so any string or numeric value can be used.
 
 ## Aggregated metrics
 

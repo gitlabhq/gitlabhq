@@ -69,12 +69,9 @@ The extension matches your Git repository remote URL with the GitLab instance UR
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
 For more details, see [Switch GitLab accounts in VS Code](_index.md#switch-gitlab-accounts-in-vs-code).
 
-{{< alert type="note" >}}
-
-If your GitLab instance or network uses a custom SSL setup,
-you can configure the extension to support self-signed certificates. For more information, see [using the extension with self-signed certificates](ssl.md).
-
-{{< /alert >}}
+> [!note]
+> If your GitLab instance or network uses a custom SSL setup,
+> you can configure the extension to support self-signed certificates. For more information, see [using the extension with self-signed certificates](ssl.md).
 
 ### Connect to your repository
 
@@ -161,16 +158,18 @@ To configure OAuth application login:
 
 ### Configure GitLab Duo
 
-GitLab Duo Chat and GitLab Duo Code Suggestions are enabled by default when you meet the
-prerequisites:
+GitLab Duo features are enabled by default when you meet the prerequisites:
 
-- You have the GitLab Duo add-on and a seat assigned.
+- For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
+- You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
 - You open a project that is linked to a remote repository on GitLab, or you set a
-  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
-- For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
-  prerequisites:
-  - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)
-  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+  default GitLab Duo namespace in the extension:
+  1. Select **Extensions** > **GitLab**.
+  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+  1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
+- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
+  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
+  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 
 ### Code security
 

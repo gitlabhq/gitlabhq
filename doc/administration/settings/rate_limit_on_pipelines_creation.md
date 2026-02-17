@@ -35,6 +35,10 @@ Requests that exceed the limits are logged in the `application_json.log` file.
 
 ## Set pipeline request limits
 
+Prerequisites:
+
+- Administrator access.
+
 To limit the number of pipeline requests:
 
 1. In the upper-right corner, select **Admin**.

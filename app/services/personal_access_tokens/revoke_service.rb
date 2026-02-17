@@ -4,13 +4,14 @@ module PersonalAccessTokens
   class RevokeService < BaseService
     attr_reader :token, :current_user, :group, :source
 
-    VALID_SOURCES = %i[self secret_detection group_token_revocation_service api_admin_token].freeze
+    VALID_SOURCES = %i[self secret_detection api_admin_token].freeze
 
-    def initialize(current_user = nil, token: nil, group: nil, source: nil)
+    def initialize(current_user = nil, token: nil, group: nil, source: nil, project: nil)
       @current_user = current_user
       @token = token
       @group = group
       @source = source
+      @project = project
 
       @source = :self if @current_user && !@source
 
@@ -43,7 +44,7 @@ module PersonalAccessTokens
       case source
       when :self
         Ability.allowed?(current_user, :revoke_token, token)
-      when :secret_detection, :group_token_revocation_service, :api_admin_token
+      when :secret_detection, :api_admin_token
         true
       else
         false

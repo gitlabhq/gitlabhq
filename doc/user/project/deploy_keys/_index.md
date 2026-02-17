@@ -65,13 +65,13 @@ If you use another user account to create deploy keys, that user is granted priv
 
 In addition:
 
-- Deploy keys work even if the user who created them is removed from the group or project.
-- The creator of a deploy key retains access to the group or project, even if the user is demoted or removed.
+- If the deploy key owner is blocked or removed from the instance, the deploy key is
+  [rejected](#deploy-key-is-rejected). It cannot be used for any repository operations,
+  including pulls and pushes.
 - When a deploy key is specified in a protected branch rule, the creator of the deploy key:
-  - Gains access to the protected branch, as well as to the deploy key itself.
+  - Gains access to the protected branch, and to the deploy key itself.
   - Can push to the protected branch, if the deploy key has read-write permission.
     This is true even if the branch is protected against changes from all users.
-- If the creator of the deploy key is blocked or removed from the instance, the user can still pull changes from the group or project, but not push.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
 For human interactions, use credentials tied to users such as personal access tokens.
@@ -99,7 +99,7 @@ The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) provides a `gl
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
@@ -147,7 +147,7 @@ You can modify only a public deploy key's name.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To grant a public deploy key access to a project:
 
@@ -164,7 +164,7 @@ To grant a public deploy key access to a project:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To edit the project access permissions of a deploy key:
 
@@ -181,7 +181,7 @@ a deploy key stops working when the key is disabled.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable a deploy key:
 
@@ -203,6 +203,21 @@ What happens to the deploy key when it is disabled depends on the following:
 - GitLab CLI [commands for deploy keys](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/deploy-key)
 
 ## Troubleshooting
+
+### Deploy key is rejected
+
+A deploy key is rejected when:
+
+- The key owner is blocked.
+- The key has expired.
+
+When a deploy key is rejected, it cannot be used for any repository operations,
+including pulls and pushes.
+
+To resolve this issue:
+
+- If the key owner is blocked, either unblock the user or [change the key owner](#set-the-owner-of-a-deploy-key) to an active user.
+- If the key has expired, create a new deploy key.
 
 ### Deploy key cannot push to a protected branch
 
@@ -266,7 +281,7 @@ end
 
 #### Set the owner of a deploy key
 
-Deploy keys belong to a specific user and are deactivated when the user is blocked or removed from the instance.
+Deploy keys belong to a specific user and are rejected when the user is blocked or removed from the instance.
 To keep a deploy key working when a user is removed, change its owner to an active user.
 
 If you have the fingerprint of the deploy key, you can change the user associated with a deploy key with the following commands:

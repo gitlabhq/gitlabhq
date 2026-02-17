@@ -168,6 +168,74 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_categor
     end
   end
 
+  describe '.cursor?' do
+    context 'when cursor is not defined' do
+      let(:job_class) { Class.new(described_class) }
+
+      it 'returns false' do
+        expect(job_class.cursor?).to be false
+      end
+    end
+
+    context 'when cursor is defined with single column' do
+      let(:job_class) do
+        Class.new(described_class) do
+          cursor :id
+        end
+      end
+
+      it 'returns true' do
+        expect(job_class.cursor?).to be true
+      end
+    end
+
+    context 'when cursor is defined with multiple columns' do
+      let(:job_class) do
+        Class.new(described_class) do
+          cursor :deployment_id, :merge_request_id
+        end
+      end
+
+      it 'returns true' do
+        expect(job_class.cursor?).to be true
+      end
+    end
+  end
+
+  describe '.cursor_columns' do
+    context 'when cursor is not defined' do
+      let(:job_class) { Class.new(described_class) }
+
+      it 'returns empty array' do
+        expect(job_class.cursor_columns).to be_empty
+      end
+    end
+
+    context 'when cursor is defined with single column' do
+      let(:job_class) do
+        Class.new(described_class) do
+          cursor :id
+        end
+      end
+
+      it 'returns array with single column' do
+        expect(job_class.cursor_columns).to match_array([:id])
+      end
+    end
+
+    context 'when cursor is defined with multiple columns' do
+      let(:job_class) do
+        Class.new(described_class) do
+          cursor :col1, :col2
+        end
+      end
+
+      it 'returns array with all columns' do
+        expect(job_class.cursor_columns).to match_array([:col1, :col2])
+      end
+    end
+  end
+
   describe '.feature_category' do
     context 'when jobs does not have feature_category attribute set' do
       let(:job_class) { Class.new(described_class) }

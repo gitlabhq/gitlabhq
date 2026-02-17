@@ -257,13 +257,18 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
       let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
       let(:issue1) { create(:issue, project: project) }
       let(:issue2) { create(:issue, project: project) }
+      let(:issue3) { create(:issue, project: project) }
+      let(:issue4) { create(:issue, project: project) }
       let(:commit) do
         double('commit', safe_message: "Fixes #{issue1.to_reference}", date: Time.current, authored_date: Time.current)
       end
 
+      let(:commit_list) { [commit] }
+
       before do
+        merge_request.update!(title: "Closes #{issue3.to_reference}", description: "Closes #{issue4.to_reference}")
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
-        allow(merge_request).to receive(:commits).and_return([commit])
+        allow(merge_request).to receive(:commits).and_return(commit_list)
         create(
           :merge_requests_closing_issues,
           issue: issue2,
@@ -279,6 +284,10 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           service.execute(merge_request)
         end.to change { issue1.reload.closed? }.from(false).to(true).and(
           change { issue2.reload.closed? }.from(false).to(true)
+        ).and(
+          change { issue3.reload.closed? }.from(false).to(true)
+        ).and(
+          change { issue4.reload.closed? }.from(false).to(true)
         )
       end
 
@@ -376,6 +385,46 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         end
       end
 
+      context 'when squashing commits' do
+        let(:merge_request) do
+          create(
+            :merge_request,
+            :simple,
+            author: user2,
+            assignees: [user2],
+            squash: true,
+            source_branch: 'improve/awesome',
+            target_branch: 'fix'
+          )
+        end
+
+        let(:issue5) { create(:issue, project: project) }
+        let(:issue6) { create(:issue, project: project) }
+        let(:merge_params) do
+          { commit_message: "Merge commit message closes #{issue6.to_reference}",
+            squash_commit_message: "Squash commit closes #{issue5.to_reference}",
+            sha: merge_request.diff_head_sha }
+        end
+
+        it 'closes issues using messages from merge and squash commit' do
+          merge_request.cache_merge_request_closes_issues!
+
+          expect do
+            service.execute(merge_request)
+          end.to change { issue1.reload.closed? }.from(false).and(
+            change { issue2.reload.closed? }.from(false).to(true)
+          ).and(
+            change { issue3.reload.closed? }.from(false).to(true)
+          ).and(
+            change { issue4.reload.closed? }.from(false).to(true)
+          ).and(
+            change { issue5.reload.closed? }.from(false).to(true)
+          ).and(
+            change { issue6.reload.closed? }.from(false).to(true)
+          )
+        end
+      end
+
       context 'with Jira integration' do
         include JiraIntegrationHelpers
 
@@ -392,14 +441,52 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         end
 
         it 'closes issues on Jira issue tracker' do
-          jira_issue = ExternalIssue.new('JIRA-123', project)
-          stub_jira_urls(jira_issue)
-          commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
-          allow(merge_request).to receive(:commits).and_return([commit])
-
           expect_any_instance_of(Integrations::Jira).to receive(:close_issue).with(merge_request, jira_issue, user).once
 
           service.execute(merge_request)
+        end
+
+        context 'when squashing commits' do
+          let(:merge_request) do
+            create(
+              :merge_request,
+              :simple,
+              author: user2,
+              assignees: [user2],
+              squash: true,
+              source_branch: 'improve/awesome',
+              target_branch: 'fix'
+            )
+          end
+
+          let(:jira_issue2) { ExternalIssue.new('JIRA-1234', project) }
+          let(:jira_issue3) { ExternalIssue.new('JIRA-1235', project) }
+          let(:merge_params) do
+            { commit_message: "Merge commit message closes #{jira_issue2.to_reference}",
+              squash_commit_message: "Squash commit closes #{jira_issue3.to_reference}",
+              sha: merge_request.diff_head_sha }
+          end
+
+          before do
+            stub_jira_urls(jira_issue2.id)
+            stub_jira_urls(jira_issue3.id)
+          end
+
+          it 'closes issues on Jira issue tracker including those mentioned in the squash and merge commit' do
+            # Doing this as we can't rely on the order that the parsed issues will be returned
+            calls = []
+            allow_any_instance_of(Integrations::Jira).to receive(:close_issue) do |_, *args|
+              calls << args
+            end
+
+            service.execute(merge_request)
+
+            expect(calls).to contain_exactly(
+              [merge_request, jira_issue, user],
+              [merge_request, jira_issue2, user],
+              [merge_request, jira_issue3, user]
+            )
+          end
         end
 
         context 'wrong issue markdown' do

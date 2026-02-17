@@ -43,7 +43,7 @@ that have the functionality you need in the [CI/CD Catalog](#cicd-catalog).
 For an introduction and hands-on examples, see [Efficient DevSecOps workflows with reusable CI/CD components](https://www.youtube.com/watch?v=-yvfSFKAgbA).
 <!-- Video published on 2024-01-22. DRI: Developer Relations, https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/399 -->
 
-For common questions and additional support, see the [FAQ: GitLab CI/CD Catalog](https://about.gitlab.com/blog/2024/08/01/faq-gitlab-ci-cd-catalog/)
+For common questions and additional support, see the [FAQ: GitLab CI/CD Catalog](https://about.gitlab.com/blog/faq-gitlab-ci-cd-catalog/)
 blog post.
 
 ## Component project
@@ -150,7 +150,7 @@ Prerequisites:
 
 If you are a member of a parent group that contains the current group or project:
 
-- You must have the minimum role set by the visibility level of the project's parent group. For example, you must have at least the Reporter role if a parent project is set to **Private**.
+- You must have the minimum role set by the visibility level of the project's parent group. For example, you must have the Reporter, Developer, Maintainer, or Owner role if a parent project is set to **Private**.
 
 To add a component to a project's CI/CD configuration, use the [`include: component`](../yaml/_index.md#includecomponent)
 keyword. The component reference is formatted as `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`,
@@ -187,14 +187,11 @@ the component's configuration.
 To use GitLab.com components on a GitLab Self-Managed instance, you must
 [mirror the component project](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
-{{< alert type="warning" >}}
-
-If a component requires the use of tokens, passwords, or other sensitive data to function,
-be sure to audit the component's source code to verify that the data is only used to
-perform actions that you expect and authorize. You should also use tokens and secrets
-with the minimum permissions, access, or scope required to complete the action.
-
-{{< /alert >}}
+> [!warning]
+> If a component requires the use of tokens, passwords, or other sensitive data to function,
+> be sure to audit the component's source code to verify that the data is only used to
+> perform actions that you expect and authorize. You should also use tokens and secrets
+> with the minimum permissions, access, or scope required to complete the action.
 
 ### Component versions
 
@@ -295,6 +292,19 @@ build-image:
 ```
 
 You can also use component context to [reference versioned resources](examples.md#use-component-context-to-reference-versioned-resources).
+
+### Component `spec` section
+
+The `spec` section in a component template defines the component's configuration and inputs.
+You can use the following keywords in the `spec` section:
+
+- [`inputs`](../yaml/_index.md#specinputs): Define input parameters for users to customize component configuration.
+- [`component`](../yaml/_index.md#speccomponent): Declare which component context fields to make available for interpolation (like `name`, `sha`, `version`, and `reference`).
+
+> [!note]
+> You cannot use [`spec:include`](../yaml/_index.md#specinclude) in components.
+> Components should be self-contained and not depend on external files. Define inputs
+> directly in the component instead of including them from separate files.
 
 ## Write a component
 
@@ -641,7 +651,7 @@ For a click-through demo, see [the CI/CD Catalog beta Product Tour](https://gitl
 
 To access the CI/CD Catalog and view the published components that are available to you:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Explore**.
 1. Select **CI/CD Catalog**.
 
@@ -651,9 +661,50 @@ in your project, you can select **CI/CD Catalog**.
 Visibility of components in the CI/CD catalog follows the component source project's
 [visibility setting](../../user/public_access.md). Components with source projects set to:
 
-- Private are visible only to users assigned at least the Guest role for the source component project. To use a component, you must have at least the Reporter role.
+- Private are visible only to users assigned the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the source component project. To use a component, you must have the Reporter, Developer, Maintainer, or Owner role.
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
+
+### View catalog resource analytics
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14027) in GitLab 18.9.
+
+{{< /history >}}
+
+If you maintain CI/CD catalog resources, you can view usage analytics to understand how your components are being adopted across projects.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for one or more catalog resource projects.
+
+To view catalog resource analytics:
+
+1. In the top bar, select **Search or go to** > **Explore**.
+1. Select **CI/CD Catalog**.
+1. Select the **Analytics** tab.
+
+The Analytics view displays the catalog resources where you have the Maintainer or Owner role.
+This view shows:
+
+- **Projects**: The catalog resource name and its latest released version.
+- **Usage statistics**: The number of unique projects that used a component from this catalog resource in a pipeline in the last 30 days.
+- **Components**: A list of components available in the latest version of the catalog resource.
+
+You can use this information to:
+
+- Identify which catalog resources are most widely adopted.
+- Track usage trends for your components over time.
+- Understand which projects are using your catalog resources.
+- Make informed decisions about component maintenance and deprecation.
 
 ### Publish a component project
 
@@ -691,7 +742,7 @@ However, publishing a component's releases in the catalog makes it discoverable 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
   - Have a [project description](../../user/project/working_with_projects.md#edit-a-project) defined.
@@ -746,12 +797,9 @@ For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions
 To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-project)
 toggle in the project settings.
 
-{{< alert type="warning" >}}
-
-This action destroys the metadata about the component project and its versions published
-in the catalog. The project and its repository still exist, but are not visible in the catalog.
-
-{{< /alert >}}
+> [!warning]
+> This action destroys the metadata about the component project and its versions published
+> in the catalog. The project and its repository still exist, but are not visible in the catalog.
 
 To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
 
@@ -777,15 +825,12 @@ and is maintained by users verified by GitLab or the instance administrator:
   creates an [internal request issue (GitLab team members only)](https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request)
   on behalf of the verified partner.
 
-  {{< alert type="warning" >}}
-
-  GitLab Partner-created components are provided **as-is**, without warranty of any kind.
-  An end user's use of a GitLab Partner-created component is at their own risk and
-  GitLab shall have no indemnification obligations nor any liability of any type
-  with respect to the end user's use of the component. The end user's use of such content
-  and any liability related thereto shall be between the publisher of the content and the end user.
-
-  {{< /alert >}}
+  > [!warning]
+  > GitLab Partner-created components are provided **as-is**, without warranty of any kind.
+  > An end user's use of a GitLab Partner-created component is at their own risk and
+  > GitLab shall have no indemnification obligations nor any liability of any type
+  > with respect to the end user's use of the component. The end user's use of such content
+  > and any liability related thereto shall be between the publisher of the content and the end user.
 
 - Verified creator ({{< icon name="check-sm" >}}): Components created and maintained by
   a user verified by an administrator.

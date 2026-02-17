@@ -397,18 +397,12 @@ module Feature
         gate_class: FlipperGate)
       # Redis L2 cache
       redis_cache_adapter =
-        ActiveSupportCacheStoreAdapter.new(
-          active_record_adapter,
-          l2_cache_backend,
-          expires_in: 1.hour,
-          write_through: true)
+        ActiveSupportCacheStoreAdapter.new(active_record_adapter, l2_cache_backend, 1.hour, write_through: true)
 
       # Thread-local L1 cache: use a short timeout since we don't have a
       # way to expire this cache all at once
-      flipper_adapter = Flipper::Adapters::ActiveSupportCacheStore.new(
-        redis_cache_adapter,
-        l1_cache_backend,
-        expires_in: 1.minute)
+      flipper_adapter =
+        Flipper::Adapters::ActiveSupportCacheStore.new(redis_cache_adapter, l1_cache_backend, 1.minute)
 
       Flipper.new(flipper_adapter).tap do |flip|
         flip.memoize = memoize
@@ -477,11 +471,11 @@ module Feature
     end
 
     def gate_specified?
-      %i[user project group feature_group namespace repository].any? { |key| params.key?(key) }
+      %i[user project group feature_group namespace repository runner].any? { |key| params.key?(key) }
     end
 
     def targets
-      [feature_group, users, projects, groups, namespaces, repositories].flatten.compact
+      [feature_group, users, projects, groups, namespaces, repositories, runners].flatten.compact
     end
 
     private
@@ -495,36 +489,19 @@ module Feature
     # rubocop: enable CodeReuse/ActiveRecord
 
     def users
-      return unless params.key?(:user)
-
-      params[:user].split(',').map do |arg|
-        UserFinder.new(arg).find_by_username || (raise UnknownTargetError, "#{arg} is not found!")
-      end
+      find_targets(:user) { |arg| UserFinder.new(arg).find_by_username }
     end
 
     def projects
-      return unless params.key?(:project)
-
-      params[:project].split(',').map do |arg|
-        Project.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
-      end
+      find_targets(:project) { |arg| Project.find_by_full_path(arg) }
     end
 
     def groups
-      return unless params.key?(:group)
-
-      params[:group].split(',').map do |arg|
-        Group.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
-      end
+      find_targets(:group) { |arg| Group.find_by_full_path(arg) }
     end
 
     def namespaces
-      return unless params.key?(:namespace)
-
-      params[:namespace].split(',').map do |arg|
-        # We are interested in Group or UserNamespace
-        Namespace.without_project_namespaces.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
-      end
+      find_targets(:namespace) { |arg| Namespace.without_project_namespaces.find_by_full_path(arg) }
     end
 
     def repositories
@@ -535,6 +512,21 @@ module Feature
         raise UnknownTargetError, "#{arg} is not found!" if container.nil?
 
         container.repository
+      end
+    end
+
+    def runners
+      find_targets(:runner) { |arg| ::Ci::Runner.find_by_id(arg) }
+    end
+
+    def find_targets(param_key)
+      return unless params.key?(param_key)
+
+      params[param_key].split(',').filter_map do |arg|
+        arg = arg.strip
+
+        result = yield(arg)
+        result || (raise UnknownTargetError, "#{arg} is not found!")
       end
     end
   end

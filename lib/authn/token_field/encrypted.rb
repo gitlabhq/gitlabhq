@@ -103,13 +103,7 @@ module Authn
       end
 
       def find_by_encrypted_token(token, unscoped)
-        if Feature.enabled?(:ci_build_find_token_authenticatable, Feature.current_request)
-          finder_class.new(self, token, unscoped).execute
-        else
-          encrypted_value = encode(token)
-          token_encrypted_with_static_iv = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-          relation(unscoped).find_by(encrypted_field => [encrypted_value, token_encrypted_with_static_iv]) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
-        end
+        finder_class.new(self, token, unscoped).execute
       end
 
       def insecure_strategy

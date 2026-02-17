@@ -34,11 +34,11 @@ to authenticate an API call. The token impersonates a user's project access and 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a trigger token:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline trigger tokens**.
 1. Select **Add new token**
@@ -46,16 +46,13 @@ To create a trigger token:
    - You can view and copy the full token for all triggers you have created.
    - You can only see the first 4 characters for tokens created by other project members.
 
-{{< alert type="warning" >}}
-
-It is a security risk to save tokens in plain text in public projects, or store them
-in a way that malicious users could access them. A leaked trigger token could be
-used to force an unscheduled deployment, attempt to access CI/CD variables,
-or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
-help improve the security of trigger tokens. For more information about keeping tokens secure,
-see the [security considerations](../../security/tokens/_index.md#security-considerations).
-
-{{< /alert >}}
+> [!warning]
+> It is a security risk to save tokens in plain text in public projects, or store them
+> in a way that malicious users could access them. A leaked trigger token could be
+> used to force an unscheduled deployment, attempt to access CI/CD variables,
+> or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
+> help improve the security of trigger tokens. For more information about keeping tokens secure,
+> see the [security considerations](../../security/tokens/_index.md#security-considerations).
 
 ## Trigger a pipeline
 
@@ -201,7 +198,7 @@ spec:
 
 To revoke a pipeline trigger token:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline triggers**.
 1. To the left of the trigger token you want to revoke, select **Revoke** ({{< icon name="remove" >}}).
@@ -227,7 +224,7 @@ in pipelines triggered with a pipeline trigger token.
 ## See which pipeline trigger token was used
 
 You can see which pipeline trigger token caused a job to run by visiting the single job page.
-A part of the trigger token displays on the right sidebar, under **Job details**.
+A part of the trigger token displays in the right sidebar, under **Job details**.
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
 **Build** > **Jobs**.

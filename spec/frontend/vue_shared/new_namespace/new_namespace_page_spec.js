@@ -5,9 +5,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
-import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
-import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
-import { sidebarState } from '~/super_sidebar/constants';
 
 jest.mock('~/super_sidebar/constants');
 describe('Experimental new namespace creation app', () => {
@@ -17,8 +14,6 @@ describe('Experimental new namespace creation app', () => {
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
   const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
-  const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
-  const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
 
@@ -42,6 +37,12 @@ describe('Experimental new namespace creation app', () => {
       provide: {
         identityVerificationRequired,
         identityVerificationPath: '#',
+      },
+      stubs: {
+        MountingPortal: {
+          name: 'MountingPortal',
+          template: '<div data-testid="mounting-portal-stub"><slot /></div>',
+        },
       },
     });
   };
@@ -116,66 +117,12 @@ describe('Experimental new namespace creation app', () => {
     expect(findLegacyContainer().exists()).toBe(true);
   });
 
-  describe('SuperSidebarToggle', () => {
-    describe('when collapsed', () => {
-      it('shows sidebar toggle', () => {
-        sidebarState.isCollapsed = true;
-        createComponent();
-
-        expect(findSuperSidebarToggle().exists()).toBe(true);
-      });
-    });
-
-    describe('when not collapsed', () => {
-      it('does not show sidebar toggle', () => {
-        sidebarState.isCollapsed = false;
-        createComponent();
-
-        expect(findSuperSidebarToggle().exists()).toBe(false);
-      });
-    });
-  });
-
-  describe('top level group alert', () => {
-    beforeEach(() => {
-      window.location.hash = `#${DEFAULT_PROPS.panels[0].name}`;
-    });
-
-    describe('when self-managed', () => {
-      it('does not render alert', () => {
-        createComponent();
-
-        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
-      });
-    });
-
-    describe('when on .com', () => {
-      it('does not render alert', () => {
-        createComponent({ propsData: { isSaas: true } });
-
-        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
-      });
-
-      describe('when empty parent group name', () => {
-        it('renders alert', () => {
-          createComponent({
-            propsData: {
-              isSaas: true,
-              panels: [{ ...DEFAULT_PROPS.panels[0], detailProps: { parentGroupName: '' } }],
-            },
-          });
-
-          expect(findNewTopLevelGroupAlert().exists()).toBe(true);
-        });
-      });
-    });
-  });
-
   describe('top bar', () => {
-    it('has "top-bar-fixed" and "container-fluid" classes', () => {
+    it('has correct classes', () => {
       createComponent();
 
-      expect(findTopBar().classes()).toEqual(['top-bar-fixed', 'container-fluid']);
+      expect(findTopBar().classes()).toContain('top-bar-fixed');
+      expect(findTopBar().classes()).toContain('container-fluid');
     });
   });
 
@@ -221,26 +168,9 @@ describe('Experimental new namespace creation app', () => {
     });
   });
 
-  it.each`
-    projectStudioEnabled | expected
-    ${true}              | ${true}
-    ${false}             | ${false}
-  `(
-    'is properly positioned when paneled view is $projectStudioEnabled',
-    ({ projectStudioEnabled, expected }) => {
-      window.gon = {
-        features: {
-          projectStudioEnabled,
-        },
-      };
+  it('always renders MountingPortal', () => {
+    createComponent();
 
-      const panel = document.createElement('div');
-      panel.classList.add('panel-header');
-      document.body.appendChild(panel);
-
-      createComponent();
-
-      expect(findMountingPortal().exists()).toBe(expected);
-    },
-  );
+    expect(findMountingPortal().exists()).toBe(true);
+  });
 });

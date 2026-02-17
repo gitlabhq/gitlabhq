@@ -230,6 +230,10 @@ class IssuableFinder
 
   attr_reader :parent
 
+  def use_minimum_char_limit?
+    !use_cte_for_search?
+  end
+
   def not_params
     strong_memoize(:not_params) do
       params_class.new(params[:not].dup, current_user, klass).tap do |not_params|
@@ -374,7 +378,7 @@ class IssuableFinder
       items = klass.with(cte.to_arel).from(klass.table_name)
     end
 
-    items.full_search(search, matched_columns: params[:in], use_minimum_char_limit: !use_cte_for_search?)
+    items.full_search(search, matched_columns: params[:in], use_minimum_char_limit: use_minimum_char_limit?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

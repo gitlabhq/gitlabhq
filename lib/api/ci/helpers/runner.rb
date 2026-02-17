@@ -88,7 +88,7 @@ module API
 
         # HTTP status codes to terminate the job on GitLab Runner:
         # - 403
-        def authenticate_job!(heartbeat_runner: false)
+        def authenticate_job!(heartbeat_runner: false, fail_on_expired_token: false)
           # 404 is not returned here because we want to terminate the job if it's
           # running. A 404 can be returned from anywhere in the networking stack which is why
           # we are explicit about a 403, we should improve this in
@@ -108,6 +108,15 @@ module API
             # Pass current_job solely to load actual status of the job.
             # AuthJobFinder currently returns no details.
             job_forbidden!(current_job, 'Job is not processing on runner')
+          rescue ::Ci::AuthJobFinder::ExpiredJobTokenError => e
+            if fail_on_expired_token
+              e.job.drop!(:job_token_expired)
+              log_job_failed_due_to_expired_token(e.job)
+            else
+              log_job_forbidden_due_to_expired_token(e.job)
+            end
+
+            job_forbidden!(e.job, 'Job token has expired')
           end
 
           # Make sure that composite identity is propagated to `PipelineProcessWorker`
@@ -226,6 +235,26 @@ module API
 
         def metrics
           strong_memoize(:metrics) { ::Gitlab::Ci::Runner::Metrics.new }
+        end
+
+        def log_job_forbidden_due_to_expired_token(job)
+          Gitlab::AppLogger.info({
+            class: self.class.name,
+            job_id: job.id,
+            job_user_id: job.user_id,
+            job_project_id: job.project_id,
+            message: "Job forbidden due to expired JWT"
+          }.merge(Gitlab::ApplicationContext.current))
+        end
+
+        def log_job_failed_due_to_expired_token(job)
+          Gitlab::AppLogger.info({
+            class: self.class.name,
+            job_id: job.id,
+            job_user_id: job.user_id,
+            job_project_id: job.project_id,
+            message: "Job failed due to expired JWT"
+          }.merge(Gitlab::ApplicationContext.current))
         end
       end
     end

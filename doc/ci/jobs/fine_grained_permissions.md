@@ -39,7 +39,7 @@ Share your feedback in [issue 519575](https://gitlab.com/gitlab-org/gitlab/-/iss
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - You must enable the use of fine-grained permissions for a project.
 
 You can add fine-grained permissions to groups and projects on your job token allowlist. This allows
@@ -48,7 +48,7 @@ resources are available to these groups and projects.
 
 To add fine-grained permissions to groups or projects on the job token allowlist:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **CI/CD job token allowlist** section, select **Add**.

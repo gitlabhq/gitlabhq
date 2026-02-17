@@ -15,6 +15,10 @@ title: Troubleshooting Gitaly Cluster (Praefect)
 Refer to the information below when troubleshooting Gitaly Cluster (Praefect). For information on troubleshooting Gitaly,
 see [Troubleshooting Gitaly](../troubleshooting.md).
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Check cluster health
 
 The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster (Praefect).
@@ -117,36 +121,61 @@ To determine the primary node of a repository, use the [`praefect metadata`](#vi
 
 ## View repository metadata
 
-Gitaly Cluster (Praefect) maintains a [metadata database](_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
-to inspect the metadata for troubleshooting.
+Gitaly Cluster (Praefect) maintains a [metadata database](_index.md#components) that contains information about the
+repositories stored on the cluster. Use the `praefect metadata` subcommand to inspect the metadata for troubleshooting.
 
-You can retrieve a repository's metadata by its Praefect-assigned repository ID:
+You can retrieve a repository's metadata by either:
 
-```shell
-sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id <repository-id>
-```
+- Virtual storage and [relative path](../../repository_storage_paths.md#from-project-name-to-hashed-path).
+- [Praefect-assigned repository ID](_index.md#praefect-generated-replica-paths).
 
-When the physical path on the physical storage starts with `@cluster`, you can
-[find the repository ID in the physical path](_index.md#praefect-generated-replica-paths).
+{{< tabs >}}
 
-You can also retrieve a repository's metadata by its virtual storage and relative path:
+{{< tab title="Virtual storage and relative path" >}}
 
-```shell
-sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -virtual-storage <virtual-storage> -relative-path <relative-path>
-```
+To retrieve a repository's metadata by its virtual storage and relative path:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Overview** > **Projects** and select the project.
+1. Note the values of **Storage name** and **Relative path** for the project.
+1. With these values, run the following command:
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -virtual-storage <virtual-storage> -relative-path <relative-path>
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Praefect-assigned repository ID" >}}
+
+> [!note]
+> A repository ID is not the same as a project ID.
+
+To retrieve a repository's metadata by its Praefect-assigned repository ID:
+
+1. Note the final component of the repository's replica path. For example, for `@cluster/repositories/6f/96/54771` the repository ID is `54771`.
+1. With that value, run the following command:
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id <repository-id>
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Examples
-
-To retrieve the metadata for a repository with a Praefect-assigned repository ID of 1:
-
-```shell
-sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id 1
-```
 
 To retrieve the metadata for a repository with virtual storage `default` and relative path `@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`:
 
 ```shell
 sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -virtual-storage default -relative-path @hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git
+```
+
+To retrieve the metadata for a repository with a Praefect-assigned repository ID of 1:
+
+```shell
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id 1
 ```
 
 Either of these examples retrieve the following metadata for an example repository:
@@ -388,3 +417,16 @@ To investigate the cause of this error:
 1. Check if the path in the `alternates` file is reachable from the `objects` directory in the project.
 
 After performing these checks, reach out to GitLab Support with the information collected.
+
+### Projects are stuck in read-only state after failed repository storage moves
+
+When using Horizontal Pod Autoscaler (HPA) with Sidekiq pods, repository storage moves can fail silently due to pod
+scaling during job execution. If a repository storage move has failed because of this issue, failed projects can remain
+stuck in a read-only state.
+
+To recover affected repositories:
+
+1. [Reset affected projects to read-write state](../../read_only_gitlab.md#make-the-repositories-read-only).
+1. [Disable HPA for Sidekiq pods](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#disable-hpa-scaling)
+1. [Re-run storage moves by using the REST API](../../operations/moving_repositories.md) for individual projects.
+1. Restore HPA configuration after migration completes.

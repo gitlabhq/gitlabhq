@@ -1,0 +1,5 @@
+---
+name: create_epic_discussion_note
+description: Grants the ability to create notes in epic discussions
+boundaries:
+  - group

@@ -17,7 +17,7 @@ RSpec.shared_examples 'does not exceed the issuable size limit' do
       stub_const("Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS", 2)
     end
 
-    it 'will not add more than the allowed number of users' do
+    it 'does not add more than the allowed number of users' do
       allow_next_instance_of(update_service) do |service|
         expect(service).not_to receive(:execute)
       end

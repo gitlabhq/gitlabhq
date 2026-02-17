@@ -11,6 +11,7 @@ module API
         success Entities::UserCounts
         tags ['users']
       end
+      route_setting :authorization, permissions: :read_user_counts, boundary_type: :user
       get do
         unauthorized! unless current_user
 

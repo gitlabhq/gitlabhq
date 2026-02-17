@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::UrlSanitizer, feature_category: :shared do
+RSpec.describe Gitlab::UrlSanitizer, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '.sanitize' do

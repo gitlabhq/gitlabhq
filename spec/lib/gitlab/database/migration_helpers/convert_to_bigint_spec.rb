@@ -77,8 +77,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
   describe '#add_bigint_column_indexes' do
     let(:connection) { migration.connection }
 
-    let(:table_name) { '_test_table_bigint_indexes' }
-    let(:int_column) { 'token' }
+    let(:table_name) { :_test_table_bigint_indexes }
+    let(:primary_key) { :id }
+    let(:int_column) { :token }
     let(:bigint_column) { 'token_convert_to_bigint' }
 
     subject(:add_bigint_column_indexes) { migration.add_bigint_column_indexes(table_name, int_column) }
@@ -86,6 +87,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
     before do
       connection.execute(<<~SQL)
         CREATE TABLE IF NOT EXISTS public.#{table_name} (
+          #{primary_key} integer PRIMARY KEY,
           name varchar(40),
           #{int_column} integer
         );
@@ -100,15 +102,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
     end
 
     context 'without corresponding bigint column' do
-      let(:error_msg) { "Bigint column '#{bigint_column}' does not exist on #{table_name}" }
-
-      it { expect { subject }.to raise_error(RuntimeError, error_msg) }
+      it { expect { subject }.not_to raise_error }
     end
 
     context 'with corresponding bigint column' do
       let(:indexes) { connection.indexes(table_name) }
       let(:int_column_indexes) { indexes.select { |i| i.columns.include?(int_column) } }
       let(:bigint_column_indexes) { indexes.select { |i| i.columns.include?(bigint_column) } }
+      let(:bigint_index_name) { ->(int_index_name) { migration.bigint_index_name(int_index_name) } }
 
       before do
         connection.execute("ALTER TABLE #{table_name} ADD COLUMN #{bigint_column} bigint")
@@ -125,7 +126,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
       end
 
       context 'with integer column indexes' do
-        let(:bigint_index_name) { ->(int_index_name) { migration.bigint_index_name(int_index_name) } }
         let(:expected_bigint_indexes) do
           [
             {
@@ -192,15 +192,113 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
         it 'creates appropriate bigint indexes' do
           expected_bigint_indexes.each do |bigint_index|
             expect(migration).to receive(:add_concurrent_index).with(
-              table_name,
+              table_name.to_s,
               bigint_index[:column],
               name: bigint_index[:name],
-              ** bigint_index.except(:name, :column)
+              **bigint_index.except(:name, :column)
             )
           end
 
           add_bigint_column_indexes
         end
+      end
+
+      context 'when integer column is the primary key' do
+        let(:bigint_column_primary_key) { 'id_convert_to_bigint' }
+
+        before do
+          connection.execute("ALTER TABLE #{table_name} ADD COLUMN #{bigint_column_primary_key} bigint")
+        end
+
+        it 'creates a unique bigint index for the primary key' do
+          expect(migration).to receive(:add_concurrent_index).with(
+            table_name.to_s,
+            [bigint_column_primary_key],
+            name: bigint_index_name.call("#{table_name}_pkey"),
+            unique: true
+          )
+
+          migration.add_bigint_column_indexes(table_name, primary_key)
+        end
+      end
+    end
+  end
+
+  describe '#drop_bigint_columns_indexes' do
+    let(:connection) { migration.connection }
+    let(:table_name) { :_test_table_drop_bigint_indexes }
+    let(:int_column) { :token }
+    let(:bigint_column) { 'token_convert_to_bigint' }
+
+    subject(:drop_bigint_columns_indexes) { migration.drop_bigint_columns_indexes(table_name, int_column) }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS public.#{table_name} (
+          name varchar(40),
+          token integer,
+          #{bigint_column} bigint
+        );
+      SQL
+    end
+
+    after do
+      connection.execute("DROP TABLE IF EXISTS #{table_name}")
+    end
+
+    context 'without indexes' do
+      it 'does not raise error' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'with bigint column indexes' do
+      let(:indexes) { connection.indexes(table_name) }
+      let(:bigint_column_indexes) { indexes.select { |i| i.columns.include?(bigint_column) } }
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE INDEX "idx_#{table_name}_bigint" ON #{table_name} USING btree (#{bigint_column});
+          CREATE INDEX "idx_#{table_name}_combined" ON #{table_name} USING btree (#{bigint_column}, name);
+          CREATE UNIQUE INDEX "uniq_idx_#{table_name}_bigint" ON #{table_name} USING btree (#{bigint_column});
+          CREATE INDEX "idx_#{table_name}_token" ON #{table_name} USING btree (token);
+        SQL
+      end
+
+      it 'drops all indexes containing the bigint column' do
+        expect(bigint_column_indexes.size).to eq(3)
+
+        drop_bigint_columns_indexes
+
+        expect(connection.indexes(table_name).select { |i| i.columns.include?(bigint_column) }).to be_empty
+      end
+
+      it 'preserves indexes not containing the bigint column' do
+        drop_bigint_columns_indexes
+
+        remaining_indexes = connection.indexes(table_name)
+        expect(remaining_indexes.size).to eq(1)
+        expect(remaining_indexes.first.columns).to eq(['token'])
+      end
+    end
+
+    context 'with multiple bigint columns' do
+      let(:int_column2) { 'another_column' }
+      let(:bigint_column2) { 'another_column_convert_to_bigint' }
+
+      before do
+        connection.execute("ALTER TABLE #{table_name} ADD COLUMN #{bigint_column2} bigint")
+        connection.execute(<<~SQL)
+          CREATE INDEX "idx_#{table_name}_bigint1" ON #{table_name} USING btree (#{bigint_column});
+          CREATE INDEX "idx_#{table_name}_bigint2" ON #{table_name} USING btree (#{bigint_column2});
+          CREATE INDEX "idx_#{table_name}_both" ON #{table_name} USING btree (#{bigint_column}, #{bigint_column2});
+        SQL
+      end
+
+      it 'drops indexes containing any of the specified columns' do
+        migration.drop_bigint_columns_indexes(table_name, [int_column, int_column2])
+
+        expect(connection.indexes(table_name)).to be_empty
       end
     end
   end

@@ -1313,15 +1313,19 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'deduplicates on allowed_plan_ids' do
+      let_it_be(:default_plan) { create(:default_plan) }
+
       before do
-        create_list(:ci_runner, 2, allowed_plan_ids: [1, 2])
-        create_list(:ci_runner, 2, allowed_plan_ids: [3, 4])
+        create_list(:ci_runner, 2, allowed_plan_ids: [default_plan.id])
+        create_list(:ci_runner, 2, allowed_plan_ids: [])
       end
 
       it 'creates two matchers' do
         expect(matchers.size).to eq(2)
 
-        expect(matchers.map(&:allowed_plan_ids)).to match_array([[1, 2], [3, 4]])
+        expect(matchers.map(&:allowed_plan_ids)).to match_array(
+          [[default_plan.id], []]
+        )
       end
     end
 
@@ -1631,6 +1635,57 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
   it_behaves_like 'TokenAuthenticatable' do
     let(:token_field) { :token }
+  end
+
+  describe '.find_by_token' do
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:token) { runner.token }
+
+    context 'with partition pruning enabled' do
+      it 'uses runner_type filter in query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          expect(described_class.find_by_token(token)).to eq(runner)
+        end
+
+        expect(recorder.count).to eq(1)
+        expect(recorder.log.first).to match(/"ci_runners"."token_encrypted" IN/)
+        expect(recorder.log.first).to match(/"ci_runners"."runner_type" =/)
+      end
+
+      context 'when runner_type is incorrect' do
+        before do
+          allow(::Ci::Runners::TokenPartition).to receive_message_chain(:new, :decode).and_return('project_type')
+        end
+
+        it 'falls back to all partitions' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            expect(described_class.find_by_token(token)).to eq(runner)
+          end
+
+          expect(recorder.count).to eq(2)
+          expect(recorder.log.first).to match(/"ci_runners"."token_encrypted" IN/)
+          expect(recorder.log.first).to match(/"ci_runners"."runner_type" =/)
+          expect(recorder.log.second).to match(/"ci_runners"."token_encrypted" IN/)
+          expect(recorder.log.second).not_to match(/"ci_runners"."runner_type" =/)
+        end
+      end
+
+      context 'when runner_type cannot be decoded' do
+        before do
+          allow(::Ci::Runners::TokenPartition).to receive_message_chain(:new, :decode).and_return(nil)
+        end
+
+        it 'queries all partitions without partition filter' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            expect(described_class.find_by_token(token)).to eq(runner)
+          end
+
+          expect(recorder.count).to eq(1)
+          expect(recorder.log.first).to match(/"ci_runners"."token_encrypted" IN/)
+          expect(recorder.log.first).not_to match(/"ci_runners"."runner_type" =/)
+        end
+      end
+    end
   end
 
   describe '#token' do

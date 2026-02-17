@@ -5,12 +5,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Rails request SLIs (service level indicators)
 ---
 
-{{< alert type="note" >}}
-
-This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
-by default.
-
-{{< /alert >}}
+> [!note]
+> This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
+> by default.
 
 The request Apdex SLI and the error rate SLI are [SLIs defined in the application](_index.md).
 
@@ -257,11 +254,8 @@ specify do
 end
 ```
 
-{{< alert type="warning" >}}
-
-We can't specify the urgency at the namespace level. The directive is ignored when doing so.
-
-{{< /alert >}}
+> [!warning]
+> We can't specify the urgency at the namespace level. The directive is ignored when doing so.
 
 ### Error budget attribution and ownership
 

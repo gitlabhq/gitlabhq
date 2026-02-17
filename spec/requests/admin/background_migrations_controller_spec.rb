@@ -79,9 +79,13 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
       end
     end
 
-    context 'when multiple database is enabled', :add_ci_connection do
+    context 'when multiple database is enabled' do
       let(:base_models) { { 'fake_db' => default_model, 'ci' => ci_model }.with_indifferent_access }
       let(:ci_model) { Ci::ApplicationRecord }
+
+      before do
+        skip_if_multiple_databases_not_setup
+      end
 
       context 'when CI database is provided' do
         it "uses CI database connection" do

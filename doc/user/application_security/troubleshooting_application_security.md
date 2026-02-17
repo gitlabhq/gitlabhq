@@ -30,13 +30,10 @@ From highest to lowest severity, the logging levels are:
 
 ### Debug-level logging
 
-{{< alert type="warning" >}}
-
-Debug logging can be a serious security risk. The output may contain the content of
-environment variables and other secrets available to the job. The output is uploaded
-to the GitLab server and is visible in job logs.
-
-{{< /alert >}}
+> [!warning]
+> Debug logging can be a serious security risk. The output may contain the content of
+> environment variables and other secrets available to the job. The output is uploaded
+> to the GitLab server and is visible in job logs.
 
 To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
@@ -85,13 +82,10 @@ Select **new pipeline** to run a new pipeline.
 
 ## Getting warning messages `… report.json: no matching files`
 
-{{< alert type="warning" >}}
-
-Debug logging can be a serious security risk. The output may contain the content of
-environment variables and other secrets available to the job. The output is uploaded
-to the GitLab server and visible in job logs.
-
-{{< /alert >}}
+> [!warning]
+> Debug logging can be a serious security risk. The output may contain the content of
+> environment variables and other secrets available to the job. The output is uploaded
+> to the GitLab server and visible in job logs.
 
 This message is often followed by the [error `No files to upload`](../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check
@@ -111,14 +105,14 @@ Unable to run pipeline
     jobs:sast config key may not be used with `rules`: only/except
 ```
 
-This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
+This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#override-sast-jobs)
 with [the deprecated `only` or `except` syntax.](../../ci/yaml/deprecated_keywords.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/_index.md#override-sast-jobs).
 
 ### Transitioning your `only/except` syntax to `rules`
 

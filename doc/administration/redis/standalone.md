@@ -51,7 +51,7 @@ the Linux package:
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These are necessary when [configuring the GitLab application servers](#set-up-the-gitlab-rails-application-instance).
 
-[Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+[Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis/)
 are supported and can be added if needed.
 
 ## Set up the GitLab Rails application instance
@@ -74,6 +74,56 @@ On the instance where GitLab is installed:
 1. Save your changes to `/etc/gitlab/gitlab.rb`.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+## Use Valkey instead of Redis
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9113) in GitLab 18.9 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+You can use [Valkey](https://valkey.io/) as a drop-in replacement for Redis.
+Valkey uses the same configuration options as Redis.
+
+Using Valkey instead of Redis is a [beta](../../policy/development_stages_support.md#beta) feature.
+
+To use Valkey instead of Redis on a standalone node:
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
+
+   ```ruby
+   ## Enable Redis and disable all other services
+   ## https://docs.gitlab.com/omnibus/roles/
+   roles ['redis_master_role']
+
+   ## Switch to Valkey
+   redis['backend'] = 'valkey'
+
+   ## Redis configuration
+   redis['bind'] = '0.0.0.0'
+   redis['port'] = 6379
+   redis['password'] = '<redis_password>'
+
+   ## Disable automatic database migrations
+   gitlab_rails['auto_migrate'] = false
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+The GitLab Rails application configuration remains the same. Configure `gitlab_rails['redis_host']`,
+`gitlab_rails['redis_port']`, and `gitlab_rails['redis_password']` as you would for Redis.
+
+### Known issues
+
+- Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
+  doesn't affect the version of Valkey installed or how it functions.
 
 ## Troubleshooting
 

@@ -5,15 +5,18 @@ require 'spec_helper'
 RSpec.describe MergeRequests::MergeData, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:merge_request) do
-    # NOTE: manually creating it to avoid creating merge_data
-    MergeRequest.create!(
-      title: 'Test MR',
-      source_project: project,
-      target_project: project,
-      author: project.creator,
-      source_branch: 'master',
-      target_branch: 'feature'
+    # NOTE: manually inserting MR to avoid creating merge_data
+    MergeRequest.insert(
+      {
+        title: 'Test Sepc MR',
+        source_project_id: project.id,
+        target_project_id: project.id,
+        author_id: project.creator.id,
+        source_branch: 'master',
+        target_branch: 'feature'
+      }
     )
+    MergeRequest.find_by(title: 'Test Sepc MR')
   end
 
   describe 'associations' do

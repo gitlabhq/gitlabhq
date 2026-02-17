@@ -1,0 +1,5 @@
+---
+name: update_merge_request_draft_note
+description: Grants the ability to update merge request draft notes
+boundaries:
+  - project

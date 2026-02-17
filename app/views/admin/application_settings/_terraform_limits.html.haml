@@ -3,6 +3,11 @@
 
   %fieldset
     .form-group
+      = f.gitlab_ui_checkbox_component :terraform_state_encryption_enabled,
+        s_('TerraformSettings|Turn on Terraform state encryption'),
+        help_text: s_('TerraformSettings|Encrypt Terraform state files before storing them. When turned off, state files are stored unencrypted.')
+
+    .form-group
       = f.label :max_terraform_state_size_bytes, s_('TerraformLimits|Terraform state size limit (bytes)'), class: 'label-bold'
       = f.number_field :max_terraform_state_size_bytes, class: 'form-control gl-form-input'
       .form-text.gl-text-subtle

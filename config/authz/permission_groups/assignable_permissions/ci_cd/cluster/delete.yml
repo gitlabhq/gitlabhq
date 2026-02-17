@@ -1,0 +1,9 @@
+---
+name: delete_cluster
+description: Grants the ability to delete clusters
+boundaries:
+  - group
+  - project
+  - instance
+permissions:
+  - delete_cluster

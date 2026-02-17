@@ -8,6 +8,7 @@ export const initCascadingSettingsLockTooltips = () => {
 
   return new Vue({
     el,
+    name: 'HamlLockTooltipsRoot',
     render(createElement) {
       return createElement(HamlLockTooltips);
     },

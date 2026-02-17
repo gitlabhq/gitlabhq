@@ -164,7 +164,7 @@ Disadvantages:
 
 This is similar to the approach used for GitLab.com. To learn more about this process and how the
 different types of indexes were handled, see the blog post about
-[upgrading the operating system on our PostgreSQL database clusters](https://about.gitlab.com/blog/2022/08/12/upgrading-database-os/).
+[upgrading the operating system on our PostgreSQL database clusters](https://about.gitlab.com/blog/upgrading-database-os/).
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 
@@ -354,11 +354,8 @@ To provide users with read-only access to GitLab during the OS upgrade (partial 
 1. Route users to the promoted site instead of the old primary site.
 1. Set up the old primary site as a new secondary site.
 
-{{< alert type="warning" >}}
-
-Even though the secondary site already has a read-replica of the database, you cannot upgrade
-its operating system prior to promotion. If you were to attempt that, then the secondary site may
-miss replication of some Git repositories or files, due to the corrupted indexes.
-See [Streaming replication](#streaming-replication).
-
-{{< /alert >}}
+> [!warning]
+> Even though the secondary site already has a read-replica of the database, you cannot upgrade
+> its operating system prior to promotion. If you were to attempt that, then the secondary site may
+> miss replication of some Git repositories or files, due to the corrupted indexes.
+> See [Streaming replication](#streaming-replication).

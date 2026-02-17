@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 
 import { GlButton } from '@gitlab/ui';
 import RunnerDockerInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_docker_instructions.vue';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 describe('RunnerDockerInstructions', () => {
   let wrapper;

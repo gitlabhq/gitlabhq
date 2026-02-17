@@ -389,7 +389,7 @@ module Gitlab
           request_enum.each,
           timeout: GitalyClient.long_timeout,
           remote_storage: remote_repository.storage,
-          gitaly_context: { 'enable_secrets_check' => true }
+          gitaly_context: { 'enable_secrets_check' => true, 'skip_commits_check' => true }
         )
 
         # First request

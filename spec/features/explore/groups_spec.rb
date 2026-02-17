@@ -29,6 +29,8 @@ RSpec.describe 'Explore Groups', :js, feature_category: :groups_and_projects do
   shared_examples 'renders public and internal projects' do
     it do
       visit_page
+      wait_for_requests
+
       expect(page).to have_content(public_project.name).or(have_content(public_project.path))
       expect(page).to have_content(internal_project.name).or(have_content(internal_project.path))
       expect(page).not_to have_content(private_project.name)
@@ -38,6 +40,8 @@ RSpec.describe 'Explore Groups', :js, feature_category: :groups_and_projects do
   shared_examples 'renders only public project' do
     it do
       visit_page
+      wait_for_requests
+
       expect(page).to have_content(public_project.name).or(have_content(public_project.path))
       expect(page).not_to have_content(internal_project.name)
       expect(page).not_to have_content(private_project.name)

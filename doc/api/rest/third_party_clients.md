@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "List of community-maintained client libraries for the GitLab REST API."
 title: REST API third-party clients
@@ -57,7 +57,7 @@ Administrators can monitor usage of these API clients by
 ## Python
 
 - [`python-gitlab`](https://github.com/python-gitlab/python-gitlab)
-  - Blog post: [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/)
+  - Blog post: [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/)
 - [`libsaas_gitlab`](https://gitlab.com/bor-sh-infrastructure/libsaas_gitlab)
 
 ## Ruby

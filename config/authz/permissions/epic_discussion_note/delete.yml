@@ -1,0 +1,5 @@
+---
+name: delete_epic_discussion_note
+description: Grants the ability to delete notes in epic discussions
+boundaries:
+  - group

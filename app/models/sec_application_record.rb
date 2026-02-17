@@ -11,3 +11,5 @@ class SecApplicationRecord < ApplicationRecord
     end
   end
 end
+
+SecApplicationRecord.prepend_mod

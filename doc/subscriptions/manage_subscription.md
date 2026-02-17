@@ -66,13 +66,10 @@ To subscribe to GitLab for a GitLab Self-Managed instance:
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
    You must [add this code to your GitLab instance](../administration/license.md).
 
-{{< alert type="note" >}}
-
-If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
-instance, ensure you're purchasing enough seats to
-[cover your users](../administration/admin_area.md#administering-users).
-
-{{< /alert >}}
+> [!note]
+> If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
+> instance, ensure you're purchasing enough seats to
+> [cover your users](../administration/admin_area.md#administering-users).
 
 ## View subscription
 
@@ -98,7 +95,7 @@ The following information is displayed:
 
 | Field                       | Description |
 |:----------------------------|:------------|
-| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
+| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group (including Enterprise Agile Planning seats). |
 | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. |
 | **Maximum seats used**      | Highest number of seats you've used. |
 | **Seats owed**              | **Max seats used** - **Seats in subscription**. |
@@ -128,7 +125,7 @@ The **Subscription** page includes the following information:
 - Licensee
 - Plan
 - When it was uploaded, started, and when it expires
-- Number of users in subscription
+- Number of users in subscription (including Enterprise Agile Planning seats)
 - Number of billable users
 - Maximum users
 - Number of users over subscription
@@ -270,12 +267,9 @@ To manually renew your subscription:
 1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you need for the upcoming year.
 
-   {{< alert type="note" >}}
-
-   Make sure this number is equal to, or greater than
-   the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
-
-   {{< /alert >}}
+   > [!note]
+   > Make sure this number is equal to, or greater than
+   > the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
 
 1. Optional. For GitLab Self-Managed, if the maximum number of users in your instance exceeded the number
    you were licensed for in the previous subscription term, the
@@ -413,6 +407,10 @@ also automated.
 
 ### Manually synchronize subscription data
 
+Prerequisites:
+
+- Administrator access.
+
 You can also manually synchronize subscription data at any time.
 
 1. In the upper-right corner, select **Admin**.
@@ -526,23 +524,3 @@ You cannot transfer:
 - A subscription with compute minutes which is already linked to a namespace.
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
 - A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
-
-## Enterprise Agile Planning
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
-DevSecOps platform where engineers build, test, secure, and deploy code.
-The add-on enables cross-team collaboration between developers and non-developers without having to
-purchase full GitLab licenses for non-engineering team members.
-With Enterprise Agile Planning seats, non-engineering team members can participate in planning
-workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
-executive dashboards to drive organizational visibility.
-
-To purchase additional Enterprise Agile Planning seats, contact your
-[GitLab sales representative](https://customers.gitlab.com/contact_us) for more information.

@@ -7,6 +7,8 @@ require 'gitlab_quality/test_tooling'
 require 'gitlab/rspec/configurations/test_metrics'
 
 require_relative '../../qa'
+# Extension for GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
+require_relative 'helpers/quarantine_formatter_extension'
 
 QA::Specs::QaDeprecationToolkitEnv.configure!
 
@@ -63,7 +65,7 @@ RSpec.configure do |config|
   FactoryBot.definition_file_paths = %w[qa/factories qa/ee/factories]
 
   config.add_formatter QA::Support::Formatters::ContextFormatter
-  config.add_formatter QA::Support::Formatters::QuarantineFormatter
+  config.add_formatter GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
 
   unless QA::Runtime::Env.dry_run || config.dry_run?

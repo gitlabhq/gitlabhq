@@ -8,7 +8,6 @@ title: Foundational agents
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -30,6 +29,11 @@ practitioners actually work.
 
 Foundational agents are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
+- Have [foundational agents turned on](#turn-foundational-agents-on-or-off).
+
 ## Available foundational agents
 
 The following foundational agents are available:
@@ -47,7 +51,7 @@ To make changes to a foundational agent, create a copy of it.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To duplicate an agent:
 

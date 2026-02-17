@@ -1,7 +1,7 @@
 import { GlAlert, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import VueDraggable from 'vuedraggable';
+import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { DRAG_DELAY } from '~/sortable/constants';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';

@@ -20,9 +20,9 @@ title: Deployments API
 
 Use this API to interact with [code deployments](../ci/environments/deployments.md) to GitLab environments.
 
-## List project deployments
+## List all project deployments
 
-Get a list of deployments in a project.
+Lists all deployments in a project.
 
 ```plaintext
 GET /projects/:id/deployments
@@ -200,7 +200,9 @@ Example response:
 ]
 ```
 
-## Get a specific deployment
+## Retrieve a deployment
+
+Retrieves a single deployment.
 
 ```plaintext
 GET /projects/:id/deployments/:deployment_id
@@ -337,6 +339,8 @@ When [multiple approval rules](../ci/environments/deployment_approvals.md#add-mu
 
 ## Create a deployment
 
+Creates a deployment.
+
 ```plaintext
 POST /projects/:id/deployments
 ```
@@ -396,6 +400,8 @@ Deployments created by users on GitLab Premium or Ultimate include the `approval
 ```
 
 ## Update a deployment
+
+Updates a deployment.
 
 ```plaintext
 PUT /projects/:id/deployments/:deployment_id
@@ -466,9 +472,9 @@ Deployments created by users on GitLab Premium or Ultimate include the `approval
 }
 ```
 
-## Delete a specific deployment
+## Delete a deployment
 
-Delete a specific deployment that is not currently the last deployment for an environment or in a `running` state
+Deletes a specified deployment that is not currently the last deployment for an environment or in a `running` state.
 
 ```plaintext
 DELETE /projects/:id/deployments/:deployment_id
@@ -503,17 +509,14 @@ Example responses:
 { "message": "400 Deployment currently deployed to environment" }
 ```
 
-## List of merge requests associated with a deployment
+## List all merge requests associated with a deployment
 
-{{< alert type="note" >}}
+> [!note]
+> Not all deployments can be associated with merge requests. See
+> [Track what merge requests were deployed to an environment](../ci/environments/deployments.md#track-newly-included-merge-requests-per-deployment)
+> for more information.
 
-Not all deployments can be associated with merge requests. See
-[Track what merge requests were deployed to an environment](../ci/environments/deployments.md#track-newly-included-merge-requests-per-deployment)
-for more information.
-
-{{< /alert >}}
-
-This API retrieves the list of merge requests shipped with a given deployment:
+Lists all merge requests shipped with a given deployment.
 
 ```plaintext
 GET /projects/:id/deployments/:deployment_id/merge_requests
@@ -527,7 +530,9 @@ curl --request "GET" \
   --url "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
 ```
 
-## Approve or reject a blocked deployment
+## Approve or reject a deployment
+
+Approves or rejects a deployment.
 
 {{< details >}}
 

@@ -49,7 +49,7 @@ Create a timeline event manually using the form.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a timeline event:
 
@@ -81,14 +81,11 @@ You can create a timeline event using the [`/timeline` quick action](../../user/
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
-{{< alert type="warning" >}}
-
-Internal notes added to incident timelines in public and internal
-incidents are visible to anyone with access to the incident.
-
-{{< /alert >}}
+> [!warning]
+> Internal notes added to incident timelines in public and internal
+> incidents are visible to anyone with access to the incident.
 
 To create a timeline event from a comment on the incident:
 
@@ -127,13 +124,10 @@ of an incident.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 A new timeline event is created when someone adds or removes [labels](../../user/project/labels.md) on an incident.
 
@@ -149,7 +143,7 @@ You can also delete timeline events.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To delete a timeline event:
 

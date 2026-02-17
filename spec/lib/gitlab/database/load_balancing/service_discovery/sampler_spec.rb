@@ -27,8 +27,8 @@ RSpec.describe ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Sampler do
     it 'samples random ports across all hosts' do
       expect(sampler.sample(addresses)).to eq([
         address_class.new("127.0.0.1", 6432),
-                                                address_class.new("127.0.0.2", 6435),
-                                                address_class.new("127.0.0.1", 6435)
+        address_class.new("127.0.0.2", 6435),
+        address_class.new("127.0.0.1", 6435)
       ])
     end
 

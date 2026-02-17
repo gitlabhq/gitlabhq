@@ -273,6 +273,7 @@ module ProjectsHelper
   def show_no_ssh_key_message?(project)
     Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
       cookies[:hide_no_ssh_message].blank? &&
+      current_user &&
       !current_user.hide_no_ssh_key &&
       current_user.require_ssh_key?
   end
@@ -421,11 +422,6 @@ module ProjectsHelper
     Gitlab::SafeRequestStore[key] = nil
 
     nil
-  end
-
-  def show_terraform_banner?(project)
-    Feature.enabled?(:show_terraform_banner, type: :ops) &&
-      project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
   def show_lfs_misconfiguration_banner?(project)
@@ -581,14 +577,14 @@ module ProjectsHelper
     project.persisted? && can?(current_user, :archive_project, project)
   end
 
-  def show_inactive_project_deletion_banner?(project)
+  def show_dormant_project_deletion_banner?(project)
     return false unless project
-    return false unless delete_inactive_projects?
+    return false unless delete_dormant_projects?
 
     project.persisted? && project.dormant?
   end
 
-  def inactive_project_deletion_date(project)
+  def dormant_project_deletion_date(project)
     Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
   end
 
@@ -700,7 +696,7 @@ module ProjectsHelper
 
   def projects_filtered_search_and_sort_app_data
     {
-      initial_sort: project_list_sort_by,
+      initial_sort: group_project_list_sort_by,
       programming_languages: programming_languages,
       paths_to_exclude_sort_on: [starred_explore_projects_path, explore_root_path]
     }.to_json
@@ -708,7 +704,7 @@ module ProjectsHelper
 
   def dashboard_projects_app_data
     {
-      initial_sort: project_list_sort_by,
+      initial_sort: group_project_list_sort_by,
       programming_languages: programming_languages,
       base_path: root_path
     }.to_json
@@ -797,6 +793,12 @@ module ProjectsHelper
     ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(ref)
   end
 
+  # This function is here to solve rubocop error of line too long.
+  # Need to remove in the cleanup of the security manager feature flag.
+  def localized_security_manager_role_name
+    (::Gitlab::Security::SecurityManagerConfig.enabled? ? _('Security Manager') : nil)
+  end
+
   def localized_access_names
     {
       Gitlab::Access::NO_ACCESS => _('No access'),
@@ -804,10 +806,11 @@ module ProjectsHelper
       Gitlab::Access::GUEST => _('Guest'),
       Gitlab::Access::PLANNER => _('Planner'),
       Gitlab::Access::REPORTER => _('Reporter'),
+      Gitlab::Access::SECURITY_MANAGER => localized_security_manager_role_name,
       Gitlab::Access::DEVELOPER => _('Developer'),
       Gitlab::Access::MAINTAINER => _('Maintainer'),
       Gitlab::Access::OWNER => _('Owner')
-    }
+    }.compact
   end
 
   def configure_oauth_import_message(provider, help_url)
@@ -1048,17 +1051,12 @@ module ProjectsHelper
         :duo_foundational_flows_enabled,
         project,
         method(:edit_group_path)
-      ),
-      duo_sast_fp_detection_cascading_settings: project_cascading_namespace_settings_tooltip_data(
-        :duo_sast_fp_detection_enabled,
-        project,
-        method(:edit_group_path)
       )
     }
   end
 
-  def delete_inactive_projects?
-    strong_memoize(:delete_inactive_projects_setting) do
+  def delete_dormant_projects?
+    strong_memoize(:delete_dormant_projects_setting) do
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end

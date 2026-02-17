@@ -6,12 +6,12 @@ import {
   GlFormInput,
   GlFormInputGroup,
   GlLink,
+  GlMultiStepFormTemplate,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import { isReasonableGitUrl } from '~/lib/utils/url_utility';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 
@@ -23,7 +23,7 @@ export default {
     GlFormInput,
     GlFormInputGroup,
     GlLink,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
     SharedProjectCreationFields,
   },
   inject: {
@@ -106,8 +106,8 @@ export default {
 <template>
   <form ref="form" method="post" :action="formPath" @submit.prevent="onSubmit">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template :title="option.title" :current-step="2" :steps-total="2">
-      <template #form>
+    <gl-multi-step-form-template :title="option.title" :current-step="2" :steps-total="2">
+      <template #default>
         <p>
           {{
             __(
@@ -232,6 +232,6 @@ export default {
           {{ __('Go back') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </form>
 </template>

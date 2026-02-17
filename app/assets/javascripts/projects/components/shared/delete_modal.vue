@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
-import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
@@ -19,7 +18,7 @@ export default {
       'This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:',
     ),
   },
-  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf, HelpPageLink },
+  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf },
   model: {
     prop: 'visible',
     event: 'change',
@@ -144,11 +143,6 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-    </template>
-    <template #restore-help-page-link="{ content }">
-      <help-page-link href="user/project/working_with_projects" anchor="restore-a-project">{{
-        content
-      }}</help-page-link>
     </template>
   </groups-projects-delete-modal>
 </template>

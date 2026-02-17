@@ -29,6 +29,10 @@ might edit the template projects without understanding the side effects.
 
 ## Select a group to manage template projects
 
+Prerequisites:
+
+- Administrator access.
+
 To select the group to manage the project templates for your instance:
 
 1. In the upper-right corner, select **Admin**.
@@ -63,6 +67,10 @@ Prerequisites:
 
 Repository and database information that are copied over to each new project are
 identical to the data exported with the [GitLab Project Import/Export](../user/project/settings/import_export.md).
+This includes the full Git commit history from the template project.
+
+To create a template without commit history, initialize your template project with a single commit
+that contains all the files you want to include.
 
 ## Related topics
 

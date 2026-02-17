@@ -94,21 +94,20 @@ export default {
 
 ### Listen for changes
 
-You can still react to changes in the rich text editor. Reacting to changes helps
-you know if the document is empty or dirty. Use the `@change` event handler for
-this purpose.
+You can still react to changes in the rich text editor. Use the `@change` event
+handler for this purpose.
 
 ```html
 <script>
 export default {
   data() {
     return {
-      empty: false,
+      disabled: false,
     };
   },
   methods: {
-    handleContentEditorChange({ empty }) {
-      this.empty = empty;
+    handleContentEditorChange({ markdown }) {
+      this.disabled = !!/XXX/.exec(markdown);
     }
   },
 };
@@ -121,7 +120,7 @@ export default {
       @initialized="loadInitialContent"
       @change="handleContentEditorChange"
     />
-    <gl-button :disabled="empty" @click="submitChanges">
+    <gl-button :disabled="disabled" @click="submitChanges">
       {{ __('Submit changes') }}
     </gl-button>
   </div>
@@ -170,13 +169,10 @@ Node views are located in `~/content_editor/components/wrappers`.
 You can inject the Tiptap Editor object to Vue components to dispatch
 commands.
 
-{{< alert type="note" >}}
-
-Do not implement logic that changes the editor's
-state in Vue components. Encapsulate this logic in commands, and dispatch
-the command from the component's methods.
-
-{{< /alert >}}
+> [!note]
+> Do not implement logic that changes the editor's
+> state in Vue components. Encapsulate this logic in commands, and dispatch
+> the command from the component's methods.
 
 ```html
 <script>

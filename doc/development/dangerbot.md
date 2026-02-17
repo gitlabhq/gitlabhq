@@ -121,11 +121,8 @@ to revert the change before merging!
 
 #### Adding labels via Danger
 
-{{< alert type="note" >}}
-
-This is applicable to all the projects that use the [`gitlab-dangerfiles` gem](https://rubygems.org/gems/gitlab-dangerfiles).
-
-{{< /alert >}}
+> [!note]
+> This is applicable to all the projects that use the [`gitlab-dangerfiles` gem](https://rubygems.org/gems/gitlab-dangerfiles).
 
 Danger is often used to improve MR hygiene by adding labels. Instead of calling the
 API directly in your `Dangerfile`, add the labels to `helper.labels_to_add` array (with `helper.labels_to_add << label`

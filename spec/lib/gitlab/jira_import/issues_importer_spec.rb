@@ -9,7 +9,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_import) { create(:jira_import_state, project: project, user: current_user) }
-  let_it_be(:default_issue_type) { WorkItems::Type.default_issue_type }
+  let_it_be(:default_issue_type) { WorkItems::TypesFramework::Provider.new(project).default_issue_type }
 
   let(:deployment_type) { 'cloud' }
   let(:jira_issue_1) { instance_double(JIRA::Resource::Issue, id: 'JIRA-1', attrs: { key: 'JIRA-1' }) }

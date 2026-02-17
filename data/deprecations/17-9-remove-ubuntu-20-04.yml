@@ -1,0 +1,25 @@
+- title: "Linux package support for Ubuntu 20.04"
+  announcement_milestone: "17.9"
+  removal_milestone: "19.0"
+  breaking_change: true
+  reporter: denisra
+  stage: gitlab-delivery
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8915
+  impact: medium
+  impact_offering: self-managed
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |
+    Ubuntu standard support for Ubuntu 20.04 [ended in May 2025](https://wiki.ubuntu.com/Releases).
+
+    In accordance with our [Linux package supported platforms policy](https://docs.gitlab.com/install/package/#supported-platforms),
+    we drop package builds once a vendor stops supporting the operating system.
+
+    From GitLab 19.0, we will no longer provide packages for the Ubuntu 20.04 distribution for Linux package installs.
+    GitLab 18.11 will be the last GitLab version with Linux packages for Ubuntu 20.04.
+
+    If you currently run GitLab on Ubuntu 20.04, you must upgrade to Ubuntu 22.04 or another
+    [supported operating system](https://docs.gitlab.com/install/package/#supported-platforms) before upgrading to GitLab
+    19.0. Canonical provides an [upgrade guide](https://documentation.ubuntu.com/server/how-to/software/upgrade-your-release/)
+    to help you migrate.

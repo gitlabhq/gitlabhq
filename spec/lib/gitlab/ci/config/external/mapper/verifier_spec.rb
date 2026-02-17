@@ -141,9 +141,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         projects_queries = queries.occurrences_starting_with('SELECT "projects"')
         access_check_queries = queries.occurrences_starting_with('SELECT MAX("project_authorizations"."access_level")')
 
-        # We could not reduce the number of projects queries because we need to call project for
-        # the `can_access_local_content?` and `sha` BatchLoaders.
-        expect(projects_queries.values.sum).to eq(2)
+        expect(projects_queries.values.sum).to eq(1)
         expect(access_check_queries.values.sum).to eq(0)
       end
 

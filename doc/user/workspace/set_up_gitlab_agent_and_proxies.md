@@ -15,14 +15,11 @@ This tutorial shows you how to:
 - Set up the GitLab workspaces proxy to authenticate and authorize [workspaces](_index.md)
   in your cluster.
 
-{{< alert type="note" >}}
-
-You must complete the setup steps in this tutorial before you can configure a GitLab agent for Kubernetes
-to support workspaces.
-After completing the tutorial, use the [GitLab agent for Kubernetes configuration](gitlab_agent_configuration.md)
-to configure your agent.
-
-{{< /alert >}}
+> [!note]
+> You must complete the setup steps in this tutorial before you can configure a GitLab agent for Kubernetes
+> to support workspaces.
+> After completing the tutorial, use the [GitLab agent for Kubernetes configuration](gitlab_agent_configuration.md)
+> to configure your agent.
 
 ## Before you begin
 
@@ -112,26 +109,20 @@ To configure the `remote_development` module in the agent project:
 
 For a full list of configuration options, see the workspace [configuration reference](settings.md#configuration-reference).
 
-{{< alert type="note" >}}
-
-The GitLab agent for Kubernetes is configured in one project, but you can use it in other project workspaces.
-A separate agent is not required for each project.
-
-The configured agent is not visible until you
-[allow the agent in your group](#allow-the-gitlab-agent-for-kubernetes-in-your-group).
-
-{{< /alert >}}
+> [!note]
+> The GitLab agent for Kubernetes is configured in one project, but you can use it in other project workspaces.
+> A separate agent is not required for each project.
+> 
+> The configured agent is not visible until you
+> [allow the agent in your group](#allow-the-gitlab-agent-for-kubernetes-in-your-group).
 
 ## Allow the GitLab agent for Kubernetes in your group
 
 When you allow an agent in a group, the group, its subgroups, and all projects in those groups can
 use that agent.
 
-{{< alert type="note" >}}
-
-Only one agent is required. You can create workspaces from all projects in a group with the same agent.
-
-{{< /alert >}}
+> [!note]
+> Only one agent is required. You can create workspaces from all projects in a group with the same agent.
 
 To allow your GitLab agent for Kubernetes in a group and make it available to all projects in that group:
 
@@ -143,7 +134,7 @@ To allow your GitLab agent for Kubernetes in a group and make it available to al
 
 ## Grant workspace permissions
 
-Grant users with at least the Developer role for the workspace and agent projects
+Grant users with the Developer, Maintainer, or Owner role for the workspace and agent projects
 the necessary permissions to create and manage workspaces. You can:
 
 - [Add users to a project](../project/members/_index.md#add-users-to-a-project)
@@ -218,13 +209,10 @@ To generate certificates manually:
      --work-dir ~/.certbot/work
    ```
 
-{{< alert type="note" >}}
-
-You must renew your certificates when they expire.
-For example, Let's Encrypt certificates expire after three months.
-To automatically renew certificates, see [`cert-manager`](https://cert-manager.io/docs/).
-
-{{< /alert >}}
+> [!note]
+> You must renew your certificates when they expire.
+> For example, Let's Encrypt certificates expire after three months.
+> To automatically renew certificates, see [`cert-manager`](https://cert-manager.io/docs/).
 
 ## Register a GitLab OAuth application
 
@@ -308,27 +296,20 @@ To install the Helm chart for the GitLab workspaces proxy:
 
 1. Install and upgrade the chart:
 
-   {{< alert type="warning" >}}
-
-   Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive
-   information through command line arguments. For more information, see the
-   [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
-
-   Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies
-   on a wildcard domain. For more information, see the
-   [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
-
-   You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.
-
-   {{< /alert >}}
-
-   {{< alert type="note" >}}
-
-   Before chart version 0.1.16, the Helm chart installation created secrets automatically.
-   If you're upgrading from a version earlier than 0.1.16,
-   [create the required Kubernetes secrets](#create-kubernetes-secrets) before running the upgrade command.
-
-   {{< /alert >}}
+   > [!warning]
+   > Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive
+   > information through command line arguments. For more information, see the
+   > [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
+   >
+   > Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies
+   > on a wildcard domain. For more information, see the
+   > [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
+   >
+   > You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.
+   >
+   > Before chart version 0.1.16, the Helm chart installation created secrets automatically.
+   > If you're upgrading from a version earlier than 0.1.16,
+   > [create the required Kubernetes secrets](#create-kubernetes-secrets) before running the upgrade command.
 
    ```shell
    helm repo update

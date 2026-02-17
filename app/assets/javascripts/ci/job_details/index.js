@@ -49,6 +49,7 @@ export const initJobDetails = () => {
 
   return new Vue({
     el,
+    name: 'JobAppRoot',
     apolloProvider,
     store,
     provide: {

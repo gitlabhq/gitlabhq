@@ -165,7 +165,7 @@ Parameters:
 
 Currently, this API endpoint doesn't return issues from any subgroups.
 If you want to get all the milestones' issues, you can instead use the
-[List issues API](issues.md#list-issues) and filter for a
+[List issues API](issues.md#list-all-issues) and filter for a
 particular milestone (for example, `GET /issues?milestone=1.0.0&state=opened`).
 
 ## Get all merge requests assigned to a single milestone

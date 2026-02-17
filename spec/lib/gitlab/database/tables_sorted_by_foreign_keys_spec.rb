@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
   let(:connection) { Ci::ApplicationRecord.connection }
   let(:tables) do
     %w[_test_gitlab_main_items _test_gitlab_main_references _test_gitlab_partition_parent
-       gitlab_partitions_dynamic._test_gitlab_partition_20220101
-       gitlab_partitions_dynamic._test_gitlab_partition_20220102]
+      gitlab_partitions_dynamic._test_gitlab_partition_20220101
+      gitlab_partitions_dynamic._test_gitlab_partition_20220102]
   end
 
   subject do

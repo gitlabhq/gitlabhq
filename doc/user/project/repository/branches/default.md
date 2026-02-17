@@ -54,8 +54,14 @@ To update the default branch for an individual [project](../../_index.md):
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
 1. Select **Save changes**.
 
-API users can also use the `default_branch` attribute of the
-[Projects API](../../../../api/projects.md) when creating or editing a project.
+You can also use the `default_branch` attribute of the [Projects API](../../../../api/projects.md).
+When you create a project with the API and set `initialize_with_readme` to `true`,
+you can specify the `default_branch` parameter as either:
+
+- A branch name. For example, `main`.
+- A fully qualified reference. For example, `refs/heads/main`.
+
+The API strips the `refs/heads/` prefix if you provide a fully qualified reference.
 
 ## Change the default branch name for new projects in an instance
 
@@ -126,11 +132,8 @@ to apply to every repository's default branch for the instance, or for individua
 - **Not protected** - Both developers and maintainers can push new commits
   and force push.
 
-{{< alert type="warning" >}}
-
-Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
-
-{{< /alert >}}
+> [!warning]
+> Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
 
 ### For all projects in an instance
 
@@ -178,11 +181,8 @@ disable this privilege for group owners, enforcing the protection rule set for t
 1. Clear the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-GitLab administrators can still update the default branch protection of a group.
-
-{{< /alert >}}
+> [!note]
+> GitLab administrators can still update the default branch protection of a group.
 
 ### For all projects in a group
 
@@ -207,15 +207,12 @@ which locks this setting for group owners.
 
 ## Update the default branch name in your repository
 
-{{< alert type="warning" >}}
-
-Changing the name of your default branch can potentially break tests,
-CI/CD configuration, services, helper utilities, and any integrations your repository
-uses. Before you change this branch name, consult with your project owners and maintainers.
-Ensure they understand the scope of this change includes references to the old
-branch name in related code and scripts.
-
-{{< /alert >}}
+> [!warning]
+> Changing the name of your default branch can potentially break tests,
+> CI/CD configuration, services, helper utilities, and any integrations your repository
+> uses. Before you change this branch name, consult with your project owners and maintainers.
+> Ensure they understand the scope of this change includes references to the old
+> branch name in related code and scripts.
 
 When you change the default branch name for an existing repository, don't create a new branch.
 Preserve the history of your default branch by renaming it. This example renames a Git repository's
@@ -290,7 +287,7 @@ current default branch, instead of displaying the "not found" page.
 - [Configure a default branch for your wiki](../../wiki/_index.md)
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)
   on the Git mailing list
-- [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/2021/03/10/new-git-default-branch-name/)
+- [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/new-git-default-branch-name/)
 
 ## Troubleshooting
 

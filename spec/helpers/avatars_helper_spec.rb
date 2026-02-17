@@ -366,7 +366,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       context 'with user parameter' do
         let(:options) { { user: user_with_avatar, only_path: false } }
 
-        it 'will return avatar with a full path' do
+        it 'returns avatar with a full path' do
           is_expected.to eq tag.img(
             alt: "#{user_with_avatar.name}'s avatar",
             src: avatar_icon_for_user(user_with_avatar, 16, only_path: false),
@@ -380,7 +380,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       context 'with user_name and user_email' do
         let(:options) { { user_email: user_with_avatar.email, user_name: user_with_avatar.username, only_path: false } }
 
-        it 'will return avatar with a full path' do
+        it 'returns avatar with a full path' do
           is_expected.to eq tag.img(
             alt: "#{user_with_avatar.username}'s avatar",
             src: helper.avatar_icon_for_email(user_with_avatar.email, 16, only_path: false),
@@ -395,7 +395,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     context 'with unregistered email address' do
       let(:options) { { user_email: "unregistered_email@example.com" } }
 
-      it 'will return default alt text for avatar' do
+      it 'returns default alt text for avatar' do
         expect(subject).to include("default avatar")
       end
     end

@@ -34,12 +34,9 @@ If the answer is **Yes** for any of the questions above, you should strongly con
 You can always start by creating a new Gem [in the same repository](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
 to be used by a wider community.
 
-{{< alert type="warning" >}}
-
-To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
-to [reserve a gem name](#reserve-a-gem-name).
-
-{{< /alert >}}
+> [!warning]
+> To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
+> to [reserve a gem name](#reserve-a-gem-name).
 
 ## Advantages of using Gems
 
@@ -82,12 +79,9 @@ and prevents complexity (coordinating changes across repositories, new permissio
 
 Gems stored in the same repository should be referenced in `Gemfile` with the `path:` syntax.
 
-{{< alert type="warning" >}}
-
-To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
-to [reserve a gem name](#reserve-a-gem-name).
-
-{{< /alert >}}
+> [!warning]
+> To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
+> to [reserve a gem name](#reserve-a-gem-name).
 
 ### Create and use a new Gem
 
@@ -369,7 +363,10 @@ To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#crea
 
 ### Account creation
 
-In case you are considering the creation of an account on RubyGems.org for the purpose of your work at GitLab, make sure to use your corporate email account.
+If you are creating an account on RubyGems.org for the purposes of your work at GitLab, you should:
+
+- Use your corporate email account (`@gitlab.com`).
+- Set up two-factor authentication using a Web Authentication device such as a YubiKey or device passkey.
 
 ### Maintainer and Account Changes
 

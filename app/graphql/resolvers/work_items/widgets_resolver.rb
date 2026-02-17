@@ -36,9 +36,8 @@ module Resolvers
       end
 
       def resolve(ids:, union: false)
-        all_widgets = ::WorkItems::Type
-          .id_in(ids.map(&:model_id))
-          .with_widget_definition_preload
+        all_widgets = ::WorkItems::TypesFramework::Provider.new(resource_parent)
+          .by_ids_with_widget_definition_preload(ids.map(&:model_id))
           .map { |type| type.widgets(resource_parent).map { |widget| widget.widget_type.upcase } }
 
         return [] if all_widgets.blank?

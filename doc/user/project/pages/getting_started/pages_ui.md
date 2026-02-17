@@ -27,11 +27,8 @@ This guide explains how to use the Pages UI to deploy a static site or framework
 - Your app must [output files to the `public` folder](../public_folder.md). If you create
   this folder during the build pipeline, you do not need to commit it to Git.
 
-  {{< alert type="warning" >}}
-
-  This step is important. Ensure your files are in a root-level `public` folder.
-
-  {{< /alert >}}
+  > [!warning]
+  > This step is important. Ensure your files are in a root-level `public` folder.
 
 - You must have a project that either:
   - Generates static sites or a client-rendered single-page application (SPA),
@@ -79,11 +76,8 @@ After your pipeline completes successfully:
 1. In **Deployments**, you can view your active deployment URL.
 1. To visit your deployed GitLab Pages site, select the URL.
 
-{{< alert type="note" >}}
-
-It might take a few minutes for your site to become available after the pipeline completes.
-
-{{< /alert >}}
+> [!note]
+> It might take a few minutes for your site to become available after the pipeline completes.
 
 ## Troubleshooting
 

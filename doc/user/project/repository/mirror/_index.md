@@ -45,7 +45,7 @@ The following is not supported:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
@@ -88,19 +88,16 @@ To mirror a repository with SSH authentication:
 1. Select **Add new**.
 1. Enter a **Git repository URL**. Provide a URL in the format `ssh://gitlab.com/gitlab-org/gitlab.git`.
 
-   {{< alert type="note" >}}
-
-   SSH URLs must use the format `ssh://host/path/to/repo.git` instead of
-   SCP-style URLs (`git@host:path/to/repo.git`). Replace the colon (`:`)
-   with a slash (`/`) and add the `ssh://` prefix.
-
-   {{< /alert >}}
+   > [!note]
+   > SSH URLs must use the format `ssh://host/path/to/repo.git` instead of
+   > SCP-style URLs (`git@host:path/to/repo.git`). Replace the colon (`:`)
+   > with a slash (`/`) and add the `ssh://` prefix.
 
 1. Select a **Mirror direction**. For more information, see [Pull mirroring](pull.md) and [Push mirroring](push.md).
 1. Select either **Detect host keys** or **Input host keys manually**.
 1. In the **Authentication method** field, select **SSH public key**
 1. In the **Username** field, add `git`.
-1. Optional. Configure the **Mirror user** and **Mirror branches** settings.
+1. Optional. Configure the **Mirror branches** settings.
 1. Select **Mirror repository**.
 1. Copy the SSH public key and provide it to your non-GitLab server.
 
@@ -143,11 +140,8 @@ You can also manually trigger an update:
 - According to [the pull mirroring interval limit](../../../../administration/instance_limits.md#pull-mirroring-interval)
   set by the administrator on GitLab Self-Managed instances.
 
-{{< alert type="note" >}}
-
-[GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables both push and pull updates.
-
-{{< /alert >}}
+> [!note]
+> [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables both push and pull updates.
 
 ### Force an update
 
@@ -159,7 +153,7 @@ While mirrors are scheduled to update automatically, you can force an immediate 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
@@ -218,12 +212,9 @@ If you must change the key at any time, you can remove and re-add the mirror
 to generate a new key. Update the other repository with the new
 key to keep the mirror running.
 
-{{< alert type="note" >}}
-
-The generated keys are stored in the GitLab database, not in the file system. Therefore,
-SSH public key authentication for mirrors cannot be used in a pre-receive hook.
-
-{{< /alert >}}
+> [!note]
+> The generated keys are stored in the GitLab database, not in the file system. Therefore,
+> SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
 ### Verify a host key
 

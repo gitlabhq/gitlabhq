@@ -1,0 +1,5 @@
+---
+name: read_oauth_application
+description: Grants the ability to view OAuth applications
+boundaries:
+  - instance

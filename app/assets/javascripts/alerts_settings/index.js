@@ -37,6 +37,7 @@ export default (el) => {
   const service = new IncidentsSettingsService(operationsSettingsEndpoint, pagerdutyResetKeyPath);
   return new Vue({
     el,
+    name: 'AlertSettingsWrapperRoot',
     components: {
       AlertSettingsWrapper,
     },

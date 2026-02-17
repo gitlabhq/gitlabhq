@@ -14,7 +14,6 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
         cop_name: cop_name,
         files: be_empty,
         offense_count: 0,
-        previously_disabled: false,
         grace_period: false
       )
     end
@@ -86,14 +85,6 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
       it { is_expected.to eq(false) }
     end
 
-    context 'when previously disabled' do
-      before do
-        cop_todo.previously_disabled = true
-      end
-
-      it { is_expected.to eq(true) }
-    end
-
     context 'when in grace period' do
       before do
         cop_todo.grace_period = true
@@ -128,25 +119,6 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
       end
     end
 
-    context 'when previously disabled' do
-      specify do
-        cop_todo.record('a.rb', 1)
-        cop_todo.record('b.rb', 2)
-        cop_todo.previously_disabled = true
-
-        expect(yaml).to eq(<<~YAML)
-          ---
-          #{cop_name}:
-            # Offense count: 3
-            # Temporarily disabled due to too many offenses
-            Enabled: false
-            Exclude:
-              - 'a.rb'
-              - 'b.rb'
-        YAML
-      end
-    end
-
     context 'with grace period' do
       specify do
         cop_todo.record('a.rb', 1)
@@ -160,6 +132,31 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
             Exclude:
               - 'a.rb'
               - 'b.rb'
+        YAML
+      end
+    end
+
+    context 'with header section' do
+      let(:header_section) do
+        <<~HEADER
+
+          # This a code comment.
+
+          # But anything is retained, really.
+
+        HEADER
+      end
+
+      specify do
+        cop_todo.record('a.rb', 1)
+        cop_todo.header_section = header_section
+
+        expect(yaml).to eq(<<~YAML)
+          ---
+          #{header_section}
+          #{cop_name}:
+            Exclude:
+              - 'a.rb'
         YAML
       end
     end

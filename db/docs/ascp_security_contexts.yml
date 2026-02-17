@@ -1,0 +1,16 @@
+---
+table_name: ascp_security_contexts
+classes:
+  - Security::Ascp::SecurityContext
+feature_categories:
+  - static_application_security_testing
+description: >
+  Stores security context information for ASCP components.
+  Each component has one security context that describes its authentication
+  model, authorization model, data sensitivity level, and a summary of
+  security-relevant characteristics used in vulnerability analysis.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219888
+milestone: '18.9'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

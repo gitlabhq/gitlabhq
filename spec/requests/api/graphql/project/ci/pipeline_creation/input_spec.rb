@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipeline_composition do
   include GraphqlHelpers
+  include ReactiveCachingHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
@@ -122,10 +123,19 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
       project.add_developer(user)
     end
 
+    let(:service) do
+      Ci::PipelineCreation::FindPipelineInputsService.new(
+        current_user: user,
+        project: project,
+        ref: ref
+      )
+    end
+
     before do
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(true)
+      allow(Ci::PipelineCreation::FindPipelineInputsService)
+        .to receive(:new)
+        .and_return(service)
+      synchronous_reactive_cache(service)
     end
 
     context 'when inputs exist' do
@@ -476,6 +486,83 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
       it 'successfully queries all input fields' do
         expect { post_graphql(comprehensive_query, current_user: user) }.not_to raise_error
         expect(graphql_errors).to be_nil
+      end
+    end
+
+    context 'when cache is empty' do
+      let(:ref) { 'master' }
+
+      before do
+        # Override the parent `before` block to simulate cache miss
+        allow(Ci::PipelineCreation::FindPipelineInputsService)
+          .to receive(:new)
+          .and_call_original
+      end
+
+      context 'when failOnCacheMiss is false' do
+        let(:query_without_fail) do
+          <<~GQL
+            query {
+              project(fullPath: "#{project.full_path}") {
+                ciPipelineCreationInputs(ref: "#{ref}", failOnCacheMiss: false) {
+                  name
+                  type
+                }
+              }
+            }
+          GQL
+        end
+
+        it 'returns nothing' do
+          post_graphql(query_without_fail, current_user: user)
+
+          expect(graphql_data['project']['ciPipelineCreationInputs']).to be_nil
+        end
+      end
+
+      context 'when failOnCacheMiss is true' do
+        let(:query_with_fail) do
+          <<~GQL
+            query {
+              project(fullPath: "#{project.full_path}") {
+                ciPipelineCreationInputs(ref: "#{ref}", failOnCacheMiss: true) {
+                  name
+                  type
+                }
+              }
+            }
+          GQL
+        end
+
+        it 'returns an error' do
+          post_graphql(query_with_fail, current_user: user)
+
+          expect(graphql_errors).to include(
+            a_hash_including(
+              'message' => 'Failed to retrieve pipeline inputs from cache.'
+            )
+          )
+        end
+      end
+    end
+
+    context 'when ci_pipeline_inputs_reactive_cache feature flag is disabled' do
+      let(:ref) { 'master' }
+
+      before do
+        stub_feature_flags(ci_pipeline_inputs_reactive_cache: false)
+
+        # Override the parent `before` block to call the original service
+        allow(Ci::PipelineCreation::FindPipelineInputsService)
+          .to receive(:new)
+          .and_call_original
+      end
+
+      it 'returns inputs directly without caching' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data['project']['ciPipelineCreationInputs']).to be_an(Array)
+        expect(graphql_data['project']['ciPipelineCreationInputs'].length).to be > 0
       end
     end
   end

@@ -724,7 +724,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         end
       end
 
-      it 'passes on the parameters to  #rename_base_repository_path' do
+      it 'passes on the parameters to #rename_base_repository_path' do
         request
       end
 

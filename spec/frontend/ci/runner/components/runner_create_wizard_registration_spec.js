@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import { GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -41,7 +41,7 @@ describe('Create New Runner Registration', () => {
     return waitForPromises();
   };
 
-  const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findToken = () => wrapper.findByTestId('token-input');
   const findCopyTokenButton = () => wrapper.findByTestId('copy-token-to-clipboard');
   const findLoadingIcon = () => wrapper.findByTestId('loading-icon-wrapper');
@@ -52,8 +52,8 @@ describe('Create New Runner Registration', () => {
       createComponent();
     });
 
-    it('passes the correct props to MultiStepFormTemplate', () => {
-      expect(findMultiStepFormTemplate().props()).toMatchObject({
+    it('passes the correct props to GlMultiStepFormTemplate', () => {
+      expect(findGlMultiStepFormTemplate().props()).toMatchObject({
         title: 'Register your new runner',
         currentStep: 3,
         stepsTotal: 3,

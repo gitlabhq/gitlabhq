@@ -39,7 +39,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def tag_list
-    tags = Ci::TagsFinder.new(params: params).execute.limit(TAGS_LIMIT)
+    tags = Ci::TagsFinder.new(params: search_params).execute.limit(TAGS_LIMIT)
 
     render json: Ci::TagSerializer.new.represent(tags)
   end
@@ -51,7 +51,7 @@ class Admin::RunnersController < Admin::ApplicationController
   private
 
   def runner
-    @runner ||= Ci::Runner.find(params[:id])
+    @runner ||= Ci::Runner.find(ci_runner_finder_params[:id])
   end
 
   def runner_params
@@ -68,8 +68,8 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def assign_projects
     @projects =
-      if params[:search].present?
-        ::Project.search(params[:search], include_namespace: true)
+      if search_params[:search].present?
+        ::Project.search(search_params[:search], include_namespace: true)
       else
         Project.all
       end
@@ -77,7 +77,19 @@ class Admin::RunnersController < Admin::ApplicationController
     runner_projects_ids = runner.project_ids
     @projects = @projects.id_not_in(runner_projects_ids) if runner_projects_ids.any?
     @projects = @projects.inc_routes
-    @projects = @projects.page(params[:page]).per(30).without_count
+    @projects = @projects.page(page_params[:page]).per(30).without_count
+  end
+
+  def page_params
+    params.permit(:page)
+  end
+
+  def search_params
+    params.permit(:search)
+  end
+
+  def ci_runner_finder_params
+    params.permit(:id)
   end
 end
 

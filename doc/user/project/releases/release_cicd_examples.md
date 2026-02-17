@@ -19,12 +19,9 @@ In this CI/CD example, the release is triggered by one of the following events:
 You can use this method if you prefer to create the Git tag manually, and create a release as a
 result.
 
-{{< alert type="note" >}}
-
-Do not provide Release notes when you create the Git tag in the UI. Providing release notes
-creates a release, resulting in the pipeline failing.
-
-{{< /alert >}}
+> [!note]
+> Do not provide Release notes when you create the Git tag in the UI. Providing release notes
+> creates a release, resulting in the pipeline failing.
 
 Key points in the following extract of an example `.gitlab-ci.yml` file:
 
@@ -39,7 +36,7 @@ release_job:
     - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
   script:
     - echo "running release_job"
-  release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+  release:                               # See https://docs.gitlab.com/ci/yaml/#release for available properties
     tag_name: '$CI_COMMIT_TAG'
     description: '$CI_COMMIT_TAG'
 ```
@@ -64,19 +61,16 @@ release_job:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
   script:
     - echo "running release_job for $TAG"
-  release:                                         # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+  release:                                         # See https://docs.gitlab.com/ci/yaml/#release for available properties
     tag_name: 'v0.$CI_PIPELINE_IID'                # The version is incremented per pipeline.
     description: 'v0.$CI_PIPELINE_IID'
     ref: '$CI_COMMIT_SHA'                          # The tag is created from the pipeline SHA.
 ```
 
-{{< alert type="note" >}}
-
-Environment variables set in `before_script` or `script` are not available for expanding
-in the same job. Read more about
-[potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
-
-{{< /alert >}}
+> [!note]
+> Environment variables set in `before_script` or `script` are not available for expanding
+> in the same job. Read more about
+> [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
 
 ## Create release metadata in a custom script
 
@@ -84,7 +78,7 @@ In this CI/CD example the release preparation is split into separate jobs for gr
 
 - The `prepare_job` job generates the release metadata. Any image can be used to run the job,
   including a custom image. The generated metadata is stored in the variable file `variables.env`.
-  This metadata is [passed to the downstream job](../../../ci/variables/job_scripts.md#pass-an-environment-variable-to-another-job).
+  This metadata is [passed to the downstream job](../../../ci/variables/job_scripts.md#pass-environment-variables-to-later-jobs).
 - The `release_job` uses the content from the variables file to create a release, using the
   metadata passed to it in the variables file. This job must use the
   `registry.gitlab.com/gitlab-org/cli:latest` image because it contains the `glab` CLI.

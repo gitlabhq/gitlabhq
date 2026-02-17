@@ -2,6 +2,10 @@
 key_path: counts.count_total_view_admin_gitaly_servers_pageload_monthly
 description: Monthly count of total users who visit the gitaly servers page
 product_group: engagement
+product_categories:
+- navigation
+- settings
+- gitaly
 performance_indicator_type: []
 value_type: number
 status: active

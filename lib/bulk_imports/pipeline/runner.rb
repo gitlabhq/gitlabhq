@@ -24,7 +24,7 @@ module BulkImports
 
             delete_partial_imported_records(entry)
 
-            increment_fetched_objects_counter
+            increment_fetched_objects_counter(entry)
 
             transformers.each do |transformer|
               entry = run_pipeline_step(:transformer, transformer.class.name) do
@@ -35,7 +35,7 @@ module BulkImports
             run_pipeline_step(:loader, loader.class.name, entry) do
               loader.load(context, entry)
 
-              increment_imported_objects_counter
+              increment_imported_objects_counter(entry)
             end
 
             save_processed_entry(raw_entry, index)
@@ -228,12 +228,16 @@ module BulkImports
         ObjectCounter.set(tracker, ObjectCounter::SOURCE_COUNTER, export_status.total_objects_count)
       end
 
-      def increment_fetched_objects_counter
-        ObjectCounter.increment(tracker, ObjectCounter::FETCHED_COUNTER)
+      def increment_fetched_objects_counter(entry)
+        increment_counter(ObjectCounter::FETCHED_COUNTER, entry)
       end
 
-      def increment_imported_objects_counter
-        ObjectCounter.increment(tracker, ObjectCounter::IMPORTED_COUNTER)
+      def increment_imported_objects_counter(entry)
+        increment_counter(ObjectCounter::IMPORTED_COUNTER, entry)
+      end
+
+      def increment_counter(counter_type, entry)
+        ObjectCounter.increment_by_object(tracker, counter_type, entry)
       end
     end
   end

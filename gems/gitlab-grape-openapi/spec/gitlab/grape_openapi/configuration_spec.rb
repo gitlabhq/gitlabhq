@@ -46,4 +46,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Configuration do
       expect(configuration.servers.first.description).to be_nil
     end
   end
+
+  describe '#excluded_api_classes' do
+    it 'has default value' do
+      expect(configuration.excluded_api_classes).to eq([])
+    end
+  end
 end

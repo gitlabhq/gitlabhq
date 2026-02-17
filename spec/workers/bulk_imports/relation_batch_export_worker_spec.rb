@@ -13,7 +13,7 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
   let(:job_args) { [user.id, batch.id] }
 
   describe '#perform' do
-    subject(:perform) { described_class.new.perform(user.id, batch.id) }
+    subject(:perform) { described_class.new.perform(*job_args) }
 
     before_all do
       Gitlab::Cache::Import::Caching.set_add(cache_key, label.id)
@@ -97,6 +97,14 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
         end
       end
     end
+
+    context 'when the relation export batch has been deleted' do
+      let(:job_args) { [user.id, non_existing_record_id] }
+
+      it 'does not raise an error' do
+        expect { perform }.not_to raise_error
+      end
+    end
   end
 
   describe '.sidekiq_retries_exhausted' do
@@ -114,15 +122,35 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
       expect(batch.reload.failed?).to eq(true)
       expect(batch.error.size).to eq(255)
     end
+
+    context 'when the relation export batch has been deleted' do
+      let(:job_args) { [user.id, non_existing_record_id] }
+
+      it 'does not raise an error' do
+        expect do
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
+        end.not_to raise_error
+      end
+    end
   end
 
   describe '.sidekiq_interruptions_exhausted' do
-    it 'sets export status to failed' do
-      job = { 'args' => job_args }
+    let(:job) { { 'args' => job_args } }
 
+    it 'sets export status to failed' do
       described_class.interruptions_exhausted_block.call(job)
       expect(batch.reload).to be_failed
       expect(batch.error).to eq('Export process reached the maximum number of interruptions')
+    end
+
+    context 'when the relation export batch has been deleted' do
+      let(:job_args) { [user.id, non_existing_record_id] }
+
+      it 'does not raise an error' do
+        expect do
+          described_class.interruptions_exhausted_block.call(job)
+        end.not_to raise_error
+      end
     end
   end
 end

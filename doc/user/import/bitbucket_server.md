@@ -3,7 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate from Bitbucket Server
-description: "Import projects from Bitbucket Server to GitLab."
+description: "Migrate from Bitbucket Server to GitLab."
 ---
 
 {{< details >}}
@@ -87,7 +87,7 @@ However, to help estimate the duration of your import, a project comprised of th
   publicly resolvable or accessible on the network where GitLab is running.
 - You must enable the [Bitbucket Server import source](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   or ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
-- At least the Maintainer role on the destination group to import to.
+- the Maintainer or Owner role on the destination group to import to.
 - Bitbucket Server authentication token with administrator access. Without administrator access, some data is
   [not imported](https://gitlab.com/gitlab-org/gitlab/-/issues/446218).
 
@@ -114,15 +114,12 @@ for imports.
 
 For imports to GitLab.com, you must use the [post-migration method](mapping.md) instead.
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
-migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
-[post-migration method](mapping.md) instead that doesn't have these limitations.
-
-For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
+> migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
+> [post-migration method](mapping.md) instead that doesn't have these limitations.
+> 
+> For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
 
 Using the alternative method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address
 in the GitLab user database. If no such user is found:
@@ -131,8 +128,8 @@ in the GitLab user database. If no such user is found:
 - For pull request reviewers, no reviewer is assigned.
 - For pull request approvers, no approval is added.
 
-`@mentions` on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
-If a user with the same email address is not found on GitLab, the `@mention` is made static.
+Mentions on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
+If a user with the same email address is not found on GitLab, the mention is made static.
 For a user to be matched, they must have a GitLab role that provides at least read access to the project.
 
 If the project is public, GitLab only matches users who are invited to the project.

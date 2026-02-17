@@ -14,6 +14,7 @@ class DraftNote < ApplicationRecord
   # Attribute used to store quick actions changes and users referenced.
   attr_accessor :commands_changes
   attr_accessor :users_referenced
+  attr_accessor :suggestions
 
   # Text with quick actions filtered out
   attr_accessor :rendered_note

@@ -27,12 +27,9 @@ Currently, there are four endpoints for simulating the following conditions:
 For obvious reasons, these endpoints are not enabled by default on `production`.
 They are enabled by default on **development** environments.
 
-{{< alert type="warning" >}}
-
-It is required that you secure access to the chaos endpoints using a secret token.
-You should not enable them in production unless you absolutely know what you're doing.
-
-{{< /alert >}}
+> [!warning]
+> It is required that you secure access to the chaos endpoints using a secret token.
+> You should not enable them in production unless you absolutely know what you're doing.
 
 A secret token can be set through the `GITLAB_CHAOS_SECRET` environment variable.
 For example, when using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)

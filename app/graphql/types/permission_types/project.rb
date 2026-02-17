@@ -25,8 +25,17 @@ module Types
       permission_field :admin_all_resources,
         description: 'If `true`, the user is an instance administrator.'
 
+      permission_field :can_leave,
+        description: 'If `true`, the user can leave this project.'
+
       def create_snippet
         Ability.allowed?(context[:current_user], :create_snippet, object)
+      end
+
+      def can_leave
+        return false unless current_user
+
+        current_user.can_leave_project?(object)
       end
 
       def admin_all_resources

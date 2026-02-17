@@ -19,7 +19,7 @@ This error occurs because Docker starts on TLS automatically.
 - If this is your first time setting it up, see
   [use the Docker executor with the Docker image](using_docker_build.md#use-docker-in-docker).
 - If you are upgrading from v18.09 or earlier, see the
-  [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
+  [upgrade guide](https://about.gitlab.com/blog/docker-in-docker-with-docker-19-dot-03/).
 
 This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has fully started up. For a more detailed explanation, see [issue 27215](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
 
@@ -76,7 +76,7 @@ this error can happen if your job previously relied on environment variables der
 such as `DOCKER_PORT_2375_TCP`. Your job fails with this error if:
 
 - Your CI/CD image relies on a legacy variable, such as `DOCKER_PORT_2375_TCP`.
-- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags.html) is set to `true`.
+- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags/) is set to `true`.
 - `DOCKER_HOST` is not explicitly set.
 
 ## Error: `unauthorized: incorrect username or password`

@@ -21,7 +21,7 @@ To configure the Jira DVCS connector, see
 You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later.
 
 Jira creates a webhook in the GitLab project to provide real-time updates.
-To configure this webhook, you must have at least the Maintainer role for the project.
+To configure this webhook, you must have the Maintainer or Owner role for the project.
 For more information, see [configuring webhook security](https://confluence.atlassian.com/adminjiraserver/configuring-webhook-security-1299913153.html).
 
 The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in GitLab 16.0.
@@ -34,9 +34,9 @@ By default, Jira imports commits and branches for GitLab projects every 60 minut
 To refresh the data manually in Jira:
 
 1. Sign in to your Jira instance as the user you configured the integration with.
-1. On the top bar, in the upper-right corner,
+1. In the top bar, in the upper-right corner,
    select **Administration** ({{< icon name="settings" >}}) > **Applications**.
-1. On the left sidebar, select **DVCS accounts**.
+1. In the left sidebar, select **DVCS accounts**.
 1. To refresh one or more repositories in a DVCS account:
    - **For all repositories**, next to the account,
      select the ellipsis ({{< icon name="ellipsis_h" >}}) > **Refresh repositories**.

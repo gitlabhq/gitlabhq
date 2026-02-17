@@ -63,13 +63,10 @@ To disable Prometheus and all of its exporters, and any exporters added in the f
 
 ### Changing the port and address Prometheus listens on
 
-{{< alert type="warning" >}}
-
-You can change the port Prometheus listens on, but you should not.
-This change might affect or conflict with other services that run on the GitLab
-server. Proceed at your own risk.
-
-{{< /alert >}}
+> [!warning]
+> You can change the port Prometheus listens on, but you should not.
+> This change might affect or conflict with other services that run on the GitLab
+> server. Proceed at your own risk.
 
 To access Prometheus from outside the GitLab server,
 change the address/port that Prometheus
@@ -320,13 +317,10 @@ To use an external Prometheus server:
            - 1.1.1.1:5001
    ```
 
-   {{< alert type="warning" >}}
-
-   The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
-   deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
-   80.
-
-   {{< /alert >}}
+   > [!warning]
+   > The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
+   > deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
+   > 80.
 
 1. Reload the Prometheus server.
 
@@ -368,7 +362,7 @@ If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 [A GitLab test project exists](https://gitlab.com/gitlab-org/multi-user-prometheus) to provide access, but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
-having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block).
+having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx/#inserting-custom-nginx-settings-into-the-gitlab-server-block).
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console, or through a compatible dashboard tool.

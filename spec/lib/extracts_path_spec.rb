@@ -68,44 +68,6 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
 
         it { is_expected.to be_nil }
       end
-
-      context 'when verified_ref_extractor is disabled' do
-        before do
-          stub_feature_flags(verified_ref_extractor: false)
-        end
-
-        subject { assign_ref_vars.then { ref_type } }
-
-        context 'when ref is a branch' do
-          let(:ref) { container.default_branch }
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'when ref is a tag' do
-          let(:ref) { container.repository.tag_names.first }
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'when ref is ambiguous' do
-          let(:ref) { 'ambiguous' }
-
-          before do
-            container.repository.create_branch(ref, sample_commit[:id])
-            container.repository.expire_branches_cache
-            container.repository.add_tag(container.owner, ref, sample_commit[:id])
-            container.repository.expire_tags_cache
-          end
-
-          after do
-            container.repository.rm_branch(container.owner, ref)
-            container.repository.rm_tag(container.owner, ref)
-          end
-
-          it { is_expected.to be_nil }
-        end
-      end
     end
 
     context 'when ref and path have incorrect format' do
@@ -386,17 +348,6 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       it "returns and assigns expected value" do
         is_expected.to eq(ref_type_output)
         expect(@ref_type).to eq(ref_type_output)
-      end
-
-      context 'when verified_ref_extractor is disabled' do
-        before do
-          stub_feature_flags(verified_ref_extractor: false)
-        end
-
-        it "returns and assigns expected value" do
-          is_expected.to eq(ref_type_output)
-          expect(defined?(@ref_type)).to be_nil
-        end
       end
     end
   end

@@ -28,7 +28,7 @@ With environments, you:
 
 Prerequisites:
 
-- In a private project, you must have at least the Reporter role. See [Environment permissions](#environment-permissions).
+- In a private project, you must have the Reporter, Developer, Maintainer, or Owner role. See [Environment permissions](#environment-permissions).
 
 There are a few ways to view a list of environments for a given project:
 
@@ -36,7 +36,7 @@ There are a few ways to view a list of environments for a given project:
 
   ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
-- On the left sidebar, select **Operate** > **Environments**. The environments are displayed.
+- In the left sidebar, select **Operate** > **Environments**. The environments are displayed.
 
   ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
 
@@ -117,11 +117,11 @@ You can create a static environment in the UI or in your `.gitlab-ci.yml` file.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a static environment in the UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select **Create an environment**.
 1. Complete the fields.
@@ -131,7 +131,7 @@ To create a static environment in the UI:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a static environment, in your `.gitlab-ci.yml` file:
 
@@ -139,12 +139,9 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 1. In the job, define the environment `name` and `url`. If an
    environment of that name doesn't exist when the pipeline runs, it is created.
 
-{{< alert type="note" >}}
-
-Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
-
-{{< /alert >}}
+> [!note]
+> Some characters cannot be used in environment names. For more information about the
+> `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 For example, to create an environment named `staging`, with URL `https://staging.example.com`:
 
@@ -165,7 +162,7 @@ unique to each pipeline.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To create a dynamic environment, in your `.gitlab-ci.yml` file:
 
@@ -176,12 +173,9 @@ To create a dynamic environment, in your `.gitlab-ci.yml` file:
      environments with the same prefix.
    - `url`: Optional. Prefix the hostname with a related CI/CD variable like `$CI_ENVIRONMENT_SLUG`.
 
-{{< alert type="note" >}}
-
-Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
-
-{{< /alert >}}
+> [!note]
+> Some characters cannot be used in environment names. For more information about the
+> `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 In the following example, every time the `deploy_review_app` job runs the environment's name and
 URL are defined using unique values.
@@ -227,9 +221,7 @@ In the following example a review app creates a new environment for each merge r
 - The `review` job is triggered by every push, and creates or updates an environment named
   `review/your-branch-name`. The environment URL is set to `$DYNAMIC_ENVIRONMENT_URL`.
 - When the `review` job finishes, GitLab updates the `review/your-branch-name` environment's URL.
-  It parses the `deploy.env` report artifact, registers a list of variables as runtime-created,
-  expands the `environment:url: $DYNAMIC_ENVIRONMENT_URL` and sets it to the environment
-  URL.
+  It parses the `deploy.env` report, extracts the variables, and uses them to expand and set the `environment:url`.
 
 ```yaml
 review:
@@ -370,7 +362,7 @@ GitLab validates the pipeline configuration at pipeline creation.
 
 To search environments by name:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
@@ -410,17 +402,14 @@ When using the `on_stop` action to stop an environment, the job runs if it's not
 
 ### Stop an environment by using the UI
 
-{{< alert type="note" >}}
-
-To trigger an `on_stop` action and manually stop an environment from the
-Environments view, the stop and deploy jobs must be in the same
-[`resource_group`](../yaml/_index.md#resource_group).
-
-{{< /alert >}}
+> [!note]
+> To trigger an `on_stop` action and manually stop an environment from the
+> Environments view, the stop and deploy jobs must be in the same
+> [`resource_group`](../yaml/_index.md#resource_group).
 
 To stop an environment in the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
@@ -518,13 +507,10 @@ stop_review:
 
 You can set an environment to stop automatically after a certain time period.
 
-{{< alert type="note" >}}
-
-Due to resource limitations, a background worker for stopping environments runs only once every
-hour. This means that environments may not be stopped after the exact time period specified, but are
-instead stopped when the background worker detects expired environments.
-
-{{< /alert >}}
+> [!note]
+> Due to resource limitations, a background worker for stopping environments runs only once every
+> hour. This means that environments may not be stopped after the exact time period specified, but are
+> instead stopped when the background worker detects expired environments.
 
 In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
@@ -568,7 +554,7 @@ you can view its expiration date and time.
 
 To view an environment's expiration date and time:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the name of the environment.
 
@@ -581,7 +567,7 @@ you can override its expiration.
 
 To override an environment's expiration in the UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the environment name.
 1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
@@ -607,11 +593,11 @@ Clean up stale environments when you want to stop old environments in a project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To clean up stale environments:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select **Clean up environments**.
 1. Select the date to use for determining which environments to consider stale.
@@ -691,13 +677,10 @@ To configure multiple **parallel** stop actions on an environment, specify the
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
-{{< alert type="note" >}}
-
-All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
-[downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
-the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
-
-{{< /alert >}}
+> [!note]
+> All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
+> [downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
+> the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
 
 In the following example, for the `test` environment there are two deployment jobs:
 
@@ -751,12 +734,12 @@ Delete an environment when you want to remove it and all its deployments.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 - You must [stop](#stopping-an-environment) the environment before it can be deleted.
 
 To delete an environment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
@@ -862,7 +845,7 @@ Limitations of GitLab Auto Rollback:
 
 GitLab Auto Rollback is turned off by default. To turn it on:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
@@ -876,23 +859,23 @@ and private projects.
 ### View environments
 
 - In public projects, anyone can view a list of environments, including non-members.
-- In private projects, you must have at least the Reporter role to view a list of environments.
+- In private projects, you must have the Reporter, Developer, Maintainer, or Owner role to view a list of environments.
 
 ### Create and update environments
 
-- You must have at least the Developer role to create a new environment, or update an existing unprotected environment.
+- You must have the Developer, Maintainer, or Owner role to create a new environment, or update an existing unprotected environment.
 - If an existing environment is protected and you don't have access to it, you cannot update the environment.
 
 ### Stop and delete environments
 
-- You must have at least the Developer role to stop or delete an unprotected environment.
+- You must have the Developer, Maintainer, or Owner role to stop or delete an unprotected environment.
 - If an environment is protected and you don't have access to it, you cannot stop or delete the environment.
 
 ### Run deployment jobs in protected environments
 
 If you can push or merge to the protected branch:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 If you can't push to the protected branch:
 

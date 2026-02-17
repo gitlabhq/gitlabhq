@@ -113,7 +113,7 @@ At the same time, add your new `:get_discussions` Rake task to be included in th
 
 ## Create test data
 
-As the last step, create the test data that allows the provider test to return the contract's expected response. You might wonder why you create the test data last. It's really a matter of preference. With the test already configured, you can easily run the test to verify and make sure all the necessary test data are created to produce the expected response.
+As the last step, create the test data that allows the provider test to return the contract's expected response. You might wonder why you create the test data last. It's really a matter of preference. With the test already configured, you can run the test to verify and make sure all the necessary test data are created to produce the expected response.
 
 You can read more about [provider states](https://docs.pact.io/implementation_guides/ruby/provider_states). We can do global provider states but for this tutorial, the provider state is for one specific `state`.
 

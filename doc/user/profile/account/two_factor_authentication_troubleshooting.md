@@ -28,8 +28,8 @@ This error occurs when:
 - You have enabled 2FA and attempted to authenticate with a username and password.
 - You have not enabled 2FA and attempted to authenticate with an incorrect username or password.
 - You have not enabled 2FA and the [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting is active.
-- You have not enabled 2FA and the [password authentication enabled for Git over HTTP(S)](../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
-  setting is not active.
+- You have not enabled 2FA and the [**Allow password authentication for Git over HTTP(S)**](../../../administration/settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https)
+  checkbox is not selected.
 
 To resolve this error:
 
@@ -53,15 +53,15 @@ To resolve this issue, turn on time synchronization for the device that generate
 
 {{< tab title="Android" >}}
 
-  1. Go to **Settings** > **System** > **Date & time**.
-  1. Turn on **Set time automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
+1. Go to **Settings** > **System** > **Date & time**.
+1. Turn on **Set time automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
 
 {{< /tab >}}
 
 {{< tab title="iOS" >}}
 
-  1. Go to **Settings** > **General** > **Date & Time**.
-  1. Turn on **Set Automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
+1. Go to **Settings** > **General** > **Date & Time**.
+1. Turn on **Set Automatically**. If the setting is already on, turn it off, wait a few seconds, and turn it on again.
 
 {{< /tab >}}
 
@@ -122,21 +122,15 @@ To regenerate recovery codes with the UI:
 1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
 1. In the dialog, enter your current password and select **Regenerate recovery codes**.
 
-{{< alert type="note" >}}
-
-Every time you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
-
-{{< /alert >}}
+> [!note]
+> Every time you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
 
 ### Regenerate recovery codes with SSH
 
 If you added an SSH key to your GitLab account, you can regenerate your recovery codes with SSH:
 
-{{< alert type="note" >}}
-
-- You cannot use `gitlab-sshd` to regenerate recovery codes.
-
-{{< /alert >}}
+> [!note]
+> You cannot use `gitlab-sshd` to regenerate recovery codes.
 
 To regenerate recovery codes with SSH:
 
@@ -162,14 +156,15 @@ recovery methods. If you lose your device, you may be able to restore your 2FA c
 logging into your authenticator app on a new device, provided you enabled backup features
 beforehand.
 
-{{< alert type="note" >}}
+Prerequisites:
 
 - You must enable your authenticator backup features before you lose access to your device.
-- GitLab Support cannot assist with recovery issues related to third-party authenticator apps.
-- GitLab recommends using recovery codes as your primary recovery method. Make sure you save
-  your recovery codes when you enable 2FA.
 
-{{< /alert >}}
+> [!note]
+> GitLab recommends using recovery codes as your primary recovery method. Make sure you save
+> your recovery codes when you enable 2FA.
+
+GitLab Support cannot assist with recovery issues related to third-party authenticator apps.
 
 For more information, see the documentation for your specific authenticator app.
 Documentation for common authenticators is available through the following locations:
@@ -193,7 +188,7 @@ your account. This service is only available for accounts with a GitLab.com subs
 
 GitLab Support cannot reset 2FA for Free accounts. If you cannot recover your 2FA method, you will
 be permanently locked out of your account and must create a new one. For more information, see the
-[blog announcement](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
+[blog announcement](https://about.gitlab.com/blog/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
 
 To create a support request:
 

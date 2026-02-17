@@ -2,7 +2,6 @@
 
 module Ci
   class Build < Ci::Processable
-    prepend Ci::BulkInsertableTags
     include Ci::Contextable
     include Ci::Deployable
     include TokenAuthenticatable
@@ -43,7 +42,8 @@ module Ci
       artifacts_exclude: ->(build) { build.supports_artifacts_exclude? },
       multi_build_steps: ->(build) { build.multi_build_steps? },
       return_exit_code: ->(build) { build.exit_codes_defined? },
-      fallback_cache_keys: ->(build) { build.fallback_cache_keys_defined? }
+      fallback_cache_keys: ->(build) { build.fallback_cache_keys_defined? },
+      job_inputs: ->(build) { build.inputs_defined? }
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
@@ -210,14 +210,7 @@ module Ci
       )
     end
 
-    scope :timed_out_builds, -> do
-      joins(:runtime_metadata)
-        .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout <= ?",
-          Time.current)
-        .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
-    end
-
-    scope :not_timed_out_builds, -> do
+    scope :not_timed_out_running_builds, -> do
       joins(:runtime_metadata)
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
           Time.current)
@@ -256,6 +249,10 @@ module Ci
     scope :updated_after, ->(time) { where(arel_table[:updated_at].gt(time)) }
     scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
     scope :with_token_present, -> { where.not(token_encrypted: nil) }
+    scope :with_ref, ->(ref) { joins(:pipeline).where(pipeline: { ref: ref }) }
+    scope :with_pipeline_iid, ->(project_id, iid) do
+      joins(:pipeline).where(pipeline: { project_id: project_id, iid: iid })
+    end
 
     add_authentication_token_field :token,
       encrypted: :required,
@@ -270,6 +267,12 @@ module Ci
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
+
+    # Builds no longer use the p_ci_build_tags table for tag storage.
+    # Tags are stored in ci_job_definitions and accessed via job_definition.tag_list.
+    # Tag records in the `tags` table are created by Ci::PendingBuild.build_tags_ids.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/580301
+    skip_callback :save, :after, :save_tags
 
     class << self
       # This is needed for url_for to work,
@@ -460,6 +463,17 @@ module Ci
         end
       end
 
+      before_transition canceling: [:canceled] do |build, transition|
+        reason_enum = ::Gitlab::Ci::Build::Status::Reason
+                           .fabricate(build, transition.args.first)
+
+        if reason_enum.failure_reason == :job_execution_server_timeout
+          # If job was stuck or timed-out, only bill the set timeout.
+          build.failure_reason = reason_enum.failure_reason
+          build.finished_at = build.started_at + build.timeout.seconds
+        end
+      end
+
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription
@@ -645,8 +659,13 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def play(current_user, job_variables_attributes = nil)
-      Ci::PlayBuildService.new(current_user: current_user, build: self, variables: job_variables_attributes).execute
+    def play(current_user, job_variables_attributes = nil, job_inputs = {})
+      Ci::PlayBuildService.new(
+        current_user: current_user,
+        build: self,
+        variables: job_variables_attributes,
+        inputs: job_inputs
+      ).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -894,6 +913,13 @@ module Ci
     end
     strong_memoize_attr :tag_list
 
+    override :run_steps
+    def run_steps
+      return execution_config&.run_steps || [] if Feature.disabled?(:read_from_ci_job_definition_run_steps, project)
+
+      read_job_definition_attribute(:run_steps) || execution_config&.run_steps || []
+    end
+
     def any_runners_online?
       cache_for_online_runners do
         project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
@@ -1089,6 +1115,10 @@ module Ci
 
     def multi_build_steps?
       options[:release]&.any?
+    end
+
+    def inputs_defined?
+      options[:inputs].present?
     end
 
     def hide_secrets(data, metrics = ::Gitlab::Ci::Trace::Metrics.new)
@@ -1510,6 +1540,17 @@ module Ci
         .index_by(&:type_new)
     end
     strong_memoize_attr :project_integrations
+
+    def read_job_definition_attribute(key, default_value = nil)
+      result =
+        if key.in?(::Ci::JobDefinition::NORMALIZED_DATA_COLUMNS)
+          [job_definition&.read_attribute(key), temp_job_definition&.read_attribute(key)].find { |v| !v.nil? }
+        else
+          [job_definition&.config&.dig(key), temp_job_definition&.config&.dig(key)].find { |v| !v.nil? }
+        end
+
+      [result, default_value].find { |v| !v.nil? }
+    end
   end
 end
 

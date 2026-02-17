@@ -9,76 +9,24 @@ GitLab Duo features are powered by AI models and integrations. This document pro
 
 For detailed instructions on setting up GitLab Duo licensing in your development environment, see [GitLab Duo licensing for local development](ai_development_license.md).
 
-## Instructions for setting up GitLab Duo features in the local development environment
+## Set up your local development environment
 
 Here is a list of all of the main steps to go through from a fresh, GDK-less computer to fully working ai-development ready.
 
-1. [Setup GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/#install-prerequisites#install-prerequisites). You should follow the [local network binding](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/) documentation as well.
-1. [Configure license](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk)
-1. [Setup your Google Cloud Platform account and the CLI](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-google-cloud-platform-in-ai-gateway)
-1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
-1. Get your OpenAI API key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/40277)
-1. [If you want to use GitLab Duo Chat, Code Suggestions, and other non-GitLab Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
-1. [If you want to use GitLab Duo Agent Platform or Agentic Chat locally, setup GitLab Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
-1. [Run the GitLab Duo setup Rake task](#run-gitlabduosetup-script)
+### Prepare your GDK 
 
-More details on each step can be found down below for help and troubleshooting.
+Follow the instructions in the [GitLab Development Kit](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up
+GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core
+backend components.
 
-### Setup GDK
+### Run `gitlab:duo:setup` task
 
-After following the [installation documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/#install-prerequisites), executing `gdk status` should show all services as up and running. Login as the root user and make sure there are no errors.
+Run the `gitlab:duo:setup` Rake task to seed a test group and a project with GitLab Duo features enabled.
 
-### Configure licenses
-
-See [GitLab Duo licensing for local development](ai_development_license.md).
-
-**Important** Before tackling any other step, validate that you have a working License. Navigate to `admin/subscriptions` and make sure you see only one license and that is has the `online` label.
-
-If there is any issue, check out [the troubleshooting documentation](ai_development_license.md#troubleshooting).
-
-### Install AI gateway
-
-This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI gateway with GDK.
-
-{{< alert type="note" >}}
-Make sure your license has a GitLab Duo Pro or GitLab Duo Enterprise add-on enabled before you proceed.
-GitLab Duo Core access is available automatically when you have a Premium or Enterprise license. For GitLab Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For GitLab Duo Enterprise, ask [#g_provision](ai_development_license.md#gitlab-duo-enterprise).
-{{< /alert >}}
-
-**Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally.
-AI gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure
-to check in your GDK database that the ai gateway URL is correct. Run:
-
-```ruby
-Gitlab::AiGateway.url
-```
-
-This should return a URL that points to your local and uses the right port: `http://0.0.0.0:5052`.
-
-If the value points to a non-local URL, you should ensure that:
-
-- `DEVELOPMENT_AI_GATEWAY_URL` is set to `"http://0.0.0.0:5052"`
-- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil.
-
-If you are setting up GitLab Duo Self-Hosted, the there are [specific instructions](developing_ai_features_for_duo_self_hosted.md) for that GDK configuration.
-
-Now in your `gdk` directory, you can `cd` into the `gitlab-ai-gateway` directory
-and run `poetry sync`. This should install all project dependencies. If this
-resolves without error, try now to run the test of the project with `make test`.
-If there are errors, check the results as it can help debug potential issues
-with your configuration.
-
-Finally, run `gdk tail gitlab-ai-gateway` from the GitLab project directory. There should be no errors in the log.
-
-### Setup GitLab Duo Workflow Service
-
-After following the steps in the [setup](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/), run `gdk status`. You should see the `duo-workflow-service` running. You can run `gdk tail duo-workflow-service` in case there might be errors.
-
-### Run `gitlab:duo:setup` script
-
-Note: this task is idempotent and skips reseeding if the `gitlab-duo` group
-already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
-For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
+> [!note]
+> this task is idempotent and skips reseeding if the `gitlab-duo` group
+> already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
+> For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
 This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally. Below are several options. If you are unsure, use option 1.
 
@@ -138,14 +86,16 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_core]'
    ```
 
-  After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
-  and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
+After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
+and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
 
-  A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
+`A9999` is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
+[AI Gateway installation instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway).
+If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
 
-  A1003 is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
+`A1003` is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
-## Tips for local development
+### Tips for local development
 
 1. When responses are taking too long to appear in the user interface, consider
    restarting Sidekiq by running `gdk restart rails-background-jobs`. If that
@@ -169,17 +119,17 @@ Apply the following feature flags to any AI feature work:
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
-### Push feature flags to AI gateway
+### Push feature flags to AI Gateway
 
-You can push [feature flags](../feature_flags/_index.md) to AI gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI gateway.
+You can push [feature flags](../feature_flags/_index.md) to AI Gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI Gateway.
 See the following example:
 
 ```ruby
-# Push a feature flag state to AI gateway.
+# Push a feature flag state to AI Gateway.
 Gitlab::AiGateway.push_feature_flag(:new_prompt_template, user)
 ```
 
-Later, you can use the feature flag state in AI gateway in the following way:
+Later, you can use the feature flag state in AI Gateway in the following way:
 
 ```python
 from ai_gateway.feature_flags import is_feature_enabled
@@ -191,17 +141,17 @@ else:
   # Build a prompt from the old prompt template
 ```
 
-**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
-If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
+**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository **before** removing the flag in GitLab-Rails repository.
+If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI Gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
-**IMPORTANT**: Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
+**IMPORTANT**: Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 **Technical details**:
 
 - When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
-  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI gateway.
+  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI Gateway.
 - When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#terms) (UJWT)
-  for direct AI gateway communication, GitLab returns:
+  for direct AI Gateway communication, GitLab returns:
 
   - Public headers (including `x-gitlab-enabled-feature-flags`).
   - The generated UJWT (1-hour expiration).
@@ -249,11 +199,8 @@ to send the response.
 
 The API requests to AI providers are handled in a background job. We therefore do not keep the request alive and the Frontend needs to match the request to the response from the subscription.
 
-{{< alert type="warning" >}}
-
-Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this interference, we introduced the `clientSubscriptionId`.
-
-{{< /alert >}}
+> [!warning]
+> Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this interference, we introduced the `clientSubscriptionId`.
 
 To match a response on the `aiCompletionResponse` subscription, you can provide a `clientSubscriptionId` to the `aiAction` mutation.
 
@@ -362,8 +309,8 @@ An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/
 
 - Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
-- [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
-- [AI gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
+- [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
+- [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
 - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF).
 
 ## Security

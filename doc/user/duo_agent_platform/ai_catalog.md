@@ -8,7 +8,6 @@ title: AI Catalog
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -28,12 +27,9 @@ title: AI Catalog
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The AI Catalog is a central list of agents and flows.
 Add these agents and flows to your project to get started orchestrating agentic AI tasks.
@@ -51,7 +47,7 @@ Prerequisites:
 - You must meet the [prerequisites](_index.md#prerequisites).
 - On GitLab.com, you must be a member of a top-level group that has
   [turned on GitLab Duo experiment and beta features](../../user/gitlab_duo/turn_on_off.md#on-gitlabcom-2).
-- To enable agents and flows from the AI Catalog, you must have at least the Maintainer role for a project.
+- To enable agents and flows from the AI Catalog, you must have the Maintainer or Owner role for a project.
 
 To view the AI Catalog:
 
@@ -107,7 +103,7 @@ This approach provides stability and predictability for your AI-powered workflow
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To view the current version of an agent or flow:
 
@@ -127,7 +123,7 @@ The details page displays:
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To make your group or project use the latest version of an agent or flow:
 

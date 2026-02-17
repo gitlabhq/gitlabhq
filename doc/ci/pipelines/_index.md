@@ -95,7 +95,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -137,13 +137,13 @@ The required role depends on what you want to do:
 
 To view manual pipeline variables:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
 1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
 1. Select the **Manual Variables** tab.
 
-Variable values are masked by default. If you have at least the Developer role,
+Variable values are masked by default. If you have the Developer, Maintainer, or Owner role,
 you can select the eye icon to reveal values.
 
 #### Prefill variables in manual pipelines
@@ -190,13 +190,10 @@ In this example:
 - `DEPLOY_ENVIRONMENT` is pre-filled in the **New pipeline** page with `canary` as the default value,
   and the message explains the other options.
 
-{{< alert type="note" >}}
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/compliance/compliance_pipelines.md) can have prefilled variables not appear
-when running a pipeline manually. To workaround this issue,
-[change the compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#prefilled-variables-are-not-shown).
-
-{{< /alert >}}
+> [!note]
+> Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/compliance/compliance_pipelines.md) can have prefilled variables not appear
+> when running a pipeline manually. To workaround this issue,
+> [change the compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
 #### Configure a list of selectable prefilled variable values
 
@@ -289,21 +286,18 @@ When you skip a pipeline:
   The pipeline appears in the UI and can be returned in API responses.
 - The pipeline status is **Skipped** in the UI, and `skipped` in the API.
 
-{{< alert type="note" >}}
-
-Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
-For more information, see:
-
-- The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
-- The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
-
-{{< /alert >}}
+> [!note]
+> Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
+> For more information, see:
+>
+> - The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
+> - The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
 
 ### Delete a pipeline
 
 Users with the Owner role for a project can delete a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
@@ -312,13 +306,10 @@ Users with the Owner role for a project can delete a pipeline:
 Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
 
-{{< alert type="warning" >}}
-
-Deleting a pipeline expires all pipeline caches, and deletes all immediately
-related objects, such as jobs, logs, artifacts, and triggers.
-**This action cannot be undone**.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a pipeline expires all pipeline caches, and deletes all immediately
+> related objects, such as jobs, logs, artifacts, and triggers.
+> **This action cannot be undone**.
 
 ### Pipeline security on protected branches
 
@@ -374,7 +365,7 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
@@ -437,7 +428,7 @@ running time is:
 
 To view all the pipelines that ran for your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:

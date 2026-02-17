@@ -1,0 +1,5 @@
+---
+name: read_merge_request_closes_issue
+description: Grants the ability to read issues closed by merge requests
+boundaries:
+  - project

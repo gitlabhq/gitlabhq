@@ -426,24 +426,25 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:property) { 'project_action' }
     end
 
+    # rubocop:disable Layout/LineLength -- Makes it more readable
     context 'when user is human' do
-      it 'tracks project_action_human_users event' do
-        tracking_params = { event_names: 'project_action_human_users', **dates }
-
-        expect { subject }
-          .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
-          .by(1)
+      it 'tracks internal events' do
+        expect { subject }.to trigger_internal_events('perform_git_operation_on_project')
+                                .with(user: user, project: project)
+                                .and increment_usage_metrics('counts.count_distinct_user_id_from_perform_git_operation_on_project_monthly')
+                                .and increment_usage_metrics('counts.count_distinct_user_id_from_perform_git_operation_on_project_weekly')
       end
     end
+    # rubocop:enable Layout/LineLength
 
     context 'when user is a bot' do
       let(:user) { create(:user, :project_bot) }
 
-      it 'does not track project_action_human_users event' do
-        tracking_params = { event_names: 'project_action_human_users', **dates }
+      it 'does not track perform_git_operation_on_project event' do
+        expect(Gitlab::InternalEvents).not_to receive(:track_event)
+          .with('perform_git_operation_on_project', anything)
 
-        expect { subject }
-          .not_to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
+        subject
       end
 
       it 'still tracks the regular project_action event' do

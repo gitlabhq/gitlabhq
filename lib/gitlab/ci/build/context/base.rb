@@ -56,6 +56,7 @@ module Gitlab
           def pipeline_attributes
             {
               pipeline: pipeline,
+              partition_id: pipeline.partition_id,
               project: pipeline.project,
               user: pipeline.user,
               ref: pipeline.ref,

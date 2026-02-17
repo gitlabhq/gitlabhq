@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityFindingsProjectId,
   feature_category: :vulnerability_management,
-  schema: 20241014114621,
   migration: :gitlab_sec do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :security_findings }

@@ -437,7 +437,6 @@ export const packagesListQuery = ({ type = 'group', extend = {}, extendPaginatio
     [type]: {
       id: '1',
       packages: {
-        count: 2,
         nodes: [
           {
             ...packageData(),
@@ -462,6 +461,19 @@ export const packagesListQuery = ({ type = 'group', extend = {}, extendPaginatio
         __typename: 'PackageConnection',
       },
       ...extend,
+      __typename: capitalize(type),
+    },
+  },
+});
+
+export const packagesListCountQuery = ({ type = 'group', count = 2 } = {}) => ({
+  data: {
+    [type]: {
+      id: '1',
+      packages: {
+        count,
+        __typename: 'PackageConnection',
+      },
       __typename: capitalize(type),
     },
   },

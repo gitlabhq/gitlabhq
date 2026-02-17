@@ -2,21 +2,30 @@ import { GlButtonGroup, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   boardListQueryResponse,
   mockLabelList,
   updateBoardListResponse,
+  mockMilestoneQueryResponse,
+  mockMilestoneQueryList,
 } from 'jest/boards/mock_data';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
+import MilestonePopover from '~/issuable/popover/components/milestone_popover.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import { ListType } from '~/boards/constants';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import milestoneQuery from '~/issuable/popover/queries/milestone.query.graphql';
 
 Vue.use(VueApollo);
+jest.mock('@gitlab/ui/src/components/base/icon/icon.vue', () => ({
+  name: 'GlIcon',
+  props: ['name'],
+  template: '<span :data-icon="name"></span>',
+}));
 
 describe('Board List Header Component', () => {
   let wrapper;
@@ -43,40 +52,43 @@ describe('Board List Header Component', () => {
     listQueryHandler = jest.fn().mockResolvedValue(boardListQueryResponse()),
     updateListHandler = updateListHandlerSuccess,
     injectedProps = {},
+    mountFn = shallowMountExtended,
+    additionalApolloMocks = [],
+    list = null,
   } = {}) => {
     const boardId = 'gid://gitlab/Board/1';
 
-    const listMock = {
+    const listMock = list || {
       ...mockLabelList,
       listType,
       collapsed,
     };
 
-    if (listType === ListType.assignee) {
+    if (!list && listType === ListType.assignee) {
       delete listMock.label;
       listMock.assignee = {};
     }
 
-    if (withLocalStorage) {
+    if (withLocalStorage && listMock.listType && listMock.id) {
       localStorage.setItem(
         `boards.${boardId}.${listMock.listType}.${listMock.id}.collapsed`,
         collapsed.toString(),
       );
     }
 
-    fakeApollo = createMockApollo(
-      [
-        [listQuery, listQueryHandler],
-        [updateBoardListMutation, updateListHandler],
-      ],
-      {
-        Mutation: {
-          clientToggleListCollapsed: mockClientToggleListCollapsedResolver,
-        },
-      },
-    );
+    const apolloMocks = [
+      [listQuery, listQueryHandler],
+      [updateBoardListMutation, updateListHandler],
+      ...additionalApolloMocks,
+    ];
 
-    wrapper = shallowMountExtended(BoardListHeader, {
+    fakeApollo = createMockApollo(apolloMocks, {
+      Mutation: {
+        clientToggleListCollapsed: mockClientToggleListCollapsedResolver,
+      },
+    });
+
+    const mountOptions = {
       apolloProvider: fakeApollo,
       propsData: {
         list: listMock,
@@ -92,8 +104,11 @@ describe('Board List Header Component', () => {
       },
       stubs: {
         GlButtonGroup,
+        GlIcon: true,
+        MilestonePopover: true,
       },
-    });
+    };
+    wrapper = mountFn(BoardListHeader, mountOptions);
   };
 
   const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
@@ -103,6 +118,8 @@ describe('Board List Header Component', () => {
   const findNewIssueButton = () => wrapper.findByTestId('new-issue-btn');
   const findSettingsButton = () => wrapper.findByTestId('settings-btn');
   const findBoardListHeader = () => wrapper.findByTestId('board-list-header');
+  const findMilestoneTrigger = () => wrapper.findByTestId('milestone-trigger');
+  const findMilestonePopover = () => wrapper.findComponent(MilestonePopover);
 
   it('renders border when label color is present', () => {
     const expected = [
@@ -147,6 +164,64 @@ describe('Board List Header Component', () => {
       });
 
       expect(findButtonGroup().exists()).toBe(false);
+    });
+  });
+
+  describe('Milestone popover', () => {
+    const createMilestoneComponent = (props = {}) => {
+      const milestoneListMock = {
+        ...mockMilestoneQueryList,
+        ...props,
+      };
+
+      const milestoneQueryHandler = jest.fn().mockResolvedValue(mockMilestoneQueryResponse);
+
+      createComponent({
+        list: milestoneListMock,
+        listType: ListType.milestone,
+        mountFn: mountExtended,
+        additionalApolloMocks: [[milestoneQuery, milestoneQueryHandler]],
+      });
+    };
+
+    it('does not render MilestonePopover initially', () => {
+      createMilestoneComponent();
+      expect(findMilestonePopover().exists()).toBe(false);
+    });
+
+    it('renders MilestonePopover when hovering over milestone trigger', async () => {
+      createMilestoneComponent();
+
+      const milestoneTrigger = findMilestoneTrigger();
+      await milestoneTrigger.trigger('mouseenter');
+      await nextTick();
+      expect(findMilestonePopover().exists()).toBe(true);
+
+      expect(findMilestonePopover().exists()).toBe(true);
+      expect(findMilestonePopover().props('milestoneId')).toBe(mockMilestoneQueryList.milestone.id);
+      expect(findMilestonePopover().props('cachedTitle')).toBe(mockMilestoneQueryList.title);
+      expect(findMilestonePopover().props('placement')).toBe('bottom');
+    });
+
+    it('hides MilestonePopover when mouse leaves milestone trigger', async () => {
+      createMilestoneComponent();
+
+      const milestoneTrigger = findMilestoneTrigger();
+
+      // Show popover
+      await milestoneTrigger.trigger('mouseenter');
+      await nextTick();
+      expect(findMilestonePopover().exists()).toBe(true);
+
+      // Hide popover
+      await milestoneTrigger.trigger('mouseleave');
+      await nextTick();
+      expect(findMilestonePopover().exists()).toBe(false);
+    });
+
+    it('does not render for non-milestone lists', () => {
+      createComponent({ listType: ListType.label });
+      expect(findMilestonePopover().exists()).toBe(false);
     });
   });
 
@@ -254,29 +329,28 @@ describe('Board List Header Component', () => {
     });
   });
 
-  beforeEach(async () => {
-    createComponent({ listType: ListType.label });
-    await nextTick();
-  });
+  describe('collapse/expand mutations', () => {
+    it('does not call update list mutation when user is not logged in', async () => {
+      createComponent({ currentUserId: null });
 
-  it('does not call update list mutation when user is not logged in', async () => {
-    createComponent({ currentUserId: null });
+      findCaret().vm.$emit('click');
+      await nextTick();
 
-    findCaret().vm.$emit('click');
-    await nextTick();
+      expect(updateListHandlerSuccess).not.toHaveBeenCalled();
+    });
 
-    expect(updateListHandlerSuccess).not.toHaveBeenCalled();
-  });
+    it('calls update list mutation when user is logged in', async () => {
+      createComponent({ currentUserId: 1 });
 
-  it('calls update list mutation when user is logged in', async () => {
-    createComponent({ currentUserId: 1 });
+      findCaret().vm.$emit('click');
+      await nextTick();
 
-    findCaret().vm.$emit('click');
-    await nextTick();
-
-    expect(updateListHandlerSuccess).toHaveBeenCalledWith({
-      listId: mockLabelList.id,
-      collapsed: true,
+      expect(updateListHandlerSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({
+          listId: 'gid://gitlab/List/2',
+          collapsed: true,
+        }),
+      );
     });
   });
 

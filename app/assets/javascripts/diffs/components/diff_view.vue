@@ -239,9 +239,9 @@ export default {
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
         :user-can-reply="userCanReply"
-        @showCommentForm="(code) => singleLineComment(code, line)"
-        @setHighlightedRow="setHighlightedRow"
-        @toggleLineDiscussions="
+        @show-comment-form="(code) => singleLineComment(code, line)"
+        @set-highlighted-row="setHighlightedRow"
+        @toggle-line-discussions="
           ({ lineCode, expanded }) =>
             toggleLineDiscussions({ lineCode, fileHash: diffFile.file_hash, expanded })
         "

@@ -14,6 +14,10 @@ description: Configure labels to add to new projects.
 
 {{< /details >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To manage labels for the GitLab instance:
 
 1. In the upper-right corner, select **Admin**.

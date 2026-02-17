@@ -105,4 +105,18 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
       end
     end
   end
+
+  describe 'scopes' do
+    let_it_be(:namespace1) { create(:group) }
+
+    describe '.not_deletion_in_progress' do
+      before do
+        set_state(namespace1, :deletion_in_progress)
+      end
+
+      it 'does not include namespace marked as deleted' do
+        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
+      end
+    end
+  end
 end

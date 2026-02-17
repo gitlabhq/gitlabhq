@@ -3,45 +3,110 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Configure large language models for GitLab Duo features.
-title: GitLab Duo model selection
+title: GitLab Duo (Classic) AI models
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-Every GitLab Duo feature has a default large language model, chosen by GitLab.
+Every GitLab Duo (Classic) feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
 
-GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
+## Default models
 
-If you don't want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
+The following table lists the default model for each GitLab Duo feature.
 
-If you select a specific model for a feature, the feature uses that model until you select another.
+| Feature | Model |
+|---------|---------------|
+| **Code Suggestions** | |
+| Code Generation | Claude Sonnet 4 Vertex |
+| Code Completion | Codestral 25.01 Fireworks|
+| **GitLab Duo Chat** | |
+| General Chat | Claude Sonnet 4.5 Vertex |
+| Code Explanation | Claude Sonnet 4 |
+| Test Generation | Claude Sonnet 4.5 Vertex |
+| Refactor Code | Claude Sonnet 4.5 Vertex |
+| Fix Code | Claude Sonnet 4.5 Vertex |
+| Root Cause Analysis | Claude Sonnet 4 Vertex |
+| **GitLab Duo for merge requests** | |
+| Merge Commit Message Generation | Claude Sonnet 4 Vertex|
+| Merge Request Summary | Claude Sonnet 4 Vertex |
+| Code Review Summary | Claude Sonnet 4 Vertex |
+| Code Review | Claude Sonnet 4 Vertex |
+| **Other GitLab Duo features** | |
+| Vulnerability Explanation | Claude Sonnet 4.5 Vertex |
+| Vulnerability Resolution | Claude Sonnet 4.5 |
+| Discussion Summary | Claude Sonnet 4.5 Vertex |
+| GitLab Duo for CLI | Claude Haiku 4.5 |
+
+## Supported models
+
+The following tables list the models you can select for each feature.
+
+### Code Suggestions
+
+| Model | Code Generation | Code Completion |
+|------------|-----------------|-----------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
+| Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
+| Codestral 25.01 Vertex | {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Fireworks| {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Vertex| {{< no >}} | {{< yes >}} |
+| Gemini 2.5 Flash | {{< yes >}} | {{< no >}} |
+
+### GitLab Duo Chat (Classic)
+
+| Model | General Chat | Code Explanation | Test Generation | Refactor Code | Fix Code | Root Cause Analysis |
+|------------|--------------|------------------|-----------------|---------------|----------|---------------------|
+| Claude Haiku 4.5 | {{< yes >}} | {{< no >}} | | | {{< no >}} | |
+| Claude Sonnet 3 | {{< no >}} | | | {{< no >}} | | {{< yes >}} |
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
+
+### GitLab Duo for merge requests
+
+| Model | Merge Commit Message Generation | Merge Request Summary | Code Review Summary | Code Review |
+|------------|--------------------------------|------------------------|---------------------|-------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+
+### Other GitLab Duo features
+
+| Model | Vulnerability Explanation | Vulnerability Resolution | GitLab Duo for CLI | Discussion Summary |
+|------------|----------------------------|--------------------------|-------------------|---------------------|
+| Claude Haiku 3 | {{< yes >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
+| Claude Haiku 4.5 | {{< no >}} | | {{< yes >}} | {{< no >}} |
+| Claude Sonnet 4 |  | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} |  | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} |  |  | {{< yes >}} |
 
 ## Select a model for a feature
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) to beta in GitLab 18.4.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/568112) model selection for GitLab Duo Agent Platform in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) called `duo_agent_platform_model_selection`. Disabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/18818) in GitLab 18.5. Feature flag `ai_model_switching` enabled.
-- Feature flag `duo_agent_platform_model_selection` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212051) in GitLab 18.6.
 - Feature flag `ai_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.7.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature for GitLab Duo Agent Platform is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 You can select a model for a feature in a top-level group. The model that you select
 applies to that feature for all child groups and projects.
@@ -50,7 +115,7 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
@@ -59,27 +124,6 @@ To select a model for a feature:
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
-
-![The GitLab UI for selecting a model at the top-group level.](img/configure_model_selections_v18_1.png)
-
-{{< alert type="note" >}}
-
-- Model selection for GitLab Duo Chat (Agentic) is independent from GitLab Duo Chat (Classic). You must configure each feature separately — changes to one won't affect the other.
-
-- In the IDE, model selection for GitLab Duo Chat (Agentic) is applied only when the connection type is set to WebSocket.
-
-- The OpenAI models used in GitLab Duo Chat (Agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
-  Please leave your feedback about using OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
-
-{{< /alert >}}
-
-### Assign a default GitLab Duo namespace
-
-If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
-
-When GitLab Duo can't automatically detect the namespace you are working in, it uses the default namespace to determine what models to use.
-
-Learn how to [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Troubleshooting
 
@@ -90,15 +134,6 @@ When selecting models other than the default, you might encounter the following 
 If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model without notifying the user to maintain optimal performance and reliability.
 
 If you have selected a specific model for a GitLab Duo AI-native feature, and that model is not available, there is no automatic fallback. The feature that uses this model is unavailable.
-
-### Latency issues with code completion
-
-If you are assigned a seat in a project that has a specific model selected for [code completion](../project/repository/code_suggestions/_index.md#code-completion-and-generation):
-
-- Your IDE extension disables the [direct connection to the AI gateway](../../administration/gitlab_duo/gateway.md#region-support).
-- Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
-
-This might cause increased latency with code completion requests.
 
 ### No default GitLab Duo namespace
 

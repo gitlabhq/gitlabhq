@@ -16,15 +16,13 @@ title: File tree browser
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19530) in GitLab 18.0 [with a flag](../../../../administration/feature_flags/_index.md) named `repository_file_tree_browser`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/19530) in GitLab 18.9.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The file tree browser is a drawer that displays your repository's files and directories in
 a collapsible tree structure. Use it to navigate your repository without scrolling
@@ -40,7 +38,7 @@ The file tree browser helps you:
 
 To show or hide the file tree browser:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to your repository files at `/<project>/-/tree/<branch>`.
 1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
 

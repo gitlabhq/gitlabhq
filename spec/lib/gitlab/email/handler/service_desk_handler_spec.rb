@@ -34,57 +34,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
-    # Keep duplicate tests here for easy feature flag removal.
-    # This way we don't need to touch code that stays.
-    shared_examples 'a new issue request' do
-      before do
-        setup_attachment
-      end
-
-      it 'creates a new issue' do
-        expect { receiver.execute }.to change { Issue.count }.by(1)
-
-        new_issue = Issue.last
-
-        expect(new_issue.work_item_type.base_type).to eq('issue')
-        expect(new_issue.author).to eql(support_bot)
-        expect(new_issue.confidential?).to be confidential_ticket
-        expect(new_issue.all_references.all).to be_empty
-        expect(new_issue.title).to eq(expected_subject)
-        expect(new_issue.description).to eq(expected_description.strip)
-        expect(new_issue.email&.email_message_id).to eq(message_id)
-      end
-
-      it 'creates an issue_email_participant' do
-        receiver.execute
-        new_issue = Issue.last
-
-        expect(new_issue.issue_email_participants.count).to eq(issue_email_participants_count)
-        expect(new_issue.issue_email_participants.first.email).to eq(author_email)
-      end
-
-      it 'sends thank you email' do
-        expect(Notify).to receive(:service_desk_thank_you_email).once
-          .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
-
-        receiver.execute
-      end
-
-      it 'adds metric events for incoming and reply emails' do
-        metric_transaction = instance_double(Gitlab::Metrics::WebTransaction, increment: true, observe: true)
-        allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-        # Because IssueEmailParticipants::CreateService sends new_participant email
-        expect(metric_transaction).to receive(:add_event).with(:service_desk_new_participant_email)
-          .exactly(issue_email_participants_count - 1).times
-        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, {
-          handler: 'Gitlab::Email::Handler::ServiceDeskHandler'
-        })
-        expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
-
-        receiver.execute
-      end
-    end
-
     shared_examples 'a new ticket request' do
       before do
         setup_attachment
@@ -168,26 +117,10 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
 
           it_behaves_like 'a new ticket request'
-
-          context 'when service_desk_ticket feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
         end
       end
 
       it_behaves_like 'a new ticket request'
-
-      context 'when service_desk_ticket feature flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_ticket: false)
-        end
-
-        it_behaves_like 'a new issue request'
-      end
 
       it 'attaches existing CRM contacts' do
         contact = create(:contact, group: group, email: author_email)
@@ -209,14 +142,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         it_behaves_like 'a new ticket request'
         it_behaves_like 'tickets should not be confidential is set'
-
-        context 'when service_desk_ticket feature flag is disabled' do
-          before do
-            stub_feature_flags(service_desk_ticket: false)
-          end
-
-          it_behaves_like 'a new issue request'
-        end
       end
 
       context 'when group and project are public' do
@@ -227,14 +152,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         it_behaves_like 'a new ticket request'
 
-        context 'when service_desk_ticket feature flag is disabled' do
-          before do
-            stub_feature_flags(service_desk_ticket: false)
-          end
-
-          it_behaves_like 'a new issue request'
-        end
-
         context 'when tickets_confidential_by_default is false' do
           before do
             settings.update!(tickets_confidential_by_default: false)
@@ -242,14 +159,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
           # ticket stays confidential
           it_behaves_like 'a new ticket request'
-
-          context 'when service_desk_ticket feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
         end
       end
 
@@ -270,14 +179,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         let(:to_address) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
 
         it_behaves_like 'a new ticket request'
-
-        context 'when service_desk_ticket feature flag is disabled' do
-          before do
-            stub_feature_flags(service_desk_ticket: false)
-          end
-
-          it_behaves_like 'a new issue request'
-        end
 
         context 'when more than the defined limit of participants are in Cc header' do
           before do
@@ -311,14 +212,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           let(:issue_email_participants_count) { 6 }
 
           it_behaves_like 'a new ticket request'
-
-          context 'when service_desk_ticket feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
         end
 
         context 'when no CC header is present' do
@@ -376,14 +269,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         let(:email_raw) { fixture_file('emails/service_desk_legacy.eml') }
 
         it_behaves_like 'a new ticket request'
-
-        context 'when service_desk_ticket feature flag is disabled' do
-          before do
-            stub_feature_flags(service_desk_ticket: false)
-          end
-
-          it_behaves_like 'a new issue request'
-        end
       end
 
       context 'when replying to issue creation email' do
@@ -613,14 +498,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
           it_behaves_like 'a new ticket request'
 
-          context 'when service_desk_ticket feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
-
           context 'when there is no project with the key' do
             let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', key: 'some_key') }
 
@@ -661,14 +538,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
 
           it_behaves_like 'a new ticket request'
-
-          context 'when service_desk_ticket feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
         end
       end
 
@@ -911,14 +780,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
 
       it_behaves_like 'a new ticket request'
-
-      context 'when service_desk_ticket feature flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_ticket: false)
-        end
-
-        it_behaves_like 'a new issue request'
-      end
     end
 
     context 'when there is no from address' do
@@ -977,14 +838,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=fdskbsf@mail.gmail.com' }
 
       it_behaves_like 'a new ticket request'
-
-      context 'when service_desk_ticket feature flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_ticket: false)
-        end
-
-        it_behaves_like 'a new issue request'
-      end
     end
 
     context 'when the email is forwarded' do
@@ -1005,14 +858,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
 
       it_behaves_like 'a new ticket request'
-
-      context 'when service_desk_ticket feature flag is disabled' do
-        before do
-          stub_feature_flags(service_desk_ticket: false)
-        end
-
-        it_behaves_like 'a new issue request'
-      end
     end
   end
 

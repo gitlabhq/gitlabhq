@@ -229,7 +229,7 @@ module Gitlab
         end
 
         def should_lock_for_writes?
-          Feature.enabled?(:automatic_lock_writes_on_partition_tables, type: :ops) &&
+          Feature.enabled?(:automatic_lock_writes_on_table, type: :ops) &&
             Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES &&
             connection != model.connection
         end

@@ -1,5 +1,5 @@
 import { __, s__ } from '~/locale';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 export const COMPARE_OPTIONS_INPUT_NAME = 'straight';
 export const COMPARE_OPTIONS = [
@@ -20,6 +20,9 @@ export const I18N = {
   optionsLabel: s__('CompareRevisions|Show changes'),
   viewMr: s__('CompareRevisions|View open merge request'),
   openMr: s__('CompareRevisions|Create merge request'),
+  compareToCheckMr: s__(
+    'CompareRevisions|Select %{boldStart}Compare%{boldEnd} to check for an existing merge request',
+  ),
 };
 
-export const COMPARE_REVISIONS_DOCS_URL = `${DOCS_URL_IN_EE_DIR}/user/project/repository/compare_revisions/`;
+export const COMPARE_REVISIONS_DOCS_URL = `${DOCS_URL}/user/project/repository/compare_revisions/`;

@@ -123,20 +123,44 @@ This setting limits the request rate on deprecated API endpoints per user or IP 
 
 - **Default rate limit**: Disabled by default.
 
-### Import/Export
+### Import and export
 
-This setting limits the import/export actions for groups and projects.
+These settings limit file imports and exports for groups and projects.
 
 | Limit                   | Default (per minute per user) |
-|-------------------------|-------------------------------|
-| Project Import          | 6                             |
-| Project Export          | 6                             |
-| Project Export Download | 1                             |
-| Group Import            | 6                             |
-| Group Export            | 6                             |
-| Group Export Download   | 1                             |
+|:------------------------|:------------------------------|
+| Project import          | 6 import requests             |
+| Project export          | 6 export requests             |
+| Project export download | 1 download requests           |
+| Group import            | 6 import requests             |
+| Group export            | 6 export requests             |
+| Group export download   | 1 download requests           |
 
-Read more about [import/export rate limits](settings/import_export_rate_limits.md).
+These settings [can be configured](settings/import_export_rate_limits.md).
+
+#### Direct transfer migration
+
+{{< history >}}
+
+- Maximum number of migrations permitted limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
+- Configurable settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+- Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+
+{{< /history >}}
+
+The following limits apply on migration by direct transfer.
+
+| Limit                                                                      | Default     | Configurable |
+|:---------------------------------------------------------------------------|:------------|:-------------|
+| Number of migrations by a destination GitLab instance per minute per user. | 6           | {{< no >}}   |
+| Time to wait for decompressing an archive file.                            | 210 seconds | {{< no >}}   |
+| Length of an NDJSON row.                                                   | 50 MB       | {{< no >}}   |
+| Time until an empty export status on source instance is raised.            | 5 minutes   | {{< no >}}   |
+| Relation size that can be downloaded from the source instance.             | 5 GiB       | {{< yes >}}  |
+| Size of a decompressed archive.                                            | 10 GiB      | {{< yes >}}  |
+
+For more information on changing configurable limits, see
+[import and export settings](settings/import_and_export_settings.md).
 
 ### Member Invitations
 
@@ -147,16 +171,10 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ### Webhook rate limit
 
-{{< history >}}
+Limit the number of times each minute that webhooks in a top-level namespace can be called.
+All project and group webhooks in the namespace share this limit.
 
-- [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
-
-{{< /history >}}
-
-Limit the number of times a webhook can be called per minute, per top-level namespace.
-This only applies to project and group webhooks.
-
-Calls over the rate limit are logged into `auth.log`.
+Calls that exceed the rate limit are logged in `auth.log`.
 
 To set this limit for a GitLab Self-Managed instance, use the [Plan Limits API](../api/plan_limits.md)
 or run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -299,11 +317,8 @@ The default value is `4` for GitLab Self-Managed and GitLab.com.
 
 To change this limit on your GitLab Self-Managed instance, use the [Admin Area](settings/continuous_integration.md#pipeline-limit-per-git-push).
 
-{{< alert type="warning" >}}
-
-Increasing this limit is not recommended. It can cause excessive load on your GitLab instance if many changes are pushed simultaneously, potentially creating a flood of pipelines.
-
-{{< /alert >}}
+> [!warning]
+> Increasing this limit is not recommended. It can cause excessive load on your GitLab instance if many changes are pushed simultaneously, potentially creating a flood of pipelines.
 
 ## Retention of activity history
 
@@ -778,13 +793,10 @@ Set the limit to `0` to disable it.
 By default, a [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can contain up to 1000 downstream pipelines.
 When this limit is exceeded, pipeline creation fails with the error `downstream pipeline tree is too large`.
 
-{{< alert type="warning" >}}
-
-Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
-
-Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines. Consider using `needs` between jobs or dependent stages within a single pipeline.
-
-{{< /alert >}}
+> [!warning]
+> Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
+>
+> Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines. Consider using `needs` between jobs or dependent stages within a single pipeline.
 
 To modify this limit on your instance use the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits) or the [Plan Limits API](../api/plan_limits.md).
 
@@ -1040,8 +1052,11 @@ To set a limit on your instance, use the
 
 ### Number of parallel Pages deployments
 
-When using [parallel Pages deployments](../user/project/pages/_index.md#parallel-deployments), the total number
+When using [parallel Pages deployments](../user/project/pages/parallel_deployments.md), the total number
 of parallel Pages deployments permitted for a top-level namespace is 1000.
+
+When a project has a [unique domain](../user/project/pages/_index.md#unique-domains) enabled,
+the project's unique domain is treated as its own top-level namespace with a separate limit of 1000 deployments.
 
 ### Number of registered runners for each scope
 
@@ -1087,7 +1102,7 @@ Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
 GitLab Runner also has an
-[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
 that configures the maximum log size in a runner. Jobs that exceed the runner limit
 continue to run, but the log is truncated when it hits the limit.
 
@@ -1339,13 +1354,10 @@ read the GitLab development documentation about working with diffs.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 GitLab limits each merge request to 1000 [diff versions](../user/project/merge_requests/versions.md).
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -1544,6 +1556,22 @@ Issues and merge requests enforce these maximums:
 - Maximum assignees: 200
 - Maximum reviewers: 200
 
+## Maximum number of project push mirrors
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221965) in GitLab 18.9.
+
+{{< /history >}}
+
+Each project can have a maximum of 10 enabled push mirrors.
+This limit prevents performance issues from excessive concurrent sync jobs.
+
+If you require more mirrors, you can:
+
+- Disable unused mirrors.
+- Consolidate mirrors by combining multiple destinations into a single mirror.
+
 ## CDN-based limits on GitLab.com
 
 In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are not public because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
@@ -1612,8 +1640,8 @@ You can configure these limits for GitLab Self-Managed instances using the [depe
 The Commits and Files APIs enforce maximum size and rate limits on the following endpoints:
 
 - `POST /projects/:id/repository/commits` - [Create a commit](../api/commits.md#create-a-commit)
-- `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../api/repository_files.md#create-new-file-in-repository)
-- `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../api/repository_files.md#update-existing-file-in-repository)
+- `POST /projects/:id/repository/files/:file_path` - [Create a file in a repository](../api/repository_files.md#create-a-file-in-a-repository)
+- `PUT /projects/:id/repository/files/:file_path` - [Update a file in a repository](../api/repository_files.md#update-a-file-in-a-repository)
 
 - **Maximum request size**: Requests that exceed this limit receive
   a `413 Request Entity Too Large` error with the following message: `RequestBody: upload failed: the upload size <size> is over maximum of 314572800 bytes: entity is too large`. The default is 300 MB (314,572,800 bytes).

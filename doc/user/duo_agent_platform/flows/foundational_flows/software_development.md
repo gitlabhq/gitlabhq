@@ -8,7 +8,6 @@ title: Software Development Flow
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -22,18 +21,11 @@ title: Software Development Flow
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../../../policy/development_stages_support.md).
-- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382), `duo_workflow` [flag enabled](../../../../administration/feature_flags/_index.md), and status changed to beta in GitLab 18.2.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) as a private beta in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated and changed to beta in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `duo_workflow` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 The Software Development Flow helps you create AI-generated solutions for
 work across the software development lifecycle.
@@ -48,6 +40,32 @@ Formerly known as GitLab Duo Workflow, this flow:
 
 This flow is available in VS Code, Visual Studio, and JetBrains.
 
+## Flow and Chat comparison
+
+Both the Software Development Flow and GitLab Duo Chat are available in your IDE in different tabs.
+
+Use the Software Development Flow for complex development tasks.
+
+- The flow gathers comprehensive context, creates a detailed plan for you to review, and works through
+  tasks methodically.
+- The flow uses a structured approach that is ideal for longer, deeper sessions where you need a large context window
+  and produces better results for code generation that requires iteration.
+- Each flow has a beginning and end. When you start a new flow, it gathers context again and creates a
+  new plan based on the current state of your project.
+
+Use GitLab Duo Chat for conversational interactions where you guide the direction.
+
+- Chat can gather information to answer questions, provide suggestions, and autonomously perform
+  actions on your behalf in response to your prompts.
+- Chat maintains continuous conversations, so you can return to any ongoing discussion and
+  continue where you left off.
+
+While both can help with similar tasks, they work differently.
+The flow gathers comprehensive context upfront and runs with minimal human interaction.
+Chat operates as a constant feedback loop with you and gathers context as needed during conversation.
+For example, the flow considers different solutions before it proposes an approach, while Chat jumps
+to the first viable path to provide quick results.
+
 ## Use the Software Development Flow
 
 Prerequisites:
@@ -57,12 +75,21 @@ Prerequisites:
 
 To use the flow:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The flow is aware of all files available to Git in the project branch.
-   - You can provide additional [context](../../../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - You can provide additional [context](../../../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
    - The flow cannot access external sources or the web.
+   - For example:
+
+     ```plaintext
+     I have a large Ruby class that is used in a few places and I want to break it down.
+     Analyze this class and see what sub-methods or properties can be delegated to a
+     separate class. Then, propose a transition plan to implement this new sub-class
+     and update all of the required tests.
+     ```
+
 1. Select **Start**.
 
 After you describe your task, a plan is generated and executed.
@@ -108,16 +135,10 @@ On your GitLab Self-Managed instance, you can view these events on the
 
 ## Risks
 
-The Software Development Flow is a beta feature and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/). This tool uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
+The Software Development Flow uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
 
 The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your local workstation. Consider all documented risks before enabling this product. Key risks include:
 
 1. The Software Development Flow can access files in the project’s local file system, including files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such as credentials in `.env` files.
 1. The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows` scope, linked to your user identity. This token allows access to designated GitLab APIs for the duration of the workflow. By default, only read operations are performed without explicit approval, but write operations are possible based on your permissions.
 1. Do not provide the Software Development Flow with additional credentials or secrets (for example, in messages or goals), as these may be unintentionally used or exposed in code or API calls.
-
-## Give feedback
-
-The Software Development Flow is in beta and your feedback is crucial to improve it for you and others.
-To report issues or suggest improvements,
-[complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).

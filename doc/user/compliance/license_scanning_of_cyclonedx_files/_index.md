@@ -32,14 +32,11 @@ This method of scanning is capable of parsing and identifying over 600 different
 Third-party scanners may be used to generate the list of dependencies, as long as they produce a CycloneDX report artifact for [a supported language](#supported-languages-and-package-managers) and follow the GitLab CycloneDX property taxonomy.
 The ability to provide other licenses is tracked in [epic 10861](https://gitlab.com/groups/gitlab-org/-/epics/10861).
 
-{{< alert type="note" >}}
-
-The License Scanning feature relies on publicly available package metadata collected in an
-external database and synced with the GitLab instance automatically. This database is a multi-region Google Cloud Storage bucket hosted in the United States.
-The scan is executed exclusively within the GitLab instance.
-No contextual information (for example, a list of project dependencies) is sent to the external service.
-
-{{< /alert >}}
+> [!note]
+> The License Scanning feature relies on publicly available package metadata collected in an
+> external database and synced with the GitLab instance automatically. This database is a multi-region Google Cloud Storage bucket hosted in the United States.
+> The scan is executed exclusively within the GitLab instance.
+> No contextual information (for example, a list of project dependencies) is sent to the external service.
 
 ## Configuration
 

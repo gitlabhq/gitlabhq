@@ -87,11 +87,8 @@ Prerequisites:
     subgroups even if group creation is
     [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
 
-{{< alert type="note" >}}
-
-You cannot host a GitLab Pages subgroup website with a top-level domain name. For example, `subgroupname.example.io`.
-
-{{< /alert >}}
+> [!note]
+> You cannot host a GitLab Pages subgroup website with a top-level domain name. For example, `subgroupname.example.io`.
 
 To create a subgroup:
 

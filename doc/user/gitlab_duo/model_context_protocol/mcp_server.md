@@ -9,7 +9,6 @@ title: GitLab MCP server
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -146,12 +145,9 @@ To configure the GitLab MCP server in Cursor:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect Claude Code to the GitLab MCP server
 
@@ -183,12 +179,9 @@ To configure the GitLab MCP server in Claude Code:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect Claude Desktop to the GitLab MCP server
 
@@ -231,12 +224,9 @@ To configure the GitLab MCP server in Claude Desktop:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect Gemini Code Assist and Gemini CLI to the GitLab MCP server
 
@@ -268,12 +258,9 @@ To configure the GitLab MCP server in Gemini Code Assist or Gemini CLI:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect GitHub Copilot in VS Code to the GitLab MCP server
 
@@ -300,12 +287,9 @@ To configure the GitLab MCP server in GitHub Copilot in VS Code:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect Continue in VS Code to the GitLab MCP server
 
@@ -345,12 +329,9 @@ To configure the GitLab MCP server in Continue in VS Code:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect OpenAI Codex to the GitLab MCP server
 
@@ -387,12 +368,9 @@ To configure the GitLab MCP server in OpenAI Codex:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 ## Connect Zed to the GitLab MCP server
 
@@ -436,9 +414,6 @@ To configure the GitLab MCP server in Zed:
 
 You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
 
-{{< alert type="warning" >}}
-
-You're responsible for guarding against prompt injection when you use these tools.
-Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-{{< /alert >}}
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.

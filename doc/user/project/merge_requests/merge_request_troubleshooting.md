@@ -49,13 +49,10 @@ users with access to the [Rails console](../../../administration/operations/rail
 can rebase a merge request from the Rails console. Replace `<username>`,
 `<namespace/project>`, and `<iid>` with appropriate values:
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -78,13 +75,10 @@ users with access to the [Rails console](../../../administration/operations/rail
 can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
 and `<iid>` with appropriate values:
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -108,11 +102,8 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 If closing a merge request doesn't work through the UI or API, try closing it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -133,13 +124,10 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 If deleting a merge request doesn't work through the UI or API, try deleting it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -329,7 +317,7 @@ If you automate the creation of merge requests, or pushing to them, you might wa
 approvals for those merge requests. In GitLab Premium and Ultimate, by default, all approvals are removed
 [when commits are added to the source branch](approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
 To avoid this problem, add logic to your automation that ensures
-[commits are processed before approving](../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests) the merge request.
+[commits are processed before approving](../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests) the merge request.
 
 ## Merge request `merged manually`
 

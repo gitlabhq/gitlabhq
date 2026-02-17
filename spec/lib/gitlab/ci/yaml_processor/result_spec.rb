@@ -83,6 +83,98 @@ module Gitlab
           end
         end
 
+        describe '#uses_inputs?' do
+          subject { result.uses_inputs? }
+
+          context 'when inputs are defined in spec' do
+            let(:config_content) do
+              <<~YAML
+                spec:
+                  inputs:
+                    environment:
+                      default: 'production'
+                ---
+                job:
+                  script: echo $[[ inputs.environment ]]
+              YAML
+            end
+
+            it { is_expected.to be_truthy }
+          end
+
+          context 'when inputs are not defined' do
+            let(:config_content) do
+              <<~YAML
+                job:
+                  script: echo 'hello'
+              YAML
+            end
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when result is invalid' do
+            let(:result) { described_class.new(ci_config: nil, errors: ['some error']) }
+
+            it { is_expected.to be_falsey }
+          end
+        end
+
+        describe '#uses_input_rules?' do
+          subject { result.uses_input_rules? }
+
+          context 'when inputs with rules are defined in spec' do
+            let(:config_content) do
+              <<~YAML
+                spec:
+                  inputs:
+                    environment:
+                      rules:
+                        - if: '$CI_COMMIT_REF_NAME == "main"'
+                          default: 'production'
+                ---
+                job:
+                  script: echo $[[ inputs.environment ]]
+              YAML
+            end
+
+            it { is_expected.to be_truthy }
+          end
+
+          context 'when inputs are defined without rules' do
+            let(:config_content) do
+              <<~YAML
+                spec:
+                  inputs:
+                    environment:
+                      default: 'production'
+                ---
+                job:
+                  script: echo $[[ inputs.environment ]]
+              YAML
+            end
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when inputs are not defined' do
+            let(:config_content) do
+              <<~YAML
+                job:
+                  script: echo 'hello'
+              YAML
+            end
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when result is invalid' do
+            let(:result) { described_class.new(ci_config: nil, errors: ['some error']) }
+
+            it { is_expected.to be_falsey }
+          end
+        end
+
         describe '#uses_keyword?' do
           subject { result.uses_keyword?(keyword) }
 

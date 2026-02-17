@@ -5,7 +5,6 @@
     = render 'shared/project_creation_levels', f: f, method: :default_project_creation, legend: s_('ProjectCreationLevel|Default minimum role required to create projects')
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
     = render 'admin/application_settings/deletion_retention'
-    = render 'admin/application_settings/immediate_deletion', form: f
     .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)

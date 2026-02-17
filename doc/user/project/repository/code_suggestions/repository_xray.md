@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Repository X-Ray gives Code Suggestions more insight into your project's codebase and dependencies.
-title: Repository X-Ray
+description: Repository X-Ray gives Code Suggestions (Classic) more insight into your project's codebase and dependencies.
+title: Repository X-Ray with Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -23,7 +23,7 @@ title: Repository X-Ray
 
 Repository X-Ray automatically enriches:
 
-- Code generation requests for [GitLab Duo Code Suggestions](_index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
+- Code generation requests for [GitLab Duo Code Suggestions (Classic)](_index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
 - Requests to [refactor code](../../../gitlab_duo_chat/examples.md#refactor-code-in-the-ide), [fix code](../../../gitlab_duo_chat/examples.md#fix-code-in-the-ide), and [write tests](../../../gitlab_duo_chat/examples.md#write-tests-in-the-ide).
 
 To do this, Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies by:
@@ -36,11 +36,8 @@ By understanding the libraries and other dependencies in use, Repository X-Ray h
 tailor suggestions to match the coding patterns, styles, and technologies used in the project. This results
 in code suggestions that integrate more seamlessly and follow best practices for the given stack.
 
-{{< alert type="note" >}}
-
-Repository X-Ray only enhances code generation requests and not code completion requests.
-
-{{< /alert >}}
+> [!note]
+> Repository X-Ray only enhances code generation requests and not code completion requests.
 
 ## How Repository X-Ray works
 

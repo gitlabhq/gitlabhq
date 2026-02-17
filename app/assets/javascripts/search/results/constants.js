@@ -26,3 +26,4 @@ export const MAXIMUM_LINE_LENGTH = 3000;
 export const ELLIPSIS = '…';
 export const MAX_GAP = 800;
 export const HIGHLIGHT_CLASSES = ['hll', 'c', 'p', 'k'];
+export const ZOEKT_CONNECTION_ERROR_IDENTIFIER = 'ClientConnectionError';

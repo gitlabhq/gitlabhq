@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let_it_be(:project, refind: true) { create(:project, :repository, :in_group) }
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
@@ -18,7 +20,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   before_all do
-    create(:ci_pipeline_variable, pipeline: pipeline, key: 'PVAR1', value: 'PVAL1')
+    create_or_replace_pipeline_variables(pipeline, { key: 'PVAR1', value: 'PVAL1' })
   end
 
   it 'has one sourced pipeline' do
@@ -628,7 +630,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
 
         before do
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'PVAR1', value: 'PVAL1')
+          create_or_replace_pipeline_variables(pipeline, { key: 'PVAR1', value: 'PVAL1' })
         end
 
         it 'returns variables according to the forward value' do
@@ -643,7 +645,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         before do
           stub_ci_job_definition(bridge, yaml_variables: [{ key: 'SHARED_KEY', value: 'old_value' }])
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'SHARED_KEY', value: 'new value')
+          create_or_replace_pipeline_variables(pipeline, { key: 'SHARED_KEY', value: 'new value' })
         end
 
         it 'uses the pipeline variable' do
@@ -658,7 +660,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         before do
           stub_ci_job_definition(bridge, yaml_variables: [{ key: 'FILE_VAR', value: 'old_value' }])
-          create(:ci_pipeline_variable, :file, pipeline: pipeline, key: 'FILE_VAR', value: 'new value')
+          create_or_replace_pipeline_variables(pipeline, { key: 'FILE_VAR', value: 'new value', variable_type: 'file' })
         end
 
         # The current behaviour forwards the file variable as an environment variable.
@@ -677,7 +679,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           stub_ci_job_definition(bridge, yaml_variables: [{ key: 'YAML_VAR', value: '$PROJECT_FILE_VAR' }])
 
           create(:ci_variable, :file, project: pipeline.project, key: 'PROJECT_FILE_VAR', value: 'project file')
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'FILE_VAR', value: '$PROJECT_FILE_VAR')
+          create_or_replace_pipeline_variables(pipeline, { key: 'FILE_VAR', value: '$PROJECT_FILE_VAR' })
         end
 
         it 'does not expand the scoped file variable and forwards the file variable' do
@@ -788,9 +790,11 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
 
       before do
-        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR1', value: 'value1')
-        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR2', value: 'value2 $VAR1')
-        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR3', value: 'value3 $VAR1', raw: true)
+        create_or_replace_pipeline_variables(pipeline, [
+          { key: 'VAR1', value: 'value1' },
+          { key: 'VAR2', value: 'value2 $VAR1' },
+          { key: 'VAR3', value: 'value3 $VAR1', raw: true }
+        ])
 
         pipeline_schedule.variables.create!(key: 'VAR4', value: 'value4 $VAR1')
         pipeline_schedule.variables.create!(key: 'VAR5', value: 'value5 $VAR1', raw: true)

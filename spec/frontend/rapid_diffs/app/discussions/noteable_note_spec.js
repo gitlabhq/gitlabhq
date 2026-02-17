@@ -208,7 +208,7 @@ describe('NoteableNote', () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_OK, { note: updatedNote });
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
+      findNoteBody().props('saveNote')(noteText);
 
       expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: noteText });
 
@@ -222,7 +222,7 @@ describe('NoteableNote', () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_GONE);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
+      findNoteBody().props('saveNote')(noteText);
 
       await axios.waitForAll();
 
@@ -230,15 +230,14 @@ describe('NoteableNote', () => {
       expect(wrapper.emitted('noteUpdated')).toBeUndefined();
     });
 
-    it('creates alert on other API failure', async () => {
+    it('rethrows error on API failure', async () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
 
+      await expect(findNoteBody().props('saveNote')(noteText)).rejects.toThrow();
       await axios.waitForAll();
 
-      expect(createAlert).toHaveBeenCalled();
       expect(wrapper.emitted('noteUpdated')).toBeUndefined();
     });
   });
@@ -246,18 +245,18 @@ describe('NoteableNote', () => {
   describe('cancel editing via NoteBody', () => {
     it('emits cancelEditing when confirmation is not needed', async () => {
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancelEditing', { shouldConfirm: false, isDirty: false });
+      findNoteBody().vm.$emit('cancelEditing', false);
 
       await nextTick();
 
       expect(wrapper.emitted('cancelEditing')).toStrictEqual([[]]);
     });
 
-    it('shows confirmation modal when dirty and confirms, then emits cancelEditing', async () => {
+    it('shows confirmation modal when needed and confirms, then emits cancelEditing', async () => {
       confirmAction.mockResolvedValueOnce(true);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancelEditing', { shouldConfirm: true, isDirty: true });
+      findNoteBody().vm.$emit('cancelEditing', true);
 
       expect(confirmAction).toHaveBeenCalledWith(
         'Are you sure you want to cancel editing this comment?',
@@ -273,7 +272,7 @@ describe('NoteableNote', () => {
       confirmAction.mockResolvedValueOnce(false);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancelEditing', { shouldConfirm: true, isDirty: true });
+      findNoteBody().vm.$emit('cancelEditing', true);
 
       await waitForPromises();
 

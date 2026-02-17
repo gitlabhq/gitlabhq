@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feature_category: :system_access do
+RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access do
   let_it_be(:user) { create(:user, organizations: [current_organization]) }
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'custom://test') }
 
@@ -280,11 +280,11 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
       end
     end
 
-    describe 'MCP scope defaulting for dynamic applications' do
+    describe 'MCP scope forcing for dynamic applications' do
       context 'when dynamic application has only mcp scope and no scope provided' do
         let(:application) { create(:oauth_application, :dynamic, scopes: 'mcp', redirect_uri: 'http://example.com') }
 
-        it 'defaults scope to mcp', :aggregate_failures do
+        it 'forces scope to mcp', :aggregate_failures do
           get oauth_authorization_path, params: params.except(:scope).merge(
             code_challenge: 'valid_code_challenge',
             code_challenge_method: 'S256'
@@ -296,10 +296,35 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
 
+      context 'when dynamic application has only mcp scope and other scopes are requested' do
+        let(:application) { create(:oauth_application, :dynamic, scopes: 'mcp', redirect_uri: 'http://example.com') }
+        let(:all_scopes) do
+          %w[
+            api read_api read_user create_runner manage_runner k8s_proxy self_rotate mcp
+            read_repository write_repository read_virtual_registry write_virtual_registry
+            read_observability write_observability ai_features sudo admin_mode read_service_ping
+            openid profile email ai_workflows
+          ].join(' ')
+        end
+
+        it 'forces scope to mcp regardless of requested scopes', :aggregate_failures do
+          get oauth_authorization_path, params: params.merge(
+            scope: all_scopes,
+            code_challenge: 'valid_code_challenge',
+            code_challenge_method: 'S256'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp"')
+          expect(response.body).not_to include('value="api"', 'value="read_api"')
+        end
+      end
+
       context 'when non-dynamic application has multiple scopes and no scope provided' do
         let(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
 
-        it 'does not default to mcp scope', :aggregate_failures do
+        it 'does not force to mcp scope', :aggregate_failures do
           get oauth_authorization_path, params: params.except(:scope)
 
           expect(response).to have_gitlab_http_status(:ok)

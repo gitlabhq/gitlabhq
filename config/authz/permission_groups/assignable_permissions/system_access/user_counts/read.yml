@@ -1,0 +1,7 @@
+---
+name: read_user_counts
+description: Grants the ability to view user counts (assigned open issues, assigned MRs, etc.)
+boundaries:
+  - user
+permissions:
+  - read_user_counts

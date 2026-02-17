@@ -29,6 +29,34 @@ export const mockJobResponse = {
   },
 };
 
+export const mockManualJobResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      job: {
+        id: 'gid://gitlab/Ci::Build/13051',
+        manualVariables: {
+          nodes: [],
+          __typename: 'CiManualVariableConnection',
+        },
+        __typename: 'CiJob',
+        manualJob: true,
+        name: 'artifact_job',
+        detailedStatus: {
+          id: 'success-13051-13051',
+          icon: 'status_success',
+          text: 'Passed',
+          detailsPath: '/root/ci-project/-/jobs/13051',
+          __typename: 'DetailedStatus',
+        },
+        startedAt: '',
+        createdAt: '2025-04-21T16:19:15Z',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockJobWithVariablesResponse = {
   data: {
     project: {
@@ -133,6 +161,29 @@ export const mockPendingJobData = {
       button_title: 'Retry job',
       method: 'post',
       path: '/path',
+    },
+  },
+};
+
+export const mockJobInputsQueryHandler = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/4',
+      job: {
+        id: `gid://gitlab/Ci::Build/${mockId}`,
+        inputsSpec: [
+          {
+            name: 'environment',
+            type: 'STRING',
+            description: 'Target environment',
+            required: false,
+            default: 'staging',
+            options: ['staging', 'production'],
+            regex: null,
+          },
+        ],
+        inputs: [{ name: 'environment', value: 'staging' }],
+      },
     },
   },
 };

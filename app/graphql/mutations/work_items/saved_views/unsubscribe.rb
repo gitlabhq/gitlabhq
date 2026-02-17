@@ -8,12 +8,12 @@ module Mutations
 
         authorize :read_saved_view
 
-        description "Unsubscribes the current user to a saved view."
+        description "Unsubscribes the current user from a saved view."
 
         argument :id,
           ::Types::GlobalIDType[::WorkItems::SavedViews::SavedView],
           required: true,
-          description: 'Global ID of the saved view to unsubscribe to.'
+          description: 'Global ID of the saved view to unsubscribe from.'
 
         field :saved_view,
           ::Types::WorkItems::SavedViews::SavedViewType,
@@ -22,9 +22,15 @@ module Mutations
           description: 'Unsubscribed saved view.'
 
         def resolve(id:)
-          authorized_find!(id: id)
+          saved_view = authorized_find!(id: id)
 
-          { saved_view: nil }
+          unless saved_view.namespace.owner_entity.work_items_saved_views_enabled?(current_user)
+            return { saved_view: nil, errors: [_('Saved views are not enabled for this namespace.')] }
+          end
+
+          ::WorkItems::SavedViews::UserSavedView.unsubscribe(user: current_user, saved_view: saved_view)
+
+          { saved_view: saved_view }
         end
       end
     end

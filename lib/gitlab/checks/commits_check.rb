@@ -20,6 +20,12 @@ module Gitlab
       private
 
       def should_run_validations?
+        # skip_commits_check is set by rpc that can add new instance signed commis that are authored by a user other
+        # than the user triggering the rpc
+        # For example rebasing the branch of a fork when the upstream branch contains signed commits
+
+        return if gitaly_context&.fetch('skip_commits_check', false)
+
         # Enumerating commits can be expensive if there are large number
         # of commits, and we only care about performing this check if the
         # changes were made via the UI.

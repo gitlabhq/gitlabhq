@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
         end
 
         context "when the constant is defined" do
-          it "will use it find job instances to delete" do
+          it "uses it find job instances to delete" do
             my_constant = worker.name
             expect(Sidekiq::Queue)
               .to receive(:new)

@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 /**
  * Renders Stuck Runners block for job's view.
  */

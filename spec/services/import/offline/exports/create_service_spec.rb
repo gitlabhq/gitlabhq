@@ -8,7 +8,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
     let_it_be(:organization) { create(:organization) }
     let_it_be(:groups) { create_list(:group, 2, owners: current_user) }
     let_it_be(:projects) { create_list(:project, 2, maintainers: current_user) }
-    let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
+    let(:source_hostname) { 'http://localhost' }
     let(:portable_params) { (groups + projects).map { |portable| { full_path: portable.full_path } } }
     let(:storage_config) do
       {
@@ -24,7 +24,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
     end
 
     subject(:result) do
-      described_class.new(current_user, source_hostname, portable_params, storage_config, organization.id).execute
+      described_class.new(current_user, portable_params, storage_config, organization.id).execute
     end
 
     before do
@@ -178,12 +178,6 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
           expect { result }.to raise_error(NoMethodError)
         end
       end
-    end
-
-    context 'when the offline export fails validations' do
-      let(:source_hostname) { 'invalid-hostname' }
-
-      it_behaves_like 'an error response', error: 'must contain only scheme and host'
     end
 
     context 'when offline configuration fails validations' do

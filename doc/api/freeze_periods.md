@@ -20,7 +20,7 @@ Paginated list of freeze periods, sorted by `created_at` in ascending order.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/freeze_periods
@@ -33,7 +33,9 @@ GET /projects/:id/freeze_periods
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
 ```
 
 Example response:
@@ -51,13 +53,13 @@ Example response:
 ]
 ```
 
-## Get a freeze period
+## Retrieve a freeze period
 
-Get a freeze period for a specified `freeze_period_id`.
+Retrieves a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/freeze_periods/:freeze_period_id
@@ -71,7 +73,9 @@ GET /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```
 
 Example response:
@@ -89,11 +93,11 @@ Example response:
 
 ## Create a freeze period
 
-Create a freeze period.
+Creates a freeze period for a specified project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 POST /projects/:id/freeze_periods
@@ -109,9 +113,11 @@ POST /projects/:id/freeze_periods
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "freeze_start": "0 23 * * 5", "freeze_end": "0 7 * * 1", "cron_timezone": "UTC" }' \
-     --request POST "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
+curl --request POST \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{ "freeze_start": "0 23 * * 5", "freeze_end": "0 7 * * 1", "cron_timezone": "UTC" }' \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
 ```
 
 Example response:
@@ -129,11 +135,11 @@ Example response:
 
 ## Update a freeze period
 
-Update a freeze period for the given `freeze_period_id`.
+Updates a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 PUT /projects/:id/freeze_periods/:freeze_period_id
@@ -150,9 +156,11 @@ PUT /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "freeze_end": "0 8 * * 1" }' \
-     --request PUT "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
+curl --request PUT \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{ "freeze_end": "0 8 * * 1" }' \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```
 
 Example response:
@@ -170,11 +178,11 @@ Example response:
 
 ## Delete a freeze period
 
-Delete a freeze period for the given `freeze_period_id`.
+Deletes a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/freeze_periods/:freeze_period_id
@@ -188,6 +196,7 @@ DELETE /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
-
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```

@@ -13,12 +13,9 @@ title: Issue closing pattern
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For user documentation about issue closing patterns, see
-[Closing issues automatically](../user/project/issues/managing_issues.md#closing-issues-automatically).
-
-{{< /alert >}}
+> [!note]
+> For user documentation about issue closing patterns, see
+> [Closing issues automatically](../user/project/issues/managing_issues.md#closing-issues-automatically).
 
 When a commit or merge request resolves one or more issues, GitLab can close those issues when the
 commit or merge request lands in the project's default branch. The

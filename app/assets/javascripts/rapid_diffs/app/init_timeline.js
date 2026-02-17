@@ -8,6 +8,7 @@ export function initTimeline(appData) {
   // eslint-disable-next-line no-new
   new Vue({
     el: timelineContainer,
+    name: 'CommitTimelineRoot',
     pinia,
     provide: {
       userPermissions: appData.userPermissions,

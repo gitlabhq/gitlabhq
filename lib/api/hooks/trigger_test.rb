@@ -19,7 +19,7 @@ module API
           { code: 422, message: 'Unprocessable entity' },
           { code: 429, message: 'Too many requests' }
         ]
-        tags ['webhooks']
+        tags ['hooks']
       end
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the hook'
@@ -28,6 +28,7 @@ module API
           desc: 'The type of trigger hook',
           values: ProjectHook.triggers.values.map(&:to_s)
       end
+      route_setting :authorization, permissions: :test_webhook, boundary_type: configuration[:boundary_type]
       post ":hook_id/test/:trigger" do
         hook = find_hook
 

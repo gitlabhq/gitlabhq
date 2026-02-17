@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import { ALERT_EVENT } from '../constants';
-import { getMarkdownSource } from '../services/markdown_sourcemap';
+import { getMarkdownSource } from '../services/markdown_source';
 import { shouldRenderHTMLTable } from '../services/serializer/table';
 
 export default Table.extend({
@@ -23,7 +23,7 @@ export default Table.extend({
       if (node.type.name === 'table' && node.attrs.isMarkdown && shouldRenderHTMLTable(node)) {
         this.options.eventHub.$emit(ALERT_EVENT, {
           message: __(
-            'Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not supported in Markdown and will be converted to HTML.',
+            'Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML.',
           ),
           variant: VARIANT_WARNING,
         });

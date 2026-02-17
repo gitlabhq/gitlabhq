@@ -29,20 +29,44 @@ const wsWriteDeadline = 60 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
 
+type capability string
+
+const (
+	// Client capabilities
+	capabilityIncrementalStreaming capability = "incremental_streaming"
+	capabilityShellCommand         capability = "shell_command"
+
+	// Server capabilities
+	capabilityAdvancedSearch capability = "advanced_search"
+)
+
 // ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
 // capabilities that can be used by Duo Workflow Service without breaking
 // backwards compatibility. We intersect the capabilities of all parties and
 // then new behavior can only depend on that behavior if it makes it all the
-// way through. Whenever you add to this list you must also update the constant in
-// ee/app/assets/javascripts/ai/duo_agentic_chat/utils/workflow_socket_utils.js
-// and gitlab-lsp .
-var ClientCapabilities = []string{
-	"shell_command",
-	"incremental_streaming",
+// way through. Whenever you add to this list you must also update the gitlab-lsp and
+// either updates the constant in ee/app/assets/javascripts/ai/constants.js or
+// conditionally add to the capabilities in passed to buildStartRequest in
+// ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat.vue.
+var ClientCapabilities = []capability{
+	capabilityIncrementalStreaming,
+	capabilityShellCommand,
+}
+
+// ServerCapabilities defines the list of allowed server capabilities that
+// can be communicated to Duo Workflow Service. This whitelist ensures only
+// explicitly approved capabilities are sent.
+//
+// To add a new server capability:
+// 1. Add a constant above (e.g., capabilityNewFeature capability = "new_feature")
+// 2. Add it to this ServerCapabilities list
+// 3. Update get_server_capabilities in ee/lib/api/ai/duo_workflows/workflows.rb
+var ServerCapabilities = []capability{
+	capabilityAdvancedSearch,
 }
 
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
-var errUsageQuotaExceededError = errors.New("handleWebSocketMessages: usage quota exceeded")
+var errUsageQuotaExceededError = errors.New("handleAgentMessages: usage quota exceeded")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -70,27 +94,40 @@ type workflowStream interface {
 	CloseSend() error
 }
 
+type selfHostedWorkflowStream interface {
+	Send(*pb.TrackSelfHostedClientEvent) error
+	Recv() (*pb.TrackSelfHostedAction, error)
+	CloseSend() error
+}
+
 type runner struct {
-	rails       *api.API
-	backend     http.Handler
-	token       string
-	originalReq *http.Request
-	marshalBuf  []byte
-	conn        websocketConn
-	wf          workflowStream
-	client      *Client
-	sendMu      sync.Mutex
-	mcpManager  mcpManager
-	lockManager *workflowLockManager
-	workflowID  string
-	mutex       *redsync.Mutex
-	lockFlow    bool
+	rails              *api.API
+	backend            http.Handler
+	token              string
+	originalReq        *http.Request
+	marshalBuf         []byte
+	conn               websocketConn
+	wf                 workflowStream
+	client             *Client
+	sendMu             sync.Mutex
+	mcpManager         mcpManager
+	lockManager        *workflowLockManager
+	workflowID         string
+	mutex              *redsync.Mutex
+	lockFlow           bool
+	serverCapabilities []string
+	cloudServiceClient *Client
+	cloudServiceStream selfHostedWorkflowStream
 }
 
 func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
 	userAgent := r.Header.Get("User-Agent")
 
-	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure, userAgent)
+	if cfg.Service == nil {
+		return nil, fmt.Errorf("failed to initialize client: Service configuration is nil")
+	}
+
+	client, err := NewClient(cfg.Service, userAgent)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
 	}
@@ -113,18 +150,37 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 		lockFlow = false
 	}
 
+	var cloudServiceClient *Client
+	var cloudServiceStream selfHostedWorkflowStream
+
+	if cfg.CloudServiceForSelfHosted != nil && cfg.CloudServiceForSelfHosted.URI != "" {
+		cloudServiceClient, err = NewClient(cfg.CloudServiceForSelfHosted, userAgent)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize cloud service client: %v", err)
+		}
+
+		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(r.Context())
+		if err != nil {
+			_ = cloudServiceClient.Close()
+			return nil, fmt.Errorf("failed to initialize cloud service stream: %v", err)
+		}
+	}
+
 	return &runner{
-		rails:       rails,
-		backend:     backend,
-		token:       cfg.Headers["x-gitlab-oauth-token"],
-		originalReq: r,
-		marshalBuf:  make([]byte, ActionResponseBodyLimit),
-		conn:        conn,
-		wf:          wf,
-		client:      client,
-		mcpManager:  mcpManager,
-		lockManager: newWorkflowLockManager(rdb),
-		lockFlow:    lockFlow,
+		rails:              rails,
+		backend:            backend,
+		token:              cfg.Service.Headers["x-gitlab-oauth-token"],
+		originalReq:        r,
+		marshalBuf:         make([]byte, ActionResponseBodyLimit),
+		conn:               conn,
+		wf:                 wf,
+		client:             client,
+		mcpManager:         mcpManager,
+		lockManager:        newWorkflowLockManager(rdb),
+		lockFlow:           lockFlow,
+		serverCapabilities: cfg.ServerCapabilities,
+		cloudServiceClient: cloudServiceClient,
+		cloudServiceStream: cloudServiceStream,
 	}, nil
 }
 
@@ -176,13 +232,15 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 		if err != nil {
 			if err == io.EOF {
 				errCh <- nil // Expected error when a workflow ends
-			} else {
-				// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
-				if r.isUsageQuotaExceededError(err) {
-					err = errUsageQuotaExceededError
-				}
-				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
+				return
 			}
+
+			if r.isUsageQuotaExceededError(err) {
+				errCh <- errUsageQuotaExceededError
+				return
+			}
+
+			errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
 			return
 		}
 
@@ -197,7 +255,15 @@ func (r *runner) Close() error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 
-	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection(), r.mcpManager.Close())
+	var cloudServiceErrs error
+	if r.cloudServiceStream != nil {
+		cloudServiceErrs = errors.Join(r.cloudServiceStream.CloseSend())
+	}
+	if r.cloudServiceClient != nil {
+		cloudServiceErrs = errors.Join(cloudServiceErrs, r.cloudServiceClient.Close())
+	}
+
+	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection(), r.mcpManager.Close(), cloudServiceErrs)
 }
 
 func (r *runner) closeWebSocketConnection() error {
@@ -242,7 +308,10 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
-		startReq.ClientCapabilities = intersectClientCapabilities(startReq.ClientCapabilities)
+		startReq.ClientCapabilities = append(
+			intersectClientCapabilities(startReq.ClientCapabilities),
+			intersectServerCapabilities(r.serverCapabilities)...,
+		)
 		log.WithRequest(r.originalReq).WithFields(log.Fields{
 			"client_capabilities": startReq.ClientCapabilities,
 		}).Info("Sending startRequest")
@@ -266,14 +335,28 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	return nil
 }
 
-// Returns the intersection of what gitlab-lsp passed in and what workhorse
+// intersectClientCapabilities returns the intersection of what gitlab-lsp passed in and what workhorse
 // supports.
 func intersectClientCapabilities(fromClient []string) []string {
-	var result = []string{}
+	result := []string{}
 
 	for _, cap := range ClientCapabilities {
-		if slices.Contains(fromClient, cap) {
-			result = append(result, cap)
+		if slices.Contains(fromClient, string(cap)) {
+			result = append(result, string(cap))
+		}
+	}
+
+	return result
+}
+
+// intersectServerCapabilities returns the intersection of what is passed from server and what workhorse
+// supports.
+func intersectServerCapabilities(fromServer []string) []string {
+	result := []string{}
+
+	for _, cap := range ServerCapabilities {
+		if slices.Contains(fromServer, string(cap)) {
+			result = append(result, string(cap))
 		}
 	}
 
@@ -356,6 +439,54 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
 		}
+	case *pb.Action_TrackLlmCallForSelfHosted:
+		if r.cloudServiceStream == nil {
+			return fmt.Errorf("handleAgentAction: cloud service stream not initialized")
+		}
+
+		trackAction := action.GetTrackLlmCallForSelfHosted()
+
+		log.WithContextFields(ctx, log.Fields{
+			"request_id":  action.GetRequestID(),
+			"workflow_id": trackAction.WorkflowID,
+		}).Info("Sending TrackLlmCallForSelfHosted to cloud service")
+
+		clientEvent := &pb.TrackSelfHostedClientEvent{
+			RequestID:            action.GetRequestID(),
+			WorkflowID:           trackAction.WorkflowID,
+			FeatureQualifiedName: trackAction.FeatureQualifiedName,
+			FeatureAiCatalogItem: trackAction.FeatureAiCatalogItem,
+		}
+
+		if err := r.cloudServiceStream.Send(clientEvent); err != nil {
+			return fmt.Errorf("handleAgentAction: failed to send to cloud service: %v", err)
+		}
+
+		selfHostedAction, err := r.cloudServiceStream.Recv()
+		if err != nil {
+			return fmt.Errorf("handleAgentAction: failed to receive from cloud service: %v", err)
+		}
+
+		log.WithContextFields(ctx, log.Fields{
+			"request_id": selfHostedAction.GetRequestID(),
+		}).Info("Received acknowledgment from cloud service")
+
+		event := &pb.ClientEvent{
+			Response: &pb.ClientEvent_ActionResponse{
+				ActionResponse: &pb.ActionResponse{
+					RequestID: action.GetRequestID(),
+					ResponseType: &pb.ActionResponse_PlainTextResponse{
+						PlainTextResponse: &pb.PlainTextResponse{
+							Response: "authenticated",
+						},
+					},
+				},
+			},
+		}
+
+		if err := r.threadSafeSend(event); err != nil {
+			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
+		}
 	default:
 		return r.sendActionToWs(action)
 	}
@@ -433,10 +564,16 @@ func (r *runner) stopWorkflow(reason string, closeErr error) error {
 }
 
 // Shutdown gracefully stops the workflow runner during server shutdown.
-// It sends a stop workflow request to the agent platform and waits for acknowledgment.
+// It releases the distributed lock immediately to allow other instances to acquire it.
+// Then it waits for shutdown timeout to expire, sends a stop workflow request to the agent platform, and waits for
+// acknowledgment.
 // If the original request context is already canceled, it returns immediately.
 // Errors during shutdown are logged but not returned to allow other runners to proceed.
 func (r *runner) Shutdown(ctx context.Context) error {
+	if r.lockFlow {
+		r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+	}
+
 	select {
 	case <-r.originalReq.Context().Done():
 		return nil

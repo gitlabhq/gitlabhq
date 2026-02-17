@@ -1,0 +1,27 @@
+---
+name: create_package
+description: Grants the ability to create packages
+permissions:
+  - authorize_conan_package
+  - authorize_generic_package
+  - authorize_helm_chart
+  - authorize_npm_package
+  - authorize_nuget_package
+  - authorize_pypi_package
+  - authorize_ruby_gem
+  - authorize_terraform_module
+  - create_npm_package_tag
+  - publish_composer_package
+  - upload_conan_package
+  - upload_debian_package
+  - upload_generic_package
+  - upload_helm_chart
+  - upload_maven_package_file
+  - upload_npm_package
+  - upload_nuget_package
+  - upload_pypi_package
+  - upload_ruby_gem
+  - upload_terraform_module
+boundaries:
+  - group
+  - project

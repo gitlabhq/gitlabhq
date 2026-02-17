@@ -13,6 +13,7 @@ Migration/UpdateLargeTable:
   - :description_versions
   - :events
   - :issues
+  - :job_environments
   - :lfs_objects_projects
   - :merge_request_diff_commits
   - :merge_request_diff_files
@@ -30,6 +31,7 @@ Migration/UpdateLargeTable:
   - :project_daily_statistics_archived
   - :push_event_payloads
   - :resource_label_events
+  - :sbom_occurrence_refs
   - :sbom_occurrences
   - :security_findings
   - :security_scans
@@ -49,9 +51,10 @@ Migration/UpdateLargeTable:
   - :ci_pipeline_messages
   - :deployment_merge_requests
   - :import_source_user_placeholder_references
+  - :job_environments
+  - :lfs_objects
   - :lfs_objects_projects
   - :namespaces
-  - :oauth_access_token_archived_records
   - :packages_package_files
   - :personal_access_tokens
   - :project_authorizations_for_migration

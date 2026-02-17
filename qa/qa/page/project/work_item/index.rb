@@ -18,15 +18,20 @@ module QA
             element 'closed-issuables-tab', ':data-testid="`${tab.name}-issuables-tab`"' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/assets/javascripts/work_items/components/work_item_list_actions.vue' do
+          view 'app/assets/javascripts/work_items/list/components/work_item_list_actions.vue' do
             element 'export-as-csv-button'
             element 'import-from-jira-link'
             element 'work-items-list-more-actions-dropdown'
           end
 
-          view 'app/assets/javascripts/work_items/components/work_items_csv_export_modal.vue' do
+          view 'app/assets/javascripts/work_items/list/components/work_items_csv_export_modal.vue' do
             element 'export-work-items-button'
             element 'export-work-items-modal'
+          end
+
+          view 'app/assets/javascripts/work_items/components/' \
+            'work_items_onboarding_modal/work_items_onboarding_modal.vue' do
+            element 'work-items-onboarding-modal'
           end
 
           def avatar_counter
@@ -77,6 +82,16 @@ module QA
 
           def export_issues_modal
             find_element('export-work-items-modal')
+          end
+
+          def dismiss_onboarding_modal_if_present
+            return unless has_element?('work-items-onboarding-modal', wait: 0.5)
+
+            within_element('work-items-onboarding-modal') do
+              click_element('close-icon')
+            end
+
+            has_no_element?('work-items-onboarding-modal')
           end
 
           def go_to_jira_import_form

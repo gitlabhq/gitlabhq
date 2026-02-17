@@ -170,6 +170,9 @@ export default {
         title: this.item.title,
       });
     },
+    hasBadge() {
+      return Boolean(this.item.badge);
+    },
   },
   mounted() {
     if (this.item.is_active && !this.isFlyout) {
@@ -182,9 +185,15 @@ export default {
   },
   methods: {
     pinAdd() {
+      // Reset mouse state before emitting to prevent Safari bug where mouseleave
+      // doesn't fire when the element is removed from DOM
+      this.isMouseIn = false;
       this.$emit('pin-add', this.item.id, this.item.title);
     },
     pinRemove() {
+      // Reset mouse state before emitting to prevent Safari bug where mouseleave
+      // doesn't fire when the element is removed from DOM
+      this.isMouseIn = false;
       this.$emit('pin-remove', this.item.id, this.item.title);
     },
     togglePointerEvents() {
@@ -210,6 +219,7 @@ export default {
       data-testid="nav-item-link"
       :aria-label="item.title"
       @nav-link-click="$emit('nav-link-click')"
+      @nav-item-keydown-esc="$emit('nav-item-keydown-esc')"
     >
       <div
         v-if="!isFlyout"
@@ -249,6 +259,16 @@ export default {
         data-testid="nav-item-link-label"
       >
         {{ item.title }}
+        <gl-badge
+          v-if="hasBadge"
+          v-gl-tooltip="item.badge.tooltip"
+          variant="info"
+          size="sm"
+          data-testid="nav-item-feature-announcement-badge"
+          class="nav-item-feature-announcement-badge"
+        >
+          {{ item.badge.label }}
+        </gl-badge>
         <div v-if="item.subtitle" class="gl-truncate-end gl-text-sm gl-text-subtle">
           {{ item.subtitle }}
         </div>
@@ -265,6 +285,7 @@ export default {
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
+          data-testid="pill-badge"
         >
           {{ pillData }}
         </gl-badge>
@@ -282,6 +303,9 @@ export default {
         icon="thumbtack-solid"
         size="small"
         @click="pinRemove"
+        @keydown.enter.stop.prevent="pinRemove"
+        @keydown.space.stop.prevent="pinRemove"
+        @keydown.escape="$emit('nav-pin-keydown-esc')"
         @transitionend="togglePointerEvents"
       />
       <gl-button
@@ -295,6 +319,9 @@ export default {
         icon="thumbtack"
         size="small"
         @click="pinAdd"
+        @keydown.enter.stop.prevent="pinAdd"
+        @keydown.space.stop.prevent="pinAdd"
+        @keydown.escape="$emit('nav-pin-keydown-esc')"
         @transitionend="togglePointerEvents"
       />
     </template>

@@ -62,13 +62,10 @@ The following task runs a [group sync](../auth/ldap/ldap_synchronization.md#grou
 This is valuable when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
-{{< alert type="note" >}}
-
-If you'd like to change the frequency at which a group sync is performed,
-[adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-sync-schedule)
-instead.
-
-{{< /alert >}}
+> [!note]
+> If you'd like to change the frequency at which a group sync is performed,
+> [adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-sync-schedule)
+> instead.
 
 {{< tabs >}}
 
@@ -112,13 +109,10 @@ main:
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.
 
-{{< alert type="warning" >}}
-
-If you input an incorrect new provider, users cannot sign in. If this happens,
-run the task again with the incorrect provider as the `old_provider` and the
-correct provider as the `new_provider`.
-
-{{< /alert >}}
+> [!warning]
+> If you input an incorrect new provider, users cannot sign in. If this happens,
+> run the task again with the incorrect provider as the `old_provider` and the
+> correct provider as the `new_provider`.
 
 {{< tabs >}}
 

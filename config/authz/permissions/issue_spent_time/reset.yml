@@ -1,0 +1,5 @@
+---
+name: reset_issue_spent_time
+description: Grants the ability to reset spent time for issues
+boundaries:
+  - project

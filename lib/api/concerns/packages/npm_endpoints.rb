@@ -75,11 +75,12 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[npm_packages]
+              tags %w[packages]
             end
             route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
               authenticate_non_public: true
-            route_setting :authorization, job_token_policies: :read_packages,
+            route_setting :authorization, permissions: :read_npm_package_tag,
+              **authorization_boundary_options, job_token_policies: :read_packages,
               allow_public_access_for_enabled_project_features: :package_registry
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
@@ -112,10 +113,11 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[npm_packages]
+                tags %w[packages]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-              route_setting :authorization, job_token_policies: :admin_packages
+              route_setting :authorization, permissions: :create_npm_package_tag,
+                **authorization_boundary_options, job_token_policies: :admin_packages
               put format: false do
                 package_name = params[:package_name]
                 version = env['api.request.body']
@@ -150,10 +152,11 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[npm_packages]
+                tags %w[packages]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-              route_setting :authorization, job_token_policies: :admin_packages
+              route_setting :authorization, permissions: :delete_npm_package_tag,
+                **authorization_boundary_options, job_token_policies: :admin_packages
               delete format: false do
                 package_name = params[:package_name]
                 tag = params[:tag]
@@ -192,11 +195,15 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+          # Granular token authorization is skipped because:
+          # 1. Audit endpoints primarily redirect to npmjs.org (no GitLab authorization needed)
+          # 2. When forwarding is disabled, authorize_read_package!(project) provides authorization
           route_setting :authorization, job_token_policies: :read_packages,
-            allow_public_access_for_enabled_project_features: :package_registry
+            allow_public_access_for_enabled_project_features: :package_registry,
+            skip_granular_token_authorization: true
           post '-/npm/v1/security/advisories/bulk' do
             redirect_or_present_audit_report
           end
@@ -213,11 +220,15 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+          # Granular token authorization is skipped because:
+          # 1. Audit endpoints primarily redirect to npmjs.org (no GitLab authorization needed)
+          # 2. When forwarding is disabled, authorize_read_package!(project) provides authorization
           route_setting :authorization, job_token_policies: :read_packages,
-            allow_public_access_for_enabled_project_features: :package_registry
+            allow_public_access_for_enabled_project_features: :package_registry,
+            skip_granular_token_authorization: true
           post '-/npm/v1/security/audits/quick' do
             redirect_or_present_audit_report
           end

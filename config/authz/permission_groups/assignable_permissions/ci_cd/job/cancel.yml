@@ -1,7 +1,0 @@
----
-name: cancel_job
-description: Grants the ability to cancel jobs
-permissions:
-  - cancel_job
-boundaries:
-  - project

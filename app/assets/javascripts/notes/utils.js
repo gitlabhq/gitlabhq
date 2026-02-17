@@ -23,6 +23,22 @@ export const renderMarkdown = (rawMarkdown) => {
   return sanitize(marked(rawMarkdown), markdownConfig);
 };
 
+export const getNoteFormErrorMessages = (response, messages) => {
+  const { error: errorMessage, defaultError: defaultErrorMessage } = messages || COMMENT_FORM;
+  if (response && response.status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
+    if (response.data?.quick_actions_status?.error_messages?.length) {
+      return response.data?.quick_actions_status.error_messages;
+    }
+
+    const errors = response.data?.errors;
+    if (errorMessage && errors) {
+      return [sprintf(errorMessage, { reason: errors.toLowerCase() }, false)];
+    }
+  }
+
+  return [defaultErrorMessage || COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK];
+};
+
 export const createNoteErrorMessages = (data, status) => {
   const errors = data?.errors;
 

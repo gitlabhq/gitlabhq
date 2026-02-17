@@ -42,6 +42,14 @@ User limits do not apply to users in the Free tier of:
 
 For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 
+## Top-level group limits
+
+Accounts created after January 27, 2026 on the Free tier are limited to three top-level groups (group namespaces).
+Your [personal namespace](namespace/_index.md#types-of-namespaces) does not count toward this limit.
+This limit also applies to accounts that are on an Ultimate trial.
+
+To create more groups, upgrade to a paid tier.
+
 ## Determine namespace user counts
 
 Every unique user of a top-level namespace with private visibility counts towards
@@ -148,7 +156,7 @@ do not limit users and have more features to increase team productivity. For mor
 information, see [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/manage_subscription.md#upgrade-subscription-tier).
 
 To try the paid tiers before deciding to upgrade, start a
-[free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html)
+[free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/user/free_user_limit/)
 for GitLab Ultimate.
 
 ## Manage members in personal projects outside a group namespace
@@ -163,4 +171,4 @@ so that you can:
 - Increase the amount of users to more than five.
 - Purchase a paid tier subscription, additional compute minutes, or storage.
 - Use [GitLab features](https://about.gitlab.com/pricing/feature-comparison/) in the group.
-- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html) for GitLab Ultimate.
+- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/user/free_user_limit/) for GitLab Ultimate.

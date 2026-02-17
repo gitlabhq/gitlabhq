@@ -64,8 +64,5 @@ If the patch does not apply cleanly, determine whether the patch is still needed
 - If so, [create](#patching-a-dependency) a new patch from scratch.
 - If not, delete the patch file, and commit.
 
-{{< alert type="warning" >}}
-
-Do not delete patches or parts of patches without confirming that they are no longer needed. If in doubt, ask the person who introduced the patch.
-
-{{< /alert >}}
+> [!warning]
+> Do not delete patches or parts of patches without confirming that they are no longer needed. If in doubt, ask the person who introduced the patch.

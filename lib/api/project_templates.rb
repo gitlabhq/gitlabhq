@@ -31,6 +31,7 @@ module API
         detail 'This endpoint was introduced in GitLab 11.4'
         is_array true
         success Entities::TemplatesList
+        tags ['project_templates']
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
@@ -51,6 +52,7 @@ module API
       desc 'Download a template available to this project' do
         detail 'This endpoint was introduced in GitLab 11.4'
         success Entities::License
+        tags ['project_templates']
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }

@@ -73,7 +73,7 @@ module Integrations
           return :error unless response.code == 200
 
           begin
-            status = Gitlab::Json.parse(response.body).try(:fetch, 'status', nil)
+            status = Gitlab::Json.safe_parse(response.body).try(:fetch, 'status', nil)
             return status if ALLOWED_STATES.include?(status)
           rescue JSON::ParserError
           end

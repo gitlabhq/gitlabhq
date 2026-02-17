@@ -12,15 +12,12 @@ title: Epics API (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+> and is planned for removal in v5 of the API.
+> From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
+> Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
+> This change is a breaking change.
 
 Every API call to epic must be authenticated.
 
@@ -49,19 +46,16 @@ fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `star
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
 - `due_date_from_milestones` has been deprecated in favor of `due_date_from_inherited_source`
 
-## List epics for a group
+## List all group epics
 
-Gets all epics of the requested group and its subgroups.
+Lists all epics for a specified group and its subgroups.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
-{{< alert type="note" >}}
-
-`references.relative` is relative to the group that the epic is being requested from. When an epic
-is fetched from its origin group, the `relative` format is the same as the `short` format.
-When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
-
-{{< /alert >}}
+> [!note]
+> `references.relative` is relative to the group that the epic is being requested from. When an epic
+> is fetched from its origin group, the `relative` format is the same as the `short` format.
+> When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
 
 ```plaintext
 GET /groups/:id/epics
@@ -206,9 +200,9 @@ Example response:
 ]
 ```
 
-## Single epic
+## Retrieve an epic
 
-Gets a single epic
+Retrieves a specified epic for a group.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid
@@ -283,17 +277,14 @@ Example response:
 }
 ```
 
-## New epic
+## Create an epic
 
-Creates a new epic.
+Creates an epic for a specified group.
 
-{{< alert type="note" >}}
-
-Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
-directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
-`*_fixed` fields instead.
-
-{{< /alert >}}
+> [!note]
+> Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
+> directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
+> `*_fixed` fields instead.
 
 ```plaintext
 POST /groups/:id/epics
@@ -378,9 +369,9 @@ Example response:
 }
 ```
 
-## Update epic
+## Update an epic
 
-Updates an epic.
+Updates a specified epic for a group.
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid
@@ -463,7 +454,7 @@ Example response:
 }
 ```
 
-## Delete epic
+## Delete an epic
 
 {{< history >}}
 
@@ -471,7 +462,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes an epic
+Deletes a specified epic from a group.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid
@@ -488,11 +479,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-## Create a to-do item
+## Create a to-do item for an epic
 
-Manually creates a to-do item for the current user on an epic. If
-there already exists a to-do item for the user on that epic, status code `304` is
-returned.
+Creates a to-do item for the current user on a specified epic. If a to-do item already exists for the user on that epic, status code 304 is returned.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/todo

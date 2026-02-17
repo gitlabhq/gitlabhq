@@ -24,12 +24,14 @@ export default () => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'MergeRequestReportsAppRoot',
     router,
     apolloProvider,
     provide: {
       projectPath,
       iid,
       hasPolicies: parseBoolean(hasPolicies),
+      dismissalDescriptions: JSON.parse(window.gl?.mrWidgetData?.dismissal_descriptions || '{}'),
     },
     render(createElement) {
       return createElement(MergeRequestReportsApp);

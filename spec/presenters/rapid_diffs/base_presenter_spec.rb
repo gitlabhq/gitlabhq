@@ -7,7 +7,10 @@ RSpec.describe RapidDiffs::BasePresenter, feature_category: :source_code_managem
   let(:diff_options) { {} }
   let(:environment) { nil }
 
-  subject(:presenter) { described_class.new(Class.new, diff_view, diff_options, nil, environment) }
+  subject(:presenter) do
+    described_class.new(Class.new, diff_view: diff_view, diff_options: diff_options, request_params: nil,
+      environment: environment)
+  end
 
   describe '#environment' do
     subject(:method) { presenter.environment }

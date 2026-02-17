@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: REST API to retrieve GitLab audit events for instances, groups, and projects.
 title: Audit events API
 ---
 
@@ -31,7 +32,7 @@ Use this API to retrieve [instance audit events](../administration/compliance/au
 
 To retrieve audit events using the API, you must [authenticate yourself](rest/authentication.md) as an Administrator.
 
-### Retrieve all instance audit events
+### List all instance audit events
 
 {{< history >}}
 
@@ -40,7 +41,7 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/au
 
 {{< /history >}}
 
-Retrieve all available instance audit events, limited to a maximum of 30 days for each query.
+Lists all available instance audit events, limited to a maximum of 30 days for each query.
 
 ```plaintext
 GET /audit_events
@@ -53,13 +54,10 @@ GET /audit_events
 | `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, `Project`, or `Gitlab::Audit::InstanceScope`. |
 | `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present.                    |
 
-{{< alert type="warning" >}}
-
-Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
-and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+> and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+> This change is a breaking change.
 
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. You should use keyset-based
 pagination when requesting consecutive pages of results.
@@ -156,7 +154,9 @@ Example response:
 ]
 ```
 
-### Retrieve single instance audit event
+### Retrieve an instance audit event
+
+Retrieves a specified instance audit event.
 
 ```plaintext
 GET /audit_events/:id
@@ -209,24 +209,23 @@ A user with:
 - The Owner role can retrieve group audit events of all users.
 - The Developer or Maintainer role is limited to group audit events based on their individual actions.
 
-{{< alert type="warning" >}}
-
-Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
-and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+> and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+> This change is a breaking change.
 
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. Keyset-based
 pagination is recommended when requesting consecutive pages of results.
 
-### Retrieve all group audit events
+### List all group audit events
 
 {{< history >}}
 
 - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 {{< /history >}}
+
+Lists all audit events for a specified group.
 
 ```plaintext
 GET /groups/:id/audit_events
@@ -290,9 +289,9 @@ Example response:
 ]
 ```
 
-### Retrieve a specific group audit event
+### Retrieve a group audit event
 
-Only available to group owners and administrators.
+Retrieves an audit event for a specified group. Only available to group owners and administrators.
 
 ```plaintext
 GET /groups/:id/audit_events/:audit_event_id
@@ -338,13 +337,15 @@ Use this API to retrieve [project audit events](../user/compliance/audit_events.
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
 
-### Retrieve all project audit events
+### List all project audit events
 
 {{< history >}}
 
 - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 {{< /history >}}
+
+Lists all audit events for a specified project.
 
 ```plaintext
 GET /projects/:id/audit_events
@@ -356,13 +357,10 @@ GET /projects/:id/audit_events
 | `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
-{{< alert type="warning" >}}
-
-Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
-and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+> and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+> This change is a breaking change.
 
 By default, `GET` requests return 20 results at a time because the API results are paginated.
 When requesting consecutive pages of results, you should use [keyset pagination](rest/_index.md#keyset-based-pagination).
@@ -420,9 +418,9 @@ Example response:
 ]
 ```
 
-### Retrieve a specific project audit event
+### Retrieve a project audit event
 
-Only available to users with at least the Maintainer role for the project.
+Retrieves an audit event for a specified project. Only available to users with the Maintainer or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id

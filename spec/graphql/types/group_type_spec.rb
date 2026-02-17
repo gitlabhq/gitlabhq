@@ -476,7 +476,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, developers: user) }
     let_it_be(:group_being_deleted) do
-      create(:group, deleted_at: Time.now, developers: user)
+      create(:group, state: Namespaces::Stateful::STATES[:deletion_in_progress], developers: user)
     end
 
     let(:group_full_path) { group_being_deleted.full_path }

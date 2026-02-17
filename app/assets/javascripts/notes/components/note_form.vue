@@ -191,7 +191,7 @@ export default {
     markdownPreviewPath() {
       const notable = this.getNoteableData.preview_note_path;
 
-      const previewSuggestions = this.line && this.diffParams;
+      const previewSuggestions = Boolean(this.line && this.diffParams);
       const params = previewSuggestions
         ? {
             preview_suggestions: previewSuggestions,
@@ -462,8 +462,6 @@ export default {
             </gl-button>
             <gl-button
               :disabled="isDisabled"
-              category="secondary"
-              variant="confirm"
               data-testid="comment-now-button"
               class="js-comment-button gl-mb-3 @sm/panel:gl-mr-3"
               @click="handleUpdate()"

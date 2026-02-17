@@ -23,8 +23,11 @@ module API
     before do
       authenticate!
 
-      check_rate_limit!(:search_rate_limit, scope: [current_user],
-        users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
+      check_rate_limit!(
+        :search_rate_limit,
+        scope: [current_user],
+        users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
+      )
     end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
@@ -54,15 +57,8 @@ module API
         end
       end
 
-      # temporary method to allow using a feature flag
-      def search_params_keys
-        Helpers::SearchHelpers.search_param_keys.tap do |keys|
-          keys << :include_archived if ::Feature.enabled?(:search_api_fork_archived_filters, current_user)
-        end
-      end
-
       def search_params
-        keys = search_params_keys
+        keys = Helpers::SearchHelpers.search_param_keys
         params_hash = keys.filter_map do |key|
           [key, params[key]] if params.key?(key)
         end.to_h
@@ -87,8 +83,8 @@ module API
         end
 
         search_results = search_service.search_results
-        if search_results.respond_to?(:failed?) && search_results.failed?(search_scope)
-          bad_request!(search_results.error(search_scope))
+        if search_results.respond_to?(:failed?) && search_results.failed?(search_service.scope)
+          bad_request!(search_results.error(search_service.scope))
         end
 
         set_global_search_log_information(additional_params)
@@ -97,7 +93,7 @@ module API
           elapsed: @search_duration_s,
           search_type: search_type(additional_params),
           search_level: search_service.level,
-          search_scope: search_scope
+          search_scope: search_service.scope
         )
 
         Gitlab::InternalEvents.track_event('perform_search', category: 'API::Search', user: current_user)
@@ -108,11 +104,14 @@ module API
       ensure
         # If we raise an error somewhere in the @search_duration_s benchmark block, we will end up here
         # with a 200 status code, but an empty @search_duration_s.
+        # Errors record the user requested scope, otherwise the scope executed is recorded
+
+        search_service = search_service(additional_params)
         Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
           error: @search_duration_s.nil? || (status < 200 || status >= 400),
           search_type: search_type(additional_params),
-          search_level: search_service(additional_params).level,
-          search_scope: search_scope
+          search_level: search_service.level,
+          search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
         )
       end
 
@@ -132,15 +131,19 @@ module API
         scope_preload_method[params[:scope].to_sym]
       end
 
-      def verify_search_scope!(_ = {})
-        # no-op
-      end
+      def verify_search_scope_for_ee!(_); end
+
+      def verify_ee_param_regex!(_); end
+
+      def verify_ee_param_exclude_forks!(_); end
+
+      def verify_ee_param_fields!(_); end
 
       def search_type(additional_params = {})
-        search_service(additional_params).search_type
+        @search_type ||= search_service(additional_params).search_type
       end
 
-      def search_scope
+      def user_requested_search_scope
         params[:scope]
       end
 
@@ -148,7 +151,7 @@ module API
         Gitlab::Instrumentation::GlobalSearchApi.set_information(
           type: search_type(additional_params),
           level: search_service(additional_params).level,
-          scope: search_scope,
+          scope: search_service.scope,
           search_duration_s: @search_duration_s
         )
       end
@@ -174,14 +177,18 @@ module API
 
       params :search_params_archived_filter do
         optional :include_archived, type: Boolean, default: false,
-          desc: 'Includes archived projects in the search. Gated by the :search_api_fork_archived_filters feature flag'
+          desc: 'Includes archived projects in the search. Introduced in GitLab 18.9.'
       end
 
-      params :search_params_common_ee do
+      params :ee_param_fields do
         # Overridden in EE
       end
 
-      params :search_params_forks_filter_ee do
+      params :ee_param_exclude_forks do
+        # Overridden in EE
+      end
+
+      params :ee_param_regex do
         # Overridden in EE
       end
     end
@@ -203,14 +210,19 @@ module API
 
         use :search_params_common
         use :search_params_archived_filter
-        use :search_params_common_ee
-        use :search_params_forks_filter_ee
+        use :ee_param_fields
+        use :ee_param_exclude_forks
+        use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :user
       route_setting :mcp, tool_name: :gitlab_search_in_instance,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get do
-        verify_search_scope!
+        verify_search_scope_for_ee!(search_type)
+        verify_ee_param_regex!(search_type)
+        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_param_fields!(search_type)
 
         set_headers('Content-Transfer-Encoding' => 'binary')
 
@@ -221,7 +233,7 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Search on GitLab within a group' do
         detail 'This feature was introduced in GitLab 10.5.'
-        tags %w[search groups]
+        tags %w[search]
       end
 
       params do
@@ -232,17 +244,25 @@ module API
 
         use :search_params_common
         use :search_params_archived_filter
-        use :search_params_common_ee
-        use :search_params_forks_filter_ee
+        use :ee_param_fields
+        use :ee_param_exclude_forks
+        use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :group
       route_setting :mcp, tool_name: :gitlab_search_in_group,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do
-        verify_search_scope!(group_id: user_group.id)
+        additional_params = { group_id: user_group.id }
+        search_type = search_type(additional_params)
+        verify_search_scope_for_ee!(search_type)
+        verify_ee_param_regex!(search_type)
+        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_param_fields!(search_type)
+
         set_headers
 
-        present search(group_id: user_group.id), with: entity, current_user: current_user
+        present search(additional_params), with: entity, current_user: current_user
       end
     end
 
@@ -262,16 +282,23 @@ module API
           desc: 'The name of a repository branch or tag. If not given, the default branch is used'
 
         use :search_params_common
-        use :search_params_common_ee
+        use :ee_param_fields
+        use :ee_param_regex
         use :pagination
       end
+      route_setting :authorization, permissions: :use_global_search, boundary_type: :project
       route_setting :mcp, tool_name: :gitlab_search_in_project,
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do
+        additional_params = { project_id: user_project.id, repository_ref: params[:ref] }
+        search_type = search_type(additional_params)
+        verify_ee_param_regex!(search_type)
+        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_param_fields!(search_type)
+
         set_headers
 
-        present search({ project_id: user_project.id, repository_ref: params[:ref] }), with: entity,
-          current_user: current_user
+        present search(additional_params), with: entity, current_user: current_user
       end
     end
   end

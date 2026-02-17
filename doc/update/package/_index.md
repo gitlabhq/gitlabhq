@@ -21,12 +21,9 @@ GitLab instance. To upgrade a multi-node Linux package GitLab instance, see:
 
 To upgrade a single-node Linux package GitLab instance, follow the information on this page.
 
-{{< alert type="note" >}}
-
-If you host the product documentation, you can also
-[upgrade it to a later version](../../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version).
-
-{{< /alert >}}
+> [!note]
+> If you host the product documentation, you can also
+> [upgrade it to a later version](../../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version).
 
 ## Prerequisites
 

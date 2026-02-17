@@ -44,7 +44,7 @@ module API
 
       desc "Get all pages domains" do
         success Entities::PagesDomainBasic
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         optional :domain, type: String, desc: 'The domain of the GitLab Pages site to filter on.'
@@ -71,7 +71,7 @@ module API
 
       desc 'Get all pages domains' do
         success Entities::PagesDomain
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
         is_array true
       end
       params do
@@ -88,7 +88,7 @@ module API
 
       desc 'Get a single pages domain' do
         success Entities::PagesDomain
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         requires :domain, type: String, desc: 'The domain'
@@ -102,7 +102,7 @@ module API
 
       desc 'Create a new pages domain' do
         success Entities::PagesDomain
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         requires :domain, type: String, desc: 'The domain'
@@ -131,7 +131,7 @@ module API
       end
 
       desc 'Updates a pages domain' do
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         requires :domain, type: String, desc: 'The domain'
@@ -165,7 +165,7 @@ module API
 
       desc 'Verify a pages domain' do
         success Entities::PagesDomain
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         requires :domain, type: String, desc: 'The domain to verify'
@@ -185,7 +185,7 @@ module API
       end
 
       desc 'Delete a pages domain' do
-        tags %w[pages_domains]
+        tags %w[gitlab_pages]
       end
       params do
         requires :domain, type: String, desc: 'The domain'

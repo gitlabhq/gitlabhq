@@ -187,7 +187,11 @@ namespace :gitlab do
       out_of_date_schemas = []
 
       introspection_schemas.each do |schema|
-        context = { current_user: nil, remove_deprecated: Gitlab::Utils.to_boolean(schema[:remove_deprecated]) }
+        context = {
+          current_user: nil,
+          introspection: true,
+          remove_deprecated: Gitlab::Utils.to_boolean(schema[:remove_deprecated])
+        }
         current_introspection = GitlabSchema.execute(schema[:query], context: context)
 
         if current_introspection['errors']

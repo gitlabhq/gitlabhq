@@ -1,6 +1,6 @@
 ---
 stage: Developer Experience
-group: API
+group: API Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: REST API deprecations
 description: "List of deprecated fields and planned breaking changes in the GitLab REST API."
@@ -50,7 +50,7 @@ When creating and updating users through the API, `null` was a valid value for t
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/322117).
 
 The endpoint to get
-[changes from a single merge request](../merge_requests.md#get-single-merge-request-changes)
+[changes from a single merge request](../merge_requests.md#retrieve-merge-request-changes)
 has been deprecated in favor the
 [list merge request diffs](../merge_requests.md#list-merge-request-diffs) endpoint.
 API users are encouraged to switch to the new diffs endpoint instead.
@@ -143,8 +143,8 @@ The `require_password_to_approve` field will be removed in v5 of the GitLab REST
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494294).
 
-In GitLab 17.6, the [pull mirroring configuration with the Projects API](../project_pull_mirroring.md#configure-pull-mirroring-for-a-project-deprecated) is deprecated.
-It is replaced by a new configuration and endpoint, [`projects/:id/mirror/pull`](../project_pull_mirroring.md#configure-pull-mirroring-for-a-project).
+In GitLab 17.6, the [pull mirroring configuration with the Projects API](../project_pull_mirroring.md#update-pull-mirroring-for-a-project-deprecated) is deprecated.
+It is replaced by a new configuration and endpoint, [`projects/:id/mirror/pull`](../project_pull_mirroring.md#update-project-pull-mirroring-settings).
 
 The previous configuration using the Projects API will be removed in v5 of the GitLab REST API.
 

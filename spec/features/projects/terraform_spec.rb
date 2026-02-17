@@ -10,7 +10,7 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
     let(:admin) { project.creator }
 
     before do
-      gitlab_sign_in(admin)
+      sign_in(admin)
     end
 
     context 'when user does not have any terraform states and visits the index page' do
@@ -100,7 +100,7 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
 
     before do
       project.add_developer(developer)
-      gitlab_sign_in(developer)
+      sign_in(developer)
       visit project_terraform_index_path(project)
     end
 

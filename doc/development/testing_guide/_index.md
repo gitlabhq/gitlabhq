@@ -56,6 +56,10 @@ tips and tricks to get the most out of white-box testing.
 What are [flaky tests](unhealthy_tests.md#flaky-tests), the different kind of flaky tests we encountered, and what
 we do about them.
 
+## Quarantining tests
+
+Technical reference for [quarantining tests](quarantining_tests.md): RSpec and Jest syntax, metadata types, and commands.
+
 ## GitLab pipelines
 
 How GitLab test suite [is run in the CI context](../pipelines/_index.md): setup, caches, artifacts,

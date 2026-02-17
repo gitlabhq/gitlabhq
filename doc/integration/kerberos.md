@@ -19,12 +19,9 @@ GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authen
 
 Kerberos is only available on instances that use GitLab Enterprise Edition (EE). If you're running GitLab Community Edition (CE), you can [convert from GitLab CE to GitLab EE](../update/convert_to_ee/package.md).
 
-{{< alert type="warning" >}}
-
-GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
-[set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
-
-{{< /alert >}}
+> [!warning]
+> GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
+> [set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
 
 ## Configuration
 
@@ -54,12 +51,9 @@ sudo chmod 0600 /etc/http.keytab
 
 #### Self-compiled installations
 
-{{< alert type="note" >}}
-
-For self-compiled installations, make sure the `kerberos` gem group
-[has been installed](../install/self_compiled/_index.md#install-gems).
-
-{{< /alert >}}
+> [!note]
+> For self-compiled installations, make sure the `kerberos` gem group
+> [has been installed](../install/self_compiled/_index.md#install-gems).
 
 1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
    authentication. In most cases, you only need to enable Kerberos and specify
@@ -135,7 +129,7 @@ If you're not an administrator:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect Kerberos**.
    If you don't see a **Service sign-in** Kerberos option, follow the
    requirements in [Enable single sign-on](#enable-single-sign-on).
@@ -171,13 +165,10 @@ With that information at hand:
    1. If `block_auto_created_users` is false, the Kerberos user is
       authenticated and is signed in to GitLab.
 
-{{< alert type="warning" >}}
-
-We recommend that you retain the default for `block_auto_created_users`.
-Kerberos users who create accounts on GitLab without administrator
-knowledge can be a security risk.
-
-{{< /alert >}}
+> [!warning]
+> We recommend that you retain the default for `block_auto_created_users`.
+> Kerberos users who create accounts on GitLab without administrator
+> knowledge can be a security risk.
 
 ## Link Kerberos and LDAP accounts together
 
@@ -244,15 +235,12 @@ GitLab users with a linked Kerberos account can also `git pull` and `git push`
 using Kerberos tokens. That is, without having to send their password with each
 operation.
 
-{{< alert type="warning" >}}
-
-There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
-older than version 7.64.1 wherein it doesn't reuse connections when negotiating.
-This leads to authorization issues when push is larger than `http.postBuffer`
-configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
-know the `libcurl` version installed, run `curl-config --version`.
-
-{{< /alert >}}
+> [!warning]
+> There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
+> older than version 7.64.1 wherein it doesn't reuse connections when negotiating.
+> This leads to authorization issues when push is larger than `http.postBuffer`
+> configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
+> know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)
 
@@ -268,13 +256,10 @@ with current Git versions, it is possible to offer Kerberos ticket-based
 authentication on a different port (for example, `8443`) while the standard port
 offers only `basic` authentication.
 
-{{< alert type="note" >}}
-
-[Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
-username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
-this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
-
-{{< /alert >}}
+> [!note]
+> [Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
+> username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
+> this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
 {{< tabs >}}
 

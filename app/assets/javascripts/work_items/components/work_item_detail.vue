@@ -13,7 +13,6 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
@@ -22,7 +21,6 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -108,9 +106,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  designManagementDocsHref: helpPagePath('user/project/issues/design_management', {
-    anchor: 'prerequisites',
-  }),
   isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
   SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
@@ -155,9 +150,6 @@ export default {
   inject: {
     groupPath: {
       from: 'groupPath',
-    },
-    hasDesignManagementFeature: {
-      from: 'hasDesignManagementFeature',
     },
     hasSubepicsFeature: {
       from: 'hasSubepicsFeature',
@@ -586,12 +578,6 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
-    isDuoWorkflowEnabled() {
-      return this.duoRemoteFlowsAvailability;
-    },
-    duoWorkflowDefinition() {
-      return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';
-    },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
     },
@@ -947,7 +933,6 @@ export default {
     },
   },
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORKSPACE_PROJECT,
   noAccessSvg,
 };
 </script>
@@ -1237,11 +1222,11 @@ export default {
                     />
                     <div>
                       <duo-workflow-action
-                        v-if="isDuoWorkflowEnabled"
+                        v-if="duoRemoteFlowsAvailability"
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
-                        :workflow-definition="duoWorkflowDefinition"
+                        workflow-definition="developer/v1"
                         :agent-privileges="agentPrivileges"
                         :work-item-id="workItem.iid"
                         size="medium"
@@ -1283,25 +1268,6 @@ export default {
                 :linked-resources="workItemLinkedResources"
               />
 
-              <span
-                v-if="hasDesignWidget && !hasDesignManagementFeature"
-                class="gl-mt-5 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-p-3 gl-text-center"
-                data-testid="design-management-disabled-message"
-              >
-                <gl-sprintf
-                  :message="
-                    s__(
-                      'DesignManagement|To upload designs, you\'ll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}',
-                    )
-                  "
-                >
-                  <template #link="{ content }">
-                    <gl-link :href="$options.designManagementDocsHref">
-                      {{ content }}
-                    </gl-link>
-                  </template>
-                </gl-sprintf>
-              </span>
               <design-widget
                 v-if="hasDesignWidget"
                 :class="{ 'gl-mt-0': isDrawer }"
@@ -1410,8 +1376,8 @@ export default {
                 :hide-fullscreen-markdown-button="isDrawer"
                 @error="updateError = $event"
                 @openReportAbuse="openReportAbuseModal"
-                @startEditing="isAddingNotes = true"
-                @stopEditing="isAddingNotes = false"
+                @start-editing="isAddingNotes = true"
+                @stop-editing="isAddingNotes = false"
                 @focus="isAddingNotes = true"
                 @blur="isAddingNotes = false"
               />

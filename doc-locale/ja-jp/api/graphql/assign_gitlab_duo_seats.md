@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GraphQL APIを使用して、GitLab Duoシートをユーザーに割り当てます。クエリ、ミューテーション、およびアドオンのシート割り当てを効率的に管理する方法について説明します。
+description: GraphQL APIを使用して、GitLab Duoシートをユーザーに割り当てます。前提条件、クエリ、ミューテーション、およびアドオンシートの割り当てを効率的に管理する方法について説明します。
 title: GraphQLを使用してGitLab Duoシートを割り当てる
 ---
 
@@ -19,16 +19,16 @@ title: GraphQLを使用してGitLab Duoシートを割り当てる
 
 {{< /history >}}
 
-GraphQL APIを使用して、GitLab Duoシートをユーザーに割り当てます。
+このAPIを使用して、[GitLab Duoシート](../../user/gitlab_duo/_index.md)をユーザーに割り当てます。
 
-## 前提要件 {#prerequisites}
+## 前提条件 {#prerequisites}
 
-- シートを割り当てるグループのオーナーロールが必要です。
+- 割り当てを行うグループのオーナーロールが必要です。
 - `api`スコープを持つパーソナルアクセストークンが必要です。
 
 ## アドオン購入IDを取得する {#get-the-add-on-purchase-id}
 
-まず、GitLab Duoアドオンの購入IDを取得する。GitLab.comの場合:
+まず、GitLab Duoアドオンの購入IDを取得します。GitLab.comの場合:
 
 ```graphql
 query {
@@ -87,17 +87,17 @@ mutation {
 }
 ```
 
-## GraphQLを使用 {#use-graphql}
+## GraphQLを使用する {#use-graphql}
 
-[GraphQL](https://gitlab.com/-/graphql-explorer)を使用して、ユーザーに割り当てられたシートを割り当てることができます。
+[GraphQL](https://gitlab.com/-/graphql-explorer)を使用して、ユーザーにシートを割り当てることができます。
 
-1. アドオン購入IDコードの抜粋をコピーします。
+1. アドオン購入IDのコード抜粋をコピーします。
 1. GraphQLを開きます。
-1. 左側のウィンドウで、[アドオン購入IDを取得する](#get-the-add-on-purchase-id)のクエリを入力します。
+1. 左側のウィンドウで、[アドオン購入IDの取得](#get-the-add-on-purchase-id)のためのクエリを入力します。
 1. **再生**を選択します。
-1. GitLab Duoシートを特定のユーザーに割り当てるために繰り返します。
+1. 繰り返し特定のユーザーにGitLab Duoシートを割り当てます。
 
 ## 関連トピック {#related-topics}
 
-- [GraphQL APIリソース](reference/_index.md)
-- [フラグメントやインターフェースなど、GraphQL固有のエンティティ](https://graphql.org/learn/)
+- [GraphQL API Resources](reference/_index.md)
+- [フラグメントやインターフェースのようなGraphQL固有のエンティティ](https://graphql.org/learn/)

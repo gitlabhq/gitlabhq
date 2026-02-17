@@ -123,5 +123,104 @@ describe QA::Support::Formatters::AllureMetadataFormatter, feature_category: :to
         expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)
       end
     end
+
+    context 'when message_lines contains page content that should be filtered' do
+      let(:message_lines_with_page_content) do
+        [
+          "Expected to find link 'Changes' but there were no matches",
+          "Skip to main content Primary navigation Homepage Next Create new",
+          "Some actual error message",
+          "GitLab Duo Chat The upstream AI provider request timed out",
+          "Another useful error line",
+          "Homepage Next Create new QA User menu items",
+          "A" * 600 # Line longer than 500 characters
+        ]
+      end
+
+      let(:rspec_example_notification) do
+        instance_double(
+          RSpec::Core::Notifications::FailedExampleNotification,
+          example: rspec_example,
+          message_lines: message_lines_with_page_content
+        )
+      end
+
+      it 'filters out page content and keeps meaningful error messages', :aggregate_failures do
+        formatter.example_finished(rspec_example_notification)
+
+        expected_filtered_message = [
+          "Expected to find link 'Changes' but there were no matches",
+          "Some actual error message",
+          "Another useful error line"
+        ].join("\n")
+
+        expected_url = 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
+          "state=opened&search=spec.rb&search=#{ERB::Util.url_encode(expected_filtered_message)}"
+
+        expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)
+      end
+    end
+
+    context 'when message_lines contains long quoted page content' do
+      let(:message_lines_with_quoted_content) do
+        [
+          "Expected to find text 'Summary' in",
+          "\"#{'A' * 400}\"", # Long quoted string > 300 chars
+          "Actual useful error message"
+        ]
+      end
+
+      let(:rspec_example_notification) do
+        instance_double(
+          RSpec::Core::Notifications::FailedExampleNotification,
+          example: rspec_example,
+          message_lines: message_lines_with_quoted_content
+        )
+      end
+
+      it 'filters out long quoted page content', :aggregate_failures do
+        formatter.example_finished(rspec_example_notification)
+
+        expected_filtered_message = [
+          "Expected to find text 'Summary' in",
+          "Actual useful error message"
+        ].join("\n")
+
+        expected_url = 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
+          "state=opened&search=spec.rb&search=#{ERB::Util.url_encode(expected_filtered_message)}"
+
+        expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)
+      end
+    end
+
+    context 'when all message_lines are filtered out' do
+      let(:message_lines_all_filtered) do
+        [
+          "Skip to main content Primary navigation",
+          "GitLab Duo Chat interface",
+          "A" * 600 # Very long line
+        ]
+      end
+
+      let(:rspec_example_notification) do
+        instance_double(
+          RSpec::Core::Notifications::FailedExampleNotification,
+          example: rspec_example,
+          message_lines: message_lines_all_filtered
+        )
+      end
+
+      it 'falls back to exception message when all lines are filtered', :aggregate_failures do
+        formatter.example_finished(rspec_example_notification)
+
+        expected_url = 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
+          'state=opened&search=spec.rb&search=Some%20failure%20message'
+
+        expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)
+      end
+    end
   end
 end

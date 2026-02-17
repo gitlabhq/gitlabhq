@@ -56,11 +56,8 @@ found to your merge request:
 | Commit message with an issue closing pattern like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
 | Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-a-number), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
-{{< alert type="note" >}}
-
-Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
-
-{{< /alert >}}
+> [!note]
+> Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
 
 ## View merge requests
 
@@ -87,7 +84,7 @@ or:
 To view all merge requests for a project:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 
 Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
 
@@ -98,7 +95,7 @@ Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
 To view merge requests for all projects in a group:
 
 1. On the top bar, select **Search or go to** and find your group.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
@@ -139,7 +136,7 @@ To view the open merge requests for a file:
 To filter the list of merge requests:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
    - **By environment or deployment date**.
@@ -170,12 +167,9 @@ you can type (or select from the dropdown list) the following:
 - Deployed before
 - Deployed after
 
-{{< alert type="note" >}}
-
-Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
-do not return results, as this method does not create a merge commit.
-
-{{< /alert >}}
+> [!note]
+> Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
+> do not return results, as this method does not create a merge commit.
 
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from.
@@ -211,8 +205,8 @@ To assign the merge request to a user, use the `/assign @user` quick action in a
 a merge request, or:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
-1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
+1. In the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
 1. Search for the user you want to assign, and select the user. GitLab Free allows one
    assignee per merge request, but GitLab Premium and GitLab Ultimate allow multiple assignees:
@@ -257,7 +251,7 @@ Prerequisites:
 To close merge requests in the project:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the comment box at the bottom of the page.
 1. Following the comment box, select **Close merge request**.
 
@@ -336,7 +330,7 @@ For a web developer writing a webpage for your company's website:
 1. After approval, GitLab:
    - [Squashes](squash_and_merge.md) the commits.
    - Merges the commit.
-   - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
+   - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/ci-deployment-and-environments/).
 1. Your production team cherry-picks the merge commit into production.
 
 ## Filter activity in a merge request
@@ -354,7 +348,7 @@ To understand the history of a merge request, filter its activity feed to show y
 only the items that are relevant to you.
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select a merge request.
 1. Scroll to **Activity**.
 1. On the right side of the page, select **Activity filter** to show the filter options.
@@ -397,7 +391,7 @@ merge request. This merge request has three open threads:
 To see all comments in the collapsed threads, expand the threads:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Show all comments**.
@@ -414,7 +408,7 @@ If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
    **Create issue to resolve thread** ({{< icon name="work-item-new" >}}).
@@ -431,7 +425,7 @@ If you have multiple open threads in a merge request, you can
 create an issue to resolve them separately:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Resolve all with new issue**.
@@ -485,12 +479,9 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 

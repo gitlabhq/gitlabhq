@@ -19,13 +19,10 @@ title: Virtual registries cleanup policies API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of these endpoints is controlled by a feature flag.
-For more information, see the history.
-Review the documentation carefully before you use them.
-
-{{< /alert >}}
+> [!flag]
+> The availability of these endpoints is controlled by a feature flag.
+> For more information, see the history.
+> Review the documentation carefully before you use them.
 
 Use this API to:
 
@@ -37,7 +34,7 @@ Use this API to:
 
 Use the following endpoints to create and manage virtual registries cleanup policies. Each group can have only one cleanup policy.
 
-### Get the cleanup policy for a group
+### Retrieve the cleanup policy for a group
 
 {{< history >}}
 
@@ -45,7 +42,7 @@ Use the following endpoints to create and manage virtual registries cleanup poli
 
 {{< /history >}}
 
-Gets the cleanup policy for a group. Each group can have only one cleanup policy.
+Retrieves the cleanup policy for a specified group. Each group can have only one cleanup policy.
 
 ```plaintext
 GET /groups/:id/-/virtual_registries/cleanup/policy
@@ -100,7 +97,7 @@ Example response:
 
 {{< /history >}}
 
-Creates a cleanup policy for a group. Each group can have only one cleanup policy.
+Creates a cleanup policy for a specified group. Each group can have only one cleanup policy.
 
 ```plaintext
 POST /groups/:id/-/virtual_registries/cleanup/policy
@@ -156,7 +153,7 @@ Example response:
 
 {{< /history >}}
 
-Updates the cleanup policy for a group.
+Updates the cleanup policy for a specified group.
 
 ```plaintext
 PATCH /groups/:id/-/virtual_registries/cleanup/policy
@@ -219,7 +216,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes the cleanup policy for a group.
+Deletes the cleanup policy for a specified group.
 
 ```plaintext
 DELETE /groups/:id/-/virtual_registries/cleanup/policy

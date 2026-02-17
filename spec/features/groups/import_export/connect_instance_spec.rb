@@ -113,7 +113,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
   end
 
   def open_import_group
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit new_group_path
 

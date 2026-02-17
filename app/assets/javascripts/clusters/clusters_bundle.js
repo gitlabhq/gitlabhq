@@ -102,6 +102,7 @@ export default class Clusters {
 
     this.environments = new Vue({
       el,
+      name: 'EnvironmentsRoot',
       data() {
         return {
           state: store.state,
@@ -128,6 +129,7 @@ export default class Clusters {
 
       this.removeClusterAction = new Vue({
         el,
+        name: 'RemoveClusterConfirmationRoot',
         render(createElement) {
           return createElement(RemoveClusterConfirmation, {
             props: {

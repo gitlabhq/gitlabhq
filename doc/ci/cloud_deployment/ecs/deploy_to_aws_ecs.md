@@ -64,7 +64,7 @@ provide a containerized application image during the infrastructure build. To do
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/_index.md).
 
-1. On the top bar, select **Search or go to** and find your `ecs-demo` project.
+1. In the top bar, select **Search or go to** and find your `ecs-demo` project.
 1. Select **Set up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
@@ -212,7 +212,7 @@ create a deployer user on AWS:
 You can register the access information in [GitLab CI/CD Variables](../../variables/_index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
-1. On the top bar, select **Search or go to** and find your `ecs-demo` project.
+1. In the top bar, select **Search or go to** and find your `ecs-demo` project.
 1. Go to **Settings** > **CI/CD** > **Variables**.
 1. Select **Add Variable** and set the following key-value pairs.
 
@@ -229,7 +229,7 @@ These variables are injected into the pipeline jobs and can access the ECS API.
 
 Change a file in the project and see if it's reflected in the demo application on ECS:
 
-1. On the top bar, select **Search or go to** and find your `ecs-demo` project.
+1. In the top bar, select **Search or go to** and find your `ecs-demo` project.
 1. Open the `app/views/welcome/index.html.erb` file.
 1. Select **Edit**.
 1. Change the text to `You're on ECS!`.
@@ -241,12 +241,9 @@ Change a file in the project and see if it's reflected in the demo application o
 
 Congratulations! You successfully set up continuous deployment to ECS.
 
-{{< alert type="note" >}}
-
-ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
-set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
-
-{{< /alert >}}
+> [!note]
+> ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
+> set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
 ## Set up review apps
 

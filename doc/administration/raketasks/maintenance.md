@@ -161,11 +161,10 @@ To run `gitlab:check`, run:
   kubectl exec -it <toolbox-pod-name> -- sudo gitlab-rake gitlab:check
   ```
 
-  {{< alert type="note" >}}
-  Due to the specific architecture of Helm-based GitLab installations, the output may contain
-  false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
-  These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
-  {{< /alert >}}
+  > [!note]
+  > Due to the specific architecture of Helm-based GitLab installations, the output may contain
+  > false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
+  > These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
 
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
@@ -409,7 +408,7 @@ order that conforms to the GitLab release cadence.
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy
 levels of index bloat over time. Reindexing can also be run as a
-[regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).
+[regular cron job](https://docs.gitlab.com/omnibus/settings/database/#automatic-database-reindexing).
 A "healthy" level of bloat is highly dependent on the specific index, but generally
 should be below 30%.
 

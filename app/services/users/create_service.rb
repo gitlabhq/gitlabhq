@@ -39,6 +39,8 @@ module Users
       else
         error(user.errors.full_messages.to_sentence, { user: user })
       end
+    rescue Cells::TransactionRecord::Error
+      error(user.errors.full_messages.to_sentence, { user: user })
     end
 
     def error(message, payload)

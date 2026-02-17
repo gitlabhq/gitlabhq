@@ -15,7 +15,7 @@ RSpec.shared_examples 'hierarchy with traversal_ids' do
     end
   end
 
-  it 'will be valid' do
+  it 'is valid' do
     validate_traversal_ids(root)
   end
 end

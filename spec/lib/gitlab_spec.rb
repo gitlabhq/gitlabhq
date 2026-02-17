@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab, feature_category: :shared do
+RSpec.describe Gitlab, feature_category: :settings do
   include SaasTestHelper
 
   %w[root extensions ee? jh?].each do |method_name|

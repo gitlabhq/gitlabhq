@@ -46,7 +46,7 @@ To begin, create a test project to apply your pipeline execution policy to:
 
 Next, create the CI/CD configuration file that you want your pipeline execution policy to enforce:
 
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. From the **Add** (+) dropdown list, select **New file**.
 1. In the **Filename** field, enter `pipeline-config.yml`.
 1. In the file's content, copy the following:
@@ -135,7 +135,7 @@ Next, add a pipeline execution policy to your test project:
 
 Now test your pipeline execution policy by creating a merge request:
 
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. From the **Add** (+) dropdown list, select **New file**.
 1. In the **Filename** field, enter `test-file.txt`.
 1. In the file's content, add:

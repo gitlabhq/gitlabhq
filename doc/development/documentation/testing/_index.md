@@ -411,20 +411,24 @@ with the linting rules we use.
 
 To match the versions of `markdownlint-cli2` and `vale` used in the GitLab projects, refer to:
 
-- For projects managed with `asdf`, the `.tool-versions` file in the project. For example, the
-  [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
+- For projects managed with `mise`, the `.tool-versions` or `mise.toml` file in the project. For example:
+  - The [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
+  - The [`mise.toml` file in the `gitlab-operator` project](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/mise.toml).
 - The [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab-ci.yml)
   when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
 Versions set in these two locations should be the same.
 
-| Tool                | Version  | Command                                   | Additional information |
-|---------------------|----------|-------------------------------------------|------------------------|
-| `markdownlint-cli2` | Latest   | `yarn global add markdownlint-cli2`       | None.                  |
-| `markdownlint-cli2` | Specific | `yarn global add markdownlint-cli2@0.8.1` | The `@` indicates a specific version, and this example updates the tool to version `0.8.1`. |
-| Vale (using `asdf`) | Specific | `asdf install`                            | Installs the version of Vale set in `.tool-versions` file in a project. |
-| Vale (other)        | Specific | Not applicable.                           | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
-| Vale (using `brew`) | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
+| Tool                              | Version  | Command                                    | Additional information |
+|:----------------------------------|:---------|:-------------------------------------------|:-----------------------|
+| `markdownlint-cli2` (with `yarn`) | Latest   | `yarn global add markdownlint-cli2`        | None.                  |
+| `markdownlint-cli2` (with `mise`) | Latest   | `mise use -g markdownlint-cli2`            | Overridden by project-specific configuration. |
+| `markdownlint-cli2` (with `yarn`) | Specific | `yarn global add markdownlint-cli2@0.20.0` | The `@` indicates a specific version, and this example updates the tool to version `0.20.0`. |
+| `markdownlint-cli2` (with `mise`) | Specific | `mise install`                             | Installs the version of `markdownlint-cli2` set in the `.tool-versions` or `mise.toml` file in a project. |
+| Vale (with `mise`)                | Specific | `mise install`                             | Installs the version of Vale set in the `.tool-versions` or `mise.toml` file in a project. |
+| Vale (with `mise`)                | Latest   | `mise use -g vale`                         | Overridden by project-specific configuration. |
+| Vale (other)                      | Specific | Not applicable.                            | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
+| Vale (with `brew`)                | Latest   | `brew update && brew upgrade vale`         | This command is for macOS only. |
 
 ## Supported projects
 
@@ -449,6 +453,6 @@ We also run some documentation tests in these projects:
 - GitLab Plugin for Neovim: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>
 - GitLab Language Server: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>
 - GitLab Extension for Visual Studio: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
-- AI gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
+- AI Gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Centralized Evaluation Framework: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>
 - GitLab Container Registry: <https://gitlab.com/gitlab-org/container-registry/-/blob/master/.gitlab/ci/validate.yml>

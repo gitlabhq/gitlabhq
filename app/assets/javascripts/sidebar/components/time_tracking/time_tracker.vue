@@ -138,7 +138,7 @@ export default {
       },
       update(data) {
         this.timeTracking = {
-          ...data.workspace?.issuable,
+          ...data.namespace?.issuable,
         };
       },
     },

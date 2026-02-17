@@ -34,7 +34,7 @@ GET /groups/:id/variables
 | `id`      | integer or string | Yes      | The ID of a group or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/variables"
 ```
@@ -88,7 +88,7 @@ GET /groups/:id/variables/:key
 | `filter`  | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. Premium and Ultimate only. |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
 ```
@@ -166,6 +166,11 @@ curl --request POST \
 
 Update a group's variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
+
+> [!warning]
+> When filtering for an `environment_scope` that does not exist, the endpoint falls back to
+> updating a variable with the same name but different environment scope. Verify the existence
+> of a scope for a given variable using the [show variable details](#show-variable-details) endpoint.
 
 ```plaintext
 PUT /groups/:id/variables/:key

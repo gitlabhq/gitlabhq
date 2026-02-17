@@ -13,7 +13,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
 
     let_it_be(:project) { create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo' }) }
 
-    let(:branches) { { 'branch' => 'master', 'another_branch' => 'master' } }
+    let(:branches) { { 'branch' => project.default_branch, 'another_branch' => project.default_branch } }
 
     it 'creates two branches' do
       expect(subject[:status]).to eq(:success)
@@ -48,7 +48,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
     end
 
     context 'when branch already exists' do
-      let(:branches) { { 'master' => 'master' } }
+      let(:branches) { { project.default_branch => project.default_branch } }
 
       it 'returns an error' do
         expect(subject[:status]).to eq(:error)
@@ -57,7 +57,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
     end
 
     context 'when PreReceiveError exception' do
-      let(:branches) { { 'error' => 'master' } }
+      let(:branches) { { 'error' => project.default_branch } }
 
       it 'logs and returns an error if there is a PreReceiveError exception' do
         error_message = 'pre receive error'
@@ -70,7 +70,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
           pre_receive_error,
           pre_receive_message: raw_message,
           branch_name: 'error',
-          ref: 'master'
+          ref: project.default_branch
         )
 
         expect(subject[:status]).to eq(:error)
@@ -79,13 +79,16 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
     end
 
     context 'when multiple errors occur' do
-      let(:branches) { { 'master' => 'master', '' => 'master', 'failed_branch' => 'master' } }
+      let(:branches) do
+        { project.default_branch => project.default_branch, '' => project.default_branch,
+          'failed_branch' => project.default_branch }
+      end
 
       it 'returns all errors' do
         allow(project.repository).to receive(:add_branch).with(
           user,
           'failed_branch',
-          'master',
+          project.default_branch,
           expire_cache: false,
           raise_on_invalid_ref: true
         ).and_raise(Gitlab::Git::Repository::InvalidRef)
@@ -95,14 +98,17 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
           [
             'Branch already exists',
             'Branch name is invalid',
-            "Failed to create branch 'failed_branch': invalid reference name 'master'"
+            "Failed to create branch 'failed_branch': invalid reference name '#{project.default_branch}'"
           ]
         )
       end
     end
 
     context 'without N+1 for Redis cache' do
-      let(:branches) { { 'branch1' => 'master', 'branch2' => 'master', 'branch3' => 'master' } }
+      let(:branches) do
+        { 'branch1' => project.default_branch, 'branch2' => project.default_branch,
+          'branch3' => project.default_branch }
+      end
 
       it 'does not trigger Redis recreation' do
         project.repository.expire_branches_cache
@@ -114,7 +120,10 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
     end
 
     context 'without N+1 branch cache expiration' do
-      let(:branches) { { 'branch_1' => 'master', 'branch_2' => 'master', 'branch_3' => 'master' } }
+      let(:branches) do
+        { 'branch_1' => project.default_branch, 'branch_2' => project.default_branch,
+          'branch_3' => project.default_branch }
+      end
 
       it 'triggers branch cache expiration only once' do
         expect(project.repository).to receive(:expire_branches_cache).once
@@ -123,7 +132,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
       end
 
       context 'when branches were not added' do
-        let(:branches) { { 'master' => 'master' } }
+        let(:branches) { { project.default_branch => project.default_branch } }
 
         it 'does not trigger branch expiration' do
           expect(project.repository).not_to receive(:expire_branches_cache)
@@ -137,15 +146,15 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
   describe '#execute' do
     context 'when repository is empty' do
       it 'creates master branch' do
-        result = service.execute('my-feature', 'master')
+        result = service.execute('my-feature', project.default_branch)
 
         expect(result[:status]).to eq(:success)
         expect(result[:branch].name).to eq('my-feature')
-        expect(project.repository.branch_exists?('master')).to be_truthy
+        expect(project.repository.branch_exists?(project.default_branch)).to be_truthy
       end
 
       it 'creates another-feature branch' do
-        service.execute('another-feature', 'master')
+        service.execute('another-feature', project.default_branch)
 
         expect(project.repository.branch_exists?('another-feature')).to be_truthy
       end
@@ -162,7 +171,8 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
 
     context 'when branch already exists' do
       it 'returns an error' do
-        result = service.execute('master', 'master')
+        service.execute('my-branch', project.default_branch)
+        result = service.execute('my-branch', project.default_branch)
 
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to eq('Branch already exists')
@@ -210,18 +220,18 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
       end
 
       before do
-        service.execute('foo', 'master')
+        service.execute('foo', project.default_branch)
       end
 
       it 'raises the actual Gitaly error containing "file directory conflict"' do
-        expect { project.repository.add_branch(user, branch_name, 'master', raise_on_invalid_ref: true) }
+        expect { project.repository.add_branch(user, branch_name, project.default_branch, raise_on_invalid_ref: true) }
           .to raise_error(Gitlab::Git::Repository::InvalidRef) do |e|
             expect(e.message).to include('file directory conflict')
           end
       end
 
       it 'returns a user friendly error message from the service' do
-        result = service.execute(branch_name, 'master')
+        result = service.execute(branch_name, project.default_branch)
 
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to eq(expected_service_message)

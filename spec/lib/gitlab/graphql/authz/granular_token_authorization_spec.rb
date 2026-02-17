@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
     context 'with a granular token' do
       let_it_be(:access_token) do
         boundary = Authz::Boundary.for(project)
-        create(:granular_pat, boundary: boundary, permissions: [:read_wiki, :create_issue], user: user)
+        create(:granular_pat, boundary: boundary, permissions: [:read_wiki, :write_work_item], user: user)
       end
 
       it { is_expected.to eq('field_value') }
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
 
         it 'raises an ResourceNotAvailable error that includes the message from the service response' do
           expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable,
-            'Unable to determine boundary and permissions for authorization')
+            'Unable to determine boundaries and permissions for authorization')
         end
       end
 

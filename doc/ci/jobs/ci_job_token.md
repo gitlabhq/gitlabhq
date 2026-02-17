@@ -53,7 +53,7 @@ CI/CD job tokens can access the following resources:
 | [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
 | [Files API](../../api/repository_files.md)                                                            | Can access the `GET /projects/:id/repository/files/:file_path/raw` endpoint. |
-| [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
+| [Jobs API](../../api/jobs.md#retrieve-a-job-by-job-token)                                             | Can access only the `GET /job` endpoint. |
 | [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access download endpoints only. |
 | [Merge requests API](../../api/merge_requests.md)                                                     | Can access the `GET /projects/:id/merge_requests` and `GET /projects/:id/merge_requests/:merge_request_iid` endpoints. |
 | [Notes API](../../api/notes.md)                                                                       | Can access the `GET /projects/:id/merge_requests/:merge_request_iid/notes` and `GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id` endpoints. |
@@ -80,7 +80,7 @@ GitLab:
 You should also configure your [runners](../runners/_index.md) to be secure:
 
 - Avoid using Docker `privileged` mode if the machines are re-used.
-- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell/) when jobs
   run on the same machine.
 
 An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other
@@ -131,13 +131,13 @@ authenticate API calls to access project A.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the current project. If the allowed project
-  is internal or private, you must have at least the Guest role in that project.
+- You must have the Maintainer or Owner role for the current project. If the allowed project
+  is internal or private, you must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role in that project.
 - You must not have more than 200 groups and projects added to the allowlist.
 
 To add a group or project to the allowlist:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Select **Add group or project**.
@@ -171,7 +171,7 @@ Prerequisites:
 
 To set a feature to be only visible to project members:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
@@ -193,13 +193,10 @@ To set a feature to be only visible to project members:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
-a pipeline created in an unauthorized project. If the pipeline was created by one of
-your maintainers, the job token could be used in an attempt to access your project.
-
-{{< /alert >}}
+> [!warning]
+> It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
+> a pipeline created in an unauthorized project. If the pipeline was created by one of
+> your maintainers, the job token could be used in an attempt to access your project.
 
 If you disable the CI/CD job token allowlist, jobs from any project can access your project
 with a job token. The user that triggers the pipeline must have permission to access your project.
@@ -212,11 +209,11 @@ disabled.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable the job token allowlist:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Under **Authorized groups and projects**, select **All groups and projects**.
@@ -250,21 +247,18 @@ The job token has the same access permissions as the user who started the job.
 
 If you use the `semantic-release` tool, [this setting might prevent pipeline creation](#the-semantic-release-tool-and-job-tokens).
 
-{{< alert type="warning" >}}
-
-Do not enable this setting on projects configured as [pull mirrors](../../user/project/repository/mirror/pull.md),
-especially if [pipelines are triggered for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates).
-The upstream repository owner could attempt to use the `CI_JOB_TOKEN` to push commits to the mirrored project.
-
-{{< /alert >}}
+> [!warning]
+> Do not enable this setting on projects configured as [pull mirrors](../../user/project/repository/mirror/pull.md),
+> especially if [pipelines are triggered for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates).
+> The upstream repository owner could attempt to use the `CI_JOB_TOKEN` to push commits to the mirrored project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To grant permission to job tokens generated in your project to push to the project's repository:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
@@ -323,7 +317,7 @@ You cannot use job tokens to authenticate GraphQL requests.
 You can track which other projects use a CI/CD job token to authenticate with your project
 in an authentication log. To check the log:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**. The **Authentication log** section displays the
    list of other projects that accessed your project by authenticating with a job token.
@@ -346,7 +340,7 @@ Beginning in GitLab 19.0, CI/CD job tokens use the JWT standard by default. Proj
 
 To use the legacy format for your CI/CD tokens:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Turn off **Enable JWT format for CI/CD job tokens**.

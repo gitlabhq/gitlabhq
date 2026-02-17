@@ -387,7 +387,7 @@ module SidebarsHelper
       },
       {
         title: _('Projects'),
-        href: starred_explore_projects_path,
+        href: explore_projects_path,
         css_class: 'dashboard-shortcuts-projects'
       }
     ]

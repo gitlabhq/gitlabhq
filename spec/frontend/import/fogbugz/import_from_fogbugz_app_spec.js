@@ -1,6 +1,6 @@
+import { GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportFromFogbugzApp from '~/import/fogbugz/import_from_fogbugz_app.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 describe('Import from FugBugz app', () => {
   let wrapper;
@@ -18,7 +18,7 @@ describe('Import from FugBugz app', () => {
     createComponent();
   });
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findBackButton = () => wrapper.findByTestId('back-button');
   const findNextButton = () => wrapper.findByTestId('next-button');
 

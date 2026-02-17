@@ -19,7 +19,7 @@ To connect your Kubernetes cluster with GitLab, you can use:
 - [A certificate-based integration](_index.md).
 
 The certificate-based integration is
-[**deprecated**](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/)
+[**deprecated**](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)
 in GitLab 14.5. The sunsetting plans are described:
 
 - for [GitLab.com customers](../../../update/deprecations.md#gitlabcom-certificate-based-integration-with-kubernetes).
@@ -34,26 +34,20 @@ This workflow uses an agent to connect to your cluster. The agent:
 - Is not exposed to the internet.
 - Does not require full [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) access to GitLab.
 
-{{< alert type="note" >}}
-
-The certificate-based integration was used for popular GitLab features like
-GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
-
-{{< /alert >}}
+> [!note]
+> The certificate-based integration was used for popular GitLab features like
+> GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
 
 ## Find certificate-based clusters
 
-You can find all the certificate-based clusters within a GitLab instance or group, including subgroups and projects, using [a dedicated API](../../../api/cluster_discovery.md#discover-certificate-based-clusters). Querying the API with a group ID returns all the certificate-based clusters defined at or below the provided group.
+You can find all the certificate-based clusters within a GitLab instance or group, including subgroups and projects, using [a dedicated API](../../../api/cluster_discovery.md#retrieve-certificate-based-clusters). Querying the API with a group ID returns all the certificate-based clusters defined at or below the provided group.
 
 Clusters defined in parent groups are not returned in this case. This behavior helps group Owners find all the clusters they need to migrate.
 
 Disabled clusters are returned as well to avoid accidentally leaving clusters behind.
 
-{{< alert type="note" >}}
-
-The cluster discovery API does not work for personal namespaces.
-
-{{< /alert >}}
+> [!note]
+> The cluster discovery API does not work for personal namespaces.
 
 ## Migrate generic deployments
 

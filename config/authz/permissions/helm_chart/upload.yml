@@ -1,0 +1,5 @@
+---
+name: upload_helm_chart
+description: Grants the ability to push Helm Charts
+boundaries:
+  - project

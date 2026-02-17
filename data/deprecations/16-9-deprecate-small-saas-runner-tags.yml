@@ -11,4 +11,4 @@
 
     We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
 
-    For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/2023/08/15/removing-tags-from-small-saas-runner-on-linux/).
+    For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/removing-tags-from-small-saas-runner-on-linux/).

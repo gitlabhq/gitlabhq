@@ -35,6 +35,18 @@ build-cng:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
 
+dont-interrupt-me:
+  stage: .pre
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ci/yaml/#interruptible."
+  rules:
+    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      when: manual
+      allow_failure: true
+
 # ==========================================
 # Test stage
 # ==========================================
@@ -64,6 +76,7 @@ dotenv-vars:
 
 run-performance-tests:
   stage: test
+  allow_failure: true
   needs:
     - build-cng-env
     - build-cng
@@ -95,6 +108,7 @@ run-performance-tests:
     CPT_PACKAGE_REGISTRY_API_TOKEN: $CPT_PACKAGE_REGISTRY_API_TOKEN
     CPT_BASELINE_PACKAGE_NAME: "gitlab-org-gitlab"
     GENERATE_REPORT_FROM_DUO: true
+    USE_TELEGRAF_METRICS: false
   rules:
     - if: '$PARENT_CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org?($|\/)/'
       variables:

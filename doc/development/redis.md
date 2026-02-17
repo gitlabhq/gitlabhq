@@ -74,7 +74,7 @@ project:{2}:set_c
 Currently, we validate this in the development and test environments
 with the [`RedisClusterValidator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/instrumentation/redis_cluster_validator.rb),
 which is enabled for the `cache` and `shared_state`
-[Redis instances](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances)..
+[Redis instances](https://docs.gitlab.com/omnibus/settings/redis/#running-with-multiple-redis-instances)..
 
 Developers are highly encouraged to use [hash-tags](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags)
 where appropriate to facilitate future adoption of Redis Cluster in more Redis types. For example, the Namespace model uses hash-tags
@@ -122,12 +122,9 @@ requests that read the most data from the cache, we can just sort by
 
 ### The slow log
 
-{{< alert type="note" >}}
-
-There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
-on GitLab.com
-
-{{< /alert >}}
+> [!note]
+> There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
+> on GitLab.com
 
 On GitLab.com, entries from the [Redis slow log](https://redis.io/docs/latest/commands/slowlog/) are available in the
 `pubsub-redis-inf-gprd*` index with the [`redis.slowlog` tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time_s),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).

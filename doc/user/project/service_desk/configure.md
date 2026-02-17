@@ -17,7 +17,7 @@ If it's not active, you can do it in the project's settings.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - On GitLab Self-Managed, you must [set up incoming email](../../../administration/incoming_email.md#set-it-up)
   for the GitLab instance. You should use
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
@@ -211,7 +211,7 @@ To edit the custom email display name:
 
 {{< /history >}}
 
-New tickets are confidential by default, so only project members with at least the Planner role
+New tickets are confidential by default, so only project members with the Planner, Reporter, Developer, Maintainer, or Owner role
 can view them.
 
 In private and internal projects, you can configure GitLab so that new tickets are not confidential by default, and any project member can view them.
@@ -220,7 +220,7 @@ In public projects, this setting is not available because new tickets are always
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To disable this setting:
 
@@ -248,7 +248,7 @@ For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To enable this setting:
 
@@ -307,7 +307,7 @@ The custom email address you want to use must meet all of the following requirem
   with a 256-bit key.
 - The **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab Self-Managed)
   or the public internet (on GitLab.com).
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Service Desk must be configured for the project.
 
 ### Configure a custom email address
@@ -688,12 +688,9 @@ a [`service_desk_email`](#configure-service-desk-alias-email) in the instance co
 
 ### Configure Service Desk alias email
 
-{{< alert type="note" >}}
-
-On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address. You can still configure the
-[custom suffix](#configure-a-suffix-for-service-desk-alias-email) in project settings.
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address. You can still configure the
+> [custom suffix](#configure-a-suffix-for-service-desk-alias-email) in project settings.
 
 Service Desk uses the [incoming email](../../../administration/incoming_email.md)
 configuration by default. However, to have a separate email address for Service Desk,
@@ -713,16 +710,13 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-{{< alert type="note" >}}
-
-In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
-To use `webhook` on a Linux package installation running GitLab 15.3, you must generate a secret file.
-For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
-In GitLab 15.4, reconfiguring a Linux package installation generates this secret file automatically, so no
-secret file configuration setting is needed.
-For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
-
-{{< /alert >}}
+> [!note]
+> In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
+> To use `webhook` on a Linux package installation running GitLab 15.3, you must generate a secret file.
+> For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
+> In GitLab 15.4, reconfiguring a Linux package installation generates this secret file automatically, so no
+> secret file configuration setting is needed.
+> For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
 ```ruby
 gitlab_rails['service_desk_email_enabled'] = true
@@ -824,7 +818,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the Service Desk email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-service-desk-emails).
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-service-desk-emails).
 
 {{< /tab >}}
 
@@ -959,13 +953,13 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-1. Create the [Kubernetes Secret containing the OAuth 2.0 application client secret](https://docs.gitlab.com/charts/installation/secrets.html#microsoft-graph-client-secret-for-service-desk-emails):
+1. Create the [Kubernetes Secret containing the OAuth 2.0 application client secret](https://docs.gitlab.com/charts/installation/secrets/#microsoft-graph-client-secret-for-service-desk-emails):
 
    ```shell
    kubectl create secret generic service-desk-email-client-secret --from-literal=secret=<YOUR-CLIENT_SECRET>
    ```
 
-1. Create the [Kubernetes Secret for the GitLab Service Desk email auth token](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-service-desk-email-auth-token).
+1. Create the [Kubernetes Secret for the GitLab Service Desk email auth token](https://docs.gitlab.com/charts/installation/secrets/#gitlab-service-desk-email-auth-token).
    Replace `<name>` with the name of the [Helm release name](https://helm.sh/docs/intro/using_helm/) for the GitLab installation:
 
    ```shell
@@ -1177,8 +1171,8 @@ from the `incoming_email` and `service_desk_email` mailboxes.
 
 The [GitLab Helm chart](https://docs.gitlab.com/charts/) is made up of multiple subcharts, and one of them is
 the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/). Configure the
-[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
-and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#service-desk-email-configuration).
+[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options/#incoming-email-configuration)
+and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options/#service-desk-email-configuration).
 
 ### Linux package (Omnibus)
 

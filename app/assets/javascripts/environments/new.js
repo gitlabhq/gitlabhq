@@ -15,6 +15,7 @@ export default (el) => {
 
   return new Vue({
     el,
+    name: 'NewEnvironmentRoot',
     apolloProvider: apolloProvider(),
     provide: {
       projectEnvironmentsPath,

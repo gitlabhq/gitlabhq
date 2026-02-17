@@ -10,11 +10,8 @@ import { hasDiff } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { clearDraft } from '~/lib/utils/autosave';
-import { isElementStuck } from '~/lib/utils/common_utils';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -23,6 +20,7 @@ import { fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -55,11 +53,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [
-    glFeatureFlagsMixin(),
-    IdState({ idProp: (vm) => vm.file.file_hash }),
-    diffLineNoteFormMixin,
-  ],
+  mixins: [IdState({ idProp: (vm) => vm.file.file_hash }), diffLineNoteFormMixin],
   props: {
     file: {
       type: Object,
@@ -183,16 +177,15 @@ export default {
     },
     hasBodyClasses() {
       const domParts = {
-        header: '!gl-rounded-base',
+        header: '!gl-rounded-lg',
         contentByHash: '',
         content: '',
       };
 
       if (this.showBody) {
         domParts.header = 'gl-rounded-bl-none gl-rounded-br-none';
-        domParts.contentByHash =
-          'gl-rounded-none gl-rounded-bl-base gl-rounded-br-base gl-border-0';
-        domParts.content = 'gl-rounded-bl-base gl-rounded-br-base';
+        domParts.contentByHash = 'gl-rounded-none gl-rounded-bl-lg gl-rounded-br-lg gl-border-0';
+        domParts.content = 'gl-rounded-bl-lg gl-rounded-br-lg';
       }
 
       return domParts;
@@ -274,7 +267,6 @@ export default {
         if (
           this.viewDiffsFileByFile &&
           !this.isCollapsed &&
-          !this.glFeatures.singleFileFileByFile &&
           newHash &&
           oldHash &&
           !this.hasDiff &&
@@ -363,20 +355,17 @@ export default {
     },
     handleToggle({ viaUserInteraction = false } = {}) {
       const collapsingNow = !this.isCollapsed;
-      const contentElement = this.$el.querySelector(`#${fileContentsId(this.file)}`);
 
       this.setFileCollapsedByUser({
         filePath: this.file.file_path,
         collapsed: collapsingNow,
       });
 
-      if (
-        collapsingNow &&
-        viaUserInteraction &&
-        contentElement &&
-        isElementStuck(this.$refs.header.$el)
-      ) {
-        scrollToElement(contentElement, { behavior: 'auto' });
+      if (collapsingNow && viaUserInteraction) {
+        this.$nextTick(async () => {
+          this.$el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          await scrollPastCoveringElements(this.$el);
+        });
       }
 
       if (!this.hasDiff && !collapsingNow && this.file?.viewer?.expandable) {
@@ -450,7 +439,7 @@ export default {
   },
   warningClasses: [
     'collapsed-file-warning',
-    'gl-rounded-b-base',
+    'gl-rounded-b-lg',
     'gl-px-5',
     'gl-py-4',
     'gl-flex',
@@ -485,7 +474,7 @@ export default {
       variant="danger"
       :dismissible="false"
       data-testid="conflictsAlert"
-      class="gl-rounded-b-none gl-rounded-t-base"
+      class="gl-rounded-b-none gl-rounded-t-lg"
     >
       {{ $options.CONFLICT_TEXT[file.conflict_type] }}
       <template v-if="!canMerge">

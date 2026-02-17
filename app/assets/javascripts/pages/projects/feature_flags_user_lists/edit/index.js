@@ -12,6 +12,7 @@ const el = document.getElementById('js-edit-user-list');
 const { userListsDocsPath } = el.dataset;
 new Vue({
   el,
+  name: 'FeatureFlagsEditUserListRoot',
   store: createStore(el.dataset),
   provide: { userListsDocsPath },
   render(h) {

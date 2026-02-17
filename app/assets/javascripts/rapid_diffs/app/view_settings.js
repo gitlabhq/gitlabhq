@@ -18,6 +18,7 @@ const expandAllFiles = () => {
 const initSettingsApp = (el, pinia) => {
   return new Vue({
     el,
+    name: 'DiffAppControlsRoot',
     pinia,
     computed: {
       ...mapState(useDiffsList, ['isLoading', 'isEmpty']),

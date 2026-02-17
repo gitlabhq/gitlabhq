@@ -786,18 +786,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    describe '.self_aimed_for_deletion' do
-      let_it_be(:active_project) { create(:project) }
-      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
-
-      it 'returns projects marked for deletion' do
-        result = described_class.self_aimed_for_deletion
-
-        expect(result).to include(for_deletion_project)
-        expect(result).not_to include(active_project)
-      end
-    end
-
     describe '.self_or_ancestors_aimed_for_deletion' do
       subject { described_class.self_or_ancestors_aimed_for_deletion }
 
@@ -810,18 +798,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns projects not marked for deletion' do
         result = described_class.not_aimed_for_deletion
-
-        expect(result).to include(active_project)
-        expect(result).not_to include(for_deletion_project)
-      end
-    end
-
-    describe '.self_not_aimed_for_deletion' do
-      let_it_be(:active_project) { create(:project) }
-      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
-
-      it 'returns projects not marked for deletion' do
-        result = described_class.self_not_aimed_for_deletion
 
         expect(result).to include(active_project)
         expect(result).not_to include(for_deletion_project)
@@ -871,6 +847,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    describe '.deletion_in_progress' do
+      let_it_be(:normal_project) { create(:project) }
+      let_it_be(:pending_delete_project) { create(:project, pending_delete: true) }
+      let_it_be(:deletion_in_progress_project) do
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: project.creator)
+        project
+      end
+
+      it 'returns only projects with deletion_in_progress state' do
+        result = described_class.deletion_in_progress
+
+        expect(result).to contain_exactly(deletion_in_progress_project)
+      end
+
+      it 'does not return projects with pending_delete column' do
+        result = described_class.deletion_in_progress
+
+        expect(result).not_to include(pending_delete_project)
+      end
+    end
+
+    describe '.not_deletion_in_progress' do
+      let_it_be(:normal_project) { create(:project) }
+      let_it_be(:pending_delete_project) { create(:project, pending_delete: true) }
+      let_it_be(:deletion_in_progress_project) do
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: project.creator)
+        project
+      end
+
+      it 'returns projects without deletion_in_progress state' do
+        result = described_class.not_deletion_in_progress
+
+        expect(result).to include(normal_project, pending_delete_project)
+        expect(result).not_to include(deletion_in_progress_project)
+      end
+    end
+
     describe '.archived' do
       let_it_be(:archived_group) { create(:group, :archived) }
       let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }
@@ -879,19 +894,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { described_class.archived }
 
       it_behaves_like 'includes projects in archived hierarchy'
-    end
-
-    describe '.self_archived' do
-      let_it_be(:archived_group) { create(:group, :archived) }
-      let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }
-      let_it_be(:archived_project) { create(:project, archived: true) }
-
-      it 'returns archived projects' do
-        result = described_class.self_archived
-
-        expect(result).to include(archived_project)
-        expect(result).not_to include(active_project)
-      end
     end
 
     describe '.self_or_ancestors_archived' do
@@ -909,34 +911,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'excludes projects in archived hierarchy'
     end
 
-    describe '.self_non_archived' do
-      let_it_be(:active_project) { create(:project, archived: false) }
-      let_it_be(:archived_project) { create(:project, archived: true) }
-
-      it 'returns non-archived projects' do
-        result = described_class.self_non_archived
-
-        expect(result).to include(active_project)
-        expect(result).not_to include(archived_project)
-      end
-    end
-
     describe '.self_and_ancestors_non_archived' do
       subject { described_class.self_and_ancestors_non_archived }
 
       it_behaves_like 'excludes projects in archived hierarchy'
-    end
-
-    describe '.self_active' do
-      let_it_be(:active_project) { create(:project, archived: false) }
-      let_it_be(:inactive_project) { create(:project, archived: true) }
-
-      it 'returns active projects' do
-        result = described_class.self_active
-
-        expect(result).to include(active_project)
-        expect(result).not_to include(inactive_project)
-      end
     end
 
     describe '.self_and_ancestors_active' do
@@ -944,18 +922,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it_behaves_like 'excludes projects in archived hierarchy'
       it_behaves_like 'excludes projects in hierarchy marked for deletion'
-    end
-
-    describe '.self_inactive' do
-      let_it_be(:active_project) { create(:project, archived: false) }
-      let_it_be(:inactive_project) { create(:project, archived: true) }
-
-      it 'returns inactive projects' do
-        result = described_class.self_inactive
-
-        expect(result).to include(inactive_project)
-        expect(result).not_to include(active_project)
-      end
     end
 
     describe '.self_or_ancestors_inactive' do
@@ -1018,6 +984,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(described_class.with_api_blob_entity_associations.preload_values).to match_array(expected_array)
       end
     end
+
+    describe '.projects_order_namespace_id_asc' do
+      let(:arel_table) { described_class.arel_table }
+      let(:relation) { described_class.all }
+
+      before do
+        allow(relation).to receive(:reorder)
+      end
+
+      it do
+        relation.projects_order_namespace_id_asc
+        expect(relation).to have_received(:reorder).with(arel_table['namespace_id'].asc)
+      end
+    end
   end
 
   describe 'modules' do
@@ -1055,7 +1035,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:last_activity_at) { 1.day.ago }
       let(:project) { build(:project, last_activity_at: last_activity_at) }
 
-      it 'will use supplied timestamp' do
+      it 'uses supplied timestamp' do
         expect { project.valid? }.not_to change(project, :last_activity_at)
       end
     end
@@ -3448,6 +3428,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.root_ids_for' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:group1_project) { create(:project, namespace: group1) }
+    let_it_be(:group2_project) { create(:project, namespace: group2) }
+    let_it_be(:subgroup) { create(:group, parent: group1) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    it 'returns unique root namespace ids for given project ids', :aggregate_failures do
+      expect(described_class.root_ids_for([group1_project.id, subgroup_project.id])).to match_array([group1.id])
+      expect(described_class.root_ids_for([group2_project.id])).to eq([group2.id])
+      expect(described_class.root_ids_for([subgroup_project.id])).to eq([group1.id])
+    end
+
+    it 'returns empty array when project_ids is nil' do
+      expect(described_class.root_ids_for(nil)).to be_empty
+    end
+
+    it 'returns empty array when project_ids is empty' do
+      expect(described_class.root_ids_for([])).to be_empty
+    end
+
+    it 'handles non-existent project ids' do
+      expect(described_class.root_ids_for([non_existing_record_id])).to be_empty
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 
@@ -4524,7 +4531,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when retrieving the latest_unscheduled_pipelines' do
       subject { project.latest_unscheduled_pipelines(ref: project.default_branch, sha: project.commit.id) }
 
-      it 'should not contain scheduled pipelines' do
+      it 'does not contain scheduled pipelines' do
         expect(subject.length).to eq(1)
         expect(subject).to include(push_pipeline)
       end
@@ -7055,40 +7062,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#latest_successful_builds_for' do
-    let(:project) { build(:project) }
-
-    before do
-      allow(project).to receive(:default_branch).and_return('master')
-    end
-
-    context 'without a ref' do
-      it 'returns a pipeline for the default branch' do
-        expect(project)
-          .to receive(:latest_successful_pipeline_for_default_branch)
-
-        project.latest_successful_pipeline_for
-      end
-    end
-
-    context 'with the ref set to the default branch' do
-      it 'returns a pipeline for the default branch' do
-        expect(project)
-          .to receive(:latest_successful_pipeline_for_default_branch)
-
-        project.latest_successful_pipeline_for(project.default_branch)
-      end
-    end
-
-    context 'with a ref that is not the default branch' do
-      it 'returns the latest successful pipeline for the given ref' do
-        expect(project.ci_pipelines).to receive(:latest_successful_for_ref).with('foo')
-
-        project.latest_successful_pipeline_for('foo')
-      end
-    end
-  end
-
   describe '#check_repository_path_availability' do
     let(:project) { build(:project, :repository, :legacy_storage) }
 
@@ -9030,18 +9003,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#limited_protected_branches' do
-    let(:project) { create(:project) }
-    let!(:protected_branch) { create(:protected_branch, project: project) }
-    let!(:another_protected_branch) { create(:protected_branch, project: project) }
-
-    subject { project.limited_protected_branches(1) }
-
-    it 'returns limited number of protected branches based on specified limit' do
-      expect(subject.count).to eq(1)
-    end
-  end
-
   describe '#group_protected_branches' do
     subject { project.group_protected_branches }
 
@@ -10186,7 +10147,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let!(:deployment) { create(:deployment, :created, project: project) }
     let!(:old_deployment) { create(:deployment, :created, project: project, finished_at: 1.year.ago) }
 
-    it 'will call fast_destroy_all on a specific deployment by id' do
+    it 'calls fast_destroy_all on a specific deployment by id' do
       expect(Deployment).to receive(:fast_destroy_all).and_call_original
 
       expect do

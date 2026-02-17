@@ -165,7 +165,7 @@ EOT
         context 'when expanded is set to false' do
           let(:expanded) { false }
 
-          it 'will be marked as generated and collapsed' do
+          it 'is marked as generated and collapsed' do
             expect(diff).to be_generated
             expect(diff).to be_collapsed
             expect(diff.diff).to be_empty
@@ -175,7 +175,7 @@ EOT
         context 'when expanded is set to true' do
           let(:expanded) { true }
 
-          it 'will still be marked as generated, but not as collapsed' do
+          it 'marks as generated, but not as collapsed' do
             expect(diff).to be_generated
             expect(diff).not_to be_collapsed
             expect(diff.diff).not_to be_empty
@@ -267,7 +267,7 @@ EOT
       let(:diff_three) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_three })) }
 
       context 'when replace_invalid_utf8_chars is true' do
-        it 'will convert invalid characters and not cause an encoding error' do
+        it 'converts invalid characters and not cause an encoding error' do
           expect(diff.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
           expect(diff_two.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
           expect(diff_three.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
@@ -280,7 +280,7 @@ EOT
         context 'when the diff is binary' do
           let(:project) { create(:project, :repository) }
 
-          it 'will not try to replace characters' do
+          it 'does not try to replace characters' do
             expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
             expect(binary_diff(project).diff).not_to be_empty
           end
@@ -291,7 +291,7 @@ EOT
         let(:not_replaced_diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string, replace_invalid_utf8_chars: false })) }
         let(:not_replaced_diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two, replace_invalid_utf8_chars: false })) }
 
-        it 'will not try to convert invalid characters' do
+        it 'does not try to convert invalid characters' do
           expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
         end
       end

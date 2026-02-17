@@ -18,22 +18,19 @@ GitLab Self-Managed instance. If you are an administrator, to access the **Admin
 
 - In GitLab 18.5 and later:
   - In the upper-right corner, select **Admin**.
-  - On the top bar, select **Search or go to**, then select **Admin area**.
-- In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
-- In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.
-- In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin**.
-- In GitLab 16.0 and earlier: on the top bar, select **Main menu** > **Admin**.
+  - In the top bar, select **Search or go to**, then select **Admin area**.
+- In GitLab 17.3 and later: in the left sidebar, at the bottom, select **Admin**.
+- In GitLab 16.7 and later: in the left sidebar, at the bottom, select **Admin area**.
+- In GitLab 16.1 and later: in the left sidebar, select **Search or go to**, then select **Admin**.
+- In GitLab 16.0 and earlier: in the top bar, select **Main menu** > **Admin**.
 
 If the GitLab instance uses Admin Mode, you must
 [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
 **Admin** is visible.
 
-{{< alert type="note" >}}
-
-Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area.
-On GitLab.com, the **Admin** area feature is not available.
-
-{{< /alert >}}
+> [!note]
+> Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area.
+> On GitLab.com, the **Admin** area feature is not available.
 
 ## Administering projects
 
@@ -158,10 +155,10 @@ To impersonate a user:
 
 - Through the UI:
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Overview** > **Users**.
+  1. In the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
   1. In the upper right, select **Impersonate**.
-  1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito" >}}).
+  1. To stop impersonating, in the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito" >}}).
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](compliance/audit_event_reports.md#user-impersonation).
@@ -264,7 +261,7 @@ To prevent a user from creating top-level groups:
 After you turn off this setting:
 
 - The user cannot create top-level groups.
-- The user can create subgroups in groups where they have at least the Maintainer role,
+- The user can create subgroups in groups where they have the Maintainer or Owner role,
   depending on the [subgroup creation permissions](../user/group/subgroups/_index.md#change-who-can-create-subgroups)
   for the group.
 
@@ -278,12 +275,9 @@ After you turn off this setting:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 To administer all groups in the GitLab instance:
 
@@ -441,14 +435,11 @@ The page includes this information about each Gitaly server:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](feature_flags/_index.md) named `ui_for_organizations`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
+> can [enable the feature flag](feature_flags/_index.md) named `ui_for_organizations`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 The Organizations page in the **Admin** area lists all projects by default, in reverse order of when
 they were last updated. Each project shows:
@@ -729,7 +720,7 @@ control, analyze, and track every change.
 
 The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance.
 Retrieve this information with the
-[Application statistics API](../api/statistics.md#get-details-on-current-application-statistics).
+[Application statistics API](../api/statistics.md#retrieve-application-statistics).
 
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher,
 these statistics show approximate data

@@ -6,9 +6,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be_with_refind(:job) { create(:ci_build, :unique_name, pipeline: pipeline) }
-  let_it_be_with_refind(:other_job) { create(:ci_build, :unique_name, pipeline: pipeline) }
   let_it_be_with_refind(:runner) { create(:ci_runner) }
   let_it_be_with_refind(:other_runner) { create(:ci_runner, :project_type, projects: [project]) }
 
@@ -18,7 +15,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
   subject(:service) { described_class.new(statuses, config: config) }
 
   where(:taggable_class, :taggable, :other_taggable, :join_model_class, :expected_configuration) do
-    Ci::Build  | ref(:job)    | ref(:other_job)    | nil               | described_class::BuildsTagsConfiguration
     Ci::Runner | ref(:runner) | ref(:other_runner) | Ci::RunnerTagging | described_class::RunnerTaggingsConfiguration
   end
 
@@ -50,8 +46,8 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
       end
 
       context 'with tags' do
-        let(:expected_taggings) { join_model_class ? 2 : 0 }
-        let(:expected_other_taggings) { join_model_class ? 3 : 0 }
+        let(:expected_taggings) { 2 }
+        let(:expected_other_taggings) { 3 }
 
         before do
           set_tag_list(taggable, %w[tag1 tag2])
@@ -65,35 +61,11 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
           expect(other_taggable.reload.tag_list).to match_array(%w[tag2 tag3 tag4])
         end
 
-        it 'persists taggings for runners but not for builds' do
+        it 'persists taggings' do
           insert!
 
           expect(taggable.taggings.size).to eq(expected_taggings)
           expect(other_taggable.taggings.size).to eq(expected_other_taggings)
-        end
-
-        context 'when ci_stop_populating_p_ci_build_tags feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
-          end
-
-          it 'persists tags' do
-            expect(insert!).to be_truthy
-
-            expect(taggable.reload.tag_list).to match_array(%w[tag1 tag2])
-            expect(other_taggable.reload.tag_list).to match_array(%w[tag2 tag3 tag4])
-          end
-
-          it 'persists expected taggings' do
-            insert!
-
-            expect(taggable.taggings.size).to eq(2)
-            expect(other_taggable.taggings.size).to eq(3)
-
-            expect(taggable_class.tagged_with('tag1')).to include(taggable)
-            expect(taggable_class.tagged_with('tag2')).to include(taggable, other_taggable)
-            expect(taggable_class.tagged_with('tag3')).to include(other_taggable)
-          end
         end
 
         context 'when tagging class has name column' do
@@ -114,7 +86,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
 
         context 'when tags have white-space' do
           let(:expected_tags) { %w[taga tagb tagc] }
-          let(:expected_taggings) { join_model_class ? expected_tags : [] }
 
           before do
             set_tag_list(taggable, ['       taga', 'tagb      ', '   tagc    '])
@@ -124,7 +95,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
             insert!
 
             expect(taggable.tag_list).to match_array(expected_tags)
-            expect(taggable.tags.map(&:name)).to match_array(expected_taggings)
+            expect(taggable.tags.map(&:name)).to match_array(expected_tags)
           end
         end
 
@@ -134,8 +105,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
           end
 
           it 'inserts tags in batches' do
-            next unless service.config.uses_taggings?
-
             recorder = ActiveRecord::QueryRecorder.new { insert! }
             count = recorder.log.count { |query| query.include?('INSERT INTO "tags"') }
 
@@ -149,8 +118,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
           end
 
           it 'inserts expected taggings in batches' do
-            next if join_model_class.nil?
-
             recorder = ActiveRecord::QueryRecorder.new { insert! }
             count = recorder.log.count { |query| query.include?("INSERT INTO \"#{join_model_class.table_name}\"") }
 
@@ -160,8 +127,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
       end
 
       context 'with tags for only one taggable' do
-        let(:expected_tagging_count) { join_model_class ? 2 : 0 }
-
         before do
           set_tag_list(taggable, %w[tag1 tag2])
         end
@@ -176,27 +141,9 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
         it 'persists expected taggings' do
           insert!
 
-          expect(taggable.taggings.size).to eq(expected_tagging_count)
-
-          next if join_model_class.nil?
-
+          expect(taggable.taggings.size).to eq(2)
           expect(taggable_class.tagged_with('tag1')).to include(taggable)
           expect(taggable_class.tagged_with('tag2')).to include(taggable)
-        end
-
-        context 'when ci_stop_populating_p_ci_build_tags feature flag is disabled' do
-          # With feature flag disabled, taggings are created for builds
-          let(:expected_tagging_count) { taggable_class == Ci::Build || join_model_class ? 2 : 0 }
-
-          before do
-            stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
-          end
-
-          it 'persists expected taggings' do
-            insert!
-
-            expect(taggable.taggings.size).to eq(expected_tagging_count)
-          end
         end
       end
     end
@@ -204,8 +151,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
     private
 
     def set_tag_list(taggable, tags)
-      return stub_ci_job_definition(taggable, tag_list: tags) if taggable_class == Ci::Build
-
       taggable.tag_list = tags
     end
   end

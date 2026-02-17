@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectAuthorization < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
   include EachBatch
   include FromUnion
 

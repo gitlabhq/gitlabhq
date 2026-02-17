@@ -162,15 +162,30 @@ namespace :gitlab do
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
       databases_loaded = []
+      # Since we execute `create_dynamic_partitions` after `db:migrate` and
+      # `db:schema:load` which are called in `configure_database`, partitions
+      # get created before sequences are alterred for new cells. This leads to issues like
+      # https://gitlab.com/gitlab-org/gitlab-development-kit/-/work_items/3198. To avoid this
+      # we invoke `create_dynamic_partitions` with an argument that makes it a no-op,
+      # then re-enable and execute skipped tasks once `alter_cell_sequences_range` is completed.
+      skipped_partition_tasks = []
 
       if databases_with_tasks.size == 1
         return unless databases_with_tasks.first.name == 'main'
 
         connection = Gitlab::Database.database_base_models['main'].connection
+        # Invoke create_dynamic_partitions as a no-op so it's marked as
+        # executed by Rake.
+        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke(:skip)
+        skipped_partition_tasks << 'gitlab:db:create_dynamic_partitions'
+
         databases_loaded << configure_database(connection)
       else
         Gitlab::Database.database_base_models_with_gitlab_shared.each do |name, model|
           next unless databases_with_tasks.any? { |db_with_tasks| db_with_tasks.name == name }
+
+          Rake::Task["gitlab:db:create_dynamic_partitions:#{name}"].invoke(:skip)
+          skipped_partition_tasks << "gitlab:db:create_dynamic_partitions:#{name}"
 
           databases_loaded << configure_database(model.connection, database_name: name)
         end
@@ -179,6 +194,11 @@ namespace :gitlab do
       return unless databases_loaded.present? && databases_loaded.all?
 
       alter_cell_sequences_range
+      # Re-enable and execute skipped tasks
+      skipped_partition_tasks.each do |task_name|
+        Rake::Task[task_name].reenable
+        Rake::Task[task_name].invoke
+      end
 
       Rake::Task["gitlab:db:lock_writes"].invoke
       Rake::Task['db:seed_fu'].invoke
@@ -304,15 +324,15 @@ namespace :gitlab do
     end
 
     desc 'Create missing dynamic database partitions'
-    task create_dynamic_partitions: :environment do
-      Gitlab::Database::Partitioning.sync_partitions
+    task :create_dynamic_partitions, [:skip] => :environment do |_, args|
+      Gitlab::Database::Partitioning.sync_partitions unless args.skip
     end
 
     namespace :create_dynamic_partitions do
       each_database(databases) do |database_name|
         desc "Create missing dynamic database partitions on the #{database_name} database"
-        task database_name => :environment do
-          Gitlab::Database::Partitioning.sync_partitions(only_on: database_name)
+        task database_name, [:skip] => :environment do |_, args|
+          Gitlab::Database::Partitioning.sync_partitions(only_on: database_name) unless args.skip
         end
       end
     end

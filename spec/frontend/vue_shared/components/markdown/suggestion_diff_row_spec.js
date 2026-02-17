@@ -44,9 +44,16 @@ describe('SuggestionDiffRow', () => {
         },
       });
 
-      expect(findSuggestionContent().html()).toBe(
-        '<td data-testid="suggestion-diff-content" class="line_content old"><span class="line">oldrichtext</span></td>',
-      );
+      expect(findSuggestionContent().attributes('data-testid')).toBe('suggestion-diff-content');
+      expect(findSuggestionContent().classes().sort()).toStrictEqual(['line_content', 'old']);
+
+      expect(findSuggestionContent().html()).toMatchInlineSnapshot(`
+<span
+  class="line"
+>
+  oldrichtext
+</span>
+`);
     });
 
     it('has the right classes on the wrapper', () => {

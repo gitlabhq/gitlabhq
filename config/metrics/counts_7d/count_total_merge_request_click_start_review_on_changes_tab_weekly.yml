@@ -2,6 +2,8 @@
 key_path: counts.count_total_merge_request_click_start_review_on_changes_tab_weekly
 description: Weekly count of clicks on the Start a Review button on the MR Changes tab
 product_group: code_review
+product_categories:
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

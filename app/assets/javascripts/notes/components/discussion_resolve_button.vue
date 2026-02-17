@@ -24,7 +24,7 @@ export default {
   <gl-button
     :loading="isResolving"
     class="gl-w-full @sm/panel:!gl-ml-3 @sm/panel:gl-w-auto"
-    @click="$emit('onClick')"
+    @click="$emit('on-click')"
   >
     {{ buttonTitle }}
   </gl-button>

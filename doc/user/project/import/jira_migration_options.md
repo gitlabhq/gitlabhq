@@ -88,7 +88,7 @@ View a complete demo of the process: <i class="fa-youtube-play" aria-hidden="tru
 
 [GitLab Professional Services](https://about.gitlab.com/services/) has built their fork of the previously-mentioned `jira2gitlab` script, `Jira2Lab`:
 
-- Blog post: [Seamlessly migrate from Jira to GitLab with Jira2Lab at scale](https://about.gitlab.com/blog/2024/10/10/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/)
+- Blog post: [Seamlessly migrate from Jira to GitLab with Jira2Lab at scale](https://about.gitlab.com/blog/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/)
 - [Repository](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/jira2lab)
 
 As stated in the `Jira2Lab` README:

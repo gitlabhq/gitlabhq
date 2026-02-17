@@ -1,4 +1,10 @@
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import {
+  GlSprintf,
+  GlLink,
+  GlCollapse,
+  GlButton,
+  GlAnimatedChevronLgRightDownIcon,
+} from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { createAlert } from '~/alert';
@@ -8,7 +14,13 @@ import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobVariablesForm from '~/ci/job_details/components/job_variables_form.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
-import { mockFullPath, mockId, mockJobResponse, mockJobWithVariablesResponse } from '../mock_data';
+import {
+  mockFullPath,
+  mockId,
+  mockJobResponse,
+  mockManualJobResponse,
+  mockJobWithVariablesResponse,
+} from '../mock_data';
 
 jest.mock('~/alert');
 Vue.use(VueApollo);
@@ -18,13 +30,16 @@ const defaultProvide = {
 };
 const defaultProps = {
   jobId: mockId,
+  isExpanded: false,
 };
 
 describe('Job Variables Form', () => {
   let wrapper;
   let mockApollo;
 
-  const getJobQueryResponseHandlerWithVariables = jest.fn().mockResolvedValue(mockJobResponse);
+  const getJobQueryResponseHandlerWithVariables = jest
+    .fn()
+    .mockResolvedValue(mockManualJobResponse);
 
   const defaultHandlers = {
     getJobQueryResponseHandlerWithVariables,
@@ -52,6 +67,9 @@ describe('Job Variables Form', () => {
     return waitForPromises();
   };
 
+  const findToggleButton = () => wrapper.findComponent(GlButton);
+  const findChevron = () => wrapper.findComponent(GlAnimatedChevronLgRightDownIcon);
+  const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findHelpText = () => wrapper.findComponent(GlSprintf);
   const findHelpLink = () => wrapper.findComponent(GlLink);
   const findDeleteVarBtn = () => wrapper.findByTestId('delete-variable-btn');
@@ -78,14 +96,57 @@ describe('Job Variables Form', () => {
     createAlert.mockClear();
   });
 
+  describe('when not manual job', () => {
+    beforeEach(async () => {
+      await createComponent({
+        handlers: {
+          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
+        },
+      });
+    });
+
+    it("doesn't render collapsed", () => {
+      expect(findCollapse().exists()).toBe(false);
+    });
+
+    it("doesn't render toggle button", () => {
+      expect(findToggleButton().exists()).toBe(false);
+    });
+  });
+
   describe('when page renders', () => {
     beforeEach(async () => {
       await createComponent();
     });
 
+    it('renders collapsed by default when isExpanded is false', () => {
+      expect(findCollapse().props('visible')).toBe(false);
+    });
+
+    it('renders toggle button', () => {
+      expect(findToggleButton().text()).toContain('Variables');
+    });
+
     it('renders help text with provided link', () => {
       expect(findHelpText().exists()).toBe(true);
       expect(findHelpLink().attributes('href')).toBe('/help/ci/variables/_index#for-a-project');
+    });
+  });
+
+  describe('when toggling collapse', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
+    it('expands when toggle button is clicked', async () => {
+      expect(findCollapse().props('visible')).toBe(false);
+      expect(findChevron().props('isOn')).toBe(false);
+
+      await findToggleButton().trigger('click');
+
+      expect(findCollapse().props('visible')).toBe(true);
+      expect(findToggleButton().attributes('aria-expanded')).toBe('true');
+      expect(findChevron().props('isOn')).toBe(true);
     });
   });
 
@@ -114,6 +175,7 @@ describe('Job Variables Form', () => {
             .mockResolvedValue(mockJobWithVariablesResponse),
         },
       });
+      await findToggleButton().trigger('click');
     });
 
     it('sets job variables', () => {
@@ -128,11 +190,8 @@ describe('Job Variables Form', () => {
 
   describe('updating variables in UI', () => {
     beforeEach(async () => {
-      await createComponent({
-        handlers: {
-          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
-        },
-      });
+      await createComponent();
+      await findToggleButton().trigger('click');
     });
 
     it('creates a new variable when user enters a new key value', async () => {
@@ -187,11 +246,8 @@ describe('Job Variables Form', () => {
 
   describe('variable delete button placeholder', () => {
     beforeEach(async () => {
-      await createComponent({
-        handlers: {
-          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
-        },
-      });
+      await createComponent();
+      await findToggleButton().trigger('click');
     });
 
     it('delete variable button placeholder should only exist when a user cannot remove', () => {
@@ -215,11 +271,8 @@ describe('Job Variables Form', () => {
 
   describe('emitting events', () => {
     beforeEach(async () => {
-      await createComponent({
-        handlers: {
-          getJobQueryResponseHandlerWithVariables: jest.fn().mockResolvedValue(mockJobResponse),
-        },
-      });
+      await createComponent();
+      await findToggleButton().trigger('click');
     });
 
     it('emits update-variables event when data changes', async () => {

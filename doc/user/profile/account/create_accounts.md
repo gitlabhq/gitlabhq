@@ -76,12 +76,9 @@ Users are created when they:
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
 
 To create a user through the Rails console:
 

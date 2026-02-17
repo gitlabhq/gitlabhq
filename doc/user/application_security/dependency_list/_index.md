@@ -40,12 +40,9 @@ latest default branch pipeline.
 The CycloneDX reports must comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`.
 You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate) to validate CycloneDX reports.
 
-{{< alert type="note" >}}
-
-Although this is not mandatory for populating the dependency list, the SBOM document must include and comply with the
-GitLab CycloneDX property taxonomy to provide some properties and to enable some security features.
-
-{{< /alert >}}
+> [!note]
+> Although this is not mandatory for populating the dependency list, the SBOM document must include and comply with the
+> GitLab CycloneDX property taxonomy to provide some properties and to enable some security features.
 
 ## View project dependencies
 
@@ -54,16 +51,9 @@ GitLab CycloneDX property taxonomy to provide some properties and to enable some
 - In GitLab 17.2, the `location` field no longer links to the commit where the dependency was last detected when the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled. The flag is disabled by default.
 - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
 - View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
-- View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` enabled by default.
+- View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 To view the dependencies of a project or all projects in a group:
 
@@ -135,12 +125,9 @@ The dependency list shows only dependencies that match your filters.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of support for vulnerabilities associated with [SBOM-based dependency scanning](../dependency_scanning/dependency_scanning_sbom/_index.md) is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of support for vulnerabilities associated with [SBOM-based dependency scanning](../dependency_scanning/dependency_scanning_sbom/_index.md) is controlled by a feature flag.
+> For more information, see the history.
 
 If a dependency has known vulnerabilities, view them by selecting the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each

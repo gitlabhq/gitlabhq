@@ -22,14 +22,6 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
   end
 
-  it 'has link to next generation container registry docs' do
-    allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
-
-    visit_container_registry
-
-    expect(page).to have_link('Learn more', href: help_page_href)
-  end
-
   it 'has a page title set' do
     visit_container_registry
 

@@ -48,6 +48,8 @@ module Lfs
 
     def create_file!
       LfsObject.create!(oid: oid, size: size, file: uploaded_file)
+    rescue ActiveRecord::RecordNotUnique
+      LfsObject.for_oid_and_size(oid, size)
     end
 
     def replace_file!(lfs_object)

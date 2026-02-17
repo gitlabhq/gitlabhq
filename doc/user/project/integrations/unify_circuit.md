@@ -29,6 +29,7 @@ In GitLab:
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Unify Circuit.
 1. Paste the **Webhook URL** that you copied from the Unify Circuit configuration step.
 1. Select the **Notify only broken pipelines** checkbox to notify only on failures.
+1. Select the **Notify only when status changes** checkbox to send notifications only when the pipeline status for the ref changes.
 1. In the **Branches for which notifications are to be sent** dropdown list, select which types of branches to send notifications for.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.

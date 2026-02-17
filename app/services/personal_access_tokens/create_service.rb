@@ -2,6 +2,8 @@
 
 module PersonalAccessTokens
   class CreateService < BaseService
+    include Gitlab::InternalEventsTracking
+
     def initialize(current_user:, target_user:, organization_id:, params: {}, concatenate_errors: true)
       @current_user = current_user
       @target_user = target_user
@@ -18,6 +20,7 @@ module PersonalAccessTokens
 
       if token.persisted?
         log_event(token)
+        track_event(token)
 
         token.run_after_commit_or_now do
           NotificationService.new.access_token_created(token.user, token.name)
@@ -66,6 +69,19 @@ module PersonalAccessTokens
 
     def log_event(token)
       log_info("PAT CREATION: created_by: '#{current_user.username}', created_for: '#{token.user.username}', token_id: '#{token.id}'")
+    end
+
+    def track_event(token)
+      # Granular PATs created event are tracked in Authn::PersonalAccessTokens::CreateGranularService
+      return if token.granular?
+
+      scopes = token.scopes.join(', ')
+
+      track_internal_event(
+        'create_pat',
+        user: token.user,
+        additional_properties: { type: 'legacy', scopes: scopes }
+      )
     end
   end
 end

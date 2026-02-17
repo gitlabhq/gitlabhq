@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/commits/show.html.haml' do
+RSpec.describe 'projects/commits/show.html.haml', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:commits) { [commit] }
@@ -30,7 +30,7 @@ RSpec.describe 'projects/commits/show.html.haml' do
     allow(view).to receive(:commit_blob).and_return(true)
   end
 
-  context 'tree controls' do
+  context 'with tree controls' do
     before do
       render
     end
@@ -44,7 +44,7 @@ RSpec.describe 'projects/commits/show.html.haml' do
     end
   end
 
-  context 'commits date headers' do
+  context 'with commits date headers' do
     let(:user) { build(:user, timezone: timezone) }
     let(:committed_date) { Time.find_zone('UTC').parse('2023-01-01') }
 

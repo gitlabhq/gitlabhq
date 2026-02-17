@@ -107,8 +107,9 @@ By default, Mattermost uses the Linux package bundled PostgreSQL service. If you
 
 ## Running GitLab Mattermost on its own server
 
-If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services are still set up on your GitLab Mattermost server, but they do not accept user requests or
-consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab service bundled into the Linux package.
+If you run GitLab and GitLab Mattermost on two separate servers, GitLab services are still set up on your GitLab Mattermost server. However, the GitLab services do not accept
+user requests or consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab
+services that are bundled in the Linux package.
 
 ```ruby
 mattermost_external_url 'http://mattermost.example.com'
@@ -341,13 +342,10 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-{{< alert type="note" >}}
-
-When upgrading the Mattermost version, it is essential to check the
-[Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
-for Mattermost to address any changes or migrations that need to be performed.
-
-{{< /alert >}}
+> [!note]
+> When upgrading the Mattermost version, it is essential to check the
+> [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
+> for Mattermost to address any changes or migrations that need to be performed.
 
 GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
 GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`

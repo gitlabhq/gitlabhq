@@ -37,7 +37,10 @@ module QA
             result = ''
 
             wait_until(reload: false, max_duration: wait, sleep_interval: 1) do
-              result = job_log.include?('Job') ? job_log : ''
+              next false unless has_job_log?
+
+              text = job_log
+              result = text.include?('Job') ? text : ''
               result.present?
             end
 
@@ -83,13 +86,13 @@ module QA
             click_element('pipeline-path')
           end
 
-          private
-
           def loaded?(wait: 180)
             wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
               has_job_log?
             end
           end
+
+          private
 
           def job_log
             find_element('job-log-content').text

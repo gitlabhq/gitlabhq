@@ -17,6 +17,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
+// GetInfoRefsHandler returns an HTTP handler for git-upload-pack and git-receive-pack info/refs requests
 func GetInfoRefsHandler(a *api.API) http.Handler {
 	return repoPreAuthorizeHandler(a, handleGetInfoRefs)
 }

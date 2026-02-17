@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Users::GroupCallouts::Create, feature_category: :shared do
+RSpec.describe Mutations::Users::GroupCallouts::Create, feature_category: :user_management do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :private) }

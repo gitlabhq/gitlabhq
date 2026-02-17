@@ -22,5 +22,6 @@ FactoryBot.define do
   factory :doorkeeper_application, class: 'Authn::OauthApplication' do
     sequence(:name) { |n| "Application #{n}" }
     redirect_uri { 'https://app.com/callback' }
+    organization
   end
 end

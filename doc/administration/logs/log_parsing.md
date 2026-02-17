@@ -17,15 +17,12 @@ but if they are not available you can still quickly parse
 [GitLab logs](_index.md) in JSON format
 using [`jq`](https://stedolan.github.io/jq/).
 
-{{< alert type="note" >}}
-
-Specifically for summarizing error events and basic usage statistics,
-the GitLab Support Team offers the specialized
-[`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
-It can usually process larger logs much faster than `jq` and
-outputs a larger selection of statistical information.
-
-{{< /alert >}}
+> [!note]
+> Specifically for summarizing error events and basic usage statistics,
+> the GitLab Support Team offers the specialized
+> [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+> It can usually process larger logs much faster than `jq` and
+> outputs a larger selection of statistical information.
 
 ## What is JQ?
 
@@ -259,7 +256,7 @@ many unexpected user agents in this output indicate unoptimized scripts.
 Expected user agents include `gitlab-runner`, `GitLab-Shell`, and browsers.
 
 The performance impact of runners checking for new jobs can be reduced by increasing
-[the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section),
+[the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-global-section),
 for example.
 
 ### Parsing `gitlab-rails/geo.log`

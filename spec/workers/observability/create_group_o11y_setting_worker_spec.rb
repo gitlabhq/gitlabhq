@@ -95,7 +95,9 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
                   'group_id' => group.id,
                   'email' => user.email,
                   'password' => match(/\A[a-f0-9]{32}\z/),
-                  'encryption_key' => match(/\A[a-f0-9]{64}\z/)
+                  'encryption_key' => match(/\A[a-f0-9]{64}\z/),
+                  'user_name' => user.name,
+                  'group_path' => group.full_path
                 )
               )
             )
@@ -123,6 +125,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         include_examples 'logs status', :success
 
+        it 'schedules GroupExportWorker to backfill existing pipelines' do
+          expect(Ci::Observability::GroupExportWorker).to receive(:perform_in).with(1.hour, group.id)
+
+          perform
+        end
+
         context 'when CI variable creation fails' do
           before do
             create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT')
@@ -139,6 +147,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
             initial_count = group.reload.variables.count
             expect { perform }.not_to change { group.reload.variables.count }
             expect(group.reload.variables.count).to eq(initial_count)
+          end
+
+          it 'does not schedule GroupExportWorker when CI variable creation fails' do
+            expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+            perform
           end
 
           include_examples 'logs error', 'Failed to create CI variable for observability export'
@@ -172,6 +186,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
           expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
         end
 
+        it 'does not schedule GroupExportWorker when API fails' do
+          expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+          perform
+        end
+
         include_examples 'logs status', :api_failed
 
         it 'logs an error message' do
@@ -198,18 +218,6 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
         include_examples 'does not create observability setting'
       end
 
-      context 'when group already has observability setting' do
-        let!(:existing_setting) { create(:observability_group_o11y_setting, group: group) }
-
-        include_examples 'does not create observability setting'
-
-        it 'does not make an API request when setting already exists' do
-          perform
-
-          expect(WebMock).not_to have_requested(:post, Observability::O11yProvisioningClient::PROVISIONER_API)
-        end
-      end
-
       context 'when database save fails after successful API call' do
         before do
           allow_next_instance_of(::Observability::GroupO11ySettingsUpdateService) do |instance|
@@ -221,6 +229,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         it 'does not create setting when database save fails' do
           expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
+        end
+
+        it 'does not schedule GroupExportWorker when database save fails' do
+          expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+          perform
         end
       end
 

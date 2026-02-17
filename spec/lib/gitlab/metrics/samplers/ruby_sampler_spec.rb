@@ -147,5 +147,39 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
 
       sampler.sample
     end
+
+    context 'when YJIT is enabled', skip: !defined?(RubyVM::YJIT) || !RubyVM::YJIT.enabled? do
+      it 'samples YJIT metrics' do
+        expect(sampler.metrics[:yjit_enabled]).to receive(:set).with({}, 1)
+        expect(sampler.metrics[:yjit_inline_code_size_bytes]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_outlined_code_size_bytes]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_freed_page_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_freed_code_size_bytes]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_live_page_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_code_region_size_bytes]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_alloc_size_bytes]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_vm_insns_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_live_iseq_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_code_gc_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compiled_iseq_entry]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_cold_iseq_entry]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compiled_iseq_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compiled_blockid_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compiled_block_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compiled_branch_count]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_compile_time_seconds]).to receive(:set).with({}, anything)
+        expect(sampler.metrics[:yjit_object_shape_count]).to receive(:set).with({}, anything)
+
+        sampler.sample
+      end
+    end
+
+    context 'when YJIT is not enabled', skip: defined?(RubyVM::YJIT) && RubyVM::YJIT.enabled? do
+      it 'sets yjit_enabled to 0' do
+        expect(sampler.metrics[:yjit_enabled]).to receive(:set).with({}, 0)
+
+        sampler.sample
+      end
+    end
   end
 end

@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillApprovalMergeRequestRulesApprovedApproversProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20250304131257 do
+  feature_category: :code_review_workflow do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :approval_merge_request_rules_approved_approvers }
     let(:backfill_column) { :project_id }

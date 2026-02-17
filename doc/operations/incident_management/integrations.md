@@ -18,7 +18,7 @@ can [trigger paging](paging.md#paging) for on-call rotations or be used to [crea
 
 ## Integrations list
 
-With at least the Maintainer role, you can view the list of configured
+With the Maintainer or Owner role, you can view the list of configured
 alerting integrations by navigating to **Settings** > **Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
@@ -140,12 +140,9 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-{{< alert type="note" >}}
-
-Ensure your requests are smaller than the
-[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
-
-{{< /alert >}}
+> [!note]
+> Ensure your requests are smaller than the
+> [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
 #### Example request body
 
@@ -218,12 +215,9 @@ can be a nested JSON object. For example:
 }
 ```
 
-{{< alert type="note" >}}
-
-Ensure your requests are smaller than the
-[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
-
-{{< /alert >}}
+> [!note]
+> Ensure your requests are smaller than the
+> [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
 #### Prometheus severity options
 
@@ -296,12 +290,9 @@ Example request payload:
 }
 ```
 
-{{< alert type="note" >}}
-
-When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
-When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
-
-{{< /alert >}}
+> [!note]
+> When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
+> When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
 
 ## Authorization
 
@@ -348,12 +339,9 @@ curl --request POST \
   <username:password@url>
 ```
 
-{{< alert type="warning" >}}
-
-Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
-using one of the header options described previously if your tooling supports it.
-
-{{< /alert >}}
+> [!warning]
+> Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
+> using one of the header options described previously if your tooling supports it.
 
 ## Response body
 
@@ -380,7 +368,7 @@ After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
-1. Sign in as a user with at least the Developer role.
+1. Sign in as a user with the Developer, Maintainer, or Owner role.
 1. Go to **Settings** > **Monitor** in your project.
 1. Select **Alerts** to expand the section.
 1. Select the {{< icon name="settings" >}} settings icon on the right side of the integration in [the list](#integrations-list).
@@ -437,13 +425,10 @@ You can also configure the associated [incident to be closed automatically](mana
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-We are building deeper integration with Opsgenie and other alerting tools through
-[HTTP endpoint integrations](#single-alerting-endpoint) so you can see alerts in
-the GitLab interface.
-
-{{< /alert >}}
+> [!warning]
+> We are building deeper integration with Opsgenie and other alerting tools through
+> [HTTP endpoint integrations](#single-alerting-endpoint) so you can see alerts in
+> the GitLab interface.
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 
@@ -453,7 +438,7 @@ active at the same time.
 
 To enable Opsgenie integration:
 
-1. Sign in as a user with at least the Maintainer role.
+1. Sign in as a user with the Maintainer or Owner role.
 1. Go to **Monitor** > **Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.

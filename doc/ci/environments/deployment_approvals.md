@@ -28,7 +28,7 @@ a project.
 
 Prerequisites:
 
-- To update an environment, you must have at least the Maintainer role.
+- To update an environment, you must have the Maintainer or Owner role.
 
 To configure deployment approvals for a project:
 
@@ -64,6 +64,10 @@ The environments in your project require approval before deployment.
 
 Add multiple approval rules to control who can approve and execute deployment jobs.
 
+To add multiple approval rules, you must have the Developer role for the project.
+To add a group as an approver, you must [invite the group to the project](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+Only invited groups appear in the approvers list.
+
 To configure multiple approval rules, use the [CI/CD settings](protected_environments.md#protecting-environments).
 You can [also use the API](../../api/group_protected_environments.md#protect-a-single-environment).
 
@@ -90,7 +94,7 @@ A GitLab administrator can approve or reject all deployments.
 
 To allow self-approval of a deployment job:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
@@ -108,14 +112,14 @@ Prerequisites:
 
 To approve or reject a deployment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
-You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+You can also [use the API](../../api/deployments.md#approve-or-reject-a-deployment).
 
 You can give only one approval per deployment, even if you are a member of multiple
 approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541)
@@ -135,7 +139,7 @@ granted.
 
 To view the approval details of a deployment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
@@ -153,13 +157,13 @@ Review the status of your deployments, including whether a deployment is blocked
 
 To view your deployments:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the environment being deployed to.
 
 A deployment with the **blocked** label is blocked.
 
-To view your deployments, you can also [use the API](../../api/deployments.md#get-a-specific-deployment).
+To get the approval status of a deployment, you can also [use the API](../../api/deployments.md#retrieve-a-deployment).
 The `status` field indicates whether a deployment is blocked.
 
 ## Related topics

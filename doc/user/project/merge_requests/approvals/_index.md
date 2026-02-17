@@ -28,20 +28,17 @@ You can configure approvals to be optional or required, depending on your projec
   - Create a list of [Code Owners](../../codeowners/_index.md) for specific files.
   - Configure approvals
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
-  - Configure  [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
+  - Configure [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
 
-    {{< alert type="note" >}}
-
-    Support for group merge request approval settings is tracked in
-    [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
-
-    {{< /alert >}}
+    > [!note]
+    > Support for group merge request approval settings is tracked in
+    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## Configure approval rules
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To configure approval rules:
 

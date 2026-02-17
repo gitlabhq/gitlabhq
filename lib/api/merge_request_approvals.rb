@@ -30,6 +30,7 @@ module API
           ]
           tags ['merge_request_approvals']
         end
+        route_setting :authorization, permissions: :read_merge_request_approval_state, boundary_type: :project
         get 'approvals', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -58,6 +59,7 @@ module API
 
           use :ee_approval_params
         end
+        route_setting :authorization, permissions: :approve_merge_request, boundary_type: :project
         post 'approve', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
@@ -87,6 +89,7 @@ module API
           ]
           tags ['merge_request_approvals']
         end
+        route_setting :authorization, permissions: :unapprove_merge_request, boundary_type: :project
         post 'unapprove', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
@@ -105,8 +108,9 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
-          tags %w[merge_requests merge_request_approvals]
+          tags %w[merge_request_approvals]
         end
+        route_setting :authorization, permissions: :reset_approvals_merge_request, boundary_type: :project
         put 'reset_approvals', urgency: :low do
           merge_request = find_project_merge_request(params[:merge_request_iid])
 
@@ -114,6 +118,11 @@ module API
             !merge_request.merged?
 
           merge_request.approvals.delete_all
+
+          merge_request.log_approval_deletion_on_merged_or_locked_mr(
+            source: 'API::MergeRequestApprovals#reset_approvals',
+            current_user: current_user
+          )
 
           status :accepted
         end

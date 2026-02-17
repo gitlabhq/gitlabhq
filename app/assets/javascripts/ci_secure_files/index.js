@@ -15,6 +15,7 @@ export const initCiSecureFiles = (selector = '#js-ci-secure-files') => {
 
   return new Vue({
     el: containerEl,
+    name: 'SecureFilesListRoot',
     provide: {
       projectId,
       admin: parseBoolean(admin),

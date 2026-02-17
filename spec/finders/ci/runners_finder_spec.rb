@@ -548,9 +548,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
 
             it 'sorts by specified attribute' do
               expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
-                                    runner_sub_group_3, runner_sub_group_4, runner_project_1,
-                                    runner_project_2, runner_project_3, runner_project_4,
-                                    runner_project_5, runner_project_6, runner_project_7])
+                runner_sub_group_3, runner_sub_group_4, runner_project_1,
+                runner_project_2, runner_project_3, runner_project_4,
+                runner_project_5, runner_project_6, runner_project_7])
             end
           end
 
@@ -608,8 +608,8 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
 
               it 'returns correct runners' do
                 expect(subject).to eq([runner_project_7, runner_project_6,
-                                      runner_project_5, runner_project_4,
-                                      runner_project_3, runner_project_2, runner_project_1])
+                  runner_project_5, runner_project_4,
+                  runner_project_3, runner_project_2, runner_project_1])
               end
             end
 

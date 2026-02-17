@@ -1,0 +1,5 @@
+---
+name: reset_merge_request_spent_time
+description: Grants the ability to reset spent time for merge requests
+boundaries:
+  - project

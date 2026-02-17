@@ -1,0 +1,10 @@
+---
+name: enforce_job_timeouts_on_canceling_jobs
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582928
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218634
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587306
+milestone: '18.9'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

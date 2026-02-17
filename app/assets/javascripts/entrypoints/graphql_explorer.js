@@ -9,7 +9,7 @@ import { getIntrospectionQuery, buildClientSchema } from 'graphql';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Mousetrap } from '~/lib/mousetrap';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 /* eslint-enable no-restricted-imports */
 import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
 import { keysFor, TOGGLE_PERFORMANCE_BAR } from '~/behaviors/shortcuts/keybindings';
@@ -55,7 +55,7 @@ const loadSchema = async () => {
 
 const defaultQuery = `# Welcome to GraphQL explorer (GraphiQL)
 #
-# Full documentation: ${DOCS_URL_IN_EE_DIR}/api/graphql
+# Full documentation: ${DOCS_URL}/api/graphql
 #
 # GraphQL explorer is an in-browser tool for writing, validating, and
 # testing GraphQL queries.
@@ -94,7 +94,7 @@ const GraphiQLLogo = React.createElement(
   GraphiQL.Logo,
   {},
   React.createElement('a', {
-    href: `${DOCS_URL_IN_EE_DIR}/api/graphql`,
+    href: `${DOCS_URL}/api/graphql`,
     target: '_blank',
     title: 'GraphQL API documentation',
     dangerouslySetInnerHTML: { __html: gitlabLogo },

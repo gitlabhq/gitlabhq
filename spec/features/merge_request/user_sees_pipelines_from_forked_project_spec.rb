@@ -56,7 +56,7 @@ RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
 
     it 'user visits a pipelines page',
       :sidekiq_might_not_need_inline,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/467299' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24864' do
       page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
       expect(page).to have_content(pipeline.id)

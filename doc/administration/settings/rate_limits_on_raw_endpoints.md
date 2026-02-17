@@ -12,6 +12,10 @@ title: Rate limits on raw endpoints
 
 {{< /details >}}
 
+Prerequisites:
+
+- Administrator access.
+
 This setting defaults to `300` requests per minute, and allows you to rate limit the requests to raw endpoints:
 
 1. In the upper-right corner, select **Admin**.

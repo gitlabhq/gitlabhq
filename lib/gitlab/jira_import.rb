@@ -98,7 +98,7 @@ module Gitlab
       state = cache_class.read(jira_issues_pagination_state_cache_key(project_id))
       return { is_last: false, next_page_token: nil, page: 1 } unless state
 
-      Gitlab::Json.parse(state).symbolize_keys
+      Gitlab::Json.safe_parse(state).symbolize_keys
     end
 
     def self.store_pagination_state(project_id, state)

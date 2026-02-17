@@ -75,7 +75,7 @@ In the following table, you can see:
 | [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
-| [Password complexity requirements](sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Modify password complexity requirements](sign_up_restrictions.md#modify-password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
 | [Custom Text in Emails](email.md#custom-additional-text) | GitLab 16.5 and later |
@@ -118,6 +118,10 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 
 ### Enable or disable version check
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Usage statistics**.
@@ -147,20 +151,21 @@ To send usage statistics to GitLab Inc., you must allow network traffic from you
 GitLab instance to the host `version.gitlab.com` on port `443`.
 
 If your GitLab instance is behind a proxy, set the appropriate
-[proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+[proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables/).
 
 ## Enable or disable Service Ping
 
-{{< alert type="note" >}}
-
-Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
-Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
-Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
-The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
-
-{{< /alert >}}
+> [!note]
+> Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
+> Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
+> Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
+> The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable Service Ping:
 
@@ -220,6 +225,10 @@ the **Admin** area.
 Service Ping Generation controls whether Service Ping data is automatically generated on your instance. When enabled, GitLab periodically generates Service Ping payloads containing usage statistics. This setting works independently of whether the data is shared with GitLab.
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable Service Ping Generation:
 
@@ -281,13 +290,14 @@ To control Service Ping Generation through configuration:
 
 GitLab differentiates between operational and optional collected data.
 
-{{< alert type="note" >}}
-
-The **Include optional data in Service Ping** option is available only if either **Enable Service Ping** or **Enable Service Ping Generation** is enabled. If both settings are disabled, this option is disabled automatically.
-
-{{< /alert >}}
+> [!note]
+> The **Include optional data in Service Ping** option is available only if either **Enable Service Ping** or **Enable Service Ping Generation** is enabled. If both settings are disabled, this option is disabled automatically.
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable optional data in Service Ping:
 

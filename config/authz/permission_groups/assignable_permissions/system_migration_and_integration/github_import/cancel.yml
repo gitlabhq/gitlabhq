@@ -1,0 +1,7 @@
+---
+name: cancel_github_import
+description: Grants the ability to cancel GitHub project imports
+permissions:
+  - cancel_github_import
+boundaries:
+  - user

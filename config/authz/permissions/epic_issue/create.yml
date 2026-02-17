@@ -1,0 +1,5 @@
+---
+name: create_epic_issue
+description: Grants the ability to assign an issue to an epic
+boundaries:
+  - group

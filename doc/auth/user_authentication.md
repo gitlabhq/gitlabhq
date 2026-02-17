@@ -6,13 +6,6 @@ title: User authentication
 description: Passwords, two-factor authentication, SSH keys, access tokens, credentials inventory.
 ---
 
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 GitLab provides multiple authentication methods to secure how users can access their account and
 interact with repositories. Use passwords with optional two-factor authentication for web-based
 access, SSH keys for Git operations, and various types of access tokens for API interactions

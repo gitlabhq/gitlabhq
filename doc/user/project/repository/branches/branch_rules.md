@@ -46,7 +46,7 @@ and their protection methods:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To view the branch rules overview list:
 
@@ -72,19 +72,13 @@ To view branch rules and protections for a single branch:
 - **All branches** and **All protected branches** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388129) in GitLab 17.0.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create a branch rule:
 
@@ -105,11 +99,8 @@ To create a branch rule:
 
 ### Add a branch rule protection
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 To add protections to a new branch:
 
@@ -129,21 +120,18 @@ To add protections to a new branch:
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To add a merge request approval rule:
 
 1. From the [branch rule details](#view-branch-rule-details) page, go to the **Merge request approvals** section.
 1. In the **Approval rules** section, select **Add approval rule**.
-1. On the right sidebar, complete the fields:
+1. In the right sidebar, complete the fields:
    - Enter a **Rule name**.
    - In **Required number of approvals**, enter a value (`0`-`100`).
 
@@ -176,7 +164,7 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - In GitLab Free, this feature is available only if the branch rule targets **All branches**.
 - In GitLab Premium and GitLab Ultimate, this feature is available for all branch rules.
 
@@ -209,14 +197,12 @@ To edit a squash option:
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `edit_branch_rules`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Not available for `all protected branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all protected branches`.
 
 To add a status check service:
 
@@ -239,19 +225,13 @@ For more information, see [External status checks](../../merge_requests/status_c
 - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To edit a branch rule target:
 
@@ -267,11 +247,8 @@ To edit a branch rule target:
 
 For information about branch protection controls, see [Protected branches](protected.md).
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 ## Delete a branch rule
 
@@ -281,25 +258,13 @@ Not available for `all branches`.
 - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Deleting a branch rule is not available for rules targeting `all branches`.
-
-{{< /alert >}}
-
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To delete a branch rule:
 
@@ -309,6 +274,9 @@ To delete a branch rule:
 1. Next to a rule you want to delete, select **View details**.
 1. In the upper-right corner, select **Delete rule**.
 1. On the confirmation dialog, select **Delete branch rule**.
+
+> [!note]
+> Deleting a branch rule is not available for rules targeting `all branches`.
 
 ## Related topics
 

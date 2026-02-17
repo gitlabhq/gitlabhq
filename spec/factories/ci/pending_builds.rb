@@ -12,7 +12,7 @@ FactoryBot.define do
 
     before(:create) do |pending_build|
       pending_build.build.tap do |job|
-        pending_build.tag_ids = ::Ci::Tag.named(job.tag_list).ids
+        pending_build.tag_ids = ::Ci::Tag.find_or_create_all_with_like_by_name(job.tag_list).map(&:id)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
+RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
   include EverySidekiqWorkerTestHelper
 
   let(:workers_without_defaults) do
@@ -160,16 +160,20 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::BuildPrepareWorker' => 3,
         'Ci::BuildScheduleWorker' => 3,
         'Ci::BuildTraceChunkFlushWorker' => 3,
+        'Ci::BulkDeleteExpiredJobArtifactsWorker' => 0,
         'Ci::CreateDownstreamPipelineWorker' => 3,
         'Ci::DailyBuildGroupReportResultsWorker' => 3,
         'Ci::DeleteObjectsWorker' => 0,
         'Ci::DropPipelineWorker' => 3,
+        'Ci::TimedOutBuilds::DropRunningWorker' => 1,
+        'Ci::TimedOutBuilds::DropCancelingWorker' => 1,
         'Ci::InitialPipelineProcessWorker' => 3,
         'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,
         'Ci::Minutes::UpdateProjectAndNamespaceUsageWorker' => 3,
         'Ci::Minutes::UpdateGitlabHostedRunnerMonthlyUsageWorker' => 3,
         'Ci::Observability::ExportWorker' => 3,
+        'Ci::Observability::GroupExportWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,
         'Ci::PipelineArtifacts::CreateQualityReportWorker' => 3,
         'Ci::PipelineCleanupRefWorker' => 3,
@@ -178,6 +182,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::Refs::UnlockPreviousPipelinesWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2' => 3,
+        'Ci::ScheduleBulkDeleteJobArtifactCronWorker' => false,
         'Ci::TestFailureHistoryWorker' => 3,
         'Ci::TriggerDownstreamSubscriptionsWorker' => 3,
         'Ci::UnlockPipelinesInQueueWorker' => 0,
@@ -376,7 +381,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequests::HandleAssigneesChangeWorker' => 3,
         'MergeRequests::MergeabilityCheckBatchWorker' => 3,
         'MergeRequests::ResolveTodosWorker' => 3,
-        'MergeRequests::ShipMergeRequestWorker' => 3,
         'MergeRequests::SyncCodeOwnerApprovalRulesWorker' => 3,
         'MergeTrains::RefreshWorker' => 3,
         'MergeWorker' => 3,
@@ -436,11 +440,13 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'PropagateIntegrationWorker' => 3,
         'PurgeDependencyProxyCacheWorker' => 3,
         'ReactiveCachingWorker' => 3,
+        'ReactiveCaching::LowUrgencyWorker' => 3,
         'RebaseWorker' => 3,
         'RefreshLicenseComplianceChecksWorker' => 3,
         'Releases::CreateEvidenceWorker' => 3,
         'RemoteMirrorNotificationWorker' => 3,
         'Repositories::PostReceiveWorker' => 3,
+        'Repositories::CacheTagSignaturesWorker' => false,
         'RepositoryCheck::BatchWorker' => false,
         'RepositoryCheck::ClearWorker' => false,
         'RepositoryCheck::SingleRepositoryWorker' => false,
@@ -529,7 +535,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::DestroyOldPipelinesWorker' => 0,
         'AuditEvents::AuditEventStreamingWorker' => 3,
         'Vulnerabilities::TriggerFalsePositiveDetectionWorkflowWorker' => 10,
-        'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10
+        'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10,
+        'Vulnerabilities::TriggerSecretDetectionFalsePositiveDetectionWorkflowWorker' => 10
       }.merge(extra_retry_exceptions)
     end
 

@@ -13,12 +13,9 @@ title: GitLab Duo authentication and authorization
 
 GitLab Duo with Amazon Q uses a composite identity to authenticate requests.
 
-{{< alert type="note" >}}
-
-Support for a composite identity in other areas of the product
-is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
-
-{{< /alert >}}
+> [!note]
+> Support for a composite identity in other areas of the product
+> is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
 
 The token that authenticates requests is a composite of two identities:
 
@@ -39,7 +36,6 @@ When authorization is requested, GitLab validates that both the service account
 and the user who originated the quick action have sufficient permissions.
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
     accTitle: Authentication flow for GitLab Duo
     accDescr: API requests are checked against user permissions first, then service account permissions, with access denied if either check fails.
@@ -49,7 +45,4 @@ flowchart TD
     B -->|Yes| C{Service account has access?}
     C -->|No| D
     C -->|Yes| E[API request succeeds]
-
-    style D fill:#ffcccc
-    style E fill:#ccffcc
 ```

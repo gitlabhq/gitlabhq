@@ -36,6 +36,11 @@ displays an error.
 [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables pushing to,
 and pulling from, remote mirrors.
 
+## Push mirror limits
+
+Each project can have a maximum of 10 enabled push mirrors.
+For more information, see [Maximum number of project push mirrors](../../../../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
+
 ## Configure push mirroring
 
 To set up push mirroring for an existing project:
@@ -131,11 +136,8 @@ these tools to create a deployment:
 - GitLab CI/CD pipelines.
 - The AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 
-{{< alert type="note" >}}
-
-GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
-
-{{< /alert >}}
+> [!note]
+> GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
 
 To set up a mirror from GitLab to AWS CodeCommit:
 
@@ -170,12 +172,9 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. Select the **Security credentials** tab.
 1. Under **HTTPS Git credentials for AWS CodeCommit**, select **Generate credentials**.
 
-   {{< alert type="note" >}}
-
-   This Git user ID and password is specific to communicating with CodeCommit. Do
-   not confuse it with the IAM user ID or AWS keys of this user.
-
-   {{< /alert >}}
+   > [!note]
+   > This Git user ID and password is specific to communicating with CodeCommit. Do
+   > not confuse it with the IAM user ID or AWS keys of this user.
 
 1. Copy or download the special Git HTTPS user ID and password.
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.

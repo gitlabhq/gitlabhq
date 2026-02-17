@@ -38,7 +38,7 @@ describe('RunnerUpdateForm', () => {
   const findRunnerFormFields = () => wrapper.findComponent(RunnerFormFields);
 
   const findSubmit = () => wrapper.find('[type="submit"]');
-  const findSubmitDisabledAttr = () => findSubmit().attributes('disabled');
+  const findSubmitDisabledAttr = () => findSubmit().attributes('aria-disabled');
   const findCancelBtn = () => wrapper.findByRole('link', { name: 'Cancel' });
   const submitForm = () => findForm().trigger('submit');
   const submitFormAndWait = () => submitForm().then(waitForPromises);
@@ -127,7 +127,7 @@ describe('RunnerUpdateForm', () => {
     it('Form prevents multiple submissions', async () => {
       await submitForm();
 
-      expect(findSubmitDisabledAttr()).toBe('disabled');
+      expect(findSubmitDisabledAttr()).toBe('true');
     });
 
     it('Updates runner with no changes', async () => {

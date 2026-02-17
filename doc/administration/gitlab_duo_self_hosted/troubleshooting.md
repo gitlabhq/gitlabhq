@@ -39,7 +39,7 @@ Before you begin troubleshooting, you should:
 For more information on troubleshooting GitLab Duo, see:
 
 - [Troubleshooting GitLab Duo](../../user/gitlab_duo/troubleshooting.md).
-- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
+- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
 - [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
 
 ## Use debugging scripts
@@ -173,6 +173,10 @@ This missing configuration might be because of either of the following:
 
 ## Check if GitLab instance is configured to use self-hosted models
 
+Prerequisites:
+
+- Administrator access.
+
 To check if GitLab Duo was configured correctly:
 
 1. In the upper-right corner, select **Admin**.
@@ -287,7 +291,7 @@ If the instance is not reachable (for example, because of proxy configuration er
   gitlab_cloud_connector.providers.CompositeProvider.CriticalAuthError: No keys founds in JWKS; are OIDC providers up?
   ```
 
-In this scenario, verify if  `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
+In this scenario, verify if `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
 The following commands should be successful when run from the container:
 
 ```shell
@@ -381,16 +385,16 @@ Common causes include:
 
 - Large context windows or complex prompts
 - Model performance limitations
-- Network latency between the AI gateway and the model endpoint
+- Network latency between the AI Gateway and the model endpoint
 - Cross-region inference delays (for AWS Bedrock deployments)
 
 To resolve timeout errors:
 
-1. [Configure a higher AI gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
+1. [Configure a higher AI Gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
 1. Monitor your logs after adjusting the timeout to verify the errors are resolved.
 1. If timeout errors persist even with a higher timeout value:
    - Check your model's performance and resource allocation.
-   - Verify network connectivity between the AI gateway and model endpoint.
+   - Verify network connectivity between the AI Gateway and model endpoint.
    - Consider using a more performant model or deployment configuration.
 
 ## Verify GitLab setup
@@ -464,15 +468,32 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    **Important**: After troubleshooting, restart GitLab **without** this flag set.
 
-   {{< alert type="warning" >}}
-
-   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
-
-   {{< /alert >}}
+   > [!warning]
+   > **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
 
 1. To resolve this issue:
    - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).
    - If you're a customer, report the issue through [GitLab Support](https://about.gitlab.com/support/).
+
+## Error: An error occurred while fetching an authentication token for this workflow
+
+This error can occur when you try to use Agentic Chat in GitLab or your IDE.
+
+You might also see the following in the logs of your IDE's [GitLab Language Server](../../editor_extensions/language_server/_index.md):
+
+```shell
+2026-01-09T20:17:43:419 [error]: [WorkflowRailsService] Failed to fetch the workflow token
+    Error: Fetching direct_access from https://gitlab.example.com/api/v4/ai/duo_workflows/direct_access failed.
+{"message":"400 Bad request - 14:failed to connect to all addresses; last error: UNKNOWN: ipv4:172.x.x.x:50052: Ssl handshake failed (TSI_PROTOCOL_FAILURE): SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verification context. debug_error_string:{UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:\"failed to connect to all addresses; last error: UNKNOWN: ipv4:172.x.x.x:50052: Ssl handshake failed (TSI_PROTOCOL_FAILURE): SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verification context\"}}"}
+2026-01-09T20:17:43:433 [error]: Max retries exceeded or non-retryable error: An error occurred while fetching an authentication token for this workflow.
+2026-01-09T20:17:43:435 [error]: Workflow failed with status code "50": An error occurred while fetching an authentication token for this workflow.
+```
+
+This means that the language server could not communicate with the `direct_access` endpoint
+to generate a JWT token due to the certificate issue. 
+
+If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set 
+`DUO_AGENT_PLATFORM_SERVICE_SECURE` to `false`, see [Install the AI gateway](../../install/install_ai_gateway.md#start-a-container-from-the-image).
 
 ## Troubleshooting GitLab Duo Chat
 

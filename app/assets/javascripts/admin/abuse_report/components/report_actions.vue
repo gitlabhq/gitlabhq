@@ -111,16 +111,16 @@ export default {
     },
     handleResponse({ data }) {
       this.toggleActionsDrawer();
-      this.$emit('showAlert', SUCCESS_ALERT, data.message);
+      this.$emit('show-alert', SUCCESS_ALERT, data.message);
       if (this.form.close) {
-        this.$emit('closeReport');
+        this.$emit('close-report');
       }
       this.resetForm();
     },
     handleError({ response }) {
       this.toggleActionsDrawer();
       const message = response?.data?.message || ERROR_MESSAGE;
-      this.$emit('showAlert', FAILED_ALERT, message);
+      this.$emit('show-alert', FAILED_ALERT, message);
     },
     resetForm() {
       this.form = { ...formDefaults };

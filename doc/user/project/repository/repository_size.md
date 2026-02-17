@@ -112,12 +112,9 @@ This process:
 - Does not specify commit signatures.
 - Is irreversible.
 
-{{< alert type="note" >}}
-
-Information about commits, including file content, is cached in the database, and remains visible
-even after they have been removed from the repository.
-
-{{< /alert >}}
+> [!note]
+> Information about commits, including file content, is cached in the database, and remains visible
+> even after they have been removed from the repository.
 
 ### Clean up repository
 
@@ -132,12 +129,9 @@ This process:
 - Recalculates repository size on disk.
 - Is irreversible.
 
-{{< alert type="warning" >}}
-
-Removing internal Git references causes associated merge request commits, pipelines, and change
-details to become unavailable.
-
-{{< /alert >}}
+> [!warning]
+> Removing internal Git references causes associated merge request commits, pipelines, and change
+> details to become unavailable.
 
 Prerequisites:
 
@@ -196,12 +190,9 @@ This process:
 - Requires re-cloning of local repositories.
 - Is irreversible.
 
-{{< alert type="note" >}}
-
-You can also replace strings with the replacement string `***REMOVED***`. For more information, see
-[redact text from repository](#redact-text-from-repository).
-
-{{< /alert >}}
+> [!note]
+> You can also replace strings with the replacement string `***REMOVED***`. For more information, see
+> [redact text from repository](#redact-text-from-repository).
 
 Prerequisites:
 
@@ -211,12 +202,9 @@ Prerequisites:
   - A fork of a public upstream project.
   - A public upstream project with downstream forks.
 
-{{< alert type="note" >}}
-
-To ensure successful blob removal, consider temporarily restricting repository access during the
-process. New commits pushed during blob removal can cause the operation to fail.
-
-{{< /alert >}}
+> [!note]
+> To ensure successful blob removal, consider temporarily restricting repository access during the
+> process. New commits pushed during blob removal can cause the operation to fail.
 
 To remove blobs from your repository:
 
@@ -238,20 +226,17 @@ To remove blobs from your repository:
 1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
-{{< alert type="note" >}}
-
-If the project containing the sensitive information has been forked, the housekeeping task might
-succeed without completing this process. Housekeeping must maintain the integrity of the
-[special object pool repository](../../../administration/housekeeping.md#object-pool-repositories),
-which contains the forked data.
-For help, contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> If the project containing the sensitive information has been forked, the housekeeping task might
+> succeed without completing this process. Housekeeping must maintain the integrity of the
+> [special object pool repository](../../../administration/housekeeping.md#object-pool-repositories),
+> which contains the forked data.
+> For help, contact GitLab Support.
 
 #### Get a list of object IDs
 
 To remove blobs, you need a list of objects to remove.
-To get these IDs, use the `ls-tree` command or use the [Repositories API list repository tree](../../../api/repositories.md#list-repository-tree) endpoint.
+To get these IDs, use the `ls-tree` command or use the [Repositories API list repository tree](../../../api/repositories.md#list-all-repository-trees-in-a-project) endpoint.
 The following instructions use the `ls-tree` command.
 
 Prerequisites:
@@ -294,11 +279,8 @@ Permanently delete sensitive or confidential information that was accidentally c
 it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
-{{< alert type="warning" >}}
-
-This action is irreversible. After rewriting history and running housekeeping, the changes are permanent.
-
-{{< /alert >}}
+> [!warning]
+> This action is irreversible. After rewriting history and running housekeeping, the changes are permanent.
 
 While redacting files in GitLab removes exposed secrets, it also:
 
@@ -346,14 +328,11 @@ To redact text from your repository:
 1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
-{{< alert type="note" >}}
-
-If the project containing the sensitive information has been forked, the housekeeping task might fail to
-complete this redaction process to maintain the integrity of the special object pool repository
-[which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
-For help, contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> If the project containing the sensitive information has been forked, the housekeeping task might fail to
+> complete this redaction process to maintain the integrity of the special object pool repository
+> [which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
+> For help, contact GitLab Support.
 
 ## Troubleshooting
 
@@ -435,9 +414,6 @@ If you've reached the repository size limit:
 - If you still can't push changes, contact your GitLab administrator to temporarily [increase the limit for your project](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
 - As a last resort, create a new project and migrate your data.
 
-{{< alert type="note" >}}
-
-Deleting files in a new commit doesn't reduce repository size immediately, as earlier commits and blobs still exist.
-To effectively reduce size, you must rewrite history using a tool like [`git filter-repo`](https://github.com/newren/git-filter-repo).
-
-{{< /alert >}}
+> [!note]
+> Deleting files in a new commit doesn't reduce repository size immediately, as earlier commits and blobs still exist.
+> To effectively reduce size, you must rewrite history using a tool like [`git filter-repo`](https://github.com/newren/git-filter-repo).

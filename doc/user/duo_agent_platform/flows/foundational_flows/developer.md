@@ -8,7 +8,6 @@ title: Developer Flow
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -16,18 +15,11 @@ title: Developer Flow
 {{< history >}}
 
 - Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
-- Renamed from `Issue to MR` to the `Developer Flow` with a flag named `duo_developer_button` in 18.6. Disabled by default, but can be enabled for the instance or a user.
-- The `duo_workflow` flag must also be enabled, but it is enabled by default.
+- Renamed from `Issue to MR` to the `Developer Flow` with a flag named `duo_developer_button` in GitLab 18.6. Disabled by default, but can be enabled for the instance or a user. Feature flag `duo_workflow` must also be enabled, but it is enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 The Developer Flow streamlines the process of converting issues into actionable merge requests. This flow:
 
@@ -39,7 +31,7 @@ The Developer Flow streamlines the process of converting issues into actionable 
 
 This flow is available in the GitLab UI only.
 
-> ![note]
+> [!note]
 > The Developer Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
 
 ## Prerequisites
@@ -47,7 +39,7 @@ This flow is available in the GitLab UI only.
 To create a merge request from an issue, you must:
 
 - Have an existing GitLab issue with clear requirements.
-- Have at least the Developer role in the project.
+- Have the Developer, Maintainer, or Owner role in the project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
 - Ensure that the Developer Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).

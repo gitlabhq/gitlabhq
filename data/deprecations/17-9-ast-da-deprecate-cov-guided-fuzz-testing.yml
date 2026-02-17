@@ -16,7 +16,7 @@
 
     Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
     If you are impacted, you can integrate your open-source fuzzers as standalone applications,
-    or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
+    or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/).
   end_of_support_milestone: 18.0
   tiers: [Ultimate]
   documentation_url: https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing/

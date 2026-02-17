@@ -230,5 +230,11 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
         it_behaves_like 'allows setting lock_on_merge'
       end
     end
+
+    it_behaves_like 'updating archived status' do
+      let_it_be_with_reload(:label) { create(:group_label, group: group) }
+      let(:update_params) { { group_id: group.to_param, id: label.to_param } }
+      let(:expected_redirect_path) { group_labels_path }
+    end
   end
 end

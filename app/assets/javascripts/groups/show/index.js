@@ -3,8 +3,6 @@ import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { resolvers } from './graphql/resolvers';
 import routes from './routes';
 import GroupsShowApp from './components/app.vue';
@@ -44,11 +42,6 @@ export const initGroupsShowApp = () => {
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers(subgroupsAndProjectsEndpoint)),
   });
-
-  // We need to globally render components to avoid circular references
-  // https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-  Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
-  Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
 
   return new Vue({
     el,

@@ -34,10 +34,23 @@ module LooseForeignKeys
     end
 
     def execute
-      if feature_category_override_enabled?
-        cleanup_loose_foreign_keys
-      else
-        legacy_cleanup_loose_foreign_keys
+      loose_foreign_key_definitions.each do |loose_foreign_key_definition|
+        run_cleaner_service(loose_foreign_key_definition, with_skip_locked: true)
+
+        if modification_tracker.over_limit?
+          handle_over_limit
+          break
+        end
+
+        run_cleaner_service(loose_foreign_key_definition, with_skip_locked: false)
+
+        if modification_tracker.over_limit?
+          handle_over_limit
+          break
+        end
+      rescue StandardError => e
+        feature_category_override_exception(e, loose_foreign_key_definition)
+        raise
       end
 
       return if modification_tracker.over_limit?
@@ -54,56 +67,6 @@ module LooseForeignKeys
 
     attr_reader :parent_table, :loose_foreign_key_definitions, :deleted_parent_records, :modification_tracker, :deleted_records_counter, :deleted_records_rescheduled_count, :deleted_records_incremented_count, :connection, :logger
 
-    def legacy_cleanup_loose_foreign_keys
-      loose_foreign_key_definitions.each do |loose_foreign_key_definition|
-        run_cleaner_service(loose_foreign_key_definition, with_skip_locked: true)
-
-        if modification_tracker.over_limit?
-          handle_over_limit
-          break
-        end
-
-        run_cleaner_service(loose_foreign_key_definition, with_skip_locked: false)
-
-        if modification_tracker.over_limit?
-          handle_over_limit
-          break
-        end
-      end
-    end
-
-    def cleanup_loose_foreign_keys
-      loose_foreign_key_definitions.each do |loose_foreign_key_definition|
-        break if process_cleaner_service_with_feature_category(loose_foreign_key_definition)
-      end
-    end
-
-    def process_cleaner_service_with_feature_category(loose_foreign_key_definition)
-      feature_category = child_table_feature_category(loose_foreign_key_definition.from_table)
-
-      Gitlab::ApplicationContext.with_context(feature_category: feature_category) do
-        process_cleaner_services(loose_foreign_key_definition)
-      end
-    end
-
-    def process_cleaner_services(loose_foreign_key_definition)
-      run_cleaner_service(loose_foreign_key_definition, with_skip_locked: true)
-
-      if modification_tracker.over_limit?
-        handle_over_limit
-        return true
-      end
-
-      run_cleaner_service(loose_foreign_key_definition, with_skip_locked: false)
-
-      if modification_tracker.over_limit?
-        handle_over_limit
-        return true
-      end
-
-      false
-    end
-
     def dictionary_entries
       @dictionary_entries ||= Gitlab::Database::Dictionary.entries
     end
@@ -114,6 +77,21 @@ module LooseForeignKeys
 
     def feature_category_override_enabled?
       Feature.enabled?(:loose_foreign_key_worker_feature_category_override, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- LFK error routing improvements apply instance-wide
+    end
+
+    def feature_category_override_exception(exception, loose_foreign_key_definition)
+      return unless feature_category_override_enabled?
+
+      feature_category = child_table_feature_category(loose_foreign_key_definition.from_table)
+
+      logger.info(
+        event: :cleanup_worker_feature_category_override,
+        table_name: loose_foreign_key_definition.from_table,
+        feature_category: feature_category,
+        exception: exception
+      )
+
+      Gitlab::ErrorTracking.track_exception(exception, feature_category: feature_category)
     end
 
     def handle_over_limit

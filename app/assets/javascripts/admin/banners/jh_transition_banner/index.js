@@ -18,6 +18,7 @@ export const initJHTransitionBanner = () => {
 
   return new Vue({
     el,
+    name: 'JhTransitionBannerRoot',
     apolloProvider,
     render(createElement) {
       return createElement(JhTransitionBanner, {

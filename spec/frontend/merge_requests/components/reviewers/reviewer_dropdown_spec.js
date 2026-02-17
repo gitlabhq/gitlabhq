@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import { ASSIGN_REVIEWER_USERS_QUERY_VARIABLES_MOCK } from 'ee_else_ce_jest/merge_requests/components/reviewers/mock_data';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
@@ -151,6 +152,7 @@ describe('Reviewer dropdown component', () => {
         fullPath: 'gitlab-org/gitlab',
         mergeRequestId: 'gid://gitlab/MergeRequest/1',
         search: '',
+        ...ASSIGN_REVIEWER_USERS_QUERY_VARIABLES_MOCK,
       });
     });
 
@@ -161,6 +163,7 @@ describe('Reviewer dropdown component', () => {
         fullPath: 'gitlab-org/gitlab',
         mergeRequestId: 'gid://gitlab/MergeRequest/1',
         search: 'search string',
+        ...ASSIGN_REVIEWER_USERS_QUERY_VARIABLES_MOCK,
       });
     });
 

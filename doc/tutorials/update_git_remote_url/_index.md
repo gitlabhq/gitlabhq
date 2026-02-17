@@ -18,12 +18,9 @@ Update your Git remote URLs if:
 - Your organization has moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-{{< alert type="note" >}}
-
-If you don't have an existing local working copy from the old remote, then you don't need this tutorial.
-You can instead clone the project from the new GitLab URL.
-
-{{< /alert >}}
+> [!note]
+> If you don't have an existing local working copy from the old remote, then you don't need this tutorial.
+> You can instead clone the project from the new GitLab URL.
 
 This tutorial explains how to update the remote URL for your local repository without:
 
@@ -78,8 +75,8 @@ To update the Git remote URL, determine the existing and new URLs for your repos
 
 1. Get the new URL:
    1. Go to GitLab.
-   1. On the top bar, select **Search or go to** and find your project.
-   1. On the left sidebar, select **Code** > **Repository**, to go to the project's **Repository** page
+   1. In the top bar, select **Search or go to** and find your project.
+   1. In the left sidebar, select **Code** > **Repository**, to go to the project's **Repository** page
    1. In the upper-right corner, select **Code**
    1. Depending on which method you use for authentication and cloning with `git`,
    copy either the HTTPS or SSH URL. If you're not sure, use the same method as the `origin` URL from the previous step.

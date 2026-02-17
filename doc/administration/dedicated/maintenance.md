@@ -52,12 +52,9 @@ you can implement strategies like automatic recovery and retry.
 
 Longer service interruptions are rare. If extended downtime is expected, you receive advance notice.
 
-{{< alert type="note" >}}
-
-Performance degradation or downtime during the scheduled maintenance window does not
-count against the system service level availability (SLA).
-
-{{< /alert >}}
+> [!note]
+> Performance degradation or downtime during the scheduled maintenance window does not
+> count against the system service level availability (SLA).
 
 ### Scheduling exceptions
 
@@ -92,12 +89,9 @@ Upgrades are usually unnoticeable. In rare cases, you might experience temporary
 interface inconsistencies during an upgrade. If this occurs, refresh the page
 to resolve any visual inconsistencies.
 
-{{< alert type="note" >}}
-
-Implementing a caching proxy in your network further reduces the risk of
-interface inconsistencies during upgrades.
-
-{{< /alert >}}
+> [!note]
+> Implementing a caching proxy in your network further reduces the risk of
+> interface inconsistencies during upgrades.
 
 ## Emergency maintenance
 

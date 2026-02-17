@@ -81,7 +81,7 @@ class InstanceConfiguration
   end
 
   def rate_limits
-    {
+    rate_limits = {
       unauthenticated: {
         enabled: application_settings[:throttle_unauthenticated_enabled],
         requests_per_period: application_settings[:throttle_unauthenticated_requests_per_period],
@@ -153,8 +153,25 @@ class InstanceConfiguration
       user_projects_api: application_setting_limit_per_minute(:user_projects_api_limit),
       user_contributed_projects_api: application_setting_limit_per_minute(:user_contributed_projects_api_limit),
       user_starred_projects_api: application_setting_limit_per_minute(:user_starred_projects_api_limit),
-      project_members_api: application_setting_limit_per_minute(:project_members_api_limit)
+      project_members_api: application_setting_limit_per_minute(:project_members_api_limit),
+      git_ssh_operations: application_setting_limit_per_minute(:gitlab_shell_operation_limit),
+      files_api_unauthenticated: {
+        enabled: application_settings[:throttle_unauthenticated_files_api_enabled],
+        requests_per_period: application_settings[:throttle_unauthenticated_files_api_requests_per_period],
+        period_in_seconds: application_settings[:throttle_unauthenticated_files_api_period_in_seconds]
+      },
+      files_api_authenticated: {
+        enabled: application_settings[:throttle_authenticated_files_api_enabled],
+        requests_per_period: application_settings[:throttle_authenticated_files_api_requests_per_period],
+        period_in_seconds: application_settings[:throttle_authenticated_files_api_period_in_seconds]
+      }
     }
+
+    unless application_settings[:create_organization_api_limit].nil?
+      rate_limits[:organizations_api] = application_setting_limit_per_minute(:create_organization_api_limit)
+    end
+
+    rate_limits
   end
 
   def ci_cd_limits

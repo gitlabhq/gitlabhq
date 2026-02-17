@@ -17,9 +17,9 @@ Use this API to manage [Git branches](../user/project/repository/branches/_index
 
 To change the branch protections configured for a project, use the [protected branches API](protected_branches.md).
 
-## List repository branches
+## List all repository branches
 
-Get a list of repository branches from a project, sorted by name alphabetically. Search by name, or
+Lists all repository branches from a project, sorted by name alphabetically. Search by name, or
 use regular expressions to find specific branch patterns. Returns detailed information about the branch,
 including its protection status, merge status, and commit details.
 
@@ -61,8 +61,8 @@ response attributes:
 | `commit.trailers`          | object              | Git trailers parsed from the commit message. |
 | `commit.web_url`           | string              | URL to view the commit in the GitLab UI. |
 | `default`                  | boolean             | If `true`, the branch is the default branch for the project. |
-| `developers_can_merge`     | boolean             | If `true`, users with at least the Developer role can merge to this branch. |
-| `developers_can_push`      | boolean             | If `true`, users with at least the Developer role can push to this branch. |
+| `developers_can_merge`     | boolean             | If `true`, users with the Developer, Maintainer, or Owner role can merge to this branch. |
+| `developers_can_push`      | boolean             | If `true`, users with the Developer, Maintainer, or Owner role can push to this branch. |
 | `merged`                   | boolean             | If `true`, the branch has been merged into the default branch. |
 | `name`                     | string              | Name of the branch. |
 | `protected`                | boolean             | If `true`, the branch is protected from force pushes and deletion. |
@@ -112,9 +112,9 @@ Example response:
 ]
 ```
 
-## Get single repository branch
+## Retrieve a repository branch
 
-Get a single project repository branch.
+Retrieves a specified project repository branch.
 
 > [!note]
 > This endpoint can be accessed without authentication if the repository is publicly accessible.
@@ -213,7 +213,7 @@ for information on unprotecting repository branches.
 
 ## Create repository branch
 
-Create a new branch in the repository.
+Creates a new branch in the repository.
 
 ```plaintext
 POST /projects/:id/repository/branches
@@ -249,7 +249,7 @@ response attributes:
 | `commit.title`             | string  | Title of the commit message. |
 | `commit.trailers`          | object  | Git trailers parsed from the commit message. |
 | `commit.web_url`           | string  | URL to view the commit in the GitLab UI. |
-| `default`                  | boolean | If `true`, sets this branch is the default branch for the project. |
+| `default`                  | boolean | If `true`, sets this branch as the default branch for the project. |
 | `developers_can_merge`     | boolean | If `true`, users with the Developer role can merge to this branch. |
 | `developers_can_push`      | boolean | If `true`, users with the Developer role can push to this branch. |
 | `merged`                   | boolean | If `true`, the branch merged into the default branch. |
@@ -301,7 +301,7 @@ Example response:
 
 ## Delete repository branch
 
-Delete a branch from the repository.
+Deletes a specified branch from the repository.
 
 > [!note]
 > In the case of an error, an explanation message is provided.
@@ -327,15 +327,12 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> Deleting a branch does not completely erase all related data.
+> Some information persists to maintain project history and to support recovery processes.
+> For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
-Deleting a branch does not completely erase all related data.
-Some information persists to maintain project history and to support recovery processes.
-For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
-
-{{< /alert >}}
-
-## Delete merged branches
+## Delete all merged branches
 
 Deletes all branches that are merged into the project's default branch.
 

@@ -29,4 +29,5 @@ schema_inconsistencies:
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
 sharding_key:
   organization_id: organizations
+organization_transfer_support: supported
 table_size: large

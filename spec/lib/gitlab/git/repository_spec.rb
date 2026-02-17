@@ -411,16 +411,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#commit_count' do
-    it { expect(repository.commit_count("master")).to eq(37) }
-    it { expect(repository.commit_count("feature")).to eq(9) }
-    it { expect(repository.commit_count("does-not-exist")).to eq(0) }
-
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
-      subject { repository.commit_count('master') }
-    end
-  end
-
   describe '#diverging_commit_count' do
     it 'counts 0 for the same branch' do
       expect(repository.diverging_commit_count('master', 'master', max_count: 1000)).to eq([0, 0])
@@ -1522,6 +1512,14 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#count_commits' do
+    it { expect(repository.count_commits(ref: "master")).to eq(37) }
+    it { expect(repository.count_commits(ref: "feature")).to eq(9) }
+    it { expect(repository.count_commits(ref: "does-not-exist")).to eq(0) }
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
+      subject { repository.count_commits(ref: 'master') }
+    end
+
     describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
@@ -1567,22 +1565,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
           expect(repository.count_commits(options)).to eq(29)
         end
-
-        context 'with option :left_right' do
-          it 'returns the number of commits for master..feature' do
-            options = { from: 'master', to: 'feature', left_right: true }
-
-            expect(repository.count_commits(options)).to eq([29, 1])
-          end
-
-          context 'with max_count' do
-            it 'returns the number of commits' do
-              options = { from: 'feature', to: 'master', left_right: true, max_count: 1 }
-
-              expect(repository.count_commits(options)).to eq([1, 1])
-            end
-          end
-        end
       end
 
       context 'with max_count' do
@@ -1598,6 +1580,20 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           options = { all: true }
 
           expect(repository.count_commits(options)).to eq(330)
+        end
+      end
+
+      context 'with revisions parameter' do
+        it 'returns the number of commits for a single revision' do
+          options = { revisions: ['master'] }
+
+          expect(repository.count_commits(options)).to eq(37)
+        end
+
+        it 'returns the number of commits for multiple revisions' do
+          options = { revisions: %w[feature master] }
+
+          expect(repository.count_commits(options)).to eq(38)
         end
       end
 
@@ -2877,6 +2873,38 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#fork_repository' do
+    let(:source_repository) { described_class.new('default', 'source/path', '', 'group/source') }
+    let(:target_repository) { described_class.new('default', 'target/path', '', 'group/target') }
+
+    it 'delegates to gitaly_repository_client' do
+      expect(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .with(source_repository, nil)
+
+      target_repository.fork_repository(source_repository)
+    end
+
+    it 'passes branch parameter when provided' do
+      branch = 'main'
+
+      expect(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .with(source_repository, branch)
+
+      target_repository.fork_repository(source_repository, branch)
+    end
+
+    it 'wraps GRPC::BadStatus errors via wrapped_gitaly_errors' do
+      allow(target_repository.gitaly_repository_client)
+        .to receive(:fork_repository)
+        .and_raise(GRPC::BadStatus.new(GRPC::Core::StatusCodes::INTERNAL, 'Fork failed'))
+
+      expect { target_repository.fork_repository(source_repository) }
+        .to raise_error(Gitlab::Git::CommandError)
+    end
+  end
+
   describe '#check_objects_exist' do
     it 'returns hash specifying which object exists in repo' do
       refs_exist = %w[
@@ -2910,6 +2938,18 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it 'calls delegates to BlobService' do
       expect(repository.gitaly_blob_client).to receive(:list_all_blobs).with(expected_params)
+      subject
+    end
+  end
+
+  describe '#get_blob_types' do
+    subject { repository.get_blob_types(revision_paths, limit) }
+
+    let(:revision_paths) { [['master', 'README.md'], ['master', 'files']] }
+    let(:limit) { -1 }
+
+    it 'delegates to BlobService' do
+      expect(repository.gitaly_blob_client).to receive(:get_blob_types).with(revision_paths, limit)
       subject
     end
   end

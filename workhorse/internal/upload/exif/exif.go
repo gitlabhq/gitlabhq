@@ -143,6 +143,7 @@ func (c *cleaner) startProcessing(stdin io.Reader) error {
 	// Strip all remaining EXIF but preserve Orientation
 	args := append([]string{"-all=", "-tagsFromFile", "@"}, whitelistedTags...)
 	args = append(args, "-")
+	//nolint:gosec // G204: Command is hardcoded "exiftool", args are from whitelisted constant slice
 	c.cmd = exec.CommandContext(c.ctx, "exiftool", args...)
 	c.cmd.Stderr = &c.stderr
 	c.cmd.Stdin, err = preStripExif.StdoutPipe()

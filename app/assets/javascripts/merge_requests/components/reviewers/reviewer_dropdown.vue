@@ -7,6 +7,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { uuids } from '~/lib/utils/uuids';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { ASSIGN_REVIEWER_USERS_QUERY_VARIABLES } from 'ee_else_ce/merge_requests/components/reviewers/queries/constants';
 import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
@@ -226,6 +227,7 @@ export default {
           search,
           fullPath: this.projectPath,
           mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
+          ...ASSIGN_REVIEWER_USERS_QUERY_VARIABLES,
         },
       });
 

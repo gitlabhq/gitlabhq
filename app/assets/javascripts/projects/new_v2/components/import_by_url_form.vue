@@ -7,6 +7,7 @@ import {
   GlFormInput,
   GlFormInputGroup,
   GlLink,
+  GlMultiStepFormTemplate,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
@@ -14,7 +15,6 @@ import { visitUrl, isReasonableGitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
     GlFormInput,
     GlFormInputGroup,
     GlLink,
-    MultiStepFormTemplate,
+    GlMultiStepFormTemplate,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -118,11 +118,11 @@ export default {
 <template>
   <gl-form method="post" :action="newProjectFormPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <multi-step-form-template
+    <gl-multi-step-form-template
       :title="s__('ProjectImportByURL|Import repository by URL')"
       :current-step="currentStep"
     >
-      <template #form>
+      <template #default>
         <gl-form-group
           :label="__('Git repository URL')"
           label-for="repository-url"
@@ -237,6 +237,6 @@ export default {
           {{ __('Go back') }}
         </gl-button>
       </template>
-    </multi-step-form-template>
+    </gl-multi-step-form-template>
   </gl-form>
 </template>

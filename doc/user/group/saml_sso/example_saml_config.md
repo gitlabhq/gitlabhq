@@ -29,11 +29,8 @@ This section includes relevant screenshots of the following example configuratio
 - [Okta](#okta)
 - [OneLogin](#onelogin)
 
-{{< alert type="warning" >}}
-
-These screenshots are updated only as needed by GitLab Support. They are **not** official documentation.
-
-{{< /alert >}}
+> [!warning]
+> These screenshots are updated only as needed by GitLab Support. They are **not** official documentation.
 
 If you are currently having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/).
 

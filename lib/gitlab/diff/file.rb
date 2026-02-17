@@ -6,6 +6,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier, :max_blob_size
+      attr_accessor :linked
 
       delegate :new_file?, :deleted_file?, :renamed_file?, :unidiff,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
@@ -46,6 +47,7 @@ module Gitlab
         @unique_identifier = unique_identifier
         @max_blob_size = max_blob_size
         @unfolded = false
+        @linked = false
 
         # Ensure items are collected in the the batch
         add_blobs_to_batch_loader
@@ -391,7 +393,7 @@ module Gitlab
       def rendered
         return unless ipynb? && modified_file? && !collapsed? && !too_large?
 
-        strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
+        strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self).rendered }
       end
 
       def rendered?
@@ -424,6 +426,8 @@ module Gitlab
       end
 
       def whitespace_only?
+        return false unless text?
+
         !collapsed? && diff_lines_for_serializer.nil? && (added_lines != 0 || removed_lines != 0)
       end
 
@@ -490,7 +494,7 @@ module Gitlab
         if max_blob_size.present?
           Blob.lazy(repository, sha, path, blob_size_limit: max_blob_size)
         else
-          Blob.lazy(repository, sha, path)
+          Blob.lazy(repository, sha, path, blob_size_limit: Gitlab::Highlight.file_size_limit)
         end
       end
 

@@ -28,11 +28,12 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	gitalyauth "gitlab.com/gitlab-org/gitaly/v16/auth"
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v16/client"
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	gitalyauth "gitlab.com/gitlab-org/gitaly/v18/auth"
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v18/client"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	grpccorrelation "gitlab.com/gitlab-org/labkit/correlation/grpc"
 	grpctracing "gitlab.com/gitlab-org/labkit/tracing/grpc"
@@ -90,6 +91,23 @@ var allowedMetadataKeys = map[string]bool{
 	"user_id":   true,
 	"username":  true,
 	"remote_ip": true,
+}
+
+const retryConfigKey = "retry_config"
+
+func parseRetryPolicy(server api.GitalyServer) *gitalyclient.RetryPolicy {
+	retryConfig, ok := server.CallMetadata[retryConfigKey]
+	if !ok || retryConfig == "" {
+		return nil
+	}
+
+	var policy gitalyclient.RetryPolicy
+	if err := protojson.Unmarshal([]byte(retryConfig), &policy); err != nil {
+		log.WithError(err).Error("failed to unmarshal retry policy")
+		return nil
+	}
+
+	return &policy
 }
 
 func withOutgoingMetadata(ctx context.Context, gs api.GitalyServer) context.Context {
@@ -207,8 +225,7 @@ func CloseConnections() {
 }
 
 func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
-	connOpts := gitalyclient.DefaultDialOpts
-	connOpts = append(connOpts,
+	grpcOpts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(gitalyauth.RPCCredentialsV2(server.Token)),
 		grpc.WithChainStreamInterceptor(
 			grpctracing.StreamClientTracingInterceptor(),
@@ -217,7 +234,6 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 				grpccorrelation.WithClientName("gitlab-workhorse"),
 			),
 		),
-
 		grpc.WithChainUnaryInterceptor(
 			grpctracing.UnaryClientTracingInterceptor(),
 			grpc_prometheus.UnaryClientInterceptor,
@@ -234,9 +250,17 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 		// Afterward, workhorse can detect and handle DNS discovery automatically. The user needs to setup and set
 		// Gitaly address to something like "dns:gitaly.service.dc1.consul"
 		gitalyclient.WithGitalyDNSResolver(gitalyclient.DefaultDNSResolverBuilderConfig()),
-	)
+	}
 
-	conn, connErr := gitalyclient.DialSidechannel(context.Background(), server.Address, sidechannelRegistry, connOpts) // lint:allow context.Background
+	connOpts := []gitalyclient.DialOption{
+		gitalyclient.WithGrpcOptions(grpcOpts),
+	}
+
+	if retryPolicy := parseRetryPolicy(server); retryPolicy != nil {
+		connOpts = append(connOpts, gitalyclient.WithRetryPolicy(retryPolicy))
+	}
+
+	conn, connErr := gitalyclient.DialSidechannel(context.Background(), server.Address, sidechannelRegistry, connOpts...) // lint:allow context.Background
 
 	label := "ok"
 	if connErr != nil {

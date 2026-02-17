@@ -175,7 +175,7 @@ Here are some examples to get you started:
 ### Image tag
 
 As documented in the [Docker Official Images](https://github.com/docker-library/official-images#tags-and-aliases) project,
-it is strongly encouraged that version number tags be given aliases which allows the user to easily refer to the "most recent" release of a particular series.
+it is strongly encouraged that version number tags be given aliases which allows the user to refer to the "most recent" release of a particular series.
 See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://learn.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
 
 ### Permissions
@@ -249,7 +249,7 @@ for [download in the pipeline security tab](../../user/application_security/dete
 
 ### Logging
 
-The scanner should log error messages and warnings so that users can easily investigate
+The scanner should log error messages and warnings so that users can investigate
 misconfiguration and integration issues by looking at the log of the CI/CD scanning job.
 
 Scanners may use [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
@@ -471,14 +471,11 @@ The user interface uses the object's `name` and `url` fields to display the iden
 
 <a id="primary-identifier"></a>
 
-{{< alert type="note" >}}
-
-The first item of the `identifiers` array is called the
-[primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
-it is used to
-[track vulnerabilities](#vulnerability-tracking) as new commits are pushed to the repository.
-
-{{< /alert >}}
+> [!note]
+> The first item of the `identifiers` array is called the
+> [primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
+> it is used to
+> [track vulnerabilities](#vulnerability-tracking) as new commits are pushed to the repository.
 
 We recommend that you use the identifiers the GitLab scanners already [define](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/main/identifier.go):
 

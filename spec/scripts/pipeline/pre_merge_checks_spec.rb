@@ -19,7 +19,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
   let(:latest_mr_pipeline_created_at) { "2024-05-29T07:15:00 UTC" }
   let(:latest_mr_pipeline_project_id) { project_id.to_i } # We get an integer from the API
   let(:latest_mr_pipeline_web_url)    { "https://gitlab.com/gitlab-org/gitlab/-/pipelines/1310472835" }
-  let(:latest_mr_pipeline_name)       { "Ruby 3.2 MR [tier:3, gdk]" }
+  let(:latest_mr_pipeline_name)       { "Ruby 3.3 MR [tier:3, gdk]" }
   let(:latest_mr_pipeline_short) do
     {
       id: 1309901620,
@@ -247,7 +247,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is a predictive pipeline' do
-          let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [predictive]" }
+          let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [predictive]" }
 
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
@@ -259,7 +259,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
           end
 
           context 'when also matching the required tier identifier' do
-            let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [predictive,tier:3]" }
+            let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [predictive,tier:3]" }
 
             it 'returns a failed PreMergeChecksStatus' do
               expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
@@ -284,7 +284,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is not a tier-3 pipeline' do
-          let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [tier:2]" }
+          let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [tier:2]" }
 
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
@@ -297,7 +297,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is qa-only pipeline' do
-          let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [types:qa,qa-gdk]" }
+          let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [types:qa,qa-gdk]" }
 
           it 'returns a successful PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)

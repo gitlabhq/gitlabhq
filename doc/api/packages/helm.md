@@ -14,33 +14,23 @@ title: Helm API
 
 Use this API to interact with [Helm package clients](../../user/packages/helm_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
-and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
+> and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [Helm registry documentation](../../user/packages/helm_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
-
 ## Download a chart index
 
-{{< alert type="note" >}}
+> [!note]
+> To ensure consistent chart download URLs, the `contextPath` field in `index.yaml` responses
+> always uses the numeric project ID, whether you access the API with the project ID or the
+> full project path.
 
-To ensure consistent chart download URLs, the `contextPath` field in `index.yaml` responses
-always uses the numeric project ID, whether you access the API with the project ID or the
-full project path.
-
-{{< /alert >}}
-
-Download a chart index:
+Downloads a specified chart index for a project.
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/index.yaml
@@ -66,7 +56,7 @@ curl --user <username>:<personal_access_token> \
 
 ## Download a chart
 
-Download a chart:
+Downloads a specified chart for a project.
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/charts/:file_name.tgz
@@ -86,7 +76,7 @@ curl --user <username>:<personal_access_token> \
 
 ## Upload a chart
 
-Upload a chart:
+Uploads a specified chart for a project.
 
 ```plaintext
 POST projects/:id/packages/helm/api/:channel/charts

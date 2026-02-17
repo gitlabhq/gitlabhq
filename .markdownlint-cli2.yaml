@@ -151,6 +151,7 @@ config:
       "SpotBugs",
       "SSH",
       "Tiller",
+      "Tiptap",
       "TOML",
       "Trello",
       "Trello Power-Ups",

@@ -141,7 +141,7 @@ If you have the labels **Backend**, **Frontend**, **Staging**, and
 ### Scrum team
 
 In a Scrum team, use [multiple issue boards](#multiple-issue-boards) so that each scrum team has their own board.
-On the Scrum board, you can easily move issues through each
+On the Scrum board, you can move issues through each
 part of the process. For example: **To Do**, **Doing**, and **Done**.
 
 ### Quick assignments

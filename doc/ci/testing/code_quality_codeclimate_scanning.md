@@ -14,12 +14,9 @@ title: Configure CodeClimate-based Code Quality scanning (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
-[Integrate the results from a supported tool directly](code_quality.md#import-code-quality-results-from-a-cicd-job) instead. This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
+> [Integrate the results from a supported tool directly](code_quality.md#import-code-quality-results-from-a-cicd-job) instead. This change is a breaking change.
 
 Code Quality includes a built-in CI/CD template, `Code-Quality.gitlab-ci.yaml`.
 This template runs a scan based on the open source CodeClimate scanning engine.
@@ -60,13 +57,10 @@ To enable Code Quality, either:
 
   Code Quality now runs in pipelines.
 
-{{< alert type="warning" >}}
-
-On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
-could execute privileged Docker commands on the runner host. Having proper access control policies
-mitigates this attack vector by allowing access only to trusted actors.
-
-{{< /alert >}}
+> [!warning]
+> On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
+> could execute privileged Docker commands on the runner host. Having proper access control policies
+> mitigates this attack vector by allowing access only to trusted actors.
 
 ## Disable CodeClimate-based scanning
 
@@ -177,12 +171,9 @@ Both the JSON and HTML files are output as job artifacts. The HTML file is conta
 To download the Code Quality report in only HTML format, set `REPORT_FORMAT` to `html`, overriding
 the default definition of the `code_quality` job.
 
-{{< alert type="note" >}}
-
-This does not create a JSON format file, so Code Quality results are not shown in the merge request
-widget, pipeline report, or changes view.
-
-{{< /alert >}}
+> [!note]
+> This does not create a JSON format file, so Code Quality results are not shown in the merge request
+> widget, pipeline report, or changes view.
 
 ```yaml
 include:
@@ -479,7 +470,7 @@ To use a rootless private runner:
 
 Code Quality now runs in standard Docker mode and rootless.
 
-The same configuration is required if your goal is to [use rootless Podman to run Docker](https://docs.gitlab.com/runner/executors/docker.html#use-podman-to-run-docker-commands) with code quality. Make sure to replace `/run/user/<gitlab-runner-user>/docker.sock` with the correct `podman.sock` path in your system, for example: `/run/user/<gitlab-runner-user>/podman/podman.sock`.
+The same configuration is required if your goal is to [use rootless Podman to run Docker](https://docs.gitlab.com/runner/executors/docker/#use-podman-to-run-docker-commands) with code quality. Make sure to replace `/run/user/<gitlab-runner-user>/docker.sock` with the correct `podman.sock` path in your system, for example: `/run/user/<gitlab-runner-user>/podman/podman.sock`.
 
 ### Configure Kubernetes or OpenShift runners
 
@@ -489,7 +480,7 @@ To ensure Code Quality jobs can run on a Kubernetes executor:
 
 - If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
+  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
 
 #### Kubernetes
 
@@ -523,16 +514,13 @@ command = [
     "--storage-driver=overlay2"
 ]
 entrypoint = ["dockerd"]
-name = "docker:20.10.12-dind"
+name = "docker:29.1.4-dind"
 ```
 
-{{< alert type="note" >}}
-
-If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
-the previous Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
-of the `values.yaml` file.
-x
-{{< /alert >}}
+> [!note]
+> If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes/), you can use
+> the previous Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/)
+> of the `values.yaml` file.
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
 
@@ -556,17 +544,14 @@ code_quality:
 
 #### OpenShift
 
-For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.com/runner/install/operator.html).
+For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.com/runner/install/operator/).
 To give the Docker daemon in the service container permissions to initialize its storage,
 you must mount the `/var/lib` directory as a volume mount.
 
-{{< alert type="note" >}}
-
-If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
-If you opt for the `vfs` value, it might have a negative
-impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
-
-{{< /alert >}}
+> [!note]
+> If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
+> If you opt for the `vfs` value, it might have a negative
+> impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
 
 To configure permissions for the Docker daemon:
 
@@ -599,10 +584,10 @@ command = [
     "--storage-driver=overlay2"
 ]
 entrypoint = ["dockerd"]
-name = "docker:20.10.12-dind"
+name = "docker:29.1.4-dind"
 ```
 
-1. [Set the custom configuration to your runner](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template).
+1. [Set the custom configuration to your runner](https://docs.gitlab.com/runner/configuration/configuring_runner_operator/#customize-configtoml-with-a-configuration-template).
 
 1. Optional. Attach a [`privileged` service account](https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html)
    to the build Pod. This depends on your OpenShift cluster setup:

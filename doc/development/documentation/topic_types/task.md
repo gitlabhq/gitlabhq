@@ -46,7 +46,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. In the upper-right corner, select **New issue**.
 1. Complete the fields. (If you have reference content that lists each field, link to it here.)
@@ -151,9 +151,11 @@ For example, `To create an issue:`
 
 ## Task prerequisites
 
-As a best practice, if the task requires the user to have a role other than Guest,
-put the minimum role in the prerequisites. See [the Word list](../styleguide/word_list.md) for
-how to write the phrase for each role.
+If the task requires the user to have a role other than Guest,
+list all applicable roles in the prerequisites. See [the Word list](../styleguide/word_list.md) for
+how to write the phrase for each role. List the applicable roles first.
+
+If the task can only be performed by an administrator, put `Administrator access.` in the prerequisites.
 
 `Prerequisites` must always be plural, even if the list includes only one item.
 
@@ -175,9 +177,9 @@ For example, for a list of nouns:
 ```markdown
 Prerequisites:
 
-- A valid GitLab account.
-- Docker installed locally.
 - The Maintainer or Owner role for the project.
+- A project access token.
+- Docker installed locally.
 ```
 
 For a list of verbs:

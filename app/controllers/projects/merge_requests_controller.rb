@@ -40,8 +40,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:ci_pipeline_creation_requests_realtime, project)
-    push_frontend_feature_flag(:ci_pipeline_statuses_updated_subscription, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
@@ -57,7 +55,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update
+    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update,
+    :versions
   ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
@@ -88,7 +87,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :test_reports,
     :codequality_mr_diff_reports,
     :codequality_reports,
-    :terraform_reports
+    :terraform_reports,
+    :versions
   ]
   urgency :low, [:pipeline_status, :pipelines, :exposed_artifacts]
 
@@ -113,12 +113,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def rapid_diffs
     return render_404 unless rapid_diffs_page_enabled?
-
-    @rapid_diffs_presenter = ::RapidDiffs::MergeRequestPresenter.new(
-      @merge_request,
-      diff_view,
-      diff_options
-    )
 
     show_merge_request
   end
@@ -373,6 +367,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     message = format(_('Your CSV export has started. It will be emailed to %{email} when complete.'),
       email: current_user.notification_email_or_default)
     redirect_to(index_path, notice: message)
+  end
+
+  def versions
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+
+    viewable_merge_request_diffs = @merge_request.viewable_recent_merge_request_diffs
+
+    render json: RapidDiffs::MergeRequestDiffEntity.represent(
+      viewable_merge_request_diffs,
+      merge_request: @merge_request,
+      merge_request_diffs: viewable_merge_request_diffs,
+      merge_request_diff: @merge_request.merge_request_diff,
+      path_extra_options: { rapid_diffs: true }
+    )
   end
 
   protected
@@ -694,10 +702,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     flash[:alert] =
       _("This merge request has too many diff commits, and can't be updated. " \
         "Close this merge request and create a new one.")
-  end
-
-  def diffs_resource(diff_options = {})
-    @merge_request.latest_diffs(diff_options)
   end
 
   def diff_file_component(base_args)

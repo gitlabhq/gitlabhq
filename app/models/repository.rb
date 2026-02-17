@@ -204,11 +204,11 @@ class Repository
     committed_after: nil,
     pagination_params: { page_token: nil, limit: 1000 }
   )
-    return [] unless exists? && has_visible_content? && ref.present?
+    return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
     pagination_params[:limit] ||= 1000
 
-    raw_commits = raw_repository.list_commits(
+    response = raw_repository.list_commits(
       ref: ref,
       query: query,
       author: author,
@@ -216,8 +216,13 @@ class Repository
       committed_after: committed_after,
       pagination_params: pagination_params
     )
-    commits = raw_commits.map { |c| commit(c) }
-    CommitCollection.new(container, commits, ref)
+
+    Repositories::CommitCollectionWithNextCursor.new(
+      container,
+      response.map { |c| commit(c) },
+      ref,
+      next_cursor: response.next_cursor
+    )
   end
 
   def find_branch(name)
@@ -646,14 +651,14 @@ class Repository
   cache_method :recent_objects_size, fallback: 0.0
 
   def commit_count
-    root_ref ? raw_repository.commit_count(root_ref) : 0
+    root_ref ? raw_repository.count_commits(ref: root_ref) : 0
   end
   cache_method :commit_count, fallback: 0
 
   def commit_count_for_ref(ref)
     return 0 unless exists?
 
-    cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
+    cache.fetch(:"commit_count_#{ref}") { raw_repository.count_commits(ref: ref) }
   end
 
   delegate :branch_names, to: :raw_repository
@@ -775,11 +780,9 @@ class Repository
   end
 
   def list_last_commits_for_tree(sha, path, offset: 0, limit: 25, literal_pathspec: false)
-    commits = raw_repository.list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
-
-    commits.each do |path, commit|
-      commits[path] = ::Commit.new(commit, container)
-    end
+    raw_repository
+      .list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
+      .transform_values { |commit| ::Commit.new(commit, container) }
   end
 
   def last_commit_for_path(sha, path, literal_pathspec: false)
@@ -843,7 +846,7 @@ class Repository
   end
 
   def health(generate)
-    cache.fetch(:health) do
+    cache.fetch_without_caching_false(:health) do
       if generate
         info = raw_repository.repository_info
 
@@ -1210,6 +1213,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def fork_from(source_repository, branch = nil)
+    raw_repository.fork_repository(source_repository.raw_repository, branch)
+  end
+
   def rebase(user, merge_request, skip_ci: false)
     push_options = []
     push_options << Gitlab::PushOptions::CI_SKIP if skip_ci
@@ -1416,25 +1423,11 @@ class Repository
       end
   end
 
-  def granular_ref_name_update(ref)
-    if Gitlab::Git.tag_ref?(ref)
-      cache_key = 'tag_names'
-    elsif Gitlab::Git.branch_ref?(ref)
-      cache_key = 'branch_names'
-    else
-      return
-    end
-
-    cache_value = Gitlab::Git.ref_name(ref)
-
-    exists = ref_exists?(ref)
-    operation = exists ? :add : :remove
-
-    redis_set_cache.granular_update(cache_key, cache_value, operation)
-    clear_memoization(memoizable_name(cache_key))
-  end
-
   private
+
+  def empty_commit_collection_with_next_cursor
+    Repositories::CommitCollectionWithNextCursor.new(container, [], nil)
+  end
 
   # Increase the limit by number of excluded refs
   # to prevent a situation when we return less refs than requested
@@ -1469,7 +1462,11 @@ class Repository
   end
 
   def redis_set_cache
-    @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
+    @redis_set_cache ||= if Feature.enabled?(:ref_cache_with_rebuild_queue, project)
+                           Gitlab::Repositories::RebuildableSetCache.new(self)
+                         else
+                           Gitlab::RepositorySetCache.new(self)
+                         end
   end
 
   def redis_hash_cache

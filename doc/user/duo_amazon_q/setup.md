@@ -289,9 +289,9 @@ With the condition key, you can limit who can use CMK for encrypting or decrypti
 For more information, see
 [`kms:ViaService` in the AWS KMS Developer Guide](https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-via-service).
 
-## Configure GitLab to use AWS hosted AI gateway
+## Configure GitLab to use AWS hosted AI Gateway
 
-You can configure GitLab to use the hosted AI gateway on AWS.
+You can configure GitLab to use the hosted AI Gateway on AWS.
 
 1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, for installations that use the Linux package, run:
 

@@ -80,7 +80,7 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 
@@ -100,16 +100,13 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfi
    sudo gitlab-ctl set-geo-primary-node
    ```
 
-{{< alert type="note" >}}
-
-PostgreSQL and Redis should have already been disabled on the
-application nodes during typical GitLab multi-node setup. Connections
-from the application nodes to services on the backend nodes should
-have also been configured. See multi-node configuration documentation for
-[PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
-and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
-
-{{< /alert >}}
+> [!note]
+> PostgreSQL and Redis should have already been disabled on the
+> application nodes during typical GitLab multi-node setup. Connections
+> from the application nodes to services on the backend nodes should
+> have also been configured. See multi-node configuration documentation for
+> [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
+> and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
 
 ## Configure the other GitLab site to be a Geo **secondary** site
 
@@ -139,12 +136,9 @@ documentation:
 - [Gitaly](../../gitaly/_index.md), which stores data that is
   synchronized from the Geo **primary** site.
 
-{{< alert type="note" >}}
-
-[NFS](../../nfs.md) can be used in place of Gitaly but is not
-recommended.
-
-{{< /alert >}}
+> [!note]
+> [NFS](../../nfs.md) can be used in place of Gitaly but is not
+> recommended.
 
 ### Step 2: Configure the Geo tracking database on the Geo **secondary** site
 
@@ -242,7 +236,7 @@ then make the following modifications:
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 
@@ -284,22 +278,16 @@ then make the following modifications:
    registry['gid'] = 9002
    ```
 
-{{< alert type="note" >}}
-`postgresql['sql_user_password'] = 'md5 digest of secret'`
-If you had set up PostgreSQL cluster using the Linux package and had set
-`postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
-mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
-contains the plaintext passwords. These configurations are used to let the Rails
-nodes connect to the databases.
+> [!warning]
+> If you had set up PostgreSQL cluster using the Linux package and had set
+> `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
+> mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
+> contains the plaintext passwords. These configurations are used to let the Rails
+> nodes connect to the databases.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
- Ensure that the current node's IP is listed in
+Ensure that the current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
-{{< /alert >}}
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
@@ -348,7 +336,7 @@ application nodes documented previously, with some changes to run only the `side
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 

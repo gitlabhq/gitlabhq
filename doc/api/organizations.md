@@ -24,14 +24,11 @@ Use this API to interact with GitLab organizations. For more information, see [o
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-Creates a new organization.
+Creates an organization.
 
 This endpoint is an [experiment](../policy/development_stages_support.md) and might be changed or removed without notice.
 

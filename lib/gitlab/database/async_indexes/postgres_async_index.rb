@@ -12,6 +12,7 @@ module Gitlab
         MAX_TABLE_NAME_LENGTH = (Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH * 2) + 1
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
         MAX_DEFINITION_LENGTH = 2048
+        MAX_ATTEMPTS = 5
 
         before_validation :remove_whitespaces
 
@@ -23,7 +24,9 @@ module Gitlab
 
         scope :to_create, -> { where("definition ILIKE 'CREATE%'") }
         scope :to_drop, -> { where("definition ILIKE 'DROP%'") }
+        scope :retriable, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
         scope :ordered, -> { order(attempts: :asc, id: :asc) }
+        scope :queued, -> { retriable.ordered }
 
         def to_s
           definition

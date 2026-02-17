@@ -192,6 +192,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute', feature_categ
 
     before do
       allow(pipeline.project).to receive(:default_branch).and_return(default_branch)
+      allow(pipeline).to receive(:ref).and_return(default_branch)
     end
 
     it 'sets default branch to true' do

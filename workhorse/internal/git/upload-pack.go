@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -21,6 +21,11 @@ var (
 // written to.
 func handleUploadPack(w *HTTPResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
 	ctx := r.Context()
+
+	// Extract correlation ID from X-Gitaly-Correlation-Id header and store in context
+	if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+		ctx = context.WithValue(ctx, gitaly.GitalyCorrelationIDKey, correlationID)
+	}
 
 	// Prevent the client from holding the connection open indefinitely. A
 	// transfer rate of 17KiB/sec is sufficient to send 10MiB of data in

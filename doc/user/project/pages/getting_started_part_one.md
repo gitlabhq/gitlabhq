@@ -70,20 +70,14 @@ redirecting the browser to these unique domain URLs. Browsers might cache this r
 For example, if the unique ID is `f85695`, the last example is
 `http(s)://product-manual-f85695.example.io/`.
 
-{{< alert type="warning" >}}
-
-For limitations regarding namespaces served under the general domain name and HTTPS,
-see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
-
-{{< /alert >}}
+> [!warning]
+> For limitations regarding namespaces served under the general domain name and HTTPS,
+> see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
 
 To understand Pages domains clearly, read the examples below.
 
-{{< alert type="note" >}}
-
-The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` by `gitlab.io`.
-
-{{< /alert >}}
+> [!note]
+> The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` by `gitlab.io`.
 
 ### Project website examples
 
@@ -125,11 +119,8 @@ The following examples imply you disabled the **Use unique domain** setting. If 
 
 ## URLs and base URLs
 
-{{< alert type="note" >}}
-
-The `baseurl` option might be named differently in some static site generators.
-
-{{< /alert >}}
+> [!note]
+> The `baseurl` option might be named differently in some static site generators.
 
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not

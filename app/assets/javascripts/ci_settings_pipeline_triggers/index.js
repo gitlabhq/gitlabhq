@@ -27,6 +27,7 @@ export default (containerId = 'js-ci-pipeline-triggers-list') => {
 
   return new Vue({
     el: containerEl,
+    name: 'TriggersListRoot',
     apolloProvider,
     components: {
       TriggersList,

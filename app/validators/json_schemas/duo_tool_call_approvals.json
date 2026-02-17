@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Per session tool call approvals structure for Duo Agent Platform",
+  "additionalProperties": {
+    "type": "object",
+    "description": "Approval configuration for a specific tool",
+    "properties": {
+      "call_args": {
+        "type": "array",
+        "description": "Array of SHA256 hashes of approved tool call arguments",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of tool call arguments (64 hex characters)"
+        },
+        "minItems": 0,
+        "uniqueItems": true
+      }
+    },
+    "required": [
+      "call_args"
+    ],
+    "additionalProperties": false
+  }
+}

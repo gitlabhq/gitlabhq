@@ -2,7 +2,9 @@
 data_category: optional
 key_path: counts.deployments
 description: Total deployments count
-product_group: environments
+product_group: runner_core
+product_categories:
+- deployment_management
 value_type: number
 status: active
 milestone: "8.12"

@@ -71,5 +71,24 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotEquals do
         it { is_expected.to eq(true) }
       end
     end
+
+    context 'when comparing boolean with string representation' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:left_value, :right_value, :expected) do
+        true  | 'true'  | false
+        false | 'false' | false
+        true  | 'false' | true
+        false | 'true'  | true
+        'true'  | true  | false
+        'false' | false | false
+        'true'  | false | true
+        'false' | true  | true
+      end
+
+      with_them do
+        it { is_expected.to eq(expected) }
+      end
+    end
   end
 end

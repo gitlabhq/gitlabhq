@@ -1,16 +1,10 @@
 ---
 Migration/PreventIndexCreation:
   Exclude:
-    - 'db/migrate/20250506140822_add_index_project_id_on_project_authorizations_for_migration.rb'
     - 'db/migrate/20251014142227_add_fk_on_sbom_occurrence_refs_for_sbom_occurrences.rb'
     - 'db/migrate/20251014143930_add_fk_to_sbom_occurrence_refs_for_security_project_tracked_contexts.rb'
     - 'db/migrate/20251014144050_add_index_on_sbom_occurrence_refs_for_projects.rb'
     - 'db/migrate/20251014170619_add_index_on_sbom_occurrence_refs_for_pipelines.rb'
-    - 'db/post_migrate/20250512110339_replace_tmp_idx_on_maven_packages_with_uniq_idx.rb'
-    - 'db/post_migrate/20250520214740_readd_index_users_for_auditors_for_gitlab_com.rb'
-    - 'db/post_migrate/20250529231801_async_add_index_ci_build_report_results_on_build_id_partition_id.rb'
-    - 'db/post_migrate/20250602222636_add_index_of_oid_to_lfs_objects_projects.rb'
-    - 'db/post_migrate/20250609181410_change_idx_ci_build_report_results_on_build_id_partition_id.rb'
     - 'db/post_migrate/20250625234115_prepare_indexes_for_merge_request_diffs_bigint_conversion.rb'
     - 'db/post_migrate/20250627213929_add_index_to_resource_state_events_namespace_id.rb'
     - 'db/post_migrate/20250807135739_prepare_async_index_project_daily_statistics_date_and_id.rb'

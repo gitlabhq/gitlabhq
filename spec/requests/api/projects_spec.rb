@@ -130,7 +130,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:created)
 
         project = Project.find(json_response['id'])
-        expect(project.default_branch).to eq('master')
+        expect(project.default_branch).to eq('main')
+      end
+    end
+
+    context 'when branch name is fully qualified' do
+      let(:default_branch) { 'refs/heads/full_name' }
+
+      it 'creates project with provided default branch name without refs/heads prefix' do
+        expect { request }.to change { Project.count }.by(1)
+        expect(response).to have_gitlab_http_status(:created)
+
+        project = Project.find(json_response['id'])
+        expect(project.repository_exists?).to be_truthy
+        expect(project.default_branch).to eq('full_name')
       end
     end
 
@@ -426,38 +439,86 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
-      it 'does not include projects marked for deletion' do
-        project.update!(pending_delete: true)
-
-        get api(path, user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(json_response.map { |p| p['id'] }).not_to include(project.id)
-      end
-
-      context 'when user requests pending_delete projects' do
+      context 'when use_deletion_in_progress_in_finders feature flag is disabled' do
         before do
-          project.update!(pending_delete: true)
+          stub_feature_flags(use_deletion_in_progress_in_finders: false)
         end
 
-        let(:params) { { include_pending_delete: true } }
+        it 'does not include projects marked for deletion' do
+          project.update!(pending_delete: true)
 
-        it 'does not return projects marked for deletion' do
-          get api(path, user), params: params
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).not_to include(project.id)
         end
 
-        context 'when user is an admin' do
-          it 'returns projects marked for deletion' do
-            get api(path, admin, admin_mode: true), params: params
+        context 'when user requests pending_delete projects' do
+          before do
+            project.update!(pending_delete: true)
+          end
+
+          let(:params) { { include_pending_delete: true } }
+
+          it 'does not return projects marked for deletion' do
+            get api(path, user), params: params
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
-            expect(json_response.map { |p| p['id'] }).to include(project.id)
+            expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+          end
+
+          context 'when user is an admin' do
+            it 'returns projects marked for deletion' do
+              get api(path, admin, admin_mode: true), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to be_an Array
+              expect(json_response.map { |p| p['id'] }).to include(project.id)
+            end
+          end
+        end
+      end
+
+      context 'when use_deletion_in_progress_in_finders feature flag is enabled' do
+        before do
+          stub_feature_flags(use_deletion_in_progress_in_finders: true)
+        end
+
+        it 'does not include projects with deletion_in_progress state' do
+          project.project_namespace.start_deletion!(transition_user: project.creator)
+
+          get api(path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+
+        context 'when user requests pending_delete projects' do
+          before do
+            project.project_namespace.start_deletion!(transition_user: project.creator)
+          end
+
+          let(:params) { { include_pending_delete: true } }
+
+          it 'does not return projects with deletion_in_progress state' do
+            get api(path, user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+          end
+
+          context 'when user is an admin' do
+            it 'returns projects with deletion_in_progress state' do
+              get api(path, admin, admin_mode: true), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to be_an Array
+              expect(json_response.map { |p| p['id'] }).to include(project.id)
+            end
           end
         end
       end
@@ -1653,7 +1714,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       post api(path, user), params: project
 
-      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/#{json_response['path']}/-/blob/master/README.md")
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/#{json_response['path']}/-/blob/main/README.md")
     end
 
     it 'sets tag list to a project (deprecated)' do
@@ -2476,7 +2537,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       let(:failed_status_code) { :not_found }
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_group_project do
+    it_behaves_like 'authorizing granular token permissions', :read_ancestor_group do
       let(:boundary_object) { private_project }
       let(:request) do
         get api("/projects/#{private_project.id}/groups", personal_access_token: pat)
@@ -2617,7 +2678,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_share_location_project do
+    it_behaves_like 'authorizing granular token permissions', :read_share_location do
       let(:boundary_object) { project }
       let(:request) do
         get api("/projects/#{project.id}/share_locations", personal_access_token: pat)
@@ -3068,7 +3129,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(response).to have_gitlab_http_status(:moved_permanently)
 
           url = response.headers['Location']
-          expect(url).to start_with("#{request.base_url}/api/v4/projects/#{project.id}")
+          expect(url).to start_with("#{::Settings.gitlab.url}/api/v4/projects/#{project.id}")
           expect(CGI.parse(URI(url).query)).to include({ 'license' => ['true'] })
         end
 
@@ -3528,7 +3589,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_user_project do
+      it_behaves_like 'authorizing granular token permissions', :read_contributing_user do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/users", personal_access_token: pat)
@@ -3645,7 +3706,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(project_fork_target).to be_forked
           end
 
-          it_behaves_like 'authorizing granular token permissions', :mark_forked_project do
+          it_behaves_like 'authorizing granular token permissions', :create_fork_relationship do
             let(:boundary_object) { project_fork_target }
             let(:request) do
               post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", personal_access_token: pat)
@@ -3789,7 +3850,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(project_fork_target).not_to be_forked
           end
 
-          it_behaves_like 'authorizing granular token permissions', :delete_fork_project do
+          it_behaves_like 'authorizing granular token permissions', :delete_fork_relationship do
             let(:boundary_object) { project_fork_target }
             let(:request) do
               delete api("/projects/#{project_fork_target.id}/fork", personal_access_token: pat)
@@ -3835,7 +3896,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(project_fork_source.forks).to include(private_fork)
         end
 
-        it_behaves_like 'authorizing granular token permissions', :read_fork_project do
+        it_behaves_like 'authorizing granular token permissions', :read_fork do
           let(:boundary_object) { project_fork_source }
           let(:request) do
             get api("/projects/#{project_fork_source.id}/forks", personal_access_token: pat)
@@ -4028,7 +4089,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(group_ids).to contain_exactly(direct_group1.id, direct_group2.id, inherited_group.id)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_invited_group_project do
+      it_behaves_like 'authorizing granular token permissions', :read_project_invited_group do
         let(:boundary_object) { main_project }
         let(:request) do
           get api("/projects/#{main_project.id}/invited_groups", personal_access_token: pat)
@@ -4180,7 +4241,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(project.project_group_links).to be_empty
       end
 
-      it_behaves_like 'authorizing granular token permissions', :delete_group_share_project do
+      it_behaves_like 'authorizing granular token permissions', :unshare_project do
         let(:boundary_object) { project }
         let(:request) do
           delete api("/projects/#{project.id}/share/#{group.id}", personal_access_token: pat)
@@ -4293,7 +4354,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       project2.add_developer(project2_user)
     end
 
-    it_behaves_like 'authorizing granular token permissions', :import_member_project do
+    it_behaves_like 'authorizing granular token permissions', :import_member do
       let(:boundary_object) { project2 }
       let(:request) do
         post api("/projects/#{project.id}/import_project_members/#{project2.id}", personal_access_token: pat)
@@ -5549,7 +5610,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         project.update!(archived: true)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :archive_project do
+      it_behaves_like 'authorizing granular token permissions', :unarchive_project do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/unarchive", personal_access_token: pat)
@@ -5639,7 +5700,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['star_count']).to eq(0)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :star_project do
+      it_behaves_like 'authorizing granular token permissions', :unstar_project do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/unstar", personal_access_token: pat)
@@ -5684,7 +5745,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       private_user.users_star_projects.create!(project_id: public_project.id)
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_starrer_project do
+    it_behaves_like 'authorizing granular token permissions', :read_starring_user do
       let(:boundary_object) { public_project }
       let(:request) do
         get api("/projects/#{public_project.id}/starrers", personal_access_token: pat)
@@ -5759,7 +5820,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_language_project do
+      it_behaves_like 'authorizing granular token permissions', :read_language do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/languages", personal_access_token: pat)
@@ -5916,39 +5977,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           params.merge!(permanently_remove: true)
         end
 
-        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
-          before do
-            stub_application_setting(allow_immediate_namespaces_deletion: false)
-          end
-
-          it_behaves_like 'immediately delete project error' do
-            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-          end
-
-          context 'when current user is an admin' do
-            let_it_be(:user) { admin }
-            let(:admin_mode) { true }
-
-            context 'when project is already marked for deletion' do
-              before do
-                project.update!(marked_for_deletion_at: 1.day.ago, deleting_user: admin)
-                params[:full_path] = project.full_path
-                project.add_owner(admin)
-              end
-
-              it_behaves_like 'deletes project immediately'
-
-              context 'when admin_mode is false' do
-                let(:admin_mode) { false }
-
-                it_behaves_like 'immediately delete project error' do
-                  let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
-                end
-              end
-            end
-          end
-        end
-
         context 'when project is not marked for deletion' do
           let(:error_message) { 'Project must be marked for deletion first.' }
 
@@ -5966,14 +5994,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             end
 
             it_behaves_like 'deletes project immediately'
-
-            context 'when the allow_immediate_namespaces_deletion FF is disabled' do
-              before do
-                stub_feature_flags(allow_immediate_namespaces_deletion: false)
-              end
-
-              it_behaves_like 'deletes project immediately'
-            end
           end
 
           context 'with incorrect project full path' do
@@ -6288,7 +6308,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['error']).to eq('visibility does not have a valid value')
       end
 
-      it_behaves_like 'authorizing granular token permissions', :create_fork_project do
+      it_behaves_like 'authorizing granular token permissions', :create_fork do
         let(:boundary_object) { project }
         let(:fork_path) { "fork-test-#{SecureRandom.hex(4)}" }
         let(:request) do
@@ -6444,7 +6464,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:created)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :recalculate_storage_project do
+      it_behaves_like 'authorizing granular token permissions', :recalculate_storage do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/repository_size", personal_access_token: pat)
@@ -6572,7 +6592,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         owner_group.add_owner(user)
       end
 
-      it_behaves_like 'authorizing granular token permissions', :read_transfer_location_project do
+      it_behaves_like 'authorizing granular token permissions', :read_project_transfer_location do
         let(:boundary_object) { project }
         let(:request) do
           get api("/projects/#{project.id}/transfer_locations", personal_access_token: pat)
@@ -6695,7 +6715,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'with granular token permissions', :enable_admin_mode do
-      it_behaves_like 'authorizing granular token permissions', :read_storage_project do
+      it_behaves_like 'authorizing granular token permissions', :read_storage do
         let(:boundary_object) { project }
         let(:user) { admin }
         let(:request) do
@@ -6708,5 +6728,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   it_behaves_like 'custom attributes endpoints', 'projects' do
     let(:attributable) { project }
     let(:other_attributable) { project2 }
+    let(:boundary_type) { project }
   end
 end
