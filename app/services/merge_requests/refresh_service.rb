@@ -156,7 +156,21 @@ module MergeRequests
         .preload_merge_data(@project)
 
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
-      filter_merge_requests(merge_requests_array).each do |merge_request|
+      filtered_merge_requests = filter_merge_requests(merge_requests_array)
+
+      if Feature.enabled?(:batch_merge_status_updates, @project)
+        recheck_merge_requests_batched(filtered_merge_requests)
+      else
+        recheck_merge_requests_individually(filtered_merge_requests)
+      end
+
+      # Upcoming method calls need the refreshed version of
+      # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
+      merge_requests_for_source_branch(reload: true)
+    end
+
+    def recheck_merge_requests_individually(filtered_merge_requests)
+      filtered_merge_requests.each do |merge_request|
         skip_merge_status_trigger = true
 
         if branch_and_project_match?(merge_request) || @push.force_push?
@@ -167,8 +181,8 @@ module MergeRequests
           # changes will hide the error from the user.
           merge_request.merge_error = nil
 
-          # Don't skip trigger since we to update the MR's merge status in real-time
-          # when the push if for the MR's source branch and project.
+          # Don't skip trigger since we need to update the MR's merge status in real-time
+          # when the push is for the MR's source branch and project.
           skip_merge_status_trigger = false
         elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
           merge_request.reload_diff(current_user)
@@ -177,10 +191,30 @@ module MergeRequests
         merge_request.skip_merge_status_trigger = skip_merge_status_trigger
         merge_request.mark_as_unchecked
       end
+    end
 
-      # Upcoming method calls need the refreshed version of
-      # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
-      merge_requests_for_source_branch(reload: true)
+    def recheck_merge_requests_batched(filtered_merge_requests)
+      source_branch_or_force_pushed_mrs = []
+      all_mr_ids = []
+
+      filtered_merge_requests.each do |merge_request|
+        all_mr_ids << merge_request.id
+
+        if branch_and_project_match?(merge_request) || @push.force_push?
+          merge_request.reload_diff(current_user)
+          schedule_duo_code_review(merge_request)
+          source_branch_or_force_pushed_mrs << merge_request
+        elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
+          merge_request.reload_diff(current_user)
+        end
+      end
+
+      MergeRequest.batch_mark_as_unchecked(all_mr_ids, mrs_to_trigger: source_branch_or_force_pushed_mrs)
+
+      # Clear existing merge error if the push were directed at the
+      # source branch. Clearing the error when the target branch
+      # changes will hide the error from the user.
+      MergeRequest.batch_clear_merge_error(source_branch_or_force_pushed_mrs.map(&:id))
     end
 
     def push_commit_ids

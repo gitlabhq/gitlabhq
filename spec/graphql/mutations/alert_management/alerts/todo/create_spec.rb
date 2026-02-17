@@ -55,7 +55,7 @@ RSpec.describe Mutations::AlertManagement::Alerts::Todo::Create, feature_categor
         end
       end
 
-      specify { expect { resolve }.not_to change(Todo, :count) }
+      specify { expect { resolve }.not_to change { Todo.count } }
       specify { expect(resolve[:errors]).to eq([error_response.message]) }
     end
 

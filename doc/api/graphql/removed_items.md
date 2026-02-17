@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GraphQL API removed items
 description: "List of deprecated and removed items in the GitLab GraphQL API."
 ---

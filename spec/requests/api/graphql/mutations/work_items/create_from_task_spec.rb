@@ -51,7 +51,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
 
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
-      end.to change(WorkItem, :count).by(1)
+      end.to change { WorkItem.count }.by(1)
 
       created_work_item = WorkItem.last
       work_item.reload

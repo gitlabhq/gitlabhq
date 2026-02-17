@@ -66,7 +66,7 @@ RSpec.describe Types::BaseEnum, feature_category: :api do
       context 'when the use_name is `true`' do
         it 'changes the graphql_name' do
           expect { set_declarative_enum }
-            .to change(enum_type, :graphql_name).from('OriginalName').to('Name')
+            .to change { enum_type.graphql_name }.from('OriginalName').to('Name')
         end
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Types::BaseEnum, feature_category: :api do
 
         it 'does not change the graphql_name' do
           expect { set_declarative_enum }
-            .not_to change(enum_type, :graphql_name).from('OriginalName')
+            .not_to change { enum_type.graphql_name }.from('OriginalName')
         end
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe Types::BaseEnum, feature_category: :api do
       context 'when the use_description is `true`' do
         it 'changes the description' do
           expect { set_declarative_enum }
-            .to change(enum_type, :description).from('Original description').to('Description')
+            .to change { enum_type.description }.from('Original description').to('Description')
         end
       end
 
@@ -93,7 +93,7 @@ RSpec.describe Types::BaseEnum, feature_category: :api do
 
         it 'does not change the description' do
           expect { set_declarative_enum }
-            .not_to change(enum_type, :description).from('Original description')
+            .not_to change { enum_type.description }.from('Original description')
         end
       end
     end

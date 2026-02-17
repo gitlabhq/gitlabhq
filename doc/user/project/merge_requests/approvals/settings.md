@@ -110,7 +110,7 @@ For more information, see the [official Git documentation](https://git-scm.com/b
 > the commit history is rewritten with a new committer. This might enable users who
 > previously committed changes in a merge request to now approve changes in it, as they are
 > no longer a committer.
-> 
+>
 > See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
 
 ## Prevent editing approval rules in merge requests
@@ -200,8 +200,7 @@ To keep existing approvals after more changes are added to a merge request:
 
 If you automate the creation and approval of merge requests, build in logic to ensure commits are
 processed fully before approving the merge request. This prevents an unintentional approval reset.
-See [Handle timing issues with automated approvals](../../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests)
-for more details.
+For more information, see [handle timing issues with automated approvals](../../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests).
 
 ## Remove approvals by Code Owners if their files changed
 

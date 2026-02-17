@@ -40,9 +40,25 @@ module WorkItems
         case attribute
         when :relative_position
           return order_relative_position(user) if user && scoped_to_subscribed
+
+        when :name_asc
+          return reorder(
+            Gitlab::Pagination::Keyset::Order.build(
+              [column_order_name_asc, column_order_id_desc]
+            )
+          )
         end
 
         order(id: :desc)
+      end
+
+      def self.column_order_name_asc
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'name',
+          column_expression: arel_table[:name],
+          order_expression: arel_table[:name].lower.asc,
+          order_direction: :asc
+        )
       end
 
       def self.order_relative_position(user)

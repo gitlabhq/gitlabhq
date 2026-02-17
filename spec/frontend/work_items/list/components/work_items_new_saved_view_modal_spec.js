@@ -276,7 +276,8 @@ describe('WorkItemsNewSavedViewModal', () => {
 
     it.each`
       scenario                            | mockSetup                                                                                              | expectedError
-      ${'with errors in response'}        | ${{ data: { workItemSavedViewCreate: { errors: ['Failed to create saved view'], savedView: null } } }} | ${'Something went wrong while creating the view'}
+      ${'with errors in response'}        | ${{ data: { workItemSavedViewCreate: { errors: ['Failed to create saved view'], savedView: null } } }} | ${'Failed to create saved view'}
+      ${'with empty errors in response'}  | ${{ data: { workItemSavedViewCreate: { errors: [''], savedView: null } } }}                            | ${'Something went wrong while creating the view'}
       ${'when mutation throws exception'} | ${new Error('Network error')}                                                                          | ${'Something went wrong while creating the view'}
     `('shows an error message $scenario', async ({ mockSetup, expectedError }) => {
       if (mockSetup instanceof Error) {
@@ -373,8 +374,8 @@ describe('WorkItemsNewSavedViewModal', () => {
     it('shows an error message when update mutation fails with errors in response', async () => {
       saveSavedView.mockResolvedValue({
         data: {
-          workItemSavedViewCreate: {
-            errors: ['Failed to create saved view'],
+          workItemSavedViewUpdate: {
+            errors: ['Only the author can change visibility settings'],
             savedView: null,
           },
         },
@@ -393,7 +394,7 @@ describe('WorkItemsNewSavedViewModal', () => {
       await waitForPromises();
 
       expect(saveSavedView).toHaveBeenCalled();
-      expect(findAlert().text()).toBe('Something went wrong while saving the view');
+      expect(findAlert().text()).toBe('Only the author can change visibility settings');
       expect(mockToastShow).not.toHaveBeenCalled();
       expect(wrapper.emitted('hide')).toBeUndefined();
     });

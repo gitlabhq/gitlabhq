@@ -154,9 +154,10 @@ export default {
         });
 
         if (data[mutationKey].errors?.length) {
-          this.error = this.isEdit
+          const fallback = this.isEdit
             ? s__('WorkItem|Something went wrong while saving the view')
             : s__('WorkItem|Something went wrong while creating the view');
+          this.error = data[mutationKey].errors[0] || fallback;
           return;
         }
 
@@ -230,7 +231,13 @@ export default {
       </span>
     </div>
     <gl-form data-testid="add-new-saved-view-form" @submit.prevent="saveView">
-      <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="error = undefined">
+      <gl-alert
+        v-if="error"
+        class="gl-mb-3"
+        variant="danger"
+        :dismissible="true"
+        @dismiss="error = undefined"
+      >
         {{ error }}
       </gl-alert>
       <gl-form-group

@@ -73,7 +73,7 @@ GitLab enables Git LFS by default for both GitLab Self-Managed and GitLab SaaS.
 It offers both server settings and project-specific settings.
 
 - To configure Git LFS on your instance, such as setting up remote object storage, see
-  [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md).
+  [Git Large File Storage (LFS) administration](../../../administration/lfs/_index.md).
 - To configure Git LFS for a specific project:
 
   1. In the root directory of your local copy of the repository, run `git lfs install`. This command
@@ -119,7 +119,7 @@ authentication.
 
 By default, Git LFS operations occur over HTTPS, even when Git communicates with your repository over SSH.
 In GitLab 17.2, [pure SSH support for LFS](https://gitlab.com/groups/gitlab-org/-/epics/11872) was introduced.
-For information on how to enable this feature, see [Pure SSH transfer protocol](../../../administration/lfs/_index.md#pure-ssh-transfer-protocol).
+For information on how to enable this feature, see [pure SSH transfer protocol](../../../administration/lfs/_index.md#pure-ssh-transfer-protocol).
 
 To fetch new LFS objects for a repository you have already cloned, run this command:
 
@@ -140,10 +140,10 @@ It's important to understand the differences between untracking a file in Git LF
   If users check out historical branches or tags, they still need the LFS version of the file.
 - Delete: The file is removed but remains in your repository history.
 
-To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file-from-a-repository).
+To delete a tracked file with Git LFS, see [remove a file](../undo.md#remove-a-file-from-a-repository).
 
 To completely expunge all history of a file, past and present,
-see [Handle sensitive information](../undo.md#handle-sensitive-information).
+see [handle sensitive information](../undo.md#handle-sensitive-information).
 
 > [!warning]
 > Expunging file history requires rewriting Git history. This action is destructive and irreversible.
@@ -152,7 +152,7 @@ see [Handle sensitive information](../undo.md#handle-sensitive-information).
 
 If you need to remove large files from your repository's history, to reduce
 the total size of your repository, see
-[Reduce repository size](../../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
+[reduce repository size](../../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Related topics
 

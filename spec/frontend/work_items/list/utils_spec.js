@@ -477,6 +477,44 @@ describe('saveSavedView', () => {
 
       expect(mockQuery).not.toHaveBeenCalled();
     });
+
+    it('does not update cache when mutation returns errors', async () => {
+      const errorResponse = {
+        data: {
+          workItemSavedViewCreate: {
+            savedView: null,
+            errors: ['You do not have permission to create this saved view.'],
+          },
+        },
+      };
+
+      mockMutate.mockResolvedValue(errorResponse);
+
+      mockQuery.mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [],
+            },
+          },
+        },
+      });
+
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      await saveSavedView(params);
+
+      const { update } = mockMutate.mock.calls[0][0];
+      const mockCache = { readQuery: jest.fn(), writeQuery: jest.fn() };
+      update(mockCache, { data: errorResponse.data });
+
+      expect(mockCache.readQuery).not.toHaveBeenCalled();
+      expect(mockCache.writeQuery).not.toHaveBeenCalled();
+    });
   });
 
   describe('when editing a saved view', () => {
@@ -549,6 +587,34 @@ describe('saveSavedView', () => {
       expect(callArgs.variables.input.filters).toBeUndefined();
       expect(callArgs.variables.input.sort).toBeUndefined();
       expect(callArgs.variables.input.displaySettings).toBeUndefined();
+    });
+
+    it('does not update cache when mutation returns errors', async () => {
+      const errorResponse = {
+        data: {
+          workItemSavedViewUpdate: {
+            savedView: null,
+            errors: ['Only the author can change visibility settings'],
+          },
+        },
+      };
+
+      mockMutate.mockResolvedValue(errorResponse);
+
+      const params = {
+        ...editSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      await saveSavedView(params);
+
+      const { update } = mockMutate.mock.calls[0][0];
+      const mockCache = { readQuery: jest.fn(), writeQuery: jest.fn() };
+      update(mockCache, { data: errorResponse.data });
+
+      expect(mockCache.readQuery).not.toHaveBeenCalled();
+      expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });
   });
 });

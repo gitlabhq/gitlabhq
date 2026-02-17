@@ -150,7 +150,7 @@ The commit you want to undo is `B`.
 ### Revert commits and modify history
 
 The following sections document tasks that rewrite Git history. For more information, see
-[Rebase and resolve conflicts](git_rebase.md).
+[rebase and resolve conflicts](git_rebase.md).
 
 #### Delete a specific commit
 
@@ -376,7 +376,7 @@ at merge, use `git merge --squash`. For example:
    git commit -m "Squash commit from feature-branch"
    ```
 
-For information on how to squash commits from the GitLab UI, see [Squash and merge](../../user/project/merge_requests/squash_and_merge.md).
+For information on how to squash commits from the GitLab UI, see [squash and merge](../../user/project/merge_requests/squash_and_merge.md).
 
 ### Revert a merge commit to a different parent
 
@@ -392,7 +392,7 @@ To revert a merge commit to a different parent, you must revert the commit from 
    git revert -m 2 7a39eb0
    ```
 
-For information on reverting changes from the GitLab UI, see [Revert changes](../../user/project/merge_requests/revert_changes.md).
+For information on reverting changes from the GitLab UI, see [revert changes](../../user/project/merge_requests/revert_changes.md).
 
 ## Handle sensitive information
 
@@ -406,9 +406,9 @@ Permanently delete sensitive or confidential information that was accidentally c
 it's no longer accessible in your repository's history. This process replaces a list of strings with `***REMOVED***`.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
+[remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
-To redact text from your repository, see [Redact text from repository](../../user/project/repository/repository_size.md#redact-text-from-repository).
+To redact text from your repository, see [redact text from repository](../../user/project/repository/repository_size.md#redact-text-from-repository).
 
 ### Remove information from commits
 
@@ -431,7 +431,7 @@ These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
 For more information about purging files from the repository history and GitLab storage,
-see [Reduce repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
+see [reduce repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Undo and remove commits
 
@@ -550,7 +550,7 @@ git revert <commit-sha>
 
 These commands remove the file from current branches, but do not expunge it from your repository's history.
 To completely remove all traces of the file, past and present, from your repository, see
-[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
+[remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 ## Compare `git revert` and `git reset`
 

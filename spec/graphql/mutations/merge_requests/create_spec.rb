@@ -65,7 +65,7 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
         end
 
         it 'creates a new merge request' do
-          expect { mutated_merge_request }.to change(MergeRequest, :count).by(1)
+          expect { mutated_merge_request }.to change { MergeRequest.count }.by(1)
         end
 
         it 'returns a new merge request' do
@@ -124,7 +124,7 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
           let(:title) { nil }
 
           it 'does not create a new merge request' do
-            expect { mutated_merge_request }.not_to change(MergeRequest, :count)
+            expect { mutated_merge_request }.not_to change { MergeRequest.count }
           end
 
           it 'returns errors' do

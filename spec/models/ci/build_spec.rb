@@ -6670,7 +6670,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       }
     end
 
-    subject(:fabricate) { described_class.fabricate(build_attributes) }
+    subject(:fabricate) { described_class.fabricate(**build_attributes) }
 
     it 'initializes with temp_job_definition' do
       expect(fabricate).to have_attributes(

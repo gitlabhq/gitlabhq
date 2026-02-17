@@ -173,6 +173,65 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
       end
 
+      context 'with several MRs affected by the push' do
+        let!(:extra_merge_request1) do
+          create(
+            :merge_request,
+            source_project: @project,
+            source_branch: 'feature1',
+            target_branch: 'master',
+            merge_status: 'cannot_be_merged'
+          )
+        end
+
+        let!(:extra_merge_request2) do
+          create(
+            :merge_request,
+            source_project: @project,
+            source_branch: 'feature2',
+            target_branch: 'master',
+            merge_status: 'cannot_be_merged'
+          )
+        end
+
+        it 'uses batch method to update merge status with fewer queries' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          end
+
+          expect(@merge_request.reload.merge_status).to eq('unchecked')
+          expect(@another_merge_request.reload.merge_status).to eq('unchecked')
+          expect(@fork_merge_request.reload.merge_status).to eq('unchecked')
+          expect(extra_merge_request1.reload.merge_status).to eq('cannot_be_merged_recheck')
+          expect(extra_merge_request2.reload.merge_status).to eq('cannot_be_merged_recheck')
+
+          merge_status_updates = recorder.occurrences_starting_with('UPDATE "merge_requests" SET "merge_status"')
+          expect(merge_status_updates.values.sum).to eq(2)
+        end
+
+        context 'when batch_merge_status_updates feature flag is disabled' do
+          before do
+            stub_feature_flags(batch_merge_status_updates: false)
+          end
+
+          it 'updates merge status individually with more queries' do
+            recorder = ActiveRecord::QueryRecorder.new do
+              refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+            end
+
+            expect(@merge_request.reload.merge_status).to eq('unchecked')
+            expect(@another_merge_request.reload.merge_status).to eq('unchecked')
+            expect(@fork_merge_request.reload.merge_status).to eq('unchecked')
+            expect(extra_merge_request1.reload.merge_status).to eq('cannot_be_merged_recheck')
+            expect(extra_merge_request2.reload.merge_status).to eq('cannot_be_merged_recheck')
+
+            # Individual updates would have one UPDATE per MR (5 MRs)
+            merge_status_updates = recorder.occurrences_starting_with('UPDATE "merge_requests" SET "merge_status"')
+            expect(merge_status_updates.values.sum).to eq 5
+          end
+        end
+      end
+
       context 'when a merge error exists' do
         let(:error_message) { 'This is a merge error' }
 

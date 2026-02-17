@@ -74,7 +74,7 @@ module Mutations
             check_spam_action_response!(saved_view)
             { saved_view: saved_view, errors: [] }
           else
-            { saved_view: nil, errors: result.message }
+            { saved_view: nil, errors: result.errors }
           end
         end
 

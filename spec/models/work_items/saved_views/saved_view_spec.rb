@@ -136,6 +136,28 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :portfolio_ma
         end
       end
     end
+
+    context 'when sort is :name_asc' do
+      let_it_be(:view_alpha) { create(:saved_view, namespace: group, name: 'Alpha view', author: user) }
+      let_it_be(:view_beta) { create(:saved_view, namespace: group, name: 'beta view', author: user) }
+      let_it_be(:view_gamma) { create(:saved_view, namespace: group, name: 'Gamma view', author: user) }
+
+      it 'returns saved views sorted alphabetically by name case-insensitive' do
+        result = described_class.in_namespace(group).sort_by_attributes(:name_asc)
+        names = result.map(&:name)
+
+        expect(names.index('Alpha view')).to be < names.index('beta view')
+        expect(names.index('beta view')).to be < names.index('Gamma view')
+      end
+
+      it 'uses id descending as tiebreaker for identical names' do
+        duplicate_view = create(:saved_view, namespace: group, name: 'Alpha view', author: user)
+
+        result = described_class.in_namespace(group).sort_by_attributes(:name_asc)
+
+        expect(result.to_a.index(duplicate_view)).to be < result.to_a.index(view_alpha)
+      end
+    end
   end
 
   describe '#unsubscribe_other_users!' do

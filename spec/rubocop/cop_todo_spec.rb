@@ -117,6 +117,49 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
           #{cop_name}:
         YAML
       end
+
+      context 'with header section containing autocorrect marker' do
+        let(:header_section) { '# Cop supports --autocorrect.' }
+
+        before do
+          cop_todo.header_section = header_section
+        end
+
+        context 'without trailing newline' do
+          specify 'does not duplicate the autocorrect marker' do
+            expect(yaml).to eq(<<~YAML)
+              ---
+              # Cop supports --autocorrect.
+              #{cop_name}:
+            YAML
+          end
+        end
+
+        context 'with trailing newline' do
+          let(:header_section) { "# Cop supports --autocorrect.\n" }
+
+          specify 'does not duplicate the autocorrect marker' do
+            expect(yaml).to eq(<<~YAML)
+              ---
+              # Cop supports --autocorrect.
+              #{cop_name}:
+            YAML
+          end
+        end
+
+        context 'with additional comments' do
+          let(:header_section) { "# Cop supports --autocorrect.\n# Additional comment" }
+
+          specify 'removes the autocorrect marker but keeps other comments' do
+            expect(yaml).to eq(<<~YAML)
+              ---
+              # Cop supports --autocorrect.
+              # Additional comment
+              #{cop_name}:
+            YAML
+          end
+        end
+      end
     end
 
     context 'with grace period' do

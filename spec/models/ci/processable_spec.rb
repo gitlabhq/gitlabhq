@@ -127,7 +127,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   describe '.fabricate' do
     let(:build_attributes) { { options: { script: ['echo'] }, project_id: 1, partition_id: 99 } }
 
-    subject(:fabricate) { described_class.fabricate(build_attributes) }
+    subject(:fabricate) { described_class.fabricate(**build_attributes) }
 
     it 'initializes with temp_job_definition' do
       expect(fabricate.metadata&.config_options).to be_nil

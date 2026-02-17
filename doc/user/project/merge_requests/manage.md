@@ -27,7 +27,7 @@ To delete a merge request:
 > [!note]
 > Deleting a merge request does not completely erase all data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../../../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../../../topics/git/undo.md#handle-sensitive-information).
 
 ## Bulk edit merge requests in a project
 

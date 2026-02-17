@@ -27,7 +27,7 @@ RSpec.describe 'Create a new cluster agent token', feature_category: :deployment
                "or you don't have permission to perform this action"]
 
     it 'does not create a token' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change(Clusters::AgentToken, :count)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { Clusters::AgentToken.count }
     end
   end
 

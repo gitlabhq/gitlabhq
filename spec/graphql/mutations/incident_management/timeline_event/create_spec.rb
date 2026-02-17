@@ -91,7 +91,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create, feature_cat
         end
 
         it 'does not create a new tag' do
-          expect { resolve }.not_to change(IncidentManagement::TimelineEventTag, :count)
+          expect { resolve }.not_to change { IncidentManagement::TimelineEventTag.count }
         end
       end
 
@@ -141,7 +141,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create, feature_cat
           errors: ["Following tags don't exist: [\"other time\"]"]
 
         it 'does not create the timeline event' do
-          expect { resolve }.not_to change(IncidentManagement::TimelineEvent, :count)
+          expect { resolve }.not_to change { IncidentManagement::TimelineEvent.count }
         end
       end
     end

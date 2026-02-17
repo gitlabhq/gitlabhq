@@ -1029,7 +1029,7 @@ export const saveSavedView = async ({
     variables: { input: inputVariables },
     optimisticResponse,
     update: (cache, { data: responseData }) => {
-      if (!responseData) return;
+      if (!responseData || responseData[mutationKey].errors?.length) return;
 
       if (!isEdit) {
         updateSavedViewsCache({

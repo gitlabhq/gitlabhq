@@ -135,13 +135,13 @@ To change this behavior and include additional file types in the default setting
    ```
 
 This feature can use excessive CPU. If you experience an issue, see the
-[Repository Languages: excessive CPU use](files/_index.md#repository-languages-excessive-cpu-use) troubleshooting section.
+[excessive CPU use](files/_index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
 ## Repository contributor analytics
 
 You can view a line chart with the number of commits to the selected project branch over time,
 and line charts with the number of commits by each project member.
-For more information, see [Contributor analytics](../../analytics/contributor_analytics.md).
+For more information, see [contributor analytics](../../analytics/contributor_analytics.md).
 
 ## Repository history graph
 
@@ -179,7 +179,7 @@ After you change a path, you must update the existing URL in the following resou
   instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/_index.md#image).
 - Variables that specify a project or namespace.
-- [CODEOWNERS file](../codeowners/_index.md#codeowners-file).
+- [`CODEOWNERS` file](../codeowners/_index.md#codeowners-file).
 
 ## Related topics
 
@@ -197,7 +197,7 @@ After you change a path, you must update the existing URL in the following resou
 ### Search sequence of pushes to a repository
 
 If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
-[This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
+This [Stack Overflow thread](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
 describes how you can end up in this state without a force push. Another cause can be a misconfigured
 [server hook](../../../administration/server_hooks.md) that changes a HEAD ref in a `git reset` operation.
 

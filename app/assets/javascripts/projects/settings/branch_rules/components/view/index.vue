@@ -658,6 +658,7 @@ export default {
         <!-- Code Owners -->
         <protection-toggle
           v-if="showCodeOwners"
+          :class="{ 'gl-mt-6': !hasPushAccessLevelSet }"
           data-testid="code-owners-content"
           data-test-id-prefix="code-owners"
           :is-protected="branchProtection.codeOwnerApprovalRequired"

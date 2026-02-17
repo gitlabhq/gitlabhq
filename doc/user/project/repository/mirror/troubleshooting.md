@@ -34,11 +34,11 @@ One of these issues might be occurring:
 1. Your GitHub settings might be set to block pushes that expose your email address
    used in commits. To fix this problem, either:
    - Set your GitHub email address to public.
-   - Disable the [Block command line pushes that expose my email](https://github.com/settings/emails)
+   - Turn off the [**Block command line pushes that expose my email**](https://github.com/settings/emails)
      setting.
 1. Your repository exceeds the GitHub file size limit of 100 MB. To fix this problem,
    check the file size limit configured for on GitHub, and consider using
-   [Git Large File Storage](https://git-lfs.com/) to manage large files.
+   [Git Large File Storage (LFS)](https://git-lfs.com/) to manage large files.
 
 ## Deadline Exceeded
 
@@ -48,7 +48,7 @@ must update your mirroring username and password to ensure that `%40` characters
 ## Connection blocked: server only allows public key authentication
 
 The connection between GitLab and the remote repository is blocked. Even if a
-[TCP Check](../../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site)
+[TCP check](../../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site)
 is successful, you must check any networking components in the route from GitLab
 to the remote server for blockage.
 
@@ -108,7 +108,7 @@ Push mirroring to transfer LFS files over SSH is not supported.
 
 The workaround is to use an HTTPS repository URL instead of SSH for your push mirror.
 
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/249587) to fix this problem.
+[Issue 249587](https://gitlab.com/gitlab-org/gitlab/-/issues/249587) exists to fix this problem.
 
 ## Pull mirror is missing LFS files
 
@@ -179,7 +179,7 @@ that includes the `ssh://` protocol, like `ssh://git@gitlab.com/gitlab-org/gitla
 This error is returned when the target host public SSH key changes.
 Public SSH keys rarely change. If host key verification fails,
 but you suspect the key is still valid, you must delete the repository mirror
-and create it again. For more information, see [Create a repository mirror](_index.md#create-a-repository-mirror).
+and create it again. For more information, see [create a repository mirror](_index.md#create-a-repository-mirror).
 
 ## Transfer mirror users and tokens to a single service account
 

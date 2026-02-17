@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Authenticate with the GitLab REST API by using OAuth 2.0, access, and job tokens."
 title: REST API authentication
 ---

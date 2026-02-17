@@ -62,11 +62,11 @@ to preview the changes submitted to a feature branch through a merge request
 on a per-branch basis. You don't need to check out the branch, install, and preview locally.
 All your changes are available to preview by anyone with the review apps link.
 
-With GitLab [Route Maps](../../../ci/review_apps/_index.md#route-maps) set, the
+With GitLab [route maps](../../../ci/review_apps/_index.md#route-maps) set, the
 merge request widget takes you directly to the pages changed, making it easier and
 faster to preview proposed modifications.
 
-[Read more about review apps](../../../ci/review_apps/_index.md).
+For more information, see [review apps](../../../ci/review_apps/_index.md).
 
 ## License compliance
 

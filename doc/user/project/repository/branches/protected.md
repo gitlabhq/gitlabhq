@@ -31,7 +31,7 @@ and quality. Protected branches:
 > For more information about default branch settings, see [default branch](default.md).
 
 For information about how protection rules behave when a branch matches multiple rules or has
-complex permission requirements, see [Protection rules](protection_rules.md).
+complex permission requirements, see [protection rules](protection_rules.md).
 
 ## Protect a branch
 
@@ -44,7 +44,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role.
 - When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the project must be accessible and shared with the group.
-  For more information, see [Shared projects](../../members/sharing_projects_groups.md).
+  For more information, see [shared projects](../../members/sharing_projects_groups.md).
 
 To protect a branch:
 
@@ -379,7 +379,7 @@ To enable force pushes on branches that are already protected:
 
 {{< /details >}}
 
-For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
+For a protected branch, you can require at least one approval by a [code owner](../../codeowners/_index.md).
 If a branch is protected by multiple rules, code owner approval is required if
 **Required approval from code owners** enabled.
 
@@ -434,7 +434,7 @@ specific users, groups, or access levels.
 > [!note]
 > To avoid permanently locking protection settings for a branch, ensure at least one user or group
 > retains unprotect permissions for the branch at all times.
-> 
+>
 > Users cannot create, modify, or delete protected branch settings unless they can unprotect the
 > branch themselves. This safety mechanism is in place to prevent configuration errors.
 
@@ -465,7 +465,7 @@ Merge request pipelines run on the source branch or a merge request reference ba
 
 When a merge request is between protected branches, protected variables and runners are available to
 the pipeline if the user has permission to update both the source and target branches.
-For more information, see [Control access to protected variables and runners](../../../../ci/pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
+For more information, see [control access to protected variables and runners](../../../../ci/pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 ## Create protected branches
 

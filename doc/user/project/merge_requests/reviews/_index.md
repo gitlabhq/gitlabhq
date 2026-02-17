@@ -46,7 +46,7 @@ The right sidebar shows the list of reviewers, and (if they follow the review fl
   This block [can be bypassed](#prevent-merge-when-you-request-changes).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
+For an overview, see the [merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183) video.
 <!-- Video published on 2023-04-29 -->
 
 ## Find merge requests to review
@@ -164,7 +164,7 @@ To start your review of a merge request:
 1. Find your merge request, and select the title of the merge request to view it.
 1. Read the merge request description and comments to learn about the merge request.
 1. Select **Changes** to view the diff of the proposed changes. To learn more about
-   the **Changes** page, see [Changes in merge requests](../changes.md).
+   the **Changes** page, see [changes in merge requests](../changes.md).
 1. [Suggest multi-line or single-line changes](suggestions.md) as needed. When ready to save your
    first review comment, select **Start a review** to:
 
@@ -312,9 +312,8 @@ another user with permission to merge the merge request can override this check:
 
 ## Download merge request changes
 
-You can download the changes from a merge request as a diff or patch file.
-For more information and examples, see
-[Download merge request changes](../changes.md#download-merge-request-changes).
+You can [download the changes from a merge request](../changes.md#download-merge-request-changes)
+as a diff or patch file.
 
 ## Associated features
 
@@ -336,7 +335,7 @@ Merge requests are related to these features:
   Revert changes from any commit from a merge request.
 - [Keyboard shortcuts](../../../shortcuts.md#merge-requests):
   Access and change specific parts of a merge request with keyboard commands.
-- [Value stream analytics](../../../group/value_stream_analytics/_index.md): Track key merge request steps (such as `reviewed` and `approved`) to identify where your team spends the most time in the software development lifecycle. This information helps uncover actionable insights to optimize merge request workflows for groups and projects, and improve developer productivity. Read more about [How we reduced MR review time with value stream analytics](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/).
+- [Value stream analytics](../../../group/value_stream_analytics/_index.md): Track key merge request steps (such as `reviewed` and `approved`) to identify where your team spends the most time in the software development lifecycle. This information helps uncover actionable insights to optimize merge request workflows for groups and projects, and improve developer productivity. Read more about [how we reduced MR review time with value stream analytics](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/) in the blog post.
 
 ## Related topics
 

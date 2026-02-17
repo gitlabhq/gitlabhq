@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
   subject(:setting) { build(:service_desk_setting) }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
+    subject_key: :project_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_SERVICE_DESK_SETTINGS,
+    claiming_attributes: [:custom_email]
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_length_of(:outgoing_name).is_at_most(255) }

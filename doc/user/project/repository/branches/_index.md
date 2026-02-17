@@ -124,7 +124,7 @@ To create a branch from an issue:
 1. Select **Create branch**.
 
 For information about creating branches in empty repositories,
-see [Empty repository behavior](#empty-repository-behavior).
+see [empty repository behavior](#empty-repository-behavior).
 
 If the name of the created branch is
 [prefixed with the issue number](#prefix-branch-names-with-a-number), GitLab cross-links
@@ -150,7 +150,7 @@ To create a branch directly from a task:
 1. Select **Create branch**.
 
 For information about creating branches in empty repositories,
-see [Empty repository behavior](#empty-repository-behavior).
+see [empty repository behavior](#empty-repository-behavior).
 
 If the name of the created branch is
 [prefixed with the task number](#prefix-branch-names-with-a-number), GitLab cross-links
@@ -233,7 +233,7 @@ GitLab uses this number to import data into the merge request:
 - The branch is connected to the issue or task.
 - If your project is configured with a
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
-  merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
+  merging the merge request also [automatically closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
 - If the merge request is in the same project, and not a fork, the issue milestone
   and labels are copied to the merge request.
@@ -241,7 +241,7 @@ GitLab uses this number to import data into the merge request:
 ## Manage and protect branches
 
 GitLab provides multiple methods to protect individual branches. These methods
-ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [Branch rules](branch_rules.md).
+ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [branch rules](branch_rules.md).
 
 ### Download branch comparisons
 
@@ -330,7 +330,7 @@ To do this:
 > [!note]
 > Deleting a branch does not completely erase all related data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
 
 ## Configure workflows for target branches
 
@@ -416,7 +416,7 @@ To do this:
 - [Compare changes in merge requests](../../merge_requests/changes.md)
 - [Download merge request changes](../../merge_requests/changes.md#download-merge-request-changes)
 - [Branches API](../../../../api/branches.md)
-- [Protected Branches API](../../../../api/protected_branches.md)
+- [Protected branches API](../../../../api/protected_branches.md)
 - [Getting started with Git](../../../../topics/git/_index.md)
 - [Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 

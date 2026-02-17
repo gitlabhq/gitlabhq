@@ -1,0 +1,10 @@
+---
+name: cells_claims_service_desk_settings
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562081
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223449
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590058
+milestone: '18.10'
+group: group::project management
+type: beta
+default_enabled: false

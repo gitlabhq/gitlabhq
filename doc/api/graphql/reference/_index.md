@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GraphQL API resources
 ---
 
@@ -57331,6 +57331,7 @@ Values for sorting saved views.
 | <a id="workitemssavedviewssortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="workitemssavedviewssortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="workitemssavedviewssortid"></a>`ID` | Ordered by id. |
+| <a id="workitemssavedviewssortname_asc"></a>`NAME_ASC` | Alphabetically by name in ascending order. |
 | <a id="workitemssavedviewssortrelative_position"></a>`RELATIVE_POSITION` | Relative position by ascending order. If user is logged out, or explicitly subscribed is not passed, falls back to id sort. |
 | <a id="workitemssavedviewssortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="workitemssavedviewssortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |

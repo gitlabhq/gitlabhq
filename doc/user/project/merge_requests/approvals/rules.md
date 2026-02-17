@@ -117,7 +117,7 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 ![Merge request approvals widget](img/mr_approvals_widget_v16_0.png)
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
+For an overview, see the [multiple approvers](https://www.youtube.com/watch?v=8JQJ5821FrA) video.
 
 ## Get notified about all merge requests you can approve
 
@@ -135,7 +135,7 @@ You can override the merge request approval rules for a project by either:
 
 Prerequisites:
 
-- The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests)
+- The project setting [**Prevent editing approval rules in merge requests**](settings.md#prevent-editing-approval-rules-in-merge-requests)
   is disabled.
 - One of the following must be true:
   - You have administrator access.
@@ -164,7 +164,7 @@ To create an approval rule which requires more than one approval:
 - When you [create](#add-an-approval-rule) or [edit](#edit-an-approval-rule) a rule, set **Approvals required** to `2` or more.
 
 To require multiple approvals for a rule, you can also
-[use the API](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project)
+use the [Merge request approvals API](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project)
 to set the `approvals_required` attribute to `2` or more.
 
 ## Configure optional approval rules
@@ -191,7 +191,7 @@ approval rule for certain branches:
    - To apply the rule to all protected branches, select **All protected branches**.
    - To apply the rule to a specific branch, select it from the list.
 1. To enable this configuration, follow
-   [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
+   [Require code owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
 
 ## Enable approval permissions for additional users
 
@@ -202,7 +202,7 @@ oversight on proposed work.
 
 Users with the Planner or Reporter role can approve merge requests only through regular approval rules.
 Code owner approval rules require users to have the Developer, Maintainer, or Owner role. For more information,
-see [Eligible approvers](#eligible-approvers).
+see [eligible approvers](#eligible-approvers).
 
 Prerequisites:
 
@@ -269,7 +269,7 @@ To be eligible as an approver for your project, a user must be a direct member o
 Users with the Developer role can approve merge requests if one of the following is true:
 
 - Users added as approvers at the project or merge request level.
-- Users who are [Code owners](#code-owners-as-approvers) of the files
+- Users who are [code owners](#code-owners-as-approvers) of the files
   changed in the merge request.
 
 Users with the Planner or Reporter role can approve only if all of the following are true:

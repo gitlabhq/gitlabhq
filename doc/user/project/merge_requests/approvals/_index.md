@@ -25,7 +25,7 @@ You can configure approvals to be optional or required, depending on your projec
   flexibility to:
 
   - Create required [rules](rules.md) about the number and type of required approvals.
-  - Create a list of [Code Owners](../../codeowners/_index.md) for specific files.
+  - Create a list of [code owners](../../codeowners/_index.md) for specific files.
   - Configure approvals
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
   - Configure [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
@@ -54,7 +54,7 @@ You can also configure:
 - Merge request approval rules with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
-For more information on configuring rules, see [Approval rules](rules.md).
+For more information on configuring rules, see [approval rules](rules.md).
 
 ### Required approvals
 
@@ -72,7 +72,7 @@ Use cases include:
 - Enforce review of all code that gets merged into a repository.
 - Specify reviewers and a minimum number of approvals.
 - Specify categories of reviewers, such as backend, frontend, quality assurance, database, or documentation.
-- Use the [Code Owners](../../codeowners/_index.md) files to determine reviewers.
+- Use the [`CODEOWNERS` file](../../codeowners/_index.md#codeowners-file) to determine reviewers.
 - Require approval for [declining test coverage](../../../../ci/testing/code_coverage/_index.md#add-a-coverage-check-approval-rule).
 - GitLab Ultimate: [Require security team approval](../../../application_security/policies/merge_request_approval_policies.md) for potential vulnerabilities.
 
@@ -161,7 +161,7 @@ After a merge request receives the required approvals, it is ready to merge, unl
 
 ### Prevent merge request creator approval
 
-To prevent merge request creators from approving their own work, enable the [Prevent approval by merge request creator](settings.md#prevent-approval-by-merge-request-creator) setting.
+To prevent merge request creators from approving their own work, enable the [**Prevent approval by merge request creator**](settings.md#prevent-approval-by-merge-request-creator) setting.
 
 ### Approval rule changes
 

@@ -253,6 +253,12 @@ class MergeRequest < ApplicationRecord
     state :locked, value: MergeRequest.available_states[:locked]
   end
 
+  # NOTE: If you modify this state machine (transitions or callbacks), you must also
+  # review and update the batch method below (batch_mark_as_unchecked).
+  # Batch methods bypass callbacks for performance, so any new callbacks may need
+  # to be handled manually.
+  #
+  # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/546431
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_preparing do
       transition [:unchecked, :can_be_merged] => :preparing
@@ -325,6 +331,39 @@ class MergeRequest < ApplicationRecord
 
     after_transition { |merge_request| merge_request.disable_transitioning }
     # rubocop: enable Style/SymbolProc
+  end
+
+  # NOTE: Batch transition merge_status to unchecked/cannot_be_merged_recheck.
+  # This bypasses state machine callbacks for performance but mimics their behavior.
+  #
+  # Transitions mirror the `mark_as_unchecked` event defined above.
+  # Process batch updates in batches as there can be many target merge requests.
+  def self.batch_mark_as_unchecked(mr_ids, mrs_to_trigger: [], batch_size: 1000)
+    return if mr_ids.blank?
+
+    mr_ids.each_slice(batch_size) do |batch_ids|
+      where(id: batch_ids)
+        .where(merge_status: [:preparing, :can_be_merged, :checking])
+        .update_all(merge_status: :unchecked)
+
+      where(id: batch_ids)
+        .where(merge_status: [:cannot_be_merged, :cannot_be_merged_rechecking])
+        .update_all(merge_status: :cannot_be_merged_recheck)
+    end
+
+    mrs_to_trigger.each do |mr|
+      GraphqlTriggers.merge_request_merge_status_updated(mr.reset)
+    end
+  end
+
+  def self.batch_clear_merge_error(mr_ids, batch_size: 1000)
+    return if mr_ids.blank?
+
+    mr_ids.each_slice(batch_size) do |batch_ids|
+      where(id: batch_ids)
+        .where.not(merge_error: nil)
+        .update_all(merge_error: nil)
+    end
   end
 
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`

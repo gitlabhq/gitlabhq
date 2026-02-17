@@ -20,13 +20,13 @@ RSpec.describe 'Deletion of custom emoji', feature_category: :shared do
 
   shared_examples 'does not delete custom emoji' do
     it 'does not change count' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change(CustomEmoji, :count)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { CustomEmoji.count }
     end
   end
 
   shared_examples 'deletes custom emoji' do
     it 'changes count' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.to change(CustomEmoji, :count).by(-1)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.to change { CustomEmoji.count }.by(-1)
     end
   end
 

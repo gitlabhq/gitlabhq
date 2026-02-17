@@ -337,4 +337,23 @@ RSpec.shared_examples 'getting a collection of projects' do
       it { is_expected.to be_empty }
     end
   end
+
+  context 'when projects has ci pipelines' do
+    it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      new_project = create(:project, :repository, group: group, creator: current_user, developers: [current_user])
+      create(:ci_pipeline, :with_job, status: :success, project: new_project, ref: new_project.commit.sha)
+
+      # There are a few known N+1 queries: https://gitlab.com/gitlab-org/gitlab/-/issues/214037
+      # - User#max_member_access_for_project_ids
+      # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
+      # - Ci::Pipeline#detailed_status
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.not_to exceed_all_query_limit(control).with_threshold(4)
+    end
+  end
 end

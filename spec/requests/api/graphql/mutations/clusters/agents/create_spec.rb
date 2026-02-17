@@ -24,7 +24,7 @@ RSpec.describe 'Create a new cluster agent', feature_category: :deployment_manag
     it_behaves_like 'a mutation that returns a top-level access error'
 
     it 'does not create cluster agent' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change(Clusters::Agent, :count)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { Clusters::Agent.count }
     end
   end
 

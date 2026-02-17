@@ -51,7 +51,7 @@ module WorkItems
       private
 
       def updating_visibility?
-        params.key?(:private)
+        params.key?(:private) && params[:private] != saved_view.private?
       end
 
       def can_update_visibility?

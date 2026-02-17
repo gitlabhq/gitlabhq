@@ -146,7 +146,7 @@ when you view that file in your project's Git repository:
 
 When you cherry-pick a merge commit in the GitLab UI, the mainline is always the
 first parent. Use the command line to cherry-pick with a different mainline. For more information, see
-[Copy the contents of an entire branch](../../../topics/git/cherry_pick.md#copy-the-contents-of-an-entire-branch).
+[copy the contents of an entire branch](../../../topics/git/cherry_pick.md#copy-the-contents-of-an-entire-branch).
 
 ## Related topics
 

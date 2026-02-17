@@ -143,7 +143,7 @@ To add a merge request approval rule:
      GitLab suggests approvers based on previous authors of the files changed by the merge request.
 1. Select **Save changes**.
 
-For additional information, see [Approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
+For additional information, see [approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
 
 ### Edit squash commits option
 
@@ -215,7 +215,7 @@ To add a status check service:
 
 ![Branch rules status checks](img/branch_rule_status_check_v17_4.png)
 
-For more information, see [External status checks](../../merge_requests/status_checks.md).
+For more information, see [external status checks](../../merge_requests/status_checks.md).
 
 ## Edit a branch rule target
 

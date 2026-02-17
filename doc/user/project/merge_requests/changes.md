@@ -374,8 +374,8 @@ per conflicted file on the merge request diff:
 
 You can show scanner findings in the diff. For details, see:
 
-- [Code Quality findings](../../../ci/testing/code_quality.md#merge-request-changes-view)
-- [Static Analysis findings](../../application_security/sast/_index.md#merge-request-changes-view)
+- [Code quality findings](../../../ci/testing/code_quality.md#merge-request-changes-view)
+- [Static analysis findings](../../application_security/sast/_index.md#merge-request-changes-view)
 
 ## Download merge request changes
 

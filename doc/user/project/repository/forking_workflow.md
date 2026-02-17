@@ -33,7 +33,7 @@ use a personal fork of a public project.
 > Merge requests that were closed due to a broken fork relationship are not reopened
 > if the fork relationship is later restored.
 >
-> For more information, see [Archive a project](../working_with_projects.md#archive-a-project).
+> For more information, see [archive a project](../working_with_projects.md#archive-a-project).
 
 ## Create a fork
 
@@ -167,7 +167,7 @@ For instructions, see [configure pull mirroring](mirror/pull.md#configure-pull-m
 ## Merge changes back upstream
 
 When you are ready to send your code back to the upstream project, create a new merge request as
-described in [When you work in a fork](../merge_requests/creating_merge_requests.md#when-you-work-in-a-fork).
+described in [when you work in a fork](../merge_requests/creating_merge_requests.md#when-you-work-in-a-fork).
 When successfully merged, your changes are added to the upstream repository.
 
 After your merge request is merged upstream, the branch in your fork is not automatically considered
@@ -188,7 +188,7 @@ Prerequisites:
 > If you remove a fork relationship, you can't send new merge requests to the source.
 > Any existing open merge requests from the fork to the source are also closed.
 > If anyone has forked your project, their fork also loses the relationship.
-> To restore the fork relationship, [use the API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
+> To restore the fork relationship, use the [Project forks API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
 
 To remove a fork relationship:
 
@@ -218,7 +218,7 @@ Your fork uses a deduplication strategy
 to reduce the storage space it needs. Your fork can access the object pool connected to the
 source project.
 
-For more information and to check the storage use, see [View project fork storage usage](../../storage_usage_quotas.md#view-project-fork-storage-usage).
+For more information and to check the storage use, see [view project fork storage usage](../../storage_usage_quotas.md#view-project-fork-storage-usage).
 
 ## Related topics
 
@@ -231,8 +231,7 @@ For more information and to check the storage use, see [View project fork storag
 ### Error: `An error occurred while forking the project. Please try again`
 
 This error can be due to a mismatch in instance runner settings between the forked project
-and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#using-instance-runners-in-forked-projects)
-in the Runner documentation for more information.
+and the new namespace. For more information, see [using instance runners in forked projects](../../../ci/runners/configure_runners.md#using-instance-runners-in-forked-projects).
 
 ### Removing fork relationship fails
 

@@ -47,7 +47,7 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
       it 'deletes the work item' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
-        end.to change(WorkItem, :count).by(-1)
+        end.to change { WorkItem.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response['project']).to include('id' => work_item.project.to_global_id.to_s)

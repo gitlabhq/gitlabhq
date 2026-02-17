@@ -61,7 +61,7 @@ After you configure a GitLab repository as a pull mirror:
    - Fails: The update is attempted again later. After 14 failures, a mirror is marked as a
      [hard failure](#fix-hard-failures-when-mirroring) and is no longer enqueued for updates. A branch diverging
      from its upstream counterpart can cause failures. To prevent branches from
-     diverging, configure [Overwrite diverged branches](#overwrite-diverged-branches) when
+     diverging, configure [overwrite diverged branches](#overwrite-diverged-branches) when
      you create your mirror.
 
 ## Configure pull mirroring
@@ -86,7 +86,7 @@ Prerequisites:
 
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. For more information, see
-   [Authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
+   [authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
 1. Select any of the options you need:
    - [**Overwrite diverged branches**](#overwrite-diverged-branches)
    - [**Trigger pipelines for mirror updates**](#trigger-pipelines-for-mirror-updates)
@@ -132,7 +132,7 @@ the remote repository updates branches or tags. Before you enable this feature:
 When [SSO enforcement](../../../group/saml_sso/_index.md#sso-enforcement) is enabled for your group,
 the user who created the mirror must maintain an active SSO session or the mirror fails.
 
-To configure mirroring without SSO session dependency, you can [use the API](../../../../api/project_pull_mirroring.md)
+To configure mirroring without SSO session dependency, you can use the [Pull mirroring API](../../../../api/project_pull_mirroring.md)
 with a [project access token](../../settings/project_access_tokens.md), [group access token](../../../group/settings/group_access_tokens.md),
 or [personal access token](../../../profile/personal_access_tokens.md) for service accounts.
 
@@ -149,8 +149,8 @@ often minutes afterwards. You can notify GitLab using an
 [API call](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
 but the [minimum interval for pull mirroring limits](_index.md#force-an-update) is still enforced.
 
-For more information, read
-[Start the pull mirroring process for a project](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project).
+For more information, see
+[start the pull mirroring process for a project](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project).
 
 ## Fix hard failures when mirroring
 

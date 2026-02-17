@@ -187,7 +187,7 @@ To rebase interactively:
      git push origin my-branch --force-with-lease
      ```
 
-     Some actions require a force push to make changes to the branch. For more information, see [Force push to a remote branch](#force-push-to-a-remote-branch).
+     Some actions require a force push to make changes to the branch. For more information, see [force push to a remote branch](#force-push-to-a-remote-branch).
 
 ## Resolve conflicts from the command line
 
@@ -261,7 +261,7 @@ you can't force push unless you:
 - Unprotect it.
 - Allow force pushes.
 
-For more information, see [Allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push).
+For more information, see [allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push).
 
 ## Restore your backed up branch
 
@@ -299,7 +299,7 @@ the merge request.
 
 ## Troubleshooting
 
-For CI/CD pipeline troubleshooting information, see [Debugging CI/CD pipelines](../../ci/debugging.md).
+For CI/CD pipeline troubleshooting information, see [debugging CI/CD pipelines](../../ci/debugging.md).
 
 ### `Unmergeable state` after `/rebase` quick action
 

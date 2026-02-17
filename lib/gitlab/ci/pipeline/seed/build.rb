@@ -89,9 +89,9 @@ module Gitlab
           def to_resource
             logger.instrument(:pipeline_seed_build_to_resource) do
               if bridge?
-                ::Ci::Bridge.fabricate(attributes)
+                ::Ci::Bridge.fabricate(**attributes)
               else
-                ::Ci::Build.fabricate(attributes)
+                ::Ci::Build.fabricate(**attributes)
               end
             end
           end

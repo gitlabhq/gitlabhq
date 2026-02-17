@@ -5011,6 +5011,92 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.batch_mark_as_unchecked' do
+    let(:mr_can_be_merged) { create(:merge_request, :unique_branches, merge_status: 'can_be_merged') }
+    let(:mr_checking) { create(:merge_request, :unique_branches, merge_status: 'checking') }
+    let(:mr_preparing) { create(:merge_request, :unique_branches, merge_status: 'preparing') }
+    let(:mr_cannot_be_merged) { create(:merge_request, :unique_branches, merge_status: 'cannot_be_merged') }
+    let(:mr_cannot_be_merged_rechecking) { create(:merge_request, :unique_branches, merge_status: 'cannot_be_merged_rechecking') }
+    let(:mr_unchecked) { create(:merge_request, :unique_branches, merge_status: 'unchecked') }
+
+    it 'batch transitions merge statuses according to mark_as_unchecked event' do
+      mr_ids = [
+        mr_can_be_merged.id,
+        mr_checking.id,
+        mr_preparing.id,
+        mr_cannot_be_merged.id,
+        mr_cannot_be_merged_rechecking.id,
+        mr_unchecked.id
+      ]
+
+      described_class.batch_mark_as_unchecked(mr_ids)
+
+      expect(mr_can_be_merged.reload.merge_status).to eq('unchecked')
+      expect(mr_checking.reload.merge_status).to eq('unchecked')
+      expect(mr_preparing.reload.merge_status).to eq('unchecked')
+      expect(mr_cannot_be_merged.reload.merge_status).to eq('cannot_be_merged_recheck')
+      expect(mr_cannot_be_merged_rechecking.reload.merge_status).to eq('cannot_be_merged_recheck')
+      expect(mr_unchecked.reload.merge_status).to eq('unchecked')
+    end
+
+    it 'only updates MRs in the provided list' do
+      described_class.batch_mark_as_unchecked([mr_can_be_merged.id])
+
+      expect(mr_can_be_merged.reload.merge_status).to eq('unchecked')
+      expect(mr_checking.reload.merge_status).to eq('checking')
+    end
+
+    it 'handles empty array' do
+      expect { described_class.batch_mark_as_unchecked([]) }.not_to raise_error
+    end
+
+    it 'does not update updated_at timestamp' do
+      expect { described_class.batch_mark_as_unchecked([mr_can_be_merged.id]) }
+        .not_to change { mr_can_be_merged.reload.updated_at }
+    end
+
+    context 'when mrs_to_trigger is provided' do
+      it 'fires GraphQL triggers for triggered MRs only' do
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(mr_can_be_merged)
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(mr_checking)
+
+        described_class.batch_mark_as_unchecked(
+          [mr_can_be_merged.id, mr_checking.id],
+          mrs_to_trigger: [mr_can_be_merged]
+        )
+      end
+    end
+
+    context 'when mrs_to_trigger is not provided' do
+      it 'does not fire GraphQL triggers' do
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated)
+
+        described_class.batch_mark_as_unchecked([mr_can_be_merged.id])
+      end
+    end
+  end
+
+  describe '.batch_clear_merge_error' do
+    let(:mr1) { create(:merge_request, :unique_branches, merge_error: 'Something went wrong') }
+    let(:mr2) { create(:merge_request, :unique_branches, merge_error: 'Another error') }
+
+    it 'clears merge_error for specified MRs' do
+      described_class.batch_clear_merge_error([mr1.id, mr2.id])
+
+      expect(mr1.reload.merge_error).to be_nil
+      expect(mr2.reload.merge_error).to be_nil
+    end
+
+    it 'handles empty array' do
+      expect { described_class.batch_clear_merge_error([]) }.not_to raise_error
+    end
+
+    it 'does not update updated_at timestamp' do
+      expect { described_class.batch_clear_merge_error([mr1.id]) }
+        .not_to change { mr1.reload.updated_at }
+    end
+  end
+
   describe "#diff_head_pipeline_success? " do
     context 'when project lacks an diff_head_pipeline relation' do
       before do

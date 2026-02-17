@@ -11,6 +11,8 @@ module Types
                                      'logged out, or explicitly subscribed is not passed, falls back to id sort.',
           value: :relative_position
 
+        value 'NAME_ASC', description: 'Alphabetically by name in ascending order.', value: :name_asc
+
         value 'ID', description: 'Ordered by id.', value: :id
       end
     end

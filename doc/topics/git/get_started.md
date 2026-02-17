@@ -19,8 +19,8 @@ Learning Git is part of a larger workflow:
 
 Choose your learning path:
 
-- Install Git: [Install Git](how_to_install_git/_index.md)
-- Learn by doing: [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md)
+- [Install Git](how_to_install_git/_index.md)
+- [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md)
 - Understand Git concepts: Continue reading
 
 ## Repositories
@@ -36,7 +36,7 @@ including the complete history of all changes made to the files.
 Git tracks changes at the file level, so you can view the modifications made to individual
 files over time.
 
-For more information, see [Repositories](../../user/project/repository/_index.md).
+For more information, see [repositories](../../user/project/repository/_index.md).
 
 ## Working directories
 
@@ -49,7 +49,7 @@ To collaborate, you can:
 - Push: Push your changes to a remote Git repository hosted on GitLab. This makes your changes available to other team members.
 - Pull: Pull changes made by others from the remote repository, and ensure that your local repository is updated with the latest changes.
 
-For more information, see [Common Git commands](commands.md).
+For more information, see [common Git commands](commands.md).
 
 ## Branches
 
@@ -62,7 +62,7 @@ In GitLab, the default branch is usually called `main`.
 ### Merge a branch
 
 After a feature is complete or a bug is fixed, you can merge your branch into the default branch.
-You can do this in a [Merge request](../../user/project/merge_requests/_index.md).
+You can do this in a [merge request](../../user/project/merge_requests/_index.md).
 Merging is a safe way to bring changes from one branch into another while preserving the
 history of the changes.
 
@@ -79,7 +79,7 @@ Deleting unnecessary branches helps keep your repository organized and manageabl
 > To ensure no work is lost, verify all changes are incorporated into the default branch
 > before you delete the branch after the final merge.
 
-For more information, see [Branches](../../user/project/repository/branches/_index.md).
+For more information, see [branches](../../user/project/repository/branches/_index.md).
 
 ## Understand the Git workflow
 
@@ -106,7 +106,7 @@ A standard Git workflow includes the following steps:
 ## Forks
 
 Some organizations, particularly those working with open-source projects, may use
-different workflows. For example, [Forks](../../user/project/repository/forking_workflow.md).
+different workflows. For example, [forks](../../user/project/repository/forking_workflow.md).
 
 A fork is a personal copy of the repository that exists in your own namespace.
 Use this workflow when contributing to open-source projects or when your team uses a
@@ -119,7 +119,7 @@ the Git client on your computer.
 
 The installation process varies depending on your operating system.
 For example, Windows, MacOS, or Linux.
-For information on how to install Git, see [Install Git](how_to_install_git/_index.md).
+For information on how to install Git, see [install Git](how_to_install_git/_index.md).
 
 ## Git commands
 
@@ -134,7 +134,7 @@ To interact with Git from the command line, you can use Git commands:
 - `git pull`: Fetch changes from the remote repository and merge them into your local branch.
 
 For more comprehensive information and detailed explanations,
-see [Command Git commands](commands.md) guide.
+see [common Git commands](commands.md) guide.
 
 <!--- Use this section when the [Generate an SSH key pair](../user/ssh.md) page is added to the navigation
 

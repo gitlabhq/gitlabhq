@@ -99,6 +99,19 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
           expect(result).to be_error
           expect(result.message).to eq('Only the author can change visibility settings')
         end
+
+        it 'allows non-author to update when visibility is unchanged' do
+          service = described_class.new(
+            current_user: current_user,
+            saved_view: other_saved_view,
+            params: { name: 'New Name', private: other_saved_view.private? }
+          )
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(other_saved_view.reload.name).to eq('New Name')
+        end
       end
 
       context 'when changing from private to public' do

@@ -16,7 +16,7 @@ title: Update a fork
 A fork is a personal copy of the repository and all its branches, which you create
 in a namespace of your choice. You can use forks to propose changes to another project
 that you don't have access to. For more information,
-see [Forking workflows](../../user/project/repository/forking_workflow.md).
+see [forking workflows](../../user/project/repository/forking_workflow.md).
 
 You can also update a fork with the [GitLab UI](../../user/project/repository/forking_workflow.md#from-the-ui).
 
@@ -30,7 +30,7 @@ To update your fork from the command line:
 
 1. Check if an `upstream` remote repository is configured for your fork:
 
-   1. Clone your fork locally, if you haven't already. For more information, see [Clone a repository](clone.md).
+   1. Clone your fork locally, if you haven't already. For more information, see [clone a repository](clone.md).
    1. View the configured remotes for your fork:
 
       ```shell

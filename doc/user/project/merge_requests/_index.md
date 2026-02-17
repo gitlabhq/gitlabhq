@@ -107,7 +107,7 @@ When viewing a file in your repository, GitLab shows a badge with the number of 
 that target the current branch and modify the file. This helps you identify files that have pending changes.
 
 The availability of this feature is controlled by a feature flag.
-For more information, see [View open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
+For more information, see [view open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
 
 To view the open merge requests for a file:
 
@@ -144,7 +144,7 @@ To filter the list of merge requests:
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved by**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../codeowners/_index.md)). Premium and Ultimate only.
+       (For more information, read about [Code Owners](../codeowners/_index.md)). Premium and Ultimate only.
      - **Merged by**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
@@ -308,9 +308,9 @@ For a software developer working in a team:
 
 1. You check out a new branch, and submit your changes through a merge request.
 1. You gather feedback from your team.
-1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
-1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
-1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../compliance/license_approval_policies.md).
+1. You work on the implementation optimizing code with [code quality reports](../../../ci/testing/code_quality.md).
+1. You verify your changes with [unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
+1. You avoid using dependencies whose license is not compatible with your project with [license approval policies](../../compliance/license_approval_policies.md).
 1. You request the [approval](approvals/_index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.

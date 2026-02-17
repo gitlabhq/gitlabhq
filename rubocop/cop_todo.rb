@@ -39,7 +39,12 @@ module RuboCop
       yaml = []
       yaml << '---'
       yaml << AUTO_CORRECT_MARKER if autocorrectable?
-      yaml << header_section.sub("#{AUTO_CORRECT_MARKER}\n", '') if header_section && !header_section.empty?
+
+      if header_section && !header_section.empty?
+        cleaned_header = header_section.sub(/#{Regexp.escape(AUTO_CORRECT_MARKER)}\n?/o, '')
+        yaml << cleaned_header unless cleaned_header.strip.empty?
+      end
+
       yaml << "#{cop_name}:"
 
       yaml << "  #{RuboCop::Formatter::GracefulFormatter.grace_period_key_value}" if grace_period
