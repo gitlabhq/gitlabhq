@@ -123,7 +123,16 @@ To create a service account:
 
 ### Edit a service account
 
+{{< history >}}
+
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/581050) username limits for service accounts with composite identities in GitLab 18.9.
+
+{{< /history >}}
+
 You can edit the name or username of a service account.
+
+> [!note]
+> You cannot update the username of a service account associated with a [composite identity](../duo_agent_platform/composite_identity.md).
 
 To edit a service account:
 

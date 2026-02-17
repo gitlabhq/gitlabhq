@@ -495,6 +495,17 @@ to generate a JWT token due to the certificate issue.
 If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set 
 `DUO_AGENT_PLATFORM_SERVICE_SECURE` to `false`, see [Install the AI gateway](../../install/install_ai_gateway.md#start-a-container-from-the-image).
 
+> [!warning]
+> There is a known issue for the `DUO_AGENT_PLATFORM_SERVICE_SECURE` global setting.
+> If you use a mix of cloud-hosted models and self-hosted models (without TLS) in features in the GitLab Duo Agent Platform, one of these models might fail. Failure depends on whether `DUO_AGENT_PLATFORM_SERVICE_SECURE` is `true` or `false`.
+> This known issue affects models for the following features:
+>
+> - GitLab Duo Chat (Agentic)
+> - All agents, except Agentic Chat
+>
+> If the models selected for these features are routed to different backends (for example, one cloud-hosted model and one self-hosted model without TLS), one of them might fail.
+> For more information, see [issue 590454](https://gitlab.com/gitlab-org/gitlab/-/issues/590454).
+
 ## Troubleshooting GitLab Duo Chat
 
 To troubleshoot GitLab Duo Chat when using GitLab Duo Self-Hosted,

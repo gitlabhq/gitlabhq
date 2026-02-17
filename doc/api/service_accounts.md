@@ -281,13 +281,16 @@ Example response:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182607/) in GitLab 17.10.
 - Add custom email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196309) in GitLab 18.2.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/581050) username limits for service accounts with composite identities in GitLab 18.9.
 
 {{< /history >}}
 
 Updates a service account in a specified top-level group.
 
 > [!note]
-> This endpoint only works on top-level groups.
+>
+> - This endpoint only works on top-level groups.
+> - You cannot update the username of a service account associated with a [composite identity](../user/duo_agent_platform/composite_identity.md).
 
 ```plaintext
 PATCH /groups/:id/service_accounts/:user_id

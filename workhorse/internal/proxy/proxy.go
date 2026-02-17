@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"gitlab.com/gitlab-org/labkit/correlation"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
@@ -32,6 +34,7 @@ type Proxy struct {
 	AllowResponseBuffering bool
 	customHeaders          map[string]string
 	forceTargetHostHeader  bool
+	forwardCorrelationID   bool
 }
 
 // WithCustomHeaders is a function that returns a configuration function to set custom headers for a proxy.
@@ -45,6 +48,13 @@ func WithCustomHeaders(customHeaders map[string]string) func(*Proxy) {
 func WithForcedTargetHostHeader() func(*Proxy) {
 	return func(proxy *Proxy) {
 		proxy.forceTargetHostHeader = true
+	}
+}
+
+// WithCorrelationID is a function that returns a configuration function to forward the correlation ID to the proxied request.
+func WithCorrelationID() func(*Proxy) {
+	return func(proxy *Proxy) {
+		proxy.forwardCorrelationID = true
 	}
 }
 
@@ -95,6 +105,14 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 
 			// override the Host with the target
 			request.Host = request.URL.Host
+		})
+	}
+
+	if p.forwardCorrelationID {
+		chainDirector(p.reverseProxy, func(request *http.Request) {
+			if correlationID := correlation.ExtractFromContext(request.Context()); correlationID != "" {
+				request.Header.Set("X-Request-ID", correlationID)
+			}
 		})
 	}
 

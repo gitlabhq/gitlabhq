@@ -376,6 +376,7 @@ class User < ApplicationRecord
   validates :notified_of_own_activity, allow_nil: false, inclusion: { in: [true, false] }
   validates :project_view, presence: true
   validates :composite_identity_enforced, inclusion: { in: [false] }, unless: -> { service_account? }
+  validate :immutable_username_with_enforced_composite_identity, if: :username_changed?, on: :update
 
   after_initialize :set_projects_limit
   # Ensures we get a user_detail on all new user records.
@@ -2899,6 +2900,12 @@ class User < ApplicationRecord
 
   def composite_identity_enforced!
     @composite_identity_enforced_override = true
+  end
+
+  def immutable_username_with_enforced_composite_identity
+    if composite_identity_enforced?
+      errors.add(:base, _('You cannot update the username of a service account associated with a composite identity.'))
+    end
   end
 
   protected

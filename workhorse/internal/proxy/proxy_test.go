@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gitlab.com/gitlab-org/labkit/correlation"
 )
 
 func TestBufferPool(t *testing.T) {
@@ -80,4 +81,93 @@ func TestXForwardedProto(t *testing.T) {
 			assert.Equal(t, tt.expectedProto, receivedProto)
 		})
 	}
+}
+
+func TestWithCorrelationID(t *testing.T) {
+	testCorrelationID := "test-correlation-id-123"
+
+	var receivedCorrelationID string
+	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedCorrelationID = r.Header.Get("X-Request-ID")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer backend.Close()
+
+	backendURL, err := http.NewRequest("GET", backend.URL, nil)
+	require.NoError(t, err)
+
+	proxy := NewProxy(
+		backendURL.URL,
+		"test-version",
+		http.DefaultTransport,
+		WithCorrelationID(),
+	)
+
+	// Create a request with correlation ID in context
+	req := httptest.NewRequest("GET", "/test", nil)
+	ctx := correlation.ContextWithCorrelation(req.Context(), testCorrelationID)
+	req = req.WithContext(ctx)
+
+	rr := httptest.NewRecorder()
+	proxy.ServeHTTP(rr, req)
+
+	assert.Equal(t, testCorrelationID, receivedCorrelationID, "X-Request-ID should be forwarded to backend")
+}
+
+func TestWithCorrelationIDNotSet(t *testing.T) {
+	var receivedCorrelationID string
+	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedCorrelationID = r.Header.Get("X-Request-ID")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer backend.Close()
+
+	backendURL, err := http.NewRequest("GET", backend.URL, nil)
+	require.NoError(t, err)
+
+	proxy := NewProxy(
+		backendURL.URL,
+		"test-version",
+		http.DefaultTransport,
+		WithCorrelationID(),
+	)
+
+	// Create a request without correlation ID in context
+	req := httptest.NewRequest("GET", "/test", nil)
+
+	rr := httptest.NewRecorder()
+	proxy.ServeHTTP(rr, req)
+
+	assert.Empty(t, receivedCorrelationID, "no X-Request-ID should be set when not in context")
+}
+
+func TestWithoutCorrelationIDOption(t *testing.T) {
+	testCorrelationID := "test-correlation-id-456"
+
+	var receivedCorrelationID string
+	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedCorrelationID = r.Header.Get("X-Request-ID")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer backend.Close()
+
+	backendURL, err := http.NewRequest("GET", backend.URL, nil)
+	require.NoError(t, err)
+
+	// Create proxy WITHOUT WithCorrelationID option
+	proxy := NewProxy(
+		backendURL.URL,
+		"test-version",
+		http.DefaultTransport,
+	)
+
+	// Create a request with correlation ID in context
+	req := httptest.NewRequest("GET", "/test", nil)
+	ctx := correlation.ContextWithCorrelation(req.Context(), testCorrelationID)
+	req = req.WithContext(ctx)
+
+	rr := httptest.NewRecorder()
+	proxy.ServeHTTP(rr, req)
+
+	assert.Empty(t, receivedCorrelationID, "X-Request-ID should not be forwarded without WithCorrelationID option")
 }

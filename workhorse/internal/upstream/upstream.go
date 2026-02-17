@@ -301,6 +301,7 @@ func (u *upstream) updateGeoProxyFieldsFromData(geoProxyData *apipkg.GeoProxyDat
 		geoProxyRoundTripper,
 		proxypkg.WithCustomHeaders(geoProxyWorkhorseHeaders),
 		proxypkg.WithForcedTargetHostHeader(),
+		proxypkg.WithCorrelationID(),
 	)
 	u.geoProxyCableRoute = u.wsRouteStrict(newRoute(`^/-/cable\z`, "geo_action_cable", railsBackend), geoProxyUpstream)
 	u.geoProxyRoute = u.route("", newRoute("", "proxy", geoPrimaryBackend), geoProxyUpstream, withGeoProxy())

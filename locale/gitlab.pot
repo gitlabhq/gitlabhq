@@ -80486,6 +80486,9 @@ msgstr ""
 msgid "You cannot unassign security policy project for group designated as CSP."
 msgstr ""
 
+msgid "You cannot update the username of a service account associated with a composite identity."
+msgstr ""
+
 msgid "You cannot verify %{value} because it is a popular public email domain."
 msgstr ""
 

@@ -1014,6 +1014,31 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
         end
       end
+
+      context 'with an enforced composite_identity' do
+        let_it_be_with_reload(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+        context 'when attempting to update the username' do
+          it 'returns a validation error' do
+            user.username = 'new_username'
+
+            expect(user).to be_invalid
+            expect(user.errors.messages[:base]).to include(
+              'You cannot update the username of a service account associated with a composite identity.'
+            )
+          end
+        end
+
+        context 'when updating other fields' do
+          it 'updates the user' do
+            user.name = 'new_name'
+            user.email = 'new_email@example.com'
+
+            expect(user).to be_valid
+            expect(user.errors.messages[:base]).to be_empty
+          end
+        end
+      end
     end
 
     it 'has a DB-level NOT NULL constraint on projects_limit' do

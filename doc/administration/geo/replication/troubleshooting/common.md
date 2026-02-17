@@ -20,6 +20,57 @@ Before attempting more advanced troubleshooting:
 - Check [the health of the Geo sites](#check-the-health-of-the-geo-sites).
 - Check [if PostgreSQL replication is working](#check-if-postgresql-replication-is-working).
 
+### Tracing requests across Geo sites
+
+When troubleshooting Geo, you might need to trace a request from the secondary site to the primary site, or vice-versa.
+GitLab uses correlation IDs to link related log entries across services.
+
+By default, each site generates its own correlation ID when receiving a request. To trace a single request across
+both sites using the same correlation ID, you must configure each receiving site's Workhorse to accept incoming
+correlation IDs from other Geo sites.
+
+On all Geo sites:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_workhorse['propagate_correlation_id'] = true
+   gitlab_workhorse['trusted_cidrs_for_propagation'] = %w(<secondary-site-ip>/32)
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Update your Helm values:
+
+   ```yaml
+   gitlab:
+     webservice:
+       workhorse:
+         extraArgs: "-propagateCorrelationID"
+         trustedCIDRsForPropagation: ["<secondary-site-ip>/32"]
+   ```
+
+1. Apply the changes.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+After enabling this setting, requests sent from the secondary site to the primary site
+share the same correlation ID in their logs, allowing you to trace requests across both sites.
+
 ### Check the health of the Geo sites
 
 On the **primary** site:
