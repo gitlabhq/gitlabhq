@@ -30,7 +30,7 @@ RSpec.describe IssueDueSchedulerWorker, feature_category: :team_planning do
       # rubocop: disable Cop/AvoidBecomes -- The lookup still done by issues,
       # so for now we need to ensure the Issue type
       create(:work_item, :issue, :opened, project: project1, due_date: Date.tomorrow).becomes(Issue)
-      create(:work_item, :epic, :opened, project: project2, due_date: Date.tomorrow).becomes(Issue)
+      create(:work_item, :task, :opened, project: project2, due_date: Date.tomorrow).becomes(Issue)
       # rubocop: enable Cop/AvoidBecomes
 
       expect(MailScheduler::IssueDueWorker).to receive(:bulk_perform_async) do |args|

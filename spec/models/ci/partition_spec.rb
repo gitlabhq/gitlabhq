@@ -228,7 +228,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
   end
 
   describe '#above_threshold?' do
-    subject(:above_threshold) { ci_partition.above_threshold?(threshold) }
+    subject(:above_threshold) { ci_partition.send(:above_threshold?, threshold) }
 
     context 'when one of the partition is above the threshold' do
       let(:threshold) { 1.byte }
@@ -243,7 +243,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
 
     context 'with default value' do
-      subject(:above_threshold) { ci_partition.above_threshold? }
+      subject(:above_threshold) { ci_partition.send(:above_threshold?) }
 
       it { is_expected.to eq(false) }
     end
@@ -260,6 +260,59 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
       let(:ci_partition) { create(:ci_partition, id: non_existing_record_id) }
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#exceed_time_window?', time_travel_to: '2026-01-31' do
+    subject(:exceeded) { ci_partition.exceed_time_window? }
+
+    before do
+      stub_application_setting(ci_partitions_in_seconds_limit: ChronicDuration.parse('30 days'))
+      ci_partition.assign_attributes(current_from: Time.current)
+    end
+
+    context 'when current_from is nil' do
+      it 'returns false' do
+        ci_partition.assign_attributes(current_from: nil)
+        expect(exceeded).to eq(false)
+      end
+    end
+
+    context 'when time_window is nil' do
+      before do
+        stub_application_setting(ci_partitions_in_seconds_limit: nil)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when elapsed' do
+      it 'returns true for "31 days"' do
+        ci_partition.assign_attributes(current_from: 31.days.ago)
+        expect(exceeded).to eq(true)
+      end
+    end
+
+    context 'when not elapsed' do
+      it 'returns false for "29 days"' do
+        ci_partition.assign_attributes(current_from: 29.days.ago)
+        expect(exceeded).to eq(false)
+      end
+    end
+
+    context 'when ci_time_based_partitioning feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_time_based_partitioning: false)
+      end
+
+      it 'uses size-based strategy' do
+        stub_application_setting(ci_partitions_size_limit: 1.byte)
+        expect(exceeded).to eq(true)
+      end
+
+      it 'returns false when size threshold not exceeded' do
+        expect(exceeded).to eq(false)
+      end
     end
   end
 end

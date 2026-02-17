@@ -90,11 +90,11 @@ import {
   savedViewFilters,
   NEW_SAVED_VIEWS_GID,
 } from '~/work_items/list/constants';
-import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
-import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import createSavedViewMutation from '~/work_items/list/graphql/create_saved_view.mutation.graphql';
+import updateSavedViewMutation from '~/work_items/list/graphql/update_saved_view.mutation.graphql';
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 
 /**
@@ -1003,10 +1003,12 @@ export const saveSavedView = async ({
     filters,
     displaySettings,
     sort,
+    __typename: 'WorkItemSavedViewType',
   };
 
   const optimisticResponse = {
     [mutationKey]: {
+      __typename: isEdit ? 'WorkItemSavedViewUpdatePayload' : 'WorkItemSavedViewCreatePayload',
       errors: [],
       savedView: isEdit
         ? {
@@ -1019,7 +1021,12 @@ export const saveSavedView = async ({
             id: NEW_SAVED_VIEWS_GID,
             ...commonSavedViewResponse,
             subscribed: true,
-            userPermissions: { updateSavedView: true, deleteSavedView: true },
+            userPermissions: {
+              updateSavedView: true,
+              deleteSavedView: true,
+              updateSavedViewVisibility: true,
+              __typename: 'SavedViewPermissions',
+            },
           },
     },
   };

@@ -47,7 +47,9 @@ module API
         issue
       end
 
-      expose :task_completion_status
+      expose :task_completion_status,
+        using: ::API::Entities::TaskCompletionStatus,
+        documentation: { type: 'Entities::TaskCompletionStatus' }
     end
   end
 end

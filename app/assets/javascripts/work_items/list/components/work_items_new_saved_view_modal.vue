@@ -11,7 +11,7 @@ import {
   GlAlert,
   GlLink,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -35,15 +35,12 @@ export default {
     descriptionValidation: s__('WorkItem|140 characters max'),
     validateTitle: s__('WorkItem|Title is required.'),
     privateView: s__('WorkItem|Only you can see and edit this view.'),
-    sharedView: s__(
-      'WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it.',
-    ),
     subscriptionLimitWarningMessage: s__(
       'WorkItem|You have reached the maximum number of views in your list. If you add a view, the last view in your list will be removed.',
     ),
     learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
-  inject: ['subscribedSavedViewLimit'],
+  inject: ['subscribedSavedViewLimit', 'isGroup'],
   model: {
     prop: 'show',
     event: 'hide',
@@ -104,6 +101,17 @@ export default {
     },
     isEdit() {
       return Boolean(this.savedView?.id);
+    },
+    canUpdateSavedViewVisibility() {
+      return !this.isEdit || this.savedView?.userPermissions?.updateSavedViewVisibility;
+    },
+    visibilityText() {
+      return sprintf(
+        s__(
+          'WorkItem|Anyone with access to this %{namespaceType} can add the view, and those with the Planner and above roles can edit it.',
+        ),
+        { namespaceType: this.isGroup ? __('group') : __('project') },
+      );
     },
   },
   watch: {
@@ -273,6 +281,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
+        v-if="canUpdateSavedViewVisibility"
         :label="__('Visibility')"
         label-for="saved-view-visibility"
         data-testid="saved-view-visibility"
@@ -294,9 +303,29 @@ export default {
             <gl-icon name="users" class="gl-shrink-0" variant="subtle" />
             {{ s__('WorkItem|Shared') }}
           </span>
-          <template #help>{{ $options.i18n.sharedView }}</template>
+          <template #help>{{ visibilityText }}</template>
         </gl-form-radio>
       </gl-form-group>
+      <div v-else class="gl-mb-5 gl-flex gl-flex-col gl-gap-3">
+        <label class="gl-m-0 gl-text-base gl-font-bold gl-text-strong">
+          {{ __('Visibility') }}
+        </label>
+        <div class="gl-flex gl-items-start gl-gap-3">
+          <div
+            class="gl-flex gl-shrink-0 gl-items-center gl-justify-center gl-rounded-full gl-bg-strong gl-p-3"
+          >
+            <gl-icon name="users" variant="subtle" />
+          </div>
+          <div class="gl-flex gl-flex-col">
+            <span class="gl-text-subtle">
+              {{ s__('WorkItem|Shared') }}
+            </span>
+            <span data-testid="shared-read-only-help-text" class="gl-text-sm gl-text-subtle">
+              {{ visibilityText }}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div class="gl-mb-5 gl-flex gl-justify-end gl-gap-3">
         <gl-button type="button" data-testid="cancel-button" @click="hideAddNewViewModal">

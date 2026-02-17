@@ -293,7 +293,7 @@ module Gitlab
     end
 
     def work_items_search_enabled?
-      ::Feature.enabled?(:search_scope_work_item, :instance)
+      ::Feature.enabled?(:search_scope_work_item, current_user)
     end
   end
 end

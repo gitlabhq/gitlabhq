@@ -480,7 +480,12 @@ export const saveSavedViewResponse = {
         sort: 'CREATED_DESC',
         displaySettings: { groupBy: 'assignee' },
         subscribed: true,
-        userPermissions: { updateSavedView: true, deleteSavedView: true },
+        userPermissions: {
+          updateSavedView: true,
+          deleteSavedView: true,
+          updateSavedViewVisibility: true,
+          __typename: 'SavedViewPermissions',
+        },
       },
     },
   },
@@ -496,7 +501,12 @@ export const editSavedViewParams = {
   filters: { state: 'closed' },
   sort: 'UPDATED_DESC',
   displaySettings: { groupBy: 'status' },
-  userPermissions: { updateSavedView: true, deleteSavedView: true },
+  userPermissions: {
+    updateSavedView: true,
+    deleteSavedView: true,
+    updateSavedViewVisibility: true,
+    __typename: 'SavedViewPermissions',
+  },
   subscribed: true,
   mutationKey: 'workItemSavedViewUpdate',
 };
@@ -513,7 +523,12 @@ export const editSavedViewResponse = {
         filters: { state: 'closed' },
         sort: 'UPDATED_DESC',
         displaySettings: { groupBy: 'status' },
-        userPermissions: { updateSavedView: true, deleteSavedView: true },
+        userPermissions: {
+          updateSavedView: true,
+          deleteSavedView: true,
+          updateSavedViewVisibility: true,
+          __typename: 'SavedViewPermissions',
+        },
         subscribed: true,
       },
     },
@@ -530,7 +545,12 @@ export const editSavedViewFormOnlyParams = {
   filters: { state: 'closed' },
   sort: 'UPDATED_DESC',
   displaySettings: { groupBy: 'status' },
-  userPermissions: { updateSavedView: true, deleteSavedView: true },
+  userPermissions: {
+    updateSavedView: true,
+    deleteSavedView: true,
+    updateSavedViewVisibility: true,
+    __typename: 'SavedViewPermissions',
+  },
   subscribed: true,
   mutationKey: 'workItemSavedViewUpdate',
 };
@@ -544,7 +564,12 @@ export const editSavedViewFormOnlyResponse = {
         name: 'Updated View',
         description: 'Updated description',
         isPrivate: false,
-        userPermissions: { updateSavedView: true, deleteSavedView: true },
+        userPermissions: {
+          updateSavedView: true,
+          deleteSavedView: true,
+          updateSavedViewVisibility: true,
+          __typename: 'SavedViewPermissions',
+        },
         subscribed: true,
       },
     },
@@ -553,7 +578,7 @@ export const editSavedViewFormOnlyResponse = {
 
 export const mockSavedViewsData = [
   {
-    __typename: 'SavedView',
+    __typename: 'WorkItemSavedViewType',
     id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
     name: 'My Private View',
     description: 'Only I can see this',
@@ -565,6 +590,8 @@ export const mockSavedViewsData = [
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
+      updateSavedViewVisibility: true,
+      __typename: 'SavedViewPermissions',
     },
   },
 ];
@@ -588,7 +615,7 @@ export const exampleSavedViewResponse = {
 
 export const unsubscribedSavedView = [
   {
-    __typename: 'SavedView',
+    __typename: 'WorkItemSavedViewType',
     name: 'Current sprint 3',
     description: 'The things I am focused on for the sprint',
     subscribed: false,
@@ -617,6 +644,8 @@ export const unsubscribedSavedView = [
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
+      updateSavedViewVisibility: true,
+      __typename: 'SavedViewPermissions',
     },
   },
 ];
@@ -638,7 +667,7 @@ export const unsubscribedSavedViewResponse = {
   },
 };
 
-export const savedViewResponseFactory = ({ limit, subscribed }) => {
+export const savedViewResponseFactory = ({ limit, subscribed, savedViews = null }) => {
   return {
     data: {
       namespace: {
@@ -650,7 +679,7 @@ export const savedViewResponseFactory = ({ limit, subscribed }) => {
         subscribedSavedViewLimit: limit || 100,
         savedViews: {
           __typename: 'SavedViewConnection',
-          nodes: subscribed ? singleSavedView : unsubscribedSavedView,
+          nodes: savedViews ?? (subscribed ? singleSavedView : unsubscribedSavedView),
         },
       },
     },

@@ -13,12 +13,14 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockSavedView = {
-  __typename: 'SavedView',
+  __typename: 'WorkItemSavedViewType',
   id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
   name: 'My View',
   userPermissions: {
     updateSavedView: true,
     deleteSavedView: true,
+    updateSavedViewVisibility: true,
+    __typename: 'SavedViewPermissions',
   },
 };
 
@@ -91,6 +93,8 @@ describe('WorkItemsSavedViewSelector', () => {
           userPermissions: {
             updateSavedView: false,
             deleteSavedView: true,
+            updateSavedViewVisibility: false,
+            __typename: 'SavedViewPermissions',
           },
         },
       });
@@ -120,6 +124,8 @@ describe('WorkItemsSavedViewSelector', () => {
             userPermissions: {
               updateSavedView: true,
               deleteSavedView: false,
+              updateSavedViewVisibility: true,
+              __typename: 'SavedViewPermissions',
             },
           },
         });

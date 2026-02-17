@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module SearchHelper
+  include Gitlab::Utils::StrongMemoize
+
+  OKR_TYPES = %w[objective key_result].freeze
+
   # params which should persist when a new tab is selected
   SEARCH_GENERIC_PARAMS = [
     :search,
@@ -297,7 +301,44 @@ module SearchHelper
     parse_navigation(sorted_navigation).to_json
   end
 
+  def work_item_types_for_filter
+    container = @project || @group
+
+    if container
+      types = ::WorkItems::TypesFinder
+        .new(container: container)
+        .execute
+        .map do |type|
+          {
+            name: type.base_type.to_s,
+            label: type.name
+          }
+        end
+
+      # Filter types based on container and feature flags
+      filter_work_item_types(types, container)
+    else
+      # Return empty list for global search - work item type filter is not applicable
+      []
+    end
+  end
+  strong_memoize_attr :work_item_types_for_filter
+
   private
+
+  def filter_work_item_types(types, container)
+    types.reject do |type|
+      # Epic is only available for groups, not projects
+      (type[:name] == 'epic' && container.is_a?(Project)) ||
+        # OKR types require feature flag (overridden in EE)
+        (OKR_TYPES.include?(type[:name]) && !okrs_mvc_enabled?)
+    end
+  end
+
+  # Overridden in EE to check feature flag
+  def okrs_mvc_enabled?
+    false
+  end
 
   def combined_generic_results
     project_autocomplete + default_autocomplete + help_autocomplete + default_autocomplete_admin

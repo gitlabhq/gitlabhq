@@ -1,11 +1,12 @@
 import { nextTick } from 'vue';
 import { GlForm, GlModal, GlAlert, GlFormRadio, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
+import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
 import { SAVED_VIEW_VISIBILITY } from '~/work_items/constants';
-import waitForPromises from 'helpers/wait_for_promises';
-import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 
 jest.mock('ee_else_ce/work_items/list/utils', () => ({
   saveSavedView: jest.fn(),
@@ -30,6 +31,8 @@ describe('WorkItemsNewSavedViewModal', () => {
           userPermissions: {
             updateSavedView: true,
             deleteSavedView: true,
+            updateSavedViewVisibility: true,
+            __typename: 'SavedViewPermissions',
           },
         },
       },
@@ -52,6 +55,8 @@ describe('WorkItemsNewSavedViewModal', () => {
           userPermissions: {
             updateSavedView: true,
             deleteSavedView: true,
+            updateSavedViewVisibility: true,
+            __typename: 'SavedViewPermissions',
           },
         },
       },
@@ -70,12 +75,23 @@ describe('WorkItemsNewSavedViewModal', () => {
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
+      updateSavedViewVisibility: true,
+      __typename: 'SavedViewPermissions',
+    },
+  };
+
+  const sharedSavedView = {
+    ...existingSavedView,
+    userPermissions: {
+      ...existingSavedView.userPermissions,
+      updateSavedViewVisibility: false,
+      __typename: 'SavedViewPermissions',
     },
   };
 
   const mockToastShow = jest.fn();
 
-  const createComponent = ({ props, mockSavedView = null } = {}) => {
+  const createComponent = ({ props, mockSavedView = null, isGroup = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemsNewSavedViewModal, {
       propsData: {
         show: true,
@@ -94,8 +110,16 @@ describe('WorkItemsNewSavedViewModal', () => {
           push: jest.fn(),
         },
       },
+      stubs: {
+        GlFormRadio: stubComponent(GlFormRadio, {
+          template: `<div>
+                       <div class="help"><slot name="help"></slot></div>
+                     </div>`,
+        }),
+      },
       provide: {
         subscribedSavedViewLimit: 5,
+        isGroup,
       },
     });
   };
@@ -105,12 +129,15 @@ describe('WorkItemsNewSavedViewModal', () => {
   const findTitleInput = () => wrapper.find('#saved-view-title');
   const findDescriptionInput = () => wrapper.find('#saved-view-description');
   const findVisibilityInputs = () => wrapper.findByTestId('saved-view-visibility');
+  const findReadOnlyVisibility = () => wrapper.findByText('Shared');
   const findCreateButton = () => wrapper.findByTestId('create-view-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findVisibilityGlRadioButtons = () => findVisibilityInputs().findAllComponents(GlFormRadio);
   const findWarningMessage = () => wrapper.findByTestId('subscription-limit-warning');
   const findWarningIcon = () => findWarningMessage().findComponent(GlIcon);
   const findLearnMoreLink = () => findWarningMessage().findComponent(GlLink);
+  const findSharedRadioButton = () => findVisibilityGlRadioButtons().at(1);
+  const findSharedReadOnlyHelpText = () => wrapper.findByTestId('shared-read-only-help-text');
 
   beforeEach(() => {
     mockToastShow.mockClear();
@@ -181,6 +208,27 @@ describe('WorkItemsNewSavedViewModal', () => {
 
     expect(wrapper.emitted('hide')).toEqual([[false]]);
     expect(findModal().exists()).toBe(true);
+  });
+
+  it.each`
+    namespace    | isGroup
+    ${'group'}   | ${true}
+    ${'project'} | ${false}
+  `('shows $namespace specific help text for shared radio button', ({ namespace, isGroup }) => {
+    createComponent({ isGroup });
+    const unexpectedText = namespace === 'group' ? 'project' : 'group';
+    expect(findSharedRadioButton().text()).toContain(namespace);
+    expect(findSharedRadioButton().text()).not.toContain(unexpectedText);
+  });
+  it.each`
+    namespace    | isGroup
+    ${'group'}   | ${true}
+    ${'project'} | ${false}
+  `('shows $namespace specific help text for read only shared option', ({ namespace, isGroup }) => {
+    createComponent({ isGroup, mockSavedView: sharedSavedView });
+    const unexpectedText = namespace === 'group' ? 'project' : 'group';
+    expect(findSharedReadOnlyHelpText().text()).toContain(namespace);
+    expect(findSharedReadOnlyHelpText().text()).not.toContain(unexpectedText);
   });
 
   describe('subscription limit warning', () => {
@@ -331,6 +379,21 @@ describe('WorkItemsNewSavedViewModal', () => {
       );
     });
 
+    describe('visibility permission', () => {
+      it('shows visibility radio buttons when user can update visibility', () => {
+        createComponent({ mockSavedView: existingSavedView });
+
+        expect(findVisibilityInputs().exists()).toBe(true);
+      });
+
+      it('shows read-only visibility when user cannot update visibility', () => {
+        createComponent({ mockSavedView: sharedSavedView });
+
+        expect(findVisibilityInputs().exists()).toBe(false);
+        expect(findReadOnlyVisibility().exists()).toBe(true);
+      });
+    });
+
     // Note: The form is not supposed to update the filters, display settings and sort key
     it('successfully updates a saved view and shows a toast message', async () => {
       saveSavedView.mockResolvedValue(successUpdateResponse);
@@ -364,6 +427,8 @@ describe('WorkItemsNewSavedViewModal', () => {
         userPermissions: {
           deleteSavedView: true,
           updateSavedView: true,
+          updateSavedViewVisibility: true,
+          __typename: 'SavedViewPermissions',
         },
       });
 

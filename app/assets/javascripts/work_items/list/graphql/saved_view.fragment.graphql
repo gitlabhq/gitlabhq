@@ -1,0 +1,17 @@
+# @feature_category: portfolio_management
+
+fragment SavedView on WorkItemSavedViewType {
+  id
+  name
+  description
+  subscribed
+  isPrivate: private
+  displaySettings
+  filters
+  sort
+  userPermissions {
+    updateSavedView
+    deleteSavedView
+    updateSavedViewVisibility
+  }
+}

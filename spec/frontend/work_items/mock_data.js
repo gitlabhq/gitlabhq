@@ -10606,7 +10606,7 @@ export const mockFullWorkItemTypeConfiguration = {
 
 export const singleSavedView = [
   {
-    __typename: 'SavedView',
+    __typename: 'WorkItemSavedViewType',
     name: 'Current sprint 3',
     description: 'The things I am focused on for the sprint',
     subscribed: true,
@@ -10635,6 +10635,8 @@ export const singleSavedView = [
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
+      updateSavedViewVisibility: true,
+      __typename: 'SavedViewPermissions',
     },
   },
 ];

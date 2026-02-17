@@ -49590,6 +49590,10 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      protect_merge_request_pipelines:
+        type: boolean
+      ci_display_pipeline_variables:
+        type: boolean
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -53604,7 +53608,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -53759,6 +53763,20 @@ definitions:
     - human_time_estimate
     - human_total_time_spent
     description: API_Entities_IssuableTimeStats model
+  API_Entities_TaskCompletionStatus:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+        example: 5
+      completed_count:
+        type: integer
+        format: int32
+        example: 3
+    required:
+    - count
+    - completed_count
   API_Entities_IssuableReferences:
     type: object
     properties:
@@ -54310,7 +54328,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -63209,7 +63227,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -63437,7 +63455,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -64178,7 +64196,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -64431,7 +64449,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -68116,6 +68134,10 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      protect_merge_request_pipelines:
+        type: boolean
+      ci_display_pipeline_variables:
+        type: boolean
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -68863,6 +68885,14 @@ definitions:
         type: integer
         format: int32
         description: Set the maximum file size for each job's artifacts
+      protect_merge_request_pipelines:
+        type: boolean
+        description: Make protected CI/CD variables and runners available in merge
+          request pipelines
+      ci_display_pipeline_variables:
+        type: boolean
+        description: Display all manually-defined variables in the pipeline details
+          page after running a pipeline manually
       allow_pipeline_trigger_approve_deployment:
         type: boolean
         description: Allow pipeline triggerer to approve deployments

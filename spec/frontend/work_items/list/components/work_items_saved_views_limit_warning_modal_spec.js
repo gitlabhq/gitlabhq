@@ -11,7 +11,7 @@ import { routes } from '~/work_items/router/routes';
 
 import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
 
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 
 import WorkItemsSavedViewsLimitWarningModal from '~/work_items/list/components/work_items_saved_views_limit_warning_modal.vue';
 

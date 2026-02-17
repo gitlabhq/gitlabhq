@@ -55,7 +55,7 @@ module MergeRequests
     def can_leave_reviewed_system_note
       return true unless current_user.respond_to?(:user_type)
 
-      current_user.user_type != 'duo_code_review_bot'
+      !current_user.duo_code_review_bot?
     end
   end
 end

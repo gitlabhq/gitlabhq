@@ -729,7 +729,7 @@ access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
 administrative duties.
 
-#### Minimal Access role assignment with Restricted Access
+#### Minimal Access role assignment with restricted access
 
 {{< history >}}
 
@@ -741,7 +741,7 @@ administrative duties.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-When [Restricted Access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
+When [restricted access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
 
 For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../user/group/manage.md#provisioning-behavior-with-saml-scim-and-ldap).
 

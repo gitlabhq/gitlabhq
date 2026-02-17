@@ -1,0 +1,8 @@
+name: ci_time_based_partitioning
+description: Enable time-based partition creation for CI tables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218731
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/577314
+milestone: '18.10'
+type: gitlab_com_derisk
+group: group::ci platform
+default_enabled: false

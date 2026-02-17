@@ -1182,7 +1182,18 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
       it 'returns items in order' do
         expect(Gitlab::Json.parse(search_navigation_json).keys)
-          .to eq(%w[projects blobs work_items issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
+          .to eq(%w[projects blobs work_items merge_requests wiki_blobs commits notes milestones users snippet_titles])
+      end
+
+      context 'when search_scope_work_item feature flag is disabled' do
+        before do
+          stub_feature_flags(search_scope_work_item: false)
+        end
+
+        it 'returns items in order with issues instead of work_items' do
+          expect(Gitlab::Json.parse(search_navigation_json).keys)
+            .to eq(%w[projects blobs issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
+        end
       end
     end
   end
@@ -1530,6 +1541,113 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         it 'returns nil' do
           expect(helper.search_scope).to be_nil
         end
+      end
+    end
+  end
+
+  describe '#work_item_types_for_filter' do
+    before do
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
+
+    context 'without a container (global search)' do
+      it 'returns an empty array' do
+        expect(helper.work_item_types_for_filter).to eq([])
+      end
+    end
+
+    context 'with a project container' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        assign(:project, project)
+      end
+
+      it 'returns an array' do
+        expect(helper.work_item_types_for_filter).to be_an(Array)
+      end
+
+      it 'returns work item types with correct structure' do
+        types = helper.work_item_types_for_filter
+
+        expect(types).to all(have_key(:name))
+        expect(types).to all(have_key(:label))
+      end
+
+      it 'includes work item types available to the project' do
+        types = helper.work_item_types_for_filter
+        type_names = types.pluck(:name)
+
+        # Should include FOSS types
+        expect(type_names).to include('issue')
+        expect(type_names).to include('incident')
+        expect(type_names).to include('task')
+        expect(type_names).to include('ticket')
+      end
+
+      it 'excludes epic type for projects' do
+        types = helper.work_item_types_for_filter
+        type_names = types.pluck(:name)
+
+        # Epic should not be available for projects
+        expect(type_names).not_to include('epic')
+      end
+
+      it 'returns stringified type keys and human-readable labels' do
+        types = helper.work_item_types_for_filter
+        issue_type = types.find { |t| t[:name] == 'issue' }
+
+        expect(issue_type[:name]).to eq('issue')
+        expect(issue_type[:label]).to eq('Issue')
+      end
+
+      context 'with OKR types' do
+        it 'excludes OKR types when feature flag is disabled' do
+          stub_feature_flags(okrs_mvc: false)
+
+          types = helper.work_item_types_for_filter
+          type_names = types.pluck(:name)
+
+          expect(type_names).not_to include('objective')
+          expect(type_names).not_to include('key_result')
+        end
+
+        it 'includes OKR types when feature flag is enabled' do
+          stub_feature_flags(okrs_mvc: true)
+
+          types = helper.work_item_types_for_filter
+          type_names = types.pluck(:name)
+
+          expect(type_names).to include('objective')
+          expect(type_names).to include('key_result')
+        end
+      end
+    end
+
+    context 'with a group container' do
+      let_it_be(:group) { create(:group) }
+
+      before do
+        assign(:group, group)
+      end
+
+      it 'returns work item types available to the group' do
+        types = helper.work_item_types_for_filter
+
+        # Group-level work item types should be available
+        expect(types).to be_an(Array)
+        expect(types).to all(have_key(:name))
+        expect(types).to all(have_key(:label))
+      end
+
+      it 'includes epic type for groups' do
+        skip 'Epic is EE-only' unless Gitlab.ee?
+
+        types = helper.work_item_types_for_filter
+        type_names = types.pluck(:name)
+
+        # Epic should be available for groups
+        expect(type_names).to include('epic')
       end
     end
   end

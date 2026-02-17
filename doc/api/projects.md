@@ -457,6 +457,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -869,6 +871,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
@@ -1205,6 +1209,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1331,6 +1337,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -2290,6 +2298,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
+- `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -2323,6 +2332,7 @@ Supported general project attributes:
 | `ci_config_path`                                   | string            | No       | The path to CI configuration file. |
 | `ci_default_git_depth`                             | integer           | No       | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_delete_pipelines_in_seconds`                   | integer           | No       | Pipelines older than the configured time are deleted. |
+| `ci_display_pipeline_variables`                    | boolean           | No       | Display all manually-defined variables in the pipeline details page after running a pipeline manually. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
@@ -2369,6 +2379,7 @@ Supported general project attributes:
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
+| `protect_merge_request_pipelines`                  | boolean           | No       | Enable or disable [control access to protected variables and runners](../ci/pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners). |
 | `public_builds`                                    | boolean           | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                 | boolean           | No       | Enable `Delete source branch` option by default for all new merge requests. |
@@ -2581,6 +2592,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2728,6 +2741,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

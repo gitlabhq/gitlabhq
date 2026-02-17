@@ -35,7 +35,7 @@ import {
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -254,6 +254,7 @@ const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
 const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
 const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
+const findSaveChangesSeparator = () => wrapper.findByTestId('save-changes-separator');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 const findWorkItemsOnboardingModal = () => wrapper.findComponent(WorkItemsOnboardingModal);
 const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
@@ -2266,6 +2267,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
   describe('when on a saved view', () => {
     beforeEach(async () => {
       await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+
       await waitForPromises();
     });
 
@@ -2393,6 +2395,38 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
 
       expect(findResetViewButton().exists()).toBe(true);
       expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('does not render "Save changes" and its separator but "Reset to defaults" when there is no permission', async () => {
+      const savedViewHandler = jest.fn().mockResolvedValue(
+        savedViewResponseFactory({
+          savedViews: [
+            {
+              ...singleSavedView[0],
+              userPermissions: {
+                ...singleSavedView[0].userPermissions,
+                updateSavedView: false,
+              },
+            },
+          ],
+        }),
+      );
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        savedViewHandler,
+      });
+      await waitForPromises();
+
+      findWorkItemUserPreferences().vm.$emit('local-update', {
+        hiddenMetadataKeys: ['labels'],
+      });
+
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(false);
+      expect(findSaveChangesSeparator().exists()).toBe(false);
     });
 
     it('resets filters, hides action buttons and resets local storage draft', async () => {

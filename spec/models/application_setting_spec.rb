@@ -1819,6 +1819,22 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.not_to allow_value(true).for(:ci_job_live_trace_enabled) }
         end
       end
+
+      describe 'ci_partitions_in_seconds_limit default value' do
+        it 'has correct default for ci_partitions_in_seconds_limit' do
+          expect(setting.ci_partitions_in_seconds_limit).to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+
+      describe '#ci_partitions_in_seconds_limit validations' do
+        it { is_expected.to allow_value(ChronicDuration.parse('2 month')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.to allow_value(ChronicDuration.parse('6 month')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(ChronicDuration.parse('1 week')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(ChronicDuration.parse('1 year')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value('').for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(nil).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(0).for(:ci_partitions_in_seconds_limit) }
+      end
     end
 
     context 'for resource_access_tokens_settings' do

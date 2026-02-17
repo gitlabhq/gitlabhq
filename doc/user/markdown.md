@@ -658,7 +658,7 @@ to stay in sync with the image.
 
 ![Task list as rendered by GitLab](img/completed_tasks_v15_3.png)
 
-To include task lists in tables, [use HTML list tags or HTML tables](#task-lists-in-tables).
+You can also add task lists to [table cells](#task-lists-in-tables).
 
 ## Links
 
@@ -967,43 +967,52 @@ When rendered, the example looks similar to:
 
 ### Task lists in tables
 
-To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
+{{< history >}}
 
-- **An HTML table with Markdown in the cells**. Tables formatted this way result in fully functioning
-  task lists.
+- Native Markdown syntax for task items in table cells [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219037) in GitLab 18.9.
 
-  ```html
-  <table>
-  <thead>
-  <tr><th>header 1</th><th>header 2</th></tr>
-  </thead>
-  <tbody>
-  <tr>
-  <td>cell 1</td>
-  <td>cell 2</td>
-  </tr>
-  <tr>
-  <td>cell 3</td>
-  <td>
+{{< /history >}}
 
-  - [ ] Task one
-  - [ ] Task two
+You can add a task item checkbox in a Markdown table cell.
+The checkbox must be the only content in the cell:
 
-  </td>
-  </tr>
-  </tbody>
-  </table>
-  ```
+```markdown
+| Complete | Task                    |
+| -------- | ----------------------- |
+|   [x]    | Refactor the backend    |
+|   [ ]    | Refactor the frontend   |
+|   [~]    | Inapplicable task       |
+```
 
-- **A Markdown table with HTML list tags**. These tasks don't save their state when selected.
-  Tables formatted this way do not render properly on `docs.gitlab.com`.
+When rendered, the example looks similar to:
 
-  ```markdown
-  | header 1 | header 2 |
-  | ---      | ---      |
-  | cell 1   | cell 2   |
-  | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
-  ```
+![Rendered task list in a Markdown table.](img/task_list_in_table_v18_9.png)
+
+To add multiple task items in a single cell, or task items with additional text,
+use an HTML table with Markdown in the cells:
+
+```html
+<table>
+<thead>
+<tr><th>header 1</th><th>header 2</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>cell 1</td>
+<td>cell 2</td>
+</tr>
+<tr>
+<td>cell 3</td>
+<td>
+
+- [ ] Task one
+- [ ] Task two
+
+</td>
+</tr>
+</tbody>
+</table>
+```
 
 You can also [create a table in the rich text editor](rich_text_editor.md#tables) and insert a task list then.
 

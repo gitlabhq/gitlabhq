@@ -72134,6 +72134,9 @@ msgstr ""
 msgid "Trial|Note: You must have an internet connection."
 msgstr ""
 
+msgid "Trial|Please reach out to %{support_link_start}GitLab Support%{support_link_end} for assistance."
+msgstr ""
+
 msgid "Trial|Privacy Statement"
 msgstr ""
 
@@ -72159,6 +72162,9 @@ msgid "Trial|Start your free trial"
 msgstr ""
 
 msgid "Trial|State or province"
+msgstr ""
+
+msgid "Trial|This email address was already registered for a trial. Please enter a different email address."
 msgstr ""
 
 msgid "Trial|Try GitLab Ultimate and automate tasks with GitLab Duo Agent Platform free for %{duration} days. After that, continue with free features or upgrade to a paid plan."
@@ -78315,7 +78321,7 @@ msgstr ""
 msgid "WorkItem|Ancestor not available"
 msgstr ""
 
-msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
+msgid "WorkItem|Anyone with access to this %{namespaceType} can add the view, and those with the Planner and above roles can edit it."
 msgstr ""
 
 msgid "WorkItem|Apply template"

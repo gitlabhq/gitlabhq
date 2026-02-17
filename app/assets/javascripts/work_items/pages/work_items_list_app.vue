@@ -62,7 +62,7 @@ import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.gra
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -1086,6 +1086,9 @@ export default {
     viewConfigChanged() {
       return this.filtersChanged || this.sortChanged || this.preferencesChanged;
     },
+    showSaveChanges() {
+      return this.savedView?.userPermissions?.updateSavedView && this.viewConfigChanged;
+    },
     savedViewDraftStorageKey() {
       return `${this.rootPageFullPath}-saved-view-${this.$route.params.view_id}`;
     },
@@ -2103,8 +2106,13 @@ export default {
                   >
                     {{ s__('WorkItem|Reset to defaults') }}
                   </gl-button>
-                  <div class="gl-border-r gl-mx-4 gl-h-full gl-w-1 gl-border-r-subtle"></div>
+                  <div
+                    v-if="showSaveChanges"
+                    data-testid="save-changes-separator"
+                    class="gl-border-r gl-mx-4 gl-h-full gl-w-1 gl-border-r-subtle"
+                  ></div>
                   <gl-button
+                    v-if="showSaveChanges"
                     size="small"
                     category="primary"
                     variant="default"

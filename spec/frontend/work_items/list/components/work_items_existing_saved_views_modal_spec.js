@@ -18,7 +18,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
   const mockPush = jest.fn();
   const mockSavedViewsData = [
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
       name: 'My Private View',
       description: 'Only I can see this',
@@ -30,10 +30,12 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
       name: 'Team View',
       description: 'Shared with the team',
@@ -45,6 +47,8 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
   ];

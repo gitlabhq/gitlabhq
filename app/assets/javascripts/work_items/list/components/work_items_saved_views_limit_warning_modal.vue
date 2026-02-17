@@ -4,7 +4,7 @@ import { s__, __, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import { ROUTES } from '~/work_items/constants';
 
 export default {

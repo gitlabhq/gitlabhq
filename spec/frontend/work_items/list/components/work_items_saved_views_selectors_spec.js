@@ -25,6 +25,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
@@ -40,6 +42,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
@@ -55,6 +59,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
   ];

@@ -14,6 +14,7 @@ class LfsFileLock < ApplicationRecord
   end
 
   def can_be_unlocked_by?(current_user, forced = false)
+    return false unless current_user
     return true if current_user.id == user_id
 
     forced && current_user.can?(:admin_project, project)

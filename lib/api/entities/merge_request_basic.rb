@@ -103,7 +103,9 @@ module API
 
       expose :squash
       expose :squash_on_merge?, as: :squash_on_merge
-      expose :task_completion_status
+      expose :task_completion_status,
+        using: ::API::Entities::TaskCompletionStatus,
+        documentation: { type: 'Entities::TaskCompletionStatus' }
 
       # #cannot_be_merged? is generally indicative of conflicts, and is set via
       #   MergeRequests::MergeabilityCheckService. However, it can also indicate

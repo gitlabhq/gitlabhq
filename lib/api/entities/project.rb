@@ -140,6 +140,8 @@ module API
           project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
         end
         expose :ci_push_repository_for_job_token_allowed, documentation: { type: 'Boolean' }
+        expose :protect_merge_request_pipelines, documentation: { type: 'Boolean' }
+        expose :ci_display_pipeline_variables, documentation: { type: 'Boolean' }
       end
 
       with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :read_runners_registration_token, project) } do

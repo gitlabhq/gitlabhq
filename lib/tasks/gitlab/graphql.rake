@@ -160,8 +160,8 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | GraphQL | Update GraphQL docs and schema'
-    task update_all: [:compile_docs, 'schema:dump']
+    desc 'GitLab | GraphQL | Update GraphQL docs, schema, and introspection docs'
+    task update_all: [:compile_docs, 'schema:dump', :generate_all_introspection_schemas]
   end
 end
 

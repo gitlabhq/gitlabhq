@@ -1,5 +1,7 @@
 # @feature_category: portfolio_management
 
+#import "./saved_view.fragment.graphql"
+
 query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
   namespace(fullPath: $fullPath) {
     id
@@ -11,18 +13,7 @@ query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
     subscribedSavedViewLimit
     savedViews(id: $id) {
       nodes {
-        id
-        name
-        description
-        displaySettings
-        filters
-        sort
-        subscribed
-        isPrivate: private
-        userPermissions {
-          updateSavedView
-          deleteSavedView
-        }
+        ...SavedView
       }
     }
   }

@@ -38558,6 +38558,14 @@ paths:
                 max_artifacts_size:
                   type: integer
                   description: Set the maximum file size for each job's artifacts
+                protect_merge_request_pipelines:
+                  type: boolean
+                  description: Make protected CI/CD variables and runners available
+                    in merge request pipelines
+                ci_display_pipeline_variables:
+                  type: boolean
+                  description: Display all manually-defined variables in the pipeline
+                    details page after running a pipeline manually
                 allow_pipeline_trigger_approve_deployment:
                   type: boolean
                   description: Allow pipeline triggerer to approve deployments
@@ -97418,6 +97426,15 @@ components:
         commit_source:
           type: string
           example: gitaly
+    APIEntitiesTaskCompletionStatus:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 5
+        completed_count:
+          type: integer
+          example: 3
     APIEntitiesIssuableTimeStats:
       type: object
       properties:
@@ -100992,7 +101009,7 @@ components:
         time_stats:
           "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         weight:
           type: string
         blocking_issues_count:
@@ -101112,7 +101129,7 @@ components:
         squash_on_merge:
           type: string
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         has_conflicts:
           type: string
         blocking_discussions_resolved:
@@ -101241,7 +101258,7 @@ components:
         time_stats:
           "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         weight:
           type: string
         blocking_issues_count:
@@ -101327,7 +101344,7 @@ components:
         time_stats:
           "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         weight:
           type: string
         blocking_issues_count:
@@ -101439,7 +101456,7 @@ components:
         time_stats:
           "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         weight:
           type: string
         blocking_issues_count:
@@ -101559,7 +101576,7 @@ components:
         time_stats:
           "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         weight:
           type: string
         blocking_issues_count:
@@ -101717,7 +101734,7 @@ components:
         squash_on_merge:
           type: string
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         has_conflicts:
           type: string
         blocking_discussions_resolved:
@@ -101865,7 +101882,7 @@ components:
         squash_on_merge:
           type: string
         task_completion_status:
-          type: string
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
         has_conflicts:
           type: string
         blocking_discussions_resolved:
@@ -103471,6 +103488,10 @@ components:
           example: continuous
         ci_push_repository_for_job_token_allowed:
           type: Boolean
+        protect_merge_request_pipelines:
+          type: Boolean
+        ci_display_pipeline_variables:
+          type: Boolean
         runners_token:
           type: string
           example: b8547b1dc37721d05889db52fa2f02
@@ -103851,6 +103872,10 @@ components:
           type: string
           example: continuous
         ci_push_repository_for_job_token_allowed:
+          type: Boolean
+        protect_merge_request_pipelines:
+          type: Boolean
+        ci_display_pipeline_variables:
           type: Boolean
         runners_token:
           type: string

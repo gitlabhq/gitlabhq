@@ -2967,6 +2967,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
         expect(json_response).to have_key('show_diff_preview_in_email')
+        expect(json_response['protect_merge_request_pipelines']).to eq(project.protect_merge_request_pipelines)
+        expect(json_response['ci_display_pipeline_variables']).to eq(project.ci_display_pipeline_variables)
       end
 
       it 'exposes all necessary attributes' do
@@ -3475,7 +3477,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'auto_devops_enabled',
           'auto_devops_deploy_strategy',
           'import_error',
-          'ci_push_repository_for_job_token_allowed'
+          'ci_push_repository_for_job_token_allowed',
+          'protect_merge_request_pipelines',
+          'ci_display_pipeline_variables'
         )
       end
     end
@@ -4492,6 +4496,34 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       let(:boundary_object) { project }
       let(:request) do
         put api("/projects/#{project.id}", personal_access_token: pat), params: { name: 'new name' }
+      end
+    end
+
+    describe 'updating protect_merge_request_pipelines attribute' do
+      it 'is enabled by default' do
+        expect(project.protect_merge_request_pipelines).to be_truthy
+      end
+
+      it 'disables protect_merge_request_pipelines' do
+        put(api(path, user), params: { protect_merge_request_pipelines: false })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.protect_merge_request_pipelines).to be_falsey
+        expect(json_response['protect_merge_request_pipelines']).to eq(false)
+      end
+    end
+
+    describe 'updating ci_display_pipeline_variables attribute' do
+      it 'is disabled by default' do
+        expect(project.ci_display_pipeline_variables).to be_falsey
+      end
+
+      it 'enables ci_display_pipeline_variables' do
+        put(api(path, user), params: { ci_display_pipeline_variables: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_display_pipeline_variables).to be_truthy
+        expect(json_response['ci_display_pipeline_variables']).to eq(true)
       end
     end
 

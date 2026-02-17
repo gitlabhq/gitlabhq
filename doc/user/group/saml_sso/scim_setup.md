@@ -224,7 +224,7 @@ During the synchronization process, all new users:
 - Are welcomed to their groups with an invitation email.
   You can [bypass email confirmation with a verified domain](_index.md#bypass-user-email-confirmation-with-verified-domains).
 
-### Provisioning behavior with Restricted Access
+### Provisioning behavior with restricted access
 
 {{< history >}}
 

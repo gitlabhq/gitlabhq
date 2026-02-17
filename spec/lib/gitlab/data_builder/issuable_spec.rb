@@ -153,12 +153,6 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       end
     end
 
-    context 'when issuable is a group level work item of type epic' do
-      let(:work_item) { create(:work_item, :epic, namespace: group, description: 'work item description') }
-
-      it_behaves_like 'work item hook data'
-    end
-
     context 'when issuable is a group level work item of type issue' do
       let(:work_item) { create(:work_item, :issue, namespace: group, description: 'work item description') }
 

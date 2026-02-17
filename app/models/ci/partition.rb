@@ -66,16 +66,6 @@ module Ci
       end
     end
 
-    def above_threshold?(threshold = ::Gitlab::CurrentSettings.ci_partitions_size_limit)
-      with_ci_connection do
-        Gitlab::Database::PostgresPartition
-          .with_parent_tables(parent_table_names)
-          .with_list_constraint(id)
-          .above_threshold(threshold)
-          .exists?
-      end
-    end
-
     def all_partitions_exist?
       with_ci_connection do
         Gitlab::Database::PostgresPartition
@@ -85,7 +75,25 @@ module Ci
       end
     end
 
+    def exceed_time_window?(time_window = ::Gitlab::CurrentSettings.ci_partitions_in_seconds_limit)
+      return above_threshold? if Feature.disabled?(:ci_time_based_partitioning, :instance)
+      return false if current_from.blank?
+      return false if time_window.blank?
+
+      Time.current.after?(current_from + time_window)
+    end
+
     private
+
+    def above_threshold?(threshold = ::Gitlab::CurrentSettings.ci_partitions_size_limit)
+      with_ci_connection do
+        Gitlab::Database::PostgresPartition
+          .with_parent_tables(parent_table_names)
+          .with_list_constraint(id)
+          .above_threshold(threshold)
+          .exists?
+      end
+    end
 
     def with_ci_connection(&block)
       Gitlab::Database::SharedModel.using_connection(connection, &block)

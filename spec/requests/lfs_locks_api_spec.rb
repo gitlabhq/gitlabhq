@@ -125,6 +125,29 @@ RSpec.describe 'Git LFS File Locking API', feature_category: :source_code_manage
       expect(json_response['theirs'].size).to eq(1)
       expect(json_response['theirs'].first['path']).to eq('README.md')
     end
+
+    context 'when using deploy key with write access' do
+      let_it_be(:key) { create(:deploy_key) }
+      let_it_be(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: key) }
+
+      let(:headers) do
+        {
+          'Authorization' => authorize_deploy_key
+        }.compact
+      end
+
+      it 'returns all locks as theirs since deploy keys cannot own locks' do
+        lock_file('README.md', maintainer)
+        lock_file('README', developer)
+
+        post_lfs_json url, nil, headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['ours']).to be_empty
+        expect(json_response['theirs'].size).to eq(2)
+        expect(json_response['theirs'].pluck('path')).to contain_exactly('README.md', 'README')
+      end
+    end
   end
 
   describe 'Delete File Lock endpoint' do

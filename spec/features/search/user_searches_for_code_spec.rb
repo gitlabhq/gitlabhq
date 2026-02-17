@@ -17,6 +17,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
 
   context 'when signed in' do
     before do
+      stub_feature_flags(search_scope_work_item: false)
       project.add_maintainer(user)
       sign_in(user)
     end
@@ -132,6 +133,27 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
 
       expect(find(:css, '.results')).to have_link(issue.title)
       expect(page).not_to have_selector('.ref-selector')
+    end
+
+    context 'when work_items scope is enabled' do
+      before do
+        stub_feature_flags(search_scope_work_item: true)
+      end
+
+      it 'no ref switcher shown in work items result summary' do
+        issue = create(:issue, title: 'test', project: project)
+        visit(project_tree_path(project))
+
+        submit_search('test')
+        select_search_scope('Code')
+
+        expect(page).to have_selector('.ref-selector')
+
+        select_search_scope('Work items')
+
+        expect(find(:css, '.results')).to have_link(issue.title)
+        expect(page).not_to have_selector('.ref-selector')
+      end
     end
   end
 

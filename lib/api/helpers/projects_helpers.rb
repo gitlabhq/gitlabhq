@@ -125,6 +125,8 @@ module API
         optional :ci_id_token_sub_claim_components, type: Array[String], desc: 'Claims that will be used to build the sub claim in id tokens'
         optional :ci_delete_pipelines_in_seconds, type: Integer, desc: 'Pipelines older than the configured time are deleted'
         optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
+        optional :protect_merge_request_pipelines, type: Boolean, desc: "Make protected CI/CD variables and runners available in merge request pipelines"
+        optional :ci_display_pipeline_variables, type: Boolean, desc: "Display all manually-defined variables in the pipeline details page after running a pipeline manually"
       end
 
       params :optional_update_params_ee do
@@ -230,6 +232,8 @@ module API
           :ci_push_repository_for_job_token_allowed,
           :ci_delete_pipelines_in_seconds,
           :max_artifacts_size,
+          :protect_merge_request_pipelines,
+          :ci_display_pipeline_variables,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

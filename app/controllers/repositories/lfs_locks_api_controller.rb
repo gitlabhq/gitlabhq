@@ -58,7 +58,9 @@ module Repositories
     end
 
     def split_by_owner(locks)
-      groups = locks.partition { |lock| lock.user_id == user.id }
+      # When user is nil (e.g., deploy key auth), all locks belong to others
+      user_id = user&.id
+      groups = locks.partition { |lock| user_id && lock.user_id == user_id }
 
       groups.map! do |records|
         LfsFileLockSerializer.new.represent(records, root: false)

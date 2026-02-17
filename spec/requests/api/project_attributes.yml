@@ -105,7 +105,6 @@ ci_cd_settings:
     - id_token_sub_claim_components
     - delete_pipelines_in_seconds
     - allow_composite_identities_to_run_pipelines
-    - display_pipeline_variables
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
@@ -117,6 +116,7 @@ ci_cd_settings:
     separated_caches: ci_separated_caches
     allow_fork_pipelines_to_run_in_parent_project: ci_allow_fork_pipelines_to_run_in_parent_project
     delete_pipelines_in_seconds: ci_delete_pipelines_in_seconds
+    display_pipeline_variables: ci_display_pipeline_variables 
   computed_attributes:
     - restrict_user_defined_variables
 
@@ -199,7 +199,6 @@ project_setting:
     - spp_repository_pipeline_access
     - max_number_of_vulnerabilities
     - extended_prat_expiry_webhooks_execute
-    - protect_merge_request_pipelines
     - model_prompt_cache_enabled
     - web_based_commit_signing_enabled
     - duo_context_exclusion_settings

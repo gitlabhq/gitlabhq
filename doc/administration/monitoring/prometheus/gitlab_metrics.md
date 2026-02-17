@@ -67,6 +67,8 @@ The following metrics are available:
 | `email_receiver_error`                                                         | Counter   |  14.1 |                                                                         | Total number of errors when processing incoming emails |
 | `failed_login_captcha_total`                                                   | Gauge     |  11.0 |                                                                         | Counter of failed CAPTCHA attempts during login |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio`                   | Histogram |  17.6 | `throttle_key`, `peek`, `feature_category`                              | Utilization ratio of a throttle in GitLab Application Rate Limiter. |
+| `gitaly_circuit_breaker_requests_total`                                        | Counter   |  18.9 | `circuit_state`, `result`, `reason`                                     | Total Gitaly requests processed by circuit breaker. `result` can be `allowed`, `rejected`, or `error`. `reason` provides error detail (for example, `resource_exhausted`) |
+| `gitaly_circuit_breaker_transitions_total`                                     | Counter   |  18.9 | `from_state`, `to_state`                                                | Total circuit breaker state transitions. States are `closed`, `open`. Detailed endpoint and storage information is available in structured logs |
 | `gitlab_cache_misses_total`                                                    | Counter   |  10.2 | `controller`, `action`, `store`, `endpoint_id`                          | Cache read miss |
 | `gitlab_cache_operation_duration_seconds`                                      | Histogram |  10.2 | `operation`, `store`, `endpoint_id`                                     | Cache access time |
 | `gitlab_cache_operations_total`                                                | Counter   |  12.2 | `controller`, `action`, `operation`, `store`, `endpoint_id`             | Cache operations by controller or action |
@@ -226,6 +228,8 @@ The following metrics can be controlled by feature flags:
 | `gitlab_ci_current_queue_size`               | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_retrieval_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_active_runners_total`       | `gitlab_ci_builds_queuing_metrics` |
+| `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
+| `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
 
 ## Praefect metrics
 

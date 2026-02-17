@@ -331,7 +331,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
 
-### Provisioning behavior with Restricted Access
+### Provisioning behavior with restricted access
 
 {{< history >}}
 

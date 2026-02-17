@@ -533,6 +533,7 @@ class ApplicationSetting < ApplicationRecord
       pipeline_variables_default_allowed: [:boolean, { default: true }],
       ci_job_live_trace_enabled: [:boolean, { default: false }],
       ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
+      ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }]
     }
@@ -544,6 +545,12 @@ class ApplicationSetting < ApplicationRecord
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
   validates :ci_partitions_size_limit, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :ci_partitions_in_seconds_limit, presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: ChronicDuration.parse('1 month'),
+      less_than_or_equal_to: ChronicDuration.parse('6 months')
+    }
   validates :ci_delete_pipelines_in_seconds_limit, presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 1.day }
 

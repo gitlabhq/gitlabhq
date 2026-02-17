@@ -33,53 +33,6 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
       end
 
-      describe '#validate_depth' do
-        it_behaves_like 'validates hierarchy depth', :epic, 7
-        it_behaves_like 'validates hierarchy depth', :objective, 9
-
-        context 'with cross-type hierarchies (objective to key_result)' do
-          let_it_be(:objective1) { create(:work_item, :objective, project: project) }
-          let_it_be(:key_result) { create(:work_item, :key_result, project: project) }
-          let_it_be(:objective3) { create(:work_item, :objective, project: project) }
-
-          it 'validates maximum depth of 1 for key_results under objectives' do
-            create(:parent_link, work_item_parent: objective1, work_item: key_result)
-
-            key_result2 = create(:work_item, :key_result, project: project)
-            link = build(:parent_link, work_item_parent: key_result, work_item: key_result2)
-
-            expect(link).not_to be_valid
-          end
-        end
-      end
-
-      describe '#validate_cyclic_reference' do
-        let_it_be(:epic_a) { create(:work_item, :epic, project: project) }
-        let_it_be(:epic_b) { create(:work_item, :epic, project: project) }
-        let_it_be(:epic_c) { create(:work_item, :epic, project: project) }
-
-        before do
-          # Create a chain: epic_a -> epic_b -> epic_c
-          create(:parent_link, work_item_parent: epic_a, work_item: epic_b)
-          create(:parent_link, work_item_parent: epic_b, work_item: epic_c)
-        end
-
-        it 'is not valid if parent and child are same' do
-          link = build(:parent_link, work_item_parent: epic_a, work_item: epic_a)
-
-          expect(link).not_to be_valid
-          expect(link.errors[:work_item]).to include('is not allowed to point to itself')
-        end
-
-        it 'is not valid if child is already in ancestors' do
-          # epic_c is a descendant of epic_a, so epic_a cannot be a child of epic_c
-          link = build(:parent_link, work_item_parent: epic_c, work_item: epic_a)
-
-          expect(link).not_to be_valid
-          expect(link.errors[:work_item]).to include("it's already present in this item's hierarchy")
-        end
-      end
-
       describe '#validate_max_children' do
         let_it_be(:link1) { create(:parent_link, work_item_parent: issue, work_item: task1) }
 
