@@ -94,7 +94,15 @@ module Tooling
         end
 
         def render_argument_table(level, args, owner)
-          arg_header = ('#' * level) + ARG_HEADER
+          arg_header =
+
+            # Only permit heading levels valid in CommonMark
+            if level < 6
+              ('#' * level) + ARG_HEADER
+            else
+              ARG_HEADER.sub("# Arguments", "Arguments:")
+            end
+
           render_field_table(arg_header, args, owner)
         end
 

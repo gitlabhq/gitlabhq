@@ -178,7 +178,7 @@ You can change how long users can remain signed in without activity.
    > [!note]
    > For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
 
-If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
+If the [**Remember me** option](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
@@ -196,7 +196,7 @@ By default, sessions expire a set amount of time after the session becomes inact
 When the session duration is met, the session ends and the user is signed out even if:
 
 - The user is still actively using the session.
-- The user selected [remember me](#configure-the-remember-me-option) during sign in.
+- The user selected [**Remember me**](#configure-the-remember-me-option) during sign in.
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
@@ -313,7 +313,7 @@ This setting is turned on by default and applies to:
 - Project access tokens.
 
 For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced`
-setting in the [Application Settings API](../../api/settings.md).
+setting in the [Application settings API](../../api/settings.md).
 
 To require expiration dates for new access tokens:
 

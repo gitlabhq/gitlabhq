@@ -36,7 +36,7 @@ GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-or
 written in Go that can listen on an external IP address and provide support for
 custom domains and custom certificates. It supports dynamic certificates through
 Server Name Indication (SNI) and exposes pages using HTTP2 by default.
-You are encouraged to read its [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md) to fully understand how
+You are encouraged to read the [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md) to fully understand how
 it works.
 
 When used with [custom domains](#custom-domains), the Pages daemon needs to listen on
@@ -124,7 +124,7 @@ Suffix List prevents browsers from accepting
 [supercookies](https://en.wikipedia.org/wiki/HTTP_cookie#Supercookie),
 among other things.
 
-To submit your GitLab Pages subdomain, follow [Submit amendments to the Public Suffix List](https://publicsuffix.org/submit/).
+To submit your GitLab Pages subdomain, see [submit amendments to the Public Suffix List](https://publicsuffix.org/submit/).
 For example, if your domain is `example.io`, you should
 request that `example.io` is added to the Public Suffix List. GitLab.com
 added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/230).
@@ -200,7 +200,7 @@ This example contains the following:
 - `192.0.2.2`: The secondary IP, which is dedicated to GitLab Pages. It must be different than the primary IP.
 
 > [!note]
-> You should not use the GitLab domain to serve user pages. For more information, see [Security](#security).
+> You should not use the GitLab domain to serve user pages. For more information, see the [security section](#security).
 
 ## Configuration
 
@@ -236,7 +236,7 @@ To configure GitLab Pages to use wildcard domains:
 The resulting URL scheme is `http://<namespace>.example.io/<project_slug>`.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [How to Enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s).
+For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s) video.
 <!-- Video published on 2017-02-22 -->
 
 ### Single-domain sites
@@ -315,8 +315,8 @@ Prerequisites:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+1. If you're using [access control](#access-control), update the redirect URI in the GitLab Pages
+   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    to use the HTTPS protocol.
 
 The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
@@ -369,8 +369,8 @@ Prerequisites:
    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
    ```
 
-1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+1. If you're using [access control](#access-control), update the redirect URI in the GitLab Pages
+   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    to use the HTTPS protocol.
 
    > [!note]
@@ -428,7 +428,7 @@ control over how the Pages daemon runs and serves content in your environment.
 
 | Setting                                 | Default                                               | Description |
 |-----------------------------------------|-------------------------------------------------------|-------------|
-| `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support). |
+| `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
 | `access_control`                        | Not applicable                                        | Whether to enable [access control](_index.md#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
@@ -495,7 +495,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | **`pages_nginx[]`**                     | Not applicable                                        |             |
 | `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](_index.md#custom-domains). |
 | `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (enabled by default). |
-| `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (enabled by default). See [Rewrites](../../user/project/pages/redirects.md#rewrites) for more information. |
+| `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (enabled by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
 | `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_source_ip_burst`            | Not applicable                                        | Rate limit per source IP maximum burst allowed per second. |
 | `rate_limit_domain`                     | Not applicable                                        | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
@@ -590,8 +590,8 @@ Prerequisites:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-1. If you're using Pages Access Control, edit the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
+1. If you're using access control, edit the redirect URI in the GitLab Pages
+   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
 
 ### Custom domain verification
 
@@ -702,7 +702,7 @@ of your instance only.
 Prerequisites:
 
 - Be an administrator of the instance.
-- You must enable Access Control first for the setting to show in the Admin area.
+- You must enable access control first for the setting to show in the Admin area.
 
 To disable public access to all Pages sites:
 
@@ -843,7 +843,7 @@ archive. You can modify the cache behavior by changing the following configurati
 | ------- | ----------- |
 | `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is `60s`. |
 | `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is `30s`. |
-| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is `30s`. |
+| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. For more information, see the [ZIP cache refresh example](#zip-cache-refresh-example). Default is `30s`. |
 | `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections because doing so may affect the latency of serving Pages. Default is 30 s. |
 | `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is `30m`. |
 
@@ -1204,7 +1204,7 @@ By default, GitLab Pages uses the internal GitLab API every time a new domain is
 Pages fails to start if it can't connect to the API.
 The domain information is also cached by the Pages daemon to speed up subsequent requests.
 
-For common issues, see [troubleshooting](troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
+For common issues, see the [troubleshooting section](troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 ### GitLab API cache configuration
 

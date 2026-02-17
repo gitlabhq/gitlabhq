@@ -121,8 +121,8 @@ To configure deletion protection for groups and projects:
 To override the delay, and permanently delete a project marked for removal:
 
 1. [Restore the project](../../user/project/working_with_projects.md#restore-a-project).
-1. Delete the project as described in the
-   [Administering Projects page](../admin_area.md#administering-projects).
+1. Delete the project as described in
+   [administering projects](../admin_area.md#administering-projects).
 
 ## Configure project visibility defaults
 
@@ -179,7 +179,7 @@ Prerequisites:
 1. Select **Save changes**.
 
 For more details on group visibility, see
-[Group visibility](../../user/group/_index.md#group-visibility).
+[group visibility](../../user/group/_index.md#group-visibility).
 
 ## Restrict visibility levels
 

@@ -24,7 +24,7 @@ sudo gitlab-ctl tail gitlab-pages
 
 You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
-For more information, see [Getting the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+For more information, see how to [get the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
 ## Debug GitLab Pages
 
@@ -88,7 +88,7 @@ To start tailing the logs:
    sudo gitlab-ctl tail nginx/gitlab_pages_access.log
    ```
 
-1. For **GitLab Pages** logs, run: Start by identifying the [correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+1. For **GitLab Pages** logs, run: Start by [identifying the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
    ```shell
    sudo gitlab-ctl tail gitlab-pages
@@ -105,7 +105,7 @@ To start tailing the logs:
    ```
 
 1. For **GitLab Rails** logs, run:
-   You can filter these logs based on the `correlation_id` [identified in GitLab Pages logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+   You can filter these logs based on the `correlation_id` from [GitLab Pages logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
    ```shell
    sudo gitlab-ctl tail gitlab-rails
@@ -275,7 +275,7 @@ If you see the following error:
 ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
 ```
 
-If you are [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server)
+If you are [running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server),
 you must copy the `/etc/gitlab/gitlab-secrets.json` file
 from the **GitLab server** to the **Pages server**.
 
@@ -298,7 +298,7 @@ WARN[0010] Pages cannot communicate with an instance of the GitLab API. Please s
 ```
 
 This can happen if your `gitlab-secrets.json` file is out of date between GitLab Rails and GitLab
-Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server),
+Pages. Follow steps 8-10 of [running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server)
 in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
@@ -318,7 +318,7 @@ container.
 ## 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an out-dated operating system.
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings using [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
 This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](../../install/package/_index.md#supported-platforms) is recommended.
 
@@ -367,7 +367,7 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
 
-1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
+1. Check the [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
    1. In the upper-right corner, select **Admin**.
    1. Select **Applications** and then **Add new application**.
@@ -503,7 +503,7 @@ To resolve:
 If the **pages** job succeeds but the **deploy** job fails, you might get an error that states `Response size over 104857600 bytes`.
 
 This error occurs when the decompressed Pages content exceeds the
-[Maximum Gzip-compressed size](../instance_limits.md#maximum-gzip-compressed-size) limit.
+[maximum Gzip-compressed size](../instance_limits.md#maximum-gzip-compressed-size) limit.
 
 To resolve this issue, increase the `max_http_decompressed_size` limit.
 Use one of the following methods:

@@ -52,15 +52,17 @@ module QA
           end
         end
 
+        # Check if a feature flag is currently enabled.
+        #
+        # First checks the persisted state via the GET /features API
+        # If the flag is not found in the API response, falls back to
+        # the default value from the local YAML definition file
         def enabled?(key, **scopes)
           feature = JSON.parse(get_features).find { |flag| flag['name'] == key.to_s }
           if feature
             feature['state'] == 'on' ||
               (feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes))
           else
-            # The feature wasn't found via the API so we check for a default value.
-            # We expand the path include both ee and jh.
-
             pattern = if GitlabEdition.jh?
                         "#{File.expand_path('../{ee/,jh/,}config/feature_flags', QA::Runtime::Path.qa_root)}/**/#{key}.yml"
                       else
@@ -68,6 +70,16 @@ module QA
                       end
 
             file = Dir.glob(pattern).first
+
+            # NOTE: Gitaly feature flags (prefixed with 'gitaly_') are often defined in the Gitaly project and
+            # do not have a YAML definition in the GitLab repo.
+            # - Return false, rather than raising a 'No feature flag found named' error for these cases.
+            # https://gitlab.com/gitlab-org/gitlab/-/blob/96aeb9cb001a7c620c9a6ba1327cd0ad9cbfaf9f/lib/feature/gitaly.rb
+            # https://gitlab.com/gitlab-org/gitaly/-/tree/d9c4290917c214e77be9fad485866b0de5f6a278/internal/featureflag
+
+            # However it is possible for such YAML feature files to exist, and in this case
+            #   - return the default value from the file
+            return false if !file && key.to_s.start_with?('gitaly_')
 
             raise UnknownFeatureFlagError, "No feature flag found named '#{key}'" unless file
 

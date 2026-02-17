@@ -2,6 +2,14 @@
 
 module Test
   class MockLlmClass
+    MOCK_VECTORS = [1.0, 2.0, 3.0].freeze
+
+    NIL_CONTENTS_ERROR_MESSAGE = 'The text content is empty.'
+
+    def self.generate_embeddings(contents, unit_primitive:, model: nil, user: nil)
+      new(contents, unit_primitive: unit_primitive, user: user, model: model).execute
+    end
+
     def initialize(contents, unit_primitive:, user:, model:)
       @contents = contents
       @unit_primitive = unit_primitive
@@ -10,11 +18,16 @@ module Test
     end
 
     def execute
-      [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
-      ]
+      # simulate error returned by vertex
+      raise nil_contents_error if @contents.any?(&:nil?)
+
+      Array.new(@contents.length, MOCK_VECTORS)
+    end
+
+    private
+
+    def nil_contents_error
+      StandardError.new(NIL_CONTENTS_ERROR_MESSAGE)
     end
   end
 end

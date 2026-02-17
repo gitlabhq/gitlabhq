@@ -127,7 +127,7 @@ To check if includes are enabled, start the Rails console and run:
 ### Through the API
 
 To set the wiki to allow URI includes for AsciiDoc through the
-[Application Settings API](../../api/settings.md#update-application-settings),
+[Application settings API](../../api/settings.md#update-application-settings),
 use a `curl` command:
 
 ```shell

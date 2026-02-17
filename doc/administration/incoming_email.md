@@ -16,7 +16,7 @@ description: Configure incoming email.
 
 GitLab has several features based on receiving incoming email messages:
 
-- [Reply by Email](reply_by_email.md): allow GitLab users to comment on issues
+- [Reply by email](reply_by_email.md): allow GitLab users to comment on issues
   and merge requests by replying to notification email.
 - [New issue by email](../user/project/issues/create_issues.md#by-sending-an-email):
   allow GitLab users to create a new issue by sending an email to a
@@ -29,7 +29,7 @@ GitLab has several features based on receiving incoming email messages:
 
 ## Requirements
 
-We recommend using an email address that receives **only** messages that are intended for
+You should use an email address that receives **only** messages that are intended for
 the GitLab instance. Any incoming email messages not intended for GitLab receive a reject notice.
 
 Handling incoming email messages requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
@@ -46,13 +46,13 @@ Let's walk through each of these options.
 [Sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing) is
 a mail server feature where any email to `user+arbitrary_tag@example.com` ends up
 in the mailbox for `user@example.com` . It is supported by providers such as
-Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
+Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, and the
 [Postfix mail server](reply_by_email_postfix_setup.md), which you can run on-premises.
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
 and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365).
 
 > [!note]
-> If your provider or server supports email sub-addressing, we recommend using it.
+> If your provider or server supports email sub-addressing, you should use it.
 > A dedicated email address only supports Reply by Email functionality.
 > A catch-all mailbox supports the same features as sub-addressing,
 > but sub-addressing is still preferred because only one email address is used,
@@ -547,7 +547,7 @@ incoming_email:
 ##### Dedicated email address
 
 > [!note]
-> Supports [Reply by Email](reply_by_email.md) only.
+> Supports [Reply by email](reply_by_email.md) only.
 > Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
@@ -759,7 +759,7 @@ incoming_email:
 ##### Dedicated email address
 
 > [!note]
-> Supports [Reply by Email](reply_by_email.md) only.
+> Supports [Reply by email](reply_by_email.md) only.
 > Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
@@ -886,7 +886,7 @@ gitlab_rails['incoming_email_inbox_options'] = {
 }
 ```
 
-The Microsoft Graph API is not yet supported in self-compiled installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+The Microsoft Graph API is not yet supported in self-compiled installations. See [issue 326169](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 
 ### Use encrypted credentials
 
@@ -944,8 +944,7 @@ The supported configuration items for the encrypted file are:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Use a Kubernetes secret to store the incoming email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-incoming-emails).
+Use a Kubernetes secret to store the incoming email password. For more information, see [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-incoming-emails).
 
 {{< /tab >}}
 

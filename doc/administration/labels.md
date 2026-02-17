@@ -23,7 +23,7 @@ To manage labels for the GitLab instance:
 1. In the upper-right corner, select **Admin**.
 1. Select **Labels**.
 
-For more details on how to manage labels, see [Labels](../user/project/labels.md).
+For more information, see [manage labels](../user/project/labels.md).
 
 Labels created in the **Admin** area are automatically added to new projects.
 They are not available to new groups.

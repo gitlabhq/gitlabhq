@@ -215,6 +215,59 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
       it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
+    context 'when an interface has a field with arguments' do
+      let(:type) do
+        interface = Module.new
+        interface.include(::Types::BaseInterface)
+        interface.graphql_name 'Searchable'
+        interface.description 'Something that can be searched.'
+        interface.field :search_results, GraphQL::Types::String, null: true, description: 'The results.' do
+          argument :query, GraphQL::Types::String, required: true, description: 'The search query.'
+        end
+
+        implementor = Class.new(::Types::BaseObject)
+        implementor.graphql_name 'SearchableItem'
+        implementor.description 'An item that is searchable.'
+        implementor.implements interface
+        interface.orphan_types implementor
+
+        Class.new(::Types::BaseObject) do
+          graphql_name 'InterfaceArgTest'
+          description 'A test for interface fields with arguments.'
+
+          field :searchable, interface, null: true, description: 'A searchable thing.'
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          #### `Searchable`
+
+          Something that can be searched.
+
+          Implementations:
+
+          - [`SearchableItem`](#searchableitem)
+
+          ##### Fields with arguments
+
+          ###### `Searchable.searchResults`
+
+          The results.
+
+          Returns [`String`](#string).
+
+          Arguments:
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="searchablesearchresultsquery"></a>`query` | [`String!`](#string) | The search query. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
     context 'when an argument is deprecated' do
       let(:type) do
         Class.new(Types::BaseObject) do

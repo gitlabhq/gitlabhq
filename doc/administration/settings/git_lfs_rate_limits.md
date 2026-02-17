@@ -14,7 +14,7 @@ title: Rate limits on Git LFS
 
 {{< /details >}}
 
-[Git LFS (Large File Storage)](../../topics/git/lfs/_index.md) is a Git extension
+[Git Large File Storage (LFS)](../../topics/git/lfs/_index.md) is a Git extension
 for handling large files. If you use Git LFS in your repository, common Git operations
 can generate many Git LFS requests. You can enforce
 [general user and IP rate limits](user_and_ip_rate_limits.md), but you can also

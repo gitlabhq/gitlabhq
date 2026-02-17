@@ -17,7 +17,7 @@ Use Git Large File Storage (LFS) to store large files in a Git repository withou
 increasing its size or affecting performance. You can enable or disable LFS, configure local
 or remote storage for LFS objects, and migrate objects between storage types.
 
-For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/_index.md).
+For user documentation, see [Git Large File Storage (LFS)](../../topics/git/lfs/_index.md).
 
 Prerequisites:
 
@@ -570,7 +570,7 @@ To delete these references:
 
 To remove references to multiple missing LFS objects at once:
 
-1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Open the [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following script:
 
    ```ruby
@@ -630,7 +630,7 @@ the rule may be related to the size of the request.
 ### Error viewing a PDF file
 
 When LFS has been configured with object storage and `proxy_download` set to
-`false`, [you may see an error when previewing a PDF file from the Web browser](https://gitlab.com/gitlab-org/gitlab/-/issues/248100):
+`false`, you might see an error when previewing a PDF file from the Web browser:
 
 ```plaintext
 An error occurred while loading the file. Please try again later.
@@ -663,7 +663,7 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
    ```
 
    This error indicates that you've reached the default limit of 100,000 LFS files,
-   as described in issue [#476693](https://gitlab.com/gitlab-org/gitlab/-/issues/476693).
+   as described in [issue 476693](https://gitlab.com/gitlab-org/gitlab/-/issues/476693).
 
 1. Increase the value of the `GITLAB_LFS_MAX_OID_TO_FETCH` variable:
 
@@ -684,7 +684,7 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
    sudo gitlab-ctl reconfigure
    ```
 
-   For additional information, see [Reconfigure a Linux package installation](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+   For more information, see [reconfigure a Linux package installation](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 1. Repeat the fork operation.
 

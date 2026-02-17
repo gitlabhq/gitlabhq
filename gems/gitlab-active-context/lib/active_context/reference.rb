@@ -6,6 +6,7 @@ module ActiveContext
     extend Concerns::Preprocessor
     include Preprocessors::ContentFetcher
     include Preprocessors::Embeddings
+    include Preprocessors::EmbeddingsWithModelRedesign
     include Preprocessors::Preload
 
     DELIMITER = '|'
@@ -114,6 +115,10 @@ module ActiveContext
 
     def unique_identifiers
       [identifier]
+    end
+
+    def indexing_embedding_models
+      collection_class&.indexing_embedding_models || []
     end
 
     def embedding_versions

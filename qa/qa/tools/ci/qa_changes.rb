@@ -153,7 +153,7 @@ module QA
 
           tests_from_frontend_mapping = []
           tests_from_backend_mapping = clean_map
-            .select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
+            .select { |_test, mappings| changed_files.any? { |file| mappings.include?(file) } }
             .keys
 
           if QA::Runtime::Env.frontend_selective_execution_enabled?
@@ -175,13 +175,13 @@ module QA
           clean_e2e_frontend_map = frontend_code_paths_map.each_with_object(Hash.new { |h, k| h[k] = [] }) do
           |(example_id, mappings), hsh|
             name = example_id.gsub("./", "").split(":").first
-            cleaned_up_mappings = mappings.map { |path| path.gsub('/builds/gitlab-org/gitlab', '.') }
+            cleaned_up_mappings = mappings.map { |path| path.sub(%r{^.*/gitlab/}, '') }
 
             hsh[name] = (hsh[name] + cleaned_up_mappings).uniq
           end
 
           clean_e2e_frontend_map
-            .select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
+            .select { |_test, mappings| changed_files.any? { |file| mappings.include?(file) } }
             .keys
         end
 

@@ -184,4 +184,54 @@ RSpec.describe ActiveContext::Reference do
       end
     end
   end
+
+  describe '#indexing_embedding_models' do
+    before do
+      allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection_record)
+    end
+
+    let(:mock_collection_record) do
+      double(
+        "Collection",
+        include_ref_fields: true, collection_class: 'Test::Collections::Mock',
+        current_indexing_embedding_model: nil,
+        next_indexing_embedding_model: nil
+      )
+    end
+
+    let(:reference) { Test::References::Mock.new(collection_id: 1, routing: 2, args: 3) }
+
+    subject(:indexing_embedding_models) { reference.indexing_embedding_models }
+
+    it 'delegates to the collection_class.indexing_embedding_models' do
+      expect(Test::Collections::Mock).to receive(:indexing_embedding_models).and_call_original
+
+      indexing_embedding_models
+    end
+
+    it 'is empty when the indexing models are not set in the collection record' do
+      expect(indexing_embedding_models).to be_empty
+    end
+
+    context 'when the indexing models metadata are set in the collection record' do
+      before do
+        allow(mock_collection_record).to receive_messages(
+          current_indexing_embedding_model: { model_ref: 'model-001', field: 'embeddings_v1' },
+          next_indexing_embedding_model: { model_ref: 'model-002', field: 'embeddings_v2' }
+        )
+      end
+
+      it 'returns the expected ::ActiveContext::EmbeddingModel objects' do
+        expect(indexing_embedding_models).to all(be_a(::ActiveContext::EmbeddingModel))
+
+        model_1 = indexing_embedding_models.first
+        expect(model_1.model_name).to eq('model-001')
+        expect(model_1.field).to eq('embeddings_v1')
+
+        model_2 = indexing_embedding_models.second
+        expect(model_2.model_name).to eq('model-002')
+        expect(model_2.field).to eq('embeddings_v2')
+      end
+    end
+  end
 end

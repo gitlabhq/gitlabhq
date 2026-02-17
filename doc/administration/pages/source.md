@@ -27,7 +27,7 @@ The advantage of using the Linux package installation is that it contains the la
 GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a lightweight HTTP server that listens on an external IP address and provides support for
 custom domains and certificates. It supports dynamic certificates through
 `SNI` and exposes pages using HTTP2 by default.
-You are encouraged to read its [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md)
+You are encouraged to read the [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md)
 to fully understand how it works.
 
 In the case of [custom domains](#custom-domains) (but not
@@ -458,7 +458,7 @@ Pages access control is disabled by default. To enable it:
      auth-server=<URL of the GitLab instance>
    ```
 
-1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
+1. Users can now configure it in their [project settings](../../user/project/pages/pages_access_control.md).
 
 ## Change storage path
 
