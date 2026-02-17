@@ -2860,6 +2860,7 @@ Input type: `AiCatalogAgentCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogagentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogagentcreatedescription"></a>`description` | [`String!`](#string) | Description for the agent. |
+| <a id="mutationaicatalogagentcreatemcpservers"></a>`mcpServers` {{< icon name="warning-solid" >}} | [`[AiCatalogMcpServerID!]`](#aicatalogmcpserverid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.10. |
 | <a id="mutationaicatalogagentcreatename"></a>`name` | [`String!`](#string) | Name for the agent. |
 | <a id="mutationaicatalogagentcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the agent. |
 | <a id="mutationaicatalogagentcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the agent is publicly visible in the catalog. |
@@ -2917,6 +2918,7 @@ Input type: `AiCatalogAgentUpdateInput`
 | <a id="mutationaicatalogagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogagentupdatedescription"></a>`description` | [`String`](#string) | Description for the agent. |
 | <a id="mutationaicatalogagentupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Agent to update. |
+| <a id="mutationaicatalogagentupdatemcpservers"></a>`mcpServers` {{< icon name="warning-solid" >}} | [`[AiCatalogMcpServerID!]`](#aicatalogmcpserverid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.10. |
 | <a id="mutationaicatalogagentupdatename"></a>`name` | [`String`](#string) | Name for the agent. |
 | <a id="mutationaicatalogagentupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the agent is publicly visible in the catalog. |
 | <a id="mutationaicatalogagentupdaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the agent. |
@@ -26793,6 +26795,7 @@ An AI catalog agent version.
 | <a id="aicatalogagentversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogagentversionitem"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
+| <a id="aicatalogagentversionmcpservers"></a>`mcpServers` {{< icon name="warning-solid" >}} | [`AiCatalogMcpServerConnection`](#aicatalogmcpserverconnection) | **Introduced** in GitLab 18.10. **Status**: Experiment. MCP servers associated with the item. |
 | <a id="aicatalogagentversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogagentversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
 | <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |

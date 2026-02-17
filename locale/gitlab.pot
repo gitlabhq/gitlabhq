@@ -26039,6 +26039,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Actions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Agent or flow is required."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
@@ -26081,6 +26084,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Configuration path"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Configuration path is required."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Configuration source"
 msgstr ""
 
@@ -26117,6 +26123,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Description is required."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Developer"
 msgstr ""
 
@@ -26139,6 +26148,9 @@ msgid "DuoAgentsPlatform|Event Type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event types"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Event types are required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
@@ -26247,6 +26259,9 @@ msgid "DuoAgentsPlatform|Select one or multiple event types"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Service account"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Service account is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Session has been cancelled successfully."

@@ -72,6 +72,7 @@ export default {
       },
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       update(data) {
+        this.manualJob = data?.project?.job?.manualJob;
         const jobVariables = cloneDeep(data?.project?.job?.manualVariables?.nodes);
         return [...jobVariables.reverse(), ...this.variables];
       },
@@ -91,6 +92,7 @@ export default {
         },
       ],
       expanded: this.isExpanded,
+      manualJob: false,
     };
   },
   watch: {
@@ -131,7 +133,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mt-5">
+  <div v-if="manualJob" class="gl-mt-5">
     <gl-button
       :aria-expanded="expanded"
       aria-controls="variables-form-collapse"

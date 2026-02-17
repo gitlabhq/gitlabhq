@@ -630,9 +630,11 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
 
       context 'for assignees widget' do
-        let_it_be(:assignee) { create(:user, developer_of: project) }
-
         let(:widget_params) { { assignees_widget: { assignee_ids: [assignee.id] } } }
+        let_it_be(:assignee) { create(:user, developer_of: project) }
+        # Use a fresh work item to ensure updated_by_id is not already set to current_user
+        # from a prior test, which would prevent Rails from detecting the change.
+        let_it_be_with_refind(:work_item) { create(:work_item, project: project, assignees: [developer], updated_by: nil) }
 
         it 'updates assignees of the work item' do
           expect do
@@ -641,18 +643,16 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           end.to change { work_item.assignees }.from([developer]).to([assignee]).and change { work_item.updated_at }
         end
 
-        context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485027' do
-          it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
-            attributes:
-            %w[
-              updated_at
-              updated_by_id
-            ],
-            widgets:
-            %w[
-              assignees_widget
-            ]
-        end
+        it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes:
+          %w[
+            updated_at
+            updated_by_id
+          ],
+          widgets:
+          %w[
+            assignees_widget
+          ]
 
         context 'when work item validation fails' do
           let(:opts) { { title: '' } }

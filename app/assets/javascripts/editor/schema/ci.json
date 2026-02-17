@@ -259,6 +259,7 @@
           "enum": [
             "none",
             "developer",
+            "maintainer",
             "all"
           ]
         },

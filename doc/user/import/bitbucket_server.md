@@ -171,6 +171,12 @@ This value indicates the URL provided by the Bitbucket server to use for the imp
 To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
 For more information, see [Proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
 
+### Import fails with JSON::NestingError
+
+If a project import fails with an error message containing `JSON::NestingError`, the Bitbucket Server response contains deeply nested objects that exceed the `max_http_response_json_depth` setting.
+
+To resolve this issue, increase the [maximum allowed nesting depth in JSON HTTP responses from outbound requests](../../administration/instance_limits.md#maximum-allowed-nesting-depth-in-json-http-responses-from-outbound-requests).
+
 ## Related topics
 
 - [Migrate from Bitbucket Cloud](bitbucket_cloud.md).

@@ -155,7 +155,6 @@ module API
                     not_found!('Revision') unless recipe_revision
 
                     if package.conan_recipe_revisions.one?
-                      track_conan_package_event('delete_package')
                       destroy_conditionally!(package) do |package|
                         ::Packages::MarkPackageForDestructionService.new(container: package,
                           current_user: current_user).execute

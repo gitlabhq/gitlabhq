@@ -263,21 +263,21 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
     let(:commit) { mr.commits.find { |commit| commit.sha == mr.diff_head_sha } }
 
     it 'links to a valid reference' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{reference}", disable_banzai_timeout: true)
 
       expect(doc.css('a').first.attr('href'))
         .to eq reference
     end
 
-    it 'commit ref tag is valid', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6683' do
-      doc = reference_filter("See #{reference}")
+    it 'commit ref tag is valid' do
+      doc = reference_filter("See #{reference}", disable_banzai_timeout: true)
       commit_ref_tag = doc.css('a').first.css('span.gfm.gfm-commit')
 
       expect(commit_ref_tag.text).to eq(commit.short_id)
     end
 
     it 'has valid text' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{reference}", disable_banzai_timeout: true)
 
       expect(doc.text).to eq("See #{mr.to_reference(full: true)} (#{commit.short_id})")
     end
@@ -285,7 +285,7 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
     it 'ignores invalid commit short_ids on link text' do
       invalidate_commit_reference =
         urls.project_merge_request_url(mr.project, mr) + "/diffs?commit_id=12345678"
-      doc = reference_filter("See #{invalidate_commit_reference}")
+      doc = reference_filter("See #{invalidate_commit_reference}", disable_banzai_timeout: true)
 
       expect(doc.text).to eq("See #{mr.to_reference(full: true)} (diffs)")
     end

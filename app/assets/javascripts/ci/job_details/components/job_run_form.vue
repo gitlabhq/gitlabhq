@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -25,6 +25,7 @@ export default {
     GlButton,
     JobVariablesForm,
     PipelineInputsForm,
+    GlLoadingIcon,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['canSetPipelineVariables', 'projectPath'],
@@ -95,7 +96,10 @@ export default {
         : this.$options.i18n.runButtonText;
     },
     showInputsForm() {
-      return this.glFeatures.ciJobInputs && !this.$apollo.queries.job.loading;
+      return this.glFeatures.ciJobInputs;
+    },
+    inputsLoading() {
+      return this.$apollo.queries.job.loading;
     },
     playProps() {
       if (this.glFeatures.ciJobInputs) {
@@ -180,20 +184,23 @@ export default {
 </script>
 <template>
   <div>
-    <pipeline-inputs-form
-      v-if="showInputsForm"
-      emit-modified-only
-      preselect-all-inputs
-      :saved-inputs="job.inputs"
-      :initial-inputs="job.inputsSpec"
-      :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"
-      @update-inputs="handleInputsUpdated"
-    />
+    <template v-if="showInputsForm">
+      <gl-loading-icon v-if="inputsLoading" />
+      <pipeline-inputs-form
+        v-else
+        emit-modified-only
+        preselect-all-inputs
+        :saved-inputs="job.inputs"
+        :initial-inputs="job.inputsSpec"
+        :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"
+        @update-inputs="handleInputsUpdated"
+      />
+    </template>
 
     <job-variables-form
       v-if="canSetPipelineVariables"
       :job-id="jobId"
-      :is-expanded="!glFeatures.ciJobInputs"
+      :is-expanded="!showInputsForm"
       @update-variables="onVariablesUpdate"
     />
 

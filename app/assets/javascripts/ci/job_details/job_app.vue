@@ -327,11 +327,13 @@ export default {
         <!-- job form for variables and inputs -->
 
         <template v-if="showJobForm">
-          <h2>{{ emptyStateTitle }}</h2>
+          <template v-if="emptyStateIllustration.content">
+            <h2>{{ emptyStateTitle }}</h2>
 
-          <p v-if="emptyStateIllustration.content" data-testid="job-empty-state-content">
-            {{ emptyStateIllustration.content }}
-          </p>
+            <p data-testid="job-empty-state-content">
+              {{ emptyStateIllustration.content }}
+            </p>
+          </template>
           <job-run-form
             :is-retryable="isJobRetryable"
             :job-id="job.id"

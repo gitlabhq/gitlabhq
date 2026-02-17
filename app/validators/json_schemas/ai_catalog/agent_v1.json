@@ -13,6 +13,12 @@
       "items": {
         "type": "integer"
       }
+    },
+    "mcp_servers": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
     }
   },
   "required": [
