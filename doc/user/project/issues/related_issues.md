@@ -25,7 +25,7 @@ The relationship only shows up in the UI if the user can see both issues. When y
 issue that has open blockers, a warning is displayed.
 
 > [!note]
-> To manage linked issues through our API, see [Issue links API](../../../api/issue_links.md).
+> To manage linked issues through our API, see the [Issue links API](../../../api/issue_links.md).
 
 ## Add a linked issue
 
@@ -39,8 +39,8 @@ To link one issue to another:
    select the add linked issue button ({{< icon name="plus" >}}).
 1. Select the relationship between the two issues. Either:
    - **relates to**
-   - **[blocks](#blocking-issues)**
-   - **[is blocked by](#blocking-issues)**
+   - [**blocks**](#blocking-issues)
+   - [**is blocked by**](#blocking-issues)
 1. Input the issue number or paste in the full URL of the issue.
 
    ![Linking related issues with the current issue](img/related_issues_add_v15_3.png)
@@ -63,7 +63,7 @@ them categorized so their relationships can be better understood visually.
 ![Section to view or manage related issues](img/related_issue_block_v15_3.png)
 
 You can also add a linked issue from a commit message or the description in another issue or MR.
-For more information, see [Crosslinking issues](crosslinking_issues.md).
+For more information, see [crosslinking issues](crosslinking_issues.md).
 
 ## Remove a linked issue
 

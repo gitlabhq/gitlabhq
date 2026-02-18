@@ -90,6 +90,10 @@ GitLab SAST is not designed to report vulnerabilities in these cases.
 
 ## Conduct the test
 
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
 After you choose a codebase to test with, you're ready to conduct the test. You can follow these steps:
 
 1. [Enable SAST](_index.md#configuration) by creating a merge request (MR) that adds SAST to the CI/CD configuration.

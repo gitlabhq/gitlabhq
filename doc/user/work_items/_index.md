@@ -160,7 +160,7 @@ To toggle the sorting order between ascending and descending:
   or {{< icon name="sort-highest" >}}).
 
 For more information about sorting logic, see
-[Sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
 
 ## Configure list display preferences
 

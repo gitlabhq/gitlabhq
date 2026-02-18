@@ -51,7 +51,7 @@ For example:
   <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-For information about who is eligible to approve merge requests as either an approver or Code Owner, see [Approver by membership type](../merge_requests/approvals/rules.md#approver-by-membership-type).
+For information about who is eligible to approve merge requests as either an approver or Code Owner, see [approver by membership type](../merge_requests/approvals/rules.md#approver-by-membership-type).
 
 ## Code Owners and protected branches
 
@@ -111,8 +111,8 @@ Prerequisites:
 1. Create a `CODEOWNERS` file in your [preferred location](#codeowners-file).
 1. Define some rules in the file following the [`CODEOWNERS` syntax](reference.md).
    Some suggestions:
-   - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-approvers) approval rule.
-   - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval) on a protected branch.
+   - Configure the [**All eligible users**](../merge_requests/approvals/rules.md#code-owners-as-approvers) approval rule.
+   - [Require code owner approval](../repository/branches/protected.md#require-code-owner-approval) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 
 ## `CODEOWNERS` file
@@ -135,7 +135,7 @@ all others are ignored:
 1. In the `docs` directory: `./docs/CODEOWNERS`.
 1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
 
-For more information, see [`CODEOWNERS` syntax](reference.md) and [Advanced `CODEOWNERS` configuration](advanced.md).
+For more information, see [`CODEOWNERS` syntax](reference.md) and [advanced `CODEOWNERS` configuration](advanced.md).
 
 ## Related topics
 

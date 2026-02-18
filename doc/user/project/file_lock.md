@@ -14,7 +14,7 @@ GitLab supports two different types of file locking:
 - Exclusive file locks: Applied through the command line with Git LFS and
   [`.gitattributes`](repository/files/git_attributes.md). These locks prevent modifications to
   locked files on any branch. Available on Free, Premium, and Ultimate tiers.
-  For more information, see [Exclusive file locks](../../topics/git/file_management.md#exclusive-file-locks).
+  For more information, see [exclusive file locks](../../topics/git/file_management.md#exclusive-file-locks).
 - Default branch file and directory locks: Applied through the GitLab UI. These locks prevent
   modifications to files and directories on the default branch only.
 
@@ -42,7 +42,7 @@ When a file or directory is locked by a user:
 > On non-default branches, all users can still modify locked files and directories.
 > A **Lock** status is visible on these files and directories. This helps team members
 > to be aware of in-flight work without restricting their workflow on other branches.
-> 
+>
 > File locking is also bypassed during fork synchronization.
 > When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
 > project, locked files in the fork can be overwritten with changes from the upstream project.
@@ -50,7 +50,7 @@ When a file or directory is locked by a user:
 ### Permissions
 
 You must have at least the Developer role for the project to create, view, or manage
-default branch locks. For more information, see [Roles and permissions](../permissions.md).
+default branch locks. For more information, see [roles and permissions](../permissions.md).
 
 ### Lock a file or directory
 
@@ -131,7 +131,7 @@ To remove a lock:
 {{< /tabs >}}
 
 To remove an exclusive file lock, see
-[Lock and unlock files](../../topics/git/file_management.md#lock-and-unlock-files).
+[lock and unlock files](../../topics/git/file_management.md#lock-and-unlock-files).
 
 ## Merge request checks and lock ownership
 

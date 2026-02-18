@@ -803,7 +803,7 @@ Set the due date.
 
 **Additional details**:
 
-- For more date format examples, see [Chronic](https://gitlab.com/gitlab-org/ruby/gems/gitlab-chronic#examples).
+- For more date format examples, see [Chronic examples](https://gitlab.com/gitlab-org/ruby/gems/gitlab-chronic#examples).
 - To remove the due date, use [`/remove_due_date`](#remove_due_date).
 
 ### `duplicate`
@@ -1421,7 +1421,7 @@ Rebase the source branch on the latest commit of the target branch. If there are
 
 **Additional details**:
 
-- For help, see [troubleshooting information](../../topics/git/troubleshooting_git.md).
+- For help, see [troubleshooting Git](../../topics/git/troubleshooting_git.md).
 
 ### `relabel`
 

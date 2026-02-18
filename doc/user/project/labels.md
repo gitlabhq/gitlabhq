@@ -202,7 +202,7 @@ To do so:
 1. Select **Create group label**.
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
-1. Select a color by selecting from the available colors,enter input a hex color value for a specific color.
+1. Select a color by selecting from the available colors, or enter a hex color value for a specific color.
 1. Select **Create**.
 
 ## Edit a label
@@ -395,7 +395,7 @@ Prerequisites:
 To "promote" the label to the parent group:
 
 1. In the parent group, [create a label](#create-a-group-label) with the same name as the original
-   one. We recommend making it a different color so you don't mistake the two while you're doing this.
+   one. You should make it a different color so you don't mistake the two while you're doing this.
 1. In the subgroup, [view its labels](#view-group-labels). You should see the two labels and where
    they come from:
 
@@ -574,7 +574,7 @@ It's not possible to do it from the group label list.
 
 > [!note]
 > Priority sorting is based on the highest priority label only.
-> [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
+> [Issue 14523](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
 
 Prerequisites:
 
@@ -594,7 +594,7 @@ To change the relative priority of these labels, drag them up and down the list.
 The labels higher in the list get higher priority.
 
 To learn what happens when you sort by priority or label priority, see
-[Sorting and ordering issue lists](issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](issues/sorting_issue_lists.md).
 
 ## Lock labels when a merge request is merged
 

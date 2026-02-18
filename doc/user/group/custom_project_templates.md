@@ -92,7 +92,7 @@ to the new project. These items include:
 - Labels, milestones, snippets, and releases.
 - CI/CD pipeline configuration.
 
-For a complete list of what is copied, see [Project items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
+For a complete list of what is copied, see [project items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
 
 ### Permissions and sensitive data
 

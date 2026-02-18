@@ -15,7 +15,7 @@ use Git to interact with GitLab.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a thorough demo of Plan features, see
-[Multi-team planning with GitLab Ultimate](https://www.youtube.com/watch?v=KmASFwSap7c).
+[multi-team planning with GitLab Ultimate](https://www.youtube.com/watch?v=KmASFwSap7c).
 In this video, Gabe describes a use case of a multi-team organization that uses GitLab
 with Scaled Agile Framework (SAFe).
 Alternatively, to learn how to map the SAFe to what you can do in GitLab see

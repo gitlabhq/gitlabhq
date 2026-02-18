@@ -28,8 +28,8 @@ Group milestones apply to any issue, epic or merge request in that group's proje
 
 For information about project and group milestones API, see:
 
-- [Project Milestones API](../../../api/milestones.md)
-- [Group Milestones API](../../../api/group_milestones.md)
+- [Project milestones API](../../../api/milestones.md)
+- [Group milestones API](../../../api/group_milestones.md)
 
 ## Milestones as releases
 
@@ -42,7 +42,7 @@ Milestones can be used to track releases. To do so:
 1. Add issues to your release by selecting the milestone from the issue's right sidebar.
 
 Additionally, to automatically generate release evidence when you create your release, integrate
-milestones with the [Releases feature](../releases/_index.md#associate-milestones-with-a-release).
+milestones with the [releases feature](../releases/_index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 
@@ -53,8 +53,8 @@ You can assign **group milestones** to any issue, epic, or merge request of any 
 
 For information about project and group milestones API, see:
 
-- [Project Milestones API](../../../api/milestones.md)
-- [Group Milestones API](../../../api/group_milestones.md)
+- [Project milestones API](../../../api/milestones.md)
+- [Group milestones API](../../../api/group_milestones.md)
 
 ### View project or group milestones
 
@@ -80,7 +80,7 @@ To do so:
 
 Alternatively, this project's issues are visible in the group's milestone page.
 
-Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
+Improving this experience is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
 
 ### View all milestones
 

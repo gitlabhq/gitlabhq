@@ -112,7 +112,7 @@ If the board you've deleted was the last one, a new `Development` board is creat
 ## Issue boards use cases
 
 You can tailor GitLab issue boards to your own preferred workflow.
-For workflow-based documentation, see [Tutorials: Plan and track your work](../../tutorials/plan_and_track.md).
+For workflow-based documentation, see the [plan and track your work tutorial](../../tutorials/plan_and_track.md).
 
 ### Use cases for a single issue board
 
@@ -356,7 +356,7 @@ To change the iteration of issues, [drag issue cards](#move-issues-and-lists) to
 Create lists of issues that have a specific status.
 Status lists help you organize issues by their workflow stage, such as **In progress** or **Done**.
 
-For more information about status, see [Status](../work_items/status.md).
+For more information, see the [status section](../work_items/status.md).
 
 Status lists behave differently from other list types:
 
@@ -668,7 +668,7 @@ Prerequisites:
 - You must have at least the Planner role for a project in GitLab.
 
 To move an issue, select the issue card and drag it to another position in its current list or
-into a different list. Learn about possible effects in [Dragging issues between lists](#dragging-issues-between-lists).
+into a different list. Learn about the possible effects in [dragging issues between lists](#dragging-issues-between-lists).
 
 To move a list, select its top bar, and drag it horizontally.
 You can't move the **Open** and **Closed** lists, but you can hide them when editing an issue board.

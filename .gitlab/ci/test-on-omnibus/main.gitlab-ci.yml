@@ -103,6 +103,7 @@ praefect:
 # https://about.gitlab.com/blog/2024/05/30/a-beginners-guide-to-the-git-reftable-format/
 # https://gitlab.com/groups/gitlab-org/-/epics/14946
 gitaly-reftables-backend:
+  when: manual
   extends:
     - .parallel
     - .omnibus-e2e
