@@ -54,78 +54,166 @@ table.no-vertical-table-lines tr {
 
 開発の後期段階でセキュリティの脆弱性が発見されると、コストのかかる遅延や潜在的なセキュリティ侵害が発生する可能性があります。SASTスキャンはコミットごとに自動的に実行されるため、ワークフローを中断することなく、すぐにフィードバックを得られます。
 
+## GitLab Duoによる誤検出の削減と脆弱性の解決 {#reducing-false-positives-and-resolving-vulnerabilities-with-gitlab-duo}
+
+{{< details >}}
+
+- プラン: Ultimate
+
+{{< /details >}}
+
+SASTスキャナーは、脆弱性レポートにノイズを発生させる誤検出を生成する可能性があります。GitLab Duoは、脆弱性管理を支援します。
+
+### 誤検出の検出 {#false-positive-detection}
+
+[GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md)は、重大度が高いSASTの脆弱性を自動的に分析して、可能性のある誤検出を特定します。これにより、セキュリティチームは真の脆弱性に集中し、手動トリアージに費やす時間を削減できます。
+
+GitLab Duoアドオンをご利用のUltimateのお客様の場合、誤検出の検出は、各セキュリティスキャンの後に自動的に実行され、各評価の説明とともに信頼性スコアが提供されます。
+
+### エージェント型のSAST脆弱性の解決 {#agentic-sast-vulnerability-resolution}
+
+[Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md)は、高度および重大の重大度のSAST脆弱性に対するコンテキスト認識型コード修正を含むマージリクエストを自動的に生成します。このエージェント型アプローチでは、複数回の推論を使用して、人間の介入を最小限に抑えて脆弱性を解決します。
+
+GitLab Duo Enterpriseをご利用のUltimateのお客様の場合、エージェント型の脆弱性の解決は、脆弱性が特定の条件を満たす場合に、各セキュリティスキャンの後に自動的に実行されます。
+
 ## 機能 {#features}
 
 次の表に、各機能が利用可能なGitLabのプランを示します。
 
-| 機能                                                                                  | FreeおよびPremium                    | Ultimate |
-|:-----------------------------------------------------------------------------------------|:-------------------------------------|:------------|
-| [オープンソースアナライザー](#supported-languages-and-frameworks)による基本的なスキャン         | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| ダウンロード可能な[SAST JSONレポート](#download-a-sast-report)                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| [GitLab高度なSAST](gitlab_advanced_sast.md)によるクロスファイルスキャン、クロスファンクションスキャン | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [マージリクエストウィジェット](#merge-request-widget)での新しい発見                            | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [マージリクエストの変更ビュー](#merge-request-changes-view)での新しい発見                | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [脆弱性管理](../vulnerabilities/_index.md)                                 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [UIベースのスキャナー設定](#configure-sast-by-using-the-ui)                        | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [ルールセットのカスタマイズ](customize_rulesets.md)                                           | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| [高度な脆弱性追跡](#advanced-vulnerability-tracking)                      | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
+| 機能                                                                                                                          | FreeおよびPremium | Ultimate |
+|:---------------------------------------------------------------------------------------------------------------------------------|:------------------|:------------|
+| [オープンソースアナライザー](#supported-languages-and-frameworks)による基本的なスキャン                                                 | {{< yes >}}       | {{< yes >}} |
+| ダウンロード可能な[SAST JSONレポート](#download-a-sast-report)                                                                         | {{< yes >}}       | {{< yes >}} |
+| [GitLab高度なSAST](gitlab_advanced_sast.md)によるクロスファイルスキャン、クロスファンクションスキャン                                         | {{< no >}}        | {{< yes >}} |
+| [マージリクエストウィジェット](#merge-request-widget)での新しい発見                                                                    | {{< no >}}        | {{< yes >}} |
+| [マージリクエストの変更ビュー](#merge-request-changes-view)での新しい発見                                                        | {{< no >}}        | {{< yes >}} |
+| [脆弱性管理](../vulnerabilities/_index.md)                                                                         | {{< no >}}        | {{< yes >}} |
+| [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md)（GitLab Duoアドオンが必要です）               | {{< no >}}        | {{< yes >}} |
+| [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md)（GitLab Duo Enterpriseが必要です） | {{< no >}}        | {{< yes >}} |
+| [UIベースのスキャナー設定](#enable-sast-by-using-the-ui)                                                                   | {{< no >}}        | {{< yes >}} |
+| [ルールセットのカスタマイズ](customize_rulesets.md)                                                                                   | {{< no >}}        | {{< yes >}} |
+| [高度な脆弱性追跡](#advanced-vulnerability-tracking)                                                              | {{< no >}}        | {{< yes >}} |
 
 ## はじめに {#getting-started}
 
-SASTを初めて使用する場合は、次の手順に従ってプロジェクトのSASTを有効にする方法を確認してください。
+UIを使用するか、プロジェクトのGitLab CI/CD設定ファイルを編集して、プロジェクトでSASTを有効にします。
 
-前提要件: 
+前提条件: 
 
-- DockerまたはKubernetes executorを使用した、LinuxベースのGitLab Runner。GitLab.comのためにホストされたRunnerを使用している場合は、デフォルトで有効になっています。
+- DockerまたはKubernetes executorを使用した、LinuxベースのGitLab Runner。GitLab.com用のホストRunnerを使用している場合は、デフォルトで有効になっています。
   - Windows Runnerはサポートされていません。
   - amd64以外のCPUアーキテクチャはサポートされていません。
 - GitLab CI/CD設定（`.gitlab-ci.yml`）には、`test`ステージを含める必要がありますが、これはデフォルトで含まれています。`.gitlab-ci.yml`ファイルでステージを再定義する場合は、`test`ステージが必要です。
 
-SASTを有効にするには、次の手順に従います:
+> [!note]デフォルトでは、SASTはブランチパイプラインでのみ実行されます。マージリクエストパイプラインでSASTを実行するには、[use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)を参照してください。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. プロジェクトにまだ`.gitlab-ci.yml`ファイルがない場合は、ルートディレクトリに作成します。
-1. `.gitlab-ci.yml`ファイルの先頭に、次のいずれかの行を追加します:
+### UIを使用してSASTを有効にする {#enable-sast-by-using-the-ui}
 
-テンプレートを使用:
+UIを使用してSASTを有効化および設定できます。設定はデフォルトのままにすることも、カスタマイズすることも可能です。使用できる方法は、GitLabのライセンスプランによって異なります。
 
-```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-```
+#### カスタマイズでSASTを有効にする {#enable-sast-with-customizations}
 
-または、CIコンポーネントを使用:
+{{< details >}}
 
-```yaml
-include:
-  - component: gitlab.com/components/sast/sast@main
-```
+- プラン: Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
-この時点で、SASTがパイプラインで有効になります。サポートされているソースコードが存在する場合、パイプラインの実行時に、適切なアナライザーとデフォルトルールにより、脆弱性のスキャンが自動的に行われます。対応するジョブは、パイプラインの`test`ステージの下に表示されます。
+{{< /details >}}
 
-{{< alert type="note" >}}
+{{< history >}}
+
+- GitLab 16.2で、UIから個々のSASTアナライザーの設定オプションを[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/410013)しました。
+
+{{< /history >}}
+
+> [!note] UI設定方法は、既存の`.gitlab-ci.yml`ファイルが最小限である場合に最適に機能します。設定が複雑な場合、ツールが解析に失敗する可能性があります。その場合は、代わりに[CI/CDファイルを編集](#enable-sast-by-editing-the-cicd-file)してください。
+
+カスタマイズしてSASTを有効化および設定するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **セキュリティ** > **セキュリティ設定**を選択します。
+1. プロジェクトのデフォルトブランチの最新のパイプラインが完了し、有効なSASTアーティファクトが生成された場合は、**Configure SAST**を選択します。それ以外の場合は、静的アプリケーションセキュリティテスト（SAST）行の**Enable SAST**を選択します。
+1. SASTのカスタム値を入力します。
+
+   カスタム値は`.gitlab-ci.yml`ファイルに保存されます。SAST設定ページにないCI/CD変数の場合、それらの値はGitLab SASTテンプレートから継承されます。
+1. **マージリクエストの作成**を選択します。
+1. マージリクエストをレビューしてマージします。
+
+これで、パイプラインにSASTジョブが含まれます。サポートされているソースコードが存在する場合、パイプラインの実行時に、適切なアナライザーとデフォルトルールにより、脆弱性のスキャンが自動的に行われます。対応するジョブは、プロジェクトのパイプラインの`test`ステージの下に表示されます。
+
+#### デフォルト設定のみでSASTを有効にする {#enable-sast-with-default-settings-only}
+
+> [!note] UI設定方法は、既存の`.gitlab-ci.yml`ファイルが最小限である場合に最適に機能します。設定が複雑な場合、ツールが解析に失敗する可能性があります。その場合は、代わりに[CI/CDファイルを編集](#enable-sast-by-editing-the-cicd-file)してください。
+
+デフォルト設定でSASTを有効化および設定するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **セキュリティ** > **セキュリティ設定**を選択します。
+1. SASTセクションで**マージリクエスト経由で設定**を選択します。
+
+   マージリクエストページが開きます。
+1. フィールドに入力します。
+1. **マージリクエストの作成**を選択します。
+1. マージリクエストをレビューしてマージし、SASTを有効にします。
+
+これで、パイプラインにSASTジョブが含まれます。サポートされているソースコードが存在する場合、パイプラインの実行時に、適切なアナライザーとデフォルトルールにより、脆弱性のスキャンが自動的に行われます。対応するジョブは、プロジェクトのパイプラインの`test`ステージの下に表示されます。
+
+### CI/CDファイルを編集してSASTを有効にする {#enable-sast-by-editing-the-cicd-file}
+
+プロジェクトでSASTを有効にするには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **ビルド** > **パイプライン**エディターに移動します。
+1. SAST CI/CDテンプレートまたはコンポーネントのいずれかを追加します。
+
+   テンプレートを使用するには、次の行を追加します:
+
+   ```yaml
+   include:
+     - template: Jobs/SAST.gitlab-ci.yml
+   ```
+
+   CI/CDコンポーネントを使用するには、次の行を追加します:
+
+   ```yaml
+   include:
+     - component: gitlab.com/components/sast/sast@main
+   ```
+
+1. **検証**タブを選択し、**パイプラインの検証**を選択します。
+
+   **シミュレーションが正常に完了しました**というメッセージは、ファイルが有効であることを裏付けています。
+1. **編集**タブを選択します。
+1. フィールドに入力します:
+   - コミットメッセージ。
+   - ブランチ。例: `add-sast`。
+1. **これらの変更で新しいマージリクエストを開始**チェックボックスをオンにし、**変更をコミットする**を選択します。
+
+   マージリクエストページが開きます。
+1. 標準のワークフローに従ってフィールドに入力し、**マージリクエストの作成**を選択します。
+1. 標準のワークフローに従ってマージリクエストをレビューおよび編集し、**マージ**を選択します。
+
+これで、パイプラインにSASTジョブが含まれます。サポートされているソースコードが存在する場合、パイプラインの実行時に、適切なアナライザーとデフォルトルールにより、脆弱性のスキャンが自動的に行われます。対応するジョブは、プロジェクトのパイプラインの`test`ステージの下に表示されます。
 
 動作例は、[SASTサンプルプロジェクト](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/semgrep/sast-getting-started)で確認できます。
 
-{{< /alert >}}
+### 次の手順 {#next-steps}
 
-これらのステップを完了すると、次のことができるようになります:
+SASTを有効にした後、次のことができます:
 
 - [結果の把握](#understanding-the-results)方法について詳しく理解する。
 - [最適化のヒント](#optimization)を確認する。
 - [幅広いプロジェクトへのロールアウト](#roll-out)を計画する。
 
-その他の設定方法の詳細については、[設定](#configuration)を参照してください。
+## 結果の把握 {#understanding-the-results}
 
-## 結果を把握する {#understanding-the-results}
+パイプラインの脆弱性を確認できます。
 
-パイプラインの脆弱性を確認できます:
-
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. 左側のサイドバーで、**ビルド** > **パイプライン**を選択します。
 1. パイプラインを選択します。
 1. **セキュリティ**タブを選択します。
-1. 結果をダウンロードするか、詳細を表示する脆弱性を選択します（Ultimateのみ）。詳細には以下の内容が含まれます:
+1. 結果をダウンロードするか、詳細を表示する脆弱性を選択します（Ultimateのみ）。詳細には以下の内容が含まれます。
    - 説明: 脆弱性の原因、潜在的な影響、推奨される修正手順について説明しています。
    - ステータス: 脆弱性がトリアージされたか、解決されたかを示します。
    - 重大度: 影響に基づいて6つのレベルに分類されます。[重大度レベルの詳細はこちらをご覧ください](../vulnerabilities/severities.md)。
@@ -135,17 +223,13 @@ include:
 
 SASTの脆弱性には、検出された脆弱性の主要なCWE識別子に従って名前が付けられています。スキャナーが検出した特定の問題の詳細については、各脆弱性の発見の説明をお読みください。SASTカバレッジの詳細については、[SASTルール](rules.md)を参照してください。
 
-Ultimateでは、セキュリティスキャンの結果をダウンロードすることもできます:
+Ultimateでは、セキュリティスキャンの結果をダウンロードすることもできます。
 
 - パイプラインの**セキュリティ**タブで、**結果をダウンロード**を選択します。
 
 詳細については、[パイプラインセキュリティレポート](../detect/security_scanning_results.md)を参照してください。
 
-{{< alert type="note" >}}
-
-発見がフィーチャーブランチ上に生成されます。その発見がデフォルトブランチにマージされると、脆弱性になります。この区別は、セキュリティ対策状況を評価する上で重要です。
-
-{{< /alert >}}
+> [!note]検出結果はフィーチャーブランチで生成されます。その発見がデフォルトブランチにマージされると、脆弱性になります。この区別は、セキュリティ対策状況を評価する上で重要です。
 
 SASTの結果を確認するその他の方法:
 
@@ -163,12 +247,12 @@ SASTの結果を確認するその他の方法:
 
 {{< /details >}}
 
-ターゲットブランチからのレポートを比較できる場合、SASTの結果がマージリクエストウィジェット領域に表示されます。マージリクエストウィジェットには以下が表示されます:
+ターゲットブランチからのレポートを比較できる場合、SASTの結果がマージリクエストウィジェット領域に表示されます。マージリクエストウィジェットには以下が表示されます。
 
 - MRによって導入された新しいSASTの発見
 - MRによって解決された既存の発見
 
-利用可能な場合は常に、高度な脆弱性追跡を使用して結果が比較されます。
+結果は、高度な脆弱性追跡が利用可能な場合はそれを使用して比較されます。
 
 ![セキュリティマージリクエストウィジェット](img/sast_mr_widget_v16_7.png)
 
@@ -194,19 +278,19 @@ SASTの結果は、マージリクエストの**変更**ビューに表示され
 
 ## 最適化 {#optimization}
 
-要件に応じてSASTを最適化するには、次の操作を実行します:
+要件に応じてSASTを最適化するには、次の操作を実行します。
 
 - ルールを無効にする。
 - ファイルまたはパスをスキャンから除外する。
 
 ### ルールを無効にする {#disable-a-rule}
 
-たとえば、誤検出が多すぎるためにルールを無効にするには、次の手順に従います:
+たとえば、誤検出が多すぎるためにルールを無効にするには、次の手順に従います。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. `.gitlab/sast-ruleset.toml`ファイルがまだ存在しない場合は、プロジェクトのルートに作成します。
 1. 脆弱性の詳細で、発見をトリガーしたルールのIDを探します。
-1. ルールIDを使用して、ルールを無効にします。たとえば、`gosec.G107-1`を無効にするには、`.gitlab/sast-ruleset.toml`に以下を追加します:
+1. ルールIDを使用して、ルールを無効にします。たとえば、`gosec.G107-1`を無効にするには、`.gitlab/sast-ruleset.toml`に以下を追加します。
 
    ```toml
    [semgrep]
@@ -221,7 +305,7 @@ SASTの結果は、マージリクエストの**変更**ビューに表示され
 
 ### ファイルまたはパスをスキャンから除外する {#exclude-files-or-paths-from-being-scanned}
 
-テストコードや一時コードなどのファイルまたはパスをスキャンから除外するには、`SAST_EXCLUDED_PATHS`変数を設定します。たとえば、`rule-template-injection.go`をスキップするには、`.gitlab-ci.yml`に以下を追加します:
+テストコードや一時コードなどのファイルまたはパスをスキャンから除外するには、`SAST_EXCLUDED_PATHS`変数を設定します。たとえば、`rule-template-injection.go`をスキップするには、`.gitlab-ci.yml`に以下を追加します。
 
 ```yaml
 variables:
@@ -232,59 +316,59 @@ variables:
 
 ## ロールアウトする {#roll-out}
 
-単一のプロジェクトのSASTの結果に確信が持てたら、その実装を他のプロジェクトに拡張できます:
+単一のプロジェクトのSASTの結果に確信が持てたら、その実装を他のプロジェクトに拡張できます。
 
 - [スキャン実行の強制](../detect/security_configuration.md#create-a-shared-configuration)を使用して、グループ全体にSAST設定を適用します。
-- [リモート設定ファイルを指定](customize_rulesets.md#specify-a-remote-configuration-file)して、中央ルールセットを共有および再利用します。
-- 固有の要件がある場合、SASTはオフライン環境で、またはSELinuxの制約下で実行できます。
+- [リモート設定ファイルを指定](customize_rulesets.md#remote-ruleset-file)して、中央ルールセットを共有および再利用します。
+- 固有の要件がある場合、SASTはオフライン環境またはSELinux制約下で実行できます。
 
 ## サポートされている言語とフレームワーク {#supported-languages-and-frameworks}
 
 GitLab SASTは、次の言語とフレームワークのスキャンをサポートしています。
 
-利用可能なスキャンオプションは、GitLabのプランによって異なります:
+利用可能なスキャンオプションは、GitLabのプランによって異なります。
 
 - Ultimateでは、高度なSASTのほうがより正確な結果が得られます。サポート対象の言語には、これを使用することをおすすめします。
 - 全プランで、オープンソーススキャナーを基にしたGitLab提供のアナライザーを使用して、コードをスキャンできます。
 
-SASTでの言語サポートの計画の詳細については、[カテゴリの方向性に関するページ](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support)を参照してください。
+SASTにおける言語サポート計画の詳細については、[category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support)を参照してください。
 
 ### 完全にサポートされている言語 {#languages-with-full-support}
 
 {{< history >}}
 
-- C/C++のサポートは、[導入](https://gitlab.com/groups/gitlab-org/-/epics/14271)されました。GitLab 18.6。
+- C/C++のサポートは、GitLab 18.6で[導入](https://gitlab.com/groups/gitlab-org/-/epics/14271)されました。
 
 {{< /history >}}
 
-これらの言語は、高度なSAST（Ultimate）と標準アナライザー（すべてのティア）の両方でサポートされています:
+これらの言語は、高度なSAST（Ultimate）と標準アナライザー（全プラン）の両方でサポートされています: 
 
-| 言語               | 高度なSAST<sup>1</sup>            | 標準アナライザー<sup>2</sup> |
-|------------------------|---------------------------------------------|-------------------------------|
-| C                      | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| C++                    | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| C#                     | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Go                     | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Java<sup>3</sup>       | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| JavaScript<sup>4</sup> | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| PHP                    | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Python                 | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Ruby<sup>5</sup>       | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| TypeScript             | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| YAML<sup>6</sup>       | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Java Properties        | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
+| 言語               | GitLab高度なSAST<sup>1</sup> | 標準アナライザー<sup>2</sup> |
+|------------------------|----------------------------------|-------------------------------|
+| C                      | {{< yes >}}                      | {{< yes >}}                   |
+| C++                    | {{< yes >}}                      | {{< yes >}}                   |
+| C#                     | {{< yes >}}                      | {{< yes >}}                   |
+| Go                     | {{< yes >}}                      | {{< yes >}}                   |
+| Java<sup>3</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| Java Properties        | {{< yes >}}                      | {{< yes >}}                   |
+| JavaScript<sup>4</sup> | {{< yes >}}                      | {{< yes >}}                   |
+| PHP                    | {{< yes >}}                      | {{< yes >}}                   |
+| Python                 | {{< yes >}}                      | {{< yes >}}                   |
+| Ruby<sup>5</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| TypeScript             | {{< yes >}}                      | {{< yes >}}                   |
+| YAML<sup>6</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 
 **脚注**: 
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 
-1. [GitLab Advanced SAST](gitlab_advanced_sast.md) \- Ultimateティアのみ。
-2. すべての階層。特に指定がない限り、[Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)アナライザーと[GitLab管理ルール](rules.md#semgrep-based-analyzer)を使用します。
+1. [GitLab高度なSAST](gitlab_advanced_sast.md) \- Ultimateプランのみ。
+2. 全プラン。特に指定がない限り、[GitLab管理ルール](rules.md#semgrep-based-analyzer)を適用した[Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)アナライザーを使用します。
 3. Java Server Pages（JSP）およびAndroidを含みます。
 4. Node.jsとReactを含みます。
-5. Ruby（Ruby on Railsを含む）
-6. YAMLのサポートは、次のファイルパターンに制限されています:
+5. Ruby on Railsを含みます。
+6. YAMLサポートは、次のファイルパターンに制限されています: 
    - `application*.yml`
    - `application*.yaml`
    - `bootstrap*.yml`
@@ -292,25 +376,25 @@ SASTでの言語サポートの計画の詳細については、[カテゴリの
 
 <!-- markdownlint-enable MD029 -->
 
-### 標準アナライザーのみをサポートする言語 {#languages-with-standard-analyzer-support-only}
+### 標準アナライザーのみでサポートされている言語 {#languages-with-standard-analyzer-support-only}
 
-これらの言語は、標準アナライザー（すべてのティア）でサポートされていますが、高度なSASTではサポートされていません:
+これらの言語は、標準アナライザー（全プラン）でサポートされていますが、GitLab高度なSASTではサポートされていません: 
 
-| 言語           | 標準アナライザー<sup>1</sup>                                                                                                           | 提案されたサポート<sup>2</sup> |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| Apex（Salesforce）  | {{< icon name="check-circle-filled" >}}対応: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)             | なし                         |
-| Elixir（Phoenix）   | {{< icon name="check-circle-filled" >}}対応: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | なし                         |
-| Groovy             | {{< icon name="check-circle-filled" >}}対応: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | なし                         |
-| Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}}対応                                                                                             | [エピック 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C（iOS）  | {{< icon name="check-circle-filled" >}}対応                                                                                             | [エピック 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
-| Scala              | {{< icon name="check-circle-filled" >}}対応                                                                                             | [エピック 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift（iOS）        | {{< icon name="check-circle-filled" >}}対応                                                                                             | [エピック 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
+| 言語           | 標準アナライザー<sup>1</sup>                                                                           | 提案されているサポート<sup>2</sup> |
+|--------------------|---------------------------------------------------------------------------------------------------------|------------------------------|
+| Apex（Salesforce）  | {{< yes >}} [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)              | なし                         |
+| Elixir（Phoenix）   | {{< yes >}} [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                | なし                         |
+| Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup>  | なし                         |
+| Kotlin<sup>4</sup> | {{< yes >}}                                                                                             | [エピック15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
+| Objective-C（iOS）  | {{< yes >}}                                                                                             | [エピック16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
+| Scala              | {{< yes >}}                                                                                             | [エピック15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
+| Swift（iOS）        | {{< yes >}}                                                                                             | [エピック16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **脚注**: 
 
-1. すべての階層。特に指定がない限り、[Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)アナライザーと[GitLab管理ルール](rules.md#semgrep-based-analyzer)を使用します。
-1. 参照されているエピックは、これらの言語に対する高度なSASTのサポートを提案しています。
-1. SpotBugs（find-sec-bugsプラグインを使用）Gradle、Maven、SBTをサポートします。また、Gradleラッパー、Grails、Mavenラッパーなどのバリアントでも使用できます。ただし、SpotBugsには、Antベースのプロジェクトで使用する場合、[制限事項](https://gitlab.com/gitlab-org/gitlab/-/issues/350801)があります。AntベースのJavaまたはScalaプロジェクトには、GitLab高度なSASTまたはSemgrepベースのアナライザーを使用する必要があります。
+1. 全プラン。特に指定がない限り、[GitLab管理ルール](rules.md#semgrep-based-analyzer)を適用した[Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)アナライザーを使用します。
+1. 参照されているエピックでは、これらの言語に対する高度なSASTのサポートが提案されています。
+1. find-sec-bugsプラグインを使用したSpotBugs。Gradle、Maven、SBTをサポートします。また、Gradleラッパー、Grails、Mavenラッパーなどのバリアントでも使用できます。ただし、SpotBugsは、Antベースのプロジェクトで使用する場合、[制限](https://gitlab.com/gitlab-org/gitlab/-/issues/350801)があります。AntベースのJavaまたはScalaプロジェクトには、GitLab高度なSASTまたはSemgrepベースのアナライザーを使用する必要があります。
 1. Androidを含みます。
 
 SAST CI/CDテンプレートには、KubernetesマニフェストとHelmチャートをスキャンできるアナライザージョブも含まれています。このジョブはデフォルトでオフになっています。[Kubesecアナライザーを有効にする](#enabling-kubesec-analyzer)を参照するか、代わりに、追加のプラットフォームをサポートする[IaCスキャン](../iac_scanning/_index.md)をご検討ください。
@@ -326,23 +410,26 @@ SAST CI/CDテンプレートには、KubernetesマニフェストとHelmチャ�
 
 {{< /details >}}
 
-ソースコードは頻繁に変更されるものです。デベロッパーが変更を加えると、ソースコードがファイル内またはファイル間で移動する可能性があります。セキュリティアナライザーは、脆弱性レポートで追跡されている脆弱性をすでに報告している可能性があります。これらの脆弱性は、見つけ出して修正できるように、特定の問題のあるコードフラグメントにリンクされています。しかし、コードフラグメントが移動した際に正確に追跡されない場合、同じ脆弱性が再度報告される可能性があるため、脆弱性管理がより困難になります。
+ソースコードは頻繁に変更されるものです。デベロッパーが変更を加えると、ソースコードが同じファイル内またはファイル間で移動する可能性があります。セキュリティアナライザーは、脆弱性レポートで追跡されている脆弱性をすでに報告している可能性があります。これらの脆弱性は、見つけ出して修正できるように、特定の問題のあるコードフラグメントにリンクされています。しかし、コードフラグメントが移動した際に正確に追跡されない場合、同じ脆弱性が再度報告される可能性があるため、脆弱性管理がより困難になります。
 
-GitLab SASTは、高度な脆弱性追跡アルゴリズムを使用して、同じ脆弱性がリファクタリングまたは無関係な変更によってファイル内で移動した場合、より正確に特定します。
+GitLab SASTは、高度な脆弱性追跡アルゴリズムを使用して、リファクタリングまたは無関係な変更によって同じファイル内で同じ脆弱性が移動した場合をより正確に特定します。
 
-高度な脆弱性追跡のサポートは、使用される言語とアナライザーによって異なります。
+高度な脆弱性の追跡のサポートは、言語と使用されるアナライザーによって異なります。
 
-| 言語   | GitLab高度なSASTアナライザーのバージョン               | Semgrepベースのアナライザー |
-|------------|---------------------------------------------|-------------------------|
-| C          | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| C++        | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| C#         | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Go         | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Java       | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| JavaScript | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| PHP        | {{< icon name="dash-circle" >}}非対応          | {{< icon name="check-circle-filled" >}}対応 |
-| Python     | {{< icon name="check-circle-filled" >}}対応 | {{< icon name="check-circle-filled" >}}対応 |
-| Ruby       | {{< icon name="dash-circle" >}}非対応          | {{< icon name="check-circle-filled" >}}対応 |
+GitLab Advanced SASTアナライザーとSemgrepベースのアナライザーの両方でサポートされている言語:
+
+- C
+- C++
+- C#
+- Go
+- Java
+- JavaScript
+- Python
+
+Semgrepベースのアナライザーのみでサポートされている言語:
+
+- PHP
+- Ruby
 
 より多くの言語とアナライザーのサポートが、[エピック5144](https://gitlab.com/groups/gitlab-org/-/epics/5144)で追跡されています。
 
@@ -352,16 +439,16 @@ GitLab SASTは、高度な脆弱性追跡アルゴリズムを使用して、同
 
 {{< history >}}
 
-- GitLab 15.9でプロジェクトレベルの`sec_mark_dropped_findings_as_resolved`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/368284)されました。
+- GitLab 15.9で`sec_mark_dropped_findings_as_resolved`[プロジェクトフラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/368284)されました。
 - GitLab 15.10でデフォルトで有効になりました。
 - GitLab 16.2で[機能フラグが削除](https://gitlab.com/gitlab-org/gitlab/-/issues/375128)されました。
 
 {{< /history >}}
 
-関連性の高い脆弱性に集中できるように、GitLab SASTは次の場合に脆弱性を自動的に[解決](../vulnerabilities/_index.md#vulnerability-status-values)します:
+関連性の高い脆弱性に集中できるように、GitLab SASTは次の場合に脆弱性を自動的に[解決](../vulnerabilities/_index.md#vulnerability-status-values)します。
 
-- [定義済みルールを無効にする](customize_rulesets.md#disable-predefined-rules)場合
-- デフォルトのルールセットからルールを削除する場合
+- [定義済みルールを無効にする](customize_rulesets.md#disable-default-rules)場合
+- デフォルトルールセットからルールが削除されます。
 
 自動解決は、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)による発見にのみ使用できます。自動的に解決された脆弱性には、脆弱性管理システムがコメントを追加するため、脆弱性の履歴記録が保持されます。
 
@@ -373,7 +460,7 @@ GitLab SASTは、高度な脆弱性追跡アルゴリズムを使用して、同
 
 ### FIPS対応イメージ {#fips-enabled-images}
 
-GitLabは、[Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)ベースイメージに基づき、FIPS 140検証済みの暗号学的モジュールを使用する別バージョンのイメージを提供しています。FIPS対応イメージを使用するには、次のいずれかを実行します:
+GitLabは、[Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)ベースイメージに基づき、FIPS 140検証済みの暗号学的モジュールを使用する別バージョンのイメージを提供しています。FIPS対応イメージを使用するには、次のいずれかを実行します。
 
 - `SAST_IMAGE_SUFFIX`を`-fips`に設定します。
 - デフォルトのイメージ名に`-fips`拡張子を追加します。
@@ -390,122 +477,28 @@ include:
 
 FIPS準拠のイメージは、GitLab高度なSASTとSemgrepベースのアナライザーでのみ使用できます。
 
-{{< alert type="warning" >}}
-
-FIPS準拠の方法でSASTを使用するには、[他のアナライザーが実行されないように除外](analyzers.md#customize-analyzers)する必要があります。FIPS対応イメージを使用して、[非rootユーザーでRunner](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user)上で高度なSASTまたはSemgrepを実行する場合、`runners.kubernetes.pod_security_context`の`run_as_user`属性を、[イメージによって作成](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58)される`gitlab`ユーザーのID（`1000`）を使用するように更新する必要があります。
-
-{{< /alert >}}
+> [!warning] FIPSに準拠した方法でSASTを使用するには、[exclude other analyzers from running](analyzers.md#customize-analyzers)必要があります。FIPS対応イメージを使用して、[非rootユーザーでRunner](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user)上で高度なSASTまたはSemgrepを実行する場合、`runners.kubernetes.pod_security_context`の`run_as_user`属性を、[イメージによって作成](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58)される`gitlab`ユーザーのID（`1000`）を使用するように更新する必要があります。
 
 ## SASTレポートをダウンロードする {#download-a-sast-report}
 
 各SASTアナライザーは、ジョブアーティファクトとしてJSONレポートを出力します。このファイルには、検出されたすべての脆弱性の詳細が含まれています。ファイルをダウンロードして、GitLabの外部で処理できます。
 
-詳細については、以下を参照してください:
+詳細については、以下を参照してください: 
 
 - [SASTレポートファイルスキーマ](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [SASTレポートファイルの例](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/qa/expect/js/default/gl-sast-report.json)
 
 ## 設定 {#configuration}
 
-SASTスキャンは、CI/CDパイプラインで実行されます。GitLab管理のCI/CDテンプレートをパイプラインに追加すると、適切なアナライザーが自動的にコードをスキャンし、結果をSASTレポートアーティファクトとして保存します。
-
-プロジェクトのSASTを設定するには、次のいずれかの方法があります:
-
-- [Auto DevOps](../../../topics/autodevops/_index.md)によって提供される[自動SAST](../../../topics/autodevops/stages.md#auto-sast)を使用する。
-- CI/CD YAMLでSASTを設定する。
-- UIを使用してSASTを設定する。
-
-[スキャン実行を強制](../detect/security_configuration.md#create-a-shared-configuration)することで、多くのプロジェクトにわたってSASTを有効にできます。
-
-高度なSASTを設定する方法（GitLab Ultimateでのみ利用可能）については、[GitLab Advanced SAST](gitlab_advanced_sast.md#configuration)を参照してください。
-
-必要に応じて、[設定変数を変更](#available-cicd-variables)したり、[検出ルールをカスタマイズ](customize_rulesets.md)したりできますが、GitLab SASTはデフォルト設定で使用するように設計されています。
-
-### CI/CD YAMLでSASTを設定する {#configure-sast-in-your-cicd-yaml}
-
-SASTを有効にするには、[`SAST.gitlab-ci.yml`テンプレート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)を[含めます](../../../ci/yaml/_index.md#includetemplate)。このテンプレートは、GitLabインストールの一部として提供されます。
-
-次の内容をコピーして、`.gitlab-ci.yml`ファイルの末尾に貼り付けます。`include`行がすでに存在する場合は、その下に`template`行のみを追加します。
-
-```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-```
-
-ここで含めたテンプレートは、CI/CDパイプラインにSASTジョブを作成し、プロジェクトのソースコードをスキャンして潜在的な脆弱性を検出します。
-
-結果は[SASTレポートアーティファクト](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)として保存され、後でダウンロードして分析することができます。ダウンロードすると、常に最新のSASTアーティファクトを入手できます。
+GitLab SASTは、デフォルト設定で使用するように設計されています。ただし、必要に応じて、[change configuration variables](#available-cicd-variables)または[customize detection rules](customize_rulesets.md)を実行できます。
 
 ### 安定版と最新版のSASTテンプレート {#stable-vs-latest-sast-templates}
 
-SASTには、セキュリティテストをCI/CDパイプラインに組み込むためのテンプレートが2つ用意されています:
-
-- [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)（推奨）
-
-  安定版テンプレートは、信頼性が高く一貫性のあるSASTエクスペリエンスを提供します。CI/CDパイプラインで安定性と予測可能な動作を必要とするほとんどのユーザーおよびプロジェクトでは、安定版テンプレートを使用する必要があります。
-
-- [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
-
-  このテンプレートは、最先端の機能にアクセスしてテストしたい方を対象としています。安定版とは見なされておらず、次のメジャーリリースで計画されている破壊的な変更が含まれている可能性があります。このテンプレートを使用すると、安定版リリースに組み込まれる前に新機能やアップデートを試すことができるため、潜在的な不安定さをいとわず、新機能に関するフィードバックを積極的に提供したい方に最適です。
-
-### UIを使用してSASTを設定する {#configure-sast-by-using-the-ui}
-
-UIを使用してSASTを有効化および設定できます。設定はデフォルトのままにすることも、カスタマイズすることも可能です。使用できる方法は、GitLabのライセンスプランによって異なります。
-
-#### カスタマイズしてSASTを設定する {#configure-sast-with-customizations}
-
-{{< details >}}
-
-- プラン: Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- GitLab 16.2で、UIから個々のSASTアナライザーの設定オプションを[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/410013)しました。
-
-{{< /history >}}
-
-{{< alert type="note" >}}
-
-この設定ツールは、`.gitlab-ci.yml`ファイルが存在しない場合、または最小限の設定ファイルしかない場合に最適です。複雑なGitLab設定ファイルがある場合は、正常に解析されず、エラーが発生する可能性があります。
-
-{{< /alert >}}
-
-カスタマイズしてSASTを有効化および設定するには:
-
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **セキュリティ** > **セキュリティ設定**を選択します。
-1. プロジェクトのデフォルトブランチに対する最新のパイプラインが完了し、有効な`SAST`アーティファクトが生成された場合は、**Configure SAST**（SASTを設定）を選択します。それ以外の場合は、静的アプリケーションセキュリティテスト（SAST）行で**Enable SAST**（SASTを有効にする）を選択します。
-1. SASTのカスタム値を入力します。
-
-   カスタム値は`.gitlab-ci.yml`ファイルに保存されます。SASTの設定ページに表示されていないCI/CD変数については、GitLab SASTテンプレートから値が継承されます。
-1. **Create Merge Request**（マージリクエストの作成）を選択します。
-1. マージリクエストをレビューしてマージします。
-
-これで、パイプラインにSASTジョブが含まれます。
-
-#### デフォルト設定のみでSASTを設定する {#configure-sast-with-default-settings-only}
-
-{{< alert type="note" >}}
-
-この設定ツールは、`.gitlab-ci.yml`ファイルが存在しない場合、または最小限の設定ファイルしかない場合に最適です。複雑なGitLab設定ファイルがある場合は、正常に解析されず、エラーが発生する可能性があります。
-
-{{< /alert >}}
-
-デフォルト設定でSASTを有効化および設定するには:
-
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **セキュリティ** > **セキュリティ設定**を選択します。
-1. SASTセクションで**マージリクエスト経由で設定**を選択します。
-1. マージリクエストをレビューしてマージし、SASTを有効にします。
-
-これで、パイプラインにSASTジョブが含まれます。
+SASTには、本番環境で使用されるデフォルトの[`stable`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)テンプレートと、最先端の機能をテストするための[`latest`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)テンプレートが用意されています。違いとそれぞれの使用時期の詳細については、[template editions](../detect/security_configuration.md#template-editions)を参照してください。
 
 ### SASTジョブをオーバーライドする {#overriding-sast-jobs}
 
-ジョブ定義をオーバーライドする（`variables`、`dependencies`、[`rules`](../../../ci/yaml/_index.md#rules)のようなプロパティを変更する場合など）には、オーバーライドするSASTジョブと同じ名前でジョブを宣言します。テンプレートの挿入後にこの新しいジョブを配置し、その下に追加のキーを指定します。たとえば、次の設定により、`spotbugs`アナライザーに対して`FAIL_NEVER`を有効にすることができます:
+ジョブ定義をオーバーライドする（`variables`、`dependencies`、[`rules`](../../../ci/yaml/_index.md#rules)のようなプロパティを変更する場合など）には、オーバーライドするSASTジョブと同じ名前でジョブを宣言します。テンプレートの挿入後にこの新しいジョブを配置し、その下に追加のキーを指定します。たとえば、次の設定により、`spotbugs`アナライザーに対して`FAIL_NEVER`を有効にすることができます。
 
 ```yaml
 include:
@@ -522,17 +515,17 @@ GitLab管理のCI/CDテンプレートは、メジャーバージョンを指定
 
 場合によっては、特定のバージョンを使用しなければならないことがあります。たとえば、後のリリースで発生したリグレッションを回避する必要がある場合などです。
 
-自動更新の動作をオーバーライドするには、`SAST.gitlab-ci.yml`テンプレートを含めた後、`SAST_ANALYZER_IMAGE_TAG` CI/CD変数をCI/CD設定ファイルで設定します。
+自動更新の動作をオーバーライドするには、`SAST.gitlab-ci.yml`テンプレートをインクルードした後、CI/CD設定ファイルで`SAST_ANALYZER_IMAGE_TAG` CI/CD変数を設定します。
 
 この変数は、特定のジョブ内でのみ設定してください。[トップレベル](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)で設定すると、設定したバージョンが他のSASTアナライザーにも使用されます。
 
-タグには次のいずれかを設定できます:
+タグには次のいずれかを設定できます。
 
 - メジャーバージョン（例: `3`）: パイプラインは、このメジャーバージョン内でリリースされるマイナーまたはパッチアップデートを使用します。
 - マイナーバージョン（例: `3.7`）: パイプラインは、このマイナーバージョン内でリリースされるパッチアップデートを使用します。
 - パッチバージョン（例: `3.7.0`）: パイプラインはアップデートを受け取りません。
 
-次の例では、`semgrep`アナライザーの特定のマイナーバージョンと、`brakeman`アナライザーの特定のパッチバージョンを使用します:
+次の例では、`semgrep`アナライザーの特定のマイナーバージョンと、`brakeman`アナライザーの特定のパッチバージョンを使用します。
 
 ```yaml
 include:
@@ -559,7 +552,7 @@ brakeman-sast:
 
 ### Kubesecアナライザーを有効にする {#enabling-kubesec-analyzer}
 
-Kubesecアナライザーを有効にするには、`SCAN_KUBERNETES_MANIFESTS`を`"true"`に設定する必要があります。`.gitlab-ci.yml`で、次のように定義します:
+Kubesecアナライザーを有効にするには、`SCAN_KUBERNETES_MANIFESTS`を`"true"`に設定する必要があります。`.gitlab-ci.yml`で、次のように定義します。
 
 ```yaml
 include:
@@ -571,13 +564,13 @@ variables:
 
 ### Semgrepベースのアナライザーで他の言語をスキャンする {#scan-other-languages-with-the-semgrep-based-analyzer}
 
-Semgrepベースのアナライザーをカスタマイズして、GitLab管理のルールセットでサポートされていない言語をスキャンできます。ただし、GitLabではこれらの他の言語に対するルールセットを提供していないため、対応するには[カスタムルールセット](customize_rulesets.md#build-a-custom-configuration)を用意する必要があります。また、関連ファイルが変更されたときにジョブが実行されるように、`semgrep-sast` CI/CDジョブの`rules`も変更する必要もあります。
+SemgrepベースのSASTアナライザーをカスタマイズして、GitLab管理ルールセットでサポートされていない言語をスキャンできます。ただし、GitLabはこれらの他の言語のルールセットを提供しないため、それらをカバーするには、[replace or add to the default rules](customize_rulesets.md#replace-or-add-to-the-default-rules)する必要があります。また、関連ファイルが変更されたときにジョブが実行されるように、`semgrep-sast` CI/CDジョブの`rules`も変更する必要もあります。
 
 #### Rustアプリケーションをスキャンする {#scan-a-rust-application}
 
-たとえば、Rustアプリケーションをスキャンするには、次の手順を実行する必要があります:
+たとえば、Rustアプリケーションをスキャンするには、次の手順を実行する必要があります。
 
-1. Rust用のカスタムルールセットを提供します。リポジトリのルートにある`.gitlab/`ディレクトリに、`sast-ruleset.toml`という名前のファイルを作成します。次の例では、SemgrepレジストリのRust用デフォルトルールセットを使用しています:
+1. Rust用のカスタムルールセットを提供します。リポジトリのルートにある`.gitlab/`ディレクトリに、`sast-ruleset.toml`という名前のファイルを作成します。次の例では、SemgrepレジストリのRust用デフォルトルールセットを使用しています。
 
    ```toml
    [semgrep]
@@ -591,9 +584,9 @@ Semgrepベースのアナライザーをカスタマイズして、GitLab管理�
        target = "rust.yml"
    ```
 
-   詳細については、[ルールセットをカスタマイズする](customize_rulesets.md#build-a-custom-configuration)を参照してください。
+   詳細については、[Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules)を参照してください。
 
-1. `semgrep-sast`ジョブをオーバーライドして、Rust（`.rs`）ファイルを検出するルールを追加します。`.gitlab-ci.yml`ファイルで次のように定義します:
+1. `semgrep-sast`ジョブをオーバーライドして、Rust（`.rs`）ファイルを検出するルールを追加します。`.gitlab-ci.yml`ファイルで次のように定義します。
 
    ```yaml
    include:
@@ -619,28 +612,28 @@ spotbugs-sast:
 
 ### SpotBugsアナライザーでプリコンパイルを使用する {#using-pre-compilation-with-spotbugs-analyzer}
 
-SpotBugsベースのアナライザーは、Groovyプロジェクト用にコンパイルされたバイトコードをスキャンします。デフォルトでは、依存関係のフェッチとコードのコンパイルを自動的に試行し、スキャンできるようにします。
+SpotBugsベースのアナライザーは、Groovyプロジェクトのコンパイル済みバイトコードをスキャンします。デフォルトでは、依存関係のフェッチとコードのコンパイルを自動的に試行し、スキャンできるようにします。
 
-自動ビルドは、以下の場合に失敗する可能性があります:
+自動ビルドは、以下のいずれかの場合に失敗する可能性があります: 
 
-- プロジェクトにカスタムビルド設定が必要な場合
-- アナライザーに組み込まれていない言語バージョンを使用している場合
+- プロジェクトにカスタムビルド設定が必要な場合。
+- アナライザーに組み込まれていない言語バージョンを使用している場合。
 
-これらのイシューを解決するには、アナライザーのコンパイル手順をスキップし、代わりにパイプラインの以前のステージングからアーティファクトを直接提供する必要があります。この戦略は、プリコンパイルと呼ばれます。
+これらの問題を解決するには、アナライザーのコンパイル手順をスキップし、代わりにパイプラインの前のステージからアーティファクトを直接提供する必要があります。この手法は、プリコンパイルと呼ばれます。
 
 #### プリコンパイルされたアーティファクトを共有する {#sharing-pre-compiled-artifacts}
 
-1. コンパイルジョブ（通常は`build`という名前）を使用してプロジェクトをコンパイルし、CI/CD変数を使用して、コンパイルされた出力を`job artifact`として保存します。`artifacts: paths`
+1. コンパイルジョブ（通常は`build`という名前）を使用してプロジェクトをコンパイルし、CI/CD `artifacts: paths`変数を使用して、コンパイル済み出力を`job artifact`として保存します。
 
    - Mavenプロジェクトの場合、出力フォルダーは通常`target`ディレクトリです。
    - Gradleプロジェクトの場合、出力フォルダーは通常`build`ディレクトリです。
-   - プロジェクトでカスタムの出力先を使用する場合は、それに応じてアーティファクトのパスを設定します
+   - プロジェクトでカスタムの出力先を使用する場合は、それに応じてアーティファクトのパスを設定します。
 
 1. `spotbugs-sast`ジョブで`COMPILE: "false"` CI/CD変数を設定して、自動コンパイルを無効にします。
 
 1. `dependencies`キーワードを設定して、`spotbugs-sast`ジョブがコンパイルジョブに依存するようにします。これにより、`spotbugs-sast`ジョブは、コンパイルジョブで作成されたアーティファクトをダウンロードして使用できるようになります。
 
-次の例では、Gradleプロジェクトをプリコンパイルし、コンパイルされたバイトコードをアナライザーに提供します:
+次の例では、Gradleプロジェクトをプリコンパイルし、コンパイルされたバイトコードをアナライザーに提供します。
 
 ```yaml
 stages:
@@ -673,7 +666,7 @@ spotbugs-sast:
 
 依存関係の指定は、Mavenベースのプロジェクトでのみサポートされています。他のビルドツール（Gradleなど）には、依存関係を指定するための同等のメカニズムはありません。その場合は、コンパイルされたアーティファクトに必要なすべての依存関係が含まれていることを確認してください。
 
-次の例では、Mavenプロジェクトをプリコンパイルし、コンパイルされたバイトコードを依存関係とともにアナライザーに提供します:
+次の例では、Mavenプロジェクトをプリコンパイルし、コンパイルされたバイトコードを依存関係とともにアナライザーに提供します。
 
 ```yaml
 stages:
@@ -702,19 +695,11 @@ spotbugs-sast:
     SECURE_LOG_LEVEL: debug
 ```
 
-### マージリクエストパイプラインでジョブを実行する {#running-jobs-in-merge-request-pipelines}
-
-[マージリクエストパイプラインでセキュリティスキャンツールを使用する](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)を参照してください。
-
 ### 利用可能なCI/CD変数 {#available-cicd-variables}
 
-は、`.gitlab-ci.yml`の`variables`パラメータを使用して設定できます。
+SASTは、`.gitlab-ci.yml`の`variables`パラメータを使用して設定できます。
 
-{{< alert type="warning" >}}
-
-GitLabセキュリティスキャンツールのすべてのカスタマイズは、これらの変更をデフォルトブランチにマージする前に、マージリクエストでテストする必要があります。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
-
-{{< /alert >}}
+> [!warning] GitLabセキュリティスキャンツールのすべてのカスタマイズは、これらの変更をデフォルトブランチにマージする前に、マージリクエストでテストする必要があります。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
 
 次の例では、すべてのジョブで`SEARCH_MAX_DEPTH`変数を`10`にオーバーライドするために、SASTテンプレートを含めています。テンプレートはパイプライン設定の前に評価されるため、変数の最後の記述が優先されます。
 
@@ -728,7 +713,7 @@ variables:
 
 #### カスタム認証局 {#custom-certificate-authority}
 
-カスタム認証局を信頼するには、SAST環境で信頼するCA証明書のバンドルを`ADDITIONAL_CA_CERT_BUNDLE`変数に設定します。`ADDITIONAL_CA_CERT_BUNDLE`の値には、[X.509 PEM公開キー証明書のテキスト表現](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)が含まれている必要があります。たとえば、`.gitlab-ci.yml`ファイルでこの値を設定するには、以下のように記述します:
+カスタム認証局を信頼するには、SAST環境で信頼するCA証明書のバンドルを`ADDITIONAL_CA_CERT_BUNDLE`変数に設定します。`ADDITIONAL_CA_CERT_BUNDLE`の値には、[X.509 PEM公開キー証明書のテキスト表現](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)が含まれている必要があります。たとえば、`.gitlab-ci.yml`ファイルでこの値を設定するには、以下のように記述します。
 
 ```yaml
 variables:
@@ -794,7 +779,7 @@ variables:
         <code>SAST_SEMGREP_EXCLUDED_PATHS</code>
       </td>
       <td>
-        GitLab Advanced SASTアナライザーが同時に実行されている場合に、特にSemgrepアナライザーに対して除外されるパスのカンマ区切りリスト。これにより、高度なSASTによってすでにスキャンされたファイルを除外することで、脆弱性の重複を防ぎます。このリストは<code>SAST_EXCLUDED_PATHS</code>とマージされます。
+        GitLab高度なSASTアナライザーが同時に実行される場合に、Semgrepアナライザー専用で除外されるパスのカンマ区切りリスト。これにより、高度なSASTによってすでにスキャンされたファイルを除外することで、脆弱性の重複を防ぎます。このリストは<code>SAST_EXCLUDED_PATHS</code>とマージされます。
       </td>
       <td>なし</td>
       <td>
@@ -843,27 +828,27 @@ variables:
   </tbody>
 </table>
 
-**脚注**: 
+**脚注**:
 
-1. <a id="sast-excluded-paths-description"></a>ビルドツールで使用される一時ディレクトリは、誤検出を引き起こす可能性があるため、除外しなければならない場合があります。パスを除外するには、デフォルトの除外パスをコピーして貼り付け、除外する独自のパスを**add**（追加）します。デフォルトの除外パスを指定しない場合、デフォルト設定がオーバーライドされ、指定したパスのみがSASTスキャンから除外されます。
+1. <a id="sast-excluded-paths-description"></a>ビルドツールで使用される一時ディレクトリは、誤検出を引き起こす可能性があるため、除外しなければならない場合があります。パスを除外するには、デフォルトの除外パスをコピーして貼り付け、除外する独自のパスを**追加**します。デフォルトの除外パスを指定しない場合、デフォルト設定がオーバーライドされ、指定したパスのみがSASTスキャンから除外されます。
 
-1. <a id="sast-excluded-paths-semgrep"></a>これらのアナライザーでは、`SAST_EXCLUDED_PATHS`が**pre-filter**（プリフィルター）として実装されており、スキャンの実行前に適用されます。
+1. <a id="sast-excluded-paths-semgrep"></a>これらのアナライザーでは、`SAST_EXCLUDED_PATHS`が**プリフィルター**として実装されており、スキャンの実行前に適用されます。
 
    アナライザーは、パスがカンマ区切りのパターンのいずれかに一致するファイルまたはディレクトリをスキップします。
 
    たとえば、`SAST_EXCLUDED_PATHS`が`*.py,tests`に設定されている場合:
 
-   - `*.py`は以下を無視します:
-      - `foo.py`
-      - `src/foo.py`
-      - `foo.py/bar.sh`
-   - `tests`は以下を無視します:
-      - `tests/foo.py`
-      - `a/b/tests/c/foo.py`
+   - `*.py`は以下を無視します。
+     - `foo.py`
+     - `src/foo.py`
+     - `foo.py/bar.sh`
+   - `tests`は以下を無視します: 
+     - `tests/foo.py`
+     - `a/b/tests/c/foo.py`
 
    各パターンは、[gitignore](https://git-scm.com/docs/gitignore#_pattern_format)と同じ構文を使用するglobスタイルのパターンです。
 
-1. <a id="sast-excluded-paths-all-other-sast-analyzers"></a>これらのアナライザーでは、`SAST_EXCLUDED_PATHS`が**post-filter**（ポストフィルター）として実装されており、スキャンの実行後に適用されます。
+1. <a id="sast-excluded-paths-all-other-sast-analyzers"></a>これらのアナライザーでは、`SAST_EXCLUDED_PATHS`が**ポストフィルター**として実装されており、スキャンの実行後に適用されます。
 
    パターンには、glob（サポートされているパターンについては[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match)を参照）、またはファイルパスやフォルダーパス（`doc,spec`など）を使用できます。親ディレクトリもパターンに一致します。
 
@@ -871,7 +856,7 @@ variables:
 
    `SAST_EXCLUDED_PATHS`をプリフィルターとポストフィルターの両方としてサポートするアナライザーでは、最初にプリフィルターが適用され、次に、残りの脆弱性に対してポストフィルターが適用されます。
 
-1. <a id="sast-spotbugs-excluded-build-paths-description"></a>この変数では、パスパターンとしてglobを使用できます（サポートされているパターンについては、[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match)を参照してください）。パスパターンが、以下に示すサポート対象ビルドファイルと一致する場合、そのディレクトリはビルドプロセスから除外されます:
+1. <a id="sast-spotbugs-excluded-build-paths-description"></a>この変数では、パスパターンとしてglobを使用できます（サポートされているパターンについては、[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match)を参照してください）。パスパターンが、以下に示すサポート対象ビルドファイルと一致する場合、そのディレクトリはビルドプロセスから除外されます。
 
    - `build.sbt`
    - `grailsw`
@@ -893,7 +878,7 @@ variables:
 
 | CI/CD変数                      | アナライザー             | デフォルト                                  | 説明 |
 |-------------------------------------|----------------------|------------------------------------------|-------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab高度なSAST | `false`                                  | GitLab Ultimateでのみ使用可能）高度なSASTスキャンを有効にするには、`true`に設定します。 |
+| `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab高度なSAST | `false`                                  | GitLab高度なSASTスキャン（GitLab Ultimateでのみ利用可能）を有効にするには、`true`に設定します。 |
 | `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | `"false"`                                | Kubernetesマニフェストスキャンするには、`"true"`に設定します。 |
 | `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              |                                          | `helm`がKubernetesマニフェストを生成する際に使用するHelmチャートのパス（オプション）。生成されたマニフェストは、`kubesec`によってスキャンされます。依存関係が定義されている場合、必要な依存関係をフェッチするために、`helm dependency build`を`before_script`で実行する必要があります。 |
 | `KUBESEC_HELM_OPTIONS`              | Kubesec              |                                          | `helm`実行可能ファイルに渡す追加の引数。 |
@@ -916,7 +901,7 @@ variables:
 
 #### セキュリティスキャナーの設定 {#security-scanner-configuration}
 
-SASTアナライザーは、内部的にOSSのセキュリティスキャナーを使用して分析を実行します。これらのセキュリティスキャナーについては、推奨される設定をあらかじめ適用しているため、調整について心配する必要はありません。ただし、まれですが、デフォルトのスキャナー設定が要件に合わない場合があります。
+SASTアナライザーは、内部的にOSSのセキュリティスキャナーを使用して分析を実行します。GitLabは、セキュリティスキャナーの推奨設定を設定するため、調整について心配する必要はありません。ただし、まれですが、デフォルトのスキャナー設定が要件に合わない場合があります。
 
 スキャナーの動作をある程度カスタマイズできるようにするには、基になるスキャナーに制限付きのフラグセットを追加します。`SAST_SCANNER_ALLOWED_CLI_OPTS` CI/CD変数でフラグを指定します。指定されたフラグは、スキャナーのコマンドラインインターフェースオプションに追加されます。
 
@@ -945,7 +930,7 @@ SASTアナライザーは、内部的にOSSのセキュリティスキャナー�
         <code>--multi-core</code>
       </td>
       <td>
-        マルチコアスキャンはデフォルトで有効になっており、コンテナ情報に基づいて使用可能なCPUコアを自動的に検出して利用します。セルフホストRunnerでは、使用できるコアの最大数は4に制限されています。<code>--multi-core</code>に特定の値を明示的に設定することで、自動的に検出されたコア数をオーバーライドできます。マルチコア実行では、シングルコア実行と比べて、必要なメモリ量がコア数に比例して増加します。マルチコアスキャンを無効にするには、環境変数<code>DISABLE_MULTI_CORE</code>を設定します。利用可能なコアまたはメモリリソースを超えると、リソースの競合が発生し、パフォーマンスが十分に発揮されなくなる可能性があります。
+        マルチコアスキャンはデフォルトで有効になっており、使用可能なCPUコアを自動検出します（セルフホストRunnerでは4つに制限）。<code>--multi-core <number of cores></code>（たとえば、<code>--multi-core 12</code>）でオーバーライドします。マルチコア実行には、比例してより多くのメモリが必要です。コアあたり4GBを割り当てる必要があります。<code>DISABLE_MULTI_CORE</code>を設定して、無効にします。使用可能なリソースを超えると、パフォーマンスの問題が発生する可能性があります。
       </td>
     </tr>
     <tr>
@@ -965,7 +950,7 @@ SASTアナライザーは、内部的にOSSのセキュリティスキャナー�
       </td>
       <td>
         <p>
-          スキャン対象ファイルの最大サイズ。これを超えるサイズのインプットプログラムは無視されます。このフィルターを無効にするには、<code>0</code>または負の値を設定します。バイト数は、単位付きでも単位なしでも指定できます。例: <code>12.5kb</code>、<code>1.5MB</code>、<code>123</code>。デフォルトは<code>1000000</code>バイトです。
+          スキャン対象ファイルの最大サイズ。これを超えるサイズの入力プログラムは無視されます。このフィルターを無効にするには、<code>0</code>または負の値を設定します。バイト数は、単位付きでも単位なしでも指定できます。例: <code>12.5kb</code>、<code>1.5MB</code>、<code>123</code>。デフォルトは<code>1000000</code>バイトです。
         </p>
         <p>
           <b>注:</b>このフラグはデフォルト値のままにしておく必要があります。また、このフラグを変更して縮小されたJavaScriptをスキャンすることは避けてください。うまく動作しない可能性があります。バイナリファイルはスキャンされないため、<code>DLL</code>、<code>JAR</code>、またはその他のバイナリファイルのスキャンも避けてください。
@@ -1002,7 +987,7 @@ GitLab SASTテンプレートを使用すると、すべての標準SAST設定CI
 
 コードの特定の行やブロックにマークを付けて、脆弱性の分析から除外できます。発見ごとにコメント注釈を追加する方法を使用する前に、すべての脆弱性を脆弱性管理で管理するか、`SAST_EXCLUDED_PATHS`を使用してスキャン対象のファイルパスを調整する必要があります。
 
-Semgrepベースのアナライザーを使用する場合、次のオプションも使用できます:
+Semgrepベースのアナライザーを使用する場合、次のオプションも使用できます。
 
 - コードの1行を無視する - 行の末尾に`// nosemgrep:`コメントを追加します（コメントのプレフィックスは開発言語によって異なります）。
 
@@ -1022,11 +1007,7 @@ Semgrepベースのアナライザーを使用する場合、次のオプショ�
 
 - ファイルまたはディレクトリを無視する - リポジトリのルートディレクトリまたはプロジェクトの作業ディレクトリに`.semgrepignore`ファイルを作成し、ファイルやフォルダーのパターンを記述します。GitLab Semgrepアナライザーは、このカスタム`.semgrepignore`ファイルを[GitLab組み込みの無視パターン](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/abcea7419961320f9718a2f24fe438cc1a7f8e08/semgrepignore)と自動的にマージします。
 
-{{< alert type="note" >}}
-
-Semgrepアナライザーは、`.gitignore`ファイルを考慮しません。`.gitignore`に記載されているファイルでも、`.semgrepignore`または`SAST_EXCLUDED_PATHS`を使用して明示的に除外されない限り、分析対象となります。
-
-{{< /alert >}}
+> [!note] Semgrepアナライザーは`.gitignore`ファイルを尊重しません。`.gitignore`に記載されているファイルでも、`.semgrepignore`または`SAST_EXCLUDED_PATHS`を使用して明示的に除外されない限り、分析対象となります。
 
 詳細については、[Semgrepのドキュメント](https://semgrep.dev/docs/ignoring-files-folders-code)を参照してください。
 
@@ -1043,30 +1024,30 @@ Semgrepアナライザーは、`.gitignore`ファイルを考慮しません。`
 
 ### オフラインSASTの要件 {#requirements-for-offline-sast}
 
-オフライン環境でSASTを使用するには、以下が必要です:
+オフライン環境でSASTを使用するには、以下が必要です。
 
-- [`docker`](https://docs.gitlab.com/runner/executors/docker.html)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executorを備えたGitLab Runner。詳細については、[前提要件](#getting-started)を参照してください。
+- [`docker`](https://docs.gitlab.com/runner/executors/docker.html)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executorを備えたGitLab Runner。詳細については、[前提条件](#getting-started)を参照してください。
 - SAST[アナライザー](https://gitlab.com/gitlab-org/security-products/analyzers)イメージのコピーをローカルに保持しているDockerコンテナレジストリ。
 - パッケージの証明書チェックの設定（オプション）。
 
-GitLab Runnerでは、[デフォルトで`pull_policy`が`always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy)になっています。つまり、ローカルコピーが利用可能な場合でも、RunnerはGitLabコンテナレジストリからDockerイメージをプルしようとします。オフライン環境ではローカルで利用可能なDockerイメージのみを使用する場合は、GitLab Runnerの[`pull_policy`を`if-not-present`に設定できます](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)。ただし、オフライン環境でない場合は、プルポリシーの設定を`always`のままにしておくことをおすすめします。これにより、CI/CDパイプラインで常に最新のスキャナーを使用できるようになります。
+GitLab Runnerでは、[デフォルトで`pull_policy`が`always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy)になっています。つまり、ローカルコピーが利用可能な場合でも、RunnerはGitLabコンテナレジストリからDockerイメージをプルしようとします。オフライン環境ではローカルで利用可能なDockerイメージのみを使用する場合は、GitLab Runnerの[`pull_policy`を`if-not-present`に設定できます](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)。ただし、オフライン環境にない場合は、プルポリシー設定を`always`に維持してください。この設定により、CI/CDパイプラインで更新されたスキャナーを使用できるようになります。
 
 ### Dockerレジストリ内でGitLab SASTアナライザーイメージを利用できるようにする {#make-gitlab-sast-analyzer-images-available-inside-your-docker-registry}
 
-すべてのサポート対象言語とフレームワークでを使用するには、次ののイメージを`registry.gitlab.com`から[ローカルコンテナ](../../packages/container_registry/_index.md)にインポートします:
+すべてのサポート対象言語とフレームワークでSASTを使用するには、次のデフォルトのSASTアナライザーイメージを`registry.gitlab.com`から[ローカルのDockerコンテナレジストリ](../../packages/container_registry/_index.md)にインポートします:
 
 ```plaintext
-registry.gitlab.com/security-products/gitlab-advanced-sast:1
-registry.gitlab.com/security-products/kubesec:5
-registry.gitlab.com/security-products/pmd-apex:5
-registry.gitlab.com/security-products/semgrep:5
-registry.gitlab.com/security-products/sobelow:5
+registry.gitlab.com/security-products/gitlab-advanced-sast:2
+registry.gitlab.com/security-products/kubesec:6
+registry.gitlab.com/security-products/pmd-apex:6
+registry.gitlab.com/security-products/semgrep:6
+registry.gitlab.com/security-products/sobelow:6
 registry.gitlab.com/security-products/spotbugs:5
 ```
 
-DockerイメージをローカルのオフラインDockerレジストリにインポートするプロセスは、**your network security policy**（ネットワークのセキュリティポリシー）によって異なります。IT部門に相談して、外部リソースをインポートまたは一時的にアクセスするための承認済みプロセスを確認してください。これらのスキャナーは新しい定義で[定期的に更新](../detect/vulnerability_scanner_maintenance.md)されています。また、自分で随時更新できる場合もあります。
+DockerイメージをローカルのオフラインDockerレジストリにインポートするプロセスは、**ネットワークのセキュリティポリシー**によって異なります。IT部門に相談して、外部リソースをインポートまたは一時的にアクセスするための承認済みプロセスを確認してください。これらのスキャナーは新しい定義で[定期的に更新](../detect/vulnerability_scanner_maintenance.md)されています。また、自分で随時更新できる場合もあります。
 
-Dockerイメージをファイルとして保存および転送する方法の詳細については、、、、に関するDockerのドキュメントを参照してください:
+Dockerイメージをファイルとして保存および転送する方法の詳細については、以下に関するDockerのドキュメントを参照してください: 
 
 - `docker save`
 - `docker load`
@@ -1087,7 +1068,7 @@ Dockerイメージをファイルとして保存および転送する方法の�
 
 ### ローカルのSASTアナライザーを使用するようにSAST CI/CD変数を設定する {#set-sast-cicd-variables-to-use-local-sast-analyzers}
 
-次の設定を`.gitlab-ci.yml`ファイルに追加します。ローカルのDockerコンテナレジストリを参照するように、`SECURE_ANALYZERS_PREFIX`を置き換える必要があります:
+次の設定を`.gitlab-ci.yml`ファイルに追加します。ローカルのDockerコンテナレジストリを参照するように、`SECURE_ANALYZERS_PREFIX`を置き換える必要があります。
 
 ```yaml
 include:

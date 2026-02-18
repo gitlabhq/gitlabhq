@@ -357,7 +357,6 @@ export default {
     'app/assets/javascripts/environments/components/environments_app.vue',
     'app/assets/javascripts/environments/components/environments_app_skeleton_loader.vue',
     'app/assets/javascripts/environments/components/new_environment.vue',
-    'app/assets/javascripts/environments/components/new_environment_item.vue',
     'app/assets/javascripts/environments/components/rollback_modal_manager.vue',
     'app/assets/javascripts/environments/environment_details/components/deployment_actions.vue',
     'app/assets/javascripts/environments/environment_details/components/deployment_history.vue',

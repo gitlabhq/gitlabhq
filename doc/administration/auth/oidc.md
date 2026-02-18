@@ -1747,25 +1747,33 @@ step-up authentication actually failed, making the guidance more relevant and ac
 
 > [!note]
 > Best practices for documentation links:
-> 
+>
 > - Use HTTPS URLs for security.
 > - Link to internal documentation that explains the specific authentication requirements for your organization.
 > - Include information about how to enable `MFA` or other required authentication methods.
 
-### Session expiration
+### Disable session expiration
 
 By default, step-up authentication sessions expire based on the identity provider (IdP) token
-expiration time, typically around 10 minutes. This behavior provides strong security assurance
-but may require users to re-authenticate frequently during long working sessions.
+expiration time, typically around 10 minutes.
 
-#### Disabling session expiration
+You can control session expiration with the `session_expiration_enabled` setting:
 
-To allow step-up authentication to remain valid for the entire user session,
-you can disable session expiration in your provider configuration:
+| Setting                                      | Behavior |
+| -------------------------------------------- | -------- |
+| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim. This is typically around 10 minutes. |
+| `session_expiration_enabled: false`          | Step-up authentication remains valid for the entire user session until the user signs out. |
 
-:::Tabs
+> [!warning]
+> Disabling session expiration means users authenticate only once per session
+> rather than periodically re-verifying their identity. Only disable this setting
+> if your security requirements allow session-lifetime step-up authentication.
 
-:::TabTitle Linux package (Omnibus)
+To disable session expiration:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1797,7 +1805,9 @@ you can disable session expiration in your provider configuration:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml`:
 
@@ -1833,17 +1843,9 @@ you can disable session expiration in your provider configuration:
    sudo service gitlab restart
    ```
 
-:::EndTabs
+{{< /tab >}}
 
-| Setting | Behavior |
-|---------|----------|
-| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim (typically ~10 minutes). |
-| `session_expiration_enabled: false` | Step-up authentication remains valid for the entire user session until logout. |
-
-WARNING:
-Disabling session expiration reduces security assurance. Only disable this setting if your
-security requirements allow session-lifetime step-up authentication. When disabled, users
-authenticate once per session rather than periodically re-verifying their identity.
+{{< /tabs >}}
 
 ## Troubleshooting
 

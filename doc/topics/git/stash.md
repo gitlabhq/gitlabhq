@@ -2,85 +2,123 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Stash changes for later
+title: Stash changes
 ---
 
-Use `git stash` when you want to change to a different branch, and you want to store changes that are not ready to be
-committed.
+Use `git stash` when you want to change to a different branch but you have
+uncommitted changes that are not ready to be committed.
 
-- To stash uncommitted changes without a message:
+## Create stash entries
+
+By default, `git stash` stores tracked changes in your working directory and any staged changes.
+You can use options to control which changes are included.
+
+- To stash tracked changes:
 
   ```shell
   git stash
   ```
 
-- To stash uncommitted changes with a message:
+- To stash changes with a message:
 
   ```shell
-  git stash save "this is a message to display on the list"
+  git stash push -m "describe your changes here"
   ```
 
-- To retrieve changes from the stash and apply them to your branch:
+- To stash changes but keep staged changes in your working directory:
+
+  ```shell
+  git stash push -k
+  ```
+
+  The `-k` (`--keep-index`) option stashes your changes but also keeps them in the working directory.
+  Use this option when you want to temporarily save changes but keep working on them.
+
+- To stash changes and include untracked files:
+
+  ```shell
+  git stash push -u
+  ```
+
+  The `-u` (`--include-untracked`) option also stashes files that Git is not yet tracking.
+  Without this option, new files that have not been committed remain in your working directory.
+
+- To stash only staged changes:
+
+  ```shell
+  git stash push -S
+  ```
+
+  The `-S` (`--staged`) option stashes only changes that are staged.
+  Use this option when you want to save staged changes while you keep working on unstaged changes.
+
+## Apply stash entries
+
+If you make many changes after you stash your work, conflicts might
+occur when you apply the stash. You must resolve these conflicts
+before the changes can be applied.
+
+- To apply the most recent stash entry and keep it in the stash:
 
   ```shell
   git stash apply
   ```
 
-- To apply a specific change from the stash to your branch:
+- To apply a specific stash entry:
 
   ```shell
   git stash apply stash@{3}
   ```
 
-- To see all of the changes in the stash:
-
-  ```shell
-  git stash list
-  ```
-
-- To see a list of changes in that stash with more information:
-
-  ```shell
-  git stash list --stat
-  ```
-
-- To delete the most recently stashed change from the stash:
-
-  ```shell
-  git stash drop
-  ```
-
-- To delete a specific change from the stash:
-
-  ```shell
-  git stash drop <name>
-  ```
-
-- To delete all changes from the stash:
-
-  ```shell
-  git stash clear
-  ```
-
-- To apply the most recently stashed change and delete it from the stash:
+- To apply the most recent stash entry and remove it from the stash:
 
   ```shell
   git stash pop
   ```
 
-If you make a lot of changes after stashing your changes, conflicts might occur when you apply
-these previous changes back to your branch. You must resolve these conflicts before the changes can be applied
-from the stash.
+## View stash entries
 
-## Git stash sample workflow
+- To see all stash entries:
 
-To try using Git stashing yourself:
+  ```shell
+  git stash list
+  ```
+
+- To see stash entries with more detail:
+
+  ```shell
+  git stash list --stat
+  ```
+
+## Delete stash entries
+
+- To delete the most recent stash entry:
+
+  ```shell
+  git stash drop
+  ```
+
+- To delete a specific stash entry:
+
+  ```shell
+  git stash drop <name>
+  ```
+
+- To delete all stash entries:
+
+  ```shell
+  git stash clear
+  ```
+
+## Example: Create and apply a stash entry
+
+To try using Git stashing:
 
 1. Modify a file in a Git repository.
 1. Stash the modification:
 
    ```shell
-   git stash save "Saving changes from edit this file"
+   git stash push -m "Saving changes from edit"
    ```
 
 1. View the stash list:
@@ -95,14 +133,18 @@ To try using Git stashing yourself:
    git status
    ```
 
-1. Apply the stashed changes and drop the change from the stash:
+1. Apply the stashed changes and remove the entry from the stash:
 
    ```shell
    git stash pop
    ```
 
-1. View stash list to confirm that the change was removed:
+1. View the stash list to confirm the entry was removed:
 
    ```shell
    git stash list
    ```
+
+## Related topics
+
+- [Official Git stash documentation](https://git-scm.com/docs/git-stash)

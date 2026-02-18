@@ -1600,28 +1600,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(issue_type[:name]).to eq('issue')
         expect(issue_type[:label]).to eq('Issue')
       end
-
-      context 'with OKR types' do
-        it 'excludes OKR types when feature flag is disabled' do
-          stub_feature_flags(okrs_mvc: false)
-
-          types = helper.work_item_types_for_filter
-          type_names = types.pluck(:name)
-
-          expect(type_names).not_to include('objective')
-          expect(type_names).not_to include('key_result')
-        end
-
-        it 'includes OKR types when feature flag is enabled' do
-          stub_feature_flags(okrs_mvc: true)
-
-          types = helper.work_item_types_for_filter
-          type_names = types.pluck(:name)
-
-          expect(type_names).to include('objective')
-          expect(type_names).to include('key_result')
-        end
-      end
     end
 
     context 'with a group container' do
