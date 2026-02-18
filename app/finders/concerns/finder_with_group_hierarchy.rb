@@ -21,15 +21,9 @@ module FinderWithGroupHierarchy
   # which can include the ancestors and descendants of the requested group.
   def group_ids_for(group)
     strong_memoize(:group_ids) do
-      groups = groups_to_include(group)
-
-      # Because we are sure that all groups are in the same hierarchy tree
-      # we can preset root group for all of them to optimize permission checks
-      Group.preset_root_ancestor_for(groups)
-
-      preload_associations(groups) if !skip_authorization && current_user
-
-      groups_user_can_read_items(groups).map(&:id)
+      groups_user_can_read_items(
+        groups_to_include(group)
+      ).map(&:id)
     end
   end
 
@@ -69,6 +63,12 @@ module FinderWithGroupHierarchy
   end
 
   def groups_user_can_read_items(groups)
+    # Because we are sure that all groups are in the same hierarchy tree
+    # we can preset root group for all of them to optimize permission checks
+    Group.preset_root_ancestor_for(groups)
+
+    preload_associations(groups) if !skip_authorization && current_user
+
     DeclarativePolicy.user_scope do
       groups.select { |group| authorized_to_read_item?(group) }
     end

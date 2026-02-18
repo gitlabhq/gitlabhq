@@ -38,23 +38,39 @@ The following agents are integrated with GitLab and available on GitLab.com.
 injectGatewayToken: true
 image: node:22-slim
 commands:
-  - echo "Installing Claude Code"
-  - npm install --global @anthropic-ai/claude-code
+  - echo "Installing claude"
+  - npm install -g @anthropic-ai/claude-code
   - echo "Installing glab"
-  - export GITLAB_TOKEN=$GITLAB_TOKEN_CLAUDE
   - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
   - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
-  - apt-get install --yes glab
+  - apt-get install -y glab
+  - mkdir -p ~/.config/glab-cli
+  - |
+    cat > ~/.config/glab-cli/config.yml <<EOF
+    hosts:
+      $AI_FLOW_GITLAB_HOSTNAME:
+        token: $AI_FLOW_GITLAB_TOKEN
+        is_oauth2: "true"
+        client_id: "bypass"
+        oauth2_refresh_token: ""
+        oauth2_expiry_date: "01 Jan 50 00:00 UTC"
+        api_host: $AI_FLOW_GITLAB_HOSTNAME
+        user: ClaudeCode
+    check_update: "false"
+    git_protocol: https
+    EOF
+  - chmod 600 ~/.config/glab-cli/config.yml
   - echo "Configuring git"
   - git config --global user.email "claudecode@gitlab.com"
   - git config --global user.name "Claude Code"
-  - echo "Configuring Claude Code"
+  - echo "Setting up git remote with authentication"
+  - git remote set-url origin https://gitlab-ci-token:$AI_FLOW_GITLAB_TOKEN@$AI_FLOW_GITLAB_HOSTNAME/$AI_FLOW_PROJECT_PATH.git
   - export ANTHROPIC_AUTH_TOKEN=$AI_FLOW_AI_GATEWAY_TOKEN
   - export ANTHROPIC_CUSTOM_HEADERS=$AI_FLOW_AI_GATEWAY_HEADERS
   - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
-  - echo "Running Claude Code"
+  - echo "Running claude"
   - |
-    claude --debug --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
+    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
     You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
@@ -69,17 +85,16 @@ commands:
 
     When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
 
-    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
     Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
-    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+    glab mr create --title '<title>' --description '<desc>' --source-branch '<branch>'
 
-    If you are asked to summarize a merge request or issue, or asked to provide more information, then please post back a note to the merge request / issue so that the user can see it.
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
 
+    $ADDITIONAL_INSTRUCTIONS
     </important>
     "
 variables:
-  - GITLAB_TOKEN_CLAUDE
-  - GITLAB_HOST
+  - ADDITIONAL_INSTRUCTIONS
 ```
 
 ### OpenAI Codex
@@ -92,13 +107,30 @@ commands:
   - npm install --global @openai/codex
   - echo "Installing glab"
   - export OPENAI_API_KEY=$AI_FLOW_AI_GATEWAY_TOKEN
-  - export GITLAB_TOKEN=$GITLAB_TOKEN_CODEX
   - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
   - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
   - apt-get install --yes glab
+  - mkdir -p ~/.config/glab-cli
+  - |
+    cat > ~/.config/glab-cli/config.yml <<EOF
+    hosts:
+      $AI_FLOW_GITLAB_HOSTNAME:
+        token: $AI_FLOW_GITLAB_TOKEN
+        is_oauth2: "true"
+        client_id: "bypass"
+        oauth2_refresh_token: ""
+        oauth2_expiry_date: "01 Jan 50 00:00 UTC"
+        api_host: $AI_FLOW_GITLAB_HOSTNAME
+        user: OpenAICodex
+    check_update: "false"
+    git_protocol: https
+    EOF
+  - chmod 600 ~/.config/glab-cli/config.yml
   - echo "Configuring git"
   - git config --global user.email "codex@gitlab.com"
   - git config --global user.name "OpenAI Codex"
+  - echo "Setting up git remote with authentication"
+  - git remote set-url origin https://gitlab-ci-token:$AI_FLOW_GITLAB_TOKEN@$AI_FLOW_GITLAB_HOSTNAME/$AI_FLOW_PROJECT_PATH.git
   - echo "Running Codex"
   - |
     # Parse AI_FLOW_AI_GATEWAY_HEADERS (newline-separated "Key: Value" pairs)
@@ -114,11 +146,14 @@ commands:
       else
         header_str+=", "
       fi
-      header_str+="\"$key\" = \"$value\""
+      header_str+="'$key' = '$value'"
     done <<< "$AI_FLOW_AI_GATEWAY_HEADERS"
     header_str+="}"
 
+    echo "Headers: $header_str"
+
     codex exec \
+      --config 'model="gpt-5.1-codex"' \
       --config 'model_provider="gitlab"' \
       --config 'model_providers.gitlab.name="GitLab Managed Codex"' \
       --config 'model_providers.gitlab.base_url="https://cloud.gitlab.com/ai/v1/proxy/openai/v1"' \
@@ -141,15 +176,14 @@ commands:
 
     When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
 
-    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user Codex.
     Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
-    glab mr create --title \"<title>\" --description \"<desc>\" --source-branch \"<branch>\" --target-branch \"<branch>\"
+    glab mr create --title '<title>' --description '<desc>' --source-branch '<branch>'
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
 
+    $ADDITIONAL_INSTRUCTIONS
     </important>
     "
 variables:
-  - GITLAB_TOKEN_CODEX
-  - GITLAB_HOST
+  - ADDITIONAL_INSTRUCTIONS
 ```

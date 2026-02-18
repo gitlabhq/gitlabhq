@@ -29278,9 +29278,9 @@ Conditional rule for dynamic input options.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ciinputsruleconditiontree"></a>`conditionTree` | [`CiInputsCondition`](#ciinputscondition) | Parsed condition tree for frontend eval. |
-| <a id="ciinputsruledefault"></a>`default` | [`String`](#string) | Default value when rule matches. |
+| <a id="ciinputsruledefault"></a>`default` | [`CiInputsValue`](#ciinputsvalue) | Default value when rule matches. Can be a string, array, number, or boolean. |
 | <a id="ciinputsruleif"></a>`if` | [`String`](#string) | Condition expression. |
-| <a id="ciinputsruleoptions"></a>`options` | [`[String!]`](#string) | Available options when rule matches. |
+| <a id="ciinputsruleoptions"></a>`options` | [`[CiInputsValue!]`](#ciinputsvalue) | Available options when rule matches. Each option can be a string, array, number, or boolean. |
 
 ### `CiInputsSpec`
 

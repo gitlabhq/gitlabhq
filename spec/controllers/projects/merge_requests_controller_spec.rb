@@ -404,6 +404,59 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
     end
+
+    describe 'rapid_diffs_presenter' do
+      it 'is available as a helper method' do
+        go(format: :html)
+
+        expect(controller.view_context.rapid_diffs_presenter).to be_a(RapidDiffs::MergeRequestPresenter)
+      end
+
+      context 'when merge request has conflicts' do
+        let(:conflict_file) { instance_double(Gitlab::Conflict::File, path: 'file.txt') }
+        let(:file_collection) { instance_double(Gitlab::Conflict::FileCollection, files: [conflict_file]) }
+
+        before do
+          allow_next_found_instance_of(MergeRequest) do |mr|
+            allow(mr).to receive_messages(
+              cannot_be_merged?: true,
+              source_branch_exists?: true,
+              target_branch_exists?: true
+            )
+          end
+          allow_next_instance_of(MergeRequests::Conflicts::ListService) do |service|
+            allow(service).to receive(:conflicts).and_return(file_collection)
+          end
+          allow(conflict_file).to receive(:conflict_type).with(no_args).and_return(:both_modified)
+          allow(conflict_file).to receive(:conflict_type).with(when_renamed: true).and_return(:renamed_same_file)
+        end
+
+        it 'includes conflicts_with_types hash in the presenter' do
+          go(format: :html)
+
+          expect(controller.view_context.rapid_diffs_presenter.conflicts).to eq({
+            'file.txt' => {
+              conflict_type: :both_modified,
+              conflict_type_when_renamed: :renamed_same_file
+            }
+          })
+        end
+      end
+
+      context 'when merge request can be merged' do
+        before do
+          allow_next_found_instance_of(MergeRequest) do |mr|
+            allow(mr).to receive(:cannot_be_merged?).and_return(false)
+          end
+        end
+
+        it 'does not include conflicts in the presenter' do
+          go(format: :html)
+
+          expect(controller.view_context.rapid_diffs_presenter.conflicts).to be_nil
+        end
+      end
+    end
   end
 
   describe 'GET index' do

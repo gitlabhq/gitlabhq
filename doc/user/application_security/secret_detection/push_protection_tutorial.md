@@ -22,11 +22,11 @@ You'll also learn how to skip secret push protection, in case you need to bypass
 This tutorial is adapted from the following GitLab Unfiltered videos:
 
 - [Introduction to Secret Push Protection](https://www.youtube.com/watch?v=SFVuKx3hwNI)
-<!-- Video published on 2024-06-21 -->
+  <!-- Video published on 2024-06-21 -->
 - [Configuration - Enabling Secret Push Protection for your project](https://www.youtube.com/watch?v=t1DJN6Vsmp0)
-<!-- Video published on 2024-06-23 -->
+  <!-- Video published on 2024-06-23 -->
 - [Skip Secret Push Protection](https://www.youtube.com/watch?v=wBAhe_d2DkQ)
-<!-- Video published on 2024-06-04 -->
+  <!-- Video published on 2024-06-04 -->
 
 ## Before you begin
 

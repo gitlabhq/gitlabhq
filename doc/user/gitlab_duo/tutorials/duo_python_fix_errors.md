@@ -1012,7 +1012,7 @@ These improvements have made the application more reliable, secure, and maintain
 - [GitLab Duo use cases](../use_cases.md)
 - [Get started with GitLab Duo](../../get_started/getting_started_gitlab_duo.md).
 - Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
-<!-- markdownlint-disable -->
+  <!-- markdownlint-disable -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
   <!-- Video published on 2025-06-02 -->
@@ -1021,5 +1021,6 @@ These improvements have made the application more reliable, secure, and maintain
   <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
-<!-- Video published on 2024-01-24 -->
+  <!-- Video published on 2024-01-24 -->
+
 <!-- markdownlint-enable -->

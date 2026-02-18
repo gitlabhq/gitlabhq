@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage users and seats associated with your GitLab subscription.
 title: Manage users and seats
 ---
@@ -433,7 +433,7 @@ executive dashboards to drive organizational visibility.
 For more information about Enterprise Agile Planning seats and how to purchase them,
 contact your [GitLab sales representative](https://customers.gitlab.com/contact_us).
 
-### Using Enterprise Agile Planning seats 
+### Using Enterprise Agile Planning seats
 
 A user occupies an Enterprise Agile Planning seat if:
 

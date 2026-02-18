@@ -50,8 +50,8 @@ To enable the model registry or set the [visibility level](../../../public_acces
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Model registry**, ensure the toggle is on and select who you want to have access.
-   Users must have
-at least the [Reporter role](../../../permissions.md#roles) to modify or delete models and model versions.
+   Users must have at least the [Reporter role](../../../permissions.md#roles) to modify
+   or delete models and model versions.
 
 ## Create machine learning models by using the UI
 

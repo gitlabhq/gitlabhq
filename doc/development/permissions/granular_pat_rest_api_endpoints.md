@@ -28,6 +28,15 @@ This section lists permissions for Granular PATs and the REST API endpoints they
 
 ### Application Security resources
 
+#### Audit Event
+
+Grants the ability to read audit events.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Group | `GET` | `/groups/:id/audit_events` |
+|   |   | `GET` | `/groups/:id/audit_events/:audit_event_id` |
+
 #### Compliance Policy Setting
 
 Grants the ability to read and update compliance policy settings.
@@ -1824,6 +1833,14 @@ Grants the ability to create, read, and delete LDAP group links.
 |   |   | `DELETE` | `/groups/:id/ldap_group_links` |
 | Read | Group | `GET` | `/groups/:id/ldap_group_links` |
 
+#### LDAP Group Sync
+
+Grants the ability to run LDAP group sync.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Group | `POST` | `/groups/:id/ldap_sync` |
+
 #### Member
 
 Grants the ability to create, delete, read, and update members.
@@ -1908,6 +1925,14 @@ Grants the ability to view and modify plan limits.
 | Read | Instance | `GET` | `/application/plan_limits` |
 | Update | Instance | `PUT` | `/application/plan_limits` |
 
+#### Provisioned User
+
+Grants the ability to read provisioned users.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Group | `GET` | `/groups/:id/provisioned_users` |
+
 #### Resource Access Token
 
 Grants the ability to create, read, rotate, and delete resource access tokens.
@@ -1937,6 +1962,14 @@ Grants the ability to create, read, and delete SAML group links.
 | Delete | Group | `DELETE` | `/groups/:id/saml_group_links/:saml_group_name` |
 | Read | Group | `GET` | `/groups/:id/saml_group_links` |
 |   |   | `GET` | `/groups/:id/saml_group_links/:saml_group_name` |
+
+#### SAML User
+
+Grants the ability to read SAML users.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Group | `GET` | `/groups/:id/saml_users` |
 
 #### SSH Key
 

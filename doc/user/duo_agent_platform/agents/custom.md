@@ -37,8 +37,8 @@ custom agents to accomplish specific tasks, like creating merge
 requests or reviewing code. Or, use the AI Catalog to discover agents
 created by GitLab.
 
-When you're ready to interact with an agent, you can enable it to
-start using it with GitLab Duo Chat.
+When you're ready to interact with an agent, enable it and start using it
+with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 
 ## Prerequisites
 
@@ -176,6 +176,67 @@ To enable an agent in a project:
 The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
+
+## Use an agent
+
+You can use a custom agent in the GitLab UI, VS Code, and JetBrains IDEs.
+
+### In the GitLab UI
+
+Prerequisites:
+
+- Enable the agent in a top-level group and the project you want to use it in.
+
+To use a custom agent in the GitLab UI:
+
+1. On the top bar, select **Search or go to** and find your project or group.
+1. Open an issue, epic, or merge request.
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
+   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
+   ({{< icon name="duo-chat" >}}).
+
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
+
+### In VS Code
+
+Prerequisites:
+
+- Enable the agent in a top-level group and the project you want to use it in.
+- Install and configure [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md)
+  version 6.47.0 or later.
+- Set a [default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+To use a custom agent in VS Code:
+
+1. In VS Code, on the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
+
+### In JetBrains IDEs
+
+Prerequisites:
+
+- Enable the agent in a top-level group and the project you want to use it in.
+- Install and configure [GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md)
+  version 3.19.0 or later.
+- Set a [default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+First, enable the GitLab Duo Agent Platform:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform**, select the **Enable GitLab Duo Agent Platform** checkbox.
+1. Restart your IDE if prompted.
+
+Then, to use a custom agent:
+
+1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
 
 ## Disable an agent
 

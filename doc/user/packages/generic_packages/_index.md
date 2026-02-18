@@ -545,11 +545,9 @@ Prerequisites:
 To get checksums in response headers, you must either:
 
 - Disable object storage so files are stored locally.
-- Enable object storage, but disable direct download
-(files are served through GitLab Workhorse). When object
-storage direct download is enabled, files are redirected
-to the object storage provider, and custom headers like
-`X-Checksum-SHA256` cannot be included in the redirect response.
+- Enable object storage, but disable direct download (files are served through GitLab Workhorse).
+  When object storage direct download is enabled, files are redirected to the object storage provider,
+  and custom headers like `X-Checksum-SHA256` cannot be included in the redirect response.
 
 ```shell
 # Download a file and get the checksum from the response header
@@ -597,11 +595,9 @@ Prerequisites:
 To verify checksums in CI/CD pipelines, you must either:
 
 - Disable object storage so files are stored locally.
-- Enable object storage, but disable direct download
-(files are served through GitLab Workhorse). When object
-storage direct download is enabled, files are redirected
-to the object storage provider, and custom headers like
-`X-Checksum-SHA256` cannot be included in the redirect response.
+- Enable object storage, but disable direct download (files are served through GitLab Workhorse).
+  When object storage direct download is enabled, files are redirected to the object storage provider,
+  and custom headers like `X-Checksum-SHA256` cannot be included in the redirect response.
 
 ```yaml
 verify_download:

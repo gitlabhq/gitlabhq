@@ -399,7 +399,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
 
       before do
-        allow(diff_file).to receive(:whitespace_only?).and_return(true)
+        allow(diff_file).to receive_messages(whitespace_only?: true, conflict: nil)
       end
 
       it 'makes a call to presenter diff_files with ignore_whitespace_change: false' do

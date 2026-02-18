@@ -6,6 +6,13 @@ module RapidDiffs
 
     presents ::MergeRequest, as: :resource
 
+    attr_reader :conflicts
+
+    def initialize(subject, diff_view:, diff_options:, request_params: nil, environment: nil, conflicts: nil)
+      super(subject, diff_view:, diff_options:, request_params:, environment:)
+      @conflicts = conflicts
+    end
+
     override(:diffs_resource)
     def diffs_resource(options = {})
       resource.latest_diffs(@diff_options.merge(options))
@@ -37,6 +44,18 @@ module RapidDiffs
 
     def sorted?
       true
+    end
+
+    protected
+
+    override(:transform_file)
+    def transform_file(diff_file)
+      file = super
+      return file if file.is_a?(MergeRequest::DiffFilePresenter)
+
+      # rubocop: disable CodeReuse/Presenter -- DiffFile is a separate domain from the merge request, we need to represent it differently
+      MergeRequest::DiffFilePresenter.new(file, conflicts: @conflicts)
+      # rubocop: enable CodeReuse/Presenter
     end
   end
 end

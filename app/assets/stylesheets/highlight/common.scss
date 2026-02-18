@@ -117,7 +117,7 @@
     width: $gl-spacing-scale-5;
     height: $gl-spacing-scale-5;
     background-color: rgba($color, 0.3);
-    mask-image: url('icons-stacked.svg##{$icon}');
+    mask-image: url('@gitlab/svgs/dist/icons-stacked.svg##{$icon}');
     mask-repeat: no-repeat;
     mask-size: cover;
     mask-position: center;

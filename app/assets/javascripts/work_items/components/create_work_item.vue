@@ -352,6 +352,7 @@ export default {
 
         if (selectedWorkItemType) {
           this.selectedWorkItemTypeId = selectedWorkItemType?.id;
+          this.$emit('changeType', selectedWorkItemType.name);
         } else {
           this.showWorkItemTypeSelect = true;
           const defaultSelectedWorkItemType =
@@ -693,6 +694,13 @@ export default {
     */
     selectedWorkItemTypeName(newValue) {
       this.$emit('updateType', newValue);
+    },
+    selectedWorkItemTypeId(newId) {
+      if (newId) {
+        // Whenever the ID changes, find the name and tell the parent
+        const typeName = this.findWorkItemTypeById(newId)?.name;
+        this.$emit('changeType', typeName);
+      }
     },
   },
   mounted() {

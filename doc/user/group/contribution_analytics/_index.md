@@ -46,17 +46,17 @@ To view contribution analytics:
 1. Optional. Filter the results:
 
    - To view contribution analytics for last week, month, or three months, select one of the three tabs.
-   The selected time period applies to all charts and the table.
+     The selected time period applies to all charts and the table.
    - To zoom in on a bar chart to display only a subset of group members,
-   select the sliders ({{< icon name="status-paused" >}}) below the chart and slide them along the axis.
+     select the sliders ({{< icon name="status-paused" >}}) below the chart and slide them along the axis.
    - To sort the contributions table by a column, select the column header or the chevron
-   ({{< icon name="chevron-lg-down" >}} for descending order, {{< icon name="chevron-lg-up" >}} for ascending order).
+     ({{< icon name="chevron-lg-down" >}} for descending order, {{< icon name="chevron-lg-up" >}} for ascending order).
 
 1. Optional. To view a group member's contributions, either:
 
    - On the **Contribution analytics** bar charts, hover over the bar with the member's name.
    - In the **Contributions per group member** table, select the member's name.
-   The member's GitLab profile is displayed, and you can explore their [contributions calendar](../../profile/contributions_calendar.md).
+     The member's GitLab profile is displayed, and you can explore their [contributions calendar](../../profile/contributions_calendar.md).
 
 To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/_index.md#groupcontributions).
 

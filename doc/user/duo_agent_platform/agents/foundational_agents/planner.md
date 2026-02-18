@@ -41,11 +41,17 @@ Use the Planner Agent when you need help with:
 
 Please leave feedback in [issue 583008](https://gitlab.com/gitlab-org/gitlab/-/work_items/583008).
 
-## Access the Planner Agent
+## Use the Planner Agent
+
+You can use the Planner Agent in the GitLab UI, VS Code, and JetBrains IDEs.
+
+### In the GitLab UI
 
 Prerequisites:
 
-- Foundational agents must be [turned on](_index.md#turn-foundational-agents-on-or-off).
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+
+To use the Planner Agent in the GitLab UI:
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Open an issue, epic, or merge request.
@@ -60,9 +66,55 @@ Prerequisites:
 
    - Provide context about your request, like URLs, filter criteria, or scope.
    - If you have a preferred prioritization framework, specify it.
-   - If the agent's assumptions don't match your workflow, ask for clarification.
+   - If the agent's assumptions do not match your workflow, ask for clarification.
 
-### Example prompts
+### In VS Code
+
+Prerequisites:
+
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+- Install and configure [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)
+  version 8.39.0 or later.
+- Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+To use the Planner Agent in VS Code:
+
+1. In VS Code, on the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
+1. Enter your planning-related question or request. To get the best results from your request:
+
+   - Provide context about your request, like URLs, filter criteria, or scope.
+   - If you have a preferred prioritization framework, specify it.
+   - If the agent's assumptions do not match your workflow, ask for clarification.
+
+### In JetBrains IDEs
+
+Prerequisites:
+
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+- Install and configure [GitLab plugin for JetBrains](../../../../editor_extensions/jetbrains_ide/setup.md)
+  version 3.11.1 or later.
+- Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+First, enable the GitLab Duo Agent Platform:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform**, select the **Enable GitLab Duo Agent Platform** checkbox.
+1. Restart your IDE if prompted.
+
+Then, to use the Planner Agent:
+
+1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
+1. Enter your planning-related question or request. To get the best results from your request:
+
+   - Provide context about your request, like URLs, filter criteria, or scope.
+   - If you have a preferred prioritization framework, specify it.
+   - If the agent's assumptions do not match your workflow, ask for clarification.
+
+## Example prompts
 
 - "Generate an executive summary of this work items progress: (insert URL)"
 - "Draft a memo for this work item (insert URL) including objectives, success criteria, and key stakeholders."

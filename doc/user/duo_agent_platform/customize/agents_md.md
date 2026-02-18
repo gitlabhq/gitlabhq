@@ -29,7 +29,7 @@ details are available for GitLab Duo Agent Platform and any other AI tool that s
 
 Specify `AGENTS.md` files for GitLab Duo to use with:
 
-- GitLab Duo Chat in your IDE.
+- GitLab Duo Chat in your local environment.
 - Foundational and custom flows.
 
 ## How GitLab Duo uses `AGENTS.md` files
@@ -54,7 +54,7 @@ instructions. Previously existing conversations do not.
 ### Prerequisites
 
 - Meet the [Agent Platform prerequisites](../_index.md#prerequisites).
-- For GitLab Duo Chat in your IDE, install the supported extensions:
+- For GitLab Duo Chat in your local environment, install the supported IDE extension:
 
   - For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.60 or later.
   - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md) 3.26.0 or later.

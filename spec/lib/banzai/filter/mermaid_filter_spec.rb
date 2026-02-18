@@ -54,6 +54,26 @@ RSpec.describe Banzai::Filter::MermaidFilter, feature_category: :markdown do
       expect(proxied_urls).to have_key(gotcha_url)
       expect(proxied_urls[gotcha_url]).to match(%r{\Ahttps://assets\.example\.com/\w+/\w+\z})
     end
+
+    context 'when mermaid source contains gid: scheme URIs' do
+      # The globalid gem registers "gid" as a URI scheme. When URI.parse is called
+      # with a malformed gid: URI like "gid:foo" (no hierarchical path), URI::GID
+      # is instantiated but its #set_model_components method calls path.split on
+      # a nil path, raising NoMethodError instead of URI::Error.
+      let(:source) do
+        <<~MARKDOWN
+          ```mermaid
+          graph TD
+            A --gid:relation--> B
+            classDef gid:style fill:#f9f
+          ```
+        MARKDOWN
+      end
+
+      it 'does not raise an error when parsing malformed gid: URIs' do
+        expect { pipeline.call(source) }.not_to raise_error
+      end
+    end
   end
 
   it_behaves_like 'pipeline timing check'

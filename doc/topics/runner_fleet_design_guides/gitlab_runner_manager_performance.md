@@ -4,7 +4,7 @@ group: Runner Core
 info: >-
   To determine the technical writer assigned to the Stage/Group associated with
   this page, see
-  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+  <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Optimize GitLab Runner Manager Pod performance in Kubernetes environments.
 title: Optimize GitLab Runner manager pod performance
 ---

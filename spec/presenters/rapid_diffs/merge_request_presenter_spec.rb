@@ -35,9 +35,11 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
   describe '#diffs_slice' do
     let(:offset) { presenter.send(:offset) }
+    let(:diff_collection) { instance_double(Gitlab::Git::DiffCollection) }
 
     it 'calls first_diffs_slice on the merge_request with the correct arguments' do
-      expect(merge_request).to receive(:first_diffs_slice).with(offset, diff_options)
+      allow(diff_collection).to receive(:decorate!).and_return(diff_collection)
+      expect(merge_request).to receive(:first_diffs_slice).with(offset, diff_options).and_return(diff_collection)
 
       presenter.diffs_slice
     end
@@ -169,6 +171,134 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       result = presenter.linked_file
       expect(result).to eq(diff_file)
       expect(result.linked).to be(true)
+    end
+  end
+
+  describe 'diff files with conflicts' do
+    let(:diff_file) { build(:diff_file) }
+    let(:diff_files_array) { [diff_file] }
+    let(:diff_files_collection) do
+      instance_double(Gitlab::Git::DiffCollection).tap do |collection|
+        allow(collection).to receive(:decorate!) do |&block|
+          diff_files_array.map!(&block)
+        end
+        allow(collection).to receive(:first) { diff_files_array.first }
+      end
+    end
+
+    let(:diffs_resource) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files_collection) }
+    let(:conflicts) do
+      {
+        diff_file.new_path => {
+          conflict_type: :both_modified,
+          conflict_type_when_renamed: :renamed_same_file
+        }
+      }
+    end
+
+    subject(:presenter) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, conflicts: conflicts)
+    end
+
+    before do
+      allow(merge_request).to receive_messages(
+        latest_diffs: diffs_resource,
+        first_diffs_slice: diff_files_collection,
+        diffs_for_streaming: diffs_resource
+      )
+    end
+
+    describe '#diff_files' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diff_files
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+
+      context 'when conflicts is nil' do
+        let(:conflicts) { nil }
+
+        it 'returns diff files wrapped in presenter without conflict info' do
+          result = presenter.diff_files
+
+          expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+          expect(result.first.conflict).to be_nil
+        end
+      end
+
+      context 'when diff file is already wrapped in presenter' do
+        let(:wrapped_file) { RapidDiffs::MergeRequest::DiffFilePresenter.new(diff_file, conflicts: conflicts) }
+        let(:diff_files_array) { [wrapped_file] }
+
+        it 'does not re-wrap the file' do
+          result = presenter.diff_files
+
+          expect(result.first).to be(wrapped_file)
+        end
+      end
+    end
+
+    describe '#diffs_slice' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diffs_slice
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#diff_files_for_streaming' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diff_files_for_streaming
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#linked_file' do
+      let(:linked_file) { build(:diff_file) }
+      let(:diff_files_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [linked_file]) }
+      let(:conflicts) do
+        {
+          linked_file.file_path => {
+            conflict_type: :both_modified,
+            conflict_type_when_renamed: :renamed_same_file
+          }
+        }
+      end
+
+      let(:request_params) { { file_path: linked_file.file_path } }
+
+      before do
+        allow(merge_request).to receive(:diffs).and_return(diff_files_collection)
+      end
+
+      it 'returns linked file wrapped in presenter with conflict info' do
+        result = presenter.linked_file
+
+        expect(result).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#diff_files_for_streaming_by_changed_paths' do
+      before do
+        allow(merge_request).to receive(:diffs_for_streaming_by_changed_paths).and_yield([diff_file])
+      end
+
+      it 'yields diff files wrapped in presenter with conflict info' do
+        yielded_files = nil
+
+        presenter.diff_files_for_streaming_by_changed_paths({}) do |files|
+          yielded_files = files
+        end
+
+        expect(yielded_files.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(yielded_files.first.conflict).to eq(:both_modified)
+      end
     end
   end
 end

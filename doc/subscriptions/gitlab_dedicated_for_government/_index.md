@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: US Public Sector Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Single-tenant SaaS solution for government agencies and regulated industries.
 title: GitLab Dedicated for Government
 ---

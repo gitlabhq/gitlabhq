@@ -26,7 +26,7 @@ module Search
       end
 
       def project
-        ALWAYS_ALLOWED_SCOPES + global_scopes + PROJECT_SCOPES
+        PROJECT_SCOPES
       end
 
       private

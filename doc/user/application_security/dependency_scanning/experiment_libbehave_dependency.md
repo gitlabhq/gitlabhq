@@ -218,7 +218,7 @@ Libbehave produces the following output:
   a quick view of which features a dependency detected.
 - **MR comment summary**: The summary of findings are output as an MR comment note for easier
   review. This requires an access token to be configured to give the job access to write to the MR
-note section.
+  note section.
 - **HTML artifact**: An HTML artifact that contains a searchable set of libraries and identified
   features as well as the exact lines of code that triggered the finding.
 

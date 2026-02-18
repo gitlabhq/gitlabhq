@@ -21,7 +21,8 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
     allow(diff_file).to receive_messages(
       new_path: 'path/to/file.rb',
       content_sha: content_sha,
-      repository: repository
+      repository: repository,
+      conflict: nil
     )
   end
 
@@ -38,6 +39,49 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
 
         expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
         expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
+      end
+    end
+  end
+
+  describe 'conflict message' do
+    where(:conflict_type, :expected_message) do
+      [
+        [:both_modified, 'This file was modified in both the source and target branches.'],
+        [:modified_source_removed_target,
+          'This file was modified in the source branch, but removed in the target branch.'],
+        [:modified_target_removed_source,
+          'This file was removed in the source branch, but modified in the target branch.'],
+        [:renamed_same_file, 'This file was renamed differently in the source and target branches.'],
+        [:removed_source_renamed_target,
+          'This file was removed in the source branch, but renamed in the target branch.'],
+        [:removed_target_renamed_source,
+          'This file was renamed in the source branch, but removed in the target branch.'],
+        [:both_added, 'This file was added both in the source and target branches, but with different contents.'],
+        [:unknown_type, 'Unknown conflict']
+      ]
+    end
+
+    with_them do
+      before do
+        allow(diff_file).to receive(:conflict).and_return(conflict_type)
+      end
+
+      it 'renders the appropriate conflict message' do
+        render_component
+
+        expect(page).to have_text(expected_message)
+      end
+    end
+
+    context 'when there is no conflict' do
+      before do
+        allow(diff_file).to receive(:conflict).and_return(nil)
+      end
+
+      it 'does not render conflict message' do
+        render_component
+
+        expect(page).not_to have_text('Conflict:')
       end
     end
   end

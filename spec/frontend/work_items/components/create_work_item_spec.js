@@ -540,6 +540,22 @@ describe('Create work item component', () => {
       expect(findSelect().exists()).toBe(false);
       expect(findFormTitle().text()).toBe('New epic');
     });
+
+    it('emits "changeType" with the type name when "selectedWorkItemTypeId" changes', async () => {
+      // Initialize component without a preselected type so the dropdown is active
+      createComponent({ props: { preselectedWorkItemType: null } });
+      await waitForPromises();
+
+      const mockIssueType = namespaceWorkItemTypes.find(
+        (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
+      );
+
+      // Trigger the watcher by updating the ID (simulating a select input)
+      findSelect().vm.$emit('input', mockIssueType.id);
+      await nextTick();
+
+      expect(wrapper.emitted('changeType')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
+    });
   });
 
   describe('Create work item', () => {

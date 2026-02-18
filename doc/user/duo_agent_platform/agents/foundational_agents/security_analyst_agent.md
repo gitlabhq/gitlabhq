@@ -38,12 +38,18 @@ The Security Analyst Agent understands GitLab-specific security implementations,
 vulnerability states, severity levels, and security scanner outputs. It can interpret EPSS scores,
 CVE data, and reachability analysis to provide contextual security guidance.
 
-## Access the Security Analyst Agent
+## Use the Security Analyst Agent
+
+You can use the Security Analyst Agent in the GitLab UI, VS Code, and JetBrains IDEs.
+
+### In the GitLab UI
 
 Prerequisites:
 
-- You must be working in a GitLab project with security scanning enabled.
-- Foundational agents must be [turned on](_index.md#turn-foundational-agents-on-or-off).
+- Use a GitLab project with security scanning enabled.
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+
+To use the Security Analyst Agent in the GitLab UI:
 
 1. On the top bar, select **Search or go to** and find your project.
 
@@ -60,7 +66,59 @@ Prerequisites:
    - Provide context about your security requirements and risk tolerance.
    - Specify which types of vulnerabilities or scan results you're focusing on.
    - Include relevant project or component details when asking for analysis.
-   - Ask for clarification if the Security Analyst Agent's recommendations don't align with your security policies.
+   - Ask for clarification if the Security Analyst Agent's recommendations do not align with your security policies.
+   - Use specific vulnerability IDs or URLs when discussing particular findings.
+
+### In VS Code
+
+Prerequisites:
+
+- Use a GitLab project with security scanning enabled.
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+- Install and configure [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)
+  version 8.39.0 or later.
+- Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+To use the Security Analyst Agent in VS Code:
+
+1. In VS Code, on the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst**.
+1. Enter your security-related question or request. To get the best results from your request:
+
+   - Provide context about your security requirements and risk tolerance.
+   - Specify which types of vulnerabilities or scan results you're focusing on.
+   - Include relevant project or component details when asking for analysis.
+   - Ask for clarification if the Security Analyst Agent's recommendations do not align with your security policies.
+   - Use specific vulnerability IDs or URLs when discussing particular findings.
+
+### In JetBrains IDEs
+
+Prerequisites:
+
+- Use a GitLab project with security scanning enabled.
+- [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+- Install and configure [GitLab plugin for JetBrains](../../../../editor_extensions/jetbrains_ide/setup.md)
+  version 3.11.1 or later.
+- Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+First, enable the GitLab Duo Agent Platform:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform**, select the **Enable GitLab Duo Agent Platform** checkbox.
+1. Restart your IDE if prompted.
+
+Then, to use the Security Analyst Agent:
+
+1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst**.
+1. Enter your security-related question or request. To get the best results from your request:
+
+   - Provide context about your security requirements and risk tolerance.
+   - Specify which types of vulnerabilities or scan results you're focusing on.
+   - Include relevant project or component details when asking for analysis.
+   - Ask for clarification if the Security Analyst Agent's recommendations do not align with your security policies.
    - Use specific vulnerability IDs or URLs when discussing particular findings.
 
 ## Example prompts

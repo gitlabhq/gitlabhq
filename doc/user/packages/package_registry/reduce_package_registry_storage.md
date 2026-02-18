@@ -42,9 +42,8 @@ To delete a package:
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
-   - Or, from the **Package registry** page,
-   select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
-   and select **Delete package**.
+   - Or, from the **Package registry** page, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
+     and select **Delete package**.
 1. On the **Delete package version** confirmation dialog, select **Permanently delete**.
 
 The package is permanently deleted.

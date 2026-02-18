@@ -53,7 +53,7 @@ To use the Agent Platform:
 - For GitLab Self-Managed, [configure your instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
 - For GitLab Duo Self-Hosted, [install the AI Gateway](../../install/install_ai_gateway.md) with the Agent Platform service.
 
-To use the Agent Platform in your IDE:
+To use the Agent Platform in your local environment:
 
 - Install an editor extension and authenticate with GitLab.
 - Have a project in a [group namespace](../namespace/_index.md).

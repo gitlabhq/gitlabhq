@@ -18,7 +18,7 @@ which are available in the GitLab UI and IDEs.
 
 ## Step 1: Access GitLab Duo Chat
 
-GitLab Duo Chat (Agentic), in the UI or your IDE, is your interface
+GitLab Duo Chat (Agentic), in the UI or your local environment, is your interface
 for asking questions and interacting with agents.
 It can provide advice, but it can also propose and implement solutions.
 

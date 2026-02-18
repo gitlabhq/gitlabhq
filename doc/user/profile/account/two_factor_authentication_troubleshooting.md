@@ -36,9 +36,9 @@ To resolve this error:
 - Use a [personal access token](../personal_access_tokens.md) with the correct scopes:
   - For Git requests over HTTP(S): `read_repository` or `write_repository`
   - For [GitLab container registry](../../packages/container_registry/authenticate_with_container_registry.md)
-  requests: `read_registry` or `write_registry`
+    requests: `read_registry` or `write_registry`
   - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images)
-  requests: `read_registry` and `write_registry`
+    requests: `read_registry` and `write_registry`
 - If you configured LDAP, use an [LDAP password](../../../administration/auth/ldap/_index.md).
 - Use an [OAuth credential helper](two_factor_authentication.md#oauth-credential-helpers).
 

@@ -119,12 +119,11 @@ Prerequisites:
 - Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 Turn on GitLab Duo Chat:
-<!-- markdownlint-disable MD044 -->
+
 1. In VS Code, go to **Settings** > **Settings**.
 1. Search for `agent platform`.
 1. Under **GitLab** > **Duo Agent Platform: Enabled**, select the
    **Enable GitLab Duo Agent Platform** checkbox.
-<!-- markdownlint-enable MD044 -->
 
 Then, to use GitLab Duo Chat:
 
@@ -244,10 +243,10 @@ Because of LLM context window limits, conversations are truncated to 200,000 tok
 
 Individual conversations expire and are automatically deleted after 30 days of inactivity.
 
-## Customize GitLab Duo Chat in your IDE
+## Customize GitLab Duo Chat in your local environment
 
-Customize how GitLab Duo Chat behaves in your IDE by providing instructions that reflect your coding
-style, team practices, and project requirements.
+Customize how GitLab Duo Chat behaves in your local environment by providing instructions that
+reflect your coding style, team practices, and project requirements.
 
 GitLab Duo Chat supports two approaches:
 

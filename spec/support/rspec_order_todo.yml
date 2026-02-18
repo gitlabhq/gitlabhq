@@ -3040,7 +3040,6 @@
 - './spec/features/projects/show/redirects_spec.rb'
 - './spec/features/projects/show/rss_spec.rb'
 - './spec/features/projects/show/schema_markup_spec.rb'
-- './spec/features/projects/show/user_interacts_with_auto_devops_banner_spec.rb'
 - './spec/features/projects/show/user_interacts_with_stars_spec.rb'
 - './spec/features/projects/show/user_manages_notifications_spec.rb'
 - './spec/features/projects/show/user_sees_collaboration_links_spec.rb'

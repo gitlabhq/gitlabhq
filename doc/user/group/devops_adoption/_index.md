@@ -106,5 +106,5 @@ To remove a subgroup from the DevOps adoption report:
 1. Either:
 
 - From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.
-- From the **Adoption by subgroup** table, in the row of the group you want to remove, select
-**Remove Group from the table** ({{< icon name="remove" >}}).
+- From the **Adoption by subgroup** table, in the row of the group you want to remove,
+  select **Remove Group from the table** ({{< icon name="remove" >}}).

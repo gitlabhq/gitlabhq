@@ -8529,6 +8529,9 @@ msgstr ""
 msgid "An administrator has turned off GitLab Duo for this %{reason}."
 msgstr ""
 
+msgid "An administrator must enable the container registry for Auto DevOps to work."
+msgstr ""
+
 msgid "An alert has been resolved in %{project_path}."
 msgstr ""
 
@@ -10806,9 +10809,6 @@ msgid "Auto-resolved by the vulnerability management policy named '%{policy_name
 msgstr ""
 
 msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
-msgstr ""
-
-msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "AutoDevopsAlert|Security testing tools enabled with %{linkStart}Auto DevOps%{linkEnd}"
@@ -19683,9 +19683,6 @@ msgid "Container registry"
 msgstr ""
 
 msgid "Container registry images"
-msgstr ""
-
-msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
 msgid "Container scanning"
@@ -72719,6 +72716,9 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
+msgid "Unknown conflict"
+msgstr ""
+
 msgid "Unknown error"
 msgstr ""
 
@@ -76926,6 +76926,9 @@ msgid "Warning"
 msgstr ""
 
 msgid "Warning:"
+msgstr ""
+
+msgid "Warning: Container registry disabled"
 msgstr ""
 
 msgid "Warning: Displaying this diagram might cause performance issues on this page."

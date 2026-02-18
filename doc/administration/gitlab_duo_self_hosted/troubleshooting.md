@@ -477,7 +477,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
 ## Error: An error occurred while fetching an authentication token for this workflow
 
-This error can occur when you try to use Agentic Chat in GitLab or your IDE.
+This error can occur when you try to use Agentic Chat in GitLab or your local environment.
 
 You might also see the following in the logs of your IDE's [GitLab Language Server](../../editor_extensions/language_server/_index.md):
 

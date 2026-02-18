@@ -184,6 +184,7 @@ When experiencing a behavior not working as expected, consider providing context
 - Full job console output.
 - Framework in use with version (for example "Spring Boot v2.3.2").
 - Language runtime with version (for example "Eclipse Temurin v17.0.1").
+
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
 > [!warning]

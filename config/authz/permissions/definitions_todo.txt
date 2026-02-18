@@ -586,7 +586,6 @@ read_runner_upgrade_status
 read_runner_usage
 read_runners
 read_runners_registration_token
-read_saml_user
 read_saved_replies
 read_scan
 read_secret_push_protection_info

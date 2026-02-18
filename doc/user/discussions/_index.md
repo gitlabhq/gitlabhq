@@ -118,8 +118,8 @@ To add a commit diff comment:
    - To comment on an entire file, find the file you want to comment on and,
      in the file header, select **Comment on this file** ({{< icon name="comment" >}}).
    - To comment on specific lines, find the line number you want to comment on. Hover over the line number,
-   then select **Comment** ({{< icon name="comment" >}}). To select more lines, drag the
-   **Comment** ({{< icon name="comment" >}}) icon.
+     then select **Comment** ({{< icon name="comment" >}}). To select more lines,
+     drag the **Comment** ({{< icon name="comment" >}}) icon.
 1. Enter your comment.
 1. Submit your comment:
    - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:

@@ -26,9 +26,11 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
 
   describe '#diffs_slice' do
     let(:offset) { presenter.send(:offset) }
+    let(:diff_collection) { instance_double(Gitlab::Git::DiffCollection) }
 
     it 'calls first_diffs_slice on the commit with the correct arguments' do
-      expect(commit).to receive(:first_diffs_slice).with(offset, diff_options)
+      allow(diff_collection).to receive(:decorate!).and_return(diff_collection)
+      expect(commit).to receive(:first_diffs_slice).with(offset, diff_options).and_return(diff_collection)
 
       presenter.diffs_slice
     end

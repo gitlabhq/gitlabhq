@@ -609,10 +609,8 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 - `<package_version>`: Optional. The package version.
 - `<source_name>`: Optional. The source name.
   - `nuget` checks `nuget.org` for the requested package first.
-If GitLab package registry has a NuGet package
-with the same name as a package at
-`nuget.org`, you must specify the source name
-to install the correct package.
+    If GitLab package registry has a NuGet package with the same name as a package at
+    `nuget.org`, you must specify the source name to install the correct package.
 
 {{< /tab >}}
 

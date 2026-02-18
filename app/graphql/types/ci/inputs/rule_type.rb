@@ -12,20 +12,20 @@ module Types
           null: true,
           description: 'Parsed condition tree for frontend eval.'
 
-        field :default, GraphQL::Types::String,
+        field :default, Types::Ci::Inputs::ValueType,
           null: true,
           hash_key: 'default',
-          description: 'Default value when rule matches.'
+          description: 'Default value when rule matches. Can be a string, array, number, or boolean.'
 
         field :if, GraphQL::Types::String,
           null: true,
           hash_key: 'if',
           description: 'Condition expression.'
 
-        field :options, [GraphQL::Types::String],
+        field :options, [Types::Ci::Inputs::ValueType],
           null: true,
           hash_key: 'options',
-          description: 'Available options when rule matches.'
+          description: 'Available options when rule matches. Each option can be a string, array, number, or boolean.'
 
         def condition_tree
           return @condition_tree if defined?(@condition_tree)

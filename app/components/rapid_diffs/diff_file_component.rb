@@ -70,7 +70,8 @@ module RapidDiffs
 
     def classes
       [
-        ('rd-diff-file-component-linked' if @diff_file.linked)
+        ('rd-diff-file-component-linked' if @diff_file.linked),
+        ('rd-diff-file-component-conflict' if @diff_file.respond_to?(:conflict) && @diff_file.conflict)
       ]
     end
   end

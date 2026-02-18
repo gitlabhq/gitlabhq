@@ -32,5 +32,31 @@ module RapidDiffs
         position: 2
       }
     end
+
+    def human_readable_conflict(conflict_type)
+      case conflict_type
+      when :both_modified then _('Conflict: This file was modified in both the source and target branches.')
+      when :modified_source_removed_target then _(
+        'Conflict: This file was modified in the source branch, but removed in the target branch.'
+      )
+      when :modified_target_removed_source then _(
+        'Conflict: This file was removed in the source branch, but modified in the target branch.'
+      )
+      when :renamed_same_file then _(
+        'Conflict: This file was renamed differently in the source and target branches.'
+      )
+      when :removed_source_renamed_target then _(
+        'Conflict: This file was removed in the source branch, but renamed in the target branch.'
+      )
+      when :removed_target_renamed_source then _(
+        'Conflict: This file was renamed in the source branch, but removed in the target branch.'
+      )
+      when :both_added then _(
+        'Conflict: This file was added both in the source and target branches, but with different contents.'
+      )
+      else
+        _('Unknown conflict')
+      end
+    end
   end
 end

@@ -469,6 +469,7 @@ The following languages and dependency managers are supported by dependency scan
 </table>
 
 <!-- markdownlint-disable MD029 -->
+
 **Footnotes**:
 
 1. Java 21 LTS for [sbt](https://www.scala-sbt.org/) is limited to version 1.9.7. Support for more sbt versions can be tracked in [issue 430335](https://gitlab.com/gitlab-org/gitlab/-/issues/430335).
@@ -483,6 +484,7 @@ The following languages and dependency managers are supported by dependency scan
 9. Only SBOM, without advisories. See [issue 468764](https://gitlab.com/gitlab-org/gitlab/-/issues/468764).
 10. No license detection. See [epic 17037](https://gitlab.com/groups/gitlab-org/-/epics/17037).
 11. If a lock file contains multiple entries for the same package with different environment markers (for example, numpy==2.2.6 for Python <3.11 and numpy==2.4.1 for Python ≥3.11), only the first entry is parsed and reported.
+
 <!-- markdownlint-enable MD029 -->
 <!-- markdownlint-enable MD044 -->
 
@@ -954,7 +956,6 @@ GitLab analyzers obtain dependency information using one of the following two me
 
 The following package managers use lockfiles that GitLab analyzers are capable of parsing directly:
 
-<!-- markdownlint-disable MD044 -->
 <table class="ds-table no-vertical-table-lines">
   <thead>
     <tr>
@@ -1055,7 +1056,6 @@ The following package managers use lockfiles that GitLab analyzers are capable o
    - `yarn patch`
 
    Yarn files that contain a patch, a workspace, or both, are still processed, but these features are ignored.
-<!-- markdownlint-enable MD044 -->
 
 #### Obtaining dependency information by running a package manager to generate a parsable file
 
@@ -1064,7 +1064,6 @@ To support the following package managers, the GitLab analyzers proceed in two s
 1. Execute the package manager or a specific task, to export the dependency information.
 1. Parse the exported dependency information.
 
-<!-- markdownlint-disable MD044 -->
 <table class="ds-table no-vertical-table-lines">
   <thead>
     <tr>
@@ -1160,10 +1159,9 @@ To support the following package managers, the GitLab analyzers proceed in two s
 
      For Java versions 8 and 11, Gradle 6.7.1 is automatically selected, Java 17 uses Gradle 7.6.4, and Java 21 uses Gradle 8.8.
 
-   - If your project does use a `gradlew` file, then the version of Gradle pre-installed in the analyzer image is ignored, and the version specified in your gradlew file is used instead.
+   - If your project does use a `gradlew` file, then the version of Gradle pre-installed in the analyzer image is ignored, and the version specified in your `gradlew` file is used instead.
 1. This test confirms that if a `Pipfile.lock` file is found, it is used by Gemnasium to scan the exact package versions listed in this file.
 1. Because of the implementation of `go build`, the Go build process requires network access, a pre-loaded mod cache using `go mod download`, or vendored dependencies. For more information, refer to the [Go documentation on compiling packages and dependencies](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies).
-<!-- markdownlint-enable MD044 -->
 
 ## How analyzers are triggered
 

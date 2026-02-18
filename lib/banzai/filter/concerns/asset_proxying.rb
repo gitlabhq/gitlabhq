@@ -23,7 +23,7 @@ module Banzai
         def can_skip_asset_proxy_for_url?(url)
           begin
             uri = URI.parse(url)
-          rescue URI::Error
+          rescue URI::Error, NoMethodError
             return false
           else
             # Skip URLs like `/path.ext` or `path.ext` which are relative to the current host

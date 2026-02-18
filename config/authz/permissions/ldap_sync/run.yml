@@ -1,0 +1,3 @@
+---
+name: run_ldap_sync
+description: Grants the ability to sync a group with LDAP

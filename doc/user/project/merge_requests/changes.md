@@ -272,7 +272,7 @@ you struggle to understand code written in a language you are not familiar with,
 you can ask GitLab Duo to explain the code to you.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://youtu.be/1izKaLmmaCA?si=O2HDokLLujRro_3O)
-<!-- Video published on 2023-11-18 -->
+  <!-- Video published on 2023-11-18 -->
 
 Prerequisites:
 

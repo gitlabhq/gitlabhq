@@ -24,18 +24,18 @@ To create a blank project:
 1. Select **Create blank project**.
 1. Enter the project details:
    1. **Project name**: Enter the name of your project.
-   For more information, see [naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
+      For more information, see [naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
    1. **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    1. **Project deployment target (optional)**: If you want to deploy your project to specific environment,
-   select the relevant deployment target.
+      select the relevant deployment target.
    1. **Visibility Level**: Select the appropriate visibility level.
-   See the [viewing and access rights](../public_access.md) for users.
+      See the [viewing and access rights](../public_access.md) for users.
    1. **Initialize repository with a README**: Select this option to initialize the Git repository,
-   create a default branch, and enable cloning of this project's repository.
+      create a default branch, and enable cloning of this project's repository.
    1. **Enable Static Application Security Testing (SAST)**: Select this option to analyze the
-   source code for known security vulnerabilities.
+      source code for known security vulnerabilities.
    1. **Enable Secret Detection**: Select this option to analyze the
-   source code for secrets and credentials to prevent unauthorized access.
+      source code for secrets and credentials to prevent unauthorized access.
 1. Select **Create project**.
 
 ## Create a project from a built-in template
@@ -57,9 +57,9 @@ To create a project from a built-in template:
    - **Project name**: Enter the name of your project.
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    - **Project description (optional)** Enter a description for your project.
-   The character limit is 500.
+     The character limit is 500.
    - **Visibility Level**: Select the appropriate visibility level.
-   See the [viewing and access rights](../public_access.md) for users.
+     See the [viewing and access rights](../public_access.md) for users.
 1. Select **Create project**.
 
 > [!note]
@@ -87,9 +87,9 @@ To create a project from the HIPAA Audit Protocol template:
    - **Project name**: Enter the name of your project.
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    - **Project description (optional)** Enter a description for your project.
-   The character limit is 500.
+     The character limit is 500.
    - **Visibility Level**: Select the appropriate visibility level.
-   See the [viewing and access rights](../public_access.md) for users.
+     See the [viewing and access rights](../public_access.md) for users.
 1. Select **Create project**.
 
 ## Create a project from a custom template
@@ -110,7 +110,7 @@ To create a project from a custom template:
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    - **Project description (optional)** Enter a description for your project. The character limit is 500.
    - **Visibility Level**: Select the appropriate visibility level.
-   See the [viewing and access rights](../public_access.md) for users.
+     See the [viewing and access rights](../public_access.md) for users.
 1. Select **Create project**.
 
 ## Create a project that uses SHA-256 hashing
@@ -143,7 +143,7 @@ To create a project that uses SHA-256 hashing:
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    - **Project description (optional)** Enter a description for your project. The character limit is 500.
    - **Visibility Level**: Select the appropriate visibility level.
-   See the [viewing and access rights](../public_access.md) for users.
+     See the [viewing and access rights](../public_access.md) for users.
 1. In the **Project Configuration** area, expand the **Experimental settings**.
 1. Select **Use SHA-256 as the repository hashing algorithm**.
 1. Select **Create project**.

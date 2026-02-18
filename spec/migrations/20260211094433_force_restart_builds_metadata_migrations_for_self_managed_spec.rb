@@ -55,7 +55,10 @@ RSpec.describe ForceRestartBuildsMetadataMigrationsForSelfManaged, migration: :g
       )
     end
 
-    it 'restarts failed batched migrations and skips non-failed ones' do
+    it 'restarts failed batched migrations and skips non-failed ones', quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/590590',
+      type: :flaky
+    } do
       migrate!
 
       expect(failed_migration.reload.status).to eq(1)

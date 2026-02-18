@@ -36,6 +36,13 @@ With this integration, you can use [exact code search](../../user/search/exact_c
 instead of [advanced search](../../user/search/advanced_search.md) to search for code in GitLab.
 You can use exact match and regular expression modes to search for code in a group or repository.
 
+> [!note]
+> Zoekt handles only code search and does not replace
+> [Elasticsearch or OpenSearch](../advanced_search/elasticsearch.md).
+> For all other search scopes, including comments, commits, epics,
+> issues, merge requests, milestones, projects, users, and wikis,
+> Elasticsearch or OpenSearch is still required.
+
 ## Install Zoekt
 
 Prerequisites:
@@ -647,8 +654,12 @@ due to how resources are allocated and managed.
 
 #### Kubernetes deployments
 
-The following table shows recommended resources for Kubernetes deployments
-based on index storage requirements:
+The following table shows recommended resources per node (per StatefulSet pod)
+for Kubernetes deployments based on index storage requirements.
+Each pod in the StatefulSet runs its own webserver and indexer containers
+with independent resource allocations and its own persistent volume for index storage.
+If you run multiple nodes, multiply these resources by the number of nodes
+to calculate total cluster resources.
 
 | Disk   | Webserver CPU | Webserver memory  | Indexer CPU | Indexer memory |
 |--------|---------------|-------------------|-------------|----------------|
@@ -676,8 +687,10 @@ For Kubernetes deployments:
 
 #### VM and bare metal deployments
 
-The following table shows recommended resources for VM and bare metal deployments
-based on index storage requirements:
+The following table shows recommended resources per node for VM and bare metal deployments
+based on index storage requirements.
+If you run multiple nodes, multiply these resources by the number of nodes
+to calculate total cluster resources.
 
 | Disk   | VM size  | Total CPU | Total memory | AWS          | GCP             | Azure |
 |--------|----------|-----------|--------------|--------------|-----------------|-------|

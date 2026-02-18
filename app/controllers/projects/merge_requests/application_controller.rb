@@ -22,7 +22,8 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       @merge_request,
       diff_view: diff_view,
       diff_options: diff_options,
-      request_params: params
+      request_params: params,
+      conflicts: conflicts_with_types
     )
   end
 
