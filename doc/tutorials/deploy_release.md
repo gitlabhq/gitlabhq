@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorials page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Deployment processes and targets.
 title: 'Tutorials: Deploy and release your application'
 ---

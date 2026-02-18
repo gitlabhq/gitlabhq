@@ -14189,7 +14189,7 @@ CREATE TABLE application_settings (
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     gitlab_shell_operation_limit integer DEFAULT 600,
-    protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
+    protected_paths_for_get_request text[] DEFAULT '{/users/sign_in_path}'::text[] NOT NULL,
     namespace_storage_forks_cost_factor double precision DEFAULT 1.0 NOT NULL,
     bulk_import_max_download_file_size bigint DEFAULT 5120 NOT NULL,
     max_import_remote_file_size bigint DEFAULT 10240 NOT NULL,

@@ -30,6 +30,10 @@ module ApplicationSettingImplementation
     '/admin/session'
   ].freeze
 
+  DEFAULT_PROTECTED_PATHS_FOR_GET_REQUEST = [
+    '/users/sign_in_path'
+  ].freeze
+
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
   DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 30
 
@@ -183,6 +187,7 @@ module ApplicationSettingImplementation
         project_import_limit: 6,
         protected_ci_variables: true,
         protected_paths: DEFAULT_PROTECTED_PATHS,
+        protected_paths_for_get_request: DEFAULT_PROTECTED_PATHS_FOR_GET_REQUEST,
         push_event_activities_limit: 3,
         push_event_hooks_limit: 3,
         raw_blob_request_limit: 300,

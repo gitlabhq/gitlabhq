@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Dedicated encryption protects data at rest and in transit using AWS technologies, with support to bring your own encryption keys (BYOK).
 title: GitLab Dedicated encryption
 ---

@@ -37,4 +37,12 @@ RSpec.describe API::Concerns::McpAccess, feature_category: :mcp_server do
       expect(dummy_class.access_scopes).to include(:mcp)
     end
   end
+
+  describe '.allow_mcp_access_delete' do
+    it 'adds mcp scope' do
+      dummy_class.allow_mcp_access_delete
+
+      expect(dummy_class.access_scopes).to include(:mcp)
+    end
+  end
 end

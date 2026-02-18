@@ -7031,9 +7031,6 @@ msgstr ""
 msgid "Advanced Settings"
 msgstr ""
 
-msgid "Advanced editor"
-msgstr ""
-
 msgid "Advanced export options"
 msgstr ""
 
@@ -61458,9 +61455,6 @@ msgid "SecurityOrchestration|%{allLabel}%{projectCount} %{projectLabel} in this 
 msgstr ""
 
 msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before selection."
-msgstr ""
-
-msgid "SecurityOrchestration|%{boldStart}Experiment:%{boldEnd} Try our new advanced policy editor for a more intuitive experience."
 msgstr ""
 
 msgid "SecurityOrchestration|%{boldStart}Experimental feature:%{boldEnd} Try out auto-dismissed actions for vulnerability policy. This feature is expected to be fully available in %{boldStart}18.8.%{boldEnd}"

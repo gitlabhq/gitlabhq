@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab application limits
 description: Configure limits on an instance.
 ---
@@ -76,7 +76,7 @@ Read more about [raw endpoint rate limits](settings/rate_limits_on_raw_endpoints
 
 This setting limits the request rate on specific paths.
 
-GitLab rate limits the following paths by default:
+GitLab rate limits the following paths for POST requests by default:
 
 ```plaintext
 '/users/password',
@@ -88,6 +88,12 @@ GitLab rate limits the following paths by default:
 '/unsubscribes/',
 '/import/github/personal_access_token',
 '/admin/session'
+```
+
+GitLab rate limits the following paths for GET requests by default:
+
+```plaintext
+'/users/sign_in_path'
 ```
 
 Read more about [protected path rate limits](settings/protected_paths.md).

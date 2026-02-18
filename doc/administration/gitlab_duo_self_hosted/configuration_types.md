@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Get started with GitLab Duo Self-Hosted.
 title: GitLab Duo Self-Hosted configuration and authentication
 ---

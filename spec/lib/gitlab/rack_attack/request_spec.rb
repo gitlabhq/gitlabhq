@@ -979,6 +979,12 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       '/secure'     | true
       '/secure/'    | true
       '/secure/foo' | true
+
+      '/o/my-org/protected'  | true
+      '/o/my-org/secure'     | true
+      '/o/my-org/secure/'    | true
+      '/o/my-org/secure/foo' | true
+      '/o/org_with_underscores/protected' | true
     end
 
     with_them do
@@ -1012,6 +1018,12 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       '/secure'     | true
       '/secure/'    | true
       '/secure/foo' | true
+
+      '/o/my-org/protected'  | true
+      '/o/my-org/secure'     | true
+      '/o/my-org/secure/'    | true
+      '/o/my-org/secure/foo' | true
+      '/o/org_with_underscores/protected' | true
     end
 
     with_them do

@@ -323,6 +323,61 @@ RSpec.describe Mcp::Tools::AggregatedService, feature_category: :mcp_server do
     end
   end
 
+  describe '#enhance_response_with_operation' do
+    let(:test_service_class) do
+      Class.new(described_class) do
+        register_version '1.0.0', {
+          description: 'Test tool',
+          input_schema: { type: 'object', properties: {}, required: [] }
+        }
+
+        def self.tool_name
+          'test_aggregated_tool'
+        end
+
+        def select_tool(_args)
+          tools.first
+        end
+
+        def transform_arguments(args)
+          args
+        end
+      end
+    end
+
+    let(:service) { test_service_class.new(tools: tools) }
+
+    context 'when response has an error' do
+      let(:response) { { isError: true, content: [{ type: 'text', text: 'Error' }] } }
+
+      it 'returns the response unchanged' do
+        result = service.send(:enhance_response_with_operation, response, operation: :create, tool_name: :create_item)
+
+        expect(result).to eq(response)
+      end
+    end
+
+    context 'when response has structuredContent' do
+      let(:response) do
+        {
+          content: [{ type: 'text', text: '{"id":1}' }],
+          structuredContent: { id: 1 },
+          isError: false
+        }
+      end
+
+      it 'adds the mcp operation details' do
+        result = service.send(:enhance_response_with_operation, response, operation: :create, tool_name: :create_item)
+
+        expect(result[:structuredContent][:_meta]).to eq({
+          operation: 'create',
+          tool: 'create_item',
+          aggregator: 'test_aggregated_tool'
+        })
+      end
+    end
+  end
+
   describe 'abstract methods' do
     describe '.tool_name' do
       it 'raises NoMethodError when not implemented' do

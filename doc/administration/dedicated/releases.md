@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Release schedules, versioning model, and patch processes for GitLab Dedicated instances.
 title: GitLab Dedicated releases and versioning
 ---

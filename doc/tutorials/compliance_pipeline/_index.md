@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Create a compliance pipeline (deprecated)'
 ---
 

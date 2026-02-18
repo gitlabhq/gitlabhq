@@ -80,7 +80,7 @@ export default {
       :data-event-label="trackingLabel"
       :data-event-property="todo.action"
       :data-event-additional="trackingAdditionalData"
-      class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-nowrap gl-justify-between gl-gap-3 gl-gap-y-3 !gl-text-default !gl-no-underline @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-nowrap gl-justify-between gl-gap-3 gl-gap-y-3 gl-rounded-base !gl-text-default !gl-no-underline @sm/panel:gl-flex-row @sm/panel:gl-items-center"
     >
       <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
       <todo-item-timestamp

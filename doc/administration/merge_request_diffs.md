@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure external storage for merge request diffs on your GitLab instance.
 title: Merge request diffs storage
 ---

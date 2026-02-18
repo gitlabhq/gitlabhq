@@ -494,6 +494,17 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(page).to have_field('js-remember-me-omniauth')
         end
 
+        it 'appends URL fragment to all the oauth forms', :js do
+          visit new_user_session_path(anchor: '65')
+
+          within '.js-oauth-login' do
+            expect(page).to have_selector('form[action$="?redirect_fragment=65"]')
+
+            check _('Remember me')
+            expect(page).to have_selector('form[action$="?redirect_fragment=65&remember_me=1"]')
+          end
+        end
+
         context 'when remember me is not enabled' do
           before do
             stub_application_setting(remember_me_enabled: false)
@@ -1050,6 +1061,16 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         visit new_user_session_path
 
         ensure_tab_pane_correctness(['Main LDAP', 'Standard'])
+      end
+
+      it 'appends URL fragment to all the non oauth forms', :js do
+        visit new_user_session_path(anchor: '65')
+
+        within '.js-non-oauth-login' do
+          expect(page).to have_selector('#ldapmain form[action$="#65"]')
+          expect(page).to have_selector('#login-pane form[action$="#65"]', visible: :hidden)
+          expect(page).to have_selector('form[data-testid="passkey-form"][action$="#65"]', visible: :hidden)
+        end
       end
 
       it 'renders link to sign up path' do

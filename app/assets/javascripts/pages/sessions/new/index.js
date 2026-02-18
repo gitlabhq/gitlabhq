@@ -21,10 +21,10 @@ new NoEmojiValidator(); // eslint-disable-line no-new
 
 // This is implemented directly in app/assets/javascripts/authentication/sign_in/components/sign_in_form.vue
 if (!gon.features.signInFormVue) {
-  appendUrlFragment();
   toggleRememberMePasskey();
 }
 
+appendUrlFragment();
 appendRedirectQuery();
 toggleRememberMeQuery();
 initVueAlerts();

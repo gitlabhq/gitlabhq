@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure network access and security settings for GitLab Dedicated.
 title: GitLab Dedicated network access and security
 ---

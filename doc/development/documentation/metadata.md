@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Metadata
 ---
 
@@ -65,7 +65,7 @@ Documents with no clear group owner are considered _unassigned_ and get this met
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Example page title
 ---
 ```

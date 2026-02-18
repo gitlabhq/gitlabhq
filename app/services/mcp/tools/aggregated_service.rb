@@ -37,6 +37,35 @@ module Mcp
         tool.execute(request:, params:)
       end
 
+      def enhance_response_with_operation(response, operation:, tool_name:, action_description: nil)
+        return response if response[:isError]
+
+        if response[:structuredContent].is_a?(Hash)
+          response[:structuredContent][:_meta] = {
+            operation: operation.to_s,
+            tool: tool_name.to_s,
+            aggregator: self.class.tool_name
+          }
+        end
+
+        if action_description && response.dig(:content, 0, :text)
+          original_text = response.dig(:content, 0, :text)
+
+          if json_object_or_array?(original_text)
+            response[:content].first[:text] = "#{action_description} #{original_text}"
+          end
+        end
+
+        response
+      end
+
+      def json_object_or_array?(text)
+        parsed = Gitlab::Json.safe_parse(text)
+        parsed.is_a?(Hash) || parsed.is_a?(Array)
+      rescue JSON::ParserError, EncodingError
+        false
+      end
+
       private
 
       attr_reader :tools, :request, :params
