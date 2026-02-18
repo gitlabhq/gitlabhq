@@ -220,9 +220,11 @@ module Ci
     rescue StandardError => ex
       @metrics.increment_queue_operation(:build_conflict_exception)
 
-      # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing
-      # the result, consider this as a failure to be retried.
-      scheduler_failure!(build)
+      # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing the
+      # result, consider this as a failure to be retried. We call #reset because
+      # the state machine may have the wrong `from` state, see
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/590004
+      scheduler_failure!(build.reset)
       track_exception_for_build(ex, build)
 
       # skip, and move to next one

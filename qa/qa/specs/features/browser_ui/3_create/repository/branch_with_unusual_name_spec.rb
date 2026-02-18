@@ -22,6 +22,8 @@ module QA
 
           project.visit!
 
+          QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
           Page::Project::Show.perform do |show|
             show.switch_to_branch(branch_name)
 

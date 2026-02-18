@@ -23,6 +23,9 @@ The [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md) uses [O
 an open-source secrets management solution. OpenBao provides secure storage, access control, and lifecycle management
 for secrets used in your GitLab instance.
 
+GitLab CI/CD jobs using secrets from the GitLab Secrets Manager must use
+[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 18.6 or later.
+
 ## OpenBao architecture
 
 OpenBao integrates with GitLab as an optional component that runs in parallel to existing GitLab services.

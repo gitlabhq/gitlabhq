@@ -7,9 +7,7 @@ title: GitLab Workflow extension for VS Code
 ---
 
 The [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE. It adds a
-GitLab Workflow panel to the VS Code sidebar where you can view issues, merge requests, and pipelines,
-and extend your view with [custom queries](custom_queries.md).
+for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE.
 
 To get started, [install and configure the extension](setup.md). For added security, you can set up
 the extension in a Visual Studio Code Dev Container.
@@ -29,7 +27,7 @@ When configured, this extension brings the GitLab features you use every day dir
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
 - [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) including GitLab Duo
-  Chat (Agentic), the Software Development Flow, and GitLab Duo Code Suggestions.
+  Chat (Agentic), agents, the Software Development Flow, and GitLab Duo Code Suggestions.
 - [GitLab Duo (Classic)](../../user/gitlab_duo/feature_summary.md) including GitLab
   Duo Chat (Classic) and GitLab Duo Code Suggestions (Classic).
 
@@ -44,15 +42,19 @@ When you view a GitLab project in VS Code, the extension shows you information a
 
 After you install and set up the extension, you can access the following features:
 
-- GitLab Workflow: On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
-- GitLab Duo Chat (Agentic): On the left sidebar, select **GitLab Duo Agent Platform**
-  ({{< icon name="duo-agentic-chat" >}}), and then select the chat tab.
-- Software Development Flow: On the left sidebar, select **GitLab Duo Agent Platform**
-  ({{< icon name="duo-agentic-chat" >}}), and then select the flows tab.
-- GitLab Duo Code Suggestions and GitLab Duo Code Suggestions (Classic): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
-  The icon will change based on the feature status.
-- GitLab Duo Chat (Classic): On the left sidebar, select **GitLab Duo Chat**
-  ({{< icon name="duo-chat" >}}).
+- On the left sidebar, **GitLab Workflow** ({{< icon name="tanuki" >}}): Manage issues and merge
+  requests, run CI/CD commands, view pipeline status, and perform security scanning.
+  You can also extend your view with [custom queries](custom_queries.md).
+- On the left sidebar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
+  - The chat tab: Interact with GitLab Duo Chat (Agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+    dropdown list to select a foundational or custom agent to work with.
+  - The flows tab: Use the Software Development Flow. Learn more about the
+  [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
+- In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
+  GitLab Duo Code Suggestions and GitLab Duo Code Suggestions (Classic), and review suggestions in
+  your file as you author code.
+- On the left sidebar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
+  GitLab Duo Chat (Classic).
 
 If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-are-unavailable) for guidance.
 

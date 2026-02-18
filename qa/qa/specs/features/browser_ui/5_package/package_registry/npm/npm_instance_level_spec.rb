@@ -101,6 +101,9 @@ module QA
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: another_project)
 
           another_project.visit_job('install')
+
+          QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)
             job.click_browse_button

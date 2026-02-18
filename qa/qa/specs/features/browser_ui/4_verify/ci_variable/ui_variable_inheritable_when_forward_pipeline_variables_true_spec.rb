@@ -18,6 +18,8 @@ module QA
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
       ) do
+        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
         visit_job_page('child1', 'child1_job')
         verify_job_log_shows_variable_value
 

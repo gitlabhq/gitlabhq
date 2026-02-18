@@ -11,13 +11,17 @@ with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
 After you [install and configure](setup.md) the extension, you can access the following features:
 
-- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md): On the right tool window bar, select **GitLab Duo Agent Platform** <br>({{< icon name="duo-agentic-chat" >}}), and then select the chat tab.
-- [Software Development Flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md): On the right tool window bar, select **GitLab Duo Agent Platform** <br>({{< icon name="duo-agentic-chat" >}}), and then select the flows tab.
-- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): On the right tool window bar, select **GitLab Duo Chat**
-  ({{< icon name="duo-chat" >}}). Or select some code and then, in the floating toolbar, select
-  **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
-  The icon will change based on the feature status.
+- On the right tool window bar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
+  - The chat tab: Interact with GitLab Duo Chat (Agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+  dropdown list to select a foundational or custom agent to work with.
+  - The flows tab: Use the Software Development Flow. Learn more about the
+  [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
+- In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
+  GitLab Duo Code Suggestions and GitLab Duo Code Suggestions (Classic), and review suggestions in
+  your file as you author code.
+- On the right tool window bar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
+  GitLab Duo Chat (Classic). Or select some code and then, in the floating toolbar, select
+  **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}) for in-line conversations.
 
 ## Use with remote development
 

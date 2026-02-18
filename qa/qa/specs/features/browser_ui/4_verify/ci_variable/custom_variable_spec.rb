@@ -35,6 +35,8 @@ module QA
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
+
+        QA::EE::Page::Component::DapEmptyState.perform(&:close)
       end
 
       after do

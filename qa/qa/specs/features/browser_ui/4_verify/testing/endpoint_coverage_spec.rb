@@ -27,6 +27,8 @@ module QA
         'spans r/w postgres web sidekiq git api',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360837'
       ) do
+        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
         # create a CI variable via UI
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
         Page::Project::Settings::CiCd.perform do |ci_cd|

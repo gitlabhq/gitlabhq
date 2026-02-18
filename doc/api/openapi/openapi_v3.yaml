@@ -314,7 +314,7 @@ tags:
 - name: Workspaces
   description: Operations related to workspaces.
 servers:
-- url: https://gitlab.com/api
+- url: https://gitlab.com
   description: GitLab REST API
 paths:
   "/api/v4/namespaces/{id}/gitlab_subscription":

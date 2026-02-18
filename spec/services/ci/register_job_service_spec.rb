@@ -878,6 +878,23 @@ module Ci
             expect(pending_job).to be_failed
             expect(pending_job).to be_scheduler_failure
           end
+
+          context 'when the build transitions to running and fails on post-commit' do
+            it 'transitions to scheduler_failure status and clears runtime_metadata' do
+              allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+              allow(pending_job).to receive(:execute_hooks).and_raise(RuntimeError, 'scheduler error')
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                                                 .with(anything, a_hash_including(build_id: pending_job.id))
+                                                 .once
+
+              expect(subject).to be_nil
+
+              pending_job.reload
+              expect(pending_job).to be_failed
+              expect(pending_job).to be_scheduler_failure
+              expect(pending_job.runtime_metadata).to be_nil
+            end
+          end
         end
 
         context 'when an exception is raised during a persistent ref creation' do

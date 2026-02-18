@@ -18,6 +18,8 @@ module QA
       end
 
       it 'creates 2 trigger jobs and passes corresponding matrix variables', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348000' do
+        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           trigger_title1 = 'deploy: [ovh, monitoring]'
           trigger_title2 = 'deploy: [ovh, app]'

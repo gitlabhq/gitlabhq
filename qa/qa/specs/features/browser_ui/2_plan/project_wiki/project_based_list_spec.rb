@@ -42,6 +42,8 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
           large_wiki.visit!
 
+          QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
           Page::Project::Wiki::Show.perform do |wiki|
             wiki.expand_sidebar_if_collapsed
             wiki.click_view_all_pages

@@ -35,6 +35,8 @@ module QA
 
       it 'runs the pipeline with composed config',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348088' do
+        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           Support::Waiter.wait_until { parent_pipeline.has_linked_pipeline? }
           parent_pipeline.expand_linked_pipeline

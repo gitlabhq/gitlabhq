@@ -76034,10 +76034,10 @@ msgstr ""
 msgid "VirtualRegistry|You can add up to %{count} registries per top-level group."
 msgstr ""
 
-msgid "VirtualRegistry|You can add up to 20 registries per top-level group."
+msgid "VirtualRegistry|You can add up to %{count} upstreams per registry."
 msgstr ""
 
-msgid "VirtualRegistry|You can add up to 20 upstreams per registry."
+msgid "VirtualRegistry|You can add up to 20 registries per top-level group."
 msgstr ""
 
 msgid "VirtualRegistry|You can review the full cleanup details in the %{audit_events_link}."

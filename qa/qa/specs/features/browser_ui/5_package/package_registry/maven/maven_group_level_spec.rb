@@ -138,6 +138,9 @@ module QA
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163' do
             create_package(package_project)
             package_project.visit_job('deploy')
+
+            QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
             Page::Project::Job::Show.perform do |job|
               expect(job).to be_successful(timeout: 400)
 
@@ -156,6 +159,9 @@ module QA
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565164' do
             create_package(package_project)
             package_project.visit_job('deploy')
+
+            QA::EE::Page::Component::DapEmptyState.perform(&:close)
+
             Page::Project::Job::Show.perform do |job|
               expect(job).to be_successful(timeout: 400)
 

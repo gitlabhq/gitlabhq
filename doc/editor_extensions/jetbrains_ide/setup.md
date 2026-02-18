@@ -67,6 +67,10 @@ Prerequisites:
 
 - For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
 - You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
+- For flows, you have [foundational flows turned on](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
+  and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
+  needed.
 - You open a project that is linked to a remote repository on GitLab, or you set a default GitLab Duo
   namespace in the extension.
 

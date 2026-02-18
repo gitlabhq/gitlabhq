@@ -39,6 +39,7 @@ in the Agent Platform.
 | Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} |
 | Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Opus 4.6 | {{< yes >}} | {{< yes >}} |

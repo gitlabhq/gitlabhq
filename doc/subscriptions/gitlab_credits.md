@@ -207,10 +207,12 @@ For premium models with optimized integration:
 | `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
+| `claude-sonnet-4.6` <sup>1</sup> | 2.0 |
 | `claude-opus-4.5` | 1.2 |
 | `claude-opus-4.6` <sup>1</sup> | 1.2 |
 | `claude-sonnet-4` <sup>2</sup> | 1.1 |
 | `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
+| `claude-sonnet-4.6` <sup>2</sup> | 1.1 |
 | `gpt-5.2-codex` | 0.8 |
 | `claude-opus-4.6` <sup>2</sup> | 0.7 |
 | `gpt-5.1-codex` | 0.6 |

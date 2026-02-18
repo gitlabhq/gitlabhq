@@ -128,7 +128,8 @@ module Users
       # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
       duo_panel_auto_expanded: 125, # EE-only
       work_items_nav_badge: 126,
-      work_items_onboarding_modal: 127
+      work_items_onboarding_modal: 127,
+      duo_panel_empty_state_auto_expanded: 128 # EE-only
     }
 
     validates :feature_name,

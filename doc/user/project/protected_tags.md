@@ -26,7 +26,7 @@ Each rule allows you to match either:
 This feature evolved out of [protected branches](repository/branches/protected.md).
 
 > [!note]
-> To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
+> To create or delete a protected tag, you must be in the **Allowed to create** list for that protected tag.
 
 ## Configure protected tags
 
@@ -221,7 +221,7 @@ see [Unprotect a tag](#unprotect-a-tag).
 
 Prerequisites:
 
-- You must be in the **Allowed to create or delete** list.
+- You must be in the **Allowed to create** list of roles or users for that tag.
 
 To delete a protected tag:
 

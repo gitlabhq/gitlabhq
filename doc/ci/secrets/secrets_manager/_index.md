@@ -85,6 +85,10 @@ After you create a secret, you can use it in the pipeline configuration or in jo
 
 ## Use secrets in job scripts
 
+Prerequisites:
+
+- GitLab Runner 18.6 or later.
+
 To access secrets defined with the secret manager, use the [`secrets`](../../yaml/_index.md#secrets) and `gitlab_secrets_manager` keywords:
 
 ```yaml
