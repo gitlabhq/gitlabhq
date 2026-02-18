@@ -163,6 +163,25 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 	runTestCasesWithGeoProxyEnabled(t, testCases)
 }
 
+func TestGeoProxyCableRouteRequiresWebsocketUpgrade(t *testing.T) {
+	remoteServer := startRemoteServer(t)
+
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
+	railsServer := startRailsServer(t, &geoProxyEndpointResponseBody)
+
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
+
+	resp, err := http.Get(ws.URL + "/-/cable")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+
+	require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	require.Contains(t, string(body), "websocket upgrade required")
+}
+
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
 func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 	response := geoProxyDisabledResponseBody
