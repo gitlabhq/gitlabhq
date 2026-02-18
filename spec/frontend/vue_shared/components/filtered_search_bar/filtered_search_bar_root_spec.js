@@ -331,6 +331,17 @@ describe('FilteredSearchBarRoot', () => {
         });
       });
 
+      it('calls `recentSearchesService.save` with array of searches removing empty filter tokens', async () => {
+        const filters = [tokenValueAuthor, { type: FILTERED_SEARCH_TERM, value: { data: ' ' } }];
+
+        wrapper.findComponent(GlFilteredSearch).vm.$emit('input', filters);
+        findGlFilteredSearch().vm.$emit('submit');
+        await waitForPromises();
+
+        const { save } = RecentSearchesService.mock.instances.at(-1);
+        expect(save).toHaveBeenLastCalledWith([[tokenValueAuthor]]);
+      });
+
       it('calls `recentSearchesService.save` with array of searches', async () => {
         findGlFilteredSearch().vm.$emit('submit');
         await waitForPromises();

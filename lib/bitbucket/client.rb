@@ -32,6 +32,8 @@ module Bitbucket
       next
     ].freeze
 
+    WORKSPACE_PAGE_LENGTH = 100
+
     def initialize(options = {})
       @connection = Connection.new(options)
     end
@@ -122,6 +124,29 @@ module Bitbucket
       get_collection(path, :repo, page_number: nil, limit: limit, after_cursor: after_cursor)
     end
 
+    def multi_workspace_repos(filter: nil, limit: nil, workspace_paging_info: [])
+      # On initial request (empty workspace_paging_info), fetch all workspaces
+      # On subsequent requests, only process workspaces provided
+      workspace_configs = if workspace_paging_info.empty?
+                            all_workspaces.map do |workspace|
+                              path = build_repos_path(workspace.slug, filter)
+                              build_workspace_config(workspace.slug, path, nil, :repo)
+                            end
+                          else
+                            workspace_paging_info.map do |config|
+                              path = build_repos_path(config[:workspace], filter)
+                              build_workspace_config(
+                                config[:workspace],
+                                path,
+                                config[:page_info],
+                                :repo
+                              )
+                            end
+                          end
+
+      MultiWorkspaceCollection.new(workspace_configs, connection, limit: limit)
+    end
+
     def user
       @user ||= begin
         parsed_response = connection.get('/user')
@@ -135,6 +160,43 @@ module Bitbucket
     end
 
     private
+
+    def workspaces(page_number: nil, limit: WORKSPACE_PAGE_LENGTH, after_cursor: nil)
+      path = "/user/workspaces"
+      get_collection(path, :workspace, page_number: page_number, limit: limit, after_cursor: after_cursor)
+    end
+
+    def build_workspace_config(workspace_slug, path, page_info, type)
+      {
+        workspace: workspace_slug,
+        path: path,
+        type: type,
+        page_number: page_info&.dig(:next_page),
+        has_next_page: page_info&.dig(:has_next_page)
+      }
+    end
+
+    def build_repos_path(workspace_slug, filter)
+      path = "/repositories/#{workspace_slug}?role=member&sort=created_on"
+      path += "&q=name~\"#{filter}\"" if filter
+      path
+    end
+
+    def all_workspaces
+      page_number = nil
+      all_workspaces = []
+      has_next_page = true
+
+      while has_next_page
+        collection = workspaces(page_number: page_number, limit: WORKSPACE_PAGE_LENGTH)
+        all_workspaces.concat(collection.to_a)
+
+        has_next_page = collection.page_info[:has_next_page]
+        page_number = collection.page_info[:next_page]
+      end
+
+      all_workspaces
+    end
 
     def fetch_data(method, *args)
       case method

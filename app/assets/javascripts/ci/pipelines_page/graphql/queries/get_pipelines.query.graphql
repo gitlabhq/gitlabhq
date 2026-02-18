@@ -32,7 +32,7 @@ query getPipelines(
     ) {
       nodes {
         ...PipelineDetails
-        downstream {
+        downstream(first: 3) {
           nodes {
             id
             iid
@@ -53,6 +53,18 @@ query getPipelines(
               name
               retried
             }
+          }
+        }
+        upstream {
+          id
+          detailedStatus {
+            ...CiIcon
+            tooltip
+            label
+          }
+          project {
+            id
+            name
           }
         }
       }

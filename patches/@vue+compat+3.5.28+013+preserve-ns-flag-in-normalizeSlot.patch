@@ -1,0 +1,24 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index c8c3baa..ecd0c49 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -9250,6 +9250,7 @@ const normalizeSlot = (key, rawSlot, ctx) => {
+     return normalizeSlotValue(rawSlot(...args));
+   }, ctx);
+   normalized._c = false;
++  if (rawSlot._ns) normalized._ns = true;
+   return normalized;
+ };
+ const normalizeObjectSlots = (rawSlots, slots, instance) => {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 4127b2a..72dc3e8 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -9163,6 +9163,7 @@ const normalizeSlot = (key, rawSlot, ctx) => {
+     return normalizeSlotValue(rawSlot(...args));
+   }, ctx);
+   normalized._c = false;
++  if (rawSlot._ns) normalized._ns = true;
+   return normalized;
+ };
+ const normalizeObjectSlots = (rawSlots, slots, instance) => {

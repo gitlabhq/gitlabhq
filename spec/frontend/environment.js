@@ -21,6 +21,7 @@ class CustomEnvironment extends TestEnvironment {
 
     this.jestConsoleWatcher = setupConsoleWatcher(this, context.console, {
       ignores: [
+        /^\[Vue warn\]: Failed to resolve component/,
         /The updateQuery callback for fetchMore is deprecated/,
         // TODO: Remove this and replace with localized calls to `ignoreVueConsoleWarnings`
         // https://gitlab.com/gitlab-org/gitlab/-/issues/396779#note_1788506238

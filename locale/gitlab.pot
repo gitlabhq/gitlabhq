@@ -24589,7 +24589,7 @@ msgstr ""
 msgid "Deployment|Add approval comment"
 msgstr ""
 
-msgid "Deployment|Approval Comments"
+msgid "Deployment|Approval Activity"
 msgstr ""
 
 msgid "Deployment|Approve deployment"

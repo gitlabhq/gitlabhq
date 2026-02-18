@@ -1,0 +1,8 @@
+---
+name: bitbucket_cloud_importer_multi_workspace_repos
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223006/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589563
+milestone: '18.10'
+type: gitlab_com_derisk
+group: group::import
+default_enabled: false

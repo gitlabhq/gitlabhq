@@ -132,6 +132,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     context "when token is valid" do
       before do
         assign_session_tokens
+        stub_feature_flags(bitbucket_cloud_importer_multi_workspace_repos: false)
 
         allow(controller).to receive(:page_info).and_return({
           has_next_page: false,
@@ -202,6 +203,93 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
           end
 
           subject
+        end
+      end
+
+      context 'with multi-workspace feature enabled' do
+        let(:collection) { instance_double(Bitbucket::MultiWorkspaceCollection, workspace_paging_info: workspace_paging_info) }
+
+        let(:workspace_paging_info) do
+          [
+            { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } },
+            { workspace: 'workspace-2', page_info: { next_page: 1, has_next_page: true } },
+            { workspace: 'workspace-3', page_info: { next_page: nil, has_next_page: false } }
+          ]
+        end
+
+        before do
+          stub_feature_flags(bitbucket_cloud_importer_multi_workspace_repos: true)
+
+          allow(collection).to receive(:partition).and_return([[@repo], []])
+        end
+
+        it 'fetches multi workspace repos and includes workspace_paging_info in response' do
+          expect_next_instance_of(Bitbucket::Client) do |client|
+            expect(client)
+              .to receive(:multi_workspace_repos)
+              .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: [])
+              .and_return(collection)
+          end
+
+          get :status, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['workspace_paging_info']).to eq(workspace_paging_info.as_json)
+        end
+
+        context 'with invalid base64 payload' do
+          it 'logs exception and fetches all workspaces' do
+            expect(controller).to receive(:log_exception).with(an_instance_of(JSON::ParserError))
+
+            expect_next_instance_of(Bitbucket::Client) do |client|
+              expect(client)
+                .to receive(:multi_workspace_repos)
+                .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: [])
+                .and_return(collection)
+            end
+
+            get :status, params: { workspace_paging_info: 'invalid-base64' }, as: :json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['workspace_paging_info']).to eq(workspace_paging_info.as_json)
+          end
+        end
+
+        context 'with workspace slug validation' do
+          where(:slug, :valid) do
+            [
+              ['valid-workspace',       true],
+              ['valid_underscore_123',  true],
+              ['-__-2-test_bitbucket',  true],
+              ['x' * 63,                false],
+              ['',                      false],
+              ['invalid@slug!',         false],
+              ['invalid.slug',          false],
+              ['../../../etc/passwd',   false],
+              ['slug with spaces',      false],
+              ['InvalidUpperCase',      false]
+            ]
+          end
+
+          with_them do
+            it 'filters workspace slugs correctly' do
+              payload = [{ workspace: slug, page_info: { next_page: 1, has_next_page: true } }]
+              encoded_payload = Base64.strict_encode64(payload.to_json)
+
+              expect_next_instance_of(Bitbucket::Client) do |client|
+                expected_workspace_paging_info = valid ? [{ workspace: slug, page_info: { next_page: 1, has_next_page: true } }] : []
+
+                expect(client)
+                  .to receive(:multi_workspace_repos)
+                  .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: expected_workspace_paging_info)
+                  .and_return(collection)
+              end
+
+              get :status, params: { workspace_paging_info: encoded_payload }, as: :json
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
         end
       end
 

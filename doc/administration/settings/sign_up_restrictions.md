@@ -109,15 +109,15 @@ The following settings are available:
 
 {{< /history >}}
 
-When you turn on restricted access, instances cannot add new billable users when no licensed seats
-are left in the subscription.
-
-Restrictive access is a more restrictive setting than user cap,
-as it prevents additions rather than requiring approval of new users.
-
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
 and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, instances cannot add new billable users when no licensed seats
+are left in the subscription.
+
+> [!note]
+> If user cap is enabled for an instance or a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
 
 ### Turn on restricted access
 
@@ -136,12 +136,33 @@ When you turn on restricted access, the setting to [prevent inviting groups outs
 
 You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
+### Provisioning behavior with SAML, SCIM, and LDAP
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and GitLab Self-Managed Ultimate.
+
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+When seats become available, the users can be promoted to their intended access level.
+Existing users with billable roles are not affected by this behavior.
+
+You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+
 ### Known issues
 
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of billable users can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with administrator access add members simultaneously.
   - New billable users delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
@@ -173,10 +194,6 @@ If an administrator increases or removes the user cap, users pending approval ar
 The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
 If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
-
-When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on.
-
-You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 

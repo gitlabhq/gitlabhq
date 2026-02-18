@@ -129,6 +129,13 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       end
     end
 
+    describe '.find_each' do
+      it 'yields all records' do
+        expect { |blk| TestStaticModel.find_each(&blk) }
+          .to yield_successive_args(*TestStaticModel.all)
+      end
+    end
+
     describe 'storage isolation' do
       let(:subclass) { Class.new(TestStaticModel).tap(&:all) }
       let(:new_item) { subclass.new(id: 2, name: 'foo') }

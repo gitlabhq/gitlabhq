@@ -79,6 +79,10 @@ module ActiveRecord
           all.select { |item| item.matches?(conditions) }
         end
 
+        def find_each(&block)
+          all.each(&block)
+        end
+
         def storage
           @storage ||= []
         end

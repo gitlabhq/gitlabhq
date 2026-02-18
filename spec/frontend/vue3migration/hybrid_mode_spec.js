@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import SlotWithFallbackContent from './components/slot_with_fallback_content.vue';
 import ParentWithNamedAndDefaultSlots from './components/parent_with_named_and_default_slots.vue';
@@ -11,6 +11,12 @@ import CustomEventOnElement from './components/custom_event_on_element.vue';
 import ParentWithCamelCaseEventHandler from './components/parent_with_camel_case_event_handler.vue';
 import ChildEmittingCamelCaseEvent from './components/child_emitting_camel_case_event.vue';
 import RefInVFor from './components/ref_in_v_for.vue';
+import ParentUsingStubWithNamedSlot from './components/slot_stubs/parent_using_stub_with_named_slot.vue';
+import StubWithNamedSlot from './components/slot_stubs/stub_with_named_slot.vue';
+import ParentUsingOnlyNamedSlot from './components/slot_stubs/parent_using_only_named_slot.vue';
+import ChildWithLabelSlot from './components/slot_stubs/child_with_label_slot.vue';
+import ParentUsingScopedSlot from './components/scoped_slot_stubs/parent_using_scoped_slot.vue';
+import ChildWithScopedLabelSlot from './components/scoped_slot_stubs/child_with_scoped_label_slot.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
   it('correctly renders fallback content', () => {
@@ -304,5 +310,64 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
     expect(Array.isArray(ref1)).toBe(true);
     expect(ref0).toHaveLength(1);
     expect(ref1).toHaveLength(1);
+  });
+
+  describe('stub slot rendering', () => {
+    /**
+     * When Vue 2 compiler generates code for a component with both default slot content
+     * and named slots (e.g., `<child>Label<template #help>Help</template></child>`),
+     * `convertLegacySlots` sets `_ns` (non-scoped) flag on the default slot function.
+     *
+     * However, when slots are passed to child components, `normalizeSlot` wraps them
+     * with `withCtx()` but doesn't copy the `_ns` flag to the wrapped function.
+     *
+     * In vue_compat_test_setup.js, the custom stub generator uses `_ns` to determine
+     * whether to render only the default slot or all slots. When `_ns` is lost during
+     * normalization, it renders ALL slots, causing named slot content to appear
+     * in the stub's text output.
+     *
+     * Fix (preserve-ns-flag-in-normalizeSlot.patch): In `normalizeSlot`, copy the `_ns`
+     * flag from the original slot function to the normalized wrapper function.
+     */
+    it('renders only default slot content, not named slots', () => {
+      const wrapper = shallowMount(ParentUsingStubWithNamedSlot);
+      const stub = wrapper.findComponent(StubWithNamedSlot);
+
+      // The stub's text should only contain the default slot content ("Label text"),
+      // not the named #help slot content ("Help text that should not appear in label")
+      expect(stub.text()).toBe('Label text');
+    });
+
+    /**
+     * When a component uses only named slots (no default slot content), the stub
+     * should render all named slots so that content inside them is accessible for testing.
+     *
+     * This is the opposite case from the test above - here we WANT named slots to render
+     * because there's no default slot content that should take priority.
+     */
+    it('renders named slot content when no default slot is provided', () => {
+      const wrapper = shallowMount(ParentUsingOnlyNamedSlot);
+      const stub = wrapper.findComponent(ChildWithLabelSlot);
+
+      // The stub should render the #label slot content since there's no default slot
+      expect(stub.find('[data-testid="label-content"]').exists()).toBe(true);
+      expect(stub.text()).toBe('Label from named slot');
+    });
+
+    /**
+     * When a component uses only scoped slots (no default slot content), the stub
+     * should render all scoped slots so that content inside them is accessible for testing.
+     *
+     * This is similar to the named slot case above, but with scoped slots which pass
+     * data to the slot content. The stub should still render the scoped slot content.
+     */
+    it('renders scoped slot content when no default slot is provided', () => {
+      const wrapper = shallowMount(ParentUsingScopedSlot);
+      const stub = wrapper.findComponent(ChildWithScopedLabelSlot);
+
+      // The stub should render the #label scoped slot content since there's no default slot
+      expect(stub.find('[data-testid="label-content"]').exists()).toBe(true);
+      expect(stub.text()).toContain('Label with');
+    });
   });
 });
