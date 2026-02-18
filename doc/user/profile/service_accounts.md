@@ -156,9 +156,13 @@ Service account access to groups and projects is managed the same way as
 human users in the UI. For more information, see
 [groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
 
-You can assign service accounts to groups and projects using the UI or the [members API](../../api/members.md).
-For more information about using the UI, see [add users to a group](../group/_index.md#add-users-to-a-group)
-and [add users to a project](../project/members/_index.md#add-users-to-a-project).
+You can assign service accounts to groups and projects using:
+
+- The GitLab UI. For more information about using the UI, see
+  [add users to a group](../group/_index.md#add-users-to-a-group) and
+  [add users to a project](../project/members/_index.md#add-users-to-a-project).
+- The [group members API](../../api/group_members.md).
+- The [project members API](../../api/project_members.md).
 
 You must use the API when the
 [global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)

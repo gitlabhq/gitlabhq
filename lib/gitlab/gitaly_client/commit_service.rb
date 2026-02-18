@@ -156,13 +156,11 @@ module Gitlab
 
       # Count commits in the repository.
       #
-      # @param ref [String] The revision to count commits from (soft deprecated, use revisions instead)
-      # @param options [Hash] Options for counting commits
-      # @option options [Array<String>] :revisions Multiple revisions to count commits from.
+      # @param revisions [String, Array<String>] Single revision or array of revisions to count.
+      #   Strings are automatically wrapped in an array.
       #   Supports pseudo-revisions like --all, --branches, --tags, --not, --glob.
-      #   Takes precedence over :all and ref parameters.
-      # @option options [Boolean] :all Count commits from all refs (soft deprecated, use revisions: ['--all'])
-      # @option options [Boolean] :first_parent Only follow first parent on merge commits
+      # @param options [Hash] Options for counting commits
+      # @option options [Boolean] :first_parent Only follow first parent commits
       # @option options [Time] :after Only count commits after this time
       # @option options [Time] :before Only count commits before this time
       # @option options [String] :path Only count commits that touch this path
@@ -173,30 +171,28 @@ module Gitlab
       # @example Count commits in a single branch
       #   commit_count('master')
       #
-      # @example Count commits across multiple branches using revisions
-      #   commit_count(nil, revisions: ['feature-a', 'feature-b'])
+      # @example Count commits across multiple branches
+      #   commit_count(['feature-a', 'feature-b'])
       #
-      # @example Count commits in all branches using revisions
-      #   commit_count(nil, revisions: ['--all'])
+      # @example Count commits in all branches
+      #   commit_count('--all')
       #
       # @example Count commits in branch-2 but not in branch-1
-      #   commit_count(nil, revisions: ['branch-2', '--not', 'branch-1'])
+      #   commit_count(['branch-2', '--not', 'branch-1'])
       #
-      def commit_count(ref, options = {})
+      # @example Count commits with filters
+      #   commit_count('master', path: 'app/', after: 1.week.ago)
+      #
+      def commit_count(revisions, options = {})
+        revisions_array = Array.wrap(revisions)
+        raise ArgumentError, 'revisions is required' if revisions_array.empty?
+
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
           first_parent: !!options[:first_parent]
         )
 
-        revisions = if options[:revisions].present?
-                      Array.wrap(options[:revisions])
-                    elsif options[:all]
-                      ['--all']
-                    elsif ref
-                      [ref]
-                    end
-
-        request.revisions = encode_repeated(revisions) if revisions.present?
+        request.revisions = encode_repeated(revisions_array)
 
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?

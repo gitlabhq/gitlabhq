@@ -303,6 +303,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect(new_note.author).to eql(support_bot)
           end
 
+          it 'links external participant to the note' do
+            subject
+
+            new_note = WorkItem.last.notes.first
+
+            expect(new_note.note_metadata.external_author).to eq('alan@adventuretime.ooo')
+            expect(new_note.note_metadata.namespace_id).to eq(new_note.namespace_id)
+          end
+
           it 'does not send thank you email' do
             expect(Notify).not_to receive(:service_desk_thank_you_email)
 
@@ -329,6 +338,30 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
               expect(WorkItem.last.issue_email_participants.map(&:email))
                 .to match_array(%w[jake@adventuretime.ooo])
+            end
+          end
+
+          context 'when issue is closed and reopen_on_external_participant_note is enabled' do
+            let(:reopen_note) { WorkItem.last.notes.last }
+            let(:work_item) { WorkItem.last }
+            let(:reopen_comment_body) do
+              s_(
+                "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
+              )
+            end
+
+            before do
+              settings.update!(reopen_issue_on_external_participant_note: true)
+              work_item.close
+            end
+
+            it 'reopens issue and creates a confidential reopen note' do
+              expect { subject }.to change { work_item.notes.count }.by(2)
+              expect(work_item.reload).to be_open
+
+              expect(reopen_note).to be_confidential
+              expect(reopen_note.author).to eq(support_bot)
+              expect(reopen_note.note).to include(reopen_comment_body)
             end
           end
         end

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
@@ -43,10 +43,12 @@ describe('CiResourceComponents', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findInputHelpLink = () => wrapper.findComponent(GlLink);
+  const findInputHelpLink = () => wrapper.findByTestId('input-help-link');
   const findInputHelpIcon = () => wrapper.findComponent(GlIcon);
   const findCodeSnippetContainer = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
+  const findComponentNameLinks = () =>
+    wrapper.findAllByTestId('component-name').wrappers.map((w) => w.find('a'));
   const findUsageCounts = () => wrapper.findAllByTestId('usage-count');
   const findInputCodeBlock = () => wrapper.findAllByTestId('input-code-block');
   const findInputDefault = () => wrapper.findAllByTestId('input-default');
@@ -125,6 +127,19 @@ describe('CiResourceComponents', () => {
       it('renders the component name', () => {
         components.forEach((component) => {
           expect(wrapper.text()).toContain(component.name);
+        });
+      });
+
+      describe('component name link', () => {
+        it('renders a link for each component name', () => {
+          expect(findComponentNameLinks()).toHaveLength(components.length);
+        });
+
+        it('renders the correct href for each component', () => {
+          components.forEach((component, index) => {
+            const link = findComponentNameLinks()[index];
+            expect(link.attributes('href')).toBe(`#${encodeURIComponent(component.name)}`);
+          });
         });
       });
 

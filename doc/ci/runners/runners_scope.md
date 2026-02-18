@@ -274,9 +274,9 @@ To create a group runner:
 1. Complete the onscreen instructions:
    - For Linux, macOS, and Windows, when prompted by the command line:
      - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
-     is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
-     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
-     environment where the runner executes the job.
+       is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
+     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/).
+       The executor is the environment where the runner executes the job.
    - For Google Cloud, see [Provisioning runners in Google Cloud](provision_runners_google_cloud.md).
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
@@ -521,9 +521,9 @@ To create a project runner:
 1. Complete the onscreen instructions:
    - For Linux, macOS, and Windows, when prompted by the command line:
      - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
-     is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
-     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
-     environment where the runner executes the job.
+       is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
+     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/).
+       The executor is the environment where the runner executes the job.
    - For Google Cloud, see [Provisioning runners in Google Cloud](provision_runners_google_cloud.md).
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.

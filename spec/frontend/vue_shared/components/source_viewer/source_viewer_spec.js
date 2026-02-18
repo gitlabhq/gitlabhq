@@ -147,7 +147,7 @@ describe('Source Viewer component', () => {
       });
 
       describe('per-chunk skeleton loaders', () => {
-        const emitAppear = () => findChunks().at(0).vm.$emit('appear');
+        const emitAppear = (index = 0) => findChunks().at(index).vm.$emit('appear');
 
         it.each([
           { showBlame: true, minCount: 1 },
@@ -184,8 +184,16 @@ describe('Source Viewer component', () => {
           emitAppear();
           await nextTick();
 
-          const loader = findBlameSkeletonLoaders().at(0);
-          expect(loader.props('totalLines')).toBe(1);
+          const chunk1Loader = findBlameSkeletonLoaders().at(0);
+          expect(chunk1Loader.props('totalLines')).toBe(70);
+          expect(chunk1Loader.props('startLine')).toBe(0);
+
+          emitAppear(1);
+          await nextTick();
+
+          const chunk2Loader = findBlameSkeletonLoaders().at(1);
+          expect(chunk2Loader.props('totalLines')).toBe(40);
+          expect(chunk2Loader.props('startLine')).toBe(70);
         });
       });
 

@@ -365,7 +365,7 @@ scheduled after the background migration has completed, which could be several r
 
 1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
    - Use [Database Lab](database_lab.md) to check if the validation was successful.
-   Run the command `\d+ table_name` and ensure that `NOT VALID` has been removed from the check constraint definition.
+     Run the command `\d+ table_name` and ensure that `NOT VALID` has been removed from the check constraint definition.
    - Add the migration to validate the `NOT NULL` constraint:
 
      ```ruby

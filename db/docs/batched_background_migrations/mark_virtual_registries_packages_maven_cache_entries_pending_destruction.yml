@@ -1,0 +1,8 @@
+---
+migration_job_name: MarkVirtualRegistriesPackagesMavenCacheEntriesPendingDestruction
+description: Marks all rows in virtual_registries_packages_maven_cache_entries with status pending_destruction
+feature_category: virtual_registry
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222325"
+milestone: '18.10'
+queued_migration_version: 20260209135326
+finalized_by: # version of the migration that ensured this bbm

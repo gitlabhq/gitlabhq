@@ -132,12 +132,13 @@ Secret scanning runs in the following scenarios:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.1.
 
 {{< /history >}}
 
-You can enable extended logging to collect detailed AI interaction data from the GitLab Duo Agent Platform.
+To help improve service quality, you can share GitLab Duo interaction data with GitLab.
 
+When you turn on data collection, GitLab logs information about GitLab Duo feature usage.
 This data is used exclusively for service improvement and debugging, and not for training AI models.
 
 ### Which data is logged
@@ -157,6 +158,24 @@ The following information is not included in logs, as long as users don't includ
 - Project or namespace identifiers.
 
 GitLab does not remove identifiers that users have included in their prompt.
+
+### Configure data collection for a group
+
+Prerequisites:
+
+- Have GitLab 18.9.1 or later.
+- Have the Owner role for a top-level group.
+- On GitLab.com, your group must [have GitLab Duo enabled](turn_on_off.md#turn-gitlab-duo-on-or-off).
+
+To turn on data collection for your group:
+
+1. On top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Select the **Collect usage data** checkbox.
+1. Select **Save changes**.
+
+After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.
 
 ### Configure data collection for an instance
 

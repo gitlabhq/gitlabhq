@@ -2761,7 +2761,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     context 'when commit exists' do
       it 'returns correct JSON' do
-        expected_count = project.repository.count_commits(ref: commit_id, first_parent: false)
+        expected_count = project.repository.count_commits(revisions: commit_id, first_parent: false)
 
         get api(route, current_user)
 
@@ -2774,7 +2774,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/sequence?first_parent=true" }
 
       it 'returns correct JSON' do
-        expected_count = project.repository.count_commits(ref: commit_id, first_parent: true)
+        expected_count = project.repository.count_commits(revisions: commit_id, first_parent: true)
 
         get api(route, current_user)
 

@@ -169,6 +169,13 @@ module Gitlab
           @work_item = work_item_from_reply_to
 
           create_note(message_including_reply)
+
+          reopen_issue_on_external_participant_note(
+            noteable: @work_item,
+            author: author,
+            project: project,
+            support_bot: support_bot
+          )
         end
 
         def send_thank_you_email
@@ -208,12 +215,9 @@ module Gitlab
             project,
             support_bot,
             noteable: @work_item,
-            note: note
+            note: note,
+            external_author: from_address
           ).execute
-        end
-
-        def from_address
-          (mail.reply_to || []).first || mail.from.first || mail.sender
         end
 
         def to_address

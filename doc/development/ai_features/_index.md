@@ -102,9 +102,9 @@ If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repo
    doesn't work, try `gdk kill` and then `gdk start`.
 1. Alternatively, bypass Sidekiq entirely and run the service synchronously.
    This can help with debugging errors as GraphQL errors are now available in
-  the network inspector instead of the Sidekiq logs. To do that, temporarily alter
-  the `perform_for` method in `Llm::CompletionWorker` class by changing
-  `perform_async` to `perform_inline`.
+   the network inspector instead of the Sidekiq logs. To do that, temporarily alter
+   the `perform_for` method in `Llm::CompletionWorker` class by changing
+   `perform_async` to `perform_inline`.
 1. When testing model selection, add `export FETCH_MODEL_SELECTION_DATA_FROM_LOCAL=1` to your `env.runit` file, so that
    your GDK fetches model information from your local AI Gateway rather than cloud-connected AIGW.
 

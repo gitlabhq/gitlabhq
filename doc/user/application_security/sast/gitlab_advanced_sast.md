@@ -373,7 +373,7 @@ GitLab Advanced SAST supports the following languages:
 - Ruby
 
 GitLab Advanced SAST CPP requires additional configuration (such as a compilation database) to be
-used with GitLab Advanced SAST. For details, see [C/C++ configuration](cpp_advanced_sast.md). GitLab
+used with GitLab Advanced SAST. For details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab
 Advanced SAST CPP does not exclude Semgrep for C/C++ projects; both analyzers run in parallel with
 different rule sets.
 

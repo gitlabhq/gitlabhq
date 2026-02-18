@@ -14686,6 +14686,9 @@ msgstr ""
 msgid "CiCatalogComponent|Inputs"
 msgstr ""
 
+msgid "CiCatalogComponent|Link to %{componentName}"
+msgstr ""
+
 msgid "CiCatalogComponent|Mandatory"
 msgstr ""
 
@@ -49012,6 +49015,9 @@ msgstr ""
 msgid "Page not found"
 msgstr ""
 
+msgid "PageNavigation|On this page"
+msgstr ""
+
 msgid "PagerDutySettings|Active"
 msgstr ""
 
@@ -51494,9 +51500,6 @@ msgstr ""
 msgid "Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing."
 msgstr ""
 
-msgid "Preferences|Choose the navigation theme."
-msgstr ""
-
 msgid "Preferences|Choose what content you want to see by default on your homepage."
 msgstr ""
 
@@ -51597,9 +51600,6 @@ msgid "Preferences|Mode"
 msgstr ""
 
 msgid "Preferences|Must be a number between %{min} and %{max}"
-msgstr ""
-
-msgid "Preferences|Navigation"
 msgstr ""
 
 msgid "Preferences|Ona"
@@ -72174,6 +72174,9 @@ msgid "Trial|What's your reason for joining GitLab?"
 msgstr ""
 
 msgid "Trial|Work email address"
+msgstr ""
+
+msgid "Trial|You have successfully started an Ultimate trial for GitLab."
 msgstr ""
 
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for %{duration} days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."

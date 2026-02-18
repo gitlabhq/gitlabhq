@@ -457,7 +457,7 @@ module Gitlab
         options = process_count_commits_options(options.dup)
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.commit_count(options[:ref], options)
+          gitaly_commit_client.commit_count(options[:revisions], options)
         end
       end
 
@@ -1319,9 +1319,9 @@ module Gitlab
 
       def process_count_commits_options(options)
         if options[:from] || options[:to]
-          ref = "#{options[:from]}..#{options[:to]}"
+          revisions = "#{options[:from]}..#{options[:to]}"
 
-          options.merge(ref: ref)
+          options.merge(revisions: revisions)
         else
           options
         end

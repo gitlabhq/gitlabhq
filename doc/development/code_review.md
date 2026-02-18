@@ -672,6 +672,7 @@ experience, refactors the existing code). Then:
     - **Identify the minimal change** needed to trigger the code path (for example, setting a condition to `true` in the code) rather than full environment setup.
 
   Your testing might result in opportunities to add automated tests.
+
 - If you don't understand a piece of code, _say so_. There's a good chance
   someone else would be confused by it as well.
 - Ensure the author is clear on what is required from them to address/resolve the suggestion.

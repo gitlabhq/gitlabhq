@@ -267,7 +267,7 @@ to protect multiple branches:
    1. In the **Allowed to merge** section, select **Edit**, set to **Maintainers**,
       and select **Save changes**.
    1. In the **Allowed to push and merge** section, select **Edit**, set to **No one**,
-   and select **Save changes**.
+      and select **Save changes**.
    1. Leave **Allowed to force push** disabled.
 1. In GitLab Premium and GitLab Ultimate, to require Code Owners to review changes
    to files they work on, toggle **Require approval from code owners**.

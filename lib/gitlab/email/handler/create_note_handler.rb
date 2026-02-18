@@ -36,7 +36,14 @@ module Gitlab
             invalid_exception: InvalidNoteError,
             record_name: 'comment')
 
-          reopen_issue_on_external_participant_note
+          return unless project
+
+          reopen_issue_on_external_participant_note(
+            noteable: noteable,
+            author: author,
+            project: project,
+            support_bot: support_bot
+          )
         end
 
         def metrics_event
@@ -54,8 +61,6 @@ module Gitlab
         end
 
         def create_note
-          external_author = from_address if author.support_bot?
-
           sent_notification.create_reply(note_message, external_author)
         end
 
@@ -65,10 +70,6 @@ module Gitlab
           message_with_appended_reply
         end
 
-        def from_address
-          mail.from&.first
-        end
-
         def validate_from_address!
           # Recipieint is always set to Support bot for ServiceDesk issues so we should exclude those.
           return if author.support_bot?
@@ -76,33 +77,16 @@ module Gitlab
           raise UserNotFoundError unless from_address && author.verified_email?(from_address)
         end
 
-        def reopen_issue_on_external_participant_note
-          return unless noteable.respond_to?(:closed?)
-          return unless noteable.closed?
+        def external_author
           return unless author.support_bot?
-          return unless project.service_desk_setting&.reopen_issue_on_external_participant_note?
 
-          ::Notes::CreateService.new(
-            project,
-            Users::Internal.in_organization(project.organization_id).support_bot,
-            noteable: noteable,
-            note: build_reopen_message,
-            confidential: true
-          ).execute
+          from_address
         end
 
-        def build_reopen_message
-          translated_text = s_(
-            "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
-          )
+        def support_bot
+          return unless project
 
-          "#{assignees_references} :wave: #{translated_text}\n/reopen".lstrip
-        end
-
-        def assignees_references
-          return unless noteable.assignees.any?
-
-          noteable.assignees.map(&:to_reference).join(' ')
+          Users::Internal.in_organization(project.organization_id).support_bot
         end
       end
     end

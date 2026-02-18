@@ -51,11 +51,7 @@ module SidebarsHelper
   end
 
   def super_sidebar_logged_out_context(panel:, panel_type:)
-    sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
-
-    return sidebar_context unless project_studio_enabled?
-
-    sidebar_context.merge({
+    super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       sign_in_visible: header_link?(:sign_in).to_s,
       allow_signup: allow_signup?.to_s,
       new_user_registration_path: new_user_registration_path,

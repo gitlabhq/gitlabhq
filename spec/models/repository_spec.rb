@@ -1106,7 +1106,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect do
         repository.create_dir(user, 'newdir1',
           message: 'Create newdir', branch_name: 'master')
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       newdir = repository.tree('master', 'newdir1')
       expect(newdir.path).to eq('newdir1')
@@ -1120,7 +1120,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           repository.create_dir(user, 'newdir2',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
-        end.to change { repository.count_commits(ref: 'master') }.by(0)
+        end.to change { repository.count_commits(revisions: 'master') }.by(0)
 
         expect(repository.branch_exists?('patch')).to be_truthy
         expect(forked_project.repository.branch_exists?('patch')).to be_falsy
@@ -1137,7 +1137,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.count_commits(ref: 'master') }.by(1)
+        end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -1155,7 +1155,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           message: 'Create changelog',
           branch_name: 'master'
         )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'NEWCHANGELOG')
 
@@ -1169,7 +1169,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           message: 'Create new_file with new_dir',
           branch_name: 'master'
         )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
@@ -1197,7 +1197,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             author_email: author_email,
             author_name: author_name
           )
-        end.to change { repository.count_commits(ref: 'master') }.by(1)
+        end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -1215,7 +1215,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           message: 'Update changelog',
           branch_name: 'master'
         )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
 
@@ -1230,7 +1230,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           previous_path: 'LICENSE',
           message: 'Changes filename'
         )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       files = repository.ls_files('master')
 
@@ -1249,7 +1249,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             author_email: author_email,
             author_name: author_name
           )
-        end.to change { repository.count_commits(ref: 'master') }.by(1)
+        end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -1268,7 +1268,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
           user, 'README',
           message: 'Remove README', branch_name: 'master'
         )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
     end
@@ -1281,7 +1281,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             message: 'Remove README', branch_name: 'master',
             author_email: author_email, author_name: author_name
           )
-        end.to change { repository.count_commits(ref: 'master') }.by(1)
+        end.to change { repository.count_commits(revisions: 'master') }.by(1)
 
         last_commit = repository.commit
 

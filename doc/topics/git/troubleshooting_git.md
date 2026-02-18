@@ -88,10 +88,10 @@ To resolve this issue:
   1. Open a terminal or command prompt.
   1. Increase the `http.postBuffer` value:
 
-      ```shell
-      # Set the http.postBuffer size in bytes
-      git config http.postBuffer 524288000
-      ```
+     ```shell
+     # Set the http.postBuffer size in bytes
+     git config http.postBuffer 524288000
+     ```
 
 If the local configuration doesn't resolve the issue, you may need to modify the server configuration.
 This should be done cautiously and only if you have server access.
@@ -100,26 +100,26 @@ This should be done cautiously and only if you have server access.
 
   1. Open a terminal or command prompt.
   1. Modify the GitLab instance's
-    [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
+     [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
 
-      ```ruby
-      gitaly['configuration'] = {
-        # ...
-        git: {
-          # ...
-          config: [
-            # Set the http.postBuffer size, in bytes
-            {key: "http.postBuffer", value: "524288000"},
-          ],
-        },
-      }
-      ```
+     ```ruby
+     gitaly['configuration'] = {
+       # ...
+       git: {
+         # ...
+         config: [
+           # Set the http.postBuffer size, in bytes
+           {key: "http.postBuffer", value: "524288000"},
+         ],
+       },
+     }
+     ```
 
   1. Apply the configuration change:
 
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
 
 ### Error: `stream 0 was not closed cleanly`
 

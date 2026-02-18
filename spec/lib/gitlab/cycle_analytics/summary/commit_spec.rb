@@ -21,7 +21,7 @@ RSpec.describe Gitlab::CycleAnalytics::Summary::Commit, feature_category: :devop
   describe '#value' do
     it 'returns PrettyNumeric value and calls repository.count_commits with correct parameters' do
       expect(project.repository).to receive(:count_commits).with(
-        ref: project.default_branch,
+        revisions: project.default_branch,
         after: from,
         before: to
       ).and_return(10)

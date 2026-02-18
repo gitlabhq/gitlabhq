@@ -99,15 +99,11 @@ For end-to-end production and staging tests to function properly, GitLab allows 
 
 ## Additional resources
 
-<!-- markdownlint-disable MD044 -->
-The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/anti-abuse/#group-members) owns identity verification. You can join our channel on Slack: [#g_anti-abuse](https://gitlab.slack.com/archives/C03EH5HCLPR).
-<!-- markdownlint-enable MD044 -->
+The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/anti-abuse/#group-members) owns identity verification. You can join our channel on Slack: [`#g_anti-abuse`](https://gitlab.slack.com/archives/C03EH5HCLPR).
 
 For help with Telesign:
 
-<!-- markdownlint-disable MD044 -->
-- Telesign/GitLab collaboration channel on Slack: [#gitlab-telesign-support](https://gitlab.slack.com/archives/C052EAXB6BY)
-<!-- markdownlint-enable MD044 -->
+- Telesign/GitLab collaboration channel on Slack: [`#gitlab-telesign-support`](https://gitlab.slack.com/archives/C052EAXB6BY)
 - Telesign support contact: `support@telesign.com`
 - [Telesign portal](https://teleportal.telesign.com/)
 - [Telesign documentation](https://developer.telesign.com/enterprise/docs/get-started-with-docs)

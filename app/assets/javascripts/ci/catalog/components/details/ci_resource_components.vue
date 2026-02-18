@@ -1,5 +1,6 @@
 <script>
 import {
+  GlButton,
   GlEmptyState,
   GlIcon,
   GlLink,
@@ -9,14 +10,17 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import PageNavigationMenu from '~/vue_shared/components/page_navigation_menu.vue';
 import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog_resource_components.query.graphql';
 
 export default {
   name: 'CiResourceComponents',
   components: {
+    GlButton,
     GlEmptyState,
     GlIcon,
     GlLink,
@@ -24,6 +28,7 @@ export default {
     GlTableLite,
     GlTruncate,
     HelpIcon,
+    PageNavigationMenu,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,6 +61,14 @@ export default {
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
       },
+      result() {
+        this.$nextTick(() => {
+          if (window.location.hash) {
+            const componentName = decodeURIComponent(window.location.hash.substring(1));
+            this.scrollToComponent(componentName);
+          }
+        });
+      },
     },
   },
   computed: {
@@ -64,6 +77,12 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.components.loading;
+    },
+    navigationItems() {
+      return this.components.map((component) => ({
+        id: encodeURIComponent(component.name),
+        label: component.name,
+      }));
     },
   },
   methods: {
@@ -84,6 +103,17 @@ export default {
         return JSON.stringify(item.default, null, 2);
       } catch (e) {
         return String(item.default);
+      }
+    },
+    getComponentLabel(componentName) {
+      return sprintf(s__('CiCatalogComponent|Link to %{componentName}'), { componentName });
+    },
+    scrollToComponent(componentName) {
+      const hash = `#${encodeURIComponent(componentName)}`;
+      window.history.pushState(null, '', hash);
+      const element = document.getElementById(encodeURIComponent(componentName));
+      if (element) {
+        scrollToElement(element, { behavior: 'smooth' });
       }
     },
   },
@@ -131,80 +161,95 @@ export default {
       :title="$options.i18n.emptyStateTitle"
       :description="$options.i18n.emptyStateDesc"
     />
-    <template v-else>
-      <div
-        v-for="component in components"
-        :key="component.id"
-        class="gl-mb-8"
-        data-testid="component-section"
-      >
-        <h3 class="gl-mt-0 gl-text-size-h2" data-testid="component-name">
-          {{ component.name }}
-          <span
-            v-gl-tooltip.top
-            data-testid="usage-count"
-            :title="
-              s__(
-                'CiCatalogComponent|The number of projects that used this version of the component in the last 30 days.',
-              )
-            "
-            class="gl-ml-2 gl-text-sm gl-font-normal gl-text-subtle"
-          >
-            <gl-icon name="chart" />
-            <span class="gl-ml-1">{{ component.last30DayUsageCount }}</span>
-          </span>
-        </h3>
-        <pre
-          data-testid="copy-to-clipboard"
-          class="code highlight js-syntax-highlight language-yaml"
-        ><code>{{
-          generateSnippet(component.includePath)
-        }}</code></pre>
-        <div class="gl-mt-5">
-          <div class="gl-mb-4 gl-flex gl-gap-2">
-            <b> {{ $options.i18n.inputTitle }}</b>
-            <gl-link
-              :title="$options.i18n.learnMore"
-              :href="$options.inputHelpLink"
-              target="_blank"
+    <div v-else class="gl-flex gl-gap-6">
+      <div class="gl-flex-grow-1 gl-min-w-0">
+        <div
+          v-for="component in components"
+          :id="encodeURIComponent(component.name)"
+          :key="component.id"
+          class="gl-mb-8 gl-scroll-mt-8"
+          data-testid="component-section"
+        >
+          <h3 class="gl-group gl-mt-0 gl-text-size-h2" data-testid="component-name">
+            {{ component.name }}
+            <gl-button
+              :href="`#${encodeURIComponent(component.name)}`"
+              class="gl-invisible gl-ml-2 !gl-text-subtle group-hover:gl-visible"
+              :aria-label="getComponentLabel(component.name)"
+              icon="link"
+              variant="link"
+              @click.prevent="scrollToComponent(component.name)"
+            />
+            <span
+              v-gl-tooltip.top
+              data-testid="usage-count"
+              :title="
+                s__(
+                  'CiCatalogComponent|The number of projects that used this version of the component in the last 30 days.',
+                )
+              "
+              class="gl-ml-2 gl-text-sm gl-font-normal gl-text-subtle"
             >
-              <help-icon />
-            </gl-link>
-          </div>
-          <gl-table-lite :items="component.inputs" :fields="$options.fields" stacked="md" fixed>
-            <template #cell(name)="{ item }">
-              <code v-if="item.name" data-testid="input-name">{{ item.name }}</code>
-            </template>
-            <template #cell(required)="{ item }">
-              <span data-testid="input-required">{{ item.required }}</span>
-            </template>
-            <template #cell(type)="{ item }">
-              <span data-testid="input-type">{{ item.type.toLowerCase() }}</span>
-            </template>
-            <template #cell(description)="{ item }">
-              <span data-testid="input-description" class="gl-break-words">{{
-                item.description
-              }}</span>
-            </template>
-            <template #cell(default)="{ item }">
-              <pre
-                v-if="shouldShowCodeBlock(item)"
-                class="gl-text-left gl-text-sm"
-                data-testid="input-code-block"
-                >{{ getCodeBlock(item) }}</pre
+              <gl-icon name="chart" />
+              <span class="gl-ml-1">{{ component.last30DayUsageCount }}</span>
+            </span>
+          </h3>
+          <pre
+            data-testid="copy-to-clipboard"
+            class="code highlight js-syntax-highlight language-yaml"
+          ><code>{{
+            generateSnippet(component.includePath)
+          }}</code></pre>
+          <div class="gl-mt-5">
+            <div class="gl-mb-4 gl-flex gl-gap-2">
+              <b> {{ $options.i18n.inputTitle }}</b>
+              <gl-link
+                data-testid="input-help-link"
+                :title="$options.i18n.learnMore"
+                :href="$options.inputHelpLink"
+                target="_blank"
               >
-              <code v-else-if="getItemValue(item)" data-testid="input-default">
-                <gl-truncate
-                  :text="getItemValue(item)"
-                  position="end"
-                  class="gl-max-w-full"
-                  with-tooltip
-                />
-              </code>
-            </template>
-          </gl-table-lite>
+                <help-icon />
+              </gl-link>
+            </div>
+            <gl-table-lite :items="component.inputs" :fields="$options.fields" stacked="md" fixed>
+              <template #cell(name)="{ item }">
+                <code v-if="item.name" data-testid="input-name">{{ item.name }}</code>
+              </template>
+              <template #cell(required)="{ item }">
+                <span data-testid="input-required">{{ item.required }}</span>
+              </template>
+              <template #cell(type)="{ item }">
+                <span data-testid="input-type">{{ item.type.toLowerCase() }}</span>
+              </template>
+              <template #cell(description)="{ item }">
+                <span data-testid="input-description" class="gl-break-words">{{
+                  item.description
+                }}</span>
+              </template>
+              <template #cell(default)="{ item }">
+                <pre
+                  v-if="shouldShowCodeBlock(item)"
+                  class="gl-text-left gl-text-sm"
+                  data-testid="input-code-block"
+                  >{{ getCodeBlock(item) }}</pre
+                >
+                <code v-else-if="getItemValue(item)" data-testid="input-default">
+                  <gl-truncate
+                    :text="getItemValue(item)"
+                    position="end"
+                    class="gl-max-w-full"
+                    with-tooltip
+                  />
+                </code>
+              </template>
+            </gl-table-lite>
+          </div>
         </div>
       </div>
-    </template>
+      <div class="gl-w-64 gl-hidden gl-flex-shrink-0 @lg/panel:gl-block">
+        <page-navigation-menu :items="navigationItems" />
+      </div>
+    </div>
   </div>
 </template>

@@ -190,10 +190,10 @@ If you have an offline license, you can set up a fully private infrastructure:
 1. Install a Large Language Model (LLM) serving infrastructure.
 
    - GitLab supports various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock,
-   and Azure OpenAI. For more information about each platform, see [supported LLM platforms documentation](supported_llm_serving_platforms.md).
+     and Azure OpenAI. For more information about each platform, see [supported LLM platforms documentation](supported_llm_serving_platforms.md).
 
    - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
-   see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
+     see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 1. [Install the AI Gateway](../../install/install_ai_gateway.md) to access GitLab Duo features.
 

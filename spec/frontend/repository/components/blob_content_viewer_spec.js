@@ -211,12 +211,37 @@ describe('Blob content viewer component', () => {
 
         await triggerBlame();
 
-        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: { blame: '1' } });
+        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: { blame: '1' }, hash: '' });
         expect(findSourceViewer().props('showBlame')).toBe(true);
+
+        await router.replace({ path: '/', query: { blame: '1' } }); // Simulate the route update
+        await triggerBlame();
+
+        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: {}, hash: '' });
+        expect(findSourceViewer().props('showBlame')).toBe(false);
+      });
+
+      it('preserves the line number hash when toggling blame', async () => {
+        loadViewer.mockReturnValueOnce(SourceViewer);
+        await createComponent({ blob: simpleViewerMock });
+        window.location.hash = '#L42';
 
         await triggerBlame();
 
-        expect(findSourceViewer().props('showBlame')).toBe(false);
+        expect(mockRouterPush).toHaveBeenCalledWith({
+          path: '/',
+          query: { blame: '1' },
+          hash: '#L42',
+        });
+
+        await router.replace({ path: '/', query: { blame: '1' }, hash: '#L42' });
+        await triggerBlame();
+
+        expect(mockRouterPush).toHaveBeenCalledWith({
+          path: '/',
+          query: {},
+          hash: '#L42',
+        });
       });
 
       it('hides the blame when route changes', async () => {
@@ -224,7 +249,7 @@ describe('Blob content viewer component', () => {
         await createComponent({ blob: simpleViewerMock });
         await triggerBlame(); // First open blame
 
-        await router.replace({ path: '/mock_path', query: { blame: '0' } }); // Close it via param
+        await router.replace({ path: '/mock_path', query: {} }); // Close it by removing blame param
         expect(findSourceViewer().props('showBlame')).toBe(false);
 
         await router.replace({ path: '/mock_path', query: { blame: '1' } }); // Open it via param
@@ -649,16 +674,16 @@ describe('Blob content viewer component', () => {
 
   describe('active viewer based on plain attribute', () => {
     it.each`
-      hasRichViewer | plain  | blame  | activeViewer          | activeViewerType
-      ${true}       | ${'0'} | ${'0'} | ${RICH_BLOB_VIEWER}   | ${RICH_BLOB_VIEWER}
-      ${true}       | ${'1'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
-      ${false}      | ${'0'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
-      ${false}      | ${'1'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
-      ${true}       | ${'0'} | ${'1'} | ${SIMPLE_BLOB_VIEWER} | ${BLAME_VIEWER}
+      hasRichViewer | plain  | blame   | activeViewer          | activeViewerType
+      ${true}       | ${'0'} | ${null} | ${RICH_BLOB_VIEWER}   | ${RICH_BLOB_VIEWER}
+      ${true}       | ${'1'} | ${null} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${false}      | ${'0'} | ${null} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${false}      | ${'1'} | ${null} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${true}       | ${'0'} | ${'1'}  | ${SIMPLE_BLOB_VIEWER} | ${BLAME_VIEWER}
     `(
       'activeViewerType is `$activeViewerType` when hasRichViewer is $hasRichViewer, plain is set to $plain, and blame is set to $blame',
       async ({ hasRichViewer, plain, blame, activeViewer, activeViewerType }) => {
-        const urlParams = `?plain=${plain}&blame=${blame}`;
+        const urlParams = blame ? `?plain=${plain}&blame=${blame}` : `?plain=${plain}`;
         await createComponent(
           { blob: hasRichViewer ? richViewerMock : simpleViewerMock, urlParams },
           shallowMount,

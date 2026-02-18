@@ -80,7 +80,7 @@ The following API resources are available in the project context:
 | [Jobs Artifacts](job_artifacts.md)                                             | `/projects/:id/jobs/:job_id/artifacts` |
 | [Labels](labels.md)                                                            | `/projects/:id/labels` |
 | [Maven repository](packages/maven.md)                                          | `/projects/:id/packages/maven` (also available for groups and standalone) |
-| [Members](members.md)                                                          | `/projects/:id/members` (also available for groups) |
+| [Members](project_members.md)                                                  | `/projects/:id/members` (also available for groups) |
 | [Merge request approvals](merge_request_approvals.md)                          | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals` |
 | [Merge requests](merge_requests.md)                                            | `/projects/:id/merge_requests` (also available for groups and standalone) |
 | [Merge trains](merge_trains.md)                                                | `/projects/:id/merge_trains` |
@@ -159,7 +159,7 @@ The following API resources are available in the group context:
 | [Issues Statistics](issues_statistics.md)                      | `/groups/:id/issues_statistics` (also available for projects and standalone) |
 | [Linked epics](linked_epics.md)                                | `/groups/:id/epics/.../related_epics` |
 | [Member Roles](member_roles.md)                                | `/groups/:id/member_roles` |
-| [Members](members.md)                                          | `/groups/:id/members` (also available for projects) |
+| [Members](group_members.md)                                    | `/groups/:id/members` (also available for projects) |
 | [Merge requests](merge_requests.md)                            | `/groups/:id/merge_requests` (also available for projects and standalone) |
 | [Notes](notes.md) (comments)                                   | `/groups/:id/epics/.../notes` (also available for projects) |
 | [Notification settings](notification_settings.md)              | `/groups/:id/notification_settings` (also available for projects and standalone) |

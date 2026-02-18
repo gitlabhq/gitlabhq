@@ -511,7 +511,7 @@ To add a private hosted zone:
    - In the **Hostname** field, enter your Private Hosted Zone (PHZ) entry.
    - For **Link type**, choose one of the following:
      - For an outbound private link PHZ entry, select the endpoint service from the dropdown list.
-     Only links with the `Available` or `Pending Acceptance` status are shown.
+       Only links with the `Available` or `Pending Acceptance` status are shown.
      - For other PHZ entries, provide a list of DNS aliases.
 1. Select **Save**.
    Your PHZ entry and any aliases should appear in the list.

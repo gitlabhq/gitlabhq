@@ -162,8 +162,8 @@ To access AWS Bedrock models:
    permissions:
 
    - Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow
-   [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
-   the GitLab Duo Self-Hosted UI.
+     [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
+     the GitLab Duo Self-Hosted UI.
 
    - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
 

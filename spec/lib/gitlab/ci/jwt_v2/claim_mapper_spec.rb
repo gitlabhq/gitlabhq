@@ -22,16 +22,6 @@ RSpec.describe Gitlab::Ci::JwtV2::ClaimMapper, feature_category: :continuous_int
   subject(:mapper) { described_class.new(project_config, pipeline) }
 
   describe '#to_h' do
-    context 'when default_jwt_ci_config_ref_uri is disabled' do
-      before do
-        stub_feature_flags(default_jwt_ci_config_ref_uri: false)
-      end
-
-      it 'returns an empty hash when source is not implemented' do
-        expect(mapper.to_h).to eq({})
-      end
-    end
-
     it 'returns an default value when source is not implemented' do
       expect(mapper.to_h).to eq(expected_default_return)
     end

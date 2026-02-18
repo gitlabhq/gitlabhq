@@ -12,10 +12,8 @@ title: Guidelines for implementing Enterprise Edition features
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
   the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide/availability_details.md)
   the feature applies to.
-<!-- markdownlint-disable MD044 -->
 - **Submit a MR to the [`www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com) project.**: Add the new feature to the
   [EE features list](https://about.gitlab.com/features/).
-<!-- markdownlint-enable MD044 -->
 
 ## Runtime modes in development
 

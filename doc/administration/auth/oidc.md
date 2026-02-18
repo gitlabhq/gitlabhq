@@ -1094,9 +1094,8 @@ response to identify users as [external users](../external_users.md)
 based on group membership, configure GitLab to identify:
 
 - Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
-- Which group memberships should identify a user as an
-  [external user](../external_users.md), using the
- `external_groups` setting.
+- Which group memberships should identify a user as an [external user](../external_users.md),
+  using the `external_groups` setting.
 
 {{< tabs >}}
 

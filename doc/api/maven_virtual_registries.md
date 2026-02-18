@@ -242,6 +242,7 @@ Use the following endpoints to configure and manage upstream Maven registries.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 - `upstream_name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561675) in GitLab 18.4.
+
 {{< /history >}}
 
 Lists all upstream registries for a top-level group.

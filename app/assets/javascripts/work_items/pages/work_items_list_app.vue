@@ -1472,7 +1472,8 @@ export default {
         return;
       }
 
-      if (this.state !== workItem.state) {
+      // Work item state can be either 'OPEN' or 'CLOSED', this.state can be 'opened' or 'closed'
+      if (!this.state.includes(workItem.state.toLowerCase())) {
         this.refetchItems({ refetchCounts: true });
       }
     },

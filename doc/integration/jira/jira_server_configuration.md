@@ -45,9 +45,9 @@ To create a Jira group for the user:
    `gitlab-developers`), then select **Add group**.
 1. To add the `gitlab` user to the new `gitlab-developers` group, select **Edit members**.
    The `gitlab-developers` group appears as a selected group.
-<!-- vale gitlab_base.BadPlurals = NO -->
+   <!-- vale gitlab_base.BadPlurals = NO -->
 1. In the **Add members to selected group(s)** section, enter `gitlab`.
-<!-- vale gitlab_base.BadPlurals = YES -->
+   <!-- vale gitlab_base.BadPlurals = YES -->
 1. Select **Add selected users**.
    The `gitlab` user appears as a group member.
 

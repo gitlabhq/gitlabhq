@@ -399,10 +399,18 @@ export default {
     },
     setShowBlame(showBlame) {
       this.showBlame = showBlame;
-      const blame = showBlame === true ? '1' : '0';
-      const routerBlameState = this.$route?.query?.blame;
-      if (routerBlameState === blame || (!showBlame && !routerBlameState)) return; // If blame state is the same as requested, ignore
-      this.$router.push({ path: this.$route.path, query: { ...this.$route.query, blame } });
+      const { blame, ...queryWithoutBlame } = this.$route?.query || {};
+      const isAlreadySynced = showBlame ? blame === '1' : !blame;
+
+      if (isAlreadySynced) return;
+
+      const query = showBlame ? { ...queryWithoutBlame, blame: '1' } : queryWithoutBlame;
+
+      this.$router.push({
+        path: this.$route.path,
+        query,
+        hash: window.location.hash,
+      });
     },
   },
 };

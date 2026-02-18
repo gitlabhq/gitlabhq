@@ -94,13 +94,13 @@ The default `before_script` generates a temporary `.npmrc` that is used to authe
 
 As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom CI/CD variable named `GITLAB_TOKEN`. To create this variable:
 
-<!-- markdownlint-disable MD044 -->
-
 1. Open the left sidebar.
 1. Select **Settings** > **Access tokens**.
 1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
+   <!-- markdownlint-disable MD044 -->
 1. Under **Select scopes**, select the **api** checkbox.
+   <!-- markdownlint-enable MD044 -->
 1. Select **Create project access token**.
 1. Copy the token value.
 1. In the left sidebar, select **Settings** > **CI/CD**.
@@ -110,7 +110,6 @@ As part of publishing a package, semantic-release increases the version number i
 1. In the **Key** box, enter `GITLAB_TOKEN`.
 1. In the **Value** box, enter the token value.
 1. Select **Add variable**.
-<!-- markdownlint-enable MD044 -->
 
 ## Configure semantic-release
 

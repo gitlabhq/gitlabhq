@@ -57,18 +57,16 @@ Consider the next release as "Release N.M+1".
 1. Execute a standard migration (not a post-migration):
 
    ```ruby
-      def up
-        rename_table_safely(:issues, :tickets)
-      end
+   def up
+     rename_table_safely(:issues, :tickets)
+   end
 
-      def down
-        undo_rename_table_safely(:issues, :tickets)
-      end
-    ```
+   def down
+     undo_rename_table_safely(:issues, :tickets)
+   end
+   ```
 
-<!-- vale gitlab_base.Substitutions = NO -->
 1. Rename the table's [dictionary file](database_dictionary.md) (under `db/docs`) with the new name (like `db/docs/tickets.yml` in this example). Update `introduced_by_url` and `milestone` attributes.
-<!-- vale gitlab_base.Substitutions = YES -->
 1. Create an entry for the interim view (with the old table's name) in `db/docs/deleted_views`. This is because the view gets deleted by [`finalize_table_rename`](https://gitlab.com/gitlab-org/gitlab/-/blob/33dabf39e75ef01cd0914ed44f0954c8b72d5fe3/lib/gitlab/database/rename_table_helpers.rb#L20) in the post-deployment migration of the same merge request.
 
 **Important notes**:

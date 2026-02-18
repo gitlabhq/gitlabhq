@@ -2,6 +2,8 @@
 
 module Ci
   class PlayBuildService
+    include Gitlab::InternalEventsTracking
+
     def initialize(current_user:, build:, variables: nil, inputs: {})
       @current_user = current_user
       @build = build
@@ -30,6 +32,8 @@ module Ci
         inputs: filtered_inputs
       ).execute
 
+      track_play_with_new_input_values(filtered_inputs)
+
       ServiceResponse.success(payload: { job: job })
     rescue StateMachines::InvalidTransition
       job = retry_build(build.reset)
@@ -55,6 +59,16 @@ module Ci
 
     def process_job_inputs(job, inputs)
       Ci::Inputs::ProcessorService.new(job, inputs).execute
+    end
+
+    def track_play_with_new_input_values(filtered_inputs)
+      return unless filtered_inputs.present?
+
+      track_internal_event(
+        'play_job_with_new_input_values',
+        project: project,
+        user: current_user
+      )
     end
   end
 end

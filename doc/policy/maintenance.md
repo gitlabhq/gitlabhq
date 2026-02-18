@@ -6,9 +6,9 @@ title: GitLab release and maintenance policy
 description: Version support, release cadence, and backporting policies.
 ---
 
-The Delivery Group are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.
+The Release and Deploy team are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.
 
-GitLab has strict policies governing version naming, as well as release pace for major, minor,
+GitLab has strict policies governing version naming and release pace for major, minor,
 patch releases. New releases are announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).
 
 Our current policy is:
@@ -16,9 +16,8 @@ Our current policy is:
 - Backporting bug fixes for **only the current stable release** at any given time - see [patch releases](#patch-releases) below.
 - Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
 
-In rare cases, release managers may make an exception and backport to more than
-the last two monthly releases. See
-[Backporting to older releases](#backporting-to-older-releases) for more information.
+In rare cases, an exception may be granted to backport to more than the last two monthly releases. For the required process, see
+[policy exceptions](#policy-exceptions).
 
 ## Versioning
 
@@ -59,7 +58,7 @@ The following GitLab release versions are currently maintained:
 > For GitLab team members looking for maintained versions for the upcoming patch release, refer to the [`Release Versions` panel](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
 > under the `Patch Release Information` section in the internal `delivery: Release Information` Grafana dashboard.
 > When the active monthly release date is prior to the active patch release date, the versions are different from the maintained versions list above.
-> 
+>
 > Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions.
 
 ## Upgrade recommendations
@@ -118,39 +117,28 @@ have to adhere to various internal requirements (for example, org. compliance, v
 For highly severe security issues, there is
 [precedent](https://about.gitlab.com/releases/2016/05/02/cve-2016-4340-patches/)
 to backport security fixes to even more previous GitLab release versions.
-This decision is made on a case-by-case basis.
+For the required process, see [policy exceptions](#policy-exceptions).
 
 In some circumstances, we may choose to address a vulnerability using the regular monthly release process by
 updating the active and current stable releases only, with no backports. Factors influencing this decision include
 the very low likelihood of exploitation, the low impact of the vulnerability, the complexity of security fixes and
 the eventual risk to stability. We always address high and critical security issues with a patch release.
 
-### Backporting to older releases
+### Policy exceptions
 
-Backporting to more than one stable release is usually reserved for [security fixes](#patch-releases).
-In some cases, however, we may need to backport a bug fix to more than one stable
-release, depending on the severity of the bug.
-
-The decision on whether backporting a change is performed is done at the discretion of the
-[current release managers](https://about.gitlab.com/community/release-managers/),
-based on **all** of the following:
-
-1. Estimated severity of the bug:
-   Highest possible impact to users based on the current definition of severity.
-1. Estimated priority of the bug:
-   Immediate impact on all impacted users based on the previous estimated severity.
-1. Potentially incurring data loss and/or security breach.
-1. Potentially affecting one or more strategic accounts due to a proven inability by the user to upgrade to the current stable version.
-
-If **all** the items in the previous list are satisfied, the backport releases can be created for
-the current stable release, and two previous monthly releases. In rare cases a release manager may grant an exception to backport to more than two previous monthly releases.
-For instance, if we release `13.2.1` with a fix for a severe bug introduced in
-`13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
-
+In exceptional circumstances, deviations from this maintenance policy may be necessary. This includes requests for backporting fixes to releases older than those covered by standard policy and deviations from the [release principles](https://handbook.gitlab.com/handbook/engineering/releases/#what-each-release-type-contains)
 Severity 3 and lower requests are automatically turned down.
 
-To request backporting to more than one stable release for consideration, raise an issue in the
-[release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
+To request a policy exception:
+
+1. **Raise an issue** in the [`release/tasks`](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
+1. **Document business justification** including:
+   - Severity and priority of the bug or feature.
+   - Potential for data loss or security breach.
+   - Customer impact and why upgrading to a maintained version is not feasible.
+1. **Obtain written approval** from a sponsoring Director or VP.
+
+Exceptions are granted at the discretion of the [Release Managers](https://about.gitlab.com/community/release-m://about.gitlab.com/community/release-ma) as policy owners, subject to [SLO commitments](https://handbook.gitlab.com/handbook/engineering/releases/patch-releases/#slo-commitments).
 
 ## More information
 

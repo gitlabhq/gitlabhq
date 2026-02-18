@@ -120,6 +120,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Proofreaders needed.
+
 <!-- vale gitlab_base.Spelling = YES -->
 
 ## Become a proofreader

@@ -417,7 +417,7 @@ In troubleshooting, any authenticated user can use the API to verify the `NameID
 
 For GitLab Self-Managed, administrators can use the [users API](../../../api/users.md) to see the same information.
 
-When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
+When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/group_members.md) to view group SAML identity information for members of the group.
 
 This can then be compared to the `NameID` sent by the identity provider by decoding the
 message with a [SAML debugging tool](#saml-debugging-tools). These values must match to
@@ -623,4 +623,4 @@ Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/200
 
 {{< /details >}}
 
-If the [global SAML group membership lock](group_sync.md#global-saml-group-memberships-lock) is enabled, only administrators can manage group members and service accounts through the UI. If a group Owner needs to manage service accounts, they can use the [group members API](../../../api/members.md) instead.
+If the [global SAML group membership lock](group_sync.md#global-saml-group-memberships-lock) is enabled, only administrators can manage group members and service accounts through the UI. If a group Owner needs to manage service accounts, they can use the [group members API](../../../api/group_members.md) instead.

@@ -1309,12 +1309,10 @@ for more details.
    instead of updating each model separately.
    This can be achieve in different ways, depending on the scenario.
 
-   - Generate an `UPDATE` query, and use `FROM` to join the tables
-   that provide the necessary values
-   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
-   - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to
-   pass values calculated beforehand
-   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177993)).
+   - Generate an `UPDATE` query, and use `FROM` to join the tables that provide the necessary values
+     ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
+   - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to pass values calculated beforehand
+     ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177993)).
    - Pass all keys and values to `ActiveRelation#update`.
 
    ```ruby

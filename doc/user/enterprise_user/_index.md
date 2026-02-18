@@ -224,7 +224,7 @@ To view an enterprise user's email address:
 1. Select **Manage** > **Members**.
 1. Hover over the enterprise user's name.
 
-You can also use the [group and project members API](../../api/members.md)
+You can also use the [group members API](../../api/group_members.md) and [project members API](../../api/project_members.md)
 to access users' information. For enterprise users of the group, this information
 includes users' email addresses.
 

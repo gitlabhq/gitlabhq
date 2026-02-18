@@ -32,12 +32,22 @@ describe('BlameSkeletonLoader component', () => {
     });
   });
 
-  it('renders a row for each line in the chunk', () => {
-    createComponent({ totalLines: 5 });
+  it('renders a loader every 2nd line by default', () => {
+    createComponent({ totalLines: 8 });
 
-    expect(findAllSkeletonBars()).toHaveLength(5);
-    expect(findAllSkeletonDates()).toHaveLength(5);
-    expect(findAllSkeletonAvatars()).toHaveLength(5);
-    expect(findAllSkeletonTitles()).toHaveLength(5);
+    expect(findAllSkeletonBars()).toHaveLength(4);
+    expect(findAllSkeletonDates()).toHaveLength(4);
+    expect(findAllSkeletonAvatars()).toHaveLength(4);
+    expect(findAllSkeletonTitles()).toHaveLength(4);
+  });
+
+  it('offsets loader positions using startLine', () => {
+    // Without offset: 5 lines with loaders every 2nd line = 3 loaders
+    createComponent({ totalLines: 5 });
+    expect(findAllSkeletonBars()).toHaveLength(3);
+
+    // With offset: startLine shifts positions, resulting in 2 loaders instead of 3
+    createComponent({ totalLines: 5, startLine: 3 });
+    expect(findAllSkeletonBars()).toHaveLength(2);
   });
 });

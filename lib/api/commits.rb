@@ -403,7 +403,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        count = user_project.repository.count_commits(ref: params[:sha], first_parent: params[:first_parent])
+        count = user_project.repository.count_commits(revisions: params[:sha], first_parent: params[:first_parent])
         count_hash = { count: count }
 
         present count_hash, with: Entities::CommitSequence

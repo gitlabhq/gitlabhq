@@ -147,7 +147,7 @@ When you turn on restricted access, the following known issues might occur and r
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
-you will be charged overages for the five additional users.
+  you will be charged overages for the five additional users.
 
 Additionally, restricted access might block the standard non-overage flows:
 
@@ -315,13 +315,12 @@ that are [pending administrator approval](../moderate_users.md#view-users-pendin
 
 - If an administrator adds a user to a group or project:
   - If the new user role is [billable](../../subscriptions/manage_users_and_seats.md#billable-users),
-  all other membership requests for that user are automatically approved.
-  - If the new user role is not billable, other requests for that user remain pending until administrator
-  approval.
+    all other membership requests for that user are automatically approved.
+  - If the new user role is not billable, other requests for that user remain pending until administrator approval.
 
 - If a user who isn't an administrator adds a user to a group or project:
   - If the user does not have any billable role in any group or project, and is added or promoted to a billable role,
-  their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
+    their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
   - If the user already has a billable role, administrator approval is not required.
 
 Prerequisites:

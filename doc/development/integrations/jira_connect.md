@@ -138,10 +138,8 @@ To set up a development Jira Connect Proxy:
     recommend using Gitpod or a similar cloud development environment. For more
     information on using Gitpod with GDK, see the:
 
-    - [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/)
-    documentation.
-    - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
-    video.
+    - [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/) documentation.
+    - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d) video.
 
     <!-- vale gitlab_base.Spelling = NO -->
 

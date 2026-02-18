@@ -178,6 +178,36 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
           expect(build.reload.inputs).to be_empty
         end
       end
+
+      context 'when tracking play with new input values' do
+        it 'tracks the internal event' do
+          expect { execute_service }
+            .to trigger_internal_events('play_job_with_new_input_values')
+            .with(
+              category: 'Ci::PlayBuildService',
+              project: project,
+              user: user
+            )
+        end
+
+        context 'when all inputs match defaults' do
+          let(:job_inputs) { { version: '1.0' } }
+
+          it 'does not track the event' do
+            expect { execute_service }
+              .not_to trigger_internal_events('play_job_with_new_input_values')
+          end
+        end
+
+        context 'when no inputs are provided' do
+          let(:job_inputs) { {} }
+
+          it 'does not track the event' do
+            expect { execute_service }
+              .not_to trigger_internal_events('play_job_with_new_input_values')
+          end
+        end
+      end
     end
   end
 

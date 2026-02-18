@@ -181,15 +181,15 @@ unless absolutely necessary, we can prevent confusion and potential conflicts.
 
 - **Reasons for the Preference**:
   - **Smaller CSS File Size**: Utilizing utility classes directly can lead to more compact CSS files and
-  promote a more consistent design system.
+    promote a more consistent design system.
   - **Clarity and Maintainability**: When utility classes are used in HTML, it's clearer how styles are
-  applied, reducing the risk of conflicts and regressions.
+    applied, reducing the risk of conflicts and regressions.
 
 - **Potential Issues with Combining Styles**:
   - **Conflicts**: If utility classes and custom styles are combined in a single class, conflicts can arise,
-  especially when the styles have interdependencies.
+    especially when the styles have interdependencies.
   - **Regressions**: It becomes less obvious how styles should resolve, leading to possible regressions
-  or unexpected behavior.
+    or unexpected behavior.
 
 By following these guidelines, we can create clean, maintainable stylesheets that leverage Tailwind CSS effectively.
 
