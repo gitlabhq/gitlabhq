@@ -1,5 +1,3 @@
 ---
 name: read_shared_group
 description: Grants the ability to read a shared group
-boundaries:
-  - group

@@ -1,5 +1,3 @@
 ---
 name: delete_release
 description: Grants the ability to delete releases
-boundaries:
-  - project

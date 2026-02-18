@@ -6,7 +6,7 @@ title: Permission development guidelines
 ---
 
 There are multiple types of permissions across GitLab, and when implementing
-anything that deals with permissions, all of them should be considered. 
+anything that deals with permissions, all of them should be considered.
 
 As a pre-requisite, familiarize yourself with our [glossary](../auth/auth_glossary.md) first.
 
@@ -18,5 +18,5 @@ For more information, see:
 - [Authorizations](permissions/authorizations.md): guidance on where to check permissions.
 - [Custom roles](permissions/custom_roles.md): guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
 - [Job token guidelines](permissions/job_tokens.md): Guidance on requirements and contribution guidelines for new job token permissions.
-- [Granular Personal Access Tokens](permissions/granular_personal_access_tokens.md): Guidance on enabling granular PAT permissions for API endpoints, including requirements and contribution guidelines.
-- [GraphQL API protection against granular PATs](permissions/graphql_granular_token_authorization.md): Guidance on how to protect graphQL calls made with granular PATs.
+- [REST API support for Granular Personal Access Tokens](permissions/granular_personal_access_tokens.md): Guidance on adding granular PAT support for REST endpoints, including requirements and contribution guidelines.
+- [GraphQL API support for Granular Personal Access Tokens](permissions/graphql_granular_token_authorization.md): Guidance on adding granular PAT support for GraphQL queries and mutations, including requirements and contribution guidelines.

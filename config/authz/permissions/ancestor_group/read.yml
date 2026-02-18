@@ -1,5 +1,3 @@
 ---
 name: read_ancestor_group
 description: Grants the ability to view ancestor groups of a project
-boundaries:
-  - project

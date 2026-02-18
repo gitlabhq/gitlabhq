@@ -1,5 +1,3 @@
 ---
 name: read_commit_status
 description: Grants the ability to read commit statuses
-boundaries:
-  - project

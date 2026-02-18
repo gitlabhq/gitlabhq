@@ -1,6 +1,3 @@
 ---
 name: read_composer_package
 description: Grants the ability to read Composer packages
-boundaries:
-  - group
-  - project

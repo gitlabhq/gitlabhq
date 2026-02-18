@@ -1,5 +1,3 @@
 ---
 name: read_merge_request_time_statistic
 description: Grants the ability to read merge request time statistics
-boundaries:
-  - project

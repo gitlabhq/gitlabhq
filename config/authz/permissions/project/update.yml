@@ -1,5 +1,3 @@
 ---
 name: update_project
 description: Grants the ability to update project settings and attributes
-boundaries:
-  - project

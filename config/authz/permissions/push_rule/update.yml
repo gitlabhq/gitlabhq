@@ -1,6 +1,3 @@
 ---
 name: update_push_rule
 description: Grants the ability to update push rules
-boundaries:
-  - group
-  - project

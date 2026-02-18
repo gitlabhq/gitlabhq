@@ -1,5 +1,3 @@
 ---
 name: download_project_export
 description: Grants the ability to download project exports
-boundaries:
-  - project

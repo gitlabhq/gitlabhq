@@ -1,5 +1,3 @@
 ---
 name: delete_page
 description: Grants the ability to delete pages
-boundaries:
-  - project

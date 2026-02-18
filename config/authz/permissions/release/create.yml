@@ -1,5 +1,3 @@
 ---
 name: create_release
 description: Grants the ability to create releases
-boundaries:
-  - project

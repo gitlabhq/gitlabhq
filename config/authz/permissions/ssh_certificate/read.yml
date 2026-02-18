@@ -1,5 +1,3 @@
 ---
 name: read_ssh_certificate
 description: Grants the ability to read SSH certificates
-boundaries:
-  - group

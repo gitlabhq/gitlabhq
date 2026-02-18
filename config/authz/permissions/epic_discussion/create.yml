@@ -1,5 +1,3 @@
 ---
 name: create_epic_discussion
 description: Grants the ability to create epic discussions
-boundaries:
-  - group

@@ -1,6 +1,3 @@
 ---
 name: read_group
 description: Grants the ability to read a group
-boundaries:
-  - group
-  - user

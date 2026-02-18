@@ -1,5 +1,3 @@
 ---
 name: delete_secure_file
 description: Grants the ability to delete secure files
-boundaries:
-  - project

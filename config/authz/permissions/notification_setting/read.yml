@@ -1,7 +1,3 @@
 ---
 name: read_notification_setting
 description: Grants the ability to read notification settings
-boundaries:
-  - group
-  - project
-  - user

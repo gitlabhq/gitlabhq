@@ -1,5 +1,3 @@
 ---
 name: read_repository_merge_base
 description: Grants the ability to read repository merge bases
-boundaries:
-  - project

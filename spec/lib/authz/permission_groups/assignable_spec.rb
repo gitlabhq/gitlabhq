@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissions do
+  let(:boundaries) { %w[project] }
   let(:definition) do
     {
       name: 'action_resource',
       description: 'Grants action on resource',
       feature_category: 'feature_category_name',
       # include read_resource twice to ensure uniqueness is handled
-      permissions: %w[read_resource write_resource read_resource]
+      permissions: %w[read_resource write_resource read_resource],
+      boundaries: boundaries
     }
   end
 
@@ -72,6 +74,18 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         it 'returns an empty array' do
           expect(assignable.permissions).to eq([])
         end
+      end
+    end
+
+    describe '#boundaries' do
+      subject { assignable.boundaries }
+
+      it { is_expected.to eq(boundaries) }
+
+      context 'when boundaries are not defined' do
+        let(:boundaries) { nil }
+
+        it { is_expected.to eq([]) }
       end
     end
 

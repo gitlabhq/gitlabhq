@@ -1,6 +1,3 @@
 ---
 name: update_protected_branch
 description: Grants the ability to update protected branches
-boundaries:
-  - project
-  - group

@@ -50,7 +50,7 @@ For a click-through demo, see [GitLab Duo Agent Platform - GitLab MCP server](ht
 
 ## Prerequisites
 
-- Have [GitLab Duo Core](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) and
+- Have [GitLab Duo](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off) and
   [beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) turned on.
 
 ## Connect a client to the GitLab MCP server

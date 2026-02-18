@@ -1,5 +1,3 @@
 ---
 name: read_repository_health
 description: Grants the ability to read repository health information
-boundaries:
-  - project

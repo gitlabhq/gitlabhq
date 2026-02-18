@@ -1,7 +1,3 @@
 ---
 name: read_service_account
 description: Grants the ability to read service accounts
-boundaries:
-  - group
-  - project
-  - instance

@@ -1,6 +1,3 @@
 ---
 name: download_terraform_module
 description: Grants the ability to download Terraform modules
-boundaries:
-  - group
-  - project

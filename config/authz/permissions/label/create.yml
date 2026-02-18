@@ -1,6 +1,3 @@
 ---
 name: create_label
 description: Grants the ability to create labels
-boundaries:
-  - group
-  - project

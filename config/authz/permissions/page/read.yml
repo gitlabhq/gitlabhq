@@ -1,5 +1,3 @@
 ---
 name: read_page
 description: Grants the ability to read pages
-boundaries:
-  - project

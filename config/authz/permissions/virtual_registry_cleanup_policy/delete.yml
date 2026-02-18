@@ -1,5 +1,3 @@
 ---
 name: delete_virtual_registry_cleanup_policy
 description: Grants the ability to delete virtual registry cleanup policies
-boundaries:
-  - group

@@ -1,5 +1,3 @@
 ---
 name: authorize_markdown_upload
 description: Grants the ability to authorize markdown upload
-boundaries:
-  - project

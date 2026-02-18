@@ -1,5 +1,3 @@
 ---
 name: read_user_preference
 description: Grants the ability to read user preferences
-boundaries:
-  - user

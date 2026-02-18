@@ -1,5 +1,3 @@
 ---
 name: delete_cluster_agent
 description: Grants the ability to delete cluster agents
-boundaries:
-  - project

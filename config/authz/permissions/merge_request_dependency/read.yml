@@ -1,5 +1,3 @@
 ---
 name: read_merge_request_dependency
 description: Grants the ability to read merge request dependencies
-boundaries:
-  - project

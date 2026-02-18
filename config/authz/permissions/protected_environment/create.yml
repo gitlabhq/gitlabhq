@@ -1,6 +1,3 @@
 ---
 name: create_protected_environment
 description: Grants the ability to create protected environments
-boundaries:
-  - project
-  - group

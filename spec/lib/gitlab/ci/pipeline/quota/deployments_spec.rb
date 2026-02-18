@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
   let_it_be_with_refind(:namespace) { create(:namespace) }
   let_it_be_with_reload(:project) { create(:project, :repository, namespace: namespace) }
-  let_it_be(:plan_limits) { create(:plan_limits, :default_plan) }
-
   let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
   let(:pipeline_seed) { double(:pipeline_seed, deployments_count: 2) }
@@ -22,7 +20,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
   let(:ci_pipeline_deployments_limit) { 0 }
 
   before do
-    plan_limits.update!(ci_pipeline_deployments: ci_pipeline_deployments_limit)
+    namespace.actual_plan.actual_limits.update!(ci_pipeline_deployments: ci_pipeline_deployments_limit)
   end
 
   subject(:quota) { described_class.new(namespace, pipeline, command) }
@@ -54,7 +52,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
 
     context 'when limit does not exist' do
       before do
-        allow(namespace).to receive(:actual_plan) { create(:default_plan) }
+        allow(namespace).to receive(:actual_plan).and_return(Plan.new)
       end
 
       it 'is enabled by default' do

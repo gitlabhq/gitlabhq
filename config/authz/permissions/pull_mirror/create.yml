@@ -1,5 +1,3 @@
 ---
 name: create_pull_mirror
 description: Grants the ability to create pull mirror operations
-boundaries:
-  - project

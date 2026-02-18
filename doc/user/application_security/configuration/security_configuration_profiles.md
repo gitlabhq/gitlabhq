@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Platform Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Managing security configuration profiles
 ---
 
@@ -57,7 +57,7 @@ To save time, you can apply security settings to multiple projects at once:
 1. Select the **Bulk Action** dropdown and choose **Manage security scanners**.
 1. Choose **Apply default profile to all** to standardize your security posture across the selection.
 
-## Default profiles 
+## Default profiles
 
 GitLab provides default profiles that are preconfigured scanner settings so you can enable security scanning with minimal configuration.
 

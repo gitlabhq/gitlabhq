@@ -1,6 +1,3 @@
 ---
 name: create_resource_access_token
 description: Grants the ability to create resource access tokens
-boundaries:
-  - project
-  - group

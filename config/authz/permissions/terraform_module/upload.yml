@@ -1,5 +1,3 @@
 ---
 name: upload_terraform_module
 description: Grants the ability to upload Terraform modules
-boundaries:
-  - project

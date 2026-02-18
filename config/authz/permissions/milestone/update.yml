@@ -1,6 +1,3 @@
 ---
 name: update_milestone
 description: Grants the ability to update milestones
-boundaries:
-  - group
-  - project

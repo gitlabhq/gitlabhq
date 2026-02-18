@@ -1,5 +1,3 @@
 ---
 name: read_terraform_module
 description: Grants the ability to read Terraform modules
-boundaries:
-  - group

@@ -41,6 +41,11 @@ RSpec.describe ForceRestartBuildsMetadataMigrationsForSelfManaged, migration: :g
     end
 
     before do
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_100 PARTITION OF p_ci_builds FOR VALUES IN (100);
+        CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_101 PARTITION OF p_ci_builds FOR VALUES IN (101);
+      SQL
+
       failed_migration.batched_jobs.create!(
         batch_size: 1000, sub_batch_size: 100, min_value: 1, max_value: 100, attempts: 5
       )

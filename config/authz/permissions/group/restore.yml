@@ -1,5 +1,3 @@
 ---
 name: restore_group
 description: Grants the ability to restore a group
-boundaries:
-  - group

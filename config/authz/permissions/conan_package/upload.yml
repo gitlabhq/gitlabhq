@@ -1,5 +1,3 @@
 ---
 name: upload_conan_package
 description: Grants the ability to upload Conan packages
-boundaries:
-  - project

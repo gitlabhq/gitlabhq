@@ -1,7 +1,3 @@
 ---
 name: update_work_item_type
 description: Grants the ability to update work item types
-boundaries:
-  - instance
-  - group
-  - project

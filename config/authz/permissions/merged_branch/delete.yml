@@ -1,5 +1,3 @@
 ---
 name: delete_merged_branch
 description: Grants the ability to delete merged branches
-boundaries:
-  - project

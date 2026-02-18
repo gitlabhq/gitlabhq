@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to apply security policies across multiple groups and projects from a single, centralized location.
 title: Policy enforcement
 ---

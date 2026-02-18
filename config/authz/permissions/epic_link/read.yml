@@ -1,5 +1,3 @@
 ---
 name: read_epic_link
 description: Grants the ability to read epic links
-boundaries:
-  - group

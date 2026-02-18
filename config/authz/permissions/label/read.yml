@@ -1,6 +1,3 @@
 ---
 name: read_label
 description: Grants the ability to read labels
-boundaries:
-  - group
-  - project

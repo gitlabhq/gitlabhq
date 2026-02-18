@@ -1,6 +1,3 @@
 ---
 name: update_debian_distribution
 description: Grants the ability to update Debian distributions
-boundaries:
-  - project
-  - group

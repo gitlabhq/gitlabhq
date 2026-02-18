@@ -336,7 +336,7 @@ and [project](../working_with_projects.md#view-project-activity) activity pages.
 You can use the GitLab-Figma plugin to upload your designs from Figma directly to your issues
 in GitLab.
 
-To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
+To use the plugin in Figma, install it from the [Figma directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
 and connect to GitLab through a personal access token.
 
 For more information, see the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).
@@ -362,4 +362,4 @@ The workaround is to select one of the previous versions from the dropdown list 
 **Designs** section.
 It's shown as either **Showing latest version** or **Showing version #N**.
 
-Issue [392540](https://gitlab.com/gitlab-org/gitlab/-/issues/392540) tracks improving this behavior.
+[Issue 392540](https://gitlab.com/gitlab-org/gitlab/-/issues/392540) tracks improving this behavior.

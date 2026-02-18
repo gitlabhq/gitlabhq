@@ -1,5 +1,3 @@
 ---
 name: update_user_avatar
 description: Grants the ability to update user avatar
-boundaries:
-  - user

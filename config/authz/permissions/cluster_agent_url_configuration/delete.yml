@@ -1,5 +1,3 @@
 ---
 name: delete_cluster_agent_url_configuration
 description: Grants the ability to delete cluster agent URL configurations
-boundaries:
-  - project

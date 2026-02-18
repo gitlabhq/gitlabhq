@@ -1,5 +1,3 @@
 ---
 name: read_language
 description: Grants the ability to view project languages
-boundaries:
-  - project

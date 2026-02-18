@@ -1,5 +1,3 @@
 ---
 name: unassign_runner
 description: Grants the ability to unassign runners
-boundaries:
-  - project

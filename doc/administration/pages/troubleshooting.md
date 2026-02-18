@@ -249,11 +249,26 @@ To stop `systemd` from cleaning the Pages related content:
 ## Unable to access GitLab Pages
 
 If you can't access your GitLab Pages (such as receiving `502 Bad Gateway` errors, or a login loop)
-and in your Pages log shows this error:
+and your Pages log shows one of these errors:
 
-```plaintext
-"error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
-```
+- A context deadline exceeded error:
+
+  ```plaintext
+  "error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
+  ```
+
+- An HTTP/HTTPS protocol mismatch error:
+
+  ```plaintext
+  "error":"Get \"https://gitlab.example.com/api/v4/internal/pages?host=example.com\": http: server gave HTTP response to HTTPS client","level":"error","msg":"could not fetch domain information from a source"
+  ```
+
+  This error occurs when a load balancer or reverse proxy terminates TLS
+  before the request reaches GitLab. Pages tries to connect using the HTTPS
+  `external_url`, but receives a plain HTTP response.
+
+To resolve, set `internal_gitlab_server` to communicate directly with the
+local GitLab Rails instance, bypassing the external URL:
 
 1. Add the following to `/etc/gitlab/gitlab.rb`:
 

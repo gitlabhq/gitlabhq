@@ -1,8 +1,3 @@
 ---
 name: read_issue
 description: Grants the ability to read issues
-boundaries:
-  - instance
-  - group
-  - project
-  - user

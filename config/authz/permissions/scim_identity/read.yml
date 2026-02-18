@@ -1,5 +1,3 @@
 ---
 name: read_scim_identity
 description: Grants the ability to read SCIM user identity
-boundaries:
-  - group

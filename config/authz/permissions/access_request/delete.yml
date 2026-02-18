@@ -1,7 +1,3 @@
 ---
 name: delete_access_request
 description: Grants ability to delete access requests
-boundaries:
-  - group
-  - project
-  - user

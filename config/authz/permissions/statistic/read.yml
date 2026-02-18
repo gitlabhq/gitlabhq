@@ -1,5 +1,3 @@
 ---
 name: read_statistic
 description: Grants the ability to read project statistics
-boundaries:
-  - project

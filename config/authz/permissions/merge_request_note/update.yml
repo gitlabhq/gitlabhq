@@ -1,5 +1,3 @@
 ---
 name: update_merge_request_note
 description: Grants the ability to update merge request notes
-boundaries:
-  - project

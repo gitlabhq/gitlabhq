@@ -1,5 +1,3 @@
 ---
 name: create_repository_changelog
 description: Grants the ability to create repository changelogs
-boundaries:
-  - project

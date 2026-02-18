@@ -1,5 +1,3 @@
 ---
 name: read_release_link
 description: Grants the ability to read release links
-boundaries:
-  - project

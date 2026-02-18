@@ -1,6 +1,3 @@
 ---
 name: read_runner
 description: Grants the ability to read runners
-boundaries:
-  - group
-  - project

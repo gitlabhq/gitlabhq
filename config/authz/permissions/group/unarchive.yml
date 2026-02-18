@@ -1,5 +1,3 @@
 ---
 name: unarchive_group
 description: Grants the ability to unarchive a group
-boundaries:
-  - group

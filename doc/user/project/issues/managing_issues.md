@@ -558,11 +558,11 @@ To change issue type:
    - Objective
    - Task
    - Epic (moves issue to the parent group)
-     For more information, see [Promote an issue to an epic](#promote-an-issue-to-an-epic).
+     For more information, see [promote an issue to an epic](#promote-an-issue-to-an-epic).
 
 1. Select **Change type**.
 
-To promote an issue to an incident, see [Promote an issue to an incident](#promote-an-issue-to-an-incident)
+To promote an issue to an incident, see [promote an issue to an incident](#promote-an-issue-to-an-incident)
 
 ### Promote an issue to an epic
 
@@ -709,7 +709,7 @@ To filter the list of issues:
    - [Organization](../../crm/_index.md)
    - [Parent](../../group/epics/_index.md)
    - Release
-   - Search within (titles or descriptions)
+   - Search in (titles or descriptions)
    - Status
    - Subscribed
    - Type
@@ -789,7 +789,7 @@ To open the issue in full view:
   - In the upper-left corner, select the issue reference, for example `my_project#123`.
   - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
-To always open issues in full page view, see [Set preference whether to open items in a drawer](../../work_items/_index.md#configure-list-display-preferences).
+To always open issues in full page view, [configure your list display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
 ## Copy issue reference
 
@@ -804,7 +804,7 @@ To copy the issue reference to your clipboard:
 
 You can now paste the reference into another description or comment.
 
-Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).
 
 ## Copy issue email address
 
@@ -812,7 +812,7 @@ You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
 For more information about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](../../discussions/_index.md#reply-to-a-comment-by-sending-email).
+[reply to a comment by sending email](../../discussions/_index.md#reply-to-a-comment-by-sending-email).
 
 To copy the issue's email address:
 
@@ -935,7 +935,7 @@ You can assign a status to issues to track their progress through your workflow.
 Status provides more granular tracking than the basic open/closed states, so you can use specific
 stages like **In progress**, **Done**, or **Won't do**.
 
-For more information about status, including how to configure custom statuses, see [Status](../../work_items/status.md).
+For more information about how to configure custom statuses, see the [status section](../../work_items/status.md).
 
 <!-- vale gitlab_base.FutureTense = YES -->
 

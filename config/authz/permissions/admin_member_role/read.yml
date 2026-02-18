@@ -1,5 +1,3 @@
 ---
 name: read_admin_member_role
 description: Grants the ability to read admin member roles
-boundaries:
-  - instance

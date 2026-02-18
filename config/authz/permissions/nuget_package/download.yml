@@ -1,5 +1,3 @@
 ---
 name: download_nuget_package
 description: Grants the ability to download NuGet packages
-boundaries:
-  - project

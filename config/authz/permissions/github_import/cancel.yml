@@ -1,5 +1,3 @@
 ---
 name: cancel_github_import
 description: Grants the ability to cancel GitHub project imports
-boundaries:
-  - user

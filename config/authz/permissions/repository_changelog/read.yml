@@ -1,5 +1,3 @@
 ---
 name: read_repository_changelog
 description: Grants the ability to read repository changelogs
-boundaries:
-  - project

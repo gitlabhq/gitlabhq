@@ -1,5 +1,3 @@
 ---
 name: approve_deployment
 description: Grants the ability to approve or reject blocked deployments
-boundaries:
-  - project

@@ -1,5 +1,3 @@
 ---
 name: delete_pipeline
 description: Grants the ability to delete pipelines
-boundaries:
-  - project

@@ -1,5 +1,3 @@
 ---
 name: create_commit
 description: Grants the ability to create commits
-boundaries:
-  - project

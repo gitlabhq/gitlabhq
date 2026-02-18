@@ -1,5 +1,3 @@
 ---
 name: read_commit_discussion_note
 description: Grants the ability to read notes in commit discussions
-boundaries:
-  - project

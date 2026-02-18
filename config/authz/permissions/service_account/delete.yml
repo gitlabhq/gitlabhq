@@ -1,6 +1,3 @@
 ---
 name: delete_service_account
 description: Grants the ability to delete service accounts
-boundaries:
-  - group
-  - project

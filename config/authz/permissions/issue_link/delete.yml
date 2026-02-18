@@ -1,5 +1,3 @@
 ---
 name: delete_issue_link
 description: Grants the ability to delete issue links
-boundaries:
-  - project

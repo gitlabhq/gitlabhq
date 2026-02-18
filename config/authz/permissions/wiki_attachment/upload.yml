@@ -1,6 +1,3 @@
 ---
 name: upload_wiki_attachment
 description: Grants the ability to upload wiki attachments
-boundaries:
-  - group
-  - project

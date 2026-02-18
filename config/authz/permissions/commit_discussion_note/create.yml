@@ -1,5 +1,3 @@
 ---
 name: create_commit_discussion_note
 description: Grants the ability to create notes in commit discussions
-boundaries:
-  - project

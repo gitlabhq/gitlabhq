@@ -1,6 +1,3 @@
 ---
 name: read_container_repository
 description: Grants the ability to read container repositories
-boundaries:
-  - project
-  - group

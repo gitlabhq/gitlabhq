@@ -1,5 +1,3 @@
 ---
 name: read_trigger
 description: Grants the ability to read pipeline triggers
-boundaries:
-  - project

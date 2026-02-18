@@ -1,5 +1,3 @@
 ---
 name: read_issue_state_event
 description: Grants the ability to read Issue state events.
-boundaries:
-  - project
