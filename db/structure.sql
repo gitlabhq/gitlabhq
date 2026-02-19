@@ -30300,7 +30300,10 @@ CREATE TABLE targeted_messages (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    target_type smallint DEFAULT 0 NOT NULL
+    target_type smallint DEFAULT 0 NOT NULL,
+    starts_at timestamp with time zone NOT NULL,
+    ends_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_targeted_messages_starts_at_before_ends_at CHECK ((starts_at < ends_at))
 );
 
 CREATE SEQUENCE targeted_messages_id_seq

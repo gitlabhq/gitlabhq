@@ -26,7 +26,7 @@ to them.
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To create an epic in the group you're in:
 
@@ -89,7 +89,7 @@ After you create an epic, you can edit the following details:
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To edit an epic's title or description:
 
@@ -114,7 +114,7 @@ When you view an epic that has a list in the description, you can also reorder t
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the epic, or be
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the epic, or be
   assigned to the epic.
 - The epic's description must have an [ordered, unordered](../../markdown.md#lists), or
   [task](../../markdown.md#task-lists) list.
@@ -138,7 +138,7 @@ To reorder list items, when viewing an epic:
 
 Prerequisites:
 
-- You must have at least the Planner role for the parent epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To update multiple epics at the same time:
 
@@ -233,7 +233,7 @@ assigns them.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To change the assignee on an epic:
 
@@ -288,7 +288,7 @@ On epic boards, the color shows on the epic's card accent:
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To change an epic's color:
 
@@ -331,7 +331,7 @@ Deleting an epic releases all existing issues from their associated epic in the 
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To close an epic:
 
@@ -351,7 +351,7 @@ You can reopen an epic that was closed.
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To do so, either:
 
@@ -400,7 +400,7 @@ Whether you can view an epic depends on the [group visibility level](../../publi
 the epic's [confidentiality status](#make-an-epic-confidential):
 
 - Public group and a non-confidential epic: Anyone can view the epic.
-- Private group and non-confidential epic: You must have at least the Guest role for the group, or be a member of a project in the group or one of its subgroups.
+- Private group and non-confidential epic: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group, or be a member of a project in the group or one of its subgroups.
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
 
@@ -536,7 +536,7 @@ If you're working on items that contain private information, you can make an epi
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To make an epic confidential:
 
@@ -631,7 +631,7 @@ To address risks to timely delivery of your planned work, incorporate a review o
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To change the health status of an epic:
 
@@ -674,7 +674,7 @@ current parent.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To add an existing issue to an epic:
 
@@ -702,7 +702,7 @@ then [add an existing issue to an epic](#add-an-existing-issue-to-an-epic).
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To create an issue from an epic:
 
@@ -721,7 +721,7 @@ After you remove an issue from an epic, the issue is no longer associated with t
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To remove an issue from an epic:
 
@@ -738,7 +738,7 @@ You can reorder the list of issues by dragging them.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To reorder issues assigned to an epic:
 
@@ -759,7 +759,7 @@ tab. You can move issues from one epic to another.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To move an issue to another epic:
 
@@ -795,7 +795,7 @@ This helps organize and track related work across multiple epics.
 
 Prerequisites:
 
-- You must have at least the Guest role for either the parent epic's group or the child epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for either the parent epic's group or the child epic's group.
 
 To add a parent epic:
 
@@ -815,7 +815,7 @@ Add a child epic that belongs to a group that is different from the parent epic'
 
 Prerequisites:
 
-- You must have at least the Guest role for both the child and parent epics' groups.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both the child and parent epics' groups.
 - Multi-level child epics must be available for both the child and parent epics' groups.
 
 To add a child epic from another group, paste the epic's URL when [adding an existing epic](#add-a-child-epic-to-an-epic).
@@ -826,7 +826,7 @@ From an epic, view its child epics and related milestones on the [roadmap](../ro
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To view child epics from the parent:
 
@@ -836,7 +836,7 @@ To view child epics from the parent:
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 #### New epic
 
@@ -868,7 +868,7 @@ Issues and child epics cannot be intermingled.
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To move child epics to another epic:
 
@@ -882,7 +882,7 @@ You can reorder the list of child epics.
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To reorder child epics assigned to an epic:
 
@@ -893,7 +893,7 @@ To reorder child epics assigned to an epic:
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To remove a child epic from a parent epic:
 

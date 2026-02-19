@@ -94,6 +94,7 @@ The following context is available to the software development flow in GitLab Du
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
 - Changed to beta in GitLab 18.4.
 - Enabled by default in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/589801) in GitLab 18.10.
 
 {{< /history >}}
 

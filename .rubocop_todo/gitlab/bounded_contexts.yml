@@ -1443,6 +1443,8 @@ Gitlab/BoundedContexts:
     - 'app/services/container_expiration_policies/update_service.rb'
     - 'app/services/database/consistency_check_service.rb'
     - 'app/services/database/consistency_fix_service.rb'
+    - 'app/services/database/base_migration_service.rb'
+    - 'app/services/database/list_migrations_service.rb'
     - 'app/services/database/mark_migration_service.rb'
     - 'app/services/deploy_keys/create_service.rb'
     - 'app/services/deployments/archive_in_project_service.rb'

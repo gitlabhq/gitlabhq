@@ -77,6 +77,18 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    For more information, see [encrypting your data at rest](../encryption.md#encrypted-data-at-rest).
 
+1. Optional. On the **Geo migration secrets** page, collect and upload encrypted secrets from your GitLab Self-Managed instance:
+
+   > [!note]
+   > This step is only required if you select Geo migration during account setup.
+
+   1. Download the script for your installation type and run it on your GitLab Self-Managed instance.
+   1. Upload your `migration_secrets.json.age` file.
+   1. Optional. Upload your `ssh_host_keys.json.age` file (recommended if you plan to use a
+      custom domain).
+
+   For detailed instructions and troubleshooting, see [migrate to GitLab Dedicated with Geo](../geo_migration.md).
+
 1. On the **Tenant summary** page, review the tenant configuration details.
 
    > [!note]

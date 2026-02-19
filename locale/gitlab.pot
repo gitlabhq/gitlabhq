@@ -26393,6 +26393,9 @@ msgstr ""
 msgid "DuoChat|What is a fork?"
 msgstr ""
 
+msgid "DuoCodeReview|:warning: %{user_reference}, you don't have permission to create a pipeline for Code Review Flow in this project. Contact your administrator to update your permissions."
+msgstr ""
+
 msgid "DuoCodeReview|:warning: %{user_reference}, you need to set a default namespace to use Code Review Flow in this project. Please set a default GitLab Duo namespace in your [preferences](%{docs_url})."
 msgstr ""
 
@@ -68116,6 +68119,9 @@ msgstr ""
 msgid "TargetedMessages|Edit targeted message"
 msgstr ""
 
+msgid "TargetedMessages|Ends at"
+msgstr ""
+
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
 msgstr ""
 
@@ -68138,6 +68144,9 @@ msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
 msgstr ""
 
 msgid "TargetedMessages|Select a target type"
+msgstr ""
+
+msgid "TargetedMessages|Starts at"
 msgstr ""
 
 msgid "TargetedMessages|Target Type"
@@ -81787,6 +81796,9 @@ msgstr ""
 msgid "cannot be enabled until identity verification is completed"
 msgstr ""
 
+msgid "cannot be in the past"
+msgstr ""
+
 msgid "cannot be linked to the epic. This epic already has maximum number of child issues & epics."
 msgstr ""
 
@@ -83270,6 +83282,9 @@ msgid "must be at least 1 day"
 msgstr ""
 
 msgid "must be before %{expiry_date}"
+msgstr ""
+
+msgid "must be before ends at"
 msgstr ""
 
 msgid "must be between 1 day and %{limit}"

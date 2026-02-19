@@ -88873,6 +88873,32 @@ paths:
                     minute, per top-level namespace. 0 for unlimited (GitLab.com only).
               required:
               - plan_name
+  "/api/v4/admin/migrations/pending":
+    get:
+      operationId: getApiV4AdminMigrationsPending
+      summary: List pending database migrations
+      tags:
+      - Migrations
+      responses:
+        '200':
+          description: 200 OK
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+      parameters:
+      - name: database
+        required: false
+        description: The name of the database
+        schema:
+          type: string
+          enum:
+          - main
+          - ci
+          - sec
+          - embedding
+          - geo
+        in: query
   "/api/v4/admin/migrations/{timestamp}/mark":
     post:
       operationId: postApiV4AdminMigrationsTimestampMark

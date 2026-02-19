@@ -179,6 +179,10 @@ module QA
             has_link?(name)
           end
         end
+
+        def has_settings_sidebar?
+          has_css?('[data-testid="project-settings-sidebar"]')
+        end
       end
     end
   end

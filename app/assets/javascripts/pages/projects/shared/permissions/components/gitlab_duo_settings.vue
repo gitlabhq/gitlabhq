@@ -92,11 +92,6 @@ export default {
       required: false,
       default: false,
     },
-    paidDuoTier: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -129,12 +124,7 @@ export default {
       return null;
     },
     shouldShowExclusionSettings() {
-      return (
-        this.licensedAiFeaturesAvailable &&
-        this.showDuoContextExclusion &&
-        this.experimentFeaturesEnabled &&
-        this.paidDuoTier
-      );
+      return this.experimentFeaturesEnabled;
     },
     showAvailabilityCascadingButton() {
       return (
@@ -154,10 +144,6 @@ export default {
         this.duoFoundationalFlowsCascadingSettings?.lockedByAncestor ||
         this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
       );
-    },
-
-    showDuoContextExclusion() {
-      return this.glFeatures.useDuoContextExclusion;
     },
   },
   watch: {

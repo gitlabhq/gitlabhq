@@ -40035,6 +40035,34 @@ paths:
       tags:
       - clusters
       operationId: postApiV4AdminClustersAdd
+  "/api/v4/admin/migrations/pending":
+    get:
+      description: List pending database migrations
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: database
+        description: The name of the database
+        type: string
+        default: main
+        enum:
+        - main
+        - ci
+        - sec
+        - embedding
+        - geo
+        required: false
+      responses:
+        '200':
+          description: 200 OK
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+      tags:
+      - migrations
+      operationId: getApiV4AdminMigrationsPending
   "/api/v4/admin/migrations/{timestamp}/mark":
     post:
       description: Mark the migration as successfully executed

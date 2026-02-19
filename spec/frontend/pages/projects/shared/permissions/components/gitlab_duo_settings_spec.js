@@ -13,7 +13,6 @@ const defaultProps = {
   duoFeaturesLocked: false,
   licensedAiFeaturesAvailable: true,
   experimentFeaturesEnabled: true,
-  paidDuoTier: true,
   duoContextExclusionSettings: {
     exclusionRules: ['*.log', 'node_modules/'],
   },
@@ -36,7 +35,6 @@ describe('GitlabDuoSettings', () => {
       propsData,
       provide: {
         glFeatures: {
-          useDuoContextExclusion: true,
           aiExperimentSastFpDetection: true,
           ...provide,
         },
@@ -499,90 +497,21 @@ describe('GitlabDuoSettings', () => {
   });
 
   describe('ExclusionSettings', () => {
-    it('renders ExclusionSettings component when duo features are available', () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: true },
-      );
+    it('renders ExclusionSettings component when experiment features are enabled', () => {
+      wrapper = createWrapper({ experimentFeaturesEnabled: true });
 
       expect(findExclusionSettings().exists()).toBe(true);
       expect(findExclusionSettings().props('exclusionRules')).toEqual(['*.log', 'node_modules/']);
     });
 
-    it('does not render ExclusionSettings when duo features are not available', () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: false },
-        { useDuoContextExclusion: true },
-      );
-
-      expect(findExclusionSettings().exists()).toBe(false);
-    });
-
-    it('does not render ExclusionSettings when feature flag is disabled', () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: false },
-      );
-
-      expect(findExclusionSettings().exists()).toBe(false);
-    });
-
     it('does not render ExclusionSettings when experiment features are disabled', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: false,
-        },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper({ experimentFeaturesEnabled: false });
 
       expect(findExclusionSettings().exists()).toBe(false);
-    });
-
-    it('renders ExclusionSettings when experiment features are enabled', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: true,
-          paidDuoTier: true,
-        },
-        { useDuoContextExclusion: true },
-      );
-
-      expect(findExclusionSettings().exists()).toBe(true);
-    });
-
-    it('does not render ExclusionSettings when paidDuoTier is false', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: true,
-          paidDuoTier: false,
-        },
-        { useDuoContextExclusion: true },
-      );
-
-      expect(findExclusionSettings().exists()).toBe(false);
-    });
-
-    it('renders ExclusionSettings when paidDuoTier is true', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: true,
-          paidDuoTier: true,
-        },
-        { useDuoContextExclusion: true },
-      );
-
-      expect(findExclusionSettings().exists()).toBe(true);
     });
 
     it('updates exclusion rules when ExclusionSettings emits update', async () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper();
       const newRules = ['*.log', 'node_modules/', '*.tmp'];
 
       const exclusionSettings = findExclusionSettings();
@@ -594,10 +523,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('renders hidden inputs for exclusion rules form submission', () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper();
       const hiddenInputs = findExclusionRulesHiddenInputs();
 
       expect(hiddenInputs).toHaveLength(2);
@@ -606,10 +532,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('updates hidden inputs when exclusion rules change', async () => {
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper();
       const newRules = ['*.tmp', 'cache/'];
 
       const exclusionSettings = findExclusionSettings();
@@ -627,14 +550,9 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('handles empty exclusion rules', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: true,
-          duoContextExclusionSettings: { exclusionRules: [] },
-        },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper({
+        duoContextExclusionSettings: { exclusionRules: [] },
+      });
 
       expect(findExclusionSettings().exists()).toBe(true);
       expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
@@ -646,14 +564,9 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('handles missing duo context exclusion settings', () => {
-      wrapper = createWrapper(
-        {
-          licensedAiFeaturesAvailable: true,
-          experimentFeaturesEnabled: true,
-          duoContextExclusionSettings: {},
-        },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper({
+        duoContextExclusionSettings: {},
+      });
 
       expect(findExclusionSettings().exists()).toBe(true);
       expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
@@ -668,10 +581,7 @@ describe('GitlabDuoSettings', () => {
       // Mock the closest method to return our mock form
       const mockClosest = jest.fn().mockReturnValue(mockForm);
 
-      wrapper = createWrapper(
-        { licensedAiFeaturesAvailable: true },
-        { useDuoContextExclusion: true },
-      );
+      wrapper = createWrapper();
 
       // Mock the $el.closest method
       wrapper.vm.$el.closest = mockClosest;

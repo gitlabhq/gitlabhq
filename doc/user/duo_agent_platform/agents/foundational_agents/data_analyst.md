@@ -90,7 +90,7 @@ Prerequisites:
 
 - [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
 - Install and configure [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)
-  version 8.39.0 or later.
+  version 6.57.3 or later.
 - Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To use the Data Analyst Agent in VS Code:

@@ -47,6 +47,7 @@ Prerequisites:
 
 - Ensure you meet the [Agent Platform prerequisites](../../../../user/duo_agent_platform/_index.md#prerequisites).
 - Ensure **Allow foundational flows** and **Code Review** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
+- Ensure you have the Developer, Maintainer, or Owner [role](../../../permissions.md) for the project.
 
 To use the Code Review Flow on a merge request:
 
@@ -171,6 +172,15 @@ You might get an error that states
 This error occurs when you have used all of your allocated GitLab Credits for the current billing period.
 
 Contact your administrator to purchase additional credits or wait for your credits to reset at the start of the next billing period.
+
+### `Error DCR4003`
+
+You might get an error that states
+`<User>, you don't have permission to create a pipeline for Code Review Flow in this project. Contact your administrator to update your permissions. Error code: DCR4003`.
+
+This error occurs because Code Review Flow runs on a CI/CD pipeline, and you don't have permission to create pipelines in this project.
+
+Contact your administrator and ask them to give you the required [permissions to execute pipelines](../../../permissions.md).
 
 ### `Error DCR5000`
 

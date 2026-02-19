@@ -24,16 +24,22 @@ module QA
     private
 
     def enable_secrets_manager
-      Flow::Login.sign_in(as: owner)
-      skip "OpenBao instance is not reachable" unless openbao_healthy?
-      project.visit!
+      Support::Waiter.wait_until(max_duration: 10, sleep_interval: 1) do
+        project.reload!
+        project.find_member(owner.username).present?
+      end
 
-      Page::Project::Menu.perform(&:go_to_general_settings)
-      Page::Project::Settings::Main.perform do |settings|
-        settings.expand_visibility_project_features_permissions do |permissions|
-          permissions.enable_secrets_manager
-          Support::Waiter.wait_until(max_duration: 60, sleep_interval: 2) do
-            permissions.secrets_manager_enabled?
+      Flow::Login.while_signed_in(as: owner) do
+        skip "OpenBao instance is not reachable" unless openbao_healthy?
+        project.visit!
+
+        Page::Project::Menu.perform(&:go_to_general_settings)
+        Page::Project::Settings::Main.perform do |settings|
+          settings.expand_visibility_project_features_permissions do |permissions|
+            permissions.enable_secrets_manager
+            Support::Waiter.wait_until(max_duration: 60, sleep_interval: 2) do
+              permissions.secrets_manager_enabled?
+            end
           end
         end
       end

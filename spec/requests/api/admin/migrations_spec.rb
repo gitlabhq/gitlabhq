@@ -5,6 +5,145 @@ require 'spec_helper'
 RSpec.describe API::Admin::Migrations, feature_category: :database do
   let(:admin) { create(:admin) }
 
+  describe 'GET /admin/migrations/pending' do
+    let(:database) { :main }
+    let(:params) { { database: database } }
+    let(:connection) { ApplicationRecord.connection }
+    let(:path) { '/admin/migrations/pending' }
+
+    subject(:get_pending) do
+      get api(path, admin, admin_mode: true), params: params
+    end
+
+    context 'when there are pending migrations' do
+      let(:pending_migrations) do
+        [
+          { version: 1, name: 'migration_one', filename: '1_migration_one.rb', status: 'pending' },
+          { version: 2, name: 'migration_two', filename: '2_migration_two.rb', status: 'pending' }
+        ]
+      end
+
+      before do
+        service_double = instance_double(
+          Database::ListMigrationsService,
+          execute: ServiceResponse.success(payload: { migrations: pending_migrations })
+        )
+
+        allow(Database::ListMigrationsService)
+          .to receive(:new)
+          .with(connection: connection, status: 'pending')
+          .and_return(service_double)
+      end
+
+      it_behaves_like "GET request permissions for admin mode"
+
+      it 'returns pending migrations' do
+        get_pending
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['pending_migrations'].size).to eq(2)
+        expect(json_response['database']).to eq('main')
+        expect(json_response['total_pending']).to eq(2)
+      end
+
+      it 'returns migration details' do
+        get_pending
+
+        first_migration = json_response['pending_migrations'].first
+        expect(first_migration['version']).to eq(1)
+        expect(first_migration['name']).to eq('migration_one')
+        expect(first_migration['filename']).to eq('1_migration_one.rb')
+        expect(first_migration['status']).to eq('pending')
+      end
+    end
+
+    context 'when there are no pending migrations' do
+      before do
+        service_double = instance_double(
+          Database::ListMigrationsService,
+          execute: ServiceResponse.success(payload: { migrations: [] })
+        )
+
+        allow(Database::ListMigrationsService)
+          .to receive(:new)
+          .with(connection: connection, status: 'pending')
+          .and_return(service_double)
+      end
+
+      it 'returns an empty array' do
+        get_pending
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['pending_migrations']).to be_empty
+        expect(json_response['total_pending']).to eq(0)
+      end
+    end
+
+    context 'when multiple database is enabled' do
+      let(:ci_model) { Ci::ApplicationRecord }
+      let(:database) { :ci }
+
+      before do
+        skip_if_multiple_databases_not_setup(:ci)
+      end
+
+      it 'uses the correct connection' do
+        expect(Database::ListMigrationsService)
+          .to receive(:new)
+          .with(connection: ci_model.connection, status: 'pending')
+          .and_call_original
+
+        get_pending
+
+        expect(json_response['database']).to eq('ci')
+      end
+
+      context 'when the database name does not exist' do
+        let(:database) { :wrong_database }
+
+        it 'returns bad request', :aggregate_failures do
+          get_pending
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.body).to include('database does not have a valid value')
+        end
+      end
+
+      context 'when the database is not configured' do
+        let(:database) { :sec }
+
+        before do
+          allow(Gitlab::Database).to receive(:database_base_models).and_return({ 'main' => ApplicationRecord })
+        end
+
+        it 'returns not found', :aggregate_failures do
+          get_pending
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to include("Database 'sec' is not configured")
+        end
+      end
+    end
+
+    context 'when user is not an admin' do
+      let(:user) { create(:user) }
+
+      it 'returns forbidden' do
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      it 'returns unauthorized' do
+        get api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'POST /admin/migrations/:version/mark' do
     let(:database) { :main }
     let(:params) { { database: database } }
@@ -90,6 +229,21 @@ RSpec.describe API::Admin::Migrations, feature_category: :database do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(response.body).to include('database does not have a valid value')
+        end
+      end
+
+      context 'when the database is not configured' do
+        let(:database) { :sec }
+
+        before do
+          allow(Gitlab::Database).to receive(:database_base_models).and_return({ 'main' => ApplicationRecord })
+        end
+
+        it 'returns not found', :aggregate_failures do
+          mark
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to include("Database 'sec' is not configured")
         end
       end
     end
