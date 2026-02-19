@@ -19,7 +19,7 @@ Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
-    config.load_defaults 7.1
+    config.load_defaults 7.2
 
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
@@ -29,6 +29,11 @@ module Gitlab
     # https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
     #
     # To switch a setting to the new default value, we just need to delete the specific line here.
+
+    # Rails 7.2
+    config.active_record.postgresql_adapter_decode_dates = false # New default is `true`
+    config.active_record.validate_migration_timestamps = false # New default is `true`
+    config.yjit = false # New default is `true`
 
     # Rails 7.1
     config.active_record.default_column_serializer = Psych # New default is `nil`

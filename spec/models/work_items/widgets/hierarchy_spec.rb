@@ -137,6 +137,8 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
     subject { described_class.new(work_item).rolled_up_counts_by_type }
 
     before_all do
+      skip unless Gitlab.ee?
+
       create(:parent_link, work_item_parent: work_item, work_item: sub_epic)
       create(:parent_link, work_item_parent: sub_epic, work_item: sub_sub_epic)
       create(:parent_link, work_item_parent: sub_epic, work_item: sub_issue)
@@ -145,25 +147,54 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
       create(:parent_link, work_item_parent: sub_epic_2, work_item: sub_issue_2)
     end
 
-    it 'returns rolled up dates by work item type and state' do
-      is_expected.to contain_exactly(
-        {
-          work_item_type: WorkItems::Type.default_by_type(:epic),
-          counts_by_state: { all: 3, opened: 2, closed: 1 }
-        },
-        {
-          work_item_type: WorkItems::Type.default_by_type(:issue),
-          counts_by_state: { all: 2, opened: 1, closed: 1 }
-        },
-        {
-          work_item_type: WorkItems::Type.default_by_type(:task),
-          counts_by_state: { all: 1, opened: 1, closed: 0 }
-        },
-        {
-          work_item_type: WorkItems::Type.default_by_type(:ticket),
-          counts_by_state: { all: 0, opened: 0, closed: 0 }
-        }
-      )
+    context "when the FF for system defined types is enabled" do
+      it 'returns rolled up dates by work item type and state' do
+        is_expected.to contain_exactly(
+          {
+            work_item_type: build(:work_item_system_defined_type, :epic),
+            counts_by_state: { all: 3, opened: 2, closed: 1 }
+          },
+          {
+            work_item_type: build(:work_item_system_defined_type, :issue),
+            counts_by_state: { all: 2, opened: 1, closed: 1 }
+          },
+          {
+            work_item_type: build(:work_item_system_defined_type, :task),
+            counts_by_state: { all: 1, opened: 1, closed: 0 }
+          },
+          {
+            work_item_type: build(:work_item_system_defined_type, :ticket),
+            counts_by_state: { all: 0, opened: 0, closed: 0 }
+          }
+        )
+      end
+    end
+
+    context "when the FF for system defined types is disabled" do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      it 'returns rolled up dates by work item type and state' do
+        is_expected.to contain_exactly(
+          {
+            work_item_type: build(:work_item_type, :epic),
+            counts_by_state: { all: 3, opened: 2, closed: 1 }
+          },
+          {
+            work_item_type: build(:work_item_type, :issue),
+            counts_by_state: { all: 2, opened: 1, closed: 1 }
+          },
+          {
+            work_item_type: build(:work_item_type, :task),
+            counts_by_state: { all: 1, opened: 1, closed: 0 }
+          },
+          {
+            work_item_type: build(:work_item_type, :ticket),
+            counts_by_state: { all: 0, opened: 0, closed: 0 }
+          }
+        )
+      end
     end
   end
 

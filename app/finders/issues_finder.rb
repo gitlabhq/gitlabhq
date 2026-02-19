@@ -239,8 +239,8 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_negated_issue_types(items)
-    provider = ::WorkItems::TypesFramework::Provider.new(params.parent)
-    issue_type_params = Array(not_params[:issue_types]).map(&:to_s) & provider.unfiltered_base_types
+    issue_type_params =
+      Array(not_params[:issue_types]).map(&:to_s) & ::WorkItems::TypesFramework::Provider.unfiltered_base_types
     return items if issue_type_params.blank?
 
     items.without_issue_type(issue_type_params)

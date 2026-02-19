@@ -1067,12 +1067,18 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           context 'when new type does not support a widget' do
+            let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+
             before do
               (work_item.dates_source || work_item.build_dates_source)
                 .update!(start_date: Date.current, due_date: Date.tomorrow)
 
-              WorkItems::Type.default_by_type(:issue).widget_definitions
-                .find_by_widget_type(:start_and_due_date).update!(disabled: true)
+              # As we want to stub the widgets of issue type and work item is a type of task, we can not use the
+              # # stub_all_work_item_widgets method.
+              widget_definitions = issue_type.widget_classes(work_item.namespace).reject do |widget|
+                widget == WorkItems::Widgets::StartAndDueDate
+              end
+              allow(issue_type).to receive(:widget_classes).with(project).and_return(widget_definitions)
             end
 
             it 'updates the work item type and clear widget attributes' do
@@ -2032,7 +2038,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when unsupported widget input is sent' do
-      let_it_be(:work_item) { create(:work_item, :test_case, project: project) }
+      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
 
       let(:input) do
         {
@@ -2040,8 +2046,18 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         }
       end
 
+      before do
+        # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
+        # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
+        widgets = work_item.work_item_type.widget_classes(project).reject do |widget|
+          widget == WorkItems::Widgets::Assignees
+        end
+
+        allow(work_item.work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+      end
+
       it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Following widget keys are not supported by Test Case type: [:assignees_widget]"]
+        errors: ["Following widget keys are not supported by Issue type: [:assignees_widget]"]
     end
   end
 end

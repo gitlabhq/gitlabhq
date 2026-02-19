@@ -73,7 +73,7 @@ DevOps adoption data may take up to a minute to appear while GitLab processes th
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view DevOps adoption:
 
@@ -85,7 +85,7 @@ To view DevOps adoption:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To add a subgroup to the DevOps adoption report:
 
@@ -97,7 +97,7 @@ To add a subgroup to the DevOps adoption report:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To remove a subgroup from the DevOps adoption report:
 

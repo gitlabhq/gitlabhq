@@ -10,7 +10,22 @@ RSpec.shared_examples 'quick actions that change work item type' do
       _, updates, message = service.execute(command, work_item)
 
       expect(message).to eq(_('Type changed successfully.'))
-      expect(updates).to eq({ issue_type: 'task', work_item_type: WorkItems::Type.default_by_type(:task) })
+      expect(updates).to eq(
+        { issue_type: 'task', work_item_type: build(:work_item_system_defined_type, :task) }
+      )
+    end
+
+    context "when the FF for system defined types is disabled" do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      it 'populates :issue_type: and :work_item_type' do
+        _, updates, message = service.execute(command, work_item)
+
+        expect(message).to eq(_('Type changed successfully.'))
+        expect(updates).to eq({ issue_type: 'task', work_item_type: build_stubbed(:work_item_type, :task) })
+      end
     end
 
     context 'when new type is invalid' do
@@ -54,11 +69,26 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:new_type) { 'incident' }
       let(:unsupported_type) { 'task' }
 
+      context "when the FF for system defined types is disabled" do
+        before do
+          stub_feature_flags(work_item_system_defined_type: false)
+        end
+
+        it 'populates :issue_type: and :work_item_type' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_('Promoted successfully.'))
+          expect(updates).to eq({ issue_type: 'incident', work_item_type: build_stubbed(:work_item_type, :incident) })
+        end
+      end
+
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
         expect(message).to eq(_('Promoted successfully.'))
-        expect(updates).to eq({ issue_type: 'incident', work_item_type: WorkItems::Type.default_by_type(:incident) })
+        expect(updates).to eq(
+          { issue_type: 'incident', work_item_type: build(:work_item_system_defined_type, :incident) }
+        )
       end
 
       it_behaves_like 'action with validation errors'
@@ -70,11 +100,26 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:new_type) { 'issue' }
       let(:unsupported_type) { 'incident' }
 
+      context "when the FF for system defined types is disabled" do
+        before do
+          stub_feature_flags(work_item_system_defined_type: false)
+        end
+
+        it 'populates :issue_type: and :work_item_type' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_('Promoted successfully.'))
+          expect(updates).to eq({ issue_type: 'issue', work_item_type: build_stubbed(:work_item_type, :issue) })
+        end
+      end
+
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
         expect(message).to eq(_('Promoted successfully.'))
-        expect(updates).to eq({ issue_type: 'issue', work_item_type: WorkItems::Type.default_by_type(:issue) })
+        expect(updates).to eq(
+          { issue_type: 'issue', work_item_type: build(:work_item_system_defined_type, :issue) }
+        )
       end
 
       it_behaves_like 'action with validation errors'

@@ -765,13 +765,3 @@ and expire in five minutes to limit exposure.
 
 Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`.
 JWT claims are the issuer (`gitlab`) and the audience (`gitlab-zoekt`).
-
-#### Basic authentication
-
-GitLab authenticates to the Zoekt webserver with HTTP basic authentication
-through NGINX to execute search queries.
-Basic authentication is used primarily in GitLab Helm chart and Kubernetes deployments.
-
-This method uses the username and password configured in Kubernetes secrets.
-Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`
-on the Zoekt webserver.

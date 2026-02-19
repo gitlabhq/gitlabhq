@@ -42,7 +42,7 @@ To create a merge request from an issue, you must:
 - Have the Developer, Maintainer, or Owner role in the project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
-- Ensure that the Developer Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- Ensure **Allow foundational flows** and **Developer** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 
 ## Use the flow
 

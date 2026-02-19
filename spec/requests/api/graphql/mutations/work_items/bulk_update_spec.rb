@@ -271,10 +271,20 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     end
 
     context 'when updating work items that do not support requested widgets' do
-      let_it_be(:key_result) { create(:work_item, :key_result, project: project) }
+      let_it_be(:task) { create(:work_item, :task, project: project) }
       let_it_be(:issue) { create(:work_item, :issue, project: project) }
 
-      let(:updatable_work_item_ids) { [key_result.to_gid.to_s, issue.to_gid.to_s] }
+      let(:updatable_work_item_ids) { [task.to_gid.to_s, issue.to_gid.to_s] }
+
+      before do
+        # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
+        # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
+        widgets = task.work_item_type.widget_classes(project).reject do |widget|
+          widget == WorkItems::Widgets::Milestone
+        end
+
+        allow(task.work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+      end
 
       context 'when updating milestone widget' do
         let(:additional_arguments) do
@@ -286,11 +296,11 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
         end
 
         it 'updates only work items that support the milestone widget' do
-          # Key Results don't support milestones, but Issues do
+          # issue type supports milestone and we stub task to not support the widget
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
           end.to change { issue.reload.milestone }.from(nil).to(milestone)
-            .and not_change { key_result.reload.attributes['milestone_id'] }
+            .and not_change { task.reload.attributes['milestone_id'] }
 
           expect(mutation_response).to include(
             'updatedWorkItemCount' => 1

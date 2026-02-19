@@ -1315,15 +1315,6 @@ Gitlab.ee do
 end
 
 #
-# Zoekt credentials
-#
-Gitlab.ee do
-  Settings['zoekt'] ||= {}
-  Settings.zoekt['username_file'] ||= Rails.root.join('.gitlab_zoekt_username')
-  Settings.zoekt['password_file'] ||= Rails.root.join('.gitlab_zoekt_password')
-end
-
-#
 # Repositories
 #
 Settings['repositories'] ||= {}

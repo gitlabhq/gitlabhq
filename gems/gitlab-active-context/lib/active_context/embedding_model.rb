@@ -8,7 +8,7 @@ module ActiveContext
 
     def initialize(model_name:, field:, llm_class:, llm_params:)
       @model_name = model_name
-      @field = field
+      @field = field.to_sym
 
       @llm_class = llm_class
       @llm_params = llm_params

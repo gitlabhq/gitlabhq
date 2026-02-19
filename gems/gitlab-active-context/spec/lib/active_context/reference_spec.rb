@@ -226,11 +226,11 @@ RSpec.describe ActiveContext::Reference do
 
         model_1 = indexing_embedding_models.first
         expect(model_1.model_name).to eq('model-001')
-        expect(model_1.field).to eq('embeddings_v1')
+        expect(model_1.field).to eq(:embeddings_v1)
 
         model_2 = indexing_embedding_models.second
         expect(model_2.model_name).to eq('model-002')
-        expect(model_2.field).to eq('embeddings_v2')
+        expect(model_2.field).to eq(:embeddings_v2)
       end
     end
   end

@@ -45,7 +45,7 @@ module ActiveContext
               # Apply the generated embeddings back to each document
               items.each.with_index do |item, index|
                 models.each do |model|
-                  item[:doc][model.field.to_sym] = embeddings_by_model[model.field][index]
+                  item[:doc][model.field] = embeddings_by_model[model.field][index]
                 end
 
                 item[:doc].delete(content_field) if remove_content

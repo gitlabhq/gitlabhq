@@ -2,41 +2,25 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Control GitLab Duo Chat (Classic) availability
+title: Control GitLab Duo Agent Platform availability
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-{{< history >}}
+GitLab Duo Agent Platform is on by default.
+GitLab Duo Agent Platform includes GitLab Duo Chat (Agentic), agents, and flows.
 
-- [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-- [Settings to turn AI features on and off added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
-
-{{< /history >}}
-
-GitLab Duo Chat (Classic) is on by default.
-GitLab Duo Chat (Classic) includes a [set of features](feature_summary.md).
-
-You can turn GitLab Duo Chat (Classic) on or off:
+You can turn GitLab Duo Agent Platform on or off:
 
 - On GitLab.com: For top-level groups, other groups or subgroups, and projects.
 - On GitLab Self-Managed: For instances, groups or subgroups, and projects.
 
 ## Turn GitLab Duo Core on or off
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
-- GitLab availability settings, and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
-- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
-
-{{< /history >}}
 
 GitLab Duo Core is included with Premium and Ultimate subscriptions.
 
@@ -85,6 +69,48 @@ To change GitLab Duo Core availability:
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
+
+## Turn GitLab Duo Agent Platform on or off
+
+### On GitLab.com
+
+On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group (namespace).
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To change GitLab Duo Agent Platform availability:
+
+1. On the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Select **Save changes**.
+
+GitLab Duo Agent Platform availability changes for all subgroups and projects.
+
+When GitLab Duo Agent Platform is turned off, related settings for flows and
+[foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
+
+### On GitLab Self-Managed
+
+On GitLab Self-Managed, you can control GitLab Duo Agent Platform availability for the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To change GitLab Duo Agent Platform availability:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Select **Save changes**.
+
+When GitLab Duo Agent Platform is turned off, related settings for flows and
+[foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
 
 ## Turn GitLab Duo on or off
 
@@ -195,11 +221,6 @@ To change GitLab Duo availability for a project:
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the project.
-
-### For earlier GitLab versions
-
-For information on how to turn GitLab Duo on of off in earlier GitLab versions,
-see [Control GitLab Duo availability for earlier GitLab versions](turn_on_off_earlier.md).
 
 ## Turn on beta and experimental features
 

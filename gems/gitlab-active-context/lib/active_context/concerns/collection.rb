@@ -104,7 +104,7 @@ module ActiveContext
         end
 
         def indexing_embedding_fields
-          indexing_embedding_models.map(&:field)
+          indexing_embedding_models.map { |m| m.field.to_s }
         end
       end
 

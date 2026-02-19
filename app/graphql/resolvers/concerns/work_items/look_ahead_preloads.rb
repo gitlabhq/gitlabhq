@@ -55,6 +55,7 @@ module WorkItems
         },
         :author,
         :work_item_type,
+        :namespace,
         *super
       ]
     end

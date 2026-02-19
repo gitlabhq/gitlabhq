@@ -46,7 +46,7 @@ This flow is available in the GitLab UI only.
 Prerequisites:
 
 - Ensure you meet the [Agent Platform prerequisites](../../../../user/duo_agent_platform/_index.md#prerequisites).
-- Ensure that **Allow foundational flows** and **Code Review** are [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off) for the top-level group.
+- Ensure **Allow foundational flows** and **Code Review** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 
 To use the Code Review Flow on a merge request:
 

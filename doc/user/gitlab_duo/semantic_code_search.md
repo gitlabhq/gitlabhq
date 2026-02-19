@@ -40,7 +40,7 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 - These features turned on:
   - For GitLab.com, experiment features for your top-level namespace.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
-- [GitLab Duo](turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
+- [GitLab Duo](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
 - A supported vector store configured:
   - Elasticsearch 8.0 and later.
   - OpenSearch 2.0 and later.

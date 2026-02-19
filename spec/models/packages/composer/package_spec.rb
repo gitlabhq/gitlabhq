@@ -77,6 +77,13 @@ RSpec.describe Packages::Composer::Package, feature_category: :package_registry 
 
       it_behaves_like 'validate package name format', :composer_package
     end
+
+    describe 'bytesize validations' do
+      it { is_expected.to allow_value('A' * described_class::TARGET_SHA_MAX_LENGTH).for(:target_sha) }
+      it { is_expected.not_to allow_value('A' * (described_class::TARGET_SHA_MAX_LENGTH + 1)).for(:target_sha) }
+      it { is_expected.to allow_value('A' * described_class::VERSION_CACHE_SHA_MAX_LENGTH).for(:version_cache_sha) }
+      it { is_expected.not_to allow_value('A' * (described_class::VERSION_CACHE_SHA_MAX_LENGTH + 1)).for(:version_cache_sha) } # rubocop disable Layout/LineLength -- More readable on single line
+    end
   end
 
   describe '.installable' do

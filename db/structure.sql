@@ -37689,6 +37689,18 @@ ALTER TABLE sprints
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE packages_composer_metadata
+    ADD CONSTRAINT check_packages_composer_metadata_target_sha_max_length CHECK ((octet_length(target_sha) <= 64)) NOT VALID;
+
+ALTER TABLE packages_composer_metadata
+    ADD CONSTRAINT check_packages_composer_metadata_version_cache_sha_max_length CHECK ((octet_length(version_cache_sha) <= 255)) NOT VALID;
+
+ALTER TABLE packages_composer_packages
+    ADD CONSTRAINT check_packages_composer_packages_target_sha_max_length CHECK ((octet_length(target_sha) <= 64)) NOT VALID;
+
+ALTER TABLE packages_composer_packages
+    ADD CONSTRAINT check_packages_composer_packages_version_cache_sha_max_length CHECK ((octet_length(version_cache_sha) <= 255)) NOT VALID;
+
 ALTER TABLE packages_conan_package_references
     ADD CONSTRAINT check_reference_length CHECK ((octet_length(reference) <= 20)) NOT VALID;
 

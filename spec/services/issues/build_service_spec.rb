@@ -168,7 +168,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
     end
 
     describe 'setting issue type' do
-      context 'with a corresponding WorkItems::Type' do
+      context 'with a corresponding WorkItem Type' do
         let_it_be(:type_task) { build(:work_item_system_defined_type, :task) }
         let_it_be(:type_task_id) { type_task.id }
         let_it_be(:type_issue_id) { build(:work_item_system_defined_type, :issue).id }

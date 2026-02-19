@@ -20,7 +20,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
   describe 'accessors' do
     it 'returns the expected embedding model info' do
       expect(embedding_model.model_name).to eq(model_name)
-      expect(embedding_model.field).to eq(field)
+      expect(embedding_model.field).to eq(field.to_sym)
       expect(embedding_model.llm_class).to eq(llm_class)
       expect(embedding_model.llm_params).to eq(llm_params)
     end

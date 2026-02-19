@@ -29,7 +29,7 @@ Subgroups can:
 - Be nested up to 20 levels.
 - Use [runners](../../../ci/runners/_index.md) registered to parent groups:
   - Secrets configured for the parent group are available to subgroup jobs.
-  - Users with at least the Maintainer role in projects that belong to subgroups can see the details of runners registered to
+  - Users with the Maintainer or Owner role in projects that belong to subgroups can see the details of runners registered to
     parent groups.
 
 For example:
@@ -82,7 +82,7 @@ you should add private subgroups only to private parent groups.
 Prerequisites:
 
 - You must have either:
-  - At least the Maintainer role for a group.
+  - The Maintainer or Owner role for a group.
   - The [role determined by a setting](#change-who-can-create-subgroups). These users can create
     subgroups even if group creation is
     [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
@@ -101,7 +101,7 @@ To create a subgroup:
 
 Prerequisites:
 
-- You must have at least the Maintainer role on the group, depending on the group's setting.
+- You must have the Maintainer or Owner role on the group, depending on the group's setting.
 
 To change who can create subgroups on a group:
 

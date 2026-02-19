@@ -48,7 +48,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 To use Code Suggestions:
 
-- If you have the GitLab Duo Core add-on, [turn on IDE features](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- If you have GitLab Duo Core, [turn on IDE features](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Set up Code Suggestions](set_up.md).
 
 > [!note]

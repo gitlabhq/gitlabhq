@@ -118,7 +118,7 @@ configure iteration cadences to automatically roll over incomplete issues to the
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To create an iteration cadence:
 
@@ -162,7 +162,7 @@ From there you can create a new iteration or select an iteration to get a more d
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To edit an iteration cadence:
 
@@ -230,7 +230,7 @@ to satisfy the requirement that there are at least two upcoming iterations sched
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 Deleting an iteration cadence also deletes all iterations in that cadence.
 
@@ -267,7 +267,7 @@ If you disable that option, you can create iterations manually.
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 - There must be at least one iteration cadence in the group and
   [automatic scheduling must be disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 
@@ -291,7 +291,7 @@ To create an iteration:
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To edit an iteration:
 
@@ -314,7 +314,7 @@ To edit an iteration:
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 - [Automatic scheduling must be disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 
 To delete an iteration:

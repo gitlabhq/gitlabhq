@@ -116,7 +116,7 @@ the group's projects.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
 
 ### Create a project label
 
@@ -146,7 +146,7 @@ Labels you create this way belong to the same project as the issue or merge requ
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To do so:
 
@@ -193,7 +193,7 @@ Labels you create this way belong to the same group as the epic.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To do so:
 
@@ -215,7 +215,7 @@ To do so:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
 
 ### Edit a project label
 
@@ -249,7 +249,7 @@ To edit a **group** label:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 ### Delete a project label
 
@@ -304,7 +304,7 @@ When you archive a label:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
 
 To archive a label:
 
@@ -329,7 +329,7 @@ To view archived labels:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
 
 To unarchive a label:
 
@@ -360,8 +360,8 @@ also merged.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
-- You must have at least the Planner role for the project's parent group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project's parent group.
 
 To promote a project label to a group label:
 
@@ -390,7 +390,7 @@ Prerequisites:
 
 - There must be a group that contains subgroups ("parent group").
 - There must be a subgroup in the parent group, that has a label you want to promote.
-- You must have at least the Planner role for both groups.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for both groups.
 
 To "promote" the label to the parent group:
 
@@ -423,7 +423,7 @@ labels from the label list page.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - The project must have no labels present.
 
 To add the default labels to the project:
@@ -578,7 +578,7 @@ It's not possible to do it from the group label list.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To prioritize a label:
 
@@ -625,7 +625,7 @@ When you add locked labels to issues or epics, they behave like regular labels.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
 
 > [!warning]
 > After you set a label as locked, nobody can undo it or delete the label.

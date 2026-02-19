@@ -21,7 +21,7 @@ To set up Code Suggestions, follow the instructions for your IDE.
 
 To use Code Suggestions, you need:
 
-- If you have GitLab Duo Core, [IDE features turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- If you have GitLab Duo Core, [IDE features turned on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.
 

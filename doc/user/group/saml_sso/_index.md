@@ -665,7 +665,7 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
   - SSO is not enforced when viewing merge requests where you are the
     assignee or reviewer. You can see merge requests even if
     your SSO session has expired.
-  - SSO is not enforced when viewing snippets for private projects where you have at least the Guest role.
+  - SSO is not enforced when viewing snippets for private projects where you have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 SSO enforcement for web activity has the following effects when enabled:
 

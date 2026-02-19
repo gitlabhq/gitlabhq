@@ -425,7 +425,7 @@ project setting. New projects created in the group have this value selected by d
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the group.
+- You must have the Maintainer or Owner role in the group.
 - The group must be the top-level group, not a subgroup.
 
 To set the default minimum role:
@@ -436,7 +436,7 @@ To set the default minimum role:
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.
 
-After a new project is created, project members with at least the Maintainer role
+After a new project is created, project members with the Maintainer or Owner role
 can change the project setting to another value if needed.
 
 ## Troubleshooting

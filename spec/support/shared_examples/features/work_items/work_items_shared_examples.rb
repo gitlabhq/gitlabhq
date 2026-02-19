@@ -410,6 +410,8 @@ end
 
 RSpec.shared_examples 'authored work item guest user permissions' do
   it 'shows expected actions based on guest permissions on authored work item', :aggregate_failures do
+    skip unless Gitlab.ee? # Skip for CE, as key results are EE only types
+
     within_testid 'work-item-actions-dropdown' do
       click_button _('More actions')
 

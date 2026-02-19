@@ -117,13 +117,13 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           end.to raise_error(
             WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
             <<~STRING
-            Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-            See related documentation in
-            https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
+              Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+              See related documentation in
+              https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
 
-            If you have additional questions, you can ask in
-            https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-          STRING
+              If you have additional questions, you can ask in
+              https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+            STRING
           )
         end
       end

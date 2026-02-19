@@ -4,10 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_planning do
   let_it_be(:namespace) { create(:namespace) }
-  # TODO: change this to system defined in this MR:
-  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-  let_it_be(:issue_type) { build(:work_item_type, :issue) }
-  let_it_be(:task_type) { build(:work_item_type, :task) }
+  let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+  let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
 
   let(:provider) { described_class.new(namespace) }
 
@@ -111,9 +109,7 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   describe '#unfiltered_base_types' do
     subject { provider.unfiltered_base_types }
 
-    # TODO: Uncomment this test in this MR
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-    # it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all.map(&:base_type)) }
+    it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all.map(&:base_type)) }
 
     it { is_expected.to all(be_a(String)) }
 
@@ -224,9 +220,7 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   describe '#filtered_types' do
     subject { provider.filtered_types }
 
-    # TODO: Uncomment this test in this MR
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-    # it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all) }
+    it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all) }
 
     context "when work_item_system_defined_type is disabled" do
       before do
@@ -405,10 +399,8 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   end
 
   describe '#by_ids_with_widget_definition_preload' do
-    # TODO: change this to system defined in this MR:
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-    let(:issue_type) { build(:work_item_type, :issue) }
-    let(:task_type) { build(:work_item_type, :task) }
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+    let(:task_type) { build(:work_item_system_defined_type, :task) }
 
     it 'returns work item types without preloading' do
       ids = [issue_type.id, task_type.id]
@@ -520,13 +512,18 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
     let(:ids) { [task_type.id, issue_type.id] }
 
-    # TODO: Remove stubbing the FF once we are able to assign SystemDefined Type as work_item_type to issue
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-    before do
-      stub_feature_flags(work_item_system_defined_type: false)
-    end
-
     it { is_expected.to contain_exactly(task_type, issue_type) }
+
+    context 'when work_item_system_defined_type is disabled' do
+      let_it_be(:issue_type) { build(:work_item_type, :issue) }
+      let_it_be(:task_type) { build(:work_item_type, :task) }
+
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      it { is_expected.to contain_exactly(task_type, issue_type) }
+    end
   end
 
   describe '#by_base_types_ordered_by_name' do
@@ -534,21 +531,22 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
     let(:names) { [:task, :issue] }
 
-    # TODO: Remove stubbing the FF once we are able to assign SystemDefined Type as work_item_type to issue
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-    before do
-      stub_feature_flags(work_item_system_defined_type: false)
-    end
+    context 'when work_item_system_defined_type is disabled' do
+      let_it_be(:issue_type) { build(:work_item_type, :issue) }
+      let_it_be(:task_type) { build(:work_item_type, :task) }
 
-    it { is_expected.to contain_exactly(task_type, issue_type) }
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      it { is_expected.to contain_exactly(task_type, issue_type) }
+    end
   end
 
   describe 'feature flag behavior' do
     describe '#use_system_defined_types?' do
-      context 'when work_item_system_defined_type is enabled' do
-        it 'returns true' do
-          expect(provider.send(:use_system_defined_types?)).to be(true)
-        end
+      it 'returns true' do
+        expect(provider.send(:use_system_defined_types?)).to be(true)
       end
 
       context 'when work_item_system_defined_type is disabled' do
@@ -563,10 +561,18 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     end
 
     describe '#type_class' do
-      # TODO: Add the case for system defined on this MR:
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-      it 'returns WorkItems::Type class' do
-        expect(provider.send(:type_class)).to eq(WorkItems::Type)
+      it 'returns SystemDefined::Type class' do
+        expect(provider.send(:type_class)).to eq(WorkItems::TypesFramework::SystemDefined::Type)
+      end
+
+      context 'when work_item_system_defined_type is disabled' do
+        before do
+          stub_feature_flags(work_item_system_defined_type: false)
+        end
+
+        it 'returns WorkItems::Type class' do
+          expect(provider.send(:type_class)).to eq(WorkItems::Type)
+        end
       end
     end
   end

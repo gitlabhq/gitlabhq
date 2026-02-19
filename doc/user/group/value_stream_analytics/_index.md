@@ -286,7 +286,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 - You must create a custom value stream. Value stream analytics only shows custom value streams created for your group or project.
 
 To view value stream analytics for your group or project:
@@ -604,7 +604,7 @@ Access permissions for value stream analytics depend on the project type.
 |--------------|---------------------------------------------------|
 | Public       | Anyone can access.                                |
 | Internal     | Any authenticated user can access.                |
-| Private      | Any user with at least the Guest role can access. |
+| Private      | Any user with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role can access. |
 
 ## Value Stream Analytics GraphQL API
 
@@ -633,7 +633,7 @@ The following metrics are available:
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 First, you must determine which value stream you want to use in the reporting.
 
