@@ -12,11 +12,9 @@ As a pre-requisite, familiarize yourself with our [glossary](../auth/auth_glossa
 
 For more information, see:
 
-- [Predefined roles system](permissions/predefined_roles.md): a general overview about predefined roles, user types, feature specific permissions, and permissions dependencies.
-- [`DeclarativePolicy` framework](policies.md): introduction into `DeclarativePolicy` framework we use for authorization.
-- [Naming and conventions](permissions/conventions.md): guidance on how to name new permissions and what should be included in policy classes.
 - [Authorizations](permissions/authorizations.md): guidance on where to check permissions.
 - [Custom roles](permissions/custom_roles.md): guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
-- [Job token guidelines](permissions/job_tokens.md): Guidance on requirements and contribution guidelines for new job token permissions.
-- [REST API support for Granular Personal Access Tokens](permissions/granular_personal_access_tokens.md): Guidance on adding granular PAT support for REST endpoints, including requirements and contribution guidelines.
-- [GraphQL API support for Granular Personal Access Tokens](permissions/graphql_granular_token_authorization.md): Guidance on adding granular PAT support for GraphQL queries and mutations, including requirements and contribution guidelines.
+- [`DeclarativePolicy` framework](policies.md): introduction into `DeclarativePolicy` framework we use for authorization.
+- [Granular Access](permissions/granular_access/_index.md): Development guidelines for granular access control, including job tokens and granular Personal Access Tokens.
+- [Naming and conventions](permissions/conventions.md): guidance on how to name new permissions and what should be included in policy classes.
+- [Predefined roles system](permissions/predefined_roles.md): a general overview about predefined roles, user types, feature specific permissions, and permissions dependencies.

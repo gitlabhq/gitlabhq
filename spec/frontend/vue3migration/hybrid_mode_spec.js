@@ -17,6 +17,8 @@ import ParentUsingOnlyNamedSlot from './components/slot_stubs/parent_using_only_
 import ChildWithLabelSlot from './components/slot_stubs/child_with_label_slot.vue';
 import ParentUsingScopedSlot from './components/scoped_slot_stubs/parent_using_scoped_slot.vue';
 import ChildWithScopedLabelSlot from './components/scoped_slot_stubs/child_with_scoped_label_slot.vue';
+import ParentWithAsyncDefaultVModel from './components/async_v_model/parent_with_async_default_v_model.vue';
+import ParentWithAsyncCustomVModel from './components/async_v_model/parent_with_async_custom_v_model.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
   it('correctly renders fallback content', () => {
@@ -368,6 +370,65 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
       // The stub should render the #label scoped slot content since there's no default slot
       expect(stub.find('[data-testid="label-content"]').exists()).toBe(true);
       expect(stub.text()).toContain('Label with');
+    });
+  });
+
+  /**
+   * When Vue 2 compiler generates code for `v-model` on a component, it produces a `model`
+   * object in the vnode data containing `value` and `callback`. The compat layer's
+   * `convertLegacyProps` function converts this to proper props (`value` prop and
+   * `onModelCompat:input` handler).
+   *
+   * However, `convertLegacyProps` only handled the case when `type` is an object
+   * (`isObject(type)`). For async components defined as functions (e.g.,
+   * `AsyncComponent: () => import('./async_component.vue')`), the resolved `type` is
+   * still a function, not an object. This caused `v-model` data to not be converted,
+   * breaking two-way binding on async components.
+   *
+   * Fix (async-component-v-model.patch): Extend the condition to also handle function
+   * types: `isObject(type) || typeof type === "function"`. For async components,
+   * `type.model` is undefined, so it falls back to the default `value`/`input` props.
+   *
+   * Note: Async components with custom `model` options (non-default prop/event names)
+   * are NOT supported, as the component definition isn't available when the vnode is
+   * created. This is undocumented limitation of compat build - so we use default
+   * `value`/`input` for async components. (good for now)
+   */
+  describe('async component v-model', () => {
+    it('supports v-model with default prop/event on async components', async () => {
+      const wrapper = mount(ParentWithAsyncDefaultVModel);
+      await waitForPromises();
+
+      const input = wrapper.find('[data-testid="async-input"]');
+      expect(input.exists()).toBe(true);
+
+      await input.setValue('test value');
+
+      expect(wrapper.find('[data-testid="output"]').text()).toBe('test value');
+    });
+
+    /**
+     * Not working with Vue.js 3 compiler also: Custom `model` options on async.
+     *
+     * In Vue 2, the async component is resolved before the vnode is created, so
+     * the `model` option (custom prop/event names) is available during rendering.
+     *
+     * In Vue 3 compat, when `convertLegacyProps` runs, the `type` is still the async
+     * wrapper function, not the resolved component. The `__asyncResolved` getter could
+     * provide access to the resolved component, but it's undefined during the first render.
+     *
+     */
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('supports v-model with custom prop/event on async components', async () => {
+      const wrapper = mount(ParentWithAsyncCustomVModel);
+      await waitForPromises();
+
+      const input = wrapper.find('[data-testid="async-input"]');
+      expect(input.exists()).toBe(true);
+
+      await input.setValue('custom value');
+
+      expect(wrapper.find('[data-testid="output"]').text()).toBe('custom value');
     });
   });
 });

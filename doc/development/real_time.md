@@ -259,11 +259,7 @@ module Subscriptions
               description: 'ID of the issue.'
 
     def authorized?(issue_id:)
-      issue = force(GitlabSchema.find_by_gid(issue_id))
-
-      unauthorized! unless issue && Ability.allowed?(current_user, :read_issue, issue)
-
-      true
+      authorize_object_or_gid!(:read_issue, gid: issue_id)
     end
   end
 end

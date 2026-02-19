@@ -148,7 +148,7 @@ Turn on GitLab Duo Chat:
 
 Then, to use GitLab Duo Chat:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. On the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** tab.
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
@@ -317,7 +317,7 @@ To select a model:
   1. Select a model from the dropdown list.
 
 - In your IDE:
-  1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+  1. On the sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
   1. Select the **Chat** tab.
   1. Select a model from the dropdown list.
 

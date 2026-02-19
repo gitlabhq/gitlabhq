@@ -38,6 +38,26 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
           expect(result.payload[:warnings]).to be_empty
         end
       end
+
+      context 'with label_wildcard_id' do
+        let(:filter_data) { { label_wildcard_id: 'Any' } }
+
+        it 'renames label_wildcard_id to label_name' do
+          expect(result.payload[:filters][:label_name]).to eq('Any')
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_id set to None' do
+        let(:filter_data) { { label_wildcard_id: 'None' } }
+
+        it 'renames label_wildcard_id to label_name' do
+          expect(result.payload[:filters][:label_name]).to eq('None')
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
     end
 
     describe 'assignee validation' do

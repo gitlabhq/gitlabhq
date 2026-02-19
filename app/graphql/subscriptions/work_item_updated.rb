@@ -11,11 +11,7 @@ module Subscriptions
       description: 'ID of the work item.'
 
     def authorized?(work_item_id:)
-      work_item = force(GitlabSchema.find_by_gid(work_item_id))
-
-      unauthorized! unless work_item && Ability.allowed?(current_user, :"read_#{work_item.to_ability_name}", work_item)
-
-      true
+      authorize_object_or_gid!(:read_work_item, gid: work_item_id)
     end
   end
 end

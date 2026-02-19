@@ -48,10 +48,10 @@ Use the Software Development Flow for complex development tasks.
 
 - The flow gathers comprehensive context, creates a detailed plan for you to review, and works through
   tasks methodically.
-- The flow uses a structured approach that is ideal for longer, deeper sessions where you need a large context window
-  and produces better results for code generation that requires iteration.
-- Each flow has a beginning and end. When you start a new flow, it gathers context again and creates a
-  new plan based on the current state of your project.
+- The flow uses a structured approach that is ideal for longer, deeper sessions where you need a
+  large context window and produces better results for code generation that requires iteration.
+- Each flow has a beginning and end. When you start a new flow, it gathers context again and creates
+  a new plan based on the current state of your project.
 
 Use GitLab Duo Chat for conversational interactions where you guide the direction.
 
@@ -75,11 +75,12 @@ Prerequisites:
 
 To use the flow:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. In your IDE, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The flow is aware of all files available to Git in the project branch.
-   - You can provide additional [context](../../../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
+   - You can provide additional [context](../../../duo_agent_platform/context.md#gitlab-duo-chat-agentic)
+    for your chat.
    - The flow cannot access external sources or the web.
    - For example:
 
@@ -92,8 +93,8 @@ To use the flow:
 
 1. Select **Start**.
 
-After you describe your task, a plan is generated and executed.
-You can pause or ask it to adjust the plan.
+After you describe your task, the flow generates and executes a plan.
+You can pause or ask the flow to adjust the plan.
 
 ## Supported languages
 
@@ -129,16 +130,25 @@ to the following APIs:
 
 ## Audit log
 
-An audit event is created for each API request done by the Software Development Flow.
+The Software Development Flow generates an audit event for each API request.
 On your GitLab Self-Managed instance, you can view these events on the
-[instance audit events](../../../../administration/compliance/audit_event_reports.md#instance-audit-events) page.
+[instance audit events](../../../../administration/compliance/audit_event_reports.md#instance-audit-events)
+page.
 
 ## Risks
 
-The Software Development Flow uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
+The Software Development Flow uses an AI agent that can perform actions using your GitLab account.
+AI tools based on large language models can be unpredictable. Review potential risks before use.
 
-The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your local workstation. Consider all documented risks before enabling this product. Key risks include:
+The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your
+local workstation. Consider all documented risks before enabling this product. Key risks include:
 
-1. The Software Development Flow can access files in the project’s local file system, including files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such as credentials in `.env` files.
-1. The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows` scope, linked to your user identity. This token allows access to designated GitLab APIs for the duration of the workflow. By default, only read operations are performed without explicit approval, but write operations are possible based on your permissions.
-1. Do not provide the Software Development Flow with additional credentials or secrets (for example, in messages or goals), as these may be unintentionally used or exposed in code or API calls.
+- The Software Development Flow can access files in the project’s local file system, including
+  files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such
+  as credentials in `.env` files.
+- The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows`
+  scope, linked to your user identity. This token allows access to designated GitLab APIs for the
+  duration of the workflow. By default, only read operations are performed without explicit approval,
+  but write operations are possible based on your permissions.
+- Do not provide the Software Development Flow with additional credentials or secrets (for example,
+  in messages or goals), because these may be used unintentionally or exposed in code or API calls.

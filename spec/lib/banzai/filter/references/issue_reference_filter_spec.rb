@@ -144,6 +144,20 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
       expect(doc.children.first.children.first.attr('data-original')).to eq inner_html
     end
 
+    it 'includes data-original-href when reference is inside a link with custom content' do
+      inner_html = 'custom text'
+      doc = reference_filter(%(<a href="#{written_reference}">#{inner_html}</a>))
+      link = doc.children.first.children.first
+      expect(link.attr('data-original-href')).to eq written_reference
+      expect(link.attr('data-link')).to eq 'true'
+    end
+
+    it 'does not include data-original-href for plain text references' do
+      doc = reference_filter("Issue #{written_reference}")
+      link = doc.css('a').first
+      expect(link.attr('data-original-href')).to be_nil
+    end
+
     it 'includes a data-reference-format attribute' do
       doc = reference_filter("Issue #{written_reference}+")
       link = doc.css('a').first

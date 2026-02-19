@@ -73,6 +73,13 @@ module Banzai
           href = node.attr('href')
 
           %(<a href="#{href}">#{original_content}</a>)
+        elsif node.attr('data-link') == 'true' && node.attr('data-original-href')
+          # Reference was inside a link like [custom text](reference).
+          # Restore as a plain link with the original href to avoid leaking
+          # information about the reference's existence.
+          original_href = CGI.escapeHTML(node.attr('data-original-href'))
+
+          %(<a href="#{original_href}">#{original_content}</a>)
         end
 
       # The reference should be replaced by the original link's content,

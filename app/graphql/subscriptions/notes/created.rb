@@ -3,9 +3,13 @@
 module Subscriptions
   module Notes
     class Created < Base
+      include Gitlab::Utils::StrongMemoize
+
       payload_type ::Types::Notes::NoteType
 
-      def update(*args)
+      private
+
+      def note_object
         case object
         when ResourceEvent
           object.work_item_synthetic_system_note
@@ -15,6 +19,7 @@ module Subscriptions
           object
         end
       end
+      strong_memoize_attr :note_object
     end
   end
 end

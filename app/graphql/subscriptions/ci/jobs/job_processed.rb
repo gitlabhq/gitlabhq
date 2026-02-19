@@ -19,23 +19,13 @@ module Subscriptions
         payload_type Types::Ci::JobType
 
         def authorized?(project_id:, **_kwargs)
-          project = force(GitlabSchema.find_by_gid(project_id))
-
-          unauthorized! unless project
-          unauthorized! unless Ability.allowed?(current_user, :read_build, project)
-
-          true
+          authorize_object_or_gid!(:read_build, gid: project_id)
         end
 
         def update(project_id:, with_artifacts: false)
           processed_job = object
 
-          return NO_UPDATE unless processed_job
-
-          project = force(GitlabSchema.find_by_gid(project_id))
-
-          return NO_UPDATE unless project && processed_job.project_id == project.id
-          return NO_UPDATE unless Ability.allowed?(current_user, :read_build, processed_job)
+          return NO_UPDATE unless processed_job && processed_job.project_id == project_id.model_id.to_i
 
           if processed_job.has_job_artifacts? && with_artifacts
             return processed_job

@@ -331,11 +331,15 @@ module Banzai
         # It always contains safe HTML --- if the original match was on a link, it is the
         # inner HTML of the <a> tag (after sanitization, etc.).  If not, we escape the plain text
         # match.
+        #
+        # `original_href` is used to store the original href in ReferenceRedactor when necessary,
+        # for cases when the reference is used as the href. Note that it is text, not safe HTML.
         def data_attributes_for(match_text, link_content_html, **attrs)
           {
             **attrs,
-            original: link_content_html || CGI.escapeHTML(match_text)
-          }
+            original: link_content_html || CGI.escapeHTML(match_text),
+            original_href: link_content_html ? match_text : nil
+          }.compact
         end
       end
     end

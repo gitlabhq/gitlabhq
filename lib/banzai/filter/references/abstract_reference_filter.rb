@@ -200,7 +200,7 @@ module Banzai
               link_content_html || CGI.escapeHTML(match_text),
               parent,
               object,
-              link_content: !!link_content_html,
+              original_href: link_content_html ? match_text : nil,
               link_reference: link_reference
             )
             data_attributes[:reference_format] = matches[:format] if matches.names.include?("format")
@@ -239,9 +239,16 @@ module Banzai
           link
         end
 
-        # "link_content" is true when "original" is the inner HTML content, or false when "original"
-        # is HTML-escaped plain text representing the link as written.
-        def data_attributes_for(original, parent, object, link_content: false, link_reference: false)
+        # If the reference was found inside a link, "original_href" contains the original href text
+        # as written by the user.  It is text, and not safe HTML.  In this case, "original" is the
+        # inner HTML content of the link tag, and we set data-link="true".  This is used by e.g. the
+        # rich-text editor, so it knows the target should not be treated as a plain reference.
+        #
+        # Otherwise, "original_href" is nil, and "original" is the HTML-escaped reference as written
+        # by the user.
+        #
+        # Note that "original" must always be safe HTML.
+        def data_attributes_for(original, parent, object, original_href: nil, link_reference: false)
           parent_id = case parent
                       when Group
                         { group: parent.id, namespace: parent.id }
@@ -253,10 +260,11 @@ module Banzai
 
           {
             original: original,
-            link: link_content,
+            link: original_href.present?,
+            original_href: original_href,
             link_reference: link_reference,
             object_sym => object.id
-          }.merge(parent_id)
+          }.merge(parent_id).compact
         end
 
         # Provides the default content of the created link, if there was no original content to use.

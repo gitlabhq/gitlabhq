@@ -621,3 +621,4 @@ For authentication in CI/CD jobs, consider:
 - [Group access tokens](../group/settings/group_access_tokens.md)
 - [Project access tokens](../project/settings/project_access_tokens.md)
 - [Personal access tokens API](../../api/personal_access_tokens.md)
+- [REST API endpoints with granular personal access token support](../../auth/tokens/fine_grained_access_tokens.md)

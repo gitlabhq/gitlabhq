@@ -12,9 +12,7 @@ module Subscriptions
         description: 'Global ID of the merge request.'
 
       def authorized?(merge_request_id:)
-        merge_request = force(GitlabSchema.find_by_gid(merge_request_id))
-        unauthorized! unless merge_request && Ability.allowed?(current_user, :read_merge_request, merge_request)
-        true
+        authorize_object_or_gid!(:read_merge_request, gid: merge_request_id)
       end
     end
   end

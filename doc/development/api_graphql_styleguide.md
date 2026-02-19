@@ -2256,9 +2256,12 @@ This class runs during the initial subscription request and subsequent updates. 
 
 You should implement the `#authorized?` method of the subscription class so that the initial subscription and subsequent updates are authorized.
 
-When a user is not authorized, you should call the `unauthorized!` helper so that execution is halted and the user is unsubscribed. Returning `false`
-results in redaction of the response, but we leak information that some updates are happening. This leakage is due to a
-[bug in the GraphQL gem](https://github.com/rmosolgo/graphql-ruby/issues/3390).
+When a user is not authorized, you should call the `unauthorized!` helper so that execution is halted and the user is unsubscribed.
+
+Use the `#authorize_object_or_gid!` helper for the typical case where we check permissions based on the Global ID or the object being subscribed to.
+For the initial subscription, the object will not be present, so this fetches the object using the given Global ID. But for subsequent updates, it uses the
+object we are returning to the user so that we do not fetch another instance of the same object. The `object` argument can also be used to specify
+the object to authorize.
 
 ### Triggering subscriptions
 

@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Granular Personal Access Tokens
+title: REST API implementation guide
 ---
 
 To reduce the security impact of compromised Personal Access Tokens (PATs), granular or fine-grained PATs allow users to create tokens with fine-grained permissions limited to specific organizational boundaries (groups, projects, user, or instance-level). This enables users to follow the principle of least privilege by granting tokens only the permissions they need.
@@ -13,7 +13,7 @@ This documentation is designed for community contributors and GitLab developers 
 
 ## Step-by-Step Implementation Guide
 
-This guide walks you through adding granular PAT authorization to REST API endpoints. Before starting, review the [Permission Naming Conventions](conventions.md) documentation to understand the terminology used throughout.
+This guide walks you through adding granular PAT authorization to REST API endpoints. Before starting, review the [Permission Naming Conventions](../../conventions.md) documentation to understand the terminology used throughout.
 
 **Note:** These steps cover REST API endpoints only. For GraphQL endpoint protection, refer to [GraphQL protection](graphql_granular_token_authorization.md).
 
@@ -76,7 +76,7 @@ Quick reference showing what you create in each step:
 
 **Goal:** Define granular permissions following GitLab naming conventions.
 
-For the naming conventions, see [Naming Permissions](conventions.md#naming-permissions) in the conventions documentation.
+For the naming conventions, see [Naming Permissions](../../conventions.md#naming-permissions) in the conventions documentation.
 
 #### Determining the Resource Name for Endpoints
 
@@ -133,7 +133,7 @@ description: Grants the ability to read CI/CD jobs
 | `name` | Permission name (auto-populated by generator) |
 | `description` | Human-readable description of what the permission allows |
 
-For additional details, see the [Permission Definition File](conventions.md#permission-definition-file) section in the conventions documentation.
+For additional details, see the [Permission Definition File](../../conventions.md#permission-definition-file) section in the conventions documentation.
 
 #### Create Resource Metadata for Raw Permissions
 
@@ -161,11 +161,11 @@ The validation task (`bundle exec rake gitlab:permissions:validate`) enforces se
 
 **Permission Name Format:**
 
-For guidance on how to name permissions, see [Naming Permissions](conventions.md#naming-permissions) in the conventions documentation.
+For guidance on how to name permissions, see [Naming Permissions](../../conventions.md#naming-permissions) in the conventions documentation.
 
 **Action Words:**
 
-For a list of disallowed actions, see [Disallowed Actions](conventions.md#disallowed-actions) in the conventions documentation.
+For a list of disallowed actions, see [Disallowed Actions](../../conventions.md#disallowed-actions) in the conventions documentation.
 
 **File Structure:**
 

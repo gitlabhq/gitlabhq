@@ -15,14 +15,12 @@ RSpec.describe Subscriptions::Ci::PipelineSchedule::StatusUpdated, feature_categ
     let_it_be(:other_project) { create(:project) }
     let_it_be(:schedule1) { create(:ci_pipeline_schedule, project: project, owner: user) }
     let_it_be(:schedule2) { create(:ci_pipeline_schedule, project: project, owner: user) }
-    let_it_be(:other_schedule) { create(:ci_pipeline_schedule, project: other_project, owner: unauthorized_user) }
 
     let(:current_user) { user }
     let(:project_id) { project.to_gid }
 
     before_all do
       project.add_owner(user)
-      other_project.add_owner(unauthorized_user)
     end
 
     subject(:subscription) { resolver.resolve_with_support(project_id: project_id) }
@@ -76,7 +74,8 @@ RSpec.describe Subscriptions::Ci::PipelineSchedule::StatusUpdated, feature_categ
       end
 
       context 'when the updated schedule belongs to a different project' do
-        let(:updated_schedule) { other_schedule }
+        let(:other_project) { create(:project, developers: [current_user]) }
+        let(:project_id) { other_project.to_gid }
 
         it 'unsubscribes the user' do
           # GraphQL::Execution::Skip is returned when unsubscribed

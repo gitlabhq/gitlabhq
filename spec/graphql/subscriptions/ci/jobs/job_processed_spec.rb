@@ -60,11 +60,20 @@ RSpec.describe Subscriptions::Ci::Jobs::JobProcessed, feature_category: :continu
       context 'when a user can not read the job' do
         before do
           allow(Ability).to receive(:allowed?)
-                              .with(current_user, :read_build, project)
+                              .with(current_user, :read_build, job)
                               .and_return(false)
         end
 
         it 'unsubscribes the user' do
+          expect(subscription).to be_an(GraphQL::Execution::Skip)
+        end
+      end
+
+      context 'when the job does not belong to the project' do
+        let(:other_project) { create(:project, developers: [current_user]) }
+        let(:project_id) { other_project.to_gid }
+
+        it 'skips the update' do
           expect(subscription).to be_an(GraphQL::Execution::Skip)
         end
       end

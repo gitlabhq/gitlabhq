@@ -10,13 +10,15 @@ module Subscriptions
         description: 'ID of the noteable.'
 
       def authorized?(noteable_id:)
-        noteable = force(GitlabSchema.find_by_gid(noteable_id))
+        authorize_object_or_gid!(
+          :"read_#{noteable_id.model_class.to_ability_name}",
+          gid: noteable_id,
+          object: note_object&.noteable
+        )
+      end
 
-        # unsubscribe if user cannot read the noteable anymore for any reason, e.g. issue was set confidential,
-        # in the meantime the read note permissions is checked within its corresponding returned type, i.e. NoteType
-        unauthorized! unless noteable && Ability.allowed?(current_user, :"read_#{noteable.to_ability_name}", noteable)
-
-        true
+      def update(...)
+        note_object
       end
     end
   end

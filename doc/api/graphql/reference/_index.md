@@ -5389,6 +5389,30 @@ Input type: `ContainerVirtualRegistryUpstreamCreateInput`
 | <a id="mutationcontainervirtualregistryupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainervirtualregistryupstreamcreateregistryupstream"></a>`registryUpstream` | [`ContainerRegistryUpstreamWithRegistry`](#containerregistryupstreamwithregistry) | Container registry upstream after association. |
 
+### `Mutation.containerVirtualRegistryUpstreamDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerVirtualRegistryUpstreamDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistryupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistryupstreamdeleteupstreamid"></a>`upstreamId` | [`VirtualRegistriesContainerRegistryUpstreamID!`](#virtualregistriescontainerregistryupstreamid) | ID of the container virtual registry upstream. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistryupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistryupstreamdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainervirtualregistryupstreamdeleteregistryupstream"></a>`registryUpstream` | [`ContainerRegistryUpstreamWithRegistry`](#containerregistryupstreamwithregistry) | Deleted container registry upstream. |
+
 ### `Mutation.corpusCreate`
 
 Input type: `CorpusCreateInput`
@@ -58686,6 +58710,12 @@ An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
 A `VirtualRegistriesContainerRegistryID` is a global ID. It is encoded as a string.
 
 An example `VirtualRegistriesContainerRegistryID` is: `"gid://gitlab/VirtualRegistries::Container::Registry/1"`.
+
+### `VirtualRegistriesContainerRegistryUpstreamID`
+
+A `VirtualRegistriesContainerRegistryUpstreamID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesContainerRegistryUpstreamID` is: `"gid://gitlab/VirtualRegistries::Container::RegistryUpstream/1"`.
 
 ### `VirtualRegistriesContainerUpstreamID`
 

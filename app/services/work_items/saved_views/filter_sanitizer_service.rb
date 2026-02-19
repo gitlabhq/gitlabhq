@@ -50,6 +50,11 @@ module WorkItems
         # Rename issue_types back to types for consistency with GraphQL input
         sanitized_filters[:types] = sanitized_filters.delete(:issue_types) if sanitized_filters.key?(:issue_types)
 
+        # Rename label_wildcard_id back to label_name for consistency with GraphQL input
+        if sanitized_filters.key?(:label_wildcard_id)
+          sanitized_filters[:label_name] = sanitized_filters.delete(:label_wildcard_id)
+        end
+
         # Handle static negated filters
         return unless filters[:not]
 

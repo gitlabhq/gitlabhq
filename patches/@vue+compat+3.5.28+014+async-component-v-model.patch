@@ -1,0 +1,26 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index ecd0c49..8c678ac 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6111,7 +6111,7 @@ function convertLegacyProps(legacyProps, type) {
+   if (legacyProps.staticStyle) {
+     converted.style = normalizeStyle([legacyProps.staticStyle, converted.style]);
+   }
+-  if (legacyProps.model && isObject(type)) {
++  if (legacyProps.model && (isObject(type) || typeof type === "function")) {
+     const { prop = "value", event = "input" } = type.model || {};
+     converted[prop] = legacyProps.model.value;
+     converted[compatModelEventPrefix + event] = legacyProps.model.callback;
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 72dc3e8..c19aa93 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6018,7 +6018,7 @@ function convertLegacyProps(legacyProps, type) {
+   if (legacyProps.staticStyle) {
+     converted.style = normalizeStyle([legacyProps.staticStyle, converted.style]);
+   }
+-  if (legacyProps.model && isObject(type)) {
++  if (legacyProps.model && (isObject(type) || typeof type === "function")) {
+     const { prop = "value", event = "input" } = type.model || {};
+     converted[prop] = legacyProps.model.value;
+     converted[compatModelEventPrefix + event] = legacyProps.model.callback;

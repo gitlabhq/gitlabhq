@@ -60,6 +60,29 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
           redactor.redact([doc])
           expect(doc.to_html).to eq('<a href="https://www.gitlab.com">Homer</a>')
         end
+
+        context 'when reference was inside a link with custom content' do
+          it 'restores the original link with the original href' do
+            html = "<a href='https://www.gitlab.com/resolved' data-link='true' data-original-href='@All' class='gfm' data-reference-type='user' data-original='target'>All Project and Group Members</a>"
+            doc = Nokogiri::HTML.fragment(html)
+            redactor.redact([doc])
+            expect(doc.to_html).to eq('<a href="@All">target</a>')
+          end
+
+          it 'escapes the original href to prevent XSS' do
+            html = "<a href='https://www.gitlab.com/resolved' data-link='true' data-original-href='&lt;script&gt;' class='gfm' data-reference-type='user' data-original='target'>content</a>"
+            doc = Nokogiri::HTML.fragment(html)
+            redactor.redact([doc])
+            expect(doc.to_html).to eq('<a href="&lt;script&gt;">target</a>')
+          end
+
+          it 'falls back to original content if data-original-href is missing' do
+            html = "<a href='https://www.gitlab.com/resolved' data-link='true' class='gfm' data-reference-type='user' data-original='target'>content</a>"
+            doc = Nokogiri::HTML.fragment(html)
+            redactor.redact([doc])
+            expect(doc.to_html).to eq('target')
+          end
+        end
       end
     end
 

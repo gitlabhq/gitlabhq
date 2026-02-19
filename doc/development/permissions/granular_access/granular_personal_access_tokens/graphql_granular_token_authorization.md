@@ -634,4 +634,4 @@ These directives return `NilBoundary` which will be validated by the authorizati
 
 ## See Also
 
-- [Granular Personal Access Tokens Documentation](granular_personal_access_tokens.md)
+- [Granular Personal Access Tokens Documentation](_index.md)

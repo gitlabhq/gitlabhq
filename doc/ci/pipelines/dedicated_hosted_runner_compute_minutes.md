@@ -1,7 +1,7 @@
 ---
 stage: Production Engineering
 group: Runners Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Compute minutes, usage tracking, quota management for GitLab-hosted runners on GitLab Dedicated.
 title: Compute usage for GitLab-hosted runners on GitLab Dedicated
 ---
