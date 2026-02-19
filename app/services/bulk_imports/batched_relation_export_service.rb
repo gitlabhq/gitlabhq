@@ -61,15 +61,11 @@ module BulkImports
     strong_memoize_attr :batch_size
 
     def export
-      # TODO: Once `offline_export_id` is actually supported, we'll only want to supply
-      # the `user` parameter if `offline_export_id` is absent.
-      # Epic link: https://gitlab.com/groups/gitlab-org/-/work_items/8985
       # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- This is only executed from within a worker
-      @export ||= portable.bulk_import_exports.safe_find_or_create_by!(
-        relation: relation,
-        user: user,
-        offline_export_id: nil
-      )
+      export_params = { offline_export_id: offline_export_id, relation: relation }
+      export_params[:user] = user unless offline_export_id
+
+      @export ||= portable.bulk_import_exports.safe_find_or_create_by!(export_params)
       # rubocop:enable Performance/ActiveRecordSubtransactionMethods
     end
 

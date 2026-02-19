@@ -269,12 +269,6 @@ app/models/project.rb:
 - valid_runners_token?
 - storage_upgradable?
 - deploy_token_create_url
-app/models/project_statistics.rb:
-- update_wiki_size
-- update_snippets_size
-- update_lfs_objects_size
-- update_uploads_size
-- update_container_registry_size
 app/models/todo.rb:
 - unmergeable?
 - merge_train_removed?

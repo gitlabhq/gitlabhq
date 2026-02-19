@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Import::Offline::Export, feature_category: :importers do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization) }
@@ -97,6 +99,46 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
 
           export_without_config.fail_op
         end
+      end
+    end
+  end
+
+  describe '#completed?' do
+    where(:status_trait, :expected_result) do
+      :created  | false
+      :started  | false
+      :finished | true
+      :failed   | true
+    end
+
+    with_them do
+      subject(:export) { build(:offline_export, status_trait) }
+
+      it 'returns the expected result' do
+        expect(export.completed?).to eq(expected_result)
+      end
+    end
+  end
+
+  describe '#update_has_failures!' do
+    subject(:export) { create(:offline_export, has_failures: has_failures) }
+
+    context 'when has_failures is currently false' do
+      let(:has_failures) { false }
+
+      it 'sets the has_failures flag to true' do
+        expect { export.update_has_failures! }
+          .to change { export.has_failures }
+          .from(false).to(true)
+      end
+    end
+
+    context 'when has_failures is currently true' do
+      let(:has_failures) { true }
+
+      it 'leaves the has_failures flag unchanged' do
+        expect { export.update_has_failures! }
+          .not_to change { export.has_failures }
       end
     end
   end

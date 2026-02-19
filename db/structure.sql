@@ -44341,7 +44341,7 @@ CREATE INDEX index_bulk_import_export_uploads_on_project_id ON bulk_import_expor
 
 CREATE INDEX index_bulk_import_exports_on_group_id ON bulk_import_exports USING btree (group_id);
 
-CREATE INDEX index_bulk_import_exports_on_offline_export_id ON bulk_import_exports USING btree (offline_export_id);
+CREATE INDEX index_bulk_import_exports_on_offline_export_id_and_relation ON bulk_import_exports USING btree (offline_export_id, relation);
 
 CREATE INDEX index_bulk_import_exports_on_project_id ON bulk_import_exports USING btree (project_id);
 

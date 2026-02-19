@@ -138,6 +138,24 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
   end
 
   describe '#execute' do
+    context 'about its container' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      where(:container, :namespace_id) do
+        ref(:project) | lazy { project.namespace.id }
+        ref(:group) | lazy { group.id }
+      end
+
+      with_them do
+        let(:service) { described_class.new(container: container, current_user: user, params: {}) }
+
+        it 'ensures the proper namespace' do
+          issue = service.execute
+          expect(issue.namespace_id).to eq(namespace_id)
+        end
+      end
+    end
+
     describe 'setting milestone' do
       context 'when developer' do
         it 'builds a new issues with given params' do

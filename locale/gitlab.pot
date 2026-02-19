@@ -2684,6 +2684,9 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
+msgid "AICatalog|Connect Model Context Protocol servers to extend this agent with external tools and data sources."
+msgstr ""
+
 msgid "AICatalog|Connects to an AI model provider outside GitLab."
 msgstr ""
 
@@ -2975,6 +2978,12 @@ msgstr ""
 msgid "AICatalog|Learn more about foundational flows"
 msgstr ""
 
+msgid "AICatalog|MCP servers"
+msgstr ""
+
+msgid "AICatalog|MCP servers allow your agent to connect with external tools."
+msgstr ""
+
 msgid "AICatalog|Make %{itemType} public?"
 msgstr ""
 
@@ -3090,6 +3099,9 @@ msgid "AICatalog|Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
 msgid "AICatalog|Save changes"
+msgstr ""
+
+msgid "AICatalog|Search MCP servers."
 msgstr ""
 
 msgid "AICatalog|Search tools."
@@ -78342,6 +78354,9 @@ msgstr ""
 msgid "WorkItem|Aqua"
 msgstr ""
 
+msgid "WorkItem|Archive"
+msgstr ""
+
 msgid "WorkItem|Archive %{itemName}"
 msgstr ""
 
@@ -78709,6 +78724,9 @@ msgid "WorkItem|Failed to load statuses."
 msgstr ""
 
 msgid "WorkItem|Failed to unarchive custom field %{fieldName}."
+msgstr ""
+
+msgid "WorkItem|Failed to update work item type."
 msgstr ""
 
 msgid "WorkItem|Field"
@@ -79534,6 +79552,9 @@ msgstr ""
 msgid "WorkItem|Types"
 msgstr ""
 
+msgid "WorkItem|UnArchive"
+msgstr ""
+
 msgid "WorkItem|Unable to fetch destination projects."
 msgstr ""
 
@@ -79622,6 +79643,9 @@ msgid "WorkItem|Work item not found"
 msgstr ""
 
 msgid "WorkItem|Work item settings"
+msgstr ""
+
+msgid "WorkItem|Work item type updated."
 msgstr ""
 
 msgid "WorkItem|Work item types"

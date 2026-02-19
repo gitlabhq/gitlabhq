@@ -342,6 +342,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Groups::UpdateStatisticsWorker' => 3,
         'Import::BulkImports::SourceUsersAttributesWorker' => 6,
         'Import::LoadPlaceholderReferencesWorker' => 6,
+        'Import::Offline::ExportWorker' => 3,
         'ImportIssuesCsvWorker' => 3,
         'ImportSoftwareLicensesWorker' => 3,
         'IncidentManagement::AddSeveritySystemNoteWorker' => 3,

@@ -28,64 +28,6 @@ You can turn GitLab Duo Chat (Classic) on or off:
 - On GitLab.com: For top-level groups, other groups or subgroups, and projects.
 - On GitLab Self-Managed: For instances, groups or subgroups, and projects.
 
-## Turn GitLab Duo Core on or off
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
-- GitLab availability settings, and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
-- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
-
-{{< /history >}}
-
-GitLab Duo Core is included with Premium and Ultimate subscriptions.
-
-- If you are an existing customer from GitLab 17.11 or earlier, you must turn on features for GitLab Duo Core.
-- If you are a new customer in GitLab 18.0 or later, GitLab Duo Core is automatically turned on and no further action is needed.
-
-If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
-when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn it on.
-
-### On GitLab.com
-
-On GitLab.com, you can change availability for GitLab Duo Core for your top-level group (namespace).
-
-Prerequisites:
-
-- You must have the Owner role for the top-level group.
-
-To change GitLab Duo Core availability:
-
-1. On the top bar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
-   If you selected **Always off** for GitLab Duo availability, you cannot access
-   this setting.
-1. Select **Save changes**.
-
-It might take up to 10 minutes for the change to take effect.
-
-### On GitLab Self-Managed
-
-On GitLab Self-Managed, you can change availability for GitLab Duo Core for your instance.
-
-Prerequisites:
-
-- You must be an administrator.
-
-To change GitLab Duo Core availability:
-
-1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
-   If you selected **Always off** for GitLab Duo availability, you cannot access
-   this setting.
-1. Select **Save changes**.
-
 ## Turn GitLab Duo on or off
 
 GitLab Duo is on by default.
@@ -200,6 +142,64 @@ GitLab Duo availability changes for the project.
 
 For information on how to turn GitLab Duo on of off in earlier GitLab versions,
 see [Control GitLab Duo availability for earlier GitLab versions](turn_on_off_earlier.md).
+
+## Turn GitLab Duo Core on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
+- GitLab availability settings, and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
+- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
+
+{{< /history >}}
+
+GitLab Duo Core is included with Premium and Ultimate subscriptions.
+
+- If you are an existing customer from GitLab 17.11 or earlier, you must turn on features for GitLab Duo Core.
+- If you are a new customer in GitLab 18.0 or later, GitLab Duo Core is automatically turned on and no further action is needed.
+
+If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
+when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn it on.
+
+### On GitLab.com
+
+On GitLab.com, you can change availability for GitLab Duo Core for your top-level group (namespace).
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To change GitLab Duo Core availability:
+
+1. On the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo availability**, select an option.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
+   If you selected **Always off** for GitLab Duo availability, you cannot access
+   this setting.
+1. Select **Save changes**.
+
+It might take up to 10 minutes for the change to take effect.
+
+### On GitLab Self-Managed
+
+On GitLab Self-Managed, you can change availability for GitLab Duo Core for your instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To change GitLab Duo Core availability:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo availability**, select an option.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
+   If you selected **Always off** for GitLab Duo availability, you cannot access
+   this setting.
+1. Select **Save changes**.
 
 ## Turn on beta and experimental features
 

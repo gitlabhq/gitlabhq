@@ -49,6 +49,10 @@ module Import
         state_machine.states.map(&:human_name)
       end
 
+      def completed?
+        finished? || failed?
+      end
+
       def validate_source_hostname
         uri = Gitlab::Utils.parse_url(source_hostname)
 
@@ -65,6 +69,12 @@ module Import
         return unless configuration
 
         ::Import::Offline::ConfigurationPurgeWorker.perform_in(PURGE_CONFIGURATION_DELAY, configuration.id)
+      end
+
+      def update_has_failures!
+        return if has_failures?
+
+        update!(has_failures: true)
       end
     end
   end

@@ -32,14 +32,10 @@ module BulkImports
     attr_reader :user, :portable, :relation, :jid, :offline_export_id
 
     def export
-      # TODO: Once `offline_export_id` is actually supported, we'll only want to supply
-      # the `user` parameter if `offline_export_id` is absent.
-      # Epic link: https://gitlab.com/groups/gitlab-org/-/work_items/8985
-      export = portable.bulk_import_exports.safe_find_or_create_by!(
-        relation: relation,
-        user: user,
-        offline_export_id: nil
-      )
+      export_params = { offline_export_id: offline_export_id, relation: relation }
+      export_params[:user] = user unless offline_export_id
+
+      export = portable.bulk_import_exports.safe_find_or_create_by!(export_params)
 
       return export if export.finished? && export.updated_at > EXISTING_EXPORT_TTL.ago && !export.batched?
 

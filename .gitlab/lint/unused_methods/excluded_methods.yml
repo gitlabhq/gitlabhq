@@ -10,6 +10,12 @@ app/models/event.rb:
 - find_sti_class: Override of an ActiveRecord internal method
 app/models/jira_import_state.rb:
   - owner_class_attribute_default: Used internally by state_machine
+app/models/project_statistics.rb:
+  - update_wiki_size: Called dynamically, and cannot be removed unless column is removed
+  - update_snippets_size: Called dynamically, and cannot be removed unless column is removed
+  - update_lfs_objects_size: Called dynamically, and cannot be removed unless column is removed
+  - update_uploads_size: Called dynamically, and cannot be removed unless column is removed
+  - update_container_registry_size: Called dynamically, and cannot be removed unless column is removed
 app/models/service_desk/custom_email_verification.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/user.rb:

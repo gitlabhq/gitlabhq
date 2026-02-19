@@ -87,7 +87,7 @@ or directly in the GitLab Credits dashboard.
 By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
 in the current monthly billing period, and any On-Demand charges incurred going forward.
 
-If you haven’t accepted usage billing terms, you can’t use GitLab Duo Agent Platform and consume On-Demand credits.
+If you haven't accepted usage billing terms, you can't use GitLab Duo Agent Platform and consume On-Demand credits.
 You can regain access to GitLab Duo Agent Platform by either purchasing
 a monthly commitment or accepting the usage billing terms.
 

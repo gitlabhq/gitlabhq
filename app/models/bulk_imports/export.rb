@@ -30,6 +30,9 @@ module BulkImports
     scope :for_user, ->(user) { where(user: user) }
     scope :for_user_and_relation, ->(user, relation) { where(user: user, relation: relation) }
     scope :for_offline_export, ->(offline_export) { where(offline_export: offline_export) }
+    scope :for_offline_export_and_relation, ->(offline_export, relation) do
+      where(offline_export: offline_export, relation: relation)
+    end
 
     state_machine :status, initial: :started do
       state :pending, value: PENDING
@@ -53,6 +56,10 @@ module BulkImports
         if export.config.user_contributions_relation?(export.relation)
           UserContributionsExportMapper.new(export.portable).clear_cache
         end
+      end
+
+      after_transition any => :failed do |export|
+        export.flag_failure_on_offline_export if export.offline?
       end
     end
 
@@ -89,8 +96,16 @@ module BulkImports
       config.relation_has_user_contributions?(relation)
     end
 
+    def completed?
+      finished? || failed?
+    end
+
     def offline?
       offline_export_id.present?
+    end
+
+    def flag_failure_on_offline_export
+      offline_export.update_has_failures!
     end
   end
 end

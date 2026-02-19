@@ -34,7 +34,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     it 'builds the correct SQL' do
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT * FROM `#{table_name}`
-        WHERE startsWith(path, '#{group.traversal_path}')
+        WHERE startsWith(`#{table_name}`.`path`, '#{group.traversal_path}')
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)

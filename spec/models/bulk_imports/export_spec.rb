@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Export, type: :model, feature_category: :importers do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'constants' do
     it 'correctly defines in progress statuses' do
       expect(described_class::IN_PROGRESS_STATUSES).to eq(
@@ -80,6 +82,19 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
         expect(described_class.for_offline_export(nil)).to contain_exactly(direct_transfer_relation_export)
       end
     end
+
+    describe '.for_offline_export_and_relation' do
+      let_it_be(:offline_export) { create(:offline_export) }
+      let_it_be(:export_1) { create(:bulk_import_export, offline_export: offline_export, relation: 'milestones') }
+      let_it_be(:export_2) { create(:bulk_import_export, offline_export: offline_export, relation: 'labels') }
+      let_it_be(:export_3) { create(:bulk_import_export, relation: 'milestones') }
+
+      it 'returns exports for the given offline export and relation' do
+        result = described_class.for_offline_export_and_relation(offline_export, 'milestones')
+
+        expect(result).to contain_exactly(export_1)
+      end
+    end
   end
 
   describe 'state machine transitions', :clean_gitlab_redis_shared_state do
@@ -116,6 +131,19 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
           expect { finish_export }.not_to change {
             Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
           }.from(3)
+        end
+      end
+    end
+
+    describe '#fail_op!' do
+      context 'when export is for offline transfer' do
+        let(:export) { create(:bulk_import_export, :offline) }
+
+        subject(:fail_export) { export.fail_op! }
+
+        it 'marks the offline export as failed' do
+          expect { fail_export }
+            .to change { export.offline_export.has_failures? }.from(false).to(true)
         end
       end
     end
@@ -211,6 +239,23 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       subject(:export) { create(:bulk_import_export) }
 
       it { is_expected.not_to be_offline }
+    end
+  end
+
+  describe '#completed?' do
+    where(:status, :expected_result) do
+      :pending  | false
+      :started  | false
+      :finished | true
+      :failed   | true
+    end
+
+    with_them do
+      subject(:export) { build(:bulk_import_export, status) }
+
+      it 'returns the expected result' do
+        expect(export.completed?).to eq(expected_result)
+      end
     end
   end
 end

@@ -140,7 +140,6 @@
 - './ee/spec/features/profiles/user_visits_public_profile_spec.rb'
 - './ee/spec/features/projects/active_tabs_spec.rb'
 - './ee/spec/features/projects/audit_events_spec.rb'
-- './ee/spec/features/projects/custom_projects_template_spec.rb'
 - './ee/spec/features/projects/environments/environments_spec.rb'
 - './ee/spec/features/projects/feature_flags/feature_flag_issues_spec.rb'
 - './ee/spec/features/projects/feature_flags/user_creates_feature_flag_spec.rb'

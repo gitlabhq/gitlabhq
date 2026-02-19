@@ -20,7 +20,14 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
         top_level_relations.each do |relation|
           expect(BulkImports::RelationExportWorker)
             .to receive(:perform_async)
-            .with(user.id, group.id, group.class.name, relation, false)
+            .with(
+              user.id,
+              group.id,
+              group.class.name,
+              relation,
+              false,
+              { 'offline_export_id' => nil }
+            )
         end
 
         subject.execute
@@ -34,10 +41,38 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
         top_level_relations.each do |relation|
           expect(BulkImports::RelationExportWorker)
             .to receive(:perform_async)
-            .with(user.id, group.id, group.class.name, relation, true)
+            .with(
+              user.id,
+              group.id,
+              group.class.name,
+              relation,
+              true,
+              { 'offline_export_id' => nil }
+            )
         end
 
         subject.execute
+      end
+    end
+
+    context 'when export is from offline transfer' do
+      subject(:service) { described_class.new(portable: group, user: user, offline_export_id: 123) }
+
+      it 'schedules RelationExportWorker with the offline export ID' do
+        top_level_relations.each do |relation|
+          expect(BulkImports::RelationExportWorker)
+            .to receive(:perform_async)
+              .with(
+                user.id,
+                group.id,
+                group.class.name,
+                relation,
+                false,
+                { 'offline_export_id' => 123 }
+              )
+        end
+
+        service.execute
       end
     end
 
@@ -63,8 +98,10 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
           response = service.execute
 
           expect(response.status).to eq(:error)
-          expect(response.message).to eq(Gitlab::ImportExport::Error)
           expect(response.http_status).to eq(:unprocessable_entity)
+          expect(response.message).to include(
+            "User with ID: #{another_user.id} does not have required permissions for Group"
+          )
         end
       end
     end

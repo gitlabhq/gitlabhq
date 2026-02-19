@@ -569,6 +569,8 @@
   - 1
 - - import_offline_configuration_purge
   - 1
+- - import_offline_export
+  - 1
 - - import_reassign_placeholder_user_records
   - 1
 - - import_refresh_import_jid

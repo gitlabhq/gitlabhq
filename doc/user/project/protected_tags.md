@@ -221,7 +221,8 @@ see [Unprotect a tag](#unprotect-a-tag).
 
 Prerequisites:
 
-- You must be in the **Allowed to create** list of roles or users for that tag.
+- Be in the **Allowed to create** list of roles or users for that tag.
+- The Maintainer or Owner role in the project.
 
 To delete a protected tag:
 

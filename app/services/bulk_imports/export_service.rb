@@ -17,16 +17,20 @@ module BulkImports
       validate_user_permissions!
 
       FileTransfer.config_for(portable).portable_relations.each do |relation|
-        # TODO: This should be updated to accept the offline_export_id argument,
-        # but only after the MR that updates the worker signature is deployed.
-        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/576092
-        RelationExportWorker.perform_async(current_user.id, portable.id, portable.class.name, relation, batched)
+        RelationExportWorker.perform_async(
+          current_user.id,
+          portable.id,
+          portable.class.name,
+          relation,
+          batched,
+          { 'offline_export_id' => offline_export_id }
+        )
       end
 
       ServiceResponse.success
     rescue StandardError => e
       ServiceResponse.error(
-        message: e.class,
+        message: e.message,
         http_status: :unprocessable_entity
       )
     end

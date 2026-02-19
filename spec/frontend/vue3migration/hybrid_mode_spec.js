@@ -19,6 +19,7 @@ import ParentUsingScopedSlot from './components/scoped_slot_stubs/parent_using_s
 import ChildWithScopedLabelSlot from './components/scoped_slot_stubs/child_with_scoped_label_slot.vue';
 import ParentWithAsyncDefaultVModel from './components/async_v_model/parent_with_async_default_v_model.vue';
 import ParentWithAsyncCustomVModel from './components/async_v_model/parent_with_async_custom_v_model.vue';
+import ParentWithSlotOrder from './components/parent_with_slot_order.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
   it('correctly renders fallback content', () => {
@@ -430,5 +431,36 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
 
       expect(wrapper.find('[data-testid="output"]').text()).toBe('custom value');
     });
+  });
+
+  /**
+   * When Vue 2 compiler generates code for a component with both named slots and
+   * default slot content, it produces:
+   * 1. Named slots via `scopedSlots` prop (using `_vm._u()`) in template order
+   * 2. Default slot content as array children (third argument to `_c()`)
+   *
+   * In `convertLegacySlots`, the original code processed array children first,
+   * creating a `slots` object with `default` slot, then merged `scopedSlots` using
+   * `extend(slots, scopedSlots)`. This resulted in `default` appearing before named
+   * slots in the object property order.
+   *
+   * Vue 3 compiler creates slots in template order. When iterating over `$scopedSlots`
+   * with `v-for`, the order difference caused snapshot tests to fail because stubs
+   * that render all slots (using `RENDER_ALL_SLOTS_TEMPLATE`) would produce different
+   * DOM order.
+   *
+   * Fix (preserve-slot-order.patch): In `convertLegacySlots`, when both array children
+   * and `scopedSlots` exist, start with `scopedSlots` order and merge array children
+   * slots (default) at the end. This ensures named slots appear before default slot,
+   * matching the common template pattern where named slots are declared first.
+   */
+  it('preserves slot order with named slots before default when iterating $scopedSlots', () => {
+    const wrapper = mount(ParentWithSlotOrder);
+
+    const slots = wrapper.findAll('[data-testid^="slot-"]');
+    const slotOrder = slots.wrappers.map((s) => s.attributes('data-testid'));
+
+    // Named slots (first, last) appear before default, in their template order
+    expect(slotOrder).toEqual(['slot-first', 'slot-last', 'slot-default']);
   });
 });

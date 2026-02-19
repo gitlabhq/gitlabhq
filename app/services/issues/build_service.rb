@@ -7,13 +7,6 @@ module Issues
     def execute(initialize_callbacks: true)
       filter_resolve_discussion_params
 
-      container_param = case container
-                        when Project, Namespaces::ProjectNamespace
-                          { project: container.owner_entity }
-                        else
-                          { namespace: container }
-                        end
-
       @issue = model_klass.new(issue_params.merge(container_param)).tap do |issue|
         set_work_item_type(issue)
         initialize_callbacks!(issue) if initialize_callbacks
@@ -71,6 +64,18 @@ module Issues
     end
 
     private
+
+    def container_param
+      case container
+      when Project, Namespaces::ProjectNamespace
+        {
+          project: container.owner_entity,
+          namespace: container.owner_entity.namespace
+        }
+      else
+        { namespace: container }
+      end
+    end
 
     def set_work_item_type(issue)
       work_item_type = work_item_type_provider.fetch_work_item_type(extract_work_item_type_param)

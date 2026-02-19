@@ -15,6 +15,7 @@ module IssueBuildParameters
     )
 
     issue_params.merge(
+      add_related_issue: allowed_params[:add_related_issue],
       merge_request_to_resolve_discussions_of: allowed_params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: allowed_params[:discussion_to_resolve],
       confidential: !!Gitlab::Utils.to_boolean(issue_params[:confidential]),

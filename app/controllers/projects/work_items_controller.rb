@@ -4,6 +4,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
   include WorkhorseAuthorization
   include WorkItemsCollections
   extend Gitlab::Utils::Override
+  include IssueBuildParameters
 
   EXTENSION_ALLOWLIST = %w[csv].map(&:downcase).freeze
 
@@ -48,6 +49,26 @@ class Projects::WorkItemsController < Projects::ApplicationController
     ::Users::DismissCalloutService.new(
       container: nil, current_user: current_user, params: { feature_name: :work_items_nav_badge }
     ).execute
+  end
+
+  def new
+    service = ::WorkItems::BuildService.new(
+      container: project,
+      current_user: current_user,
+      params: build_params
+    )
+
+    @work_item = service.execute
+    @related_issue = service.related_issue
+    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
+
+    if service.discussion_to_resolve_id.present?
+      @discussion_to_resolve = service.discussions_to_resolve.first
+      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+        .track_resolve_thread_in_issue_action(user: current_user)
+    end
+
+    render :show
   end
 
   def show
