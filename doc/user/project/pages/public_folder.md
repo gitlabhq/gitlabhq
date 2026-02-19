@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to configure the build output folder for the most common static site generators
 title: GitLab Pages public folder
 ---

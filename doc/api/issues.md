@@ -1368,7 +1368,13 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 ## Delete an issue
 
-Only for administrators and project owners.
+{{< history >}}
+
+- Users can delete the issues they authored [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371104) in GitLab 18.10.
+
+{{< /history >}}
+
+Users who have the Planner or Owner role can delete any issue. Other project members can delete the issues they authored.
 
 Deletes a specified issue from a project.
 

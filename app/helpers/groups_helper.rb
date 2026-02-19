@@ -108,7 +108,7 @@ module GroupsHelper
     quantity.to_i > 0
   end
 
-  def group_project_list_sort_by
+  def project_list_sort_by
     @group_projects_sort || @sort || params[:sort] || sort_value_recently_created
   end
 
@@ -130,7 +130,7 @@ module GroupsHelper
   def groups_show_app_data(group)
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      initial_sort: group_project_list_sort_by,
+      initial_sort: sort_value_recently_created,
       full_path: group.full_path,
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
@@ -234,7 +234,7 @@ module GroupsHelper
   def groups_list_with_filtered_search_app_data(endpoint)
     {
       endpoint: endpoint,
-      initial_sort: group_project_list_sort_by,
+      initial_sort: sort_value_recently_created,
       base_path: dashboard_groups_path
     }.to_json
   end

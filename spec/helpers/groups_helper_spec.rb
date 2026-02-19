@@ -514,14 +514,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
       allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
-      allow(helper).to receive(:group_project_list_sort_by).and_return(initial_sort)
     end
 
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.groups_show_app_data(group))).to match(
         {
           'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
-          'initial_sort' => initial_sort,
+          'initial_sort' => 'created_desc',
           'full_path' => group.full_path,
           'new_subgroup_path' => "/groups/new?parent_id=#{group.id}#create-group-pane",
           'new_project_path' => "/projects/new?namespace_id=#{group.id}",

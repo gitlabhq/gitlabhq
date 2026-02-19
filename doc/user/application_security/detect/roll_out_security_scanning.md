@@ -169,7 +169,13 @@ Introduce developers to the tools that provide visibility into security findings
 
 #### Pipeline results
 
-Developers can view security findings directly in pipeline results:
+Developers can view security findings directly in pipeline results.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view pipeline results:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
@@ -181,7 +187,13 @@ For more details, see
 
 #### Merge request security widget
 
-The security widget provides visibility into vulnerabilities detected in merge request pipelines:
+The security widget provides visibility into vulnerabilities detected in merge request pipelines.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view the security widget:
 
 1. Open a merge request.
 1. Review the security widget to see detected vulnerabilities.
@@ -191,7 +203,13 @@ For more details, see [View security scan results in merge requests](security_sc
 
 #### VS Code integration with GitLab Workflow extension
 
-Developers can view security findings directly in their IDE:
+Developers can view security findings directly in their IDE.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view security findings in VS Code:
 
 1. Install the GitLab Workflow extension for VS Code.
 1. Connect the extension to your GitLab instance.
@@ -253,7 +271,11 @@ Use a merge request approval policy to add an extra approval requirement if the 
 severity of vulnerabilities in a merge request exceeds a specific threshold. This allows an extra
 review from a member of the application security team, providing an extra level of scrutiny.
 
-Configure approval policies to require security reviews:
+Prerequisites:
+
+- The Owner role for the group, or a custom role with `manage_security_policy_link` permission.
+
+To configure approval policies to require security reviews:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.

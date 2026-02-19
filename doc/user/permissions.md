@@ -240,7 +240,7 @@ Group permissions for [package registry](packages/_index.md):
 | Create epics                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Update epic details                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete epics <sup>5</sup>                                                           |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Delete epics <sup>5</sup>                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
 
@@ -248,7 +248,7 @@ Group permissions for [package registry](packages/_index.md):
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent epic.
-1. Planner, Reporter, Developer, and Maintainer can only delete the epics that they authored.
+1. Users who don't have the Planner or Owner role can only delete the epics they authored.
 
 Group permissions for [wikis](project/wiki/group.md):
 
@@ -732,7 +732,7 @@ Project permissions for [issues](project/issues/_index.md):
 1. Guest users can close and reopen issues that they authored or are assigned to.
 1. Guest users can archive and reopen issues that they authored or are assigned to.
 1. Guest users can modify the title and description that they authored or are assigned to.
-1. Planner, Reporter, Developer, and Maintainer can only delete the issues that they authored.
+1. Users who don't have the Planner or Owner role can only delete the issues they authored.
 
 Project permissions for [tasks](tasks.md):
 
@@ -746,12 +746,12 @@ Project permissions for [tasks](tasks.md):
 | Convert to another item type                                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Remove from issue                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete tasks <sup>2</sup>                                                        |       |    ✓    |          |           |            |   ✓   |
+| Delete tasks <sup>2</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
 
 1. Guest users can modify the title and description that they authored or are assigned to.
-1. Users who don't have the Planner or Owner role can delete the tasks they authored.
+1. Users who don't have the Planner or Owner role can only delete the tasks they authored.
 
 Project permissions for [OKRs](okrs.md):
 

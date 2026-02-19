@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External agents
 ---
 
@@ -104,13 +104,13 @@ Required steps to enable and use managed agents:
 1. [Enable the agent in a project](#enable-in-a-project).
 1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
 
-### Claude Code Agent 
+### Claude Code Agent
 
 The [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337/) 
 uses GitLab-managed credentials and does not require additional configuration. 
 This agent is available only on GitLab.com.
 
-### Codex Agent 
+### Codex Agent
 
 The [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/) 
 uses GitLab-managed credentials and does not require additional configuration. 

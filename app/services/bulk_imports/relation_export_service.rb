@@ -2,7 +2,8 @@
 
 module BulkImports
   class RelationExportService
-    include Gitlab::ImportExport::CommandLineUtil
+    include Gitlab::Utils::StrongMemoize
+    include ::Import::BulkImports::ExportUploadable
 
     EXISTING_EXPORT_TTL = 3.minutes
 
@@ -12,29 +13,25 @@ module BulkImports
       @portable = portable
       @relation = relation
       @jid = jid
-      @config = FileTransfer.config_for(portable)
       @offline_export_id = offline_export_id
     end
 
     def execute
-      find_or_create_export! do |export|
-        export.remove_existing_upload!
-        export_service.execute
-        ensure_export_file_exists!
-        compress_exported_relation
-        upload_compressed_file(export)
-      end
+      export.remove_existing_upload!
+      export_service.execute
+      ensure_export_file_exists!
+      compress_and_upload_export
+
+      finish_export!
     ensure
       FileUtils.remove_entry(export_path)
     end
 
     private
 
-    attr_reader :user, :portable, :relation, :jid, :config, :offline_export_id
+    attr_reader :user, :portable, :relation, :jid, :offline_export_id
 
-    delegate :export_path, to: :config
-
-    def find_or_create_export!
+    def export
       # TODO: Once `offline_export_id` is actually supported, we'll only want to supply
       # the `user` parameter if `offline_export_id` is absent.
       # Epic link: https://gitlab.com/groups/gitlab-org/-/work_items/8985
@@ -48,34 +45,14 @@ module BulkImports
 
       start_export!(export)
 
-      yield export
-
-      finish_export!(export)
+      export
     end
+    strong_memoize_attr :export
 
-    def export_service
-      @export_service ||= if config.tree_relation?(relation) || config.self_relation?(relation)
-                            TreeExportService.new(portable, export_path, relation, user)
-                          elsif config.file_relation?(relation)
-                            FileExportService.new(portable, export_path, relation, user)
-                          else
-                            raise BulkImports::Error, 'Unsupported export relation'
-                          end
+    def upload
+      ExportUpload.find_or_initialize_by(export_id: export.id) # rubocop: disable CodeReuse/ActiveRecord -- existing violation
     end
-
-    def upload_compressed_file(export)
-      compressed_file = File.join(export_path, "#{export_service.exported_filename}.gz")
-
-      upload = ExportUpload.find_or_initialize_by(export_id: export.id) # rubocop: disable CodeReuse/ActiveRecord
-
-      File.open(compressed_file) { |file| upload.export_file = file }
-
-      upload.save!
-    end
-
-    def compress_exported_relation
-      gzip(dir: export_path, filename: export_service.exported_filename)
-    end
+    strong_memoize_attr :upload
 
     def start_export!(export)
       export.update!(
@@ -90,17 +67,13 @@ module BulkImports
       export.batches.destroy_all if export.batches.any? # rubocop:disable Cop/DestroyAll
     end
 
-    def finish_export!(export)
+    def finish_export!
       export.update!(
         status_event: 'finish',
         batched: false,
         error: nil,
         total_objects_count: export_service.exported_objects_count
       )
-    end
-
-    def exported_filepath
-      File.join(export_path, export_service.exported_filename)
     end
 
     # Create empty file on disk

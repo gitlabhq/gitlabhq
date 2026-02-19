@@ -2,7 +2,7 @@
 stage: none
 group: Tutorials
 description: Tutorial on how to fix errors in a shop application in Python with GitLab Duo.
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Use GitLab Duo to fix errors in a Python shop application'
 ---
 

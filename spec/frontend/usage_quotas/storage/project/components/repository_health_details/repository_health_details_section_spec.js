@@ -1,4 +1,5 @@
 import { GlLoadingIcon, GlButton, GlEmptyState } from '@gitlab/ui';
+import EMPTY_SVG from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -122,7 +123,7 @@ describe('RepositoryHealthDetailsSection', () => {
         expect.objectContaining({
           title: 'Repository Health report was not found',
           description: 'You can generate a new report at any time by clicking the button below.',
-          illustrationName: 'status-nothing-md',
+          svgPath: EMPTY_SVG,
         }),
       );
     });

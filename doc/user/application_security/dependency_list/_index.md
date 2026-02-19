@@ -55,6 +55,10 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 
 {{< /history >}}
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
+
 To view the dependencies of a project or all projects in a group:
 
 1. On the top bar, select **Search or go to** and find your project or group.
@@ -103,6 +107,10 @@ For projects, you can filter by:
 - Component version
 
 To filter by component version, you must filter by exactly one component first.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
 
 To filter the dependency list:
 
@@ -180,6 +188,10 @@ You can export the dependency list in:
 - JSON
 - CSV
 - CycloneDX format (for projects only)
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
 
 To export the dependency list:
 

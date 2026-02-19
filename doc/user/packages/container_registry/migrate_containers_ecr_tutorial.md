@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Migrate container images from Amazon ECR to GitLab'
 description: Tutorial to automate the bulk migration of container images into GitLab from Amazon Elastic Container Registry.
 ---

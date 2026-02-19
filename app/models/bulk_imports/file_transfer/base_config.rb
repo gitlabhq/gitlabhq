@@ -81,7 +81,7 @@ module BulkImports
       # @return TreeExportService if a relation is serializable and is listed in import_export.yml
       # @return FileExportService if a relation is a file (uploads, lfs objects, git repository, etc.)
       def export_service_for(relation)
-        if tree_relation?(relation)
+        if tree_relation?(relation) || self_relation?(relation)
           ::BulkImports::TreeExportService
         elsif file_relation?(relation)
           ::BulkImports::FileExportService

@@ -63,6 +63,8 @@ class IssuePolicy < IssuablePolicy
     end
   end
 
+  rule { is_container_member & is_author }.enable :destroy_issue
+
   rule { group_issue & can?(:read_group) }.policy do
     enable :create_note
     enable :award_emoji
@@ -150,7 +152,7 @@ class IssuePolicy < IssuablePolicy
     enable :admin_issue_relation
   end
 
-  rule { can?(:guest_access) & can?(:read_issue) & is_project_member }.policy do
+  rule { can?(:guest_access) & can?(:read_issue) & is_container_member }.policy do
     enable :admin_issue_link
   end
 

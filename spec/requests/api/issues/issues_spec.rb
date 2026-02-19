@@ -1488,7 +1488,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'DELETE /projects/:id/issues/:issue_iid' do
-    let(:issue_for_deletion) { create(:issue, author: user, assignees: [user], project: project) }
+    let(:issue_for_deletion) { create(:issue, author: author, assignees: [user], project: project) }
 
     it 'rejects a non member from deleting an issue' do
       delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", non_member)
@@ -1496,7 +1496,9 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'rejects a developer from deleting an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", author)
+      developer = create(:user, developer_of: project)
+
+      delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", developer)
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
@@ -1509,6 +1511,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       it_behaves_like '412 response' do
         let(:request) { api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner) }
+      end
+    end
+
+    context 'when the user is also the author' do
+      let(:issue_for_deletion_author) { create(:user) }
+      let(:issue_for_deletion) { create(:issue, author: issue_for_deletion_author, project: project) }
+
+      it 'rejects a non member from deleting an issue' do
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", issue_for_deletion_author)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'allows members to delete their own issues' do
+        project.add_guest(issue_for_deletion_author)
+
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", issue_for_deletion_author)
+
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
 

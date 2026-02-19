@@ -51,7 +51,7 @@ class MergeRequestPolicy < IssuablePolicy
   private
 
   def can_approve?
-    can?(:update_merge_request) && is_project_member?
+    can?(:update_merge_request) && is_container_member?
   end
 end
 

@@ -2,12 +2,11 @@
 
 module BulkImports
   class RelationBatchExportService
-    include Gitlab::ImportExport::CommandLineUtil
+    include ::Import::BulkImports::ExportUploadable
 
     def initialize(user, batch)
       @user = user
       @batch = batch
-      @config = FileTransfer.config_for(portable)
     end
 
     def execute
@@ -17,8 +16,7 @@ module BulkImports
       return if batch_ids.blank?
 
       export_service.export_batch(batch_ids)
-      compress_exported_relation
-      upload_compressed_file
+      compress_and_upload_export
       export.touch
 
       finish_batch!
@@ -28,33 +26,14 @@ module BulkImports
 
     private
 
-    attr_reader :user, :batch, :config
+    attr_reader :user, :batch
 
-    delegate :export_path, to: :config
     delegate :batch_number, :export, to: :batch
     delegate :portable, :relation, to: :export
-    delegate :exported_filename, :exported_objects_count, to: :export_service
+    delegate :exported_objects_count, to: :export_service
 
-    def export_service
-      @export_service ||= config.export_service_for(relation).new(portable, export_path, relation, user)
-    end
-
-    def compress_exported_relation
-      gzip(dir: export_path, filename: exported_filename)
-    end
-
-    def upload_compressed_file
-      File.open(compressed_filename) { |file| batch_upload.export_file = file }
-
-      batch_upload.save!
-    end
-
-    def batch_upload
-      @batch_upload ||= ::BulkImports::ExportUpload.find_or_initialize_by(export_id: export.id, batch_id: batch.id) # rubocop: disable CodeReuse/ActiveRecord
-    end
-
-    def compressed_filename
-      File.join(export_path, "#{exported_filename}.gz")
+    def upload
+      @upload ||= ::BulkImports::ExportUpload.find_or_initialize_by(export_id: export.id, batch_id: batch.id) # rubocop: disable CodeReuse/ActiveRecord -- existing violation
     end
 
     def relation_batch_ids
@@ -80,10 +59,6 @@ module BulkImports
 
     def finish_batch!
       batch.update!(status_event: 'finish', objects_count: exported_objects_count, error: nil)
-    end
-
-    def exported_filepath
-      File.join(export_path, exported_filename)
     end
   end
 end

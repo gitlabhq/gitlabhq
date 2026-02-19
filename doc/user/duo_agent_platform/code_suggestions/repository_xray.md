@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Repository X-Ray gives Code Suggestions more insight into your project's codebase and dependencies.
 title: Repository X-Ray
 ---
