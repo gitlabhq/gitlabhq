@@ -34,12 +34,21 @@ module Gitlab
         21 => 'Int16',
         23 => 'Int64',
         25 => 'String',
+        700 => 'Float32',
+        701 => 'Float64',
         869 => 'String', # ip address type
+        1000 => 'Array(Bool)',
+        1005 => 'Array(Int16)',
+        1007 => 'Array(Int64)',
+        1009 => 'Array(String)',
+        1015 => 'Array(String)',
         1016 => 'Array(Int64)',
+        1021 => 'Array(Float32)',
+        1022 => 'Array(Float64)',
         1043 => 'String',
         1082 => 'Date32',
-        1184 => "DateTime64(6, 'UTC')",
         1114 => "DateTime64(6, 'UTC')",
+        1184 => "DateTime64(6, 'UTC')",
         3802 => "String" # JSONB
       }.freeze
 

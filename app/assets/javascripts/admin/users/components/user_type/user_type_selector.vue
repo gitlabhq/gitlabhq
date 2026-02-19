@@ -15,6 +15,7 @@ export const USER_TYPE_ADMIN = { value: 'admin', text: s__('AdminUsers|Administr
 // This component is rendered inside an HTML form, so it doesn't submit any data directly. It only sets up the input
 // values so that when the form is submitted, the values selected in this component are submitted as well.
 export default {
+  name: 'UserTypeSelector',
   components: {
     GlFormRadioGroup,
     GlFormRadio,

@@ -20852,7 +20852,8 @@ CREATE TABLE group_wiki_repository_states (
     verification_checksum bytea,
     verification_failure text,
     group_id bigint,
-    CONSTRAINT check_14d288436d CHECK ((char_length(verification_failure) <= 255))
+    CONSTRAINT check_14d288436d CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_f3475eb85e CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE group_wiki_repository_states_id_seq

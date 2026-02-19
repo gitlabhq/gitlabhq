@@ -4,6 +4,7 @@ import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.
 import AccessSummary from './access_summary.vue';
 
 export default {
+  name: 'RegularAccessSummary',
   components: { AccessSummary, GlSprintf, HelpPageLink },
 };
 </script>

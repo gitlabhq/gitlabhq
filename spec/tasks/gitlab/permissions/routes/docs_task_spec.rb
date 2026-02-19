@@ -160,9 +160,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
         | Action | Access | Method | Path |
         | ------ | ------ | ------ | ---- |
         | Create | Group | `PUT` | `/path/to/upload_package_route` |
-        |   | Instance | `PUT` | `/path/to/upload_package_route` |
+        | Create | Instance | `PUT` | `/path/to/upload_package_route` |
         | Read | Project | `GET` | `/path/to/download_package_route` |
-        |   |   | `DELETE` | `/path/to/delete_package_route` |
+        | Read | Project | `DELETE` | `/path/to/delete_package_route` |
       MARKDOWN
     end
 
@@ -172,8 +172,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
     #    1. Action, alphabetically
     #    1. Boundary (see `BOUNDARY_SORT_ORDER`)
     #    2. Request method (see `REQUEST_METHOD_SORT_ORDER`)
-    # 4. Action and Access columns are blank when their values are equal to that
-    #    of the previous row
     it 'returns the expected markdown' do
       expect(task.allowed_endpoints).to eq(expected_markdown)
     end

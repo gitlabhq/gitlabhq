@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import AccessSummary from './access_summary.vue';
 
 export default {
+  name: 'AdminAccessSummary',
   components: { AccessSummary, GlIcon },
   i18n: {
     fullAccess: s__('AdminUsers|Full read and write access.'),

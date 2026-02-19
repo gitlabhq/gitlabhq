@@ -10,7 +10,7 @@ module Tasks
 
           def initialize
             @routes = build_route_structs(::API::API.endpoints.flat_map(&:routes))
-            @doc_path = Rails.root.join('doc/development/permissions/granular_pat_rest_api_endpoints.md')
+            @doc_path = Rails.root.join('doc/auth/tokens/fine_grained_access_tokens.md')
             @template_path =
               Rails.root.join('tooling/authz/permissions/docs/templates/granular_pat_rest_api_endpoints.md.erb')
           end
@@ -150,11 +150,9 @@ module Tasks
               group_routes_by_action(resource_routes).each do |action, action_routes|
                 action_column = action
 
-                group_routes_by_boundary(action_routes).each_with_index do |(boundary, boundary_routes), boundary_index|
-                  action_column = ' ' if boundary_index > 0
-
-                  sort_routes_by_request_method(boundary_routes).each_with_index do |r, route_pos|
-                    base_columns = route_pos > 0 ? [' ', ' '] : [action_column, boundary.to_s.humanize]
+                group_routes_by_boundary(action_routes).each do |(boundary, boundary_routes)|
+                  sort_routes_by_request_method(boundary_routes).each do |r|
+                    base_columns = [action_column, boundary.to_s.humanize]
                     table_body << build_route_row(base_columns, r.route)
                   end
                 end

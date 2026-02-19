@@ -38,7 +38,10 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
 
       # https://gitlab.com/gitlab-org/gitlab/-/issues/560712
       'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
-      'audit_events_streaming_http_instance_namespace_filters.namespace_id'
+      'audit_events_streaming_http_instance_namespace_filters.namespace_id',
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/589639
+      'group_wiki_repository_states.group_wiki_repository_id'
     ]
 
     keys

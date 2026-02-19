@@ -1310,6 +1310,12 @@ msgid_plural "%{project} has %{number} stars"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{reason_text} Manage all notifications: %{manage_notifications_url} | Help: %{help_url}"
+msgstr ""
+
+msgid "%{reason_text} Unsubscribe from this thread: %{unsubscribe_url} | Manage all notifications: %{manage_notifications_url} | Help: %{help_url}"
+msgstr ""
+
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
 msgstr ""
 
@@ -80898,6 +80904,9 @@ msgid "You're receiving this email because of your account on %{host}. %{manage_
 msgstr ""
 
 msgid "You're receiving this email because of your account on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}"
+msgstr ""
+
+msgid "You're receiving this email because of your account on %{host}. Manage label subscriptions: %{manage_label_subscriptions_url} | Help: %{help_url}"
 msgstr ""
 
 msgid "You're receiving this email because of your activity on %{host}."

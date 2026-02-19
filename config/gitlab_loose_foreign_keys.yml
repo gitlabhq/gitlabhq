@@ -570,8 +570,8 @@ notes:
   - table: vulnerabilities
     column: noteable_id
     conditions:
-    - column: noteable_type
-      value: Vulnerability
+      - column: noteable_type
+        value: Vulnerability
     on_delete: async_delete
 notification_settings:
   - table: users
