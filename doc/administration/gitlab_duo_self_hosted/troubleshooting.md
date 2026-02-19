@@ -3,7 +3,7 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshooting tips for deploying GitLab Duo Self-Hosted
-title: Troubleshooting GitLab Duo Self-Hosted
+title: Troubleshooting self-hosted models
 ---
 
 {{< details >}}
@@ -24,8 +24,6 @@ title: Troubleshooting GitLab Duo Self-Hosted
 - Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
-
-When working with GitLab Duo Self-Hosted, you might encounter issues.
 
 Before you begin troubleshooting, you should:
 
@@ -490,9 +488,9 @@ You might also see the following in the logs of your IDE's [GitLab Language Serv
 ```
 
 This means that the language server could not communicate with the `direct_access` endpoint
-to generate a JWT token due to the certificate issue. 
+to generate a JWT token due to the certificate issue.
 
-If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set 
+If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set
 `DUO_AGENT_PLATFORM_SERVICE_SECURE` to `false`, see [Install the AI gateway](../../install/install_ai_gateway.md#start-a-container-from-the-image).
 
 > [!warning]
@@ -505,11 +503,6 @@ If you are using a self-hosted model without TLS, to resolve this issue, ensure 
 >
 > If the models selected for these features are routed to different backends (for example, one cloud-hosted model and one self-hosted model without TLS), one of them might fail.
 > For more information, see [issue 590454](https://gitlab.com/gitlab-org/gitlab/-/issues/590454).
-
-## Troubleshooting GitLab Duo Chat
-
-To troubleshoot GitLab Duo Chat when using GitLab Duo Self-Hosted,
-see [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
 
 ## Related topics
 

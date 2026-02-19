@@ -15,7 +15,7 @@ module Gitlab
       'not_in' => ->(actual, expected) { Array(expected).exclude?(actual) }
     }.freeze
 
-    def self.evaluate(filter, data, depth = 0)
+    def self.evaluate(filter, data, depth = 1)
       return true if filter.blank?
       raise ArgumentError, 'Max depth exceeded' if depth > MAX_DEPTH
 

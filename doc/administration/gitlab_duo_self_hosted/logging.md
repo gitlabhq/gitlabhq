@@ -27,7 +27,7 @@ title: Enable logging for self-hosted models
 {{< /history >}}
 
 Monitor your self-hosted model performance and debug issues more effectively with detailed
-logging for GitLab Duo Self-Hosted.
+logging.
 
 ## Enable logging
 

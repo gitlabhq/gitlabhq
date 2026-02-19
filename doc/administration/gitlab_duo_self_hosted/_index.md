@@ -206,4 +206,4 @@ If you have an offline license, you can set up a fully private infrastructure:
 - [Troubleshooting](troubleshooting.md)
 - [Install the GitLab AI Gateway](../../install/install_ai_gateway.md)
 - [Supported models](supported_models_and_hardware_requirements.md)
-- [GitLab Duo Self-Hosted supported platforms](supported_llm_serving_platforms.md)
+- [Supported platforms](supported_llm_serving_platforms.md)

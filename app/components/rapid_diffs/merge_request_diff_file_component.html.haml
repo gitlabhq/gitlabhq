@@ -1,5 +1,5 @@
-= render RapidDiffs::DiffFileComponent.new(diff_file:, parallel_view: @parallel_view, plain_view: @plain_view) do |c|
-  - c.with_header do
+= render RapidDiffs::DiffFileComponent.new(diff_file:, parallel_view: @parallel_view, plain_view: @plain_view) do |file_component_instance|
+  - file_component_instance.with_header do
     - if diff_file.conflict
       .rd-diff-file-conflict-message
         = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do |alert_instance|

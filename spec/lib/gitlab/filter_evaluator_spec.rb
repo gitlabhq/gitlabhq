@@ -158,12 +158,10 @@ RSpec.describe Gitlab::FilterEvaluator, feature_category: :duo_agent_platform do
 
     context 'when max depth is exceeded' do
       let(:filter) do
-        deep_filter = { 'type' => 'group', 'rules' => [] }
-        current = deep_filter
-        (described_class::MAX_DEPTH + 1).times do
-          next_group = { 'type' => 'group', 'rules' => [] }
-          current['rules'] = [next_group]
-          current = next_group
+        innermost = { 'field' => 'object_attributes.status', 'operator' => 'eq', 'value' => 'success' }
+
+        (described_class::MAX_DEPTH + 1).times.reduce(innermost) do |inner, _|
+          { 'type' => 'group', 'rules' => [inner] }
         end
       end
 

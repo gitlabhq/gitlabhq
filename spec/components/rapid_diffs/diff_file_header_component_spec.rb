@@ -363,11 +363,26 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     end
   end
 
+  describe 'before_file_menu slot' do
+    it 'renders content before the options menu' do
+      result = render_component do |c|
+        c.with_before_file_menu { '<div class="custom-menu">Custom Menu</div>'.html_safe }
+      end
+
+      expect(result.css('.custom-menu').text).to eq('Custom Menu')
+
+      custom_menu_position = result.to_html.index('custom-menu')
+      options_menu_position = result.to_html.index('rd-diff-file-options-menu')
+
+      expect(custom_menu_position).to be < options_menu_position
+    end
+  end
+
   def create_instance(**args)
     described_class.new(diff_file:, **args)
   end
 
-  def render_component(**args)
-    render_inline(create_instance(**args))
+  def render_component(**args, &block)
+    render_inline(create_instance(**args), &block)
   end
 end

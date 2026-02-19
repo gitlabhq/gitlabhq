@@ -5,6 +5,8 @@ module RapidDiffs
     include ButtonHelper
     include DiffHelper
 
+    renders_one :before_file_menu
+
     def initialize(diff_file:, additional_menu_items: [], environment: nil)
       @diff_file = diff_file
       @additional_menu_items = additional_menu_items

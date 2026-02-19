@@ -25,7 +25,7 @@ title: Models and hardware requirements
 
 {{< /history >}}
 
-GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Meta, Anthropic, and OpenAI through your preferred serving platform.
+You can integrate with industry-leading models from Mistral, Meta, Anthropic, and OpenAI through your preferred serving platform.
 
 You can use:
 

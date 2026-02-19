@@ -1,4 +1,5 @@
 @import 'mixins_and_variables_and_functions';
+@import 'components/rapid_diffs/merge_request_diff_file_component';
 
 @supports (content-visibility: hidden) {
   // cache diffs rendering state for better performance when switching tabs

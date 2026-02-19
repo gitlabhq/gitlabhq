@@ -15,32 +15,28 @@ title: Manage users and seats
 
 ## Billable users
 
-Billable users are users with access to a namespace in a subscription, such as direct [members](../user/project/members/_index.md#membership-types),
-inherited members, and invited users, with one of the following roles:
+Billable users are users who occupy seats in a subscription and count toward the number of seats purchased in your subscription.
 
-- Guest (billable on Premium, non-billable on Free and Ultimate)
-- Planner
-- Reporter
-- Developer
-- Maintainer
-- Owner
+The following users count as billable:
 
-On GitLab Self-Managed on the Premium tier, users who don't have access to a namespace are also billable.
+- Users with access to a namespace or top-level group in a subscription, such as direct [members](../user/project/members/_index.md#membership-types), inherited members, and invited users with one of these roles:
 
-Billable users count toward the number of seats purchased in your subscription.
-The number of billable users changes when you block, deactivate, or add
-users to your instance or group during your current subscription period.
+  - Guest (billable on Premium, non-billable on Free and Ultimate)
+  - Planner
+  - Reporter
+  - Developer
+  - Maintainer
+  - Owner
+  - [Custom role](../user/custom_roles/_index.md), except custom Guest member role with only the `read_code` permission
+
+- [Auditor users](../administration/auditor_users.md)
+- Administrators (on GitLab Self-Managed on the Premium and Ultimate tiers)
+- Users without namespace access (on GitLab Self-Managed on the Premium tier)
+
+The number of billable users changes when you block, deactivate, or add users to your instance or group during your current subscription period.
 If a user is in multiple groups or projects that belong to the same top-level group that holds the subscription, they are counted only once.
 
 Seat usage is reviewed [quarterly or annually](quarterly_reconciliation.md).
-On GitLab Self-Managed, the amount of **Billable users** is reported once a day in the **Admin** area.
-
-On GitLab.com, subscription features apply only within the top-level group the subscription applies to. If
-a user views or selects a different top-level group (one they have created themselves, for example)
-and that group does not have a paid subscription, the user does not see any of the paid features.
-
-A user can belong to two different top-level groups with different subscriptions.
-In this case, the user sees only the features available to that subscription.
 
 To prevent unexpectedly adding new billable users, which may result in overage fees, you should:
 

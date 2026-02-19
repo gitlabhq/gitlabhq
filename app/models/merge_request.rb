@@ -2699,6 +2699,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def first_diffs_slice(limit, diff_options = {})
+    return compare.first_diffs_slice(limit, diff_options) if compare
+
     diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
     diff.first_diffs_slice(limit, diff_options)
   end

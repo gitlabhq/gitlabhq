@@ -7,10 +7,19 @@ module RapidDiffs
 
     renders_one :header
 
-    def initialize(diff_file:, parallel_view: false, plain_view: false, environment: nil)
+    def initialize(
+      diff_file:,
+      parallel_view: false,
+      plain_view: false,
+      environment: nil,
+      extra_file_data: {},
+      extra_options: {}
+    )
       @diff_file = plain_view ? diff_file : diff_file.rendered || diff_file
       @parallel_view = parallel_view
       @environment = environment
+      @extra_file_data = extra_file_data
+      @extra_options = extra_options
     end
 
     def id
@@ -20,12 +29,13 @@ module RapidDiffs
     def file_data
       project = @diff_file.repository.project
       params = tree_join(@diff_file.content_sha, @diff_file.file_path)
-      {
+      data = {
         viewer: viewer_component.viewer_name,
         diff_lines_path: project_blob_diff_lines_path(project, params),
         old_path: @diff_file.old_path,
         new_path: @diff_file.new_path
       }
+      data.merge(@extra_file_data)
     end
 
     def viewer_component
@@ -70,9 +80,22 @@ module RapidDiffs
 
     def classes
       [
+        'rd-diff-file-component',
         ('rd-diff-file-component-linked' if @diff_file.linked),
-        ('rd-diff-file-component-conflict' if @diff_file.respond_to?(:conflict) && @diff_file.conflict)
-      ]
+        ('rd-diff-file-component-conflict' if @diff_file.respond_to?(:conflict) && @diff_file.conflict),
+        *Array.wrap(@extra_options[:class])
+      ].compact
+    end
+
+    def root_options
+      {
+        id: id,
+        class: classes,
+        data: {
+          testid: 'rd-diff-file',
+          file_data: file_data.to_json
+        }
+      }.deep_merge(@extra_options.except(:class))
     end
   end
 end

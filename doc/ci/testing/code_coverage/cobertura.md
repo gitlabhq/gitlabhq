@@ -162,20 +162,16 @@ test:
 
 ### Java and Kotlin examples
 
-The Maven and Gradle examples convert JaCoCo reports into Cobertura format.
-Alternatively, [issue 227345](https://gitlab.com/gitlab-org/gitlab/-/issues/227345)
-tracks the work to enable [native JaCoCo report support](jacoco.md).
+GitLab 17.6 and later supports JaCoCo format natively.
+For new projects, use [native JaCoCo reports](jacoco.md).
+
+The following examples use the [jacoco2cobertura](https://gitlab.com/haynes/jacoco2cobertura)
+Docker image to convert JaCoCo reports to Cobertura format.
 
 #### Maven example
 
-The following `.gitlab-ci.yml` example for Java or Kotlin uses [Maven](https://maven.apache.org/)
-to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
-generate the coverage artifact.
-You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
-
-GitLab expects the artifact in the Cobertura format, so you have to execute a few
-scripts before uploading it. The `test-jdk11` job tests the code and generates an
-XML artifact. The `coverage-jdk-11` job converts the artifact into a Cobertura report:
+The `test-jdk11` job uses [Maven](https://maven.apache.org/) to generate a JaCoCo XML artifact.
+The `coverage-jdk11` job converts it to Cobertura format:
 
 ```yaml
 test-jdk11:
@@ -188,14 +184,14 @@ test-jdk11:
       - target/site/jacoco/jacoco.xml
 
 coverage-jdk11:
-  # Must be in a stage later than test-jdk11's stage.
-  # The `visualize` stage does not exist by default.
-  # Please define it first, or choose an existing stage like `deploy`.
+  # The `visualize` stage does not exist by default
+  # Define it first, or use an existing stage like `deploy`
   stage: visualize
-  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.9
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.11
   script:
-    # convert report from jacoco to cobertura, using relative project path
-    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > target/site/cobertura.xml
+    # Convert report from JaCoCo to Cobertura, using relative project path
+    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/
+        > target/site/cobertura.xml
   needs: ["test-jdk11"]
   artifacts:
     reports:
@@ -206,34 +202,28 @@ coverage-jdk11:
 
 #### Gradle example
 
-The following `.gitlab-ci.yml` example for Java or Kotlin uses [Gradle](https://gradle.org/)
-to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
-generate the coverage artifact.
-You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
-
-GitLab expects the artifact in the Cobertura format, so you have to execute a few
-scripts before uploading it. The `test-jdk11` job tests the code and generates an
-XML artifact. The `coverage-jdk-11` job converts the artifact into a Cobertura report:
+The `test-jdk11` job uses [Gradle](https://gradle.org/) to generate a JaCoCo XML artifact.
+The `coverage-jdk11` job converts it to Cobertura format:
 
 ```yaml
 test-jdk11:
   stage: test
   image: gradle:6.6.1-jdk11
   script:
-    - 'gradle test jacocoTestReport' # jacoco must be configured to create an xml report
+    - gradle test jacocoTestReport # JaCoCo must be configured to create an XML report
   artifacts:
     paths:
       - build/jacoco/jacoco.xml
 
 coverage-jdk11:
-  # Must be in a stage later than test-jdk11's stage.
-  # The `visualize` stage does not exist by default.
-  # Please define it first, or chose an existing stage like `deploy`.
+  # The `visualize` stage does not exist by default
+  # Define it first, or use an existing stage like `deploy`
   stage: visualize
-  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.11
   script:
-    # convert report from jacoco to cobertura, using relative project path
-    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
+    # Convert report from JaCoCo to Cobertura, using relative project path
+    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/
+        > build/cobertura.xml
   needs: ["test-jdk11"]
   artifacts:
     reports:

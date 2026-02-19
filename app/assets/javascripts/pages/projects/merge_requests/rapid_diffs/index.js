@@ -1,4 +1,4 @@
 import { initMrPage } from '~/pages/projects/merge_requests/page';
-import { createRapidDiffsApp } from '~/rapid_diffs';
+import { createMergeRequestRapidDiffsApp } from '~/rapid_diffs/merge_request_app';
 
-initMrPage(createRapidDiffsApp);
+initMrPage(createMergeRequestRapidDiffsApp);

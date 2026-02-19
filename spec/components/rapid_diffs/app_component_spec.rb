@@ -172,6 +172,24 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(result).to have_text('custom_after_content')
   end
 
+  describe '#parallel_view?' do
+    let(:diff_view) { :parallel }
+
+    it 'returns true when diff_view is parallel' do
+      render_component
+      expect(component.parallel_view?).to be(true)
+    end
+
+    context 'when diff_view is inline' do
+      let(:diff_view) { :inline }
+
+      it 'returns false' do
+        render_component
+        expect(component.parallel_view?).to be(false)
+      end
+    end
+  end
+
   it "renders diffs list" do
     render_component
     expect(page).to have_css('[data-diffs-list]')

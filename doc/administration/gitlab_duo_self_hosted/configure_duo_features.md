@@ -2,8 +2,8 @@
 stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Configure your GitLab instance to use GitLab Duo Self-Hosted.
-title: Configure GitLab to access GitLab Duo Self-Hosted
+description: Learn how to integrate your self-hosted models with your GitLab instance
+title: Configure GitLab to use self-hosted models
 ---
 
 {{< details >}}
@@ -277,7 +277,7 @@ To disable a GitLab Duo feature or sub-feature:
 
 ### Self-host the GitLab documentation
 
-If your GitLab Duo Self-Hosted setup prevents you from accessing the GitLab documentation at
+If your setup prevents you from accessing the GitLab documentation at
 `docs.gitlab.com`, you can self-host the documentation.
 For more information, see [Host the GitLab product documentation](../docs_self_host.md).
 

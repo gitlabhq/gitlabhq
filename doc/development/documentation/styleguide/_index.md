@@ -1920,12 +1920,13 @@ Do not upload videos to the product repositories. [Add a link](#link-to-video) o
 ### Link to video
 
 To link to a video, include a YouTube icon so that readers can scan the page
-for videos before reading. Include the video's publication date after the link, to help identify
+for videos before reading. For the link text, follow the [general guidelines](#text-for-links).
+Include the video's publication date after the link, to help identify
 videos that might be out-of-date.
 
 ```markdown
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Video Title](https://link-to-video).
+For an overview, see [merge requests](https://link-to-video).
 <!-- Video published on YYYY-MM-DD -->
 ```
 

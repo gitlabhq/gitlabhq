@@ -25,6 +25,10 @@ module RapidDiffs
       diffs_slice || []
     end
 
+    def parallel_view?
+      diff_view == :parallel
+    end
+
     protected
 
     def app_data
@@ -62,10 +66,6 @@ module RapidDiffs
 
     def show_whitespace?
       !helpers.hide_whitespace?
-    end
-
-    def parallel_view?
-      diff_view == :parallel
     end
 
     def empty_state_visible?

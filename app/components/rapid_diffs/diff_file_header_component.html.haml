@@ -1,16 +1,3 @@
--# TODO: add file size
--# TODO: add comment button
--# TODO: add viewed toggle
--# TODO: add raw\rendered toggle
--# TODO: add file actions:
--#  * view file
--#  * view replaced file (for image diffs)
--#  * view on environment
--#  * edit
--#  * open in WebIDE
--#  * toggle file comments
--#  * submodule compare
-
 .rd-diff-file-header-sticky
   %header.rd-diff-file-header{ data: { testid: 'rd-diff-file-header' }, aria: { label: root_label } }
     .rd-diff-file-toggle<
@@ -72,6 +59,7 @@
           - else
             %span.rd-stats-added +#{@diff_file.added_lines}
             %span.rd-stats-removed −#{@diff_file.removed_lines}
+      = before_file_menu
       - unless menu_items.empty?
         .rd-diff-file-options-menu
           %div{ data: { options_menu: true } }

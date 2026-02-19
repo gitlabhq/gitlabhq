@@ -3,7 +3,7 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Supported LLM Serving Platforms.
-title: GitLab Duo Self-Hosted supported platforms
+title: Supported platforms for self-hosted models
 ---
 
 {{< details >}}
@@ -162,8 +162,8 @@ To access AWS Bedrock models:
    permissions:
 
    - Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow
-     [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
-     the GitLab Duo Self-Hosted UI.
+   [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
+   the GitLab UI.
 
    - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
 
@@ -201,13 +201,10 @@ For more information, see:
 
 ## Use multiple models and platforms
 
-With GitLab Duo Self-Hosted, you can use multiple models and platforms in the same GitLab instance.
+You can use multiple models and platforms in the same GitLab instance.
 
 For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock or self-hosted models served with vLLM.
 
 This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
 
-For more information on setting up different providers, see:
-
-- [Configure GitLab Duo Self-Hosted features](configure_duo_features.md)
-- [Supported GitLab Duo Self-Hosted models and hardware requirements](supported_models_and_hardware_requirements.md)
+For more information on setting up different providers, see [Supported models and hardware requirements](supported_models_and_hardware_requirements.md).

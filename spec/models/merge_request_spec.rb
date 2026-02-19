@@ -8080,6 +8080,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'returns limited diffs' do
       expect(subject.count).to eq(limit)
     end
+
+    context 'when compare is present' do
+      let(:compare) { instance_double(Compare) }
+
+      before do
+        merge_request.compare = compare
+      end
+
+      it 'returns diffs from compare' do
+        expect(compare)
+          .to receive(:first_diffs_slice)
+          .with(limit, {})
+          .and_return(['compare diff'])
+
+        expect(merge_request.first_diffs_slice(limit)).to eq(['compare diff'])
+      end
+    end
   end
 
   describe '#squash_on_merge?' do

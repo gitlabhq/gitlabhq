@@ -487,8 +487,6 @@ export default {
                   <gl-button
                     :disabled="disableSubmitButton"
                     data-testid="start-review-button"
-                    category="secondary"
-                    variant="confirm"
                     @click="handleSaveDraft()"
                   >
                     {{ $options.i18n.startReview }}
