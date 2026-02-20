@@ -94,6 +94,36 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
       end
     end
 
+    context 'when duplicate signatures are inserted concurrently' do
+      it 'skips duplicates without raising an error' do
+        expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
+          repository,
+          git_tags.map(&:object_name),
+          timeout: Gitlab::GitalyClient.fast_timeout
+        ).and_return({
+          gpg_git_tag[:id] => [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ],
+          ssh_git_tag[:id] => ['', '']
+        })
+
+        # Simulate tag signatures being created after cache miss and after validation
+        allow(Repositories::Tags::GpgSignature).to receive(:bulk_insert!).and_wrap_original do |m, items, **kw|
+          create(:tag_gpg_signature, project: project, object_name: gpg_git_tag[:id], gpg_key: create(:gpg_key))
+          m.call(items, validate: false, **kw)
+        end
+        allow(Repositories::Tags::SshSignature).to receive(:bulk_insert!).and_wrap_original do |m, items, **kw|
+          create(:tag_ssh_signature, project: project, object_name: ssh_git_tag[:id])
+          m.call(items, validate: false, **kw)
+        end
+
+        expect { batch_verification_status }.not_to raise_error
+        expect(Repositories::Tags::GpgSignature.count).to eq(1)
+        expect(Repositories::Tags::SshSignature.count).to eq(1)
+      end
+    end
+
     context 'when the rpc call times out' do
       before do
         # Stub a timeout when calling the first time
@@ -141,12 +171,12 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
         expect(Repositories::Tags::GpgSignature).to receive(:bulk_insert!).with(an_array_matching([
           an_object_having_attributes(object_name: gpg_git_tag[:id]),
           an_object_having_attributes(object_name: gpg_git_tag2[:id])
-        ])).and_call_original
+        ]), skip_duplicates: true).and_call_original
 
         expect(Repositories::Tags::SshSignature).to receive(:bulk_insert!).with(an_array_matching([
           an_object_having_attributes(object_name: ssh_git_tag[:id]),
           an_object_having_attributes(object_name: ssh_git_tag2[:id])
-        ])).and_call_original
+        ]), skip_duplicates: true).and_call_original
 
         expect do
           batch_verification_status
@@ -177,11 +207,11 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
           })
           expect(Repositories::Tags::GpgSignature).to receive(:bulk_insert!).with(an_array_matching([
             an_object_having_attributes(object_name: gpg_git_tag2[:id])
-          ])).and_call_original
+          ]), skip_duplicates: true).and_call_original
 
           expect(Repositories::Tags::SshSignature).to receive(:bulk_insert!).with(an_array_matching([
             an_object_having_attributes(object_name: ssh_git_tag2[:id])
-          ])).and_call_original
+          ]), skip_duplicates: true).and_call_original
 
           expect do
             batch_verification_status

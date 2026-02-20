@@ -9,11 +9,16 @@ RSpec.describe 'Group integrations', :js, feature_category: :integrations do
     stub_feature_flags(remove_monitor_metrics: false)
   end
 
-  it_behaves_like 'integration settings form' do
-    let(:integrations) { Integration.find_or_initialize_all_non_project_specific(Integration.for_group(group)) }
+  context 'when integration settings form', quarantine: {
+    type: :waiting_on,
+    issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/work_items/4245'
+  } do
+    it_behaves_like 'integration settings form' do
+      let(:integrations) { Integration.find_or_initialize_all_non_project_specific(Integration.for_group(group)) }
 
-    def navigate_to_integration(integration)
-      visit_group_integration(integration.title)
+      def navigate_to_integration(integration)
+        visit_group_integration(integration.title)
+      end
     end
   end
 

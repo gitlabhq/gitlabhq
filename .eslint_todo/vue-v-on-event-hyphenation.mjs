@@ -268,7 +268,6 @@ export default {
     'ee/app/assets/javascripts/operations/components/dashboard/dashboard.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/registries/show.vue',
     'ee/app/assets/javascripts/projects/merge_requests/blocking_mr_input_root.vue',
-    'ee/app/assets/javascripts/protected_environments/edit_protected_environments_list.vue',
     'ee/app/assets/javascripts/repository/components/header_area/blob_button_group.vue',
     'ee/app/assets/javascripts/repository/components/header_area/blob_overflow_menu.vue',
     'ee/app/assets/javascripts/requirements/components/requirements_root.vue',

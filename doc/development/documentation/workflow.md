@@ -90,6 +90,16 @@ otherwise agreed with the product manager and technical writer:
   documentation is merged as close as possible to the code merge.
 - If the feature has a feature flag, [follow the policy for documenting feature-flagged issues](feature_flags.md).
 
+#### AI-generated documentation
+
+All AI-generated documentation must be reviewed by a Technical Writer. Before you submit
+your documentation for review, run a [Vale](testing/vale.md) test on the documentation file
+to identify and fix style issues.
+
+Generative AI tools are not a replacement for subject matter expertise. Authors are responsible
+for ensuring the technical accuracy of any content they create. For more information
+about ouput quality, see [Communicating when using generative AI tools](https://handbook.gitlab.com/handbook/communication/#communicating-when-using-generative-ai-tools).
+
 #### Review
 
 Before merging, documentation changes committed by the developer must be

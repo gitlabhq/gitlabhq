@@ -7,6 +7,7 @@ module Types
 
       abilities(
         :read_group,
+        :change_group,
         :create_projects,
         :create_custom_emoji,
         :remove_group,

@@ -129,18 +129,22 @@ module Tasks
               undefined_permission: <<~MSG.chomp,
                 The following API routes reference permissions without definition files.
                 Create definition files using: bundle exec rails generate authz:permission <NAME>
+                #{implementation_guide_link(anchor: 'step-3-create-permission-definition-files')}
               MSG
               missing_boundary: <<~MSG.chomp,
                 The following API routes define permissions but are missing a boundary_type.
                 Add boundary_type to the route_setting :authorization.
+                #{implementation_guide_link(anchor: 'step-5-add-authorization-decorators-to-api-endpoints')}
               MSG
               missing_assignable: <<~MSG.chomp,
                 The following API routes reference permissions not included in any assignable permission.
                 Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
+                #{implementation_guide_link(anchor: 'step-4-assign-permissions-to-assignable-permissions')}
               MSG
               boundary_mismatch: <<~MSG.chomp
                 The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
                 Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
+                #{implementation_guide_link(anchor: 'determining-boundaries')}
               MSG
             }
           end

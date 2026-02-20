@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Instance integrations', :js, feature_category: :integrations do
+RSpec.describe 'Instance integrations', :js, feature_category: :integrations, quarantine: {
+  type: :waiting_on,
+  issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/work_items/4245'
+} do
   include_context 'instance integration activation'
 
   before do

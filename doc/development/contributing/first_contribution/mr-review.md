@@ -59,7 +59,8 @@ GitLab will triage your merge request automatically.
 However, you can type `@gitlab-bot ready` in a comment to alert reviewers that your MR is ready.
 
 - When the label is set to `workflow::ready for review`, [a developer reviews the MR](../../code_review.md).
-- After you have resolved all of their feedback and the MR has been approved, the MR is ready for merge.
+- After you have resolved all of their feedback and the MR has been approved, [a maintainer merges the MR](../../code_review.md#the-responsibility-of-the-maintainer).
+  As a community contributor, you cannot merge your own MR. A GitLab maintainer will handle the merge.
 
 If you need help at any point in the process, type `@gitlab-bot help` in a comment or initiate a
 [mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/) on [Discord](https://discord.com/invite/gitlab).

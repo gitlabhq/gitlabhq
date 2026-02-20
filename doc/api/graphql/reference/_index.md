@@ -37404,6 +37404,7 @@ Returns [`String`](#string).
 | <a id="grouppermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
 | <a id="grouppermissionsarchivegroup"></a>`archiveGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_group` on this resource. |
 | <a id="grouppermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this group. |
+| <a id="grouppermissionschangegroup"></a>`changeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_group` on this resource. |
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
 | <a id="grouppermissionsgeneratedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |
@@ -38248,6 +38249,7 @@ Represents an iteration object.
 | <a id="iterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="iterationdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="iterationduedate"></a>`dueDate` | [`Time`](#time) | Timestamp of the iteration due date. |
+| <a id="iterationgroup"></a>`group` | [`Group!`](#group) | Group of the iteration. |
 | <a id="iterationid"></a>`id` | [`ID!`](#id) | ID of the iteration. |
 | <a id="iterationiid"></a>`iid` | [`String!`](#string) | Internal ID of the iteration. |
 | <a id="iterationiterationcadence"></a>`iterationCadence` | [`IterationCadence!`](#iterationcadence) | Cadence of the iteration. |

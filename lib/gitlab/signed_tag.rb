@@ -43,7 +43,7 @@ module Gitlab
         tags.each { |st| st.signature_data(timeout: timeout) }
         new_cached_signatures = tags.filter_map(&:build_cached_signature)
         new_cached_signatures.group_by(&:class).flat_map do |klass, tag_signatures|
-          klass.bulk_insert!(tag_signatures)
+          klass.bulk_insert!(tag_signatures, skip_duplicates: true)
         end
         new_cached_signatures
       rescue GRPC::DeadlineExceeded

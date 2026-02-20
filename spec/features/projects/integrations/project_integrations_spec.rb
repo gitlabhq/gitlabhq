@@ -5,11 +5,16 @@ require 'spec_helper'
 RSpec.describe 'Project integrations', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
-  it_behaves_like 'integration settings form' do
-    let(:integrations) { project.find_or_initialize_integrations }
+  context 'when integration settings form', quarantine: {
+    type: :waiting_on,
+    issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/work_items/4245'
+  } do
+    it_behaves_like 'integration settings form' do
+      let(:integrations) { project.find_or_initialize_integrations }
 
-    def navigate_to_integration(integration)
-      visit_project_integration(integration.title)
+      def navigate_to_integration(integration)
+        visit_project_integration(integration.title)
+      end
     end
   end
 

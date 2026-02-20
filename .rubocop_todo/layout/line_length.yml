@@ -1348,7 +1348,6 @@ Layout/LineLength:
     - 'ee/spec/requests/api/graphql/instance_security_dashboard_spec.rb'
     - 'ee/spec/requests/api/graphql/iteration_spec.rb'
     - 'ee/spec/requests/api/graphql/iterations/cadences_spec.rb'
-    - 'ee/spec/requests/api/graphql/iterations/iterations_spec.rb'
     - 'ee/spec/requests/api/graphql/milestone_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/alert_management/http_integration/update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/analytics/devops_adoption/enabled_namespaces/bulk_enable_spec.rb'

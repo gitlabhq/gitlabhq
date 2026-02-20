@@ -200,22 +200,31 @@ module Tasks
         def error_messages
           {
             definition: "The following permissions are missing a definition file." \
-              "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files.",
+              "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files." \
+              "\n#{implementation_guide_link(anchor: 'step-3-create-permission-definition-files')}",
             excluded: "The following permissions have a definition file." \
               "\nRemove them from config/authz/permissions/definitions_todo.txt.",
-            schema: "The following permissions failed schema validation.",
-            action: "The following permissions contain a disallowed action.",
+            schema: "The following permissions failed schema validation." \
+              "\n#{implementation_guide_link(anchor: 'complete-the-yaml-definition')}",
+            action: "The following permissions contain a disallowed action." \
+              "\n#{conventions_link(anchor: 'disallowed-actions')}",
             name: "The following permissions have invalid names." \
-              "\nPermission name must be in the format action_resource[_subresource].",
-            file: "The following permission definitions do not exist at the expected path.",
+              "\nPermission name must be in the format action_resource[_subresource]." \
+              "\n#{conventions_link(anchor: 'naming-permissions')}",
+            file: "The following permission definitions do not exist at the expected path." \
+              "\n#{implementation_guide_link(anchor: 'permission-naming-and-validation')}",
             unknown_permission: "The following permissions have a definition file but are not found in " \
-              "declarative policy.\nRemove the definition files for the unknown permissions.",
+              "declarative policy.\nRemove the definition files for the unknown permissions." \
+              "\n#{conventions_link(anchor: 'permission-definition-file')}",
             missing_resource_metadata:
-              "The following permission resource directories are missing a _metadata.yml file.",
-            resource_metadata_schema: "The following resource metadata files failed schema validation.",
+              "The following permission resource directories are missing a _metadata.yml file." \
+              "\n#{implementation_guide_link(anchor: 'create-resource-metadata-for-raw-permissions')}",
+            resource_metadata_schema: "The following resource metadata files failed schema validation." \
+              "\n#{implementation_guide_link(anchor: 'create-resource-metadata-for-raw-permissions')}",
             empty_resource_directory:
               "The following resource directories contain only a _metadata.yml file with no permission definitions." \
-              "\nEither add permission definitions or remove the directory."
+              "\nEither add permission definitions or remove the directory." \
+              "\n#{implementation_guide_link(anchor: 'permission-naming-and-validation')}"
           }
         end
 
