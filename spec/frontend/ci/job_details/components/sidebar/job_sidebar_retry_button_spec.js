@@ -139,8 +139,8 @@ describe('Job Sidebar Retry Button', () => {
     it('is rendered with correct text and attributes', async () => {
       createWrapper({ props: { isManualJob: true } });
       await waitForPromises();
-      expect(findActionsDropdown().attributes('aria-label')).toBe('Retry job with modified value');
-      expect(findManualRunEditButton().text()).toBe('Retry job with modified value');
+      expect(findActionsDropdown().attributes('aria-label')).toBe('Retry job with modified values');
+      expect(findManualRunEditButton().text()).toBe('Retry job with modified values');
     });
 
     it.each`

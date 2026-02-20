@@ -23,7 +23,7 @@ between your coding environment and GitLab.
 GitLab offers the following IDE extensions with access to GitLab Duo and other GitLab features used
 to manage projects and applications.
 
-| Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br>Flow | Agents      | Other<br>GitLab features |
+| Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br> Flow | Agents      | Other<br> GitLab features |
 |-----------------------------------------------------------------|----------------------|------------------|------------------------------|-------------|--------------------------|
 | [GitLab for VS Code](visual_studio_code/_index.md)              | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< yes >}}              |
 | [GitLab Duo plugin for JetBrains IDEs](jetbrains_ide/_index.md) | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< no >}}               |
@@ -32,7 +32,7 @@ to manage projects and applications.
 
 If you prefer a command-line interface, try the following:
 
-| Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br>Flow | Agents      | Other<br>GitLab features |
+| Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br> Flow | Agents      | Other<br> GitLab features |
 |-----------------------------------------------------------------|----------------------|------------------|------------------------------|-------------|--------------------------|
 | [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}}(Classic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< yes >}}           |
 | [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}}<br>(Agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< no >}}            |

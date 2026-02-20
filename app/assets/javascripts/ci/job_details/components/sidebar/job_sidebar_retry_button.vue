@@ -19,7 +19,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 export default {
   name: 'JobSidebarRetryButton',
   i18n: {
-    retryWithModifiedValue: s__('Job|Retry job with modified value'),
+    retryWithModifiedValue: s__('Job|Retry job with modified values'),
   },
   components: {
     GlButtonGroup,

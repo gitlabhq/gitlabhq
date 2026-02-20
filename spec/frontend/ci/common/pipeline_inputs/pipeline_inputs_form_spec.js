@@ -32,6 +32,8 @@ jest.useFakeTimers();
 const defaultProps = {
   queryRef: 'main',
   emptySelectionText: 'Select inputs to create a new pipeline.',
+  descriptionText:
+    'Specify the input values to use in this pipeline. Any inputs left unselected will use their default values.',
 };
 const defaultProvide = {
   projectPath: '/root/project',
@@ -141,19 +143,21 @@ describe('PipelineInputsForm', () => {
   describe('mounted', () => {
     beforeEach(() => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
-      createComponent();
     });
 
     it('sets the initial props for crud component', () => {
+      createComponent();
+
       expect(findCrudComponent().exists()).toBe(true);
       expect(findCrudComponent().props()).toMatchObject({
-        description:
-          'Specify the input values to use in this pipeline. Any inputs left unselected will use their default values.',
+        description: defaultProps.descriptionText,
         title: 'Inputs',
       });
     });
 
     it('renders a loading state', () => {
+      createComponent();
+
       expect(findSkeletonLoader().exists()).toBe(true);
     });
   });

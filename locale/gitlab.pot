@@ -39357,7 +39357,7 @@ msgstr ""
 msgid "Job|Retry"
 msgstr ""
 
-msgid "Job|Retry job with modified value"
+msgid "Job|Retry job with modified values"
 msgstr ""
 
 msgid "Job|Run again"
@@ -51018,6 +51018,9 @@ msgstr ""
 msgid "Pipeline|Running"
 msgstr ""
 
+msgid "Pipeline|Select inputs for this run."
+msgstr ""
+
 msgid "Pipeline|Select inputs to create a new pipeline."
 msgstr ""
 
@@ -51028,6 +51031,9 @@ msgid "Pipeline|Source"
 msgstr ""
 
 msgid "Pipeline|Source|Security Policy"
+msgstr ""
+
+msgid "Pipeline|Specify the input values to use in this job. Any inputs left unselected will use their default values."
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The variables specified in the configuration file as well as %{linkStart}CI/CD settings%{linkEnd} are used by default."

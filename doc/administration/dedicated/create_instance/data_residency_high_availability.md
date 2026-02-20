@@ -81,32 +81,36 @@ Consider these factors when selecting regions:
 
 You can deploy your instance in the following AWS regions:
 
-| Region                    | Code             | ClickHouse Cloud |
-| ------------------------- | ---------------- | ---------------- |
-| Africa (Cape Town)        | `af-south-1`     | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Hyderabad)  | `ap-south-2`     | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Jakarta)    | `ap-southeast-3` | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Mumbai)     | `ap-south-1`     | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Osaka)      | `ap-northeast-3` | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Seoul)      | `ap-northeast-2` | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Singapore)  | `ap-southeast-1` | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Sydney)     | `ap-southeast-2` | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Tokyo)      | `ap-northeast-1` | {{< icon name="check-circle-filled" >}} Yes |
-| Canada (Central)          | `ca-central-1`   | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (Frankfurt)        | `eu-central-1`   | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (Ireland)          | `eu-west-1`      | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (London)           | `eu-west-2`      | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (Milan)            | `eu-south-1`     | {{< icon name="dash-circle" >}} No |
-| Europe (Paris)            | `eu-west-3`      | {{< icon name="dash-circle" >}} No |
-| Europe (Stockholm)        | `eu-north-1`     | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (Zurich)           | `eu-central-2`   | {{< icon name="dash-circle" >}} No |
-| Israel (Tel Aviv)         | `il-central-1`   | {{< icon name="dash-circle" >}} No |
-| Middle East (Bahrain)     | `me-south-1`     | {{< icon name="dash-circle" >}} No |
-| South America (São Paulo) | `sa-east-1`      | {{< icon name="check-circle-filled" >}} Yes |
-| US East (N. Virginia)     | `us-east-1`      | {{< icon name="check-circle-filled" >}} Yes |
-| US East (Ohio)            | `us-east-2`      | {{< icon name="check-circle-filled" >}} Yes |
-| US West (N. California)   | `us-west-1`      | {{< icon name="dash-circle" >}} No |
-| US West (Oregon)          | `us-west-2`      | {{< icon name="check-circle-filled" >}} Yes |
+| Region                    | Code             | ClickHouse Cloud | AWS SES |
+| ------------------------- | ---------------- | ---------------- | ------- |
+| Africa (Cape Town)        | `af-south-1`     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Hyderabad)  | `ap-south-2`     | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Jakarta)    | `ap-southeast-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Melbourne)  | `ap-southeast-4` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
+| Asia Pacific (Mumbai)     | `ap-south-1`     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Osaka)      | `ap-northeast-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Seoul)      | `ap-northeast-2` | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Singapore)  | `ap-southeast-1` | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Sydney)     | `ap-southeast-2` | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Tokyo)      | `ap-northeast-1` | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Hong Kong)  | `ap-east-1`      | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
+| Canada (Central)          | `ca-central-1`   | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Frankfurt)        | `eu-central-1`   | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Ireland)          | `eu-west-1`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (London)           | `eu-west-2`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Milan)            | `eu-south-1`     | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Spain)            | `eu-south-2`     | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
+| Europe (Paris)            | `eu-west-3`      | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Stockholm)        | `eu-north-1`     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Zurich)           | `eu-central-2`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Israel (Tel Aviv)         | `il-central-1`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Middle East (UAE)         | `me-central-1`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Middle East (Bahrain)     | `me-south-1`     | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| South America (São Paulo) | `sa-east-1`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| US East (N. Virginia)     | `us-east-1`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| US East (Ohio)            | `us-east-2`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| US West (N. California)   | `us-west-1`      | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| US West (Oregon)          | `us-west-2`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 
 If you need a region that is not listed, contact your account representative or [GitLab Support](https://about.gitlab.com/support/).
 
@@ -127,18 +131,12 @@ Limitations:
 - [Bring your own key (BYOK)](../encryption.md#bring-your-own-key-byok) is not supported
 - No SLAs apply (RTO and RPO are best effort)
 
-### Secondary regions
+#### AWS SES
 
-The following regions are available only as secondary regions and don't support AWS Simple Email Service (SES),
-which is used to send emails:
+AWS Simple Email Service (SES) is used to send emails from your GitLab instance.
+Check the primary regions table for SES availability in each region.
 
-| Region                   | Code |
-| ------------------------ | ---- |
-| Asia Pacific (Hong Kong) | `ap-east-1` |
-| Asia Pacific (Melbourne) | `ap-southeast-4` |
-| Europe (Spain)           | `eu-south-2` |
-
-To maintain email functionality, set up an [external SMTP mail service](../configure_instance/users_notifications.md#smtp-email-service).
+For regions without AWS SES support, you must set up an [external SMTP mail service](../configure_instance/users_notifications.md#smtp-email-service).
 
 ## Related topics
 

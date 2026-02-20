@@ -192,7 +192,12 @@ export default {
         preselect-all-inputs
         :saved-inputs="job.inputs"
         :initial-inputs="job.inputsSpec"
-        :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"
+        :empty-selection-text="s__('Pipeline|Select inputs for this run.')"
+        :description-text="
+          s__(
+            'Pipeline|Specify the input values to use in this job. Any inputs left unselected will use their default values.',
+          )
+        "
         @update-inputs="handleInputsUpdated"
       />
     </template>

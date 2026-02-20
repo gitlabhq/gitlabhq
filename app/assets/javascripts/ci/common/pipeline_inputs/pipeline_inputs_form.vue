@@ -2,7 +2,7 @@
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { isEqual, debounce } from 'lodash';
 import EMPTY_VARIABLES_SVG from '@gitlab/svgs/dist/illustrations/variables-sm.svg';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
@@ -63,6 +63,13 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    descriptionText: {
+      type: String,
+      required: false,
+      default: __(
+        'Specify the input values to use in this pipeline. Any inputs left unselected will use their default values.',
+      ),
     },
   },
   emits: ['update-inputs', 'update-inputs-metadata'],
@@ -410,14 +417,7 @@ export default {
 </script>
 
 <template>
-  <crud-component
-    :description="
-      __(
-        'Specify the input values to use in this pipeline. Any inputs left unselected will use their default values.',
-      )
-    "
-    :title="s__('Pipelines|Inputs')"
-  >
+  <crud-component :description="descriptionText" :title="s__('Pipelines|Inputs')">
     <template v-if="hasInputs" #actions>
       <gl-collapsible-listbox
         v-model="selectedInputNames"

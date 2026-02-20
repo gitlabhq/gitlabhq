@@ -1083,6 +1083,8 @@
   - 1
 - - security_policies_skip_pipelines_audit
   - 1
+- - security_project_tracked_contexts_create_or_update_default_tracked_context
+  - 1
 - - security_project_tracked_contexts_update_default_context
   - 1
 - - security_recreate_orchestration_configuration

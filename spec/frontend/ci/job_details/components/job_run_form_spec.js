@@ -301,6 +301,14 @@ describe('Manual Variables Form', () => {
         expect(findVariablesForm().props('isExpanded')).toBe(false);
       });
 
+      it('passes correct props to form component', () => {
+        expect(findInputsForm().props()).toMatchObject({
+          emptySelectionText: 'Select inputs for this run.',
+          descriptionText:
+            'Specify the input values to use in this job. Any inputs left unselected will use their default values.',
+        });
+      });
+
       it('passes saved inputs to form', () => {
         expect(findInputsForm().props('savedInputs')).toEqual([
           { name: 'environment', value: 'staging' },

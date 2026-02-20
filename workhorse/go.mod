@@ -28,7 +28,7 @@ require (
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.4
-	github.com/sony/gobreaker/v2 v2.1.0
+	github.com/sony/gobreaker/v2 v2.4.0
 	github.com/stretchr/testify v1.11.1
 	gitlab.com/gitlab-org/gitaly/v18 v18.9.0-rc4
 	gitlab.com/gitlab-org/labkit v1.36.0
@@ -65,7 +65,6 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.31.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.55.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/alicebob/miniredis/v2 v2.35.0 // indirect
 	github.com/aws/aws-sdk-go v1.55.8 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.4 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.14 // indirect

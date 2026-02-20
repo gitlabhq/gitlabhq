@@ -73,8 +73,17 @@ This Docker image automatically includes network protection by using
 This image is configured to allow access to the GitLab instance only.
 However, you can change the Docker image and specify your own instead.
 Your own image can be useful for complex projects that require specific dependencies or tools.
-If you do this agents will be able to reach out to any domain
-that is reachable from the GitLab Runner associated with the session.
+If you do this, and you still want to use the `srt` environment, make sure to add it to your
+Docker image with your preferred version:
+
+```Docker
+# Install srt sandboxing with cache clearing and verification
+ARG SANDBOX_RUNTIME_VERSION=0.0.20
+RUN npm cache clean --force && \
+    npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
+    test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
+    srt --version
+```
 
 To change the default Docker image, add the following to your `agent-config.yml` file:
 
