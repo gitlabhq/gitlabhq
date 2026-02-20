@@ -67,7 +67,8 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations,
 
   describe '.activated_for_instance?' do
     let!(:integration) do
-      create(:beyond_identity_integration, instance: instance, active: active, group: group, organization: organization)
+      create(:beyond_identity_integration, project: nil, instance: instance, active: active, group: group,
+        organization: organization)
     end
 
     let_it_be(:group_for_integration) { create(:group) }

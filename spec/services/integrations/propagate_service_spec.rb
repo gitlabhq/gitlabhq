@@ -80,15 +80,14 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
       end
 
       context 'and the integration is instance specific' do
-        let(:group_integration) { create(:beyond_identity_integration, :group, group: group, instance: false) }
+        let(:group_integration) { create(:beyond_identity_integration, :group, group: group) }
 
         context 'with a subgroup with integration' do
           let(:subgroup) { create(:group, parent: group) }
           let(:subgroup_integration) do
             create(:beyond_identity_integration, :group,
               group: subgroup,
-              inherit_from_id: group_integration.id,
-              instance: false)
+              inherit_from_id: group_integration.id)
           end
 
           it 'calls to PropagateIntegrationInheritDescendantWorker' do

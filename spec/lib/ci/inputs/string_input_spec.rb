@@ -187,6 +187,58 @@ RSpec.describe Ci::Inputs::StringInput, feature_category: :pipeline_composition 
           expect(input.errors).to be_empty
         end
       end
+
+      context 'when regex is used with rules' do
+        let(:input) do
+          described_class.new(
+            name: :version,
+            spec: {
+              regex: '^(\d{2}\.[1-9]\d?)|(##.##)$',
+              rules: [
+                { if: '$[[ inputs.type ]] == "release"', default: '##.##' }
+              ]
+            }
+          )
+        end
+
+        context 'when no rule matches' do
+          it 'does not validate the nil default against regex' do
+            input.validate_param!(nil, { type: 'other' })
+
+            expect(input.errors).to be_empty
+          end
+        end
+
+        context 'when a rule matches' do
+          it 'validates the rules default against regex' do
+            input.validate_param!(nil, { type: 'release' })
+
+            expect(input.errors).to be_empty
+          end
+        end
+
+        context 'when rule default does not match regex' do
+          let(:input) do
+            described_class.new(
+              name: :version,
+              spec: {
+                regex: '^[0-9]+$',
+                rules: [
+                  { if: '$[[ inputs.type ]] == "release"', default: 'invalid' }
+                ]
+              }
+            )
+          end
+
+          it 'adds an error' do
+            input.validate_param!(nil, { type: 'release' })
+
+            expect(input.errors).to contain_exactly(
+              '`version` input: default value does not match required RegEx pattern'
+            )
+          end
+        end
+      end
     end
 
     context 'when input has rules' do

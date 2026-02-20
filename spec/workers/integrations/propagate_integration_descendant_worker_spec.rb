@@ -7,13 +7,13 @@ RSpec.describe Integrations::PropagateIntegrationDescendantWorker, feature_categ
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:other_subgroup) { create(:group, parent: group) }
 
-  let!(:group_integration) { create(:beyond_identity_integration, instance: false, group: group) }
+  let!(:group_integration) { create(:beyond_identity_integration, project: nil, group: group) }
   let!(:subgroup_integration) do
-    create(:beyond_identity_integration, instance: false, group: subgroup, inherit_from_id: group_integration.id)
+    create(:beyond_identity_integration, project: nil, group: subgroup, inherit_from_id: group_integration.id)
   end
 
   let!(:custom_settings_subgroup_integration) do
-    create(:beyond_identity_integration, instance: false, group: other_subgroup, inherit_from_id: nil)
+    create(:beyond_identity_integration, project: nil, group: other_subgroup, inherit_from_id: nil)
   end
 
   it_behaves_like 'an idempotent worker' do

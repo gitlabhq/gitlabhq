@@ -47,7 +47,7 @@ To create a saved view:
 
 The view is created and added above the filter bar, to the right of your other saved views (if there are any).
 
-## Add a view to your list
+## Add a saved view to your list
 
 Add views that you or your teammates created to your saved view list.
 Only you can see which views you have added to your list.
@@ -62,7 +62,9 @@ To add a saved view to your list:
 1. Above the filter bar, select **Add view** > **Browse views**.
 1. From the list, select a view you want to add.
 
-## Edit a view
+## Edit a saved view
+
+Edit a saved view to change its name, description, or visibility.
 
 Prerequisites:
 
@@ -74,10 +76,7 @@ To edit a saved view:
 1. Select **Plan** > **Work items**.
 1. Select the view you want to edit.
 1. Select the view again, then select **Edit**.
-1. Edit the title, description, or the visibility of the view:
-   - Private: only you can see and edit it.
-   - Shared: anyone with access to this project or group can add the view, and those with the Planner,
-     Reporter, Developer, Maintainer, or Owner roles can edit it.
+1. Edit the title, description, or visibility of the view.
 1. Select **Save**.
 
 ## Copy a link to a saved view

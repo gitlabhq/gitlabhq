@@ -990,7 +990,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         end
 
         let!(:group_integration) do
-          create(:beyond_identity_integration, group: group, instance: false, active: false)
+          create(:beyond_identity_integration, project: nil, group: group, active: false)
         end
 
         it 'creates a service from the group-level integration' do

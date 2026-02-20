@@ -289,14 +289,13 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
           create(
             :beyond_identity_integration,
             project: project,
-            instance: false,
             active: true,
             inherit_from_id: instance_specific_integration.id
           )
         end
 
         let!(:group_instance_specific_integration) do
-          create(:beyond_identity_integration, group: target, instance: false, active: false)
+          create(:beyond_identity_integration, project: nil, group: target, active: false)
         end
 
         it 'creates an integration inheriting from the default' do

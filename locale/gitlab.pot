@@ -63339,6 +63339,12 @@ msgstr ""
 msgid "SecurityOrchestration|without exceptions"
 msgstr ""
 
+msgid "SecurityOrchestration|without group exceptions"
+msgstr ""
+
+msgid "SecurityOrchestration|without project exceptions"
+msgstr ""
+
 msgid "SecurityPolicies|Invalid or empty policy"
 msgstr ""
 

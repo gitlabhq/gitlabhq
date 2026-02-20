@@ -715,6 +715,16 @@ Grants the ability to create and read user support pins.
 | Create | User | `POST` | `/user/support_pin` |
 | Read | User | `GET` | `/user/support_pin` |
 
+### Monitoring resources
+
+#### Sidekiq Job
+
+Grants the ability to drop Sidekiq jobs.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Drop | Instance | `DELETE` | `/admin/sidekiq/queues/:queue_name` |
+
 ### Note resources
 
 #### Vulnerability Note

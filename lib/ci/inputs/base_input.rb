@@ -36,7 +36,8 @@ module Ci
         error('required value has not been provided') if required? && param.nil?
         return if errors.present?
 
-        run_validations(resolved_default(all_params), all_params, default: true) unless required?
+        default_value = resolved_default(all_params)
+        run_validations(default_value, all_params, default: true) unless required? || default_value.nil?
 
         run_validations(param, all_params) unless param.nil?
       end

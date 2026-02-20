@@ -112,6 +112,20 @@ RSpec.describe CommitSignatures::X509CommitSignature, feature_category: :source_
       end
     end
 
+    context 'when committer email differs in case from certificate email' do
+      let(:x509_certificate) { create(:x509_certificate, email: matching_email.upcase) }
+      let(:user) { create(:user, email: matching_email.downcase) }
+
+      before do
+        allow(project).to receive(:commit).with(commit_sha).and_return(commit)
+        allow(commit).to receive_messages(committer_email: matching_email.downcase, committer: user)
+      end
+
+      it 'returns verified (case-insensitive match)' do
+        expect(signature.verification_status).to eq('verified')
+      end
+    end
+
     context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
       before do
         stub_feature_flags(check_for_mailmapped_commit_emails: false)

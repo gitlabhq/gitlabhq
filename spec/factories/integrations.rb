@@ -304,9 +304,9 @@ FactoryBot.define do
   end
 
   factory :beyond_identity_integration, class: 'Integrations::BeyondIdentity' do
+    project
     type { 'Integrations::BeyondIdentity' }
     active { true }
-    instance { true }
     token { 'api-token' }
   end
 

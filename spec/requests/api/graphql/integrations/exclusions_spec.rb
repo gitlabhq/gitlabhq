@@ -24,11 +24,11 @@ RSpec.describe 'Querying for integration exclusions', feature_category: :integra
   context 'when the user is authorized' do
     let!(:instance_integration)  { create(:beyond_identity_integration, :instance) }
     let!(:integration_exclusion) do
-      create(:beyond_identity_integration, active: false, instance: false, project: project2, inherit_from_id: nil)
+      create(:beyond_identity_integration, active: false, project: project2, inherit_from_id: nil)
     end
 
     let!(:propagated_integration) do
-      create(:beyond_identity_integration, active: false, instance: false, project: project,
+      create(:beyond_identity_integration, active: false, project: project,
         inherit_from_id: instance_integration.id)
     end
 

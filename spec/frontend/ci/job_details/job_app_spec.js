@@ -490,6 +490,14 @@ describe('Job App', () => {
 
         expect(findSidebar().exists()).toBe(true);
       });
+
+      it('renders sidebar for job retrial', async () => {
+        await setupAndMount();
+        findSidebar().vm.$emit('update-variables');
+        await nextTick();
+
+        expect(findSidebar().exists()).toBe(true);
+      });
     });
   });
 

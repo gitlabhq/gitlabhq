@@ -22,7 +22,7 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
 
     context 'when there is an exclusion for the project exists' do
       let!(:exclusion) do
-        create(:beyond_identity_integration, active: false, project: project, instance: false, inherit_from_id: nil)
+        create(:beyond_identity_integration, active: false, project: project, inherit_from_id: nil)
       end
 
       it 'deletes the exclusion' do
@@ -32,7 +32,7 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
 
       context 'and there is an exclusion for a group' do
         let!(:group_exclusion) do
-          create(:beyond_identity_integration, active: false, group: other_project.root_namespace, instance: false,
+          create(:beyond_identity_integration, active: false, project: nil, group: other_project.root_namespace,
             inherit_from_id: nil)
         end
 
@@ -47,12 +47,12 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
 
         context 'and exclusions to be destroyed are inherited' do
           let!(:inherited_project_exclusion) do
-            create(:beyond_identity_integration, active: false, project: other_project, instance: false,
+            create(:beyond_identity_integration, active: false, project: other_project,
               inherit_from_id: group_exclusion.id)
           end
 
           let!(:inherited_group_exclusion) do
-            create(:beyond_identity_integration, active: false, group: other_project.group, instance: false,
+            create(:beyond_identity_integration, active: false, project: nil, group: other_project.group,
               inherit_from_id: group_exclusion.id)
           end
 
@@ -76,7 +76,7 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
 
         context 'and there is an exclusion for a group' do
           let!(:group_exclusion) do
-            create(:beyond_identity_integration, active: false, group: other_project.root_namespace, instance: false,
+            create(:beyond_identity_integration, active: false, project: nil, group: other_project.root_namespace,
               inherit_from_id: nil)
           end
 
@@ -93,12 +93,12 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
 
           context 'and exclusions to be deleted are inherited' do
             let!(:inherited_project_exclusion) do
-              create(:beyond_identity_integration, active: false, project: other_project, instance: false,
+              create(:beyond_identity_integration, active: false, project: other_project,
                 inherit_from_id: group_exclusion.id)
             end
 
             let!(:inherited_group_exclusion) do
-              create(:beyond_identity_integration, active: false, group: other_project.group, instance: false,
+              create(:beyond_identity_integration, active: false, project: nil, group: other_project.group,
                 inherit_from_id: group_exclusion.id)
             end
 

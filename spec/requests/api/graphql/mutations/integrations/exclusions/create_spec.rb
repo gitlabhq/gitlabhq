@@ -62,8 +62,7 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
     context 'when integrations exist for the projects' do
       let!(:instance_exclusion) { create(:beyond_identity_integration, :instance) }
       let!(:existing_exclusion) do
-        create(:beyond_identity_integration, project: project2, active: false, inherit_from_id: instance_exclusion.id,
-          instance: false)
+        create(:beyond_identity_integration, project: project2, active: false, inherit_from_id: instance_exclusion.id)
       end
 
       let(:project_ids) { [project, project2].map { |p| p.to_global_id.to_s } }

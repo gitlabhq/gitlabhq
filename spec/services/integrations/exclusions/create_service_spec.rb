@@ -78,7 +78,6 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
           :beyond_identity_integration,
           active: true,
           project: other_project,
-          instance: false,
           inherit_from_id: instance_level_integration.id
         )
       end
@@ -87,8 +86,8 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
         create(
           :beyond_identity_integration,
           active: true,
+          project: nil,
           group: other_group,
-          instance: false,
           inherit_from_id: instance_level_integration.id
         )
       end
@@ -98,8 +97,8 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
         create(
           :beyond_identity_integration,
           active: false,
+          project: nil,
           group: previously_excluded_group,
-          instance: false,
           inherit_from_id: nil
         )
       end
@@ -150,7 +149,7 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
 
     context 'when there are ancestor exclusions' do
       let!(:ancestor_exclusion) do
-        create(:beyond_identity_integration, active: false, instance: false, inherit_from_id: nil,
+        create(:beyond_identity_integration, active: false, project: nil, inherit_from_id: nil,
           group: project.root_namespace)
       end
 

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
     shared_examples_for 'exclusion from the check' do
       context 'when the project is excluded from the check' do
         let!(:integration_exclusion) do
-          create(:beyond_identity_integration, active: false, project: project, inherit_from_id: nil, instance: false)
+          create(:beyond_identity_integration, active: false, project: project, inherit_from_id: nil)
         end
 
         it 'does not raise an error' do

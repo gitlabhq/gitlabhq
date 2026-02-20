@@ -81,15 +81,27 @@ Use the **Projects** list to view:
 - The projects you work with or own
 - Inactive projects, including archived projects and projects pending deletion
 
-### View all projects on an instance
+### Explore all projects on an instance
+
+View all projects on your GitLab instance. Filter the
+list by active,
+inactive, and trending projects:
+
+- Active projects are projects with recent activity
+or ongoing development. 
+- Inactive projects are projects that are archived or
+scheduled for deletion.
+- Trending projects are public projects that are considered popular
+based on the amount of comments they received in the previous 30 days.
+
+If you are not authenticated,
+the list shows public projects only.
 
 To view the projects on your GitLab instance:
 
 1. On the top bar, select **Search or go to**.
 1. Select **Explore**.
 1. Optional. Select a tab to filter which projects are displayed.
-
-If you are not authenticated, the list shows public projects only.
 
 ### View projects you work with
 

@@ -222,10 +222,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-gl-resize-observer="updateScroll"
-    :class="{ 'with-job-sidebar-expanded': isSidebarOpen && !showJobForm }"
-  >
+  <div v-gl-resize-observer="updateScroll" :class="{ 'with-job-sidebar-expanded': isSidebarOpen }">
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">
@@ -359,7 +356,6 @@ export default {
         <!-- EO Body Section -->
 
         <sidebar
-          v-if="!showJobForm"
           :class="{
             'right-sidebar-expanded': isSidebarOpen,
             'right-sidebar-collapsed': !isSidebarOpen,

@@ -174,7 +174,6 @@ change_seat_control
 change_share_with_group_lock
 change_visibility_level
 clone_work_item
-configure_secret_detection_validity_checks
 create_admin_role
 create_alert_management_alert
 create_approvers
@@ -737,7 +736,6 @@ update_requirement
 update_runner
 update_runners_registration_token
 update_saved_replies
-update_secret_detection_validity_checks_status
 update_security_orchestration_policy_project
 update_sentry_issue
 update_snippet

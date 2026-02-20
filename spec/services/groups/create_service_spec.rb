@@ -323,7 +323,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       let(:extra_params) { { parent_id: group.id } }
       let_it_be(:group) { create(:group, organization: organization) { |g| g.add_owner(user) } }
       let_it_be(:group_integration) do
-        create(:beyond_identity_integration, group: group, instance: false, active: false)
+        create(:beyond_identity_integration, project: nil, group: group, active: false)
       end
 
       it 'creates a service from the group-level integration' do

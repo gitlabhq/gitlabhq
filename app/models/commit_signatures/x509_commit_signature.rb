@@ -26,7 +26,9 @@ module CommitSignatures
     private
 
     def emails_for_verification
-      verified_committer_emails & x509_certificate.all_emails
+      cert_emails = x509_certificate.all_emails.map(&:downcase)
+
+      verified_committer_emails.map(&:downcase) & cert_emails
     end
 
     def verified_committer_emails

@@ -381,15 +381,15 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             let_it_be(:group_instance_specific_integration) do
               create(
                 :beyond_identity_integration,
+                project: nil,
                 group: group,
-                instance: false,
                 active: true,
                 inherit_from_id: instance_specific_integration.id
               )
             end
 
             let_it_be(:parent_group_instance_specific_integration) do
-              create(:beyond_identity_integration, group: new_parent_group, instance: false, active: false)
+              create(:beyond_identity_integration, project: nil, group: new_parent_group, active: false)
             end
 
             it 'replaces inherited integrations', :aggregate_failures do

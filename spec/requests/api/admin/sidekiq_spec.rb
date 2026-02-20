@@ -48,6 +48,14 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
 
           expect(json_response).to eq('completed' => true, 'deleted_jobs' => 2, 'queue_size' => 1)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :drop_sidekiq_job do
+          let(:boundary_object) { :instance }
+          let(:user) { admin }
+          let(:request) do
+            delete api(path, personal_access_token: pat)
+          end
+        end
       end
 
       context 'when no required params are provided' do

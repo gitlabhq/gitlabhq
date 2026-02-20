@@ -31315,6 +31315,29 @@ CREATE SEQUENCE virtual_registries_container_upstreams_id_seq
 
 ALTER SEQUENCE virtual_registries_container_upstreams_id_seq OWNED BY virtual_registries_container_upstreams.id;
 
+CREATE TABLE virtual_registries_packages_maven_cache_remote_entry_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    virtual_registries_packages_maven_cache_remote_entry_iid bigint NOT NULL,
+    group_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_8ac1459228 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_cache_remote_entry_sta_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_cache_remote_entry_sta_id_seq OWNED BY virtual_registries_packages_maven_cache_remote_entry_states.id;
+
 CREATE TABLE virtual_registries_packages_maven_local_upstreams (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -35691,6 +35714,8 @@ ALTER TABLE ONLY virtual_registries_container_registry_upstreams ALTER COLUMN id
 
 ALTER TABLE ONLY virtual_registries_container_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_upstreams_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entry_states ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_cache_remote_entry_sta_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_local_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_local_upstreams_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
@@ -37659,6 +37684,9 @@ ALTER TABLE clusters_kubernetes_namespaces
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE abuse_reports
+    ADD CONSTRAINT check_95e5f0c300 CHECK ((char_length(message) <= 2048)) NOT VALID;
 
 ALTER TABLE security_findings
     ADD CONSTRAINT check_9c3ba4d6f2 CHECK ((project_id IS NOT NULL)) NOT VALID;
@@ -39906,6 +39934,9 @@ ALTER TABLE ONLY virtual_registries_container_registry_upstreams
 
 ALTER TABLE ONLY virtual_registries_container_upstreams
     ADD CONSTRAINT virtual_registries_container_upstreams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entry_states
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_remote_entry_state_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_local_upstreams
     ADD CONSTRAINT virtual_registries_packages_maven_local_upstreams_pkey PRIMARY KEY (id);
@@ -43593,6 +43624,20 @@ CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles
 CREATE INDEX idx_vr_cleanup_policies_on_next_run_at_when_runnable ON virtual_registries_cleanup_policies USING btree (next_run_at) WHERE ((enabled = true) AND (status = ANY (ARRAY[0, 2])));
 
 CREATE INDEX idx_vreg_container_reg_upst_on_group ON virtual_registries_container_registry_upstreams USING btree (group_id);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_failed_verification ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_needs_verification ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (virtual_registries_packages_maven_cache_remote_entry_iid) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX idx_vreg_mvn_cache_remote_entry_states_on_entry_iid ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (virtual_registries_packages_maven_cache_remote_entry_iid);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_on_group_id ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (group_id);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_on_verification_started ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (virtual_registries_packages_maven_cache_remote_entry_iid, verification_started_at) WHERE (verification_state = 1);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_on_verification_state ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (verification_state);
+
+CREATE INDEX idx_vreg_mvn_cache_remote_entry_states_pending_verification ON virtual_registries_packages_maven_cache_remote_entry_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX idx_vreg_pkgs_mvn_local_upstreams_on_name_trigram ON virtual_registries_packages_maven_local_upstreams USING gin (name gin_trgm_ops);
 
@@ -58550,6 +58595,9 @@ ALTER TABLE p_ci_job_annotations
 
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entry_states
+    ADD CONSTRAINT fk_rails_d6b1eddbcf FOREIGN KEY (group_id) REFERENCES namespaces(id);
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_rails_d739f46384_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

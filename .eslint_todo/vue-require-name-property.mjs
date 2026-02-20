@@ -1625,7 +1625,6 @@ export default {
     'ee/app/assets/javascripts/repository/components/lock_file_button.vue',
     'ee/app/assets/javascripts/requirements/components/export_requirements_modal.vue',
     'ee/app/assets/javascripts/requirements/components/import_requirements_modal.vue',
-    'ee/app/assets/javascripts/requirements/components/requirement_form.vue',
     'ee/app/assets/javascripts/requirements/components/requirement_item.vue',
     'ee/app/assets/javascripts/requirements/components/requirement_status_badge.vue',
     'ee/app/assets/javascripts/requirements/components/requirements_empty_state.vue',
