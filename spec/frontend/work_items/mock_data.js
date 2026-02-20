@@ -10641,6 +10641,16 @@ export const singleSavedView = [
   },
 ];
 
+export const sharedSavedView = [
+  {
+    ...singleSavedView[0],
+    isPrivate: false,
+    userPermissions: {
+      ...singleSavedView[0].userPermissions,
+    },
+  },
+];
+
 export const workItemsQueryResponseWithFeatures = {
   data: {
     namespace: {

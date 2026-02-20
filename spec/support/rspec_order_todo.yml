@@ -3200,7 +3200,6 @@
 - './spec/features/work_items/issues/notes_on_issues_spec.rb'
 - './spec/features/work_items/issues/related_issues_spec.rb'
 - './spec/features/work_items/issues/resource_label_events_spec.rb'
-- './spec/features/work_items/issues/service_desk_spec.rb'
 - './spec/features/work_items/issues/todo_spec.rb'
 - './spec/features/work_items/issues/user_comments_on_issue_spec.rb'
 - './spec/features/work_items/issues/user_creates_branch_and_merge_request_spec.rb'

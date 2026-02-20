@@ -1718,7 +1718,12 @@ export default {
         }
       });
     },
-    async confirmViewChanges() {
+    async saveViewChanges() {
+      if (this.savedView?.isPrivate) {
+        await this.updateView();
+        return;
+      }
+
       const title = sprintf(s__('WorkItem|Save changes to %{viewName}?'), {
         viewName: this.savedView?.name,
       });
@@ -1736,36 +1741,39 @@ export default {
       });
 
       if (confirmation) {
-        const mutationKey = 'workItemSavedViewUpdate';
-        try {
-          const { data } = await saveSavedView({
-            isEdit: true,
-            isForm: false,
-            namespacePath: this.rootPageFullPath,
-            id: this.savedView?.id,
-            name: this.savedView?.name,
-            description: this.savedView?.description,
-            isPrivate: this.savedView?.isPrivate,
-            filters: this.apiFilterParams,
-            displaySettings: this.displaySettingsSoT?.namespacePreferences || {},
-            sort: this.sortKey,
-            userPermissions: this.savedView?.userPermissions,
-            subscribed: this.savedView?.subscribed,
-            mutationKey,
-            apolloClient: this.$apollo,
-          });
+        await this.updateView();
+      }
+    },
+    async updateView() {
+      const mutationKey = 'workItemSavedViewUpdate';
+      try {
+        const { data } = await saveSavedView({
+          isEdit: true,
+          isForm: false,
+          namespacePath: this.rootPageFullPath,
+          id: this.savedView?.id,
+          name: this.savedView?.name,
+          description: this.savedView?.description,
+          isPrivate: this.savedView?.isPrivate,
+          filters: this.apiFilterParams,
+          displaySettings: this.displaySettingsSoT?.namespacePreferences || {},
+          sort: this.sortKey,
+          userPermissions: this.savedView?.userPermissions,
+          subscribed: this.savedView?.subscribed,
+          mutationKey,
+          apolloClient: this.$apollo,
+        });
 
-          if (data[mutationKey].errors?.length) {
-            this.error = s__('WorkItem|Something went wrong while saving the view');
-            return;
-          }
-
-          this.$toast.show(s__('WorkItem|View has been saved.'));
-          this.clearLocalSavedViewsConfig();
-        } catch (e) {
-          Sentry.captureException(e);
+        if (data[mutationKey].errors?.length) {
           this.error = s__('WorkItem|Something went wrong while saving the view');
+          return;
         }
+
+        this.$toast.show(s__('WorkItem|View has been saved.'));
+        this.clearLocalSavedViewsConfig();
+      } catch (e) {
+        Sentry.captureException(e);
+        this.error = s__('WorkItem|Something went wrong while saving the view');
       }
     },
     async resetToViewDefaults() {
@@ -2118,7 +2126,7 @@ export default {
                     category="primary"
                     variant="default"
                     data-testid="update-view-button"
-                    @click="confirmViewChanges"
+                    @click="saveViewChanges"
                   >
                     {{ s__('WorkItem|Save changes') }}
                   </gl-button>

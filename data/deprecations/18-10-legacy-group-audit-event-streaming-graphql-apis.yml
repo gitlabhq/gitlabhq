@@ -1,0 +1,41 @@
+- title: 'Legacy group-level audit event streaming destination GraphQL APIs'
+  removal_milestone: '20.0'
+  announcement_milestone: '18.10'
+  breaking_change: true
+  window:
+  reporter: andrew.jung
+  stage: software_supply_chain_security
+  issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/12339
+  impact: low
+  scope: instance
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The following group-level GraphQL APIs for audit event streaming destinations are deprecated and will be removed in GitLab 20.0.
+
+    Deprecated mutations:
+
+    - `externalAuditEventDestinationCreate` — use `groupAuditEventStreamingDestinationsCreate` instead.
+    - `externalAuditEventDestinationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
+    - `externalAuditEventDestinationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+    - `googleCloudLoggingConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+    - `googleCloudLoggingConfigurationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
+    - `googleCloudLoggingConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+    - `auditEventsAmazonS3ConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+    - `auditEventsAmazonS3ConfigurationDelete` — use `groupAuditEventStreamingDestinationsDelete` instead.
+    - `auditEventsAmazonS3ConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+    - `auditEventsStreamingHeadersCreate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingHeadersDestroy` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingHeadersUpdate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingDestinationEventsAdd` — use `auditEventsGroupDestinationEventsAdd` instead.
+    - `auditEventsStreamingDestinationEventsRemove` — use `auditEventsGroupDestinationEventsRemove` instead.
+    - `auditEventsStreamingHttpNamespaceFiltersAdd` — use `auditEventsGroupDestinationNamespaceFilterCreate` instead.
+    - `auditEventsStreamingHttpNamespaceFiltersDelete` — use `auditEventsGroupDestinationNamespaceFilterDelete` instead.
+
+    Deprecated group fields:
+
+    - `Group.externalAuditEventDestinations` — use `Group.externalAuditEventStreamingDestinations` instead.
+    - `Group.googleCloudLoggingConfigurations` — use `Group.externalAuditEventStreamingDestinations` with `gcpLogging` category instead.
+    - `Group.amazonS3Configurations` — use `Group.externalAuditEventStreamingDestinations` with `amazonS3` category instead.
+
+    The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.

@@ -1,5 +1,14 @@
 import { nextTick } from 'vue';
-import { GlForm, GlModal, GlAlert, GlFormRadio, GlIcon, GlLink } from '@gitlab/ui';
+import {
+  GlForm,
+  GlModal,
+  GlAlert,
+  GlFormRadio,
+  GlIcon,
+  GlLink,
+  GlFormCharacterCount,
+  GlFormGroup,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
@@ -117,6 +126,8 @@ describe('WorkItemsNewSavedViewModal', () => {
                        <div class="help"><slot name="help"></slot></div>
                      </div>`,
         }),
+        GlFormCharacterCount,
+        GlFormGroup,
       },
       provide: {
         subscribedSavedViewLimit: 5,
@@ -128,7 +139,9 @@ describe('WorkItemsNewSavedViewModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(GlForm);
   const findTitleInput = () => wrapper.find('#saved-view-title');
+  const findTitleFormGroup = () => wrapper.findByTestId('saved-view-title');
   const findDescriptionInput = () => wrapper.find('#saved-view-description');
+  const findDescriptionFormGroup = () => wrapper.findByTestId('saved-view-description');
   const findVisibilityInputs = () => wrapper.findByTestId('saved-view-visibility');
   const findReadOnlyVisibility = () => wrapper.findByText('Shared');
   const findCreateButton = () => wrapper.findByTestId('create-view-button');
@@ -154,11 +167,6 @@ describe('WorkItemsNewSavedViewModal', () => {
     expect(findModal().props('title')).toBe('New view');
   });
 
-  it('correctly changes the passed title', () => {
-    createComponent();
-    expect(findModal().props('title')).toBe('New view');
-  });
-
   it('autofocuses the title input when the modal is shown', async () => {
     findTitleInput().element.focus = jest.fn();
 
@@ -166,36 +174,6 @@ describe('WorkItemsNewSavedViewModal', () => {
     await waitForPromises();
 
     expect(findTitleInput().element.focus).toHaveBeenCalled();
-  });
-
-  it('disables the submit button if invalid title is provided', async () => {
-    findTitleInput().vm.$emit('input', '');
-
-    findForm().vm.$emit('submit', {
-      preventDefault: jest.fn(),
-    });
-    await waitForPromises();
-
-    expect(findTitleInput().props().state).toBe(false);
-    expect(findCreateButton().props('disabled')).toBe(true);
-  });
-
-  it('enables the submit button if title is entered after invalid title error', async () => {
-    findTitleInput().vm.$emit('input', undefined);
-
-    findForm().vm.$emit('submit', {
-      preventDefault: jest.fn(),
-    });
-    await waitForPromises();
-
-    expect(findTitleInput().props().state).toBe(false);
-    expect(findCreateButton().props('disabled')).toBe(true);
-
-    findTitleInput().vm.$emit('input', 'New view');
-    await nextTick();
-
-    expect(findTitleInput().props().state).toBe(true);
-    expect(findCreateButton().props('disabled')).toBe(false);
   });
 
   it('creates new saved view and hides modal when submitting a form', async () => {
@@ -230,6 +208,120 @@ describe('WorkItemsNewSavedViewModal', () => {
     const unexpectedText = namespace === 'group' ? 'project' : 'group';
     expect(findSharedReadOnlyHelpText().text()).toContain(namespace);
     expect(findSharedReadOnlyHelpText().text()).not.toContain(unexpectedText);
+  });
+
+  describe('form validation', () => {
+    const validTitle = 'Valid title';
+    const invalidTitle = 'This sentence is over 40 characters long.';
+    const validDescription = 'This is a valid description that is less than the character limit.';
+    const invalidDescription = 'a'.repeat(150);
+
+    describe('title validation', () => {
+      it('disables the submit button when title is empty', async () => {
+        findTitleInput().vm.$emit('input', '');
+
+        findForm().vm.$emit('submit', {
+          preventDefault: jest.fn(),
+        });
+        await waitForPromises();
+
+        expect(findTitleInput().props().state).toBe(false);
+        expect(findCreateButton().props('disabled')).toBe(true);
+      });
+
+      it('disables the submit button when title exceeds 40 characters', async () => {
+        findTitleInput().vm.$emit('input', invalidTitle);
+
+        findForm().vm.$emit('submit', {
+          preventDefault: jest.fn(),
+        });
+        await waitForPromises();
+
+        expect(findCreateButton().props('disabled')).toBe(true);
+      });
+
+      it('enables the submit button if title is entered after invalid title error', async () => {
+        findTitleInput().vm.$emit('input', undefined);
+
+        findForm().vm.$emit('submit', {
+          preventDefault: jest.fn(),
+        });
+        await waitForPromises();
+
+        expect(findTitleInput().props().state).toBe(false);
+        expect(findCreateButton().props('disabled')).toBe(true);
+
+        findTitleInput().vm.$emit('input', 'New view');
+        await nextTick();
+
+        expect(findTitleInput().props().state).toBe(true);
+        expect(findCreateButton().props('disabled')).toBe(false);
+      });
+
+      it('displays the character count text when exceeding the character limit', async () => {
+        findTitleInput().vm.$emit('input', invalidTitle);
+        await nextTick();
+
+        const charCount = findTitleFormGroup().findComponent(GlFormCharacterCount);
+        expect(charCount.exists()).toBe(true);
+        expect(charCount.props('value')).toBe(invalidTitle);
+
+        const countText = findTitleFormGroup().find('#title-character-count-text');
+        expect(countText.text()).toContain('over limit');
+      });
+
+      it('does not display the character count text when below the character limit', async () => {
+        findTitleInput().vm.$emit('input', validTitle);
+        await nextTick();
+
+        const charCount = findTitleFormGroup().findComponent(GlFormCharacterCount);
+        expect(charCount.exists()).toBe(true);
+        expect(charCount.props('value')).toBe(validTitle);
+
+        const countText = findTitleFormGroup().find('#title-character-count-text');
+        expect(countText.text()).not.toContain('over limit');
+      });
+    });
+
+    describe('description validation', () => {
+      it('disables the submit button when description exceeds 140 characters', async () => {
+        findTitleInput().vm.$emit('input', validTitle);
+        findDescriptionInput().vm.$emit('input', invalidDescription);
+
+        findForm().vm.$emit('submit', {
+          preventDefault: jest.fn(),
+        });
+        await waitForPromises();
+
+        expect(findCreateButton().props('disabled')).toBe(true);
+      });
+
+      it('displays the character count text when exceeding the character limit', async () => {
+        findTitleInput().vm.$emit('input', validTitle);
+        findDescriptionInput().vm.$emit('input', invalidDescription);
+        await nextTick();
+
+        const charCount = findDescriptionFormGroup().findComponent(GlFormCharacterCount);
+        expect(charCount.exists()).toBe(true);
+        expect(charCount.props('value')).toBe(invalidDescription);
+
+        const countText = findDescriptionFormGroup().find('#description-character-count-text');
+        expect(countText.text()).toContain('over limit');
+      });
+
+      it('does not display the character count text when below the character limit', async () => {
+        findTitleInput().vm.$emit('input', validTitle);
+        findDescriptionInput().vm.$emit('input', validDescription);
+        await nextTick();
+
+        const charCount = findDescriptionFormGroup().findComponent(GlFormCharacterCount);
+        expect(charCount.exists()).toBe(true);
+        expect(charCount.props('value')).toBe(validDescription);
+
+        const countText = findDescriptionFormGroup().find('#description-character-count-text');
+        expect(countText.text()).not.toContain('over limit');
+      });
+    });
   });
 
   describe('subscription limit warning', () => {

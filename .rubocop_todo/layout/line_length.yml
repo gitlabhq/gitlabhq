@@ -2494,7 +2494,6 @@ Layout/LineLength:
     - 'spec/features/work_items/issues/new/spam_akismet_issue_creation_spec.rb'
     - 'spec/features/work_items/issues/new/user_creates_issue_spec.rb'
     - 'spec/features/work_items/issues/notes_on_issues_spec.rb'
-    - 'spec/features/work_items/issues/service_desk_spec.rb'
     - 'spec/features/work_items/issues/user_creates_branch_and_merge_request_spec.rb'
     - 'spec/features/work_items/issues/user_edits_issue_spec.rb'
     - 'spec/features/work_items/issues/user_views_issue_spec.rb'

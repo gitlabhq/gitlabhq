@@ -204,7 +204,6 @@ RSpec/ReceiveMessages:
     - 'spec/features/projects/sourcegraph_csp_spec.rb'
     - 'spec/features/sentry_js_spec.rb'
     - 'spec/features/work_items/issues/move_spec.rb'
-    - 'spec/features/work_items/issues/service_desk_spec.rb'
     - 'spec/graphql/mutations/alert_management/update_alert_status_spec.rb'
     - 'spec/graphql/resolvers/concerns/caching_array_resolver_spec.rb'
     - 'spec/helpers/blob_helper_spec.rb'

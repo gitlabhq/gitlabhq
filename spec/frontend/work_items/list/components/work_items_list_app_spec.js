@@ -107,6 +107,7 @@ import {
   workItemUserPreferenceUpdateMutationResponseWithErrors,
   workItemCountsOnlyResponse,
   singleSavedView,
+  sharedSavedView,
   workItemsQueryResponseWithFeatures,
 } from '../../mock_data';
 import {
@@ -2444,83 +2445,129 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     });
 
     describe('when "Save changes" is clicked', () => {
-      beforeEach(async () => {
-        findIssuableList().vm.$emit('filter', [
-          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-        ]);
+      describe('for a private view', () => {
+        it('saves without prompting for confirmation', async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler: jest
+              .fn()
+              .mockResolvedValue(savedViewResponseFactory({ savedViews: singleSavedView })),
+          });
+          await waitForPromises();
 
-        await nextTick();
-      });
+          findIssuableList().vm.$emit('filter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          ]);
+          await nextTick();
 
-      it('prompts for confirmation', async () => {
-        await findUpdateViewButton().vm.$emit('click');
-
-        expect(confirmAction).toHaveBeenCalledWith(
-          null,
-          expect.objectContaining({
-            title: 'Save changes to Current sprint 3?',
-            modalHtmlMessage: expect.stringContaining(
-              'Changes will be applied for anyone else who has access to the view.',
-            ),
-            primaryBtnText: 'Save changes',
-          }),
-        );
-      });
-
-      it('calls saveSavedView when user confirms', async () => {
-        saveSavedView.mockResolvedValue({
-          data: {
-            workItemSavedViewUpdate: {
-              errors: [],
-              savedView: singleSavedView[0],
+          saveSavedView.mockResolvedValue({
+            data: {
+              workItemSavedViewUpdate: {
+                errors: [],
+                savedView: singleSavedView[0],
+              },
             },
-          },
+          });
+
+          await findUpdateViewButton().vm.$emit('click');
+
+          expect(confirmAction).not.toHaveBeenCalled();
+          await waitForPromises();
+
+          expect(saveSavedView).toHaveBeenCalledTimes(1);
+          expect(showToast).toHaveBeenCalledWith('View has been saved.');
+        });
+      });
+
+      describe('for a shared view', () => {
+        beforeEach(async () => {
+          mountComponent({
+            workItemPlanningView: true,
+            workItemsSavedViewsEnabled: true,
+            savedViewHandler: jest
+              .fn()
+              .mockResolvedValue(savedViewResponseFactory({ savedViews: sharedSavedView })),
+          });
+          await waitForPromises();
+
+          findIssuableList().vm.$emit('filter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          ]);
+
+          await nextTick();
         });
 
-        await findUpdateViewButton().vm.$emit('click');
+        it('prompts for confirmation', async () => {
+          await findUpdateViewButton().vm.$emit('click');
 
-        await waitForPromises();
-
-        expect(saveSavedView).toHaveBeenCalledTimes(1);
-
-        expect(showToast).toHaveBeenCalledWith('View has been saved.');
-      });
-
-      it('sets error when mutation returns errors', async () => {
-        saveSavedView.mockResolvedValue({
-          data: {
-            workItemSavedViewUpdate: {
-              errors: ['Something went wrong'],
-              savedView: null,
-            },
-          },
+          expect(confirmAction).toHaveBeenCalledWith(
+            null,
+            expect.objectContaining({
+              title: 'Save changes to Current sprint 3?',
+              modalHtmlMessage: expect.stringContaining(
+                'Changes will be applied for anyone else who has access to the view.',
+              ),
+              primaryBtnText: 'Save changes',
+            }),
+          );
         });
 
-        await findUpdateViewButton().vm.$emit('click');
+        it('calls saveSavedView when user confirms', async () => {
+          saveSavedView.mockResolvedValue({
+            data: {
+              workItemSavedViewUpdate: {
+                errors: [],
+                savedView: sharedSavedView[0],
+              },
+            },
+          });
 
-        await waitForPromises();
+          await findUpdateViewButton().vm.$emit('click');
 
-        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
-      });
+          await waitForPromises();
 
-      it('sets error when mutation throws error', async () => {
-        saveSavedView.mockRejectedValue(new Error('Network error'));
+          expect(saveSavedView).toHaveBeenCalledTimes(1);
 
-        await findUpdateViewButton().vm.$emit('click');
+          expect(showToast).toHaveBeenCalledWith('View has been saved.');
+        });
 
-        await waitForPromises();
+        it('sets error when mutation returns errors', async () => {
+          saveSavedView.mockResolvedValue({
+            data: {
+              workItemSavedViewUpdate: {
+                errors: ['Something went wrong'],
+                savedView: null,
+              },
+            },
+          });
 
-        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
-      });
+          await findUpdateViewButton().vm.$emit('click');
 
-      it('does not call saveSavedView when user cancels', async () => {
-        confirmAction.mockResolvedValue(false);
+          await waitForPromises();
 
-        await findUpdateViewButton().vm.$emit('click');
+          expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+        });
 
-        await waitForPromises();
+        it('sets error when mutation throws error', async () => {
+          saveSavedView.mockRejectedValue(new Error('Network error'));
 
-        expect(saveSavedView).not.toHaveBeenCalled();
+          await findUpdateViewButton().vm.$emit('click');
+
+          await waitForPromises();
+
+          expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+        });
+
+        it('does not call saveSavedView when user cancels', async () => {
+          confirmAction.mockResolvedValue(false);
+
+          await findUpdateViewButton().vm.$emit('click');
+
+          await waitForPromises();
+
+          expect(saveSavedView).not.toHaveBeenCalled();
+        });
       });
     });
 

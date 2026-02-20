@@ -1078,7 +1078,6 @@ RSpec/ContextWording:
     - 'spec/features/work_items/issues/note_polling_spec.rb'
     - 'spec/features/work_items/issues/notes_on_issues_spec.rb'
     - 'spec/features/work_items/issues/related_issues_spec.rb'
-    - 'spec/features/work_items/issues/service_desk_spec.rb'
     - 'spec/features/work_items/issues/user_creates_confidential_merge_request_spec.rb'
     - 'spec/features/work_items/issues/user_edits_issue_spec.rb'
     - 'spec/features/work_items/issues/user_interacts_with_awards_spec.rb'

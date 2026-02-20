@@ -626,6 +626,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.auditEventsInstanceAmazonS3Configurations`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsInstanceStreamingDestinations` with `amazonS3` category instead.
+{{< /details >}}
+
 Instance-level Amazon S3 configurations for audit events.
 
 Returns [`InstanceAmazonS3ConfigurationTypeConnection`](#instanceamazons3configurationtypeconnection).
@@ -1217,6 +1222,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.instanceExternalAuditEventDestinations`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsInstanceStreamingDestinations` instead.
+{{< /details >}}
+
 Instance level external audit event destinations.
 
 Returns [`InstanceExternalAuditEventDestinationConnection`](#instanceexternalauditeventdestinationconnection).
@@ -1226,6 +1236,11 @@ four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.instanceGoogleCloudLoggingConfigurations`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsInstanceStreamingDestinations` with `gcpLogging` category instead.
+{{< /details >}}
 
 Instance level google cloud logging configurations.
 
@@ -3666,6 +3681,11 @@ Input type: `ArtifactDestroyInput`
 
 ### `Mutation.auditEventsAmazonS3ConfigurationCreate`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+{{< /details >}}
+
 Input type: `AuditEventsAmazonS3ConfigurationCreateInput`
 
 #### Arguments
@@ -3690,6 +3710,11 @@ Input type: `AuditEventsAmazonS3ConfigurationCreateInput`
 
 ### `Mutation.auditEventsAmazonS3ConfigurationDelete`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `AuditEventsAmazonS3ConfigurationDeleteInput`
 
 #### Arguments
@@ -3707,6 +3732,11 @@ Input type: `AuditEventsAmazonS3ConfigurationDeleteInput`
 | <a id="mutationauditeventsamazons3configurationdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsAmazonS3ConfigurationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `AuditEventsAmazonS3ConfigurationUpdateInput`
 
@@ -3830,6 +3860,11 @@ Input type: `AuditEventsGroupDestinationNamespaceFilterDeleteInput`
 
 ### `Mutation.auditEventsInstanceAmazonS3ConfigurationCreate`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+{{< /details >}}
+
 Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
 
 #### Arguments
@@ -3853,6 +3888,11 @@ Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
 
 ### `Mutation.auditEventsInstanceAmazonS3ConfigurationDelete`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `AuditEventsInstanceAmazonS3ConfigurationDeleteInput`
 
 #### Arguments
@@ -3870,6 +3910,11 @@ Input type: `AuditEventsInstanceAmazonS3ConfigurationDeleteInput`
 | <a id="mutationauditeventsinstanceamazons3configurationdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsInstanceAmazonS3ConfigurationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `AuditEventsInstanceAmazonS3ConfigurationUpdateInput`
 
@@ -3993,6 +4038,11 @@ Input type: `AuditEventsInstanceDestinationNamespaceFilterDeleteInput`
 
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsGroupDestinationEventsAdd` instead.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingDestinationEventsAddInput`
 
 #### Arguments
@@ -4013,6 +4063,11 @@ Input type: `AuditEventsStreamingDestinationEventsAddInput`
 
 ### `Mutation.auditEventsStreamingDestinationEventsRemove`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsGroupDestinationEventsRemove` instead.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingDestinationEventsRemoveInput`
 
 #### Arguments
@@ -4031,6 +4086,11 @@ Input type: `AuditEventsStreamingDestinationEventsRemoveInput`
 | <a id="mutationauditeventsstreamingdestinationeventsremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsStreamingDestinationInstanceEventsAdd`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsInstanceDestinationEventsAdd` instead.
+{{< /details >}}
 
 Input type: `AuditEventsStreamingDestinationInstanceEventsAddInput`
 
@@ -4052,6 +4112,11 @@ Input type: `AuditEventsStreamingDestinationInstanceEventsAddInput`
 
 ### `Mutation.auditEventsStreamingDestinationInstanceEventsRemove`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsInstanceDestinationEventsRemove` instead.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingDestinationInstanceEventsRemoveInput`
 
 #### Arguments
@@ -4070,6 +4135,12 @@ Input type: `AuditEventsStreamingDestinationInstanceEventsRemoveInput`
 | <a id="mutationauditeventsstreamingdestinationinstanceeventsremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsStreamingHeadersCreate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `groupAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
 
 Input type: `AuditEventsStreamingHeadersCreateInput`
 
@@ -4093,6 +4164,12 @@ Input type: `AuditEventsStreamingHeadersCreateInput`
 
 ### `Mutation.auditEventsStreamingHeadersDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `groupAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingHeadersDestroyInput`
 
 #### Arguments
@@ -4110,6 +4187,12 @@ Input type: `AuditEventsStreamingHeadersDestroyInput`
 | <a id="mutationauditeventsstreamingheadersdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsStreamingHeadersUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `groupAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
 
 Input type: `AuditEventsStreamingHeadersUpdateInput`
 
@@ -4133,6 +4216,11 @@ Input type: `AuditEventsStreamingHeadersUpdateInput`
 
 ### `Mutation.auditEventsStreamingHttpNamespaceFiltersAdd`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsGroupDestinationNamespaceFilterCreate` instead.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingHTTPNamespaceFiltersAddInput`
 
 #### Arguments
@@ -4154,6 +4242,11 @@ Input type: `AuditEventsStreamingHTTPNamespaceFiltersAddInput`
 
 ### `Mutation.auditEventsStreamingHttpNamespaceFiltersDelete`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `auditEventsGroupDestinationNamespaceFilterDelete` instead.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingHTTPNamespaceFiltersDeleteInput`
 
 #### Arguments
@@ -4171,6 +4264,12 @@ Input type: `AuditEventsStreamingHTTPNamespaceFiltersDeleteInput`
 | <a id="mutationauditeventsstreaminghttpnamespacefiltersdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsStreamingInstanceHeadersCreate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `instanceAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
 
 Input type: `AuditEventsStreamingInstanceHeadersCreateInput`
 
@@ -4194,6 +4293,12 @@ Input type: `AuditEventsStreamingInstanceHeadersCreateInput`
 
 ### `Mutation.auditEventsStreamingInstanceHeadersDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `instanceAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
+
 Input type: `AuditEventsStreamingInstanceHeadersDestroyInput`
 
 #### Arguments
@@ -4211,6 +4316,12 @@ Input type: `AuditEventsStreamingInstanceHeadersDestroyInput`
 | <a id="mutationauditeventsstreaminginstanceheadersdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.auditEventsStreamingInstanceHeadersUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Configure headers by using the streaming destination configuration.
+           Use `instanceAuditEventStreamingDestinationsUpdate`.
+{{< /details >}}
 
 Input type: `AuditEventsStreamingInstanceHeadersUpdateInput`
 
@@ -7812,6 +7923,11 @@ Input type: `ExportRequirementsInput`
 
 ### `Mutation.externalAuditEventDestinationCreate`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsCreate` instead.
+{{< /details >}}
+
 Input type: `ExternalAuditEventDestinationCreateInput`
 
 #### Arguments
@@ -7834,6 +7950,11 @@ Input type: `ExternalAuditEventDestinationCreateInput`
 
 ### `Mutation.externalAuditEventDestinationDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `ExternalAuditEventDestinationDestroyInput`
 
 #### Arguments
@@ -7851,6 +7972,11 @@ Input type: `ExternalAuditEventDestinationDestroyInput`
 | <a id="mutationexternalauditeventdestinationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.externalAuditEventDestinationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `ExternalAuditEventDestinationUpdateInput`
 
@@ -7951,6 +8077,11 @@ Input type: `GitlabSubscriptionActivateInput`
 
 ### `Mutation.googleCloudLoggingConfigurationCreate`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+{{< /details >}}
+
 Input type: `GoogleCloudLoggingConfigurationCreateInput`
 
 #### Arguments
@@ -7975,6 +8106,11 @@ Input type: `GoogleCloudLoggingConfigurationCreateInput`
 
 ### `Mutation.googleCloudLoggingConfigurationDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `GoogleCloudLoggingConfigurationDestroyInput`
 
 #### Arguments
@@ -7992,6 +8128,11 @@ Input type: `GoogleCloudLoggingConfigurationDestroyInput`
 | <a id="mutationgooglecloudloggingconfigurationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.googleCloudLoggingConfigurationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `groupAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `GoogleCloudLoggingConfigurationUpdateInput`
 
@@ -8707,6 +8848,11 @@ Input type: `InstanceAuditEventStreamingDestinationsUpdateInput`
 
 ### `Mutation.instanceExternalAuditEventDestinationCreate`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsCreate` instead.
+{{< /details >}}
+
 Input type: `InstanceExternalAuditEventDestinationCreateInput`
 
 #### Arguments
@@ -8727,6 +8873,11 @@ Input type: `InstanceExternalAuditEventDestinationCreateInput`
 
 ### `Mutation.instanceExternalAuditEventDestinationDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `InstanceExternalAuditEventDestinationDestroyInput`
 
 #### Arguments
@@ -8744,6 +8895,11 @@ Input type: `InstanceExternalAuditEventDestinationDestroyInput`
 | <a id="mutationinstanceexternalauditeventdestinationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.instanceExternalAuditEventDestinationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `InstanceExternalAuditEventDestinationUpdateInput`
 
@@ -8766,6 +8922,11 @@ Input type: `InstanceExternalAuditEventDestinationUpdateInput`
 | <a id="mutationinstanceexternalauditeventdestinationupdateinstanceexternalauditeventdestination"></a>`instanceExternalAuditEventDestination` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | Updated destination. |
 
 ### `Mutation.instanceGoogleCloudLoggingConfigurationCreate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+{{< /details >}}
 
 Input type: `InstanceGoogleCloudLoggingConfigurationCreateInput`
 
@@ -8790,6 +8951,11 @@ Input type: `InstanceGoogleCloudLoggingConfigurationCreateInput`
 
 ### `Mutation.instanceGoogleCloudLoggingConfigurationDestroy`
 
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsDelete` instead.
+{{< /details >}}
+
 Input type: `InstanceGoogleCloudLoggingConfigurationDestroyInput`
 
 #### Arguments
@@ -8807,6 +8973,11 @@ Input type: `InstanceGoogleCloudLoggingConfigurationDestroyInput`
 | <a id="mutationinstancegooglecloudloggingconfigurationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.instanceGoogleCloudLoggingConfigurationUpdate`
+
+{{< details >}}
+**Deprecated** in GitLab 18.10.
+Use `instanceAuditEventStreamingDestinationsUpdate` instead.
+{{< /details >}}
 
 Input type: `InstanceGoogleCloudLoggingConfigurationUpdateInput`
 
@@ -34940,7 +35111,7 @@ GPG signature for a signed commit.
 | <a id="groupaiusage"></a>`aiUsage` {{< icon name="warning-solid" >}} | [`AiUsage`](#aiusage) | **Introduced** in GitLab 18.9. **Status**: Experiment. AI-related data 2.0. |
 | <a id="groupaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
-| <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupamazons3configurations"></a>`amazonS3Configurations` {{< icon name="warning-solid" >}} | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | **Deprecated** in GitLab 18.10. Use `externalAuditEventStreamingDestinations` with `amazonS3` category instead. |
 | <a id="groupanalyzerstatuses"></a>`analyzerStatuses` | [`[AnalyzerGroupStatusType!]`](#analyzergroupstatustype) | Status for all analyzers in the group. |
 | <a id="grouparchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if the group or any ancestor is archived. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
@@ -34980,12 +35151,12 @@ GPG signature for a signed commit.
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
 | <a id="groupepicboards"></a>`epicBoards` {{< icon name="warning-solid" >}} | [`EpicBoardConnection`](#epicboardconnection) | **Deprecated** in GitLab 17.5. Replaced by WorkItem type. |
 | <a id="groupepicsenabled"></a>`epicsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.5. Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/). |
-| <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` {{< icon name="warning-solid" >}} | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | **Deprecated** in GitLab 18.10. Use `externalAuditEventStreamingDestinations` instead. |
 | <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` {{< icon name="warning-solid" >}} | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
-| <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` {{< icon name="warning-solid" >}} | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | **Deprecated** in GitLab 18.10. Use `externalAuditEventStreamingDestinations` with `gcpLogging` category instead. |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
 | <a id="groupid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupislinkedtosubscription"></a>`isLinkedToSubscription` | [`Boolean`](#boolean) | Indicates if group is linked to a subscription. |

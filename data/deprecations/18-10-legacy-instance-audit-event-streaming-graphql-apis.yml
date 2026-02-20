@@ -1,0 +1,39 @@
+- title: 'Legacy instance-level audit event streaming destination GraphQL APIs'
+  removal_milestone: '20.0'
+  announcement_milestone: '18.10'
+  breaking_change: true
+  window:
+  reporter: andrew.jung
+  stage: software_supply_chain_security
+  issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/12339
+  impact: low
+  scope: instance
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The following instance-level GraphQL APIs for audit event streaming destinations are deprecated and will be removed in GitLab 20.0.
+
+    Deprecated mutations:
+
+    - `instanceExternalAuditEventDestinationCreate` — use `instanceAuditEventStreamingDestinationsCreate` instead.
+    - `instanceExternalAuditEventDestinationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+    - `instanceExternalAuditEventDestinationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+    - `instanceGoogleCloudLoggingConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+    - `instanceGoogleCloudLoggingConfigurationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+    - `instanceGoogleCloudLoggingConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+    - `auditEventsInstanceAmazonS3ConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+    - `auditEventsInstanceAmazonS3ConfigurationDelete` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+    - `auditEventsInstanceAmazonS3ConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+    - `auditEventsStreamingInstanceHeadersCreate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingInstanceHeadersDestroy` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingInstanceHeadersUpdate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+    - `auditEventsStreamingDestinationInstanceEventsAdd` — use `auditEventsInstanceDestinationEventsAdd` instead.
+    - `auditEventsStreamingDestinationInstanceEventsRemove` — use `auditEventsInstanceDestinationEventsRemove` instead.
+
+    Deprecated query fields:
+
+    - `instanceExternalAuditEventDestinations` — use `auditEventsInstanceStreamingDestinations` instead.
+    - `instanceGoogleCloudLoggingConfigurations` — use `auditEventsInstanceStreamingDestinations` with `gcpLogging` category instead.
+    - `auditEventsInstanceAmazonS3Configurations` — use `auditEventsInstanceStreamingDestinations` with `amazonS3` category instead.
+
+    The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.

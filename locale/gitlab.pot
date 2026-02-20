@@ -2528,6 +2528,9 @@ msgstr ""
 msgid "AICatalog|Add GitLab-managed external agents to the instance's AI Catalog."
 msgstr ""
 
+msgid "AICatalog|Add a Model Context Protocol server to extend agent capabilities."
+msgstr ""
+
 msgid "AICatalog|Add to AI Catalog"
 msgstr ""
 
@@ -2636,6 +2639,21 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to hide %{itemType} %{name}?"
 msgstr ""
 
+msgid "AICatalog|Atlassian, Google Cloud"
+msgstr ""
+
+msgid "AICatalog|Authentication"
+msgstr ""
+
+msgid "AICatalog|Authentication method"
+msgstr ""
+
+msgid "AICatalog|Authentication method is required."
+msgstr ""
+
+msgid "AICatalog|Authentication type"
+msgstr ""
+
 msgid "AICatalog|Basic information"
 msgstr ""
 
@@ -2696,6 +2714,9 @@ msgstr ""
 msgid "AICatalog|Copy of"
 msgstr ""
 
+msgid "AICatalog|Could not create MCP server. Please try again."
+msgstr ""
+
 msgid "AICatalog|Could not create agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
@@ -2724,6 +2745,9 @@ msgid "AICatalog|Could not update agent. Try again."
 msgstr ""
 
 msgid "AICatalog|Could not update flow. Try again."
+msgstr ""
+
+msgid "AICatalog|Create MCP server"
 msgstr ""
 
 msgid "AICatalog|Create a copy of this agent with the same configuration."
@@ -2757,6 +2781,9 @@ msgid "AICatalog|Deletion method"
 msgstr ""
 
 msgid "AICatalog|Describe any relevant information for your admin"
+msgstr ""
+
+msgid "AICatalog|Description"
 msgstr ""
 
 msgid "AICatalog|Description is required."
@@ -2841,6 +2868,9 @@ msgid "AICatalog|Failed to disable flow"
 msgstr ""
 
 msgid "AICatalog|Failed to disable flow. %{error}"
+msgstr ""
+
+msgid "AICatalog|Failed to load MCP server"
 msgstr ""
 
 msgid "AICatalog|Failed to load group agents"
@@ -2945,10 +2975,19 @@ msgstr ""
 msgid "AICatalog|Group is required."
 msgstr ""
 
+msgid "AICatalog|HTTP"
+msgstr ""
+
 msgid "AICatalog|Hide %{itemType}"
 msgstr ""
 
 msgid "AICatalog|Hide from the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|Homepage"
+msgstr ""
+
+msgid "AICatalog|Homepage URL"
 msgstr ""
 
 msgid "AICatalog|Hypothetical or low risk security flaws that could be exploited."
@@ -2970,6 +3009,24 @@ msgid "AICatalog|Learn more about foundational agents"
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational flows"
+msgstr ""
+
+msgid "AICatalog|Leave blank to use dynamic client registration"
+msgstr ""
+
+msgid "AICatalog|Link to the homepage or documentation for this MCP server"
+msgstr ""
+
+msgid "AICatalog|MCP"
+msgstr ""
+
+msgid "AICatalog|MCP server configuration"
+msgstr ""
+
+msgid "AICatalog|MCP server created."
+msgstr ""
+
+msgid "AICatalog|MCP server not found"
 msgstr ""
 
 msgid "AICatalog|MCP servers"
@@ -2999,7 +3056,16 @@ msgstr ""
 msgid "AICatalog|Managed by a private project you don't have access to."
 msgstr ""
 
+msgid "AICatalog|Model Context Protocol servers extend agent capabilities with external tools and data sources."
+msgstr ""
+
+msgid "AICatalog|Name"
+msgstr ""
+
 msgid "AICatalog|Name is required."
+msgstr ""
+
+msgid "AICatalog|New MCP server"
 msgstr ""
 
 msgid "AICatalog|New agent"
@@ -3008,7 +3074,22 @@ msgstr ""
 msgid "AICatalog|New flow"
 msgstr ""
 
+msgid "AICatalog|No MCP servers yet"
+msgstr ""
+
+msgid "AICatalog|No authentication"
+msgstr ""
+
 msgid "AICatalog|No triggers configured. %{linkStart}Add a trigger%{linkEnd} to make this %{itemType} available."
+msgstr ""
+
+msgid "AICatalog|OAuth"
+msgstr ""
+
+msgid "AICatalog|OAuth Client ID"
+msgstr ""
+
+msgid "AICatalog|OAuth Client Secret"
 msgstr ""
 
 msgid "AICatalog|Only agents enabled in your top-level group are shown."
@@ -3122,6 +3203,12 @@ msgstr ""
 msgid "AICatalog|Selected %{itemType}"
 msgstr ""
 
+msgid "AICatalog|Server URL"
+msgstr ""
+
+msgid "AICatalog|Server URL is required."
+msgstr ""
+
 msgid "AICatalog|Service account"
 msgstr ""
 
@@ -3165,6 +3252,9 @@ msgid "AICatalog|This %{itemType} is private and can only be enabled in the proj
 msgstr ""
 
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
+msgstr ""
+
+msgid "AICatalog|This MCP server has tools for finding, creating, and updating objects in..."
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
@@ -3216,6 +3306,15 @@ msgid "AICatalog|Tools are built and maintained by GitLab."
 msgstr ""
 
 msgid "AICatalog|Tools are built and maintained by GitLab. %{linkStart}What are tools?%{linkEnd}"
+msgstr ""
+
+msgid "AICatalog|Transport"
+msgstr ""
+
+msgid "AICatalog|Transport protocol"
+msgstr ""
+
+msgid "AICatalog|Transport protocol is required."
 msgstr ""
 
 msgid "AICatalog|Triage Issue, Generate Release Notes, Update Docs"
@@ -78232,9 +78331,6 @@ msgid "WorkItem|+%d more item"
 msgid_plural "WorkItem|+%d more items"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "WorkItem|140 characters max"
-msgstr ""
 
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""

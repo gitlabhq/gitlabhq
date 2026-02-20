@@ -10,8 +10,9 @@ import {
   GlFormRadio,
   GlAlert,
   GlLink,
+  GlFormCharacterCount,
 } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
 import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -31,9 +32,9 @@ export default {
     GlModal,
     GlAlert,
     GlLink,
+    GlFormCharacterCount,
   },
   i18n: {
-    descriptionValidation: s__('WorkItem|140 characters max'),
     validateTitle: s__('WorkItem|Title is required.'),
     privateView: s__('WorkItem|Only you can see and edit this view.'),
     subscriptionLimitWarningMessage: s__(
@@ -84,6 +85,7 @@ export default {
     },
   },
   emits: ['hide'],
+  MAX_TITLE_LENGTH: 40,
   MAX_DESCRIPTION_LENGTH: 140,
   SAVED_VIEW_VISIBILITY,
   data() {
@@ -91,6 +93,7 @@ export default {
       savedViewDescription: this.savedView?.description,
       savedViewTitle: this.savedView?.name,
       isTitleValid: true,
+      isDescriptionValid: true,
       savedViewVisibility: this.getSavedViewVisibility(),
       error: '',
       showWarningOnOpen: false,
@@ -117,6 +120,9 @@ export default {
         { namespaceType: this.isGroup ? __('group') : __('project') },
       );
     },
+    emptyTitleFeedback() {
+      return this.savedViewTitle ? '' : this.$options.i18n.validateTitle;
+    },
   },
   watch: {
     show: {
@@ -130,18 +136,29 @@ export default {
         }
       },
     },
+    savedViewTitle(newTitle, oldTitle) {
+      if (newTitle && newTitle !== oldTitle) {
+        this.validateTitle();
+      }
+    },
+    savedViewDescription() {
+      this.validateDescription();
+    },
   },
   methods: {
     focusTitleInput() {
       this.$refs.savedViewTitle?.$el.focus();
     },
     validateTitle() {
-      this.isTitleValid = Boolean(this.savedViewTitle?.trim());
+      const trimmedTitle = this.savedViewTitle?.trim() ?? '';
+      this.isTitleValid =
+        trimmedTitle.length > 0 && trimmedTitle.length <= this.$options.MAX_TITLE_LENGTH;
     },
     async saveView() {
       this.validateTitle();
+      this.validateDescription();
 
-      if (!this.isTitleValid) {
+      if (!this.isTitleValid || !this.isDescriptionValid) {
         return;
       }
       const mutationKey = this.isEdit ? 'workItemSavedViewUpdate' : 'workItemSavedViewCreate';
@@ -194,8 +211,13 @@ export default {
           : s__('WorkItem|Something went wrong while creating the view');
       }
     },
+    validateDescription() {
+      this.isDescriptionValid =
+        (this.savedViewDescription?.length ?? 0) <= this.$options.MAX_DESCRIPTION_LENGTH;
+    },
     resetModal() {
       this.isTitleValid = true;
+      this.isDescriptionValid = true;
       this.savedViewTitle = '';
       this.savedViewDescription = '';
       this.savedViewVisibility = SAVED_VIEW_VISIBILITY.PRIVATE;
@@ -211,6 +233,9 @@ export default {
       return this.savedView?.isPrivate
         ? SAVED_VIEW_VISIBILITY.PRIVATE
         : SAVED_VIEW_VISIBILITY.SHARED;
+    },
+    overLimitText(count) {
+      return n__('%d character over limit.', '%d characters over limit.', count);
     },
   },
 };
@@ -257,7 +282,7 @@ export default {
         label-for="saved-view-title"
         data-testid="saved-view-title"
         :state="isTitleValid"
-        :invalid-feedback="$options.i18n.validateTitle"
+        :invalid-feedback="emptyTitleFeedback"
       >
         <gl-form-input
           id="saved-view-title"
@@ -266,22 +291,40 @@ export default {
           autocomplete="off"
           autofocus
           :state="isTitleValid"
-          @input="isTitleValid = true"
         />
+        <template #description>
+          <gl-form-character-count
+            :value="savedViewTitle"
+            :limit="$options.MAX_TITLE_LENGTH"
+            count-text-id="title-character-count-text"
+          >
+            <template #over-limit-text="{ count }">{{ overLimitText(count) }}</template>
+          </gl-form-character-count>
+        </template>
       </gl-form-group>
 
       <gl-form-group
         :label="__('Description (optional)')"
-        :description="$options.i18n.descriptionValidation"
         label-for="saved-view-description"
+        :state="isDescriptionValid"
         data-testid="saved-view-description"
       >
         <gl-form-textarea
           id="saved-view-description"
           v-model="savedViewDescription"
           size="sm"
-          :maxlength="$options.MAX_DESCRIPTION_LENGTH"
+          :state="isDescriptionValid"
+          rows="3"
         />
+        <template #description>
+          <gl-form-character-count
+            :value="savedViewDescription"
+            :limit="$options.MAX_DESCRIPTION_LENGTH"
+            count-text-id="description-character-count-text"
+          >
+            <template #over-limit-text="{ count }">{{ overLimitText(count) }}</template>
+          </gl-form-character-count>
+        </template>
       </gl-form-group>
 
       <gl-form-group
@@ -338,7 +381,7 @@ export default {
         <gl-button
           type="submit"
           variant="confirm"
-          :disabled="!isTitleValid"
+          :disabled="!isTitleValid || !isDescriptionValid"
           data-testid="create-view-button"
         >
           {{ submitButtonLabel }}
