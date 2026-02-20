@@ -9,6 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import subscribeToViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 describe('WorkItemsExistingSavedViewsModal', () => {
   let wrapper;
@@ -297,6 +298,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
         expect(findWarningMessage().exists()).toBe(true);
         expect(findWarningIcon().props('name')).toBe('warning');
         expect(findLearnMoreLink().exists()).toBe(true);
+        expect(findLearnMoreLink().attributes('href')).toBe(
+          helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
+        );
       });
 
       it('contains the correct warning text', () => {

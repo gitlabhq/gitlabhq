@@ -40,13 +40,16 @@ when communicating about experiments:
 - `variant(s)`: Defines an experiment with multiple code paths.
 - `behaviors`: Used to reference all possible code paths of an experiment, including the control.
 
-## Implementing an experiment
+## Experiment workflow
+
+To run experiments in GitLab, follow this workflow:
+
+1. [Implement your experiment](implementing_experiments.md) - Create and configure your A/B/n test using the GLEX framework
+1. [Test your experiment](testing_experiments.md) - Write RSpec tests and validate experiment behavior
+1. [Roll out your experiment](experiment_rollout.md) - Deploy your experiment using feature flags
+1. [Code review guidelines](experiment_code_reviews.md) - Review experiment code with appropriate standards
 
 [GLEX](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
-
-For more information, see [Implementing an A/B/n experiment using GLEX](implementing_experiments.md).
-
-This uses [experiment](../feature_flags/_index.md#experiment-type) feature flags.
 
 ### Add new icons and illustrations for experiments
 
@@ -63,6 +66,7 @@ We recommend the following workflow:
    Engineers can then add it to the [SVG library](https://design.gitlab.com/svgs/) and modify the implementation based on the
    [Frontend Development Guidelines](../fe_guide/icons.md#usage-in-hamlrails-2).
 
-## Related topics
+## Additional resources
 
-- [Experiments API](../../api/experiments.md)
+- [Experimentation Framework Roadmap](experiment_roadmap.md) - Planned improvements and future direction
+- [Experiments API](../../api/experiments.md) - API endpoints for querying experiment data

@@ -6,7 +6,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import GroupBadge from '~/projects/settings/repository/branch_rules/components/group_badge.vue';
-import PolicyBadge from '~/projects/settings/repository/branch_rules/components/policy_badge.vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import {
@@ -38,6 +37,8 @@ describe('Branch rule', () => {
         GroupBadge: {
           template: '<div>Stubbed GroupBadge</div>',
         },
+        PolicyBadge: true,
+        DisabledByPolicyPopover: true,
       },
       propsData: { ...branchRulePropsMock, ...props },
     });
@@ -47,7 +48,6 @@ describe('Branch rule', () => {
   const findDefaultBadge = () => wrapper.findByText('default');
   const findProtectedBadge = () => wrapper.findByText('protected');
   const findGroupBadge = () => wrapper.findComponent(GroupBadge);
-  const findPolicyBadge = () => wrapper.findComponent(PolicyBadge);
   const findBranchName = () => wrapper.findByText(branchRulePropsMock.name);
   const findProtectionDetailsList = () => wrapper.findByRole('list');
   const findProtectionDetailsListItems = () => wrapper.findAllByRole('listitem');
@@ -88,10 +88,6 @@ describe('Branch rule', () => {
       await createComponent(branchRuleProps);
 
       expect(findGroupBadge().exists()).toBe(true);
-    });
-
-    it('does not render policy badge by default', () => {
-      expect(findPolicyBadge().exists()).toBe(false);
     });
   });
 

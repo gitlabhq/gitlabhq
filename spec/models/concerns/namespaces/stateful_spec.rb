@@ -10,9 +10,9 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
   let_it_be_with_reload(:namespace) { create(:namespace) }
 
   describe 'STATES constant' do
-    it 'defines all expected states' do
+    it 'defines all expected states with integer values' do
       expect(described_class::STATES).to eq({
-        'ancestor_inherited' => nil,
+        'ancestor_inherited' => 0,
         'archived' => 1,
         'deletion_scheduled' => 2,
         'creation_in_progress' => 3,
@@ -24,6 +24,61 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
     it 'is frozen' do
       expect(described_class::STATES).to be_frozen
+    end
+  end
+
+  describe 'NULL and zero handling during migration' do
+    describe 'state reading' do
+      where(:db_value) do
+        [nil, 0]
+      end
+
+      with_them do
+        it "treats #{params[:db_value].inspect} state as ancestor_inherited" do
+          namespace.update_column(:state, db_value)
+          namespace.reload
+
+          expect(namespace.state).to eq(described_class::STATES[:ancestor_inherited])
+          expect(namespace.state_name).to eq(:ancestor_inherited)
+        end
+      end
+    end
+
+    describe 'transitions from ancestor_inherited' do
+      where(:db_value, :event, :to_state) do
+        nil | :archive           | :archived
+        nil | :schedule_deletion | :deletion_scheduled
+        nil | :start_deletion    | :deletion_in_progress
+        0   | :archive           | :archived
+        0   | :schedule_deletion | :deletion_scheduled
+        0   | :start_deletion    | :deletion_in_progress
+      end
+
+      with_them do
+        before do
+          namespace.update_column(:state, db_value)
+          namespace.reload
+        end
+
+        it "transitions from #{params[:db_value].inspect} to #{params[:to_state]} on #{params[:event]}" do
+          expect { namespace.public_send(event, transition_user: user) }
+            .to change { namespace.state_name }
+                  .from(:ancestor_inherited)
+                  .to(to_state)
+        end
+      end
+    end
+
+    describe 'transitions back to ancestor_inherited write 0 instead of NULL' do
+      it 'writes 0 to the database when transitioning to ancestor_inherited' do
+        set_state(namespace, :archived)
+
+        namespace.unarchive
+        namespace.save!
+
+        raw_state = Namespace.where(id: namespace.id).pick(:state)
+        expect(raw_state).to eq(0)
+      end
     end
   end
 

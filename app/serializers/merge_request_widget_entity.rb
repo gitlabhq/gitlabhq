@@ -85,13 +85,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     MIGRATE_FROM_JENKINS_BANNER
   end
 
-  expose :is_dismissed_suggest_pipeline do |_merge_request|
-    next true unless current_user
-    next true unless Gitlab::CurrentSettings.suggest_pipeline_enabled?
-
-    current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
-  end
-
   expose :is_dismissed_jenkins_migration do |_merge_request|
     next true unless current_user
     next true unless Gitlab::CurrentSettings.show_migrate_from_jenkins_banner?

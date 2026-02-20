@@ -7,6 +7,9 @@ module Namespaces
       extend ActiveSupport::Concern
 
       included do
+        # Handles both NULL and 0 values for ancestor_inherited during migration.
+        # TODO: Simplify to `where.not(state: :deletion_in_progress)` after NULL->0 backfill
+        #   https://gitlab.com/gitlab-org/gitlab/-/issues/588431
         scope :not_deletion_in_progress, -> do
           where('state != ? OR state IS NULL', Namespaces::Stateful::STATES[:deletion_in_progress])
         end
@@ -21,12 +24,17 @@ module Namespaces
       def effective_state
         return state_name if !ancestor_inherited? || parent_id.nil?
 
+        # During migration, ancestor_inherited can be either NULL or 0.
+        # Exclude both when looking for an ancestor with an explicit state.
         closest_ancestor_state =
           self.class
              .where(id: traversal_ids)
              .where.not(state: STATES[:ancestor_inherited])
+             .where.not(state: nil) # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/588431
              .order(Arel.sql("array_length(traversal_ids, 1) DESC"))
              .pick(:state)
+
+        return :ancestor_inherited if closest_ancestor_state.nil?
 
         STATES.key(closest_ancestor_state).to_sym
       end

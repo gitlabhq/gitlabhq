@@ -574,7 +574,6 @@ export default {
     'app/assets/javascripts/merge_requests/components/approval_count.vue',
     'app/assets/javascripts/merge_requests/components/compare_app.vue',
     'app/assets/javascripts/merge_requests/components/compare_dropdown.vue',
-    'app/assets/javascripts/merge_requests/components/merge_request_header.vue',
     'app/assets/javascripts/merge_requests/components/merge_schedule_input.vue',
     'app/assets/javascripts/merge_requests/components/reviewers/reviewer_drawer.vue',
     'app/assets/javascripts/merge_requests/components/reviewers/reviewer_dropdown.vue',

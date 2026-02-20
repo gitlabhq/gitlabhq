@@ -7,20 +7,8 @@ module Tasks
         PERMISSION_DIR = ::Authz::Permission::BASE_PATH
         PERMISSION_TODO_FILE = "#{PERMISSION_DIR}/definitions_todo.txt".freeze
         JSON_SCHEMA_FILE = 'config/authz/permissions/type_schema.json'
-        PERMISSION_NAME_REGEX = /\A[a-z]+_[a-z_]+[a-z]\z/
-
-        DISALLOWED_ACTIONS = {
-          admin: 'a granular action',
-          change: 'update',
-          destroy: 'delete',
-          edit: 'update',
-          list: 'read',
-          manage: 'a granular action',
-          modify: 'update',
-          set: 'update',
-          view: 'read',
-          write: 'a granular action'
-        }.freeze
+        PERMISSION_NAME_REGEX = ::Authz::Validation::PERMISSION_NAME_REGEX
+        DISALLOWED_ACTIONS = ::Authz::Validation::DISALLOWED_ACTIONS
 
         attr_reader :declarative_policy_permissions
 
@@ -200,7 +188,7 @@ module Tasks
         def error_messages
           {
             definition: "The following permissions are missing a definition file." \
-              "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files." \
+              "\nRun bin/permission <NAME> to generate definition files." \
               "\n#{implementation_guide_link(anchor: 'step-3-create-permission-definition-files')}",
             excluded: "The following permissions have a definition file." \
               "\nRemove them from config/authz/permissions/definitions_todo.txt.",

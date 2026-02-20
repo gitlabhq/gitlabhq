@@ -75,7 +75,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a definition file.
-          #  Run bundle exec rails generate authz:permission <NAME> to generate definition files.
+          #  Run bin/permission <NAME> to generate definition files.
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - undefined_permission
@@ -111,7 +111,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a definition file.
-          #  Run bundle exec rails generate authz:permission <NAME> to generate definition files.
+          #  Run bin/permission <NAME> to generate definition files.
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - undefined_permission

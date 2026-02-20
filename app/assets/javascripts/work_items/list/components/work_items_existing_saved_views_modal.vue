@@ -14,6 +14,7 @@ import { ROUTES } from '~/work_items/constants';
 import { subscribeToSavedView } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import getNamespaceSavedViewsQuery from '../graphql/work_item_saved_views_namespace.query.graphql';
 
 export default {
@@ -45,6 +46,9 @@ export default {
     ),
     learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
+  savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
+    anchor: 'saved-view-limits',
+  }),
   model: {
     prop: 'show',
     event: 'hide',
@@ -178,7 +182,7 @@ export default {
       <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
       <span class="gl-text-sm">
         {{ $options.i18n.subscriptionLimitWarningMessage }}
-        <gl-link href="#" target="_blank">
+        <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">
           {{ $options.i18n.learnMoreAboutViewLimits }}
         </gl-link>
       </span>

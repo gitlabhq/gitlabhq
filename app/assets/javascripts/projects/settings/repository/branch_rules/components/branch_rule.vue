@@ -7,10 +7,8 @@ import { s__, sprintf, n__ } from '~/locale';
 import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
-import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
 import { getAccessLevels } from '../../../utils';
 import GroupBadge from './group_badge.vue';
-import PolicyBadge from './policy_badge.vue';
 
 export default {
   name: 'BranchRule',
@@ -28,13 +26,11 @@ export default {
     squashSetting: s__('BranchRules|Squash commits: %{setting}'),
   },
   components: {
-    DisabledByPolicyPopover,
     GlBadge,
     GlButton,
     ProtectedBadge,
     GroupInheritancePopover,
     GroupBadge,
-    PolicyBadge,
   },
   mixins: [glFeatureFlagsMixin()],
   apollo: {
@@ -63,7 +59,6 @@ export default {
     showApprovers: { default: false },
     canAdminGroupProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
-    securityPoliciesPath: { default: '' },
   },
   props: {
     name: {
@@ -106,14 +101,13 @@ export default {
     };
   },
   computed: {
+    // needed to override EE component
     protectedFromPushBySecurityPolicy() {
-      return Boolean(this.branchProtection?.protectedFromPushBySecurityPolicy);
+      return false;
     },
+    // needed to override EE component
     showPolicyBadge() {
-      return (
-        this.protectedFromPushBySecurityPolicy ||
-        Boolean(this.branchProtection?.warnProtectedFromPushBySecurityPolicy)
-      );
+      return false;
     },
     isWildcard() {
       return this.name.includes('*');
@@ -198,6 +192,14 @@ export default {
   },
   methods: {
     getAccessLevels,
+    // needed to override EE component
+    hasPushAccessLevelsText() {
+      return false;
+    },
+    // needed to override EE component
+    disabledText() {
+      return false;
+    },
     getAccessLevelsText(beginString = '', accessLevels) {
       const textParts = [];
       if (accessLevels.roles.length) {
@@ -213,12 +215,6 @@ export default {
         textParts.push(n__('1 user', '%d users', accessLevels.users.length));
       }
       return `${beginString}: ${textParts.join(', ')}`;
-    },
-    hasPushAccessLevelsText(text) {
-      return text?.includes(this.pushAccessLevelsText);
-    },
-    disabledText(text) {
-      return this.protectedFromPushBySecurityPolicy && this.hasPushAccessLevelsText(text);
     },
   },
 };
@@ -240,6 +236,7 @@ export default {
 
         <group-badge v-if="isGroupLevel" />
 
+        <!-- eslint-disable-next-line vue/no-undef-components -- PolicyBadge is registered in EE via extends -->
         <policy-badge
           v-if="showPolicyBadge"
           :is-protected-by-policy="protectedFromPushBySecurityPolicy"
@@ -268,6 +265,7 @@ export default {
       <li v-for="(detail, index) in approvalDetails" :key="index">
         <div class="gl-flex gl-items-center">
           <span :class="{ 'gl-text-disabled': disabledText(detail) }">{{ detail }}</span>
+          <!-- eslint-disable-next-line vue/no-undef-components -- DisabledByPolicyPopover is registered in EE via extends -->
           <disabled-by-policy-popover
             v-if="showPolicyBadge && hasPushAccessLevelsText(detail)"
             :is-protected-by-policy="protectedFromPushBySecurityPolicy"

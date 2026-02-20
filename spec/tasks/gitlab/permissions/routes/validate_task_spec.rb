@@ -104,7 +104,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #######################################################################
           #
           #  The following API routes reference permissions without definition files.
-          #  Create definition files using: bundle exec rails generate authz:permission <NAME>
+          #  Create definition files using: bin/permission <NAME>
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_permission
@@ -141,7 +141,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #######################################################################
           #
           #  The following API routes reference permissions without definition files.
-          #  Create definition files using: bundle exec rails generate authz:permission <NAME>
+          #  Create definition files using: bin/permission <NAME>
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_permission
@@ -176,7 +176,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #######################################################################
           #
           #  The following API routes reference permissions without definition files.
-          #  Create definition files using: bundle exec rails generate authz:permission <NAME>
+          #  Create definition files using: bin/permission <NAME>
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_one
@@ -229,7 +229,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #######################################################################
           #
           #  The following API routes reference permissions without definition files.
-          #  Create definition files using: bundle exec rails generate authz:permission <NAME>
+          #  Create definition files using: bin/permission <NAME>
           #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/first: undefined_one

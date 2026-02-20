@@ -13,7 +13,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
       delete_package_route,
       download_package_route,
       upload_package_route,
-      read_job_route
+      read_job_route,
+      multi_permission_route,
+      skipped_route
     ]
   end
 
@@ -47,12 +49,23 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
     )
   end
 
+  let(:delete_package_assignable) do
+    instance_double(::Authz::PermissionGroups::Assignable,
+      category_name: 'Category',
+      resource_name: 'Package',
+      resource_description: 'Grants the ability to read, uploaad, and delete packages',
+      action: 'delete',
+      permissions: %i[delete_package]
+    )
+  end
+
   before do
     allow(::API::API).to receive(:endpoints).and_return([instance_double(Grape::Endpoint, routes: routes)])
     allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
       create_package: create_package_assignable,
       read_package: read_package_assignable,
-      read_job: read_job_assignable
+      read_job: read_job_assignable,
+      delete_package: delete_package_assignable
     })
 
     allow(task).to receive(:doc_path).and_return(doc_path)
@@ -162,7 +175,10 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
         | Create | Group | `PUT` | `/path/to/upload_package_route` |
         | Create | Instance | `PUT` | `/path/to/upload_package_route` |
         | Read | Project | `GET` | `/path/to/download_package_route` |
+        | Read <sup>1</sup> | Project | `GET` | `/path/to/multi_permission_route` |
         | Read | Project | `DELETE` | `/path/to/delete_package_route` |
+
+        <sup>1</sup> Also requires the `Read Job` permission.
       MARKDOWN
     end
 
@@ -172,8 +188,23 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
     #    1. Action, alphabetically
     #    1. Boundary (see `BOUNDARY_SORT_ORDER`)
     #    2. Request method (see `REQUEST_METHOD_SORT_ORDER`)
+    # 4. Routes with additional permissions are marked with a <sup> footnote
     it 'returns the expected markdown' do
       expect(task.allowed_endpoints).to eq(expected_markdown)
+    end
+  end
+
+  describe '#skipped_endpoints' do
+    let(:expected_markdown) do
+      <<~MARKDOWN.chomp
+        | Method | Path |
+        | ------ | ---- |
+        | `POST` | `/path/to/skipped_route` |
+      MARKDOWN
+    end
+
+    it 'returns the expected markdown' do
+      expect(task.skipped_endpoints).to eq(expected_markdown)
     end
   end
 
@@ -212,6 +243,22 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
       },
       request_method: 'PUT',
       origin: '/api/:version/path/to/upload_package_route'
+    )
+  end
+
+  def multi_permission_route
+    create_route_double(%i[download_package read_job], :project, 'GET', '/api/:version/path/to/multi_permission_route')
+  end
+
+  def skipped_route
+    instance_double(Grape::Router::Route,
+      settings: {
+        authorization: {
+          skip_granular_token_authorization: true
+        }
+      },
+      request_method: 'POST',
+      origin: '/api/:version/path/to/skipped_route'
     )
   end
 end

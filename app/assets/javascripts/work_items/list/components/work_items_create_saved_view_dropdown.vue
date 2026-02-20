@@ -1,6 +1,7 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 import WorkItemsExistingSavedViewsModal from './work_items_existing_saved_views_modal.vue';
 
@@ -21,7 +22,11 @@ export default {
     subscriptionLimitWarningMessage: s__(
       'WorkItem|You have reached the maximum number of views in your list.',
     ),
+    learnMore: s__('WorkItem|Learn more.'),
   },
+  savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
+    anchor: 'saved-view-limits',
+  }),
   props: {
     fullPath: {
       type: String,
@@ -83,9 +88,8 @@ export default {
         <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
         <span class="gl-text-sm">
           {{ $options.i18n.subscriptionLimitWarningMessage }}
-          <!-- TODO: Replace with actual learn more URL -->
-          <gl-link href="#" target="_blank">
-            {{ s__('WorkItem|Learn more.') }}
+          <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">
+            {{ $options.i18n.learnMore }}
           </gl-link>
         </span>
       </div>

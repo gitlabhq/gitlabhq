@@ -767,6 +767,21 @@ Use **custom role** when referring to a role created with specific customized pe
 
 When referring to a non-custom role, use [**default role**](#default-role).
 
+## Customers Portal
+
+Customers Portal is the name of the subscription and license management platform for GitLab.
+Treat it as a proper noun and use it without the article "the".
+
+Use:
+
+- Sign in to Customers Portal.
+- View your subscription in Customers Portal.
+
+Instead of:
+
+- Sign in to the Customers Portal.
+- View your subscription in the Customers Portal.
+
 ## data
 
 Use **data** as a singular noun.

@@ -89,6 +89,28 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
       end
     end
 
+    context 'with NULL state during migration' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: root_group) }
+
+      it 'treats NULL state as ancestor_inherited and resolves to ancestor state' do
+        set_state(root_group, :archived)
+        child_group.update_column(:state, nil)
+        child_group.reload
+
+        expect(child_group.effective_state).to eq(:archived)
+      end
+
+      it 'returns ancestor_inherited when all ancestors also have NULL state' do
+        root_group.update_column(:state, nil)
+        child_group.update_column(:state, nil)
+        root_group.reload
+        child_group.reload
+
+        expect(child_group.effective_state).to eq(:ancestor_inherited)
+      end
+    end
+
     context 'for N+1 query prevention' do
       let_it_be(:root_group) { create(:group, state: Namespaces::Stateful::STATES[:archived]) }
 
@@ -115,6 +137,18 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
       end
 
       it 'does not include namespace marked as deleted' do
+        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
+      end
+
+      it 'includes namespaces with NULL state during migration' do
+        namespace.update_column(:state, nil)
+
+        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
+      end
+
+      it 'includes namespaces with 0 (ancestor_inherited) state' do
+        namespace.update_column(:state, 0)
+
         expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
       end
     end

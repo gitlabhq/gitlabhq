@@ -16,6 +16,7 @@ import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   name: 'WorkItemsNewSavedViewModal',
@@ -40,6 +41,9 @@ export default {
     ),
     learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
+  savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
+    anchor: 'saved-view-limits',
+  }),
   inject: ['subscribedSavedViewLimit', 'isGroup'],
   model: {
     prop: 'show',
@@ -233,7 +237,7 @@ export default {
       <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
       <span class="gl-text-sm">
         {{ $options.i18n.subscriptionLimitWarningMessage }}
-        <gl-link href="#" target="_blank">
+        <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">
           {{ $options.i18n.learnMoreAboutViewLimits }}
         </gl-link>
       </span>

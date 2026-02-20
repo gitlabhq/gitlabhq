@@ -6,4 +6,4 @@ export const suggestProps = {
   userCalloutFeatureId: 'suggest_pipeline',
 };
 
-export const iconName = 'status_notfound';
+export const iconName = 'information';

@@ -2797,7 +2797,6 @@
 - './spec/features/merge_request/user_sees_page_metadata_spec.rb'
 - './spec/features/merge_request/user_sees_pipelines_from_forked_project_spec.rb'
 - './spec/features/merge_request/user_sees_pipelines_spec.rb'
-- './spec/features/merge_request/user_sees_suggest_pipeline_spec.rb'
 - './spec/features/merge_request/user_sees_system_notes_spec.rb'
 - './spec/features/merge_request/user_sees_versions_spec.rb'
 - './spec/features/merge_request/user_selects_branches_for_new_mr_spec.rb'

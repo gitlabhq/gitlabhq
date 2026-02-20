@@ -176,9 +176,9 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      const { hasCI, mergeRequestAddCiConfigPath, isDismissedSuggestPipeline } = this.mr;
+      const { hasCI, mergeRequestAddCiConfigPath } = this.mr;
 
-      return !hasCI && mergeRequestAddCiConfigPath && !isDismissedSuggestPipeline;
+      return !hasCI && mergeRequestAddCiConfigPath;
     },
     showRenderMigrateFromJenkins() {
       const { hasCI, isDismissedJenkinsMigration, ciIntegrationJenkins } = this.mr;
@@ -505,9 +505,6 @@ export default {
       eventHub.$off('FetchDeployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },
-    dismissSuggestPipelines() {
-      this.mr.isDismissedSuggestPipeline = true;
-    },
     dismissMigrateFromJenkins() {
       this.mr.isDismissedJenkinsMigration = true;
     },
@@ -544,12 +541,9 @@ export default {
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
-      :pipeline-path="mr.mergeRequestAddCiConfigPath"
-      :pipeline-svg-path="mr.pipelinesEmptySvgPath"
       :human-access="formattedHumanAccess"
       :user-callouts-path="mr.userCalloutsPath"
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
-      @dismiss="dismissSuggestPipelines"
     />
     <mr-widget-migrate-jenkins
       v-if="showRenderMigrateFromJenkins"

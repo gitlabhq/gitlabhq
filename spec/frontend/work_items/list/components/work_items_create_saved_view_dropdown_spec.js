@@ -4,6 +4,7 @@ import WorkItemsCreateSavedViewDropdown from '~/work_items/list/components/work_
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 describe('WorkItemsCreateSavedViewDropdown', () => {
   let wrapper;
@@ -89,6 +90,9 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
       expect(findWarningMessage().exists()).toBe(true);
       expect(findWarningIcon().props('name')).toBe('warning');
       expect(findLearnMoreLink().exists()).toBe(true);
+      expect(findLearnMoreLink().attributes('href')).toBe(
+        helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
+      );
     });
 
     it('passes showSubscriptionLimitWarning to child modals', () => {

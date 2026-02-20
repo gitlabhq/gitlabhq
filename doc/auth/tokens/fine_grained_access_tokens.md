@@ -213,8 +213,10 @@ Grants the ability to approve, create, read, update, and delete deployments.
 | Delete | Project | `DELETE` | `/projects/:id/deployments/:deployment_id` |
 | Read | Project | `GET` | `/projects/:id/deployments` |
 | Read | Project | `GET` | `/projects/:id/deployments/:deployment_id` |
-| Read | Project | `GET` | `/projects/:id/deployments/:deployment_id/merge_requests` |
+| Read <sup>1</sup> | Project | `GET` | `/projects/:id/deployments/:deployment_id/merge_requests` |
 | Update | Project | `PUT` | `/projects/:id/deployments/:deployment_id` |
+
+<sup>1</sup> Also requires the `Read Merge Request` permission.
 
 #### Environment
 
@@ -322,11 +324,11 @@ Grants the ability to create, delete, play, read, take ownership of, and update 
 | Delete | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
+| Read <sup>1</sup> | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
+| Read <sup>1</sup> | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership` |
 | Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/play` |
@@ -340,6 +342,8 @@ Grants the ability to create, delete, play, read, take ownership of, and update 
 | Update | Project | `PUT` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Update | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Update | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
+
+<sup>1</sup> Also requires the `Read Pipeline` permission.
 
 #### Protected Environment
 
@@ -401,9 +405,11 @@ Grants the ability to read and update resource groups.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/resource_groups` |
 | Read | Project | `GET` | `/projects/:id/resource_groups/:key` |
-| Read | Project | `GET` | `/projects/:id/resource_groups/:key/current_job` |
-| Read | Project | `GET` | `/projects/:id/resource_groups/:key/upcoming_jobs` |
+| Read <sup>1</sup> | Project | `GET` | `/projects/:id/resource_groups/:key/current_job` |
+| Read <sup>1</sup> | Project | `GET` | `/projects/:id/resource_groups/:key/upcoming_jobs` |
 | Update | Project | `PUT` | `/projects/:id/resource_groups/:key` |
+
+<sup>1</sup> Also requires the `Read Job` permission.
 
 #### Runner
 
@@ -2336,3 +2342,43 @@ Grants the ability to create, delete, edit, read, and update wikis.
 | Update | Project | `PUT` | `/projects/:id/wikis/:slug` |
 | Update | Group | `POST` | `/groups/:id/wikis/attachments` |
 | Update | Group | `PUT` | `/groups/:id/wikis/:slug` |
+
+## Unavailable endpoints
+
+The following endpoints cannot authenticate with fine-grained tokens.
+These endpoints use alternative authorization mechanisms, such as
+job token policies or resource-specific access controls.
+
+| Method | Path |
+| ------ | ---- |
+| `GET` | `/feature_flags/unleash/:project_id` |
+| `GET` | `/feature_flags/unleash/:project_id/client/features` |
+| `POST` | `/feature_flags/unleash/:project_id/client/metrics` |
+| `POST` | `/feature_flags/unleash/:project_id/client/register` |
+| `GET` | `/feature_flags/unleash/:project_id/features` |
+| `GET` | `/groups/:id/-/packages/npm/*package_name` |
+| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` |
+| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` |
+| `GET` | `/groups/:id/-/packages/nuget/index` |
+| `GET` | `/groups/:id/-/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
+| `GET` | `/groups/:id/-/packages/nuget/v2` |
+| `GET` | `/groups/:id/-/packages/nuget/v2/$metadata` |
+| `GET` | `/packages/conan/v1/ping` |
+| `GET` | `/packages/npm/*package_name` |
+| `POST` | `/packages/npm/-/npm/v1/security/advisories/bulk` |
+| `POST` | `/packages/npm/-/npm/v1/security/audits/quick` |
+| `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` |
+| `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` |
+| `GET` | `/projects/:id/packages/conan/v1/ping` |
+| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` |
+| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/audits/quick` |
+| `GET` | `/projects/:id/packages/nuget/index` |
+| `GET` | `/projects/:id/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
+| `GET` | `/projects/:id/packages/nuget/v2` |
+| `GET` | `/projects/:id/packages/nuget/v2/$metadata` |
+| `POST` | `/projects/:id/repository/files/:file_path/authorize` |
+| `PUT` | `/projects/:id/repository/files/:file_path/authorize` |
+| `POST` | `/projects/:id/terraform/state/:name/authorize` |
+| `GET` | `/projects/:project_id/packages/nuget/v2/FindPackagesById\(\)` |
+| `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(Id='*package_name',Version='*package_version'\)` |
+| `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(\)` |

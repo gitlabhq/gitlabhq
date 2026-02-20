@@ -27,3 +27,11 @@ title: Fine-grained permissions for personal access tokens
 Fine-grained personal access tokens can access the following REST API endpoints:
 
 <%= allowed_endpoints %>
+
+## Unavailable endpoints
+
+The following endpoints cannot authenticate with fine-grained tokens.
+These endpoints use alternative authorization mechanisms, such as
+job token policies or resource-specific access controls.
+
+<%= skipped_endpoints %>

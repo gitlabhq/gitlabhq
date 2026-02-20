@@ -11,6 +11,8 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { badgeState } from '~/merge_requests/badge_state';
+import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(PiniaVuePlugin);
 
@@ -26,7 +28,7 @@ describe('MergeRequestHeader component', () => {
 
   const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
-  const createComponent = ({ confidential, hidden, locked, isImported = false }) => {
+  const createComponent = ({ confidential, hidden, locked, isImported = false } = {}) => {
     useNotes().noteableData.confidential = confidential;
     useNotes().noteableData.discussion_locked = locked;
     useNotes().noteableData.targetType = 'merge_request';
@@ -35,11 +37,19 @@ describe('MergeRequestHeader component', () => {
       pinia,
       provide: {
         hidden,
+        iid: 'mock_id',
       },
       propsData: {
         initialState: 'opened',
         isImported,
         isDraft: false,
+      },
+      mocks: {
+        $apollo: {
+          query: jest.fn().mockResolvedValue({
+            data: { namespace: { issuable: { state: 'merged' } } },
+          }),
+        },
       },
     });
   };
@@ -51,13 +61,22 @@ describe('MergeRequestHeader component', () => {
   });
 
   it('renders status badge', () => {
-    createComponent({ propsData: { initialState: 'opened' } });
+    createComponent();
 
     expect(findStatusBadge().props()).toEqual({
       issuableType: 'merge_request',
       state: 'opened',
       isDraft: false,
     });
+  });
+
+  it('updates status in badge', async () => {
+    createComponent();
+
+    badgeState.updateStatus();
+    await waitForPromises();
+
+    expect(findStatusBadge().props('state')).toEqual('merged');
   });
 
   describe.each`

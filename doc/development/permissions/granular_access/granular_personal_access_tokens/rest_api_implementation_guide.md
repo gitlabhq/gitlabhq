@@ -22,7 +22,7 @@ This guide walks you through adding granular PAT authorization to REST API endpo
 The implementation follows this flow:
 
 1. **Step 1-2:** Plan - Identify endpoints and design permissions
-1. **Step 3:** Create raw permissions (YAML files + generator)
+1. **Step 3:** Create raw permissions (YAML files)
 1. **Step 4:** Bundle raw permissions into assignable permissions (YAML files)
 1. **Step 5:** Add authorization decorators to endpoints (Ruby code)
 1. **Step 6:** Write authorization tests (Ruby specs)
@@ -108,43 +108,51 @@ When implementing granular PAT authorization, name permissions based on what the
 
 **Goal:** Create YAML definition files for each permission.
 
-Generate a permission definition file using the Rails generator:
+Generate the permission definition and resource metadata files using the `bin/permission` command.
+
+**Interactive mode** — pass just the permission name and the command walks you through each field, using the name to suggest defaults:
 
 ```shell
-bundle exec rails generate authz:permission <permission_name>
+bin/permission read_job
 ```
 
-This creates a YAML file at `config/authz/permissions/<resource>/<action>.yml`. The generator automatically parses the permission name to determine the resource and action directories.
+**Non-interactive mode** — pass `-a` (action) and `-r` (resource) as flags to skip prompts. The description auto-defaults to `"Grants the ability to <action> <resource>"`. Add `-c` to also skip the feature category prompt:
 
-#### Complete the YAML Definition
-
-The generated file includes a template. Fill in all required fields:
-
-```yaml
----
-name: read_job
-description: Grants the ability to read CI/CD jobs
+```shell
+bin/permission read_job -a read -r job -c continuous_integration
 ```
 
-**Required Fields:**
+Any field can be overridden with a flag (for example `-d` for a custom description). Run `bin/permission --help` for all available options.
+
+This creates two files:
+
+1. A permission definition at `config/authz/permissions/job/read.yml`:
+
+   ```yaml
+   ---
+   name: read_job
+   description: Grants the ability to read CI/CD jobs
+   ```
+
+1. A resource metadata file at `config/authz/permissions/job/_metadata.yml` (if one does not already exist):
+
+   ```yaml
+   ---
+   feature_category: continuous_integration
+   ```
+
+#### Permission Definition Fields
 
 | Field | Description |
 |-------|-------------|
-| `name` | Permission name (auto-populated by generator) |
+| `name` | Permission name (auto-populated from the action and resource) |
 | `description` | Human-readable description of what the permission allows |
 
 For additional details, see the [Permission Definition File](../../conventions.md#permission-definition-file) section in the conventions documentation.
 
-#### Create Resource Metadata for Raw Permissions
+#### Resource Metadata Fields
 
-For each resource directory, you must create a `_metadata.yml` file at `config/authz/permissions/<resource>/_metadata.yml`:
-
-```yaml
----
-feature_category: continuous_integration
-name: "Job"
-description: "Description of what permissions in this resource group do"
-```
+The resource metadata file is created once per resource directory. When you add a second permission for the same resource, the command detects the existing metadata and skips all metadata prompts (feature category, display name, and description).
 
 **Required Fields:**
 

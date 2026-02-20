@@ -28,19 +28,27 @@ Implementing granular permissions allows us to adhere to the principle of least 
 
 Each permission should have a corresponding definition file. These files are used to build documentation and enable a permissions-first architecture around authorization logic.
 
-To generate a new definition file, run the following command.
+To generate a new definition file, run the following command:
 
 ```shell
-bundle exec rails generate authz:permission <permission_name>
+bin/permission <permission_name>
 ```
 
-Optionally, if you need to override the default action or resource you can use the `--action` and/or `--resource` options. This is helpful if the action is more than one word. For example, consider the permission `force_delete_ai_catalog_item`. By default the generator will assume that the permission action is `force` and the resource is `delete_ai_catalog_item` which would result in a definition file being written to `config/authz/permissions/delete_ai_catalog_item/force.yml`, which is incorrect.
-
-The following command can be used to generate a definition file with the correct action and resource which will result in the definition file being written to `config/authz/permissions/ai_catalog_item/force_delete.yml`.
+In interactive mode, the command uses the permission name to suggest the action and resource, then walks you through the remaining fields. To skip all prompts, pass `-a` (action) and `-r` (resource) as flags:
 
 ```shell
-bundle exec rails generate authz:permission force_delete_ai_catalog_item --action force_delete
+bin/permission <permission_name> -a <action> -r <resource> -c <feature_category>
 ```
+
+Overriding the action or resource is helpful when the action is more than one word. For example, consider the permission `force_delete_ai_catalog_item`. By default the command splits the name at the first underscore, suggesting `force` as the action and `delete_ai_catalog_item` as the resource. This would result in the definition file being written to `config/authz/permissions/delete_ai_catalog_item/force.yml`, which is incorrect.
+
+The following command generates a definition file with the correct action and resource, writing it to `config/authz/permissions/ai_catalog_item/force_delete.yml`:
+
+```shell
+bin/permission force_delete_ai_catalog_item -a force_delete -r ai_catalog_item -c ai_catalog
+```
+
+For a full guide on using the command, see [Create Permission Definition Files](granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files).
 
 ### Naming Permissions
 

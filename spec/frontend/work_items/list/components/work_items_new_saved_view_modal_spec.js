@@ -7,6 +7,7 @@ import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
 import { SAVED_VIEW_VISIBILITY } from '~/work_items/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 jest.mock('ee_else_ce/work_items/list/utils', () => ({
   saveSavedView: jest.fn(),
@@ -249,6 +250,9 @@ describe('WorkItemsNewSavedViewModal', () => {
         expect(findWarningMessage().exists()).toBe(true);
         expect(findWarningIcon().props('name')).toBe('warning');
         expect(findLearnMoreLink().exists()).toBe(true);
+        expect(findLearnMoreLink().attributes('href')).toBe(
+          helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
+        );
       });
 
       it('contains the correct warning text', () => {

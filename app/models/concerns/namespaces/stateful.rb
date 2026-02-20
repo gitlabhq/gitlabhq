@@ -5,7 +5,7 @@ module Namespaces
     extend ActiveSupport::Concern
 
     STATES = {
-      ancestor_inherited: nil, # nil means this namespace inherits behavior from ancestors.
+      ancestor_inherited: 0,
       archived: 1,
       deletion_scheduled: 2,
       creation_in_progress: 3,
@@ -21,6 +21,13 @@ module Namespaces
       include StatePreservation
       include TransitionValidation
       include TransitionLogging
+
+      # During migration, both NULL and 0 represent ancestor_inherited in the database.
+      # Override the state reader so that NULL is treated as ancestor_inherited (value 0).
+      # TODO: Remove after NULL->0 backfill is complete https://gitlab.com/gitlab-org/gitlab/-/issues/588431
+      def state
+        read_attribute(:state) || STATES[:ancestor_inherited]
+      end
 
       # TODO: Remove `transition ancestor_inherited:` after backfills are complete https://gitlab.com/groups/gitlab-org/-/epics/17956
       state_machine :state, initial: :ancestor_inherited do

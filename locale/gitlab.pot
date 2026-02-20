@@ -72287,9 +72287,6 @@ msgstr ""
 msgid "Try grouping with different labels"
 msgstr ""
 
-msgid "Try out GitLab Pipelines"
-msgstr ""
-
 msgid "Try the troubleshooting steps here."
 msgstr ""
 
@@ -75900,8 +75897,10 @@ msgstr ""
 msgid "VirtualRegistry|No upstreams yet"
 msgstr ""
 
-msgid "VirtualRegistry|Not accessed in the last %{days} days"
-msgstr ""
+msgid "VirtualRegistry|Not accessed in the last day"
+msgid_plural "VirtualRegistry|Not accessed in the last %{days} days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "VirtualRegistry|Password (optional)"
 msgstr ""

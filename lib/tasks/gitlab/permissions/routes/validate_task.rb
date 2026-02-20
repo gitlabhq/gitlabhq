@@ -128,7 +128,7 @@ module Tasks
             {
               undefined_permission: <<~MSG.chomp,
                 The following API routes reference permissions without definition files.
-                Create definition files using: bundle exec rails generate authz:permission <NAME>
+                Create definition files using: bin/permission <NAME>
                 #{implementation_guide_link(anchor: 'step-3-create-permission-definition-files')}
               MSG
               missing_boundary: <<~MSG.chomp,
