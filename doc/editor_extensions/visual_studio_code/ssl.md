@@ -5,19 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Using the VS Code extension with self-signed certificates
 ---
 
-You can still use the GitLab Workflow extension for VS Code even if your GitLab instance uses a self-signed SSL certificate.
+You can still use the GitLab for VS Code extension even if your GitLab instance uses a self-signed SSL certificate.
 
 If you also use a proxy to connect to your GitLab instance, let us know in
 [issue 314](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/314). If you still have connection problems
 after completing these steps, review [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244), which links to
-all existing SSL issues for the GitLab Workflow extension.
+all existing SSL issues for the GitLab for VS Code extension.
 
 ## Use the extension with a self-signed CA
 
 Prerequisites:
 
 - Your GitLab instance uses a certificate signed with a self-signed certificate authority (CA).
-- Your GitLab Workflow extension version is 6.51.1 or later.
+- Your GitLab for VS Code version is 6.51.1 or later.
 - Your VS Code version is 1.101.2 (May 2025) or later.
 - The `gitlab.ca` VS Code setting is **not** in use.
 
@@ -66,7 +66,7 @@ Make sure you can see your self-signed CA in your certificate store:
 ### MacOS
 
 > [!note]
-> These instructions were tested on macOS Tahoe 26, VS Code 1.101.2, and GitLab Workflow 6.51.1.
+> These instructions were tested on macOS Tahoe 26, VS Code 1.101.2, and GitLab for VS Code 6.51.1.
 
 Make sure you see the self-signed CA in your keychain:
 

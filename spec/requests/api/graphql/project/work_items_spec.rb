@@ -79,15 +79,12 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       it_behaves_like 'work items resolver without N + 1 queries', threshold: 3
     end
 
-    # We need a separate example since all_graphql_fields_for will not fetch fields from types
-    # that implement the widget interface. Only `type` for the widgets field.
-    context 'when querying the widget interface' do
+    context 'when querying the features field' do
       let(:fields) do
         <<~GRAPHQL
           nodes {
-            widgets {
-              type
-              ... on WorkItemWidgetDescription {
+            features {
+              description {
                 edited
                 lastEditedAt
                 lastEditedBy {
@@ -95,10 +92,10 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
                   username
                 }
               }
-              ... on WorkItemWidgetAssignees {
+              assignees {
                 assignees { nodes { id } }
               }
-              ... on WorkItemWidgetHierarchy {
+              hierarchy {
                 parent { id }
                 children {
                   nodes {
@@ -106,11 +103,11 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
                   }
                 }
               }
-              ... on WorkItemWidgetLabels {
+              labels {
                 labels { nodes { id } }
                 allowsScopedLabels
               }
-              ... on WorkItemWidgetMilestone {
+              milestone {
                 milestone {
                   id
                 }
@@ -124,10 +121,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  context 'when querying WorkItemWidgetAssignees' do
-    let(:work_items_data) { graphql_data['project']['workItems']['nodes'].pluck('widgets') }
-    let(:widget_data) { work_items_data.map { |data| data.find { |widget| widget['type'] == 'ASSIGNEES' } } }
-    let(:assignee_data) { widget_data.map { |data| data.dig('assignees', 'nodes') } }
+  context 'when querying features.assignees' do
+    let(:work_items_data) { graphql_data['project']['workItems']['nodes'] }
+    let(:assignee_data) { work_items_data.map { |data| data.dig('features', 'assignees', 'assignees', 'nodes') } }
     let(:assignees) do
       [
         create(:user, name: 'BBB'),
@@ -139,9 +135,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     let(:fields) do
       <<~GRAPHQL
         nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetAssignees {
+          features {
+            assignees {
               assignees { nodes { id } }
             }
           }
@@ -168,7 +163,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  context 'when querying WorkItemWidgetHierarchy' do
+  context 'when querying features.hierarchy' do
     let_it_be(:children) { create_list(:work_item, 4, :task, project: project) }
     let_it_be(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
     let_it_be(:child_link2) { create(:parent_link, work_item_parent: item1, work_item: children[1]) }
@@ -177,9 +172,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       <<~GRAPHQL
         nodes {
           id
-          widgets {
-            type
-            ... on WorkItemWidgetHierarchy {
+          features {
+            hierarchy {
               hasChildren
               parent { id }
               children { nodes { id } }
@@ -192,8 +186,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     context 'with ordered children' do
       let(:items_data) { graphql_data['project']['workItems']['nodes'] }
       let(:work_item_data) { items_data.find { |item| item['id'] == item1.to_gid.to_s } }
-      let(:work_item_widget) { work_item_data["widgets"].find { |widget| widget.key?("children") } }
-      let(:children_ids) { work_item_widget.dig("children", "nodes").pluck("id") }
+      let(:children_ids) { work_item_data.dig("features", "hierarchy", "children", "nodes").pluck("id") }
 
       let(:first_child) { children[0].to_gid.to_s }
       let(:second_child) { children[1].to_gid.to_s }
@@ -248,13 +241,12 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  context 'when querying WorkItemWidgetStartAndDueDate' do
+  context 'when querying features.startAndDueDate' do
     let(:fields) do
       <<~GRAPHQL
         nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetStartAndDueDate {
+          features {
+            startAndDueDate {
               dueDate
               startDate
             }
@@ -390,9 +382,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     let(:fields) do
       <<~GRAPHQL
         nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetNotifications {
+          features {
+            notifications {
               subscribed
             }
           }
@@ -418,9 +409,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     let(:fields) do
       <<~GRAPHQL
         nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetAwardEmoji {
+          features {
+            awardEmoji {
               awardEmoji {
                 nodes {
                   name
@@ -468,9 +458,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     let(:fields) do
       <<~GRAPHQL
         nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetLinkedItems {
+          features {
+            linkedItems {
               linkedItems {
                 nodes {
                   linkId
@@ -479,8 +468,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
                   linkUpdatedAt
                   workItem {
                     id
-                    widgets {
-                      ... on WorkItemWidgetMilestone {
+                    features {
+                      milestone {
                         milestone {
                           id
                         }
@@ -531,9 +520,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       <<~GRAPHQL
         nodes {
           id
-          widgets {
-            type
-            ... on WorkItemWidgetParticipants {
+          features {
+            participants {
               participants {
                 nodes {
                   id
@@ -553,7 +541,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     it 'returns participants' do
       post_graphql(query, current_user: current_user)
 
-      participants_usernames = graphql_dig_at(items_data, 'widgets', 'participants', 'nodes', 'username')
+      participants_usernames = graphql_dig_at(
+        items_data, 'features', 'participants', 'participants', 'nodes', 'username'
+      )
       expect(participants_usernames).to match_array(work_items.flat_map(&:participants).map(&:username))
     end
 
@@ -577,9 +567,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         <<~GRAPHQL
           nodes {
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 closingMergeRequests {
                   count
                   nodes {
@@ -632,9 +621,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         <<~GRAPHQL
           nodes {
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 relatedMergeRequests {
                   nodes {
                     id
@@ -661,9 +649,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         <<~GRAPHQL
           nodes {
             id
-            widgets {
-              type
-              ... on WorkItemWidgetDevelopment {
+            features {
+              development {
                 relatedBranches  {
                   nodes {
                     name
@@ -693,9 +680,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         <<~QUERY
           nodes {
             id
-            widgets {
-             type
-              ... on WorkItemWidgetErrorTracking {
+            features {
+              errorTracking {
                 identifier
                 status
                 stackTrace {
@@ -725,7 +711,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
 
     context "when we call the widget for one work item" do
-      let(:widget_data) { graphql_data['workItem']['widgets'].find { |widget| widget['type'] == 'ERROR_TRACKING' } }
+      let(:widget_data) { graphql_data['workItem']['features']['errorTracking'] }
 
       let(:latest_event) do
         instance_double(Gitlab::ErrorTracking::ErrorEvent,
@@ -769,9 +755,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       let(:fields) do
         <<~QUERY
         id
-        widgets {
-          type
-          ... on WorkItemWidgetErrorTracking {
+        features {
+          errorTracking {
             identifier
             status
             stackTrace {

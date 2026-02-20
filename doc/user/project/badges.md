@@ -353,7 +353,7 @@ https://gitlab.com/%{project_path}/-/badges/custom.svg?key_color=green
 
 Prerequisites:
 
-- You must have at least the Developer role for the project or group.
+- You must have the Developer, Maintainer, or Owner role for the project or group.
 - You must have a valid URL that points directly to the desired image for the badge. If the image is in a GitLab repository, use the raw link to the image.
 
 To add a custom badge with an image:

@@ -57,7 +57,7 @@ You can change whether or not Code Suggestions uses other files as context.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab for VS Code 4.20.0.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
 - Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2 and on GitLab Self-Managed in GitLab 17.4.
@@ -73,7 +73,7 @@ Prerequisites:
 - GitLab 17.2 or later. Earlier GitLab versions that support Code Suggestions
   cannot weigh the content of open tabs more heavily than other files in your project.
 - A supported extension:
-  - GitLab Workflow extension for VS Code 6.2.2 or later.
+  - GitLab for VS Code extension 6.2.2 or later.
   - GitLab plugin for JetBrains IDEs 3.6.5 or later.
   - GitLab plugin for Neovim 1.1.0 or later.
   - GitLab extension for Visual Studio 0.51.0 or later.
@@ -85,7 +85,7 @@ To change open files being used as context:
 {{< tab title="Visual Studio Code" >}}
 
 1. On the top bar, go to **Code** > **Settings** > **Extensions**.
-1. Search for GitLab Workflow in the list, and select the gear icon.
+1. Search for **GitLab** in the list, and select the gear icon.
 1. Select **Settings**.
 1. In your **User** settings, search for `open tabs`.
 1. Under **GitLab** > **Duo Code Suggestions: Open Tabs Context**,

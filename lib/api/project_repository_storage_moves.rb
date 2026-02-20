@@ -27,6 +27,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance
       get do
         storage_moves = ::Projects::RepositoryStorageMove.with_projects.order_created_at_desc
 
@@ -40,6 +41,7 @@ module API
       params do
         requires :repository_storage_move_id, type: Integer, desc: 'The ID of a project repository storage move'
       end
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance
       get ':repository_storage_move_id' do
         storage_move = ::Projects::RepositoryStorageMove.find(params[:repository_storage_move_id])
 
@@ -54,6 +56,7 @@ module API
         requires :source_storage_name, type: String, desc: 'The source storage shard', values: -> { Gitlab.config.repositories.storages.keys }
         optional :destination_storage_name, type: String, desc: 'The destination storage shard', values: -> { Gitlab.config.repositories.storages.keys }
       end
+      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :instance
       post do
         ::Projects::ScheduleBulkRepositoryShardMovesService.enqueue(
           declared_params[:source_storage_name],

@@ -21,13 +21,13 @@ const ONBOARDING_STEPS = [
     ),
     title: __('Hone in on what’s important'),
   },
-  // {
-  //   component: Tabs,
-  //   body: __(
-  //     'The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs.',
-  //   ),
-  //   title: __('Tailor your views list'),
-  // },
+  {
+    component: Tabs,
+    body: __(
+      'The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs.',
+    ),
+    title: __('Tailor your views list'),
+  },
   {
     component: SaveView,
     body: __(

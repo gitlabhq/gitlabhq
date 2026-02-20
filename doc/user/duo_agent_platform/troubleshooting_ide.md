@@ -38,18 +38,18 @@ In VS Code, you can troubleshoot some issues by viewing debugging logs.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.
    1. In the output panel at the bottom, in the upper-right corner,
-      select **GitLab Workflow** or **GitLab Language Server** from the list.
+      select **GitLab** or **GitLab Language Server** from the list.
 1. Review for errors, warnings, connection issues, or authentication problems.
 
 ## VS Code configuration
 
 You can try several things to ensure your repository is properly configured and connected in VS Code.
 
-### View the project in the GitLab Workflow extension
+### View the project in the GitLab for VS Code extension
 
-Start by ensuring the correct project is selected in the GitLab Workflow extension for VS Code.
+Start by ensuring the correct project is selected in the GitLab for VS Code extension.
 
-1. In VS Code, on the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+1. In VS Code, on the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
 1. Ensure the project is listed and selected.
 
 If an error message appears next to the project name, select it to reveal what needs to be updated.
@@ -98,7 +98,7 @@ To close projects:
 
 #### Git remote with SSH custom alias
 
-If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab Workflow extension might not correctly match your repository to your GitLab project.
+If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab for VS Code extension might not correctly match your repository to your GitLab project.
 
 To resolve this issue, you can:
 

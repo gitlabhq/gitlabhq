@@ -1,10 +1,11 @@
 <script>
 import { GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
-import { updateCacheAfterViewRemoval } from 'ee_else_ce/work_items/list/utils';
+import { updateCacheAfterViewRemoval, reorderSavedView } from 'ee_else_ce/work_items/list/utils';
 import workItemSavedViewDelete from '~/work_items/graphql/delete_saved_view.mutation.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
@@ -19,6 +20,7 @@ export default {
     WorkItemsCreateSavedViewDropdown,
     WorkItemsSavedViewSelector,
     GlDisclosureDropdown,
+    VueDraggable,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
@@ -56,6 +58,8 @@ export default {
     return {
       visibleViews: [],
       overflowedViews: [],
+      isDragging: false,
+      draggedIndex: null,
     };
   },
   computed: {
@@ -78,6 +82,9 @@ export default {
     },
     activeViewId() {
       return this.$route.params.view_id;
+    },
+    isDraggingDisabled() {
+      return this.visibleViews.length <= 1;
     },
   },
   watch: {
@@ -171,7 +178,45 @@ export default {
       this.visibleViews = visible;
       this.overflowedViews = overflowed;
     },
-    onOverflowViewClick(view) {
+    onDragUpdate(views) {
+      this.visibleViews = views;
+    },
+    async onDragChange({ moved }) {
+      if (!moved) return;
+
+      const { newIndex, element: movedView } = moved;
+
+      try {
+        if (newIndex === 0) {
+          await reorderSavedView({
+            apolloClient: this.$apollo,
+            movedView,
+            referenceView: this.visibleViews[1],
+            position: 'before',
+            fullPath: this.fullPath,
+          });
+        } else {
+          await reorderSavedView({
+            apolloClient: this.$apollo,
+            movedView,
+            referenceView: this.visibleViews[newIndex - 1],
+            position: 'after',
+            fullPath: this.fullPath,
+          });
+        }
+      } catch (e) {
+        this.$emit('error', e, s__('WorkItem|An error occurred while reordering work items.'));
+      }
+    },
+    onDragStart(evt) {
+      this.isDragging = true;
+      this.draggedIndex = evt.oldIndex;
+    },
+    onDragEnd() {
+      this.isDragging = false;
+      this.draggedIndex = null;
+    },
+    async onOverflowViewClick(view) {
       const overflowIndex = this.overflowedViews.findIndex((item) => item.name === view.name);
 
       const [selectedOverflowView] = this.overflowedViews.splice(overflowIndex, 1);
@@ -182,6 +227,33 @@ export default {
 
       const id = getIdFromGraphQLId(view.id).toString();
       this.$router.push({ name: ROUTES.savedView, params: { view_id: id }, query: undefined });
+
+      await this.reorderViewAfterOverflowSwap(selectedOverflowView);
+    },
+    async reorderViewAfterOverflowSwap(movedView) {
+      try {
+        if (this.visibleViews.length <= 1) {
+          const firstView = this.savedViews.find((v) => v.id !== movedView.id);
+          await reorderSavedView({
+            apolloClient: this.$apollo,
+            movedView,
+            referenceView: firstView,
+            position: 'before',
+            fullPath: this.fullPath,
+          });
+        } else {
+          const secondToLast = this.visibleViews[this.visibleViews.length - 2];
+          await reorderSavedView({
+            apolloClient: this.$apollo,
+            movedView,
+            referenceView: secondToLast,
+            position: 'after',
+            fullPath: this.fullPath,
+          });
+        }
+      } catch (e) {
+        this.$emit('error', e, s__('WorkItem|An error occurred while reordering work items.'));
+      }
     },
     getNextNearestView(viewIndex) {
       if (this.savedViews.length <= 1) return null;
@@ -289,6 +361,14 @@ export default {
       }
     },
   },
+  dragOptions: {
+    animation: 200,
+    ghostClass: 'gl-invisible',
+    forceFallback: true,
+    fallbackClass: 'gl-hidden',
+    tag: 'ul',
+    fallbackTolerance: 3,
+  },
 };
 </script>
 
@@ -312,11 +392,26 @@ export default {
         {{ $options.i18n.defaultViewTitle }}
       </button>
 
-      <ul ref="viewsContainer" class="gl-mb-0 gl-flex gl-flex-nowrap gl-overflow-hidden gl-p-0">
+      <vue-draggable
+        ref="viewsContainer"
+        :value="visibleViews"
+        :disabled="isDraggingDisabled"
+        v-bind="$options.dragOptions"
+        item-key="id"
+        class="gl-mb-0 gl-flex gl-flex-nowrap gl-p-0"
+        :class="{ 'gl-overflow-hidden': !isDragging }"
+        @start="onDragStart"
+        @end="onDragEnd"
+        @change="onDragChange"
+        @input="onDragUpdate"
+      >
         <li
-          v-for="view in visibleViews"
+          v-for="(view, index) in visibleViews"
           :key="view.id"
-          class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
+          class="js-saved-view-tab gl-flex gl-shrink-0 gl-whitespace-nowrap"
+          :class="{
+            'gl-bg-gray-50': index === draggedIndex && isDragging,
+          }"
           data-testid="visible-view-selector"
         >
           <work-items-saved-view-selector
@@ -325,11 +420,12 @@ export default {
             :sort-key="sortKey"
             :filters="filters"
             :display-settings="displaySettings"
+            :class="{ 'gl-pointer-events-none': isDragging }"
             @unsubscribe-saved-view="handleUnsubscribeFromView"
             @delete-saved-view="handleDeleteView"
           />
         </li>
-      </ul>
+      </vue-draggable>
 
       <!-- Hidden container for measuring all view widths -->
       <ul

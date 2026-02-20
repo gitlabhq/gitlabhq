@@ -2,10 +2,10 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Troubleshooting the GitLab Workflow extension for VS Code
+title: Troubleshooting the GitLab for VS Code extension
 ---
 
-If you encounter any issues with the GitLab Workflow extension for VS Code, or have feature requests for it:
+If you encounter any issues with the GitLab for VS Code extension, or have feature requests for it:
 
 1. Check the [extension documentation](_index.md)
    for known issues and solutions.
@@ -34,7 +34,7 @@ Both the VS Code Extension and the GitLab Language Server provide logs that can 
 To view debug logs from either the VS Code Extension or the GitLab Language Server:
 
 1. Use the command `GitLab: Show Extension Logs` to view the output panel.
-1. In the upper-right corner of the output panel, select either **GitLab Workflow** or
+1. In the upper-right corner of the output panel, select either **GitLab** or
    **GitLab Language Server** from the dropdown list.
 
 ## Error: `407 Access Denied` failure with a proxy
@@ -80,7 +80,7 @@ To disable system certificates:
 
 ## HTTPS project cloning works but SSH cloning fails
 
-This problem happens in VS Code when your SSH URL host or path is different from your HTTPS path. The GitLab Workflow extension uses:
+This problem happens in VS Code when your SSH URL host or path is different from your HTTPS path. The GitLab for VS Code extension uses:
 
 - The host to match the account that you set up.
 - The path to get the namespace and project name.
@@ -95,7 +95,7 @@ Both have the `gitlab.com` and `gitlab-org/gitlab-vscode-extension` path.
 To fix this problem, check if your SSH URL is on a different host, or if it has extra segments in a path.
 If either is true, you can manually assign a Git repository to a GitLab project:
 
-1. In VS Code, on the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+1. In VS Code, on the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
 1. Select the project marked `(no GitLab project)`, then select **Manually assign GitLab project**:
    ![Assign GitLab project manually](img/manually_assign_v15_3.png)
 1. Select the correct project from the list.
@@ -110,18 +110,18 @@ To troubleshoot GitLab Duo errors in VS Code:
 
 1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
 1. Review diagnostics output:
-      1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
-         <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-      1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
+   1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
+      <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
 1. If the diagnostics indicate that the feature is not enabled:
-      1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
-      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-      1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
+   1. On the left sidebar in VS Code, select **Extensions** > **GitLab**.
+   1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+   1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
    default GitLab Duo namespace in the extension:
-      1. Select **Extensions** > **GitLab**.
-      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-      1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
+   1. Select **Extensions** > **GitLab**.
+   1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+   1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
 
 For additional support:
 
@@ -159,7 +159,7 @@ For updates on a permanent solution, see
 Error messages like these can occur on both macOS and Ubuntu:
 
 ```plaintext
-GitLab Workflow can't access the OS Keychain.
+The GitLab extension can't access the OS Keychain.
 If you use Ubuntu, see this existing issue.
 ```
 
@@ -188,7 +188,7 @@ When you install VS Code with `snap` in Ubuntu 20.04 and 22.04, VS Code can't re
 OS keychain. Extension versions 3.44.0 and later use the OS keychain for secure token storage.
 A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.68.0:
 
-- You can downgrade the GitLab Workflow extension to version 3.43.1.
+- You can downgrade the GitLab for VS Code extension to version 3.43.1.
 - You can install VS Code from the `.deb` package, rather than `snap`:
   1. Uninstall the `snap` VS Code.
   1. Install VS Code from the [`.deb` package](https://code.visualstudio.com/Download).
@@ -232,7 +232,7 @@ To resolve this, manually enter an `http` URL for your instance when you run the
 
 ## Required information for support
 
-Before contacting Support, make sure the latest GitLab Workflow extension is installed. All releases
+Before contacting Support, make sure the latest GitLab for VS Code extension is installed. All releases
 are available on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 under the **Version History** tab.
 
@@ -256,6 +256,6 @@ Gather this information from affected users, and provide it in your bug report:
    - Is Code Suggestions working?
    - Does GitLab Duo Chat in the Web IDE return responses?
 1. Perform extension isolation testing as described in the
-   [GitLab Workflow Extension Isolation Guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing).
+   [GitLab for VS Code extension isolation guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing).
    Try disabling (or uninstalling) all other extensions to determine if another extension is causing
    the issue. This helps determine if the problem is with our extension, or from an external source.

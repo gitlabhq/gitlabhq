@@ -86,7 +86,7 @@ The URL of the result contains a feed token and the list of projects that have t
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To assign topics to a project:
 

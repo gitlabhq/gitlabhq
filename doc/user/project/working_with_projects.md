@@ -251,7 +251,7 @@ Use the project general settings to edit your project details.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
@@ -296,7 +296,7 @@ If you haven't uploaded an avatar to your project settings, GitLab looks for a f
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
 - The file must be named `logo` with the extension `.png`, `.jpg`, or `.gif`. For example, `logo.gif`.
 
@@ -309,7 +309,7 @@ To add a logo file to use as your project avatar:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
 - The image must be one of the following file types:
   - `.bmp`

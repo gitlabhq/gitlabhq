@@ -76,13 +76,13 @@ specifically the token system. To resolve the issue:
 The following documentation is for Code Suggestions-specific troubleshooting for
 VS Code.
 
-For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/troubleshooting.md).
+For all other GitLab for VS Code troubleshooting, see [troubleshooting the GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/troubleshooting.md).
 
 ### Suggestions not displayed in VS Code or GitLab Web IDE
 
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
-1. On the left sidebar, select **Extensions** > **GitLab Workflow**.
+1. On the left sidebar, select **Extensions** > **GitLab**.
 1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
 1. In **GitLab** > **Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
@@ -91,12 +91,12 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 
 If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
-1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
+1. In your IDE, in the GitLab for VS Code **Extension Settings**, enable **GitLab: Debug**.
    - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
 1. On the top menu, select **View** > **Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
-   - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
-1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
+   - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab**.
+1. In the GitLab for VS Code **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
 
 ### Disable streaming of code generation results
 
@@ -128,7 +128,7 @@ as taking longer to resolve. To disable streaming:
 
 {{< /history >}}
 
-To reduce latency, the GitLab Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
+To reduce latency, the GitLab for VS Code extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
 bypassing the GitLab instance. This network connection does not use the proxy and certificate settings of the VS Code extension.
 
 If your GitLab instance doesn't support direct connections, or your network prevents the extension from connecting to

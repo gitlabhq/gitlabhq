@@ -60,7 +60,7 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](http
 For Visual Studio Code (VS Code) or VSCodium:
 
 - Install [VS Code](https://code.visualstudio.com/download) or [VSCodium](https://vscodium.com/).
-- Install and set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+- Install and set up the GitLab for VS Code extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - For MCP support, install version 6.28.2 and later.
   - For workspace and user configuration, install version 6.35.6 and later.
@@ -87,7 +87,7 @@ The GitLab Language Server loads and merges the configuration files.
 
 ### Version compatibility
 
-| GitLab Workflow extension version | MCP features available |
+| GitLab for VS Code version | MCP features available |
 |-----------------------------------|------------------------|
 | 6.28.2 - 6.35.5  | Basic MCP support, with no workspace or user configuration |
 | 6.35.6 and later | Full MCP support, including workspace and user configuration |
@@ -285,13 +285,13 @@ For more information about available tools, see the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab Workflow extension for VS Code 6.55.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab for VS Code extension 6.55.0.
 
 {{< /history >}}
 
 Prerequisites:
 
-- Have the GitLab Workflow extension for VS Code 6.55.0 or later installed.
+- Have the GitLab for VS Code extension 6.55.0 or later installed.
 - Have at least one MCP server configured in your user or workspace configuration.
 
 To view the status of your configured MCP servers:
@@ -391,4 +391,4 @@ Improvements to resolving `PATH` are tracked in [issue 1345](https://gitlab.com/
 
 ### Troubleshooting MCP in VS Code
 
-For troubleshooting information, see [troubleshooting the GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/troubleshooting.md).
+For troubleshooting information, see [troubleshooting the GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/troubleshooting.md).

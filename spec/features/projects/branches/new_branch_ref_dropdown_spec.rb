@@ -17,7 +17,8 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :source_code_ma
     visit new_project_branch_path(project)
   end
 
-  it 'finds a tag in a list' do
+  it 'finds a tag in a list',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
     tag_name = 'v1.0.0'
 
     filter_by(tag_name)

@@ -201,7 +201,7 @@ To view the security widget:
 
 For more details, see [View security scan results in merge requests](security_scanning_results.md).
 
-#### VS Code integration with GitLab Workflow extension
+#### VS Code integration
 
 Developers can view security findings directly in their IDE.
 
@@ -211,12 +211,12 @@ Prerequisites:
 
 To view security findings in VS Code:
 
-1. Install the GitLab Workflow extension for VS Code.
+1. Install the GitLab for VS Code extension.
 1. Connect the extension to your GitLab instance.
 1. Use the extension to view security findings without leaving your development environment.
 
 For more details, see
-[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
+[GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md).
 
 ## Vulnerability management workflow
 

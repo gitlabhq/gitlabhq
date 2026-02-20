@@ -376,10 +376,22 @@ Grants the ability to create and read repository storage moves.
 | ------ | ------ | ------ | ---- |
 | Manage | Project | `POST` | `/projects/:id/repository_storage_moves` |
 | Manage | Group | `POST` | `/groups/:id/repository_storage_moves` |
+| Manage | Instance | `POST` | `/project_repository_storage_moves` |
+| Manage | Instance | `POST` | `/snippet_repository_storage_moves` |
+| Manage | Instance | `POST` | `/snippets/:id/repository_storage_moves` |
+| Manage | Instance | `POST` | `/group_repository_storage_moves` |
 | Read | Project | `GET` | `/projects/:id/repository_storage_moves` |
 | Read | Project | `GET` | `/projects/:id/repository_storage_moves/:repository_storage_move_id` |
 | Read | Group | `GET` | `/groups/:id/repository_storage_moves` |
 | Read | Group | `GET` | `/groups/:id/repository_storage_moves/:repository_storage_move_id` |
+| Read | Instance | `GET` | `/project_repository_storage_moves` |
+| Read | Instance | `GET` | `/project_repository_storage_moves/:repository_storage_move_id` |
+| Read | Instance | `GET` | `/snippet_repository_storage_moves` |
+| Read | Instance | `GET` | `/snippet_repository_storage_moves/:repository_storage_move_id` |
+| Read | Instance | `GET` | `/snippets/:id/repository_storage_moves` |
+| Read | Instance | `GET` | `/snippets/:id/repository_storage_moves/:repository_storage_move_id` |
+| Read | Instance | `GET` | `/group_repository_storage_moves` |
+| Read | Instance | `GET` | `/group_repository_storage_moves/:repository_storage_move_id` |
 
 #### Resource Group
 
@@ -958,6 +970,8 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Delete | Group | `DELETE` | `/virtual_registries/packages/maven/upstreams/:id/cache` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/maven/cache_entries/*id` |
+| Delete | Group | `DELETE` | `/virtual_registries/packages/npm/remote/cache_entries/*id` |
+| Read | Group | `GET` | `/virtual_registries/packages/npm/remote/upstreams/:id/cache_entries` |
 | Read | Group | `GET` | `/virtual_registries/packages/maven/upstreams/:id/cache_entries` |
 | Read | Group | `GET` | `/virtual_registries/packages/maven/upstreams/:id/test` |
 | Read | Group | `GET` | `/virtual_registries/packages/maven/upstreams/:id` |

@@ -96,6 +96,7 @@ import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_save
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
+import workItemSavedViewReorder from '~/work_items/graphql/reorder_saved_view.mutation.graphql';
 
 /**
  * Get the types of work items that should be displayed on issues lists.
@@ -1169,5 +1170,81 @@ export const subscribeWithLimitEnforce = async ({
     view,
     cache: apolloClient,
     fullPath: namespacePath,
+  });
+};
+
+export const updateCacheAfterViewReorder = ({
+  cache,
+  movedView,
+  referenceView,
+  position,
+  fullPath,
+}) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      // Remove the moved view from its current position
+      const movedIndex = savedViews.findIndex((v) => v.id === movedView.id);
+      if (movedIndex === -1) return;
+
+      const [removed] = savedViews.splice(movedIndex, 1);
+
+      // Find the reference view and insert relative to it
+      const referenceIndex = savedViews.findIndex((v) => v.id === referenceView.id);
+      if (referenceIndex === -1) {
+        // If reference not found, append at end
+        savedViews.push(removed);
+        return;
+      }
+
+      const insertIndex = position === 'before' ? referenceIndex : referenceIndex + 1;
+      savedViews.splice(insertIndex, 0, removed);
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
+export const reorderSavedView = async ({
+  apolloClient,
+  movedView,
+  referenceView,
+  position,
+  fullPath,
+}) => {
+  const input = { id: movedView.id };
+
+  if (position === 'before') {
+    input.moveBeforeId = referenceView.id;
+  } else {
+    input.moveAfterId = referenceView.id;
+  }
+
+  await apolloClient.mutate({
+    mutation: workItemSavedViewReorder,
+    variables: { input },
+    update: (cache) =>
+      updateCacheAfterViewReorder({
+        cache,
+        movedView,
+        referenceView,
+        position,
+        fullPath,
+      }),
   });
 };

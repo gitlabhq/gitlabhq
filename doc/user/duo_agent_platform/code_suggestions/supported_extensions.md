@@ -22,7 +22,7 @@ To use Code Suggestions, use one of these editor extensions:
 
 | IDE                                                             | Extension |
 |-----------------------------------------------------------------|-----------|
-| Visual Studio Code (VS Code)                                    | [GitLab Workflow for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
+| Visual Studio Code (VS Code)                                    | [GitLab for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
 | [GitLab Web IDE (VS Code in the Cloud)](../../../user/project/web_ide/_index.md) | No configuration required. |
 | Microsoft Visual Studio (2022 for Windows)                      | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
 | JetBrains IDEs                                                  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
@@ -88,16 +88,16 @@ Code Suggestions works with infrastructure-as-code interfaces, including:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#4210-2024-07-16) in GitLab Workflow for VS Code 4.21.0
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#4210-2024-07-16) in GitLab for VS Code 4.21.0
 
 {{< /history >}}
 
 You can customize your coding experience in VS Code by enabling or disabling Code Suggestions for specific supported languages.
 You can do this by editing your `settings.json` file directly, or from the VS Code user interface:
 
-1. In VS Code, open the extension settings for **GitLab Workflow**:
+1. In VS Code, open the extension settings for **GitLab**:
    1. On the top bar, go to **Code** > **Settings** > **Extensions**.
-   1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
+   1. Search for **GitLab** in the list, and select **Manage** ({{< icon name="settings" >}}).
    1. Select **Extension Settings**.
 1. In your **User** settings, find the section titled **AI Assisted Code Suggestions: Enabled Supported Languages**.
 1. To enable Code Suggestions for a language, select its checkbox.
@@ -119,8 +119,7 @@ However, Code Suggestions might not function as expected.
 
 Prerequisites:
 
-- You have installed and enabled the
-  [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
+- You have installed and enabled [GitLab for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
 - You have completed the [VS Code extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
   instructions, and authorized the extension to access your GitLab account.
 
@@ -129,9 +128,9 @@ To do this:
 1. Find your desired language in the list of
    [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
    You need the **Identifier** for your languages in a later step.
-1. In VS Code, open the extension settings for **GitLab Workflow**:
+1. In VS Code, open the extension settings for **GitLab**:
    1. On the top bar, go to **Code** > **Settings** > **Extensions**.
-   1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
+   1. Search for **GitLab** in the list, and select **Manage** ({{< icon name="settings" >}}).
    1. Select **Extension Settings**.
    1. In your **User** settings, find
       **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.

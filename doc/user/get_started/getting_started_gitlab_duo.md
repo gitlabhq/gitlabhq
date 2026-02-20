@@ -77,7 +77,7 @@ For more information, see:
 
 - [Supported extensions and languages](../project/repository/code_suggestions/supported_extensions.md).
 - [Turn on Code Suggestions (Classic)](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
-- [Troubleshoot GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
+- [Troubleshoot GitLab for VS Code extension](../../editor_extensions/visual_studio_code/troubleshooting.md).
 - [Troubleshoot GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
 - [Troubleshoot GitLab extension for Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
 - [Troubleshoot GitLab plugin for Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).

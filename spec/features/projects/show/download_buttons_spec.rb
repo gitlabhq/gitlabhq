@@ -35,6 +35,8 @@ RSpec.describe 'Projects > Show > Download buttons', feature_category: :source_c
   end
 
   describe 'when checking project main page' do
-    it_behaves_like 'archive download buttons'
+    it_behaves_like 'archive download buttons' do
+      let(:button_test_id) { 'code-dropdown' }
+    end
   end
 end

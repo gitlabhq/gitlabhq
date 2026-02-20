@@ -43,7 +43,7 @@ You can also run security scanning by:
 - Scheduling security scanning by using a [scan execution policy](../policies/scan_execution_policies.md).
 - For DAST only, running an [on-demand DAST scan manually](../dast/on-demand_scan.md) or
   [on a schedule](../../../ci/pipelines/schedules.md).
-- For SAST only, running a scan by using the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md#perform-sast-scanning).
+- For SAST only, running a scan by using the [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md#perform-sast-scanning).
 
 ### Detection coverage
 

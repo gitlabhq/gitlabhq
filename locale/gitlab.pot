@@ -2573,9 +2573,6 @@ msgstr ""
 msgid "AICatalog|Agent enabled in %{name}."
 msgstr ""
 
-msgid "AICatalog|Agent enabled in %{targetType}."
-msgstr ""
-
 msgid "AICatalog|Agent hidden."
 msgstr ""
 
@@ -2792,6 +2789,9 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
+msgid "AICatalog|Enable %{itemType}"
+msgstr ""
+
 msgid "AICatalog|Enable %{itemType} in a %{targetType}"
 msgstr ""
 
@@ -2808,9 +2808,6 @@ msgid "AICatalog|Enable flow from group"
 msgstr ""
 
 msgid "AICatalog|Enable flow in your project"
-msgstr ""
-
-msgid "AICatalog|Enable in group"
 msgstr ""
 
 msgid "AICatalog|Excessive resource usage"
@@ -2889,9 +2886,6 @@ msgid "AICatalog|Flow does not exist"
 msgstr ""
 
 msgid "AICatalog|Flow enabled in %{name}."
-msgstr ""
-
-msgid "AICatalog|Flow enabled in %{targetType}."
 msgstr ""
 
 msgid "AICatalog|Flow hidden."
@@ -3168,9 +3162,6 @@ msgid "AICatalog|There was a problem fetching flows."
 msgstr ""
 
 msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
-msgstr ""
-
-msgid "AICatalog|This %{itemType} requires approval from your parent group owner before it can be used"
 msgstr ""
 
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
@@ -68059,6 +68050,9 @@ msgstr ""
 msgid "TagsPage|protected"
 msgstr ""
 
+msgid "Tailor your views list"
+msgstr ""
+
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
@@ -69327,6 +69321,9 @@ msgid "The value must match the defined regular expression."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"
+msgstr ""
+
+msgid "The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs."
 msgstr ""
 
 msgid "The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk."

@@ -40,7 +40,7 @@ gitlab-remote://gitlab.com/<label>?project=278964&ref=master
 
 ## Clone a Git project
 
-GitLab Workflow extends the `Git: Clone` command. For GitLab projects, it supports cloning with either
+GitLab for VS Code extends the `Git: Clone` command. For GitLab projects, it supports cloning with either
 HTTPS or Git URLs.
 
 Prerequisites:

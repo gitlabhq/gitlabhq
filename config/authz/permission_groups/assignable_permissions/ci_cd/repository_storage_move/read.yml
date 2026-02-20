@@ -5,4 +5,5 @@ permissions:
   - read_repository_storage_move
 boundaries:
   - group
+  - instance
   - project

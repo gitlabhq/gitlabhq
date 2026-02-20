@@ -183,7 +183,7 @@ After you change a path, you must update the existing URL in the following resou
 
 ## Related topics
 
-- [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md)
+- [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
 - [Files](files/_index.md)

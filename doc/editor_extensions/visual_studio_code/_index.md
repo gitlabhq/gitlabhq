@@ -2,12 +2,12 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
-title: GitLab Workflow extension for VS Code
+description: Use the GitLab for VS Code extension to handle common GitLab tasks directly in VS Code.
+title: GitLab for VS Code extension
 ---
 
-The [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE.
+The [GitLab for VS Code extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+integrates GitLab Duo and other GitLab features directly into your IDE.
 
 To get started, [install and configure the extension](setup.md). For added security, you can set up
 the extension in a Visual Studio Code Dev Container.
@@ -24,7 +24,7 @@ When configured, this extension brings the GitLab features you use every day dir
 - View security findings.
 - Perform SAST scanning.
 
-The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
+The GitLab for VS Code extension also streamlines your VS Code workflow with AI-assisted features:
 
 - [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) including GitLab Duo
   Chat (Agentic), agents, the Software Development Flow, and GitLab Duo Code Suggestions.
@@ -42,7 +42,7 @@ When you view a GitLab project in VS Code, the extension shows you information a
 
 After you install and set up the extension, you can access the following features:
 
-- On the left sidebar, **GitLab Workflow** ({{< icon name="tanuki" >}}): Manage issues and merge
+- On the left sidebar, **GitLab** ({{< icon name="tanuki" >}}): Manage issues and merge
   requests, run CI/CD commands, view pipeline status, and perform security scanning.
   You can also extend your view with [custom queries](custom_queries.md).
 - On the left sidebar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
@@ -60,7 +60,7 @@ If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab
 
 ## Switch GitLab accounts in VS Code
 
-The GitLab Workflow extension uses one account for each
+The GitLab for VS Code extension uses one account for each
 [VS Code Workspace](https://code.visualstudio.com/docs/editor/workspaces) (window). The extension
 automatically selects the account when:
 
@@ -97,7 +97,7 @@ In these cases, the extension adds a **(multiple projects)** label to show you m
 
 To select an account:
 
-1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests**.
 1. Select the line containing **(multiple projects, click to select)**.
 1. Select your desired project:
@@ -110,7 +110,7 @@ The **Issues and Merge requests** list updates with your selected project's info
 
 To change your project selection:
 
-1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests** to show the project list.
 1. Select the project.
 1. Next to the project name, select **Clear Selected Project** ({{< icon name="close-xs" >}}).
@@ -179,7 +179,7 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 
 To view issues and merge requests for a specific project:
 
-1. On the menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
+1. On the menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. On the sidebar, expand **Issues and merge requests**.
 1. Select your desired project to expand it.
 1. Choose one of the following result types:
@@ -222,7 +222,7 @@ GitLab opens the **New merge request** page in your default browser.
 
 Use this extension to review, comment on, and approve merge requests without leaving VS Code:
 
-1. In the GitLab Workflow sidebar, expand **Issues and Merge Requests**, and select your project.
+1. On the **GitLab** sidebar, expand **Issues and Merge Requests**, and select your project.
 1. Select the merge request you want to review. Its sidebar entry expands with more information.
 1. Under the merge request's number and title, select **Description** to read more about the merge request.
 1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
@@ -274,7 +274,7 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 
 Prerequisites:
 
-- You're using GitLab Workflow version 3.74.0 or later.
+- You're using GitLab for VS Code version 3.74.0 or later.
 - Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
   static application security testing (SAST), dynamic application security testing (DAST),
   container scanning, or dependency scanning.
@@ -282,7 +282,7 @@ Prerequisites:
 
 To view security findings:
 
-1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. On the sidebar, expand **Security scanning**.
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.
@@ -318,7 +318,7 @@ To learn about setting up SAST scanning, see
 
 Prerequisites:
 
-- You're using GitLab Workflow version 5.31.0 or later.
+- You're using GitLab for VS Code version 5.31.0 or later.
 - You've [authenticated with GitLab](setup.md#authenticate-with-gitlab).
 - You've selected the [**Enable Real-time SAST scan checkbox**](setup.md#code-security).
 
@@ -337,7 +337,7 @@ To perform SAST scanning of a file in VS Code:
         <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
-   1. Select GitLab Workflow ({{< icon name="tanuki" >}}) to display the extension sidebar.
+   1. Select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a
@@ -355,7 +355,7 @@ Advanced Search provides faster, more efficient search across the entire GitLab 
 Prerequisites:
 
 - You're a member of a GitLab project.
-- You've installed the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- You've installed [GitLab for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 - You've signed in to your GitLab instance, as described in [Authenticate with GitLab](setup.md#authenticate-with-gitlab).
 
 To search the titles and description fields in your project:
@@ -424,21 +424,21 @@ or **Accept Next Line Of Inline Suggestion**:
 To update your extension to the latest version:
 
 1. In Visual Studio Code, go to **Settings** > **Extensions**.
-1. Search for **GitLab Workflow** published by **GitLab (`gitlab.com`)**.
-1. From **Extension: GitLab Workflow**, select **Update to {later version}**.
+1. Search for **GitLab** published by **GitLab (`gitlab.com`)**.
+1. From **Extension: GitLab**, select **Update to {later version}**.
 1. Optional. To enable automatic updates in the future, select **Auto-Update**.
 
 ## Check status
 
 1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki" >}}).
-1. A menu opens under the VS Code search box, and the GitLab Workflow extension shows the status
-   of the extension. Any errors are displayed next to **Status:**.
+1. A menu opens under the VS Code search box, and the GitLab for VS Code extension shows the status.
+   Any errors are displayed next to **Status:**.
 
 For GitLab Duo Chat (Classic), you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
 
 ## Enable telemetry
 
-GitLab Workflow extension uses the telemetry settings in Visual Studio Code to send usage and error
+GitLab for VS Code uses the telemetry settings in Visual Studio Code to send usage and error
 information to GitLab. To enable or customize telemetry in Visual Studio Code:
 
 1. In Visual Studio Code, go to **File** > **Preferences** > **Settings** (on Windows/Linux) or **Code** > **Settings** > **Settings** (on macOS).
@@ -454,7 +454,7 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
 ## Related topics
 
 - [Security considerations for editor extensions](../security_considerations.md)
-- [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)
-- [Download the GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+- [Troubleshooting the GitLab for VS Code extension](troubleshooting.md)
+- [Download the GitLab for VS Code extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - Extension [source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)
 - [GitLab Language Server documentation](../language_server/_index.md)

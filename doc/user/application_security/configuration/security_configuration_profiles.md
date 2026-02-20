@@ -21,6 +21,9 @@ title: Managing security configuration profiles
 Security configuration profiles are centralized settings that define how and when security scanners run across your projects. 
 Use security configuration profiles to manage security scanners across your organization efficiently. A profile-based approach applies best practices with minimal manual setup.
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [Introducing security configuration profiles](https://www.youtube.com/watch?v=XYMKhhtRvwA).
+
 Profiles use inheritance.
 Security attributes and coverage that you manage for a group can also apply to it's subgroups and projects, unless the coverage is changed for the individual subgroup or project. 
 

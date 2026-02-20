@@ -34,7 +34,7 @@ The following GitLab projects use TypeScript:
 When setting up a new TypeScript project, configure strict type-safety rules for
 ESLint and TypeScript. This ensures that the project remains as type-safe as possible.
 
-The [GitLab Workflow Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)
+The [GitLab for VS Code extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)
 project is a good model for a TypeScript project's boilerplate and configuration.
 Consider copying the `tsconfig.json` and `.eslintrc.json` from there.
 
@@ -210,4 +210,4 @@ const doThing = (foo: Foo) => {
 ## Related topics
 
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
-- [TypeScript notes in GitLab Workflow Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/developer/coding-guidelines.md?ref_type=heads#typescript)
+- [TypeScript notes in GitLab for VS Code extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/developer/coding-guidelines.md?ref_type=heads#typescript)

@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: denisra
   stage: gitlab-delivery
-  issue_url: https://gitlab.com/gitlab-com/Product/-/work_items/14395
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/590802
   check_impact:
   impact: low
   impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=major_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=major&pipeline_impact=none&compliance_impact=none&availability_impact=major&authorization_impact=none&API_impact=none

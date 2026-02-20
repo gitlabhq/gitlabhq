@@ -49,7 +49,7 @@ When a file or directory is locked by a user:
 
 ### Permissions
 
-You must have at least the Developer role for the project to create, view, or manage
+You must have the Developer, Maintainer, or Owner role for the project to create, view, or manage
 default branch locks. For more information, see [roles and permissions](../permissions.md).
 
 ### Lock a file or directory
@@ -104,7 +104,7 @@ Prerequisites:
 
 - You must either:
   - Be the user who created the lock.
-  - Have at least the Maintainer role for the project.
+  - Have the Maintainer or Owner role for the project.
 
 To remove a lock:
 

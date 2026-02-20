@@ -32,7 +32,7 @@ This feature evolved out of [protected branches](repository/branches/protected.m
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
@@ -199,7 +199,7 @@ The tag remains in the repository but is no longer protected.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To unprotect a tag:
 
@@ -209,7 +209,7 @@ To unprotect a tag:
 1. Next to the protected tag rule you want to remove, select **Unprotect**.
 
 > [!warning]
-> After you unprotect a tag pattern, any user with at least the Developer role
+> After you unprotect a tag pattern, any user with the Developer, Maintainer, or Owner role
 > can delete tags matching that pattern.
 
 ## Delete a protected tag

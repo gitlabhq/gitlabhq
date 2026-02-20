@@ -114,7 +114,7 @@ most recent conversation, and that conversation is still active in the Chat draw
 
 Prerequisites:
 
-- [Install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
+- [Install and configure the GitLab for VS Code extension](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
 - Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
 - Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
@@ -337,7 +337,7 @@ Prerequisites:
 
 - In your project, [an agent from the AI Catalog must be enabled](../duo_agent_platform/agents/custom.md#enable-an-agent).
 - You must be a member of the project the agent is enabled in.
-- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
+- For VS Code, [install and configure the GitLab for VS Code extension](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
 - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
 
 To select an agent:

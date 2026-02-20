@@ -2647,7 +2647,6 @@
       when: never
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:system-default-rules", rules]
-    - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 

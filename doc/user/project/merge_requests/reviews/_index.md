@@ -21,7 +21,7 @@ Reviewers can use any of these tools to review a merge request:
 
 - The GitLab interface.
 - Visual Studio Code, with the
-  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/_index.md).
+  [GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/_index.md).
 - A terminal window, with the [GitLab CLI](../../../../editor_extensions/gitlab_cli/_index.md).
 
 Approvals are one of several merge checks that ensure your merge request merges only when it's truly

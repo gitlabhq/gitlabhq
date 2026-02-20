@@ -63,7 +63,7 @@ or want to contribute to the development of our extensions:
 
 - [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)
 - [GitLab Duo (Classic)](../user/gitlab_duo/feature_summary.md)
-- [How we created a GitLab Workflow Extension for VS Code](https://about.gitlab.com/blog/use-gitlab-with-vscode/)
+- [How we created an extension for VS Code](https://about.gitlab.com/blog/use-gitlab-with-vscode/)
 - [GitLab for Visual Studio](https://about.gitlab.com/blog/gitlab-visual-studio-extension/)
 - [GitLab for JetBrains and Neovim](https://about.gitlab.com/blog/gitlab-jetbrains-neovim-plugins/)
 - [Put `glab` at your fingertips with the GitLab CLI](https://about.gitlab.com/blog/introducing-the-gitlab-cli/)

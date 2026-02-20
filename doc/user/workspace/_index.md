@@ -456,7 +456,7 @@ RUN mise install python@3.11 && mise use python@3.11
 
 {{< /history >}}
 
-The GitLab Workflow extension for VS Code is configured by default in workspaces.
+The GitLab for VS Code extension is configured by default in workspaces.
 
 With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
 This extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
@@ -493,7 +493,7 @@ For more information, see [configure VS Code Extension Marketplace](../../admini
 When you create a workspace, you get a personal access token that expires in 365 days
 with `write_repository` and `api` permissions.
 This token is used to clone the project initially, while starting the workspace,
-and to configure the GitLab Workflow extension for VS Code.
+and to configure the GitLab for VS Code extension.
 
 Any Git operation you perform in the workspace uses this token for authentication and authorization.
 Terminating the workspace revokes the token.

@@ -10,6 +10,7 @@ permissions:
   - delete_maven_virtual_registry
   - delete_maven_virtual_registry_upstream
   - delete_maven_virtual_registry_upstream_cache_entry
+  - delete_npm_virtual_registry_upstream_cache_entry
   - disassociate_container_virtual_registry_upstream
   - disassociate_maven_virtual_registry_upstream
   - purge_container_virtual_registry_cache

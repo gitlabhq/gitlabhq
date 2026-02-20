@@ -20,6 +20,7 @@ RSpec.describe 'Projects > Files > Download buttons in files tree', feature_cate
   end
 
   it_behaves_like 'archive download buttons' do
+    let(:button_test_id) { 'code-dropdown' }
     let(:path_to_visit) { project_tree_path(project, project.default_branch) }
   end
 end

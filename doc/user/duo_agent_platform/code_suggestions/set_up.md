@@ -50,7 +50,7 @@ To confirm, open your IDE and verify if Code Suggestions works.
 
 To verify that Code Suggestions is turned on in VS Code:
 
-1. In VS Code, go to **Settings** > **Extensions** > **GitLab Workflow**.
+1. In VS Code, go to **Settings** > **Extensions** > **GitLab**.
 1. Select **Manage** ({{< icon name="settings" >}}).
 1. Ensure that **GitLab** > **Duo Code Suggestions: Enabled** is selected.
 1. Optional. For **GitLab** > **Duo Code Suggestions: Enabled Supported Languages**,

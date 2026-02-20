@@ -1061,6 +1061,15 @@ rspec-ee system pg17 single-db-sec-connection:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db-sec-connection-ee", rules]
 
+rspec-ee system pg17 duo_workflow_service:
+  extends:
+    - rspec-ee system pg17
+  rules:
+    - !reference [".rails:rules:triggered-by-aigw-project", rules]
+  variables:
+    RSPEC_TAGS: "--tag duo_workflow_service"
+  parallel: 4
+
 # Integration tests with Elasticsearch and PG production versions
 # These run on merge requests which meet certain conditions and the nightly pipeline
 rspec-ee unit pg17 es8:

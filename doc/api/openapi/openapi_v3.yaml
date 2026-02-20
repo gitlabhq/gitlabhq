@@ -635,6 +635,90 @@ paths:
               required:
               - started_on
               - expires_on
+  "/api/v4/virtual_registries/packages/npm/remote/upstreams/{id}/cache_entries":
+    get:
+      operationId: getApiV4VirtualRegistriesPackagesNpmRemoteUpstreamsIdCacheEntries
+      summary: List npm virtual registry upstream cache entries
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                                    This feature is currently an experiment. \
+                                    This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesNpmCacheRemoteEntry"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+      - name: search
+        required: false
+        description: Search query
+        schema:
+          type: string
+        in: query
+        example: foo/bar/mypkg
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+  "/api/v4/virtual_registries/packages/npm/remote/cache_entries/*id":
+    delete:
+      operationId: deleteApiV4VirtualRegistriesPackagesNpmRemoteCacheEntries*id
+      summary: Delete a npm virtual registry upstream cache entry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                                  This feature is currently an experiment. \
+                                  This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: 'The base64-encoded cache entry identifier (format: "group_id
+          iid")'
+        schema:
+          type: string
+        in: query
+        example: MTIzNCA1Njc4
   "/api/v4/virtual_registries/packages/maven/{id}/*path":
     get:
       operationId: getApiV4VirtualRegistriesPackagesMavenId*path
@@ -90254,6 +90338,50 @@ components:
         trial:
           type: Boolean
           example: 'false'
+    APIEntitiesVirtualRegistriesPackagesNpmCacheRemoteEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MjMgNTAw
+        group_id:
+          type: integer
+          example: 1
+        upstream_id:
+          type: integer
+          example: 1
+        upstream_checked_at:
+          type: DateTime
+        file_md5:
+          type: string
+          example: d8e8fca2dc0f896fd7cb4cb0031ba249
+        file_sha1:
+          type: string
+          example: 4e1243bd22c66e76c2ba9eddc1f91394e57f9f83
+        size:
+          type: integer
+          example: 1
+        relative_path:
+          type: string
+          example: "/@scope/package/-/@scope/package-2026.11.02-t-14.15.3.tgz"
+        upstream_etag:
+          type: string
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c
+        content_type:
+          type: string
+          example: application/octet-stream
+        created_at:
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
+        updated_at:
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
+        downloads_count:
+          type: integer
+          example: 1
+        downloaded_at:
+          type: DateTime
+          example: '2025-11-11T13:25:29.935Z'
     APIEntitiesVirtualRegistriesPackagesMavenCacheRemoteEntry:
       type: object
       properties:

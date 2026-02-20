@@ -164,7 +164,7 @@ This issue occurs when CORS policies block required resources.
 
 To resolve this issue:
 
-1. Update to GitLab Workflow Extension version 6.35.1 or later.
+1. Update to GitLab for VS Code version 6.35.1 or later.
 1. Add `https://*.cdn.web-ide.gitlab-static.net` to your CORS policy.
 1. To troubleshoot further, check HAR files for logs. For more information, see
    [create HAR files](../../user/application_security/api_fuzzing/create_har_files.md).

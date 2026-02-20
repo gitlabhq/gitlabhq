@@ -2,11 +2,11 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Settings and commands in the GitLab Workflow extension for VS Code.
-title: GitLab Workflow extension settings and commands
+description: Settings and commands in the GitLab for VS Code extension.
+title: GitLab for VS Code extension settings and commands
 ---
 
-The GitLab Workflow extension for VS Code integrates with the VS Code Command Palette, extends existing
+The GitLab for VS Code extension integrates with the VS Code Command Palette, extends existing
 VS Code integrations with Git, and provides configuration options.
 
 ## Command Palette commands
@@ -65,9 +65,9 @@ This extension provides several sets of commands that you can trigger in the
 - `GitLab: Refresh Sidebar`
 - `GitLab: Show Extension Logs`
 - `GitLab: View Security Finding Details`
-- `GitLab Workflow: Focus on For current branch View`
-- `GitLab Workflow: Focus on Issues and Merge Requests View`
-- `GitLab: Diagnostics`: Open a detailed settings page for the GitLab Workflow extension.
+- `GitLab: Focus on For current branch View`
+- `GitLab: Focus on Issues and Merge Requests View`
+- `GitLab: Diagnostics`: Open a detailed settings page for the GitLab for VS Code extension.
 
 ## Command integrations
 

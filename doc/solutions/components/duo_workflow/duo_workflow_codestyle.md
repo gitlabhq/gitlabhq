@@ -38,7 +38,7 @@ For detailed information about GitLab Duo Workflow, review [the document here](.
 - **Enforces consistent style** across all Java codebases
 - **Automates style application** without manual effort
 - **Maintains code functionality** while improving readability
-- **Integrates with GitLab Workflow** for seamless implementation
+- **Integrates with GitLab for VS Code** for seamless implementation
 - **Reduces code review time** spent addressing style issues
 - **Serves as a learning tool** for developers to understand style guidelines
 
@@ -124,7 +124,7 @@ TARGET_FILES=asset-management-api/src/main/java/com/royal/reserve/bank/asset/man
 
 **⚠️ Important Disclaimer**:
 
-GitLab Workflow uses Agentic AI which is non-deterministic, meaning:
+GitLab for VS Code uses Agentic AI which is non-deterministic, meaning:
 
 - Results may vary between runs even with identical inputs
 - The AI assistant's understanding and application of style guidelines may differ slightly each time
@@ -165,7 +165,7 @@ Remember that this tool is meant to assist developers, not replace human judgmen
    - Fill in all configuration variables
    - Add any project-specific exceptions or requirements
 
-1. **Execute via GitLab Workflow**
+1. **Execute via GitLab for VS Code**
 
    - Submit the configured prompt to Duo Workflow
    - Duo Workflow will run through a multi-step process as seen in the sample workflow execution:
@@ -183,11 +183,11 @@ Remember that this tool is meant to assist developers, not replace human judgmen
    - Review the suggested changes
    - Implement the changes in your codebase
    - Run tests to ensure functionality is preserved
-   - Monitor the task progression through the GitLab Workflow interface
+   - Monitor the task progression through the GitLab for VS Code interface
 
 ## Sample Workflow Execution
 
-When properly configured, the GitLab Workflow will execute a detailed plan for applying the style guidelines. Here's a sample of what the workflow execution looks like:
+When properly configured, the GitLab for VS Code extension will execute a detailed plan for applying the style guidelines. Here's a sample of what the workflow execution looks like:
 
 ### Sample Workflow Plan
 

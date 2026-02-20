@@ -16,7 +16,7 @@ module Types
           experiment: { milestone: '18.8' }
 
         def can_roll_up
-          object.widget_options&.dig(object.widget_type.to_sym, :can_roll_up)
+          object.widget_options&.dig(:can_roll_up)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

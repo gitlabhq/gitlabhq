@@ -22,7 +22,7 @@ If you use the [pipeline editor](../pipeline_editor/_index.md), it verifies conf
 syntax automatically.
 
 If you use VS Code, you can validate your CI/CD configuration with the
-[GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md).
+[GitLab for VS Code extension](../../editor_extensions/visual_studio_code/_index.md).
 
 ## Check CI/CD syntax
 

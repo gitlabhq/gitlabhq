@@ -968,8 +968,8 @@ For API documentation and programmatic changes, use **[update](#update)**.
 Use lowercase **editor extensions** when referring to the broader category of extensions offered by
 GitLab. However, if the UI has different capitalization, make the documentation match the UI.
 
-Individual extensions have their own names. For example, GitLab for VS Code and
-[GitLab Duo Plugin for JetBrains IDEs](#gitlab-duo-plugin-for-jetbrains-ides).
+Individual extensions have their own names. For example, [GitLab for VS Code](#gitlab-for-vs-code-extension)
+and [GitLab Duo Plugin for JetBrains IDEs](#gitlab-duo-plugin-for-jetbrains-ides).
 
 Use:
 
@@ -1366,6 +1366,17 @@ Use **GitLab for Eclipse plugin** to refer to the editor extension.
 
 Use **Eclipse** to refer to the IDE.
 
+## GitLab for VS Code extension
+
+Use **GitLab for VS Code** to refer to the extension.
+
+After the first mention, you can use
+**GitLab extension**, **the VS Code extension**, or just **extension**.
+
+Do not use **GitLab Workflow for VS Code**, **GitLab Workflow**, or **workflow** to refer to the extension.
+
+For terms in VS Code, see [VS Code user interface](#vs-code-user-interface).
+
 ## GitLab Helm chart, GitLab chart
 
 To deploy a cloud-native version of GitLab, use:
@@ -1446,10 +1457,10 @@ Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the in
 
 ## GitLab Workflow extension for VS Code
 
-Use **GitLab Workflow extension for VS Code** to refer to the extension.
-You can also use **GitLab Workflow for VS Code** or **GitLab Workflow**.
+Do not use **GitLab Workflow extension for VS Code**, **GitLab Workflow for VS Code** or
+**GitLab Workflow**.
 
-For terms in VS Code, see [VS Code user interface](#vs-code-user-interface).
+The extension was renamed to [GitLab for VS Code](#gitlab-for-vs-code-extension).
 
 ## GraphiQL
 

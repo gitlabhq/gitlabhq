@@ -51,7 +51,7 @@ For deprecation reviewers (Technical Writers only):
 
 - Announced in GitLab 18.9
 - Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590799).
 
 The GitLab Helm chart bundles several Ingress controllers as an alternative to
 the default Envoy Gateway which uses the Kubernetes Gateway API.
@@ -71,7 +71,7 @@ Alternatively, you can deploy and configure an
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.1 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14395).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590802).
 
 In GitLab 19.1, we are removing Amazon Linux 2 (AL2) package builds for the Linux package.
 
@@ -186,7 +186,7 @@ This limit ensures consistent service quality and performance across GitLab.com 
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14411).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590801).
 
 We are ending support for SUSE distributions in GitLab 19.0. This affects:
 
@@ -226,7 +226,7 @@ to help you migrate.
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14319).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590798).
 
 In GitLab 19.0, we plan to remove bundled Mattermost from the Linux package.
 
@@ -295,7 +295,7 @@ If you're on GitLab Self-Managed or GitLab Dedicated, to find out if you're impa
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14404).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590796).
 
 In GitLab 19.0, we are removing [Spamcheck](https://docs.gitlab.com/administration/reporting/spamcheck/) from the
 Linux package and GitLab Helm chart.
@@ -316,7 +316,7 @@ No data migration is required. Configuration guidance is available in the linked
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590800).
 
 The GitLab Helm chart currently bundles NGINX Ingress as the default networking component. With
 NGINX Ingress reaching end-of-life in March 2026, we are transitioning to Gateway API with Envoy
@@ -356,7 +356,7 @@ For more information, see [Upgrade packaged PostgreSQL server](https://docs.gitl
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6271).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590797).
 
 The GitLab Helm chart bundles a Bitnami PostgreSQL, Bitnami Redis, and
 a fork of the official MinIO chart to make setting up GitLab easier. Because of several

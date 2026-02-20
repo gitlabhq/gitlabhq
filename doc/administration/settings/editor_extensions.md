@@ -19,7 +19,7 @@ Configure editor extensions settings for your GitLab instance.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab Workflow 6.47.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab for VS Code 6.47.0.
 
 {{< /history >}}
 

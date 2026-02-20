@@ -5,6 +5,7 @@ import { stubComponent } from 'helpers/stub_component';
 import WorkItemsOnboardingModal from '~/work_items/components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
 import Introduction from '~/work_items/components/work_items_onboarding_modal/animations/introduction.vue';
 import Filters from '~/work_items/components/work_items_onboarding_modal/animations/filters.vue';
+import Tabs from '~/work_items/components/work_items_onboarding_modal/animations/tabs.vue';
 import SaveView from '~/work_items/components/work_items_onboarding_modal/animations/save_view.vue';
 
 jest.useFakeTimers();
@@ -56,8 +57,8 @@ describe('WorkItemsOnboardingModal', () => {
       expect(findStepBody().text()).toContain('Epics, issues, and tasks are now work items');
     });
 
-    it('renders 3 step indicators', () => {
-      expect(findStepIndicators()).toHaveLength(3);
+    it('renders 4 step indicators', () => {
+      expect(findStepIndicators()).toHaveLength(4);
     });
 
     it('does not show Back button on first step', () => {
@@ -72,6 +73,7 @@ describe('WorkItemsOnboardingModal', () => {
       expect(findStepIndicators().at(0).classes()).toContain('gl-bg-neutral-950');
       expect(findStepIndicators().at(1).classes()).toContain('gl-bg-neutral-200');
       expect(findStepIndicators().at(2).classes()).toContain('gl-bg-neutral-200');
+      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-neutral-200');
     });
   });
 
@@ -83,6 +85,15 @@ describe('WorkItemsOnboardingModal', () => {
     });
 
     it('advances to step 3 when clicking Next twice', async () => {
+      await clickNext();
+      await clickNext();
+
+      expect(wrapper.findComponent(Tabs).exists()).toBe(true);
+      expect(findStepTitle().text()).toBe('Tailor your views list');
+    });
+
+    it('advances to step 4 when clicking Next three times', async () => {
+      await clickNext();
       await clickNext();
       await clickNext();
 
@@ -104,6 +115,7 @@ describe('WorkItemsOnboardingModal', () => {
       expect(findStepIndicators().at(0).classes()).toContain('gl-bg-neutral-200');
       expect(findStepIndicators().at(1).classes()).toContain('gl-bg-neutral-950');
       expect(findStepIndicators().at(2).classes()).toContain('gl-bg-neutral-200');
+      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-neutral-200');
     });
   });
 
@@ -142,6 +154,7 @@ describe('WorkItemsOnboardingModal', () => {
 
   describe('modal completion', () => {
     it('emits close event when clicking "Get Started" on last step', async () => {
+      await clickNext();
       await clickNext();
       await clickNext();
 

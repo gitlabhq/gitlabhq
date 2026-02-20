@@ -42,11 +42,11 @@ module Types
         end
 
         def propagates_milestone
-          object.widget_options&.dig(object.widget_type.to_sym, :propagates_milestone)
+          object.widget_options&.dig(:propagates_milestone)
         end
 
         def auto_expand_tree_on_move
-          object.widget_options&.dig(object.widget_type.to_sym, :auto_expand_tree_on_move)
+          object.widget_options&.dig(:auto_expand_tree_on_move)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes
