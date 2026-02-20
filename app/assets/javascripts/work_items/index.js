@@ -32,7 +32,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     defaultBranch,
     isGroupIssuesList,
     workItemPlanningViewEnabled,
-    workItemsSavedViewsEnabled,
     // service desk list
     isServiceDeskEnabled,
     isServiceDeskSupported,
@@ -78,7 +77,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       isGroupIssuesList: parseBoolean(isGroupIssuesList),
       workItemType,
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
-      workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
       // service desk list
       isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
       isServiceDeskSupported: parseBoolean(isServiceDeskSupported),

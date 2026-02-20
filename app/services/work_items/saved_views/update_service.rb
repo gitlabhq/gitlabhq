@@ -13,7 +13,7 @@ module WorkItems
       end
 
       def execute
-        unless container.work_items_saved_views_enabled?(current_user)
+        unless container.work_items_consolidated_list_enabled?(current_user)
           return ServiceResponse.error(message: _('Saved views are not enabled for this namespace.'))
         end
 

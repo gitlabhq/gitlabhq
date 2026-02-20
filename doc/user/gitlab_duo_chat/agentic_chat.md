@@ -156,7 +156,7 @@ Then, to use GitLab Duo Chat:
 
 Prerequisites:
 
-- [Install and configure the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+- Install and configure the [GitLab for Visual Studio extension](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
 - Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
 - Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 

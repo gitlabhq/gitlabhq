@@ -76,7 +76,7 @@ RSpec.describe Mutations::WorkItems::SavedViews::Reorder, feature_category: :por
 
     context 'when saved views are disabled' do
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
       end
 
       it 'returns an error' do

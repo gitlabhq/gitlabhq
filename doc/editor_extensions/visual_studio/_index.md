@@ -3,10 +3,10 @@ stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in Visual Studio.
-title: GitLab extension for Visual Studio
+title: GitLab for Visual Studio extension
 ---
 
-The [GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
+The [GitLab for Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
 integrates GitLab with Visual Studio for Windows.
 
 GitLab for Visual Studio supports:
@@ -27,7 +27,7 @@ To update your extension to the latest version:
 
 1. In Visual Studio, go to **Extensions** > **Manage Extensions...**.
 1. Select the **Updates** tab.
-1. Search for **GitLab** published by **GitLab (`gitlab.com`)**.
+1. Search for **GitLab for Visual Studio** published by **GitLab (`gitlab.com`)**.
 1. Select **Update** on the extension to update to the latest version.
 
 ## Related topics

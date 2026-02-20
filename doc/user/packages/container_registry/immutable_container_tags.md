@@ -10,7 +10,6 @@ description: To prevent container tags from change or deletion, create immutable
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ description: To prevent container tags from change or deletion, create immutable
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_immutable_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.2. Changed from experiment to beta. Feature flag `container_registry_immutable_tags` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/588640) in GitLab 18.10.
 
 {{< /history >}}
 

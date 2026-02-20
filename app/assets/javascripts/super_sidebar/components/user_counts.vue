@@ -34,10 +34,10 @@ export default {
     mergeRequests: __('Merge requests'),
     todoList: __('To-do items'),
   },
-  data() {
-    return {
-      userCounts,
-    };
+  computed: {
+    userCounts() {
+      return userCounts;
+    },
   },
   created() {
     Object.assign(userCounts, this.sidebarData.user_counts);

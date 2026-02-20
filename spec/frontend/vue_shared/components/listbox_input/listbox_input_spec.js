@@ -121,6 +121,12 @@ describe('ListboxInput', () => {
 
       expect(findGlListbox().props('block')).toBe(block);
     });
+
+    it.each([true, false])("passes %s to the listbox's loading prop", (loading) => {
+      createComponent({ loading });
+
+      expect(findGlListbox().props('loading')).toBe(loading);
+    });
   });
 
   describe('toggle text', () => {

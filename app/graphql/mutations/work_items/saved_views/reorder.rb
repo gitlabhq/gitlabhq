@@ -44,7 +44,7 @@ module Mutations
         def resolve(id:, **args)
           saved_view = authorized_find!(id: id)
 
-          return feature_disabled_error unless saved_views_enabled?(saved_view)
+          return feature_disabled_error unless consolidated_list_enabled?(saved_view)
 
           result = ::WorkItems::SavedViews::ReorderService.new(
             current_user: current_user,
@@ -60,8 +60,8 @@ module Mutations
 
         private
 
-        def saved_views_enabled?(saved_view)
-          saved_view.namespace.owner_entity.work_items_saved_views_enabled?(current_user)
+        def consolidated_list_enabled?(saved_view)
+          saved_view.namespace.owner_entity.work_items_consolidated_list_enabled?(current_user)
         end
 
         def feature_disabled_error

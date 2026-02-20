@@ -134,7 +134,7 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
 
     context 'when saved views are not enabled' do
       before do
-        allow(container).to receive(:work_items_saved_views_enabled?).and_return(false)
+        allow(container).to receive(:work_items_consolidated_list_enabled?).and_return(false)
       end
 
       it 'returns an error' do

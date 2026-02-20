@@ -76,7 +76,7 @@ Prerequisites:
   - GitLab for VS Code extension 6.2.2 or later.
   - GitLab plugin for JetBrains IDEs 3.6.5 or later.
   - GitLab plugin for Neovim 1.1.0 or later.
-  - GitLab extension for Visual Studio 0.51.0 or later.
+  - GitLab for Visual Studio extension 0.51.0 or later.
 
 To change open files being used as context:
 

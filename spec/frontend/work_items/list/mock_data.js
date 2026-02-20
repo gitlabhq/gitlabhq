@@ -14,6 +14,7 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_HEALTH,
@@ -323,7 +324,7 @@ export const savedViewFiltersObject = {
   state: 'opened',
   confidential: true,
   subscribed: 'explicitly_subscribed',
-  in: ['title', 'description'],
+  in: ['title'],
   search: 'ABC',
   myReactionEmoji: 'smile',
   closedBefore: '2025-01-01T00:00:00.000+00:00',
@@ -358,6 +359,7 @@ export const savedViewFiltersObject = {
   authorUsername: 'root',
   milestoneTitle: ['v0.0'],
   hierarchyFilters: {
+    parentIds: ['gid://gitlab/WorkItem/456'],
     includeDescendantWorkItems: false,
   },
   fullPath: 'flightjs/Flight',
@@ -372,6 +374,10 @@ export const savedViewFiltersObject = {
 export const savedViewFilterTokens = [
   { type: 'confidential', value: { data: 'yes', operator: '=' } },
   { type: 'subscribed', value: { data: 'EXPLICITLY_SUBSCRIBED', operator: '=' } },
+  {
+    type: TOKEN_TYPE_SEARCH_WITHIN,
+    value: { data: 'TITLE', operator: OPERATOR_IS },
+  },
   { type: 'filtered-search-term', value: { data: 'ABC', operator: undefined } },
   { type: 'my-reaction', value: { data: 'smile', operator: '=' } },
   {
@@ -445,6 +451,7 @@ export const savedViewFilterTokens = [
   { type: 'author', value: { data: ['root'], operator: '||' } },
   { type: 'author', value: { data: 'root', operator: '=' } },
   { type: 'milestone', value: { data: 'v0.0', operator: '=' } },
+  { type: TOKEN_TYPE_PARENT, value: { data: '456', operator: '=' } },
   { type: 'group', value: { data: 'flightjs/Flight', operator: '=' } },
   { type: 'iteration', value: { data: '1', operator: '=' } },
   {
@@ -685,3 +692,53 @@ export const savedViewResponseFactory = ({ limit, subscribed, savedViews = null 
     },
   };
 };
+
+export const savedViewFiltersWithWildcards = {
+  milestoneWildcardId: 'none',
+  assigneeWildcardId: 'any',
+  iterationWildcardId: 'current',
+};
+
+export const savedViewFilterTokensWithWildcards = [
+  { type: TOKEN_TYPE_MILESTONE, value: { data: 'None', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'Any', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_ITERATION, value: { data: 'Current', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithNotParent = {
+  not: {
+    parentIds: ['gid://gitlab/WorkItem/789'],
+  },
+};
+
+export const savedViewFilterTokensWithNotParent = [
+  { type: TOKEN_TYPE_PARENT, value: { data: '789', operator: OPERATOR_NOT } },
+];
+
+export const savedViewFiltersWithSingleIn = {
+  in: ['title'],
+};
+
+export const savedViewFilterTokensWithSingleIn = [
+  { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithHierarchyParent = {
+  hierarchyFilters: {
+    parentIds: ['gid://gitlab/WorkItem/123'],
+  },
+};
+
+export const savedViewFilterTokensWithHierarchyParent = [
+  { type: TOKEN_TYPE_PARENT, value: { data: '123', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithHierarchyParentWildcard = {
+  hierarchyFilters: {
+    parentWildcardId: 'none',
+  },
+};
+
+export const savedViewFilterTokensWithHierarchyParentWildcard = [
+  { type: TOKEN_TYPE_PARENT, value: { data: 'None', operator: OPERATOR_IS } },
+];

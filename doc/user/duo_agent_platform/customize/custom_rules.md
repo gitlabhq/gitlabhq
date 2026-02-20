@@ -45,7 +45,7 @@ Prerequisites:
 - Meet the [Agent Platform prerequisites](../_index.md#prerequisites).
 - For VS Code, install and configure the [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
 - For a JetBrains IDE, install and configure the [GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
-- For Visual Studio, install and configure the [GitLab extension for Visual Studio](../../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+- For Visual Studio, install and configure the [GitLab for Visual Studio extension](../../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
 
 > [!note]
 > Conversations that existed before you created any custom rules do not follow those rules.

@@ -26,7 +26,7 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
   describe '#execute' do
     context 'when saved views are not enabled for the namespace' do
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
       end
 
       it 'returns an error' do

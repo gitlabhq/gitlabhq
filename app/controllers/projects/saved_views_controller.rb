@@ -17,7 +17,7 @@ module Projects
     end
 
     def show
-      return not_found unless project.work_items_saved_views_enabled?(current_user)
+      return not_found unless project.work_items_consolidated_list_enabled?(current_user)
 
       render 'projects/work_items/index'
     end

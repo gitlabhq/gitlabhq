@@ -98,7 +98,7 @@ to identify and fix style issues.
 
 Generative AI tools are not a replacement for subject matter expertise. Authors are responsible
 for ensuring the technical accuracy of any content they create. For more information
-about ouput quality, see [Communicating when using generative AI tools](https://handbook.gitlab.com/handbook/communication/#communicating-when-using-generative-ai-tools).
+about output quality, see [Communicating when using generative AI tools](https://handbook.gitlab.com/handbook/communication/#communicating-when-using-generative-ai-tools).
 
 #### Review
 

@@ -251,9 +251,9 @@ To close GitLab Duo Chat:
 
 Prerequisites:
 
-- You've [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
+- You've installed and configured the [GitLab for Visual Studio extension](../../editor_extensions/visual_studio/setup.md).
 
-To use GitLab Duo Chat in the GitLab extension for Visual Studio:
+To use GitLab Duo Chat in the GitLab for Visual Studio extension:
 
 1. In Visual Studio, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:

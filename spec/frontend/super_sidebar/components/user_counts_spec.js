@@ -57,6 +57,13 @@ describe('UserCounts component', () => {
       expect(issuesCounter.attributes('class')).toContain('dashboard-shortcuts-issues');
     });
 
+    it('updates issues counter when userCounts changes externally', async () => {
+      expect(findIssuesCounter().props('count')).toBe(userCounts.assigned_issues);
+      userCounts.assigned_issues = 123;
+      await nextTick();
+      expect(findIssuesCounter().props('count')).toBe(123);
+    });
+
     it('renders merge requests counter', () => {
       const mrsCounter = findMRsCounter();
       expect(mrsCounter.props('count')).toBe(userCounts.total_merge_requests);

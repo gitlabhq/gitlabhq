@@ -15,7 +15,6 @@ import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_
 import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
 import HealthStatus from '~/work_items/list/components/health_status.vue';
-import WorkItemListHeading from '~/work_items/list/components/work_item_list_heading.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithAnyIssues from '~/work_items/list/components/empty_state_with_any_issues.vue';
@@ -238,7 +237,6 @@ const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAn
 const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
 const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
 const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
-const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
 const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSavedViewsSelectors);
 const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
@@ -274,7 +272,6 @@ const mountComponent = ({
   subscribeHandler = subscribeToSavedViewHandler,
   workItemPlanningView = false,
   workItemFeaturesField = false,
-  workItemsSavedViewsEnabled = false,
   props = {},
   additionalHandlers = [],
   canReadCrmOrganization = true,
@@ -365,7 +362,6 @@ const mountComponent = ({
       hasProjects,
       newIssuePath: '',
       workItemPlanningViewEnabled: false,
-      workItemsSavedViewsEnabled,
       subscribedSavedViewLimit: 5,
       ...provide,
     },
@@ -530,12 +526,11 @@ describe('when work items are fetched', () => {
   });
 
   describe('work items onboarding modal', () => {
-    describe('when workItemPlanningView flag and workItemsSavedViewsEnabled are enabled', () => {
+    describe('when workItemPlanningView flag is enabled', () => {
       describe('when user has not seen the modal before', () => {
         it('renders the onboarding modal', async () => {
           mountComponent({
             workItemPlanningView: true,
-            workItemsSavedViewsEnabled: true,
             stubs: {
               WorkItemBulkEditSidebar: true,
               UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -553,7 +548,6 @@ describe('when work items are fetched', () => {
 
           mountComponent({
             workItemPlanningView: true,
-            workItemsSavedViewsEnabled: true,
             stubs: {
               WorkItemBulkEditSidebar: true,
               UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -576,7 +570,6 @@ describe('when work items are fetched', () => {
         it('does not render the onboarding modal', async () => {
           mountComponent({
             workItemPlanningView: true,
-            workItemsSavedViewsEnabled: true,
             stubs: {
               WorkItemBulkEditSidebar: true,
               UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -595,19 +588,6 @@ describe('when work items are fetched', () => {
       it('does not render UserCalloutDismisser', async () => {
         mountComponent({
           workItemPlanningView: false,
-          workItemsSavedViewsEnabled: true,
-        });
-        await waitForPromises();
-
-        expect(wrapper.findComponent(UserCalloutDismisser).exists()).toBe(false);
-      });
-    });
-
-    describe('when workItemsSavedViewsEnabled flag is disabled', () => {
-      it('does not render UserCalloutDismisser', async () => {
-        mountComponent({
-          workItemPlanningView: true,
-          workItemsSavedViewsEnabled: false,
         });
         await waitForPromises();
 
@@ -2177,13 +2157,6 @@ describe('when workItemPlanningView flag is enabled', () => {
     expect(findWorkItemListActions().props('workItemCount')).toBe(3);
   });
 
-  it('renders the WorkItemListHeading component', async () => {
-    mountComponent({ workItemPlanningView: true });
-    await waitForPromises();
-
-    expect(findWorkItemListHeading().exists()).toBe(true);
-  });
-
   it('skips the work item queries when metadata is loading', async () => {
     mountComponent({ provide: { metadataLoading: true } });
     await waitForPromises();
@@ -2200,9 +2173,9 @@ describe('when workItemPlanningView flag is enabled', () => {
   });
 });
 
-describe('when workItemsSavedViewsEnabled flag is enabled', () => {
+describe('Saved Views', () => {
   beforeEach(async () => {
-    mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+    mountComponent({ workItemPlanningView: true });
     await waitForPromises();
   });
 
@@ -2245,7 +2218,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     it('displays the "not found" modal when the "sv_not_found" query parameter is in the URL', async () => {
       await router.replace({ query: { sv_not_found: true } });
 
-      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+      mountComponent({ workItemPlanningView: true });
 
       await waitForPromises();
 
@@ -2257,7 +2230,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
         query: { sv_limit_id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3' },
       });
 
-      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+      mountComponent({ workItemPlanningView: true });
 
       await waitForPromises();
 
@@ -2294,7 +2267,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     it('navigates to /work_items with sv_not_found query parameter when saved view cannot be found', async () => {
       mountComponent({
         workItemPlanningView: true,
-        workItemsSavedViewsEnabled: true,
         savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
       });
 
@@ -2312,7 +2284,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
         it('navigates to /work_items with sv_limit_id query parameter', async () => {
           mountComponent({
             workItemPlanningView: true,
-            workItemsSavedViewsEnabled: true,
             savedViewHandler: jest
               .fn()
               .mockResolvedValue(savedViewResponseFactory({ subscribed: false, limit: 1 })),
@@ -2335,7 +2306,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
             .mockResolvedValue(savedViewResponseFactory({ subscribed: false }));
           mountComponent({
             workItemPlanningView: true,
-            workItemsSavedViewsEnabled: true,
             savedViewHandler,
           });
 
@@ -2360,7 +2330,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       const error = new Error('Network error');
       mountComponent({
         workItemPlanningView: true,
-        workItemsSavedViewsEnabled: true,
         savedViewHandler: jest.fn().mockRejectedValue(error),
       });
       await waitForPromises();
@@ -2414,7 +2383,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       );
       mountComponent({
         workItemPlanningView: true,
-        workItemsSavedViewsEnabled: true,
         savedViewHandler,
       });
       await waitForPromises();
@@ -2600,7 +2568,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     it('passes showSubscriptionLimitWarning as false to modal when not at limit', async () => {
       mountComponent({
         workItemPlanningView: true,
-        workItemsSavedViewsEnabled: true,
         provide: {
           subscribedSavedViewLimit: 10,
         },
@@ -2621,7 +2588,6 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     it('passes showSubscriptionLimitWarning as true to modal when at limit', async () => {
       mountComponent({
         workItemPlanningView: true,
-        workItemsSavedViewsEnabled: true,
         provide: {
           subscribedSavedViewLimit: 1,
         },

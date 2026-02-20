@@ -41,7 +41,7 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
 
     context 'when saved views are not enabled for the namespace' do
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
       end
 
       it 'returns an error' do

@@ -111,50 +111,61 @@ func newUpstream(
 		shutdownChan:          shutdownChan,
 		upgradedConnsManager:  upgradedConnsManager,
 	}
-	if up.geoProxyPollSleep == nil {
-		up.geoProxyPollSleep = time.Sleep
-	}
-	if up.Backend == nil {
-		up.Backend = DefaultBackend
-	}
-	if up.CableBackend == nil {
-		up.CableBackend = up.Backend
-	}
-	if up.CableSocket == "" {
-		up.CableSocket = up.Socket
-	}
-	up.geoPollerDone = make(chan struct{})
-	up.RoundTripper = roundtripper.NewBackendRoundTripper(up.Backend, up.Socket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
-	up.CableRoundTripper = roundtripper.NewBackendRoundTripper(up.CableBackend, up.CableSocket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
-	up.configureURLPrefix()
-	up.APIClient = apipkg.NewAPI(
-		up.Backend,
-		up.Version,
-		up.RoundTripper,
-	)
 
+	up.initializeDefaults()
 	routesCallback(&up)
-
 	go up.pollGeoProxyAPI()
 
-	var correlationOpts []correlation.InboundHandlerOption
+	return up.wrapWithMiddleware()
+}
+
+// initializeDefaults sets up default values and creates necessary components.
+// It uses u.Config which is embedded in the upstream struct.
+func (u *upstream) initializeDefaults() {
+	if u.geoProxyPollSleep == nil {
+		u.geoProxyPollSleep = time.Sleep
+	}
+	if u.Backend == nil {
+		u.Backend = DefaultBackend
+	}
+	if u.CableBackend == nil {
+		u.CableBackend = u.Backend
+	}
+	if u.CableSocket == "" {
+		u.CableSocket = u.Socket
+	}
+	u.geoPollerDone = make(chan struct{})
+	u.RoundTripper = roundtripper.NewBackendRoundTripper(u.Backend, u.Socket, u.ProxyHeadersTimeout, u.DevelopmentMode)
+	u.CableRoundTripper = roundtripper.NewBackendRoundTripper(u.CableBackend, u.CableSocket, u.ProxyHeadersTimeout, u.DevelopmentMode)
+	u.configureURLPrefix()
+	u.APIClient = apipkg.NewAPI(u.Backend, u.Version, u.RoundTripper)
+}
+
+// wrapWithMiddleware applies correlation and other middleware to the upstream handler.
+// It uses u.Config which is embedded in the upstream struct.
+func (u *upstream) wrapWithMiddleware() http.Handler {
+	correlationOpts := buildCorrelationOptions(u.Config)
+	handler := correlation.InjectCorrelationID(u, correlationOpts...)
+	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab/-/issues/324823
+	return rejectmethods.NewMiddleware(handler)
+}
+
+// buildCorrelationOptions creates correlation options based on config
+func buildCorrelationOptions(cfg config.Config) []correlation.InboundHandlerOption {
+	var opts []correlation.InboundHandlerOption
 	if cfg.PropagateCorrelationID {
-		correlationOpts = append(correlationOpts, correlation.WithPropagation())
+		opts = append(opts, correlation.WithPropagation())
 	}
 	if cfg.TrustedCIDRsForPropagation != nil {
-		correlationOpts = append(correlationOpts, correlation.WithCIDRsTrustedForPropagation(cfg.TrustedCIDRsForPropagation))
+		opts = append(opts, correlation.WithCIDRsTrustedForPropagation(cfg.TrustedCIDRsForPropagation))
 	}
 	if cfg.TrustedCIDRsForXForwardedFor != nil {
-		correlationOpts = append(correlationOpts, correlation.WithCIDRsTrustedForXForwardedFor(cfg.TrustedCIDRsForXForwardedFor))
+		opts = append(opts, correlation.WithCIDRsTrustedForXForwardedFor(cfg.TrustedCIDRsForXForwardedFor))
 	}
 	if cfg.AdoptCfRayHeader {
-		correlationOpts = append(correlationOpts, correlation.WithAdoptCfRayHeader())
+		opts = append(opts, correlation.WithAdoptCfRayHeader())
 	}
-
-	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
-	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab/-/issues/324823
-	handler = rejectmethods.NewMiddleware(handler)
-	return handler
+	return opts
 }
 
 func (u *upstream) configureURLPrefix() {

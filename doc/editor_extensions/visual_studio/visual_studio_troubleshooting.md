@@ -2,13 +2,13 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Connect and use GitLab Duo in Neovim.
-title: Visual Studio troubleshooting
+description: Learn how to address common issues for the GitLab for Visual Studio extension.
+title: Troubleshooting the GitLab for Visual Studio extension
 ---
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/?sort=created_date&state=opened&first_page_size=100)
-in the Visual Studio plugin's project. If an issue matches your problem, update the issue.
+in the extension's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/new).
 
 ## GitLab Duo features do not appear

@@ -18,6 +18,16 @@ import {
   editSavedViewResponse,
   editSavedViewFormOnlyParams,
   editSavedViewFormOnlyResponse,
+  savedViewFiltersWithWildcards,
+  savedViewFilterTokensWithWildcards,
+  savedViewFiltersWithNotParent,
+  savedViewFilterTokensWithNotParent,
+  savedViewFiltersWithSingleIn,
+  savedViewFilterTokensWithSingleIn,
+  savedViewFiltersWithHierarchyParent,
+  savedViewFilterTokensWithHierarchyParent,
+  savedViewFiltersWithHierarchyParentWildcard,
+  savedViewFilterTokensWithHierarchyParentWildcard,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -248,6 +258,36 @@ describe('groupMultiSelectFilterTokens', () => {
 describe('getSavedViewFilterTokens', () => {
   it('returns valid filter tokens given a saved view filters object', () => {
     expect(getSavedViewFilterTokens(savedViewFiltersObject)).toEqual(savedViewFilterTokens);
+  });
+
+  it('capitalizes wildcard filter values', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithWildcards)).toEqual(
+      savedViewFilterTokensWithWildcards,
+    );
+  });
+
+  it('handles not[parentIds] filter', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithNotParent)).toEqual(
+      savedViewFilterTokensWithNotParent,
+    );
+  });
+
+  it('handles single value in filter', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithSingleIn)).toEqual(
+      savedViewFilterTokensWithSingleIn,
+    );
+  });
+
+  it('handles hierarchyFilters with parentIds', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithHierarchyParent)).toEqual(
+      savedViewFilterTokensWithHierarchyParent,
+    );
+  });
+
+  it('handles hierarchyFilters with parentWildcardId', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithHierarchyParentWildcard)).toEqual(
+      savedViewFilterTokensWithHierarchyParentWildcard,
+    );
   });
 });
 

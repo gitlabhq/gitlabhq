@@ -6,6 +6,7 @@
 module ReactiveCaching
   class LowUrgencyWorker < ReactiveCachingWorker
     urgency :low
+    max_concurrency_limit_percentage 0.7
   end
 end
 # rubocop:enable Gitlab/BoundedContexts

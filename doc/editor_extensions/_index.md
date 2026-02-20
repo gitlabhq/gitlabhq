@@ -27,7 +27,7 @@ to manage projects and applications.
 |-----------------------------------------------------------------|----------------------|------------------|------------------------------|-------------|--------------------------|
 | [GitLab for VS Code](visual_studio_code/_index.md)              | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< yes >}}              |
 | [GitLab Duo plugin for JetBrains IDEs](jetbrains_ide/_index.md) | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< no >}}               |
-| [GitLab extension for Visual Studio](visual_studio/_index.md)   | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< no >}}  | {{< no >}}               |
+| [GitLab for Visual Studio](visual_studio/_index.md)   | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< no >}}  | {{< no >}}               |
 | [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}}(Classic) | {{< yes >}}      | {{< no >}}                   | {{< no >}}  | {{< no >}}               |
 
 If you prefer a command-line interface, try the following:

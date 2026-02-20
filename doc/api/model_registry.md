@@ -12,40 +12,133 @@ title: Model registry API
 
 {{< /details >}}
 
-Use this API to interact with the machine learning model registry. For more information, see [model registry](../user/project/ml/model_registry/_index.md).
+Use this API to interact with the machine learning [model registry](../user/project/ml/model_registry/_index.md).
+
+The `:model_version_id` attribute in each endpoint accepts either a model version ID or a candidate run ID.
+For more information, see [Model version and candidate IDs](#model-version-and-candidate-ids).
 
 ## Download a machine learning model package file
 
 Downloads a specified file from a machine learning model package.
 
 ```plaintext
-GET /projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name
+GET /api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name
 ```
 
-For Versions, the `:model_version_id` is specified in the URL of the model version.
-In the following example, the model version is `5`: `/namespace/project/-/ml/models/1/versions/5`.
+Supported attributes:
 
-For Runs, the ID must prepended with `candidate:`. In the following example, the `:model_version_id` is `candidate:5`: `/namespace/project/-/ml/candidates/5`.
+| Attribute          | Type              | Required | Description |
+|--------------------|-------------------|----------|-------------|
+| `id`               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `model_version_id` | integer or string | Yes      | The model version ID or candidate run ID. See [Model version and candidate IDs](#model-version-and-candidate-ids). |
+| `file_name`        | string            | Yes      | The filename. |
+| `path`             | string            | No       | The directory path for the file. |
 
-Parameters:
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the file contents.
 
-| Attribute          | Type              | Required | Description                                                                            |
-|--------------------|-------------------|----------|----------------------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)    |
-| `model_version_id` | integer or string | yes      | The model version ID for the file                                                      |
-| `path`             | string            | yes      | File directory path                                                                    |
-| `filename`         | string            | yes      | Filename                                                                               |
-
-```shell
-curl --header "Authorization: Bearer <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path/):filename"
-```
-
-The response contains the file contents.
-
-For example, the following command returns the file `foo.txt` for the model version with an ID of `2` and project with an ID of `1`.
+Example request:
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/2/files/foo.txt"
+```
+
+Example request with a directory path:
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/2/files/my_dir/foo.txt"
+```
+
+## Upload a model package file
+
+Uploads a file to a machine learning model package.
+
+### Authorize the upload
+
+Authorizes a file upload to a machine learning model package.
+
+```plaintext
+PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name/authorize
+```
+
+Supported attributes:
+
+| Attribute          | Type              | Required | Description |
+|--------------------|-------------------|----------|-------------|
+| `id`               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `model_version_id` | integer or string | Yes      | The model version ID or candidate run ID. See [Model version and candidate IDs](#model-version-and-candidate-ids). |
+| `file_name`        | string            | Yes      | The filename. |
+| `path`             | string            | No       | The directory path for the file. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request PUT \
+  --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/2/files/model.pkl/authorize"
+```
+
+### Send the file
+
+Uploads the file to a machine learning model package.
+
+```plaintext
+PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name
+```
+
+Supported attributes:
+
+| Attribute          | Type              | Required | Description |
+|--------------------|-------------------|----------|-------------|
+| `id`               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `model_version_id` | integer or string | Yes      | The model version ID or candidate run ID. See [Model version and candidate IDs](#model-version-and-candidate-ids). |
+| `file_name`        | string            | Yes      | The filename. |
+| `path`             | string            | No       | The directory path for the file. |
+| `file`             | file              | Yes      | The file to upload. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request PUT \
+  --header "Authorization: Bearer <your_access_token>" \
+  --form "file=@model.pkl" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/2/files/model.pkl"
+```
+
+Example request with a directory path:
+
+```shell
+curl --request PUT \
+  --header "Authorization: Bearer <your_access_token>" \
+  --form "file=@model.pkl" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/2/files/my_dir/model.pkl"
+```
+
+## Model version and candidate IDs
+
+The `:model_version_id` attribute accepts either a model version ID or
+a candidate run ID.
+
+To find the model version ID, check the URL of the model version page.
+For example, in `https://gitlab.example.com/my-namespace/my-project/-/ml/models/1/versions/5`,
+the model version ID is `5`.
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/5/files/model.pkl"
+```
+
+To use a candidate run ID, prepend the internal ID of the candidate
+with `candidate:`. For example, in
+`https://gitlab.example.com/my-namespace/my-project/-/ml/candidates/5`,
+the value for `:model_version_id` is `candidate:5`.
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/ml_models/candidate:5/files/model.pkl"
 ```

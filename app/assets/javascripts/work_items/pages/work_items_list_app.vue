@@ -10,7 +10,7 @@ import {
   GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, sortBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -113,6 +113,7 @@ import {
   TOKEN_TITLE_RELEASE,
   TOKEN_TYPE_PARENT,
   TOKEN_TITLE_PARENT,
+  FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -128,7 +129,6 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import HealthStatus from '../list/components/health_status.vue';
-import WorkItemListHeading from '../list/components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../list/components/work_item_user_preferences.vue';
 import WorkItemListActions from '../list/components/work_item_list_actions.vue';
 import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
@@ -203,7 +203,6 @@ export default {
     EmptyStateWithoutAnyTickets,
     CreateWorkItemModal,
     LocalBoard,
-    WorkItemListHeading,
     WorkItemUserPreferences,
     WorkItemListActions,
     GlIcon,
@@ -255,7 +254,6 @@ export default {
     'hasProjects',
     'newIssuePath',
     'workItemPlanningViewEnabled',
-    'workItemsSavedViewsEnabled',
     'subscribedSavedViewLimit',
   ],
   props: {
@@ -524,7 +522,7 @@ export default {
         return data?.namespace?.savedViews?.nodes ?? [];
       },
       skip() {
-        return !this.workItemsSavedViewsEnabled;
+        return !this.isPlanningViewsEnabled;
       },
       error(e) {
         Sentry.captureException(e);
@@ -1054,19 +1052,29 @@ export default {
     filtersChanged() {
       const filteredTokens = this.filterTokens
         .filter((token) => {
-          if (token.type === 'filtered-search-term') {
+          if (token.type === FILTERED_SEARCH_TERM) {
             return Boolean(token.value?.data);
           }
 
           return true;
         })
-        .map(({ id, ...rest }) => rest);
+        .map(({ id, ...rest }) => {
+          // Explicitly set undefined operator in filtered-search-term operator
+          if (rest.type === FILTERED_SEARCH_TERM) {
+            return {
+              ...rest,
+              value: { ...rest.value, operator: undefined },
+            };
+          }
+          return rest;
+        });
 
       const compareFilters = !this.isSavedView
         ? this.allItemsDefaultFilterTokens
         : this.initialViewTokens;
 
-      return !isEqual(filteredTokens, compareFilters);
+      // The sequence of the object can be changed so setting sortBy before comparing
+      return !isEqual(sortBy(filteredTokens, ['type']), sortBy(compareFilters, ['type']));
     },
     sortChanged() {
       const compareSort = !this.isSavedView ? this.initialSortKey : this.initialViewSortKey;
@@ -1248,7 +1256,9 @@ export default {
         convertTypeTokens: true,
       });
       const availableTokenTypes = this.searchTokens.map((token) => token.type);
-      return tokens.filter((token) => availableTokenTypes.includes(token.type));
+      return tokens.filter(
+        (token) => availableTokenTypes.includes(token.type) || token.type === FILTERED_SEARCH_TERM,
+      );
     },
 
     async handleLocalDisplayPreferencesUpdate(newSettings) {
@@ -1826,14 +1836,14 @@ export default {
     :class="{ 'work-item-list-container': isPlanningViewsEnabled && !isServiceDeskList }"
   >
     <user-callout-dismisser
-      v-if="isPlanningViewsEnabled && workItemsSavedViewsEnabled"
+      v-if="isPlanningViewsEnabled"
       feature-name="work_items_onboarding_modal"
     >
       <template #default="{ dismiss, shouldShowCallout }">
         <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
       </template>
     </user-callout-dismisser>
-    <template v-if="workItemsSavedViewsEnabled">
+    <template v-if="isPlanningViewsEnabled">
       <work-items-saved-views-not-found-modal
         :show="showSavedViewNotFoundModal"
         data-testid="view-not-found-modal"
@@ -1972,92 +1982,41 @@ export default {
               {{ error }}
             </gl-alert>
           </div>
-          <template v-if="!workItemsSavedViewsEnabled">
-            <work-item-list-heading>
-              <div class="gl-flex gl-justify-end gl-gap-3">
-                <gl-button
-                  v-if="enableClientSideBoardsExperiment"
-                  data-testid="show-local-board-button"
-                  @click="showLocalBoard = true"
-                >
-                  {{ __('Launch board') }}
-                </gl-button>
-                <gl-button
-                  v-if="allowBulkEditing"
-                  :disabled="isBulkEditDisabled"
-                  data-testid="bulk-edit-start-button"
-                  @click="showBulkEditSidebar = true"
-                >
-                  {{ __('Bulk edit') }}
-                </gl-button>
-                <create-work-item-modal
-                  v-if="showProjectNewWorkItem"
-                  :always-show-work-item-type-select="!isEpicsList"
-                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                  :full-path="rootPageFullPath"
-                  :is-group="isGroup"
-                  :preselected-work-item-type="preselectedWorkItemType"
-                  :is-epics-list="isEpicsList"
-                  :show-project-selector="!hasEpicsFeature"
-                  @workItemCreated="handleWorkItemCreated"
-                />
-                <new-resource-dropdown
-                  v-if="isGroupIssuesList"
-                  :query="$options.searchProjectsQuery"
-                  :query-variables="newIssueDropdownQueryVariables"
-                  :extract-projects="extractProjects"
-                  :group-id="groupId"
-                />
-                <work-item-list-actions
-                  :can-export="canExport"
-                  :show-work-item-by-email-button="showWorkItemByEmail"
-                  :work-item-count="workItemsCount"
-                  :query-variables="csvExportQueryVariables"
-                  :full-path="rootPageFullPath"
-                  :url-params="urlParams"
-                  :is-epics-list="isEpicsList"
-                  :is-group-issues-list="isGroupIssuesList"
-                />
-              </div>
-            </work-item-list-heading>
-          </template>
 
-          <template v-if="workItemsSavedViewsEnabled">
-            <work-items-saved-views-selectors
-              :selected-saved-view="savedView"
-              :full-path="rootPageFullPath"
-              :saved-views="subscribedSavedViews"
-              :sort-key="sortKey"
-              :filters="apiFilterParams"
-              :display-settings="displaySettingsSoT.namespacePreferences"
-              @reset-to-default-view="resetToDefaultView"
-              @error="handleError"
-            >
-              <template #header-area>
-                <work-item-list-actions
-                  :can-export="canExport"
-                  :show-work-item-by-email-button="showWorkItemByEmail"
-                  :work-item-count="currentTabCount"
-                  :query-variables="csvExportQueryVariables"
-                  :full-path="rootPageFullPath"
-                  :url-params="urlParams"
-                  :is-epics-list="isEpicsList"
-                  :is-group-issues-list="isGroupIssuesList"
-                />
-                <create-work-item-modal
-                  v-if="showProjectNewWorkItem"
-                  :always-show-work-item-type-select="!isEpicsList"
-                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                  :full-path="rootPageFullPath"
-                  :is-group="isGroup"
-                  :preselected-work-item-type="preselectedWorkItemType"
-                  :is-epics-list="isEpicsList"
-                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                  @workItemCreated="handleWorkItemCreated"
-                />
-              </template>
-            </work-items-saved-views-selectors>
-          </template>
+          <work-items-saved-views-selectors
+            :selected-saved-view="savedView"
+            :full-path="rootPageFullPath"
+            :saved-views="subscribedSavedViews"
+            :sort-key="sortKey"
+            :filters="apiFilterParams"
+            :display-settings="displaySettingsSoT.namespacePreferences"
+            @reset-to-default-view="resetToDefaultView"
+            @error="handleError"
+          >
+            <template #header-area>
+              <work-item-list-actions
+                :can-export="canExport"
+                :show-work-item-by-email-button="showWorkItemByEmail"
+                :work-item-count="workItemsCount"
+                :query-variables="csvExportQueryVariables"
+                :full-path="rootPageFullPath"
+                :url-params="urlParams"
+                :is-epics-list="isEpicsList"
+                :is-group-issues-list="isGroupIssuesList"
+              />
+              <create-work-item-modal
+                v-if="showProjectNewWorkItem"
+                :always-show-work-item-type-select="!isEpicsList"
+                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                :full-path="rootPageFullPath"
+                :is-group="isGroup"
+                :preselected-work-item-type="preselectedWorkItemType"
+                :is-epics-list="isEpicsList"
+                :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
+                @workItemCreated="handleWorkItemCreated"
+              />
+            </template>
+          </work-items-saved-views-selectors>
         </template>
 
         <template v-if="isPlanningViewsEnabled && !isServiceDeskList" #before-list-items>
@@ -2068,7 +2027,7 @@ export default {
                 workItemTotalStateCount
               }}</span>
               <gl-button
-                v-if="workItemsSavedViewsEnabled && allowBulkEditing"
+                v-if="allowBulkEditing"
                 size="small"
                 category="primary"
                 variant="default"
@@ -2080,48 +2039,46 @@ export default {
               </gl-button>
             </div>
 
-            <template v-if="workItemsSavedViewsEnabled">
-              <template v-if="!isSavedView">
+            <template v-if="!isSavedView">
+              <gl-button
+                v-if="viewConfigChanged"
+                size="small"
+                category="primary"
+                variant="default"
+                data-testid="save-view-button"
+                @click="isNewViewModalVisible = true"
+              >
+                {{ s__('WorkItem|Save view') }}
+              </gl-button>
+              <work-items-new-saved-view-modal
+                v-model="isNewViewModalVisible"
+                :full-path="rootPageFullPath"
+                :title="s__('WorkItem|Save view')"
+                :sort-key="sortKey"
+                :filters="apiFilterParams"
+                :display-settings="displaySettingsSoT.namespacePreferences"
+                :show-subscription-limit-warning="isSubscriptionLimitReached"
+                @hide="isNewViewModalVisible = false"
+              />
+            </template>
+            <template v-else>
+              <div v-if="viewConfigChanged" class="gl-flex">
                 <gl-button
-                  v-if="viewConfigChanged"
                   size="small"
-                  category="primary"
-                  variant="default"
-                  data-testid="save-view-button"
-                  @click="isNewViewModalVisible = true"
+                  category="tertiary"
+                  class="!gl-text-sm"
+                  variant="link"
+                  data-testid="reset-view-button"
+                  @click="resetToViewDefaults"
                 >
-                  {{ s__('WorkItem|Save view') }}
+                  {{ s__('WorkItem|Reset to defaults') }}
                 </gl-button>
-                <work-items-new-saved-view-modal
-                  v-model="isNewViewModalVisible"
-                  :full-path="rootPageFullPath"
-                  :title="s__('WorkItem|Save view')"
-                  :sort-key="sortKey"
-                  :filters="apiFilterParams"
-                  :display-settings="displaySettingsSoT.namespacePreferences"
-                  :show-subscription-limit-warning="isSubscriptionLimitReached"
-                  @hide="isNewViewModalVisible = false"
-                />
-              </template>
-              <template v-else>
-                <div v-if="viewConfigChanged" class="gl-flex">
-                  <gl-button
-                    size="small"
-                    category="tertiary"
-                    class="!gl-text-sm"
-                    variant="link"
-                    data-testid="reset-view-button"
-                    @click="resetToViewDefaults"
-                  >
-                    {{ s__('WorkItem|Reset to defaults') }}
-                  </gl-button>
+                <template v-if="showSaveChanges">
                   <div
-                    v-if="showSaveChanges"
                     data-testid="save-changes-separator"
                     class="gl-border-r gl-mx-4 gl-h-full gl-w-1 gl-border-r-subtle"
                   ></div>
                   <gl-button
-                    v-if="showSaveChanges"
                     size="small"
                     category="primary"
                     variant="default"
@@ -2130,8 +2087,8 @@ export default {
                   >
                     {{ s__('WorkItem|Save changes') }}
                   </gl-button>
-                </div>
-              </template>
+                </template>
+              </div>
             </template>
           </div>
         </template>

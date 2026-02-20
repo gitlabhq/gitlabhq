@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { camelCase } from 'lodash';
+import { camelCase, capitalize } from 'lodash';
 import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -60,6 +60,7 @@ import {
   filtersMap,
   HEALTH_STATUS_ASC,
   HEALTH_STATUS_DESC,
+  HIERARCHY_FILTERS,
   STATUS_ASC,
   STATUS_DESC,
   LABEL_PRIORITY_ASC,
@@ -387,6 +388,24 @@ const trueYesFalseNo = (value) => {
   return 'no';
 };
 
+const wildcardTokens = [
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_PARENT,
+];
+
+const isWildcardValue = (tokenType, value) =>
+  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
+
+const requiresUpperCaseValue = (tokenType, value) =>
+  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
+
 const convertToTokenValue = (token, baseValue) => {
   switch (token) {
     case TOKEN_TYPE_CONFIDENTIAL:
@@ -395,10 +414,16 @@ const convertToTokenValue = (token, baseValue) => {
     case TOKEN_TYPE_TYPE:
       return baseValue.toUpperCase();
     case TOKEN_TYPE_HEALTH:
+      if (requiresUpperCaseValue(token, capitalize(baseValue))) {
+        return baseValue.toUpperCase();
+      }
       return camelCase(baseValue);
     case TOKEN_TYPE_STATUS:
       return baseValue.name;
     default:
+      if (isWildcardValue(token, capitalize(baseValue))) {
+        return capitalize(baseValue);
+      }
       return baseValue;
   }
 };
@@ -411,23 +436,32 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const tokens = Object.entries(filterObject)
     .filter(
       ([key]) =>
-        (apiParamKeys.includes(key) || ['not', 'or'].includes(key)) &&
+        (apiParamKeys.includes(key) || ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
         (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
     .reduce((acc, [key, value]) => {
       if (key === 'in') {
+        const { operator, type } = savedViewFilters[key];
+        // TITLE or DESCRIPTION
+        const data = Array.isArray(value) ? value[0] : value;
+
+        acc.push({ type, data: data?.toUpperCase(), operator });
+
         return acc;
       }
+
       if (key === 'not') {
         /**
          * 'not' filters are a sub-object of the main filters
          * object, so they need to be mapped separately.
          */
+
         Object.entries(value).forEach(([apiParamKey, data]) => {
           const type = getTokenTypeFromApiParamKey(apiParamKey);
-          if (type) {
-            acc.push({ type, data, operator: OPERATOR_NOT });
-          }
+          if (!type) return;
+          const notData =
+            type === TOKEN_TYPE_PARENT ? getIdFromGraphQLId(data?.[0])?.toString() : data;
+          acc.push({ type, data: notData, operator: OPERATOR_NOT });
         });
         return acc;
       }
@@ -442,6 +476,26 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
             acc.push({ type, data, operator: OPERATOR_OR });
           }
         });
+        return acc;
+      }
+
+      if (key === HIERARCHY_FILTERS) {
+        const normalFilter = filtersMap[TOKEN_TYPE_PARENT][API_PARAM][NORMAL_FILTER];
+        const wildcardFilter = filtersMap[TOKEN_TYPE_PARENT][API_PARAM][WILDCARD_FILTER];
+        const parentValue = value[normalFilter] || value[wildcardFilter];
+        if (isWildcardValue(TOKEN_TYPE_PARENT, capitalize(parentValue))) {
+          acc.push({
+            type: TOKEN_TYPE_PARENT,
+            data: parentValue,
+            operator: OPERATOR_IS,
+          });
+        } else if (parentValue?.length) {
+          acc.push({
+            type: TOKEN_TYPE_PARENT,
+            data: getIdFromGraphQLId(parentValue[0])?.toString(),
+            operator: OPERATOR_IS,
+          });
+        }
         return acc;
       }
       const { operator, type } = savedViewFilters[key];
@@ -564,23 +618,6 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   return NORMAL_FILTER;
 };
 
-const wildcardTokens = [
-  TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_HEALTH,
-  TOKEN_TYPE_ITERATION,
-  TOKEN_TYPE_MILESTONE,
-  TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_REVIEWER,
-  TOKEN_TYPE_WEIGHT,
-];
-
-const isWildcardValue = (tokenType, value) =>
-  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
-
-const requiresUpperCaseValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
-
 const formatData = (token) => {
   const { data } = token.value;
 
@@ -656,8 +693,8 @@ export const convertToApiParams = (filterTokens) => {
       if (token.value.operator === OPERATOR_NOT) {
         obj.set(apiField, [convertToGraphQLId(TYPENAME_WORK_ITEM, data)]);
       } else {
-        obj.set('hierarchyFilters', {
-          [apiField]: wildcardFilterValues.includes(data)
+        obj.set(HIERARCHY_FILTERS, {
+          [apiField]: wildcardFilterValues.includes(capitalize(data))
             ? data.toUpperCase()
             : [convertToGraphQLId(TYPENAME_WORK_ITEM, data)],
           includeDescendantWorkItems: true,
@@ -666,7 +703,7 @@ export const convertToApiParams = (filterTokens) => {
     } else if (isSubscribedParam(token.type)) {
       obj.set(apiField, data.toUpperCase());
     } else if (isHealthStatusParam(token.type)) {
-      obj.set(apiField, ['NONE', 'ANY'].includes(data) ? data : camelCase(data));
+      obj.set(apiField, isWildcardValue(token.type, capitalize(data)) ? data : camelCase(data));
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }
