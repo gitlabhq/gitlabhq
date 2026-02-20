@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Agent interaction patterns for developing on GitLab Duo Agent Platform
 ---
 This guide establishes interaction patterns and rules for agents and flows within GitLab. These patterns ensure consistent, user-friendly behavior while managing infrastructure load and maintaining a high-quality user experience.

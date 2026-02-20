@@ -22,7 +22,7 @@ module QA
 
           project.visit!
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close)
+          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
           Page::Project::Show.perform do |show|
             show.switch_to_branch(branch_name)

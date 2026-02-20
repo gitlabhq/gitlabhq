@@ -899,7 +899,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
     context 'when the user is locked and submits a valid verification token' do
       let(:user) { create(:user) }
       let(:user_params) { { verification_token: 'token' } }
-      let(:session_params) { { verification_user_id: user.id } }
+      let(:session_params) { { verifies_with_email_user_id: user.id } }
       let(:post_action) { post(:create, params: { user: user_params }, session: session_params) }
 
       before do

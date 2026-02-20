@@ -78249,6 +78249,12 @@ msgstr ""
 msgid "WorkItem|Active custom fields"
 msgstr ""
 
+msgid "WorkItem|Active types are limited to %{limit}."
+msgstr ""
+
+msgid "WorkItem|Active types are limited to %{limit}. Archive one or more types to add active types."
+msgstr ""
+
 msgid "WorkItem|Activity"
 msgstr ""
 

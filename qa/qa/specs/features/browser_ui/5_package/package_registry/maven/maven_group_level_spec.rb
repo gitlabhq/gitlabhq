@@ -139,7 +139,7 @@ module QA
             create_package(package_project)
             package_project.visit_job('deploy')
 
-            QA::EE::Page::Component::DapEmptyState.perform(&:close)
+            QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
             Page::Project::Job::Show.perform do |job|
               expect(job).to be_successful(timeout: 400)
@@ -160,7 +160,7 @@ module QA
             create_package(package_project)
             package_project.visit_job('deploy')
 
-            QA::EE::Page::Component::DapEmptyState.perform(&:close)
+            QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
             Page::Project::Job::Show.perform do |job|
               expect(job).to be_successful(timeout: 400)

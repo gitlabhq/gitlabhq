@@ -102,7 +102,7 @@ module QA
 
           another_project.visit_job('install')
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close)
+          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)

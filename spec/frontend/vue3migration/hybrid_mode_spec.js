@@ -463,4 +463,36 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
     // Named slots (first, last) appear before default, in their template order
     expect(slotOrder).toEqual(['slot-first', 'slot-last', 'slot-default']);
   });
+
+  /**
+   * When Vue 2 compiler generates code for a **named slot** containing directives inside an async
+   * component (e.g., `<async-child><template #content><span v-directive>...</span></template></async-child>`),
+   * it produces a `scopedSlots` function via `_u()`. This function is called lazily during the
+   * child's render, so `resolveDirective` runs with `currentRenderingInstance` set to the child
+   * (AsyncComponentWrapper), not the parent where the directive is registered.
+   *
+   * The compat layer's `normalizeChildren` sets `children._ctx = currentRenderingInstance`
+   * unconditionally. When `createInnerComp` creates a vnode for the resolved async component,
+   * it reuses the same `children` (slots) object, and `normalizeChildren` overwrites `_ctx`
+   * with the AsyncComponentWrapper instance. Since `resolveDirective` looks up directives from
+   * `_ctx`, locally-registered directives in the parent can't be found.
+   *
+   * This reproduces the real failure in `set_status_form.vue` where `v-safe-html` (registered
+   * in SetStatusForm) is used inside `<template #button-content>` of the async EmojiPicker.
+   *
+   * Fix (preserve-slot-ctx-in-async-components.patch): In `normalizeChildren`, only set `_ctx`
+   * if it's not already set, preserving the original slot context from the defining component.
+   */
+  it('resolves directives in slot content of async components from the defining component', async () => {
+    const ParentWithAsyncChild = (
+      await import('./components/async_slot_directive/parent_with_async_child.vue')
+    ).default;
+    const wrapper = mount(ParentWithAsyncChild);
+    await waitForPromises();
+
+    const slotContent = wrapper.find('[data-testid="slot-content"]');
+    expect(slotContent.exists()).toBe(true);
+    // The directive should be applied - if _ctx was wrong, the directive wouldn't resolve
+    expect(slotContent.attributes('data-directive-applied')).toBe('true');
+  });
 });

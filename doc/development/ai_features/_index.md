@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: AI features based on 3rd-party integrations
 ---
 
@@ -13,7 +13,7 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 Here is a list of all of the main steps to go through from a fresh, GDK-less computer to fully working ai-development ready.
 
-### Prepare your GDK 
+### Prepare your GDK
 
 Follow the instructions in the [GitLab Development Kit](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up
 GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core

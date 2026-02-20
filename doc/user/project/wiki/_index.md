@@ -87,7 +87,7 @@ to be used as your wiki's home page. To create it:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
@@ -232,7 +232,7 @@ may not be able to check out the wiki locally afterward.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
@@ -263,7 +263,7 @@ itself. To generate a table of contents from a wiki page's subheadings, use the
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
@@ -287,7 +287,7 @@ is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
@@ -349,7 +349,7 @@ directory in the wiki repository.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
@@ -387,7 +387,7 @@ This creates a new version with the restored content while preserving the full v
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To restore a wiki page template to a previous version:
 
@@ -475,7 +475,7 @@ This creates a new version with the restored content while preserving the full v
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To restore a wiki page to a previous version:
 
@@ -519,7 +519,7 @@ You can manually edit the contents of the sidebar navigation.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:

@@ -86,7 +86,7 @@ GitLab automatically loads the last board you visited.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create a new issue board:
 
@@ -99,7 +99,7 @@ To create a new issue board:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project or group where the board is saved.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group where the board is saved.
 
 To delete the open issue board:
 
@@ -191,7 +191,7 @@ A **swimlane** is a horizontal grouping of issues on the issue board, for exampl
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
 of that issue's project or top-level group. This means the issue is at the bottom of any issue list that
@@ -269,7 +269,7 @@ You can have a board with both label lists and assignee lists.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add an assignee list:
 
@@ -298,7 +298,7 @@ milestone, giving you more freedom and visibility on the issue board.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a milestone list:
 
@@ -324,7 +324,7 @@ You can create lists of issues in an iteration.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add an iteration list:
 
@@ -365,7 +365,7 @@ Status lists behave differently from other list types:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a status list:
 
@@ -395,7 +395,7 @@ This feature is available both at the project and group level.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To group issues by epic in an issue board:
 
@@ -480,7 +480,7 @@ Examples:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To set a WIP limit for a list, in an issue board:
 
@@ -530,7 +530,7 @@ To open the right sidebar, select an issue card (not its title).
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can edit the following issue attributes in the right sidebar:
 
@@ -587,7 +587,7 @@ list view that's removed. You can always create it again later if you need.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To remove a list from an issue board:
 
@@ -600,7 +600,7 @@ To remove a list from an issue board:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 If your board is scoped to one or more attributes, go to the issues you want to add and apply the
 same attributes as your board scope.
@@ -618,7 +618,7 @@ When an issue should no longer belong to a list, you can remove it.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 The steps depend on the scope of the list:
 
@@ -633,7 +633,7 @@ the results you want. It's similar to the filtering used in the [issue tracker](
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can filter by the following:
 
@@ -665,7 +665,7 @@ You can move issues and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the Planner role for a project in GitLab.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a project in GitLab.
 
 To move an issue, select the issue card and drag it to another position in its current list or
 into a different list. Learn about the possible effects in [dragging issues between lists](#dragging-issues-between-lists).
@@ -754,7 +754,7 @@ If you get a banner with `There was a problem fetching users` error when filteri
 group issue board, make sure that you are added as a member to the current group.
 Non-members do not have permission to list group members when filtering by author or assignee on issue boards.
 
-To fix this error, you should add all of your users to the top-level group with at least the Guest role.
+To fix this error, you should add all of your users to the top-level group with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 ### Use Rails console to fix issue boards not loading and timing out
 

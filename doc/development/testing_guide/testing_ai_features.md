@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Testing AI features
 ---
 
@@ -55,7 +55,7 @@ For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the fol
   1. Frontend JS/Vue sends a gRPC request to DWS through Workhorse (This DWS instance runs locally in the test environment).
      LLM responses are mocked for explicit assertions therefore test failures are reproducible.
 
-### Run DAP feature tests when making a change in AI Gateway 
+### Run DAP feature tests when making a change in AI Gateway
 
 These feature tests run when we make a change to AI Gateway repository as well, to verify that an MR does not accidentally break DAP features e.g.
 

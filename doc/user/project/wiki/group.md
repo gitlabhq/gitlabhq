@@ -22,7 +22,7 @@ Group wikis are similar to [project wikis](_index.md), with a few limitations:
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 
-Similar to project wikis, group members with at least the Developer role
+Similar to project wikis, group members with the Developer, Maintainer, or Owner role
 can edit group wikis. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 

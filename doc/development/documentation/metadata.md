@@ -41,7 +41,7 @@ Documents in the `/development` directory get this metadata:
 ---
 stage: Example Stage
 group: Example Group
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Example page title
 ---
 ```

@@ -90,9 +90,9 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
   end
 
   shared_examples_for 'prompt for email verification' do
-    it 'sets the verification_user_id session variable and renders the email verification template',
+    it 'sets the verifies_with_email_user_id session variable and renders the email verification template',
       :aggregate_failures do
-      expect(request.session[:verification_user_id]).to eq(user.id)
+      expect(request.session[:verifies_with_email_user_id]).to eq(user.id)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('devise/sessions/email_verification')
     end
@@ -200,7 +200,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       before do
         encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
         user.update!(locked_at: Time.current, unlock_token: encrypted_token)
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
       end
 
       context 'when rate limited by code entry and a verification_token param exists' do
@@ -292,7 +292,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       before do
         encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
         user.update!(email_otp_last_sent_at: Time.current, email_otp: encrypted_token)
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
       end
 
       context 'when a valid verification_token param exists' do
@@ -558,7 +558,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
   describe 'resend_verification_code' do
     let(:params) { { user: { email: '' } } }
 
-    context 'when no verification_user_id session variable exists' do
+    context 'when no verifies_with_email_user_id session variable exists' do
       before do
         post(users_resend_verification_code_path, params: params)
       end
@@ -569,11 +569,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       end
     end
 
-    context 'when a verification_user_id session variable exists' do
+    context 'when a verifies_with_email_user_id session variable exists' do
       before do
         # Simulate the user having been presented the code entry
         # screen
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
       end
 
       context 'when the user is locked' do
@@ -718,7 +718,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       let(:params) { { user: { email: secondary_email.email } } }
 
       before do
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
         end
@@ -737,7 +737,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       let(:params) { { user: { email: user.email } } }
 
       before do
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
         end
@@ -763,7 +763,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       let(:params) { { user: { email: '' } } }
 
       before do
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
         end
@@ -784,7 +784,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification_code_send,
           hash_including(scope: user)).and_return(true)
 
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
 
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
@@ -808,7 +808,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
       before do
         user.update!(email_otp_required_after: 1.day.ago)
-        stub_session(session_data: { verification_user_id: user.id })
+        stub_session(session_data: { verifies_with_email_user_id: user.id })
 
         # Mock the user to fail validation on save!
         allow(User).to receive(:find_by_id).with(user.id).and_return(user)
@@ -855,12 +855,12 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       sign_in(user)
     end
 
-    it 'renders the template and removes the verification_user_id session variable' do
-      stub_session(session_data: { verification_user_id: user.id })
+    it 'renders the template and removes the verifies_with_email_user_id session variable' do
+      stub_session(session_data: { verifies_with_email_user_id: user.id })
 
       get(users_successful_verification_path)
 
-      expect(request.session.has_key?(:verification_user_id)).to eq(false)
+      expect(request.session.has_key?(:verifies_with_email_user_id)).to eq(false)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('successful_verification', layout: 'minimal')
       expect(response.body).to include(root_path)
@@ -871,7 +871,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     let(:permitted_to_skip_email_otp_in_grace_period) { true }
 
     before do
-      stub_session(session_data: { verification_user_id: user.id })
+      stub_session(session_data: { verifies_with_email_user_id: user.id })
       allow_next_instance_of(SessionsController) do |controller|
         allow(controller).to receive(
           :permitted_to_skip_email_otp_in_grace_period?
@@ -893,7 +893,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         before do
           encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
           user.update!(email_otp: encrypted_token)
-          stub_session(session_data: { verification_user_id: user.id })
+          stub_session(session_data: { verifies_with_email_user_id: user.id })
         end
 
         it 'clears the email_otp' do
@@ -941,15 +941,15 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     context 'when user is not permitted to skip email OTP in grace period' do
       let(:permitted_to_skip_email_otp_in_grace_period) { false }
 
-      it 'returne a 403 status code and does not remove verification_user_id session key' do
+      it 'returne a 403 status code and does not remove verifies_with_email_user_id session key' do
         post(users_skip_verification_for_now_path(user: { login: user.username }))
 
-        expect(request.session[:verification_user_id]).to eq(user.id)
+        expect(request.session[:verifies_with_email_user_id]).to eq(user.id)
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
-    context 'when no verification_user_id session variable exists' do
+    context 'when no verifies_with_email_user_id session variable exists' do
       before do
         stub_session(session_data: {})
       end
@@ -983,9 +983,9 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     end
 
     context 'when user is permitted to skip email OTP in grace period' do
-      context 'when verification_user_id session exists' do
+      context 'when verifies_with_email_user_id session exists' do
         before do
-          stub_session(session_data: { verification_user_id: user.id })
+          stub_session(session_data: { verifies_with_email_user_id: user.id })
         end
 
         it 'renders skip_verification_confirmation template with correct layout and locals' do
@@ -997,7 +997,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         end
       end
 
-      context 'when verification_user_id does not exist' do
+      context 'when verifies_with_email_user_id does not exist' do
         before do
           stub_session(session_data: {})
         end
@@ -1112,7 +1112,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         it 'is permitted to fallback to email otp' do
           post(users_fallback_to_email_otp_path(user: { login: user.username }))
 
-          expect(session[:verification_user_id]).to eq(user.id)
+          expect(session[:verifies_with_email_user_id]).to eq(user.id)
           expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response).to match({

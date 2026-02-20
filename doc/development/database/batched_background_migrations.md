@@ -1305,8 +1305,7 @@ for more details.
    end
    ```
 
-1. If possible update the entire sub-batch in a single query
-   instead of updating each model separately.
+1. If possible, update the entire sub-batch in a single query instead of updating each model separately. When doing so, always include a limit guard and extract it in a materialized CTE to eliminate any chance for query plan flips.
    This can be achieve in different ways, depending on the scenario.
 
    - Generate an `UPDATE` query, and use `FROM` to join the tables that provide the necessary values
@@ -1317,6 +1316,23 @@ for more details.
 
    ```ruby
    # good
+   def perform
+     each_sub_batch do |sub_batch|
+       connection.execute <<~SQL
+         WITH sub_batch_ids AS MATERIALIZED (
+           #{sub_batch.select(:id).limit(sub_batch_size).to_sql}
+         )
+         UPDATE fork_networks
+         SET organization_id = projects.organization_id
+         FROM projects
+         WHERE fork_networks.id IN (SELECT id FROM sub_batch_ids)
+         AND fork_networks.root_project_id = projects.id
+         AND fork_networks.organization_id IS NULL
+       SQL
+     end
+   end
+
+   # bad - uses pluck and does not use a limit
    def perform
      each_sub_batch do |sub_batch|
        connection.execute <<~SQL

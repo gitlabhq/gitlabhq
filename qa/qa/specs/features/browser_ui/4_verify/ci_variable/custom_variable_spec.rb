@@ -36,7 +36,7 @@ module QA
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
 
-        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+        QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
       end
 
       after do

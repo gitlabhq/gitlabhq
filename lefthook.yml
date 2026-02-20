@@ -255,6 +255,10 @@ pre-commit:
       tags: backend database
       glob: 'db/click_house/main.sql'
       run: scripts/lint-clickhouse-migrations.sh
+    gitaly-version-check:
+      tags: gitaly
+      glob: "{Gemfile.lock,VERSION}"
+      run: 'scripts/lint/gitaly_version.rb'
 
 auto-fix:
   parallel: true

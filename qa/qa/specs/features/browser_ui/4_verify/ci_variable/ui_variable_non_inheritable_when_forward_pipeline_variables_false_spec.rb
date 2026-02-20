@@ -10,7 +10,7 @@ module QA
         add_ci_file(downstream2_project, [downstream2_ci_file])
         add_ci_file(upstream_project, [upstream_ci_file, upstream_child1_ci_file, upstream_child2_ci_file])
 
-        QA::EE::Page::Component::DapEmptyState.perform(&:close)
+        QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
         start_pipeline_with_variable
         wait_for_pipelines
