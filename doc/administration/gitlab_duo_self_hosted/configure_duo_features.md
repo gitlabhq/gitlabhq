@@ -237,7 +237,7 @@ You can configure a GitLab Duo feature to use the GitLab AI vendor model, even i
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.1.
 
 {{< /history >}}
 
@@ -248,6 +248,10 @@ You can enable extended logging to collect detailed AI interaction data from the
 
 To view which information is logged,
 see [Collecting usage data](../../user/gitlab_duo/data_usage.md#collecting-usage-data).
+
+Prerequisites:
+
+- Have GitLab 18.9.1 or later.
 
 To enable extended logging:
 
