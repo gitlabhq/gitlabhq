@@ -5,6 +5,8 @@ require 'rspec-parameterized'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/database'
+require_relative '../../../tooling/danger/project_helper'
+require_relative '../../../tooling/danger/prevent_index_creation_suggestion'
 
 RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
   include_context "with dangerfile"
@@ -206,6 +208,52 @@ RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
         expect(database).to receive(:warn)
           .with(described_class::MIGRATION_TYPE_WARNING_MESSAGE)
         check_migration_type
+      end
+    end
+  end
+
+  describe '#check_prevent_index_creation_disabled' do
+    let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper, file_lines: []) }
+    let(:file_names) { [] }
+
+    subject(:check_prevent_index_creation_disabled) do
+      database.check_prevent_index_creation_disabled(file_names)
+    end
+
+    before do
+      allow(database).to receive(:project_helper).and_return(fake_project_helper)
+    end
+
+    context 'when no migrations are in file list' do
+      let(:file_names) { ['app/models/user.rb'] }
+
+      it 'does not create a suggestion' do
+        expect(Tooling::Danger::PreventIndexCreationSuggestion).not_to receive(:new)
+        check_prevent_index_creation_disabled
+      end
+    end
+
+    context 'when migration is in file list' do
+      let(:file_names) { ['db/migrate/20260000000000_add_index.rb'] }
+
+      it 'creates a suggestion' do
+        suggestion = instance_double(Tooling::Danger::PreventIndexCreationSuggestion, suggest: nil)
+        expect(Tooling::Danger::PreventIndexCreationSuggestion).to receive(:new)
+          .with(file_names.first, context: database).and_return(suggestion)
+
+        check_prevent_index_creation_disabled
+      end
+    end
+
+    context 'when geo migration is in file list' do
+      let(:file_names) { ['ee/db/geo/migrate/20260000000000_add_index.rb'] }
+
+      it 'creates a suggestion' do
+        suggestion = instance_double(Tooling::Danger::PreventIndexCreationSuggestion, suggest: nil)
+        expect(Tooling::Danger::PreventIndexCreationSuggestion).to receive(:new)
+          .with(file_names.first, context: database).and_return(suggestion)
+
+        check_prevent_index_creation_disabled
       end
     end
   end

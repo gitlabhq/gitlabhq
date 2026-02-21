@@ -132,33 +132,57 @@ To create an agent:
 
 {{< /tabs >}}
 
-The agent appears in the AI Catalog. To use the agent with Chat, enable it in a project.
+The agent appears in the AI Catalog. To use the agent with Chat, you must enable it.
 
 ## Enable an agent
 
-Enable an agent to use it with Chat. To enable an agent, you must:
-
-1. Enable it in a top-level group.
-1. Enable it in the project you want to use it in.
-
-### Enable in a top-level group
+Enable an agent to use it with Chat.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Maintainer or Owner role for the top-level group.
+- You must have the Maintainer or Owner role for the project.
 
-To enable an agent in a top-level group:
+{{< tabs >}}
+
+{{< tab title="From the managing project" >}}
+
+To enable an agent:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Agents**.
+1. Select the **Managed** tab, then select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the agent in.
+1. Under **Project**, select the project you want to enable the agent in.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable an agent:
 
 1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the agent in.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the agent in.
+1. Under **Project**, select the project you want to enable the agent in.
 1. Select **Enable**.
 
-The agent appears in the group's **Automate** > **Agents** page.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The agent appears in the group and project **Automate** > **Agents** pages.
+
+In the project, you can start a new chat with the agent.
+For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
 ### Enable in a project
+
+If an agent is already enabled in a top-level group, you can enable it in the group's projects.
 
 Prerequisites:
 
@@ -173,9 +197,9 @@ To enable an agent in a project:
 1. From the dropdown list, select the agent you want to enable.
 1. Select **Enable**.
 
-The agent appears on the project's **Automate** > **Agents** page.
+The agent appears in the project's **Automate** > **Agents** page.
+
 In the project, you can start a new chat with the agent.
-For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
 ## Use an agent
 

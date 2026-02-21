@@ -47,7 +47,9 @@ Prerequisites:
 - You must meet the [prerequisites](_index.md#prerequisites).
 - On GitLab.com, you must be a member of a top-level group that has
   [turned on GitLab Duo experiment and beta features](../../user/gitlab_duo/turn_on_off.md#on-gitlabcom-2).
-- To enable agents and flows from the AI Catalog, you must have the Maintainer or Owner role for a project.
+- To enable agents and flows from the AI Catalog:
+  - In a group, you must have the Maintainer or Owner role.
+  - In a project, you must have the Maintainer or Owner role.
 
 To view the AI Catalog:
 

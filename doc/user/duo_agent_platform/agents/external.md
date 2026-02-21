@@ -100,8 +100,7 @@ without additional agent configuration necessary.
 Required steps to enable and use managed agents:
 
 1. Access the agent in the AI Catalog. Search for the agent name, or use the direct URL.
-1. [Enable the agent in a top-level group](#enable-the-agent-in-a-top-level-group).
-1. [Enable the agent in a project](#enable-in-a-project).
+1. [Enable the agent](#enable-the-agent).
 1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
 
 ### Claude Code Agent
@@ -257,27 +256,67 @@ The following CI/CD variables are available:
 | Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
 | Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
-## Enable the agent in a top-level group
+## Enable the agent
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Maintainer or Owner role for the top-level group.
+- You must have the Maintainer or Owner role for the project.
 
-To enable an external agent in a top-level group:
+{{< tabs >}}
+
+{{< tab title="From the managing project" >}}
+
+To enable an external agent:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Agents**.
+1. Select the **Managed** tab, then select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the agent in.
+1. Under **Project**, select the project you want to enable the agent in.
+1. For **Add triggers**, select which event types trigger the external agent:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable an external agent:
 
 1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the external agent you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the external agent in.
+1. Select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the agent in.
+1. Under **Project**, select the project you want to enable the agent in.
+1. For **Add triggers**, select which event types trigger the external agent:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
 1. Select **Enable**.
 
-The external agent appears in the group's **Automate** > **Agents** page.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The external agent appears in the group and project **Automate** > **Agents** pages.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<agent>-<group>`.
 
 ## Enable in a project
+
+If an external agent is already enabled in a top-level group, you can enable it in the group's projects.
 
 Prerequisites:
 

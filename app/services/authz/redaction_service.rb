@@ -3,7 +3,7 @@
 module Authz
   # Service to perform batch authorization checks for resources.
   #
-  # This service is designed to check whether a user has read access to a batch
+  # This service is designed to check whether a user has access to a batch
   # of resources using GitLab's standard Ability system. It's used by the
   # Knowledge Graph service for final redaction but is generic enough
   # to be used by any service requiring batch authorization checks.
@@ -13,41 +13,57 @@ module Authz
   # (e.g., checking if user is blocked or deactivated). The caller is responsible
   # for ensuring the user is valid before invoking this service.
   #
+  # The caller always passes in the ability name for each resource type.
+  # If no ability is provided, access is denied (fail-closed).
+  #
   # @example
   #   service = Authz::RedactionService.new(
   #     user: current_user,
   #     resources_by_type: {
-  #       'issues' => [123, 456],
-  #       'merge_requests' => [789]
+  #       'project' => {
+  #         'ids' => [123, 456],
+  #         'ability' => 'read_project'
+  #       },
+  #       'merge_request' => {
+  #         'ids' => [789],
+  #         'ability' => 'read_merge_request'
+  #       }
   #     },
   #     source: 'knowledge_graph'
   #   )
   #   result = service.execute
   #   # => {
-  #   #      'issues' => { 123 => true, 456 => false },
-  #   #      'merge_requests' => { 789 => true }
+  #   #      'project' => { 123 => true, 456 => false },
+  #   #      'merge_request' => { 789 => true }
   #   #    }
   class RedactionService
     include Gitlab::Allowable
 
     RESOURCE_CLASSES = {
-      'issues' => ::Issue,
-      'merge_requests' => ::MergeRequest,
-      'projects' => ::Project,
-      'milestones' => ::Milestone,
-      'snippets' => ::Snippet
+      issue: ::Issue,
+      merge_request: ::MergeRequest,
+      project: ::Project,
+      milestone: ::Milestone,
+      snippet: ::Snippet,
+      user: ::User,
+      group: ::Group,
+      work_item: ::WorkItem
     }.freeze
 
     PRELOAD_ASSOCIATIONS = {
-      'issues' => [{ project: [:namespace, :project_feature, :group] }, :author, :work_item_type],
-      'merge_requests' => [{ target_project: [:namespace, :project_feature, :group] }, :author],
-      'projects' => [:namespace, :project_feature, :group],
-      'milestones' => [{ project: [:namespace, :project_feature] }, :group],
-      'snippets' => [{ project: [:namespace, :project_feature] }, :author]
+      issue: [{ project: [:namespace, :project_feature, :group] }, :author, :work_item_type],
+      merge_request: [{ target_project: [:namespace, :project_feature, :group] }, :author],
+      project: [:namespace, :project_feature, :group],
+      milestone: [{ project: [:namespace, :project_feature] }, :group],
+      snippet: [{ project: [:namespace, :project_feature] }, :author],
+      user: [],
+      group: [:parent, :organization],
+      work_item: [:author, :work_item_type, { project: [:namespace, :project_feature, :group] },
+        { namespace: :route }]
     }.freeze
 
     def self.supported_types
-      RESOURCE_CLASSES.keys
+      RESOURCE_CLASSES.keys.map(&:to_s)
     end
 
     def initialize(user:, resources_by_type:, source:, logger: nil)
@@ -65,8 +81,13 @@ module Authz
       loaded_resources_by_type = load_all_resources
 
       results = DeclarativePolicy.user_scope do
-        resources_by_type.each_with_object({}) do |(type, ids), authorization_results|
-          authorization_results[type] = authorize_resources_of_type(type, ids, loaded_resources_by_type[type] || {})
+        resources_by_type.each_with_object({}) do |(type, config), authorization_results|
+          type_sym = type.to_sym
+          config_sym = config.symbolize_keys
+          ids = config_sym[:ids]
+          ability = config_sym[:ability]
+          authorization_results[type] =
+            authorize_resources_of_type(type_sym, ids, ability, loaded_resources_by_type[type_sym] || {})
         end
       end
 
@@ -80,8 +101,10 @@ module Authz
     attr_reader :user, :resources_by_type, :source, :logger
 
     def load_all_resources
-      resources_by_type.each_with_object({}) do |(type, ids), loaded|
-        loaded[type] = load_resources_for_type(type, ids)
+      resources_by_type.each_with_object({}) do |(type, config), loaded|
+        type_sym = type.to_sym
+        config_sym = config.symbolize_keys
+        loaded[type_sym] = load_resources_for_type(type_sym, config_sym[:ids])
       end
     end
 
@@ -94,12 +117,12 @@ module Authz
 
       preloads = PRELOAD_ASSOCIATIONS[type]
       relation = klass.where(id: ids)
-      relation = relation.includes(*preloads) if preloads
+      relation = relation.includes(*preloads) if preloads.present?
       relation.index_by(&:id)
     end
     # rubocop:enable CodeReuse/ActiveRecord
 
-    def authorize_resources_of_type(type, ids, loaded_resources)
+    def authorize_resources_of_type(type, ids, ability, loaded_resources)
       return {} if ids.blank?
 
       klass = RESOURCE_CLASSES[type]
@@ -110,14 +133,15 @@ module Authz
 
         next false if resource.nil?
 
-        visible_result?(resource)
+        check_ability(resource, ability)
       end
     end
 
-    def visible_result?(resource)
-      return false unless resource.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(resource)
+    def check_ability(resource, ability)
+      return false if ability.blank?
+      return false unless DeclarativePolicy.has_policy?(resource)
 
-      Ability.allowed?(user, :"read_#{resource.to_ability_name}", resource)
+      Ability.allowed?(user, ability.to_sym, resource)
     end
 
     def log_redacted_results(results)

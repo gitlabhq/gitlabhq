@@ -118,32 +118,66 @@ The flow appears in the AI Catalog.
 ## Enable a flow
 
 Enable a flow to trigger it from an issue, merge request, or discussion.
-To enable a flow, you must:
-
-1. Enable it in a top-level group.
-1. Enable it in the project you want to use it in.
-
-### Enable in a top-level group
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Maintainer or Owner role for the top-level group.
+- You must have the Maintainer or Owner role for the project.
 
-To enable a flow in a top-level group:
+{{< tabs >}}
+
+{{< tab title="From the managing project" >}}
+
+To enable a flow:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Flows**.
+1. Select the **Managed** tab, then select the flow you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the flow in.
+1. Under **Project**, select the project you want to enable the flow in.
+1. For **Add triggers**, select which events trigger the flow:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable a flow:
 
 1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the flow in.
+1. In the upper-right corner, select **Enable**.
+1. Under **Group**, select the group you want to enable the flow in.
+1. Under **Project**, select the project you want to enable the flow in.
+1. For **Add triggers**, select which events trigger the flow:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
 1. Select **Enable**.
 
-The flow appears in the group's **Automate** > **Flows** page.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The flow appears in the group and project **Automate** > **Flows** pages.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<flow>-<group>`.
 
 ### Enable in a project
+
+If a flow is already enabled in a top-level group, you can enable it in the group's projects.
 
 Prerequisites:
 
