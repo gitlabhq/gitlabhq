@@ -132,6 +132,13 @@ module API
       end
 
       def validate_file_params!(params)
+        validate_string_param!(params, :branch)
+        validate_string_param!(params, :commit_message)
+        validate_string_param!(params, :start_branch)
+        validate_string_param!(params, :author_email)
+        validate_string_param!(params, :author_name)
+        validate_string_param!(params, :last_commit_id)
+
         bad_request!('branch is required') if params[:branch].blank?
         bad_request!('commit_message is required') if params[:commit_message].blank?
         bad_request!('content is required') unless params.key?(:content)

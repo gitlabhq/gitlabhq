@@ -72,6 +72,13 @@ module API
       end
 
       def validate_commits_attrs!(attrs)
+        validate_string_param!(attrs, :branch)
+        validate_string_param!(attrs, :commit_message)
+        validate_string_param!(attrs, :start_branch)
+        validate_string_param!(attrs, :start_sha)
+        validate_string_param!(attrs, :author_email)
+        validate_string_param!(attrs, :author_name)
+
         bad_request!('branch is required') if attrs[:branch].blank?
         bad_request!('commit_message is required') if attrs[:commit_message].blank?
         validate_actions_allow_empty!(attrs)
@@ -82,6 +89,10 @@ module API
         end
 
         attrs[:actions].each_with_index do |action, index|
+          validate_string_param!(action, :file_path, prefix: "actions[#{index}]")
+          validate_string_param!(action, :previous_path, prefix: "actions[#{index}]")
+          validate_string_param!(action, :last_commit_id, prefix: "actions[#{index}]")
+
           bad_request!("actions[#{index}][action] is required") if action[:action].blank?
           bad_request!("actions[#{index}][file_path] is required") if action[:file_path].blank?
 
@@ -287,6 +298,9 @@ module API
         require_gitlab_workhorse!
 
         attrs = file_params_from_body_upload
+
+        # Validate branch type before using it in authorize_push_to_branch!
+        validate_string_param!(attrs, :branch)
 
         authorize_push_to_branch!(attrs[:branch])
 

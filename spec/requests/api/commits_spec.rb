@@ -796,6 +796,62 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           it_behaves_like 'returns bad request - validation error', "actions[0][execute_filemode] must be a boolean"
         end
       end
+
+      context 'with non-string parameter types' do
+        using RSpec::Parameterized::TableSyntax
+
+        context 'for top-level parameters' do
+          where(:param_name, :param_value) do
+            :branch         | { nested: 'object' }
+            :commit_message | { nested: 'object' }
+            :start_branch   | { nested: 'object' }
+            :start_sha      | { nested: 'object' }
+            :author_email   | { nested: 'object' }
+            :author_name    | { nested: 'object' }
+            :branch         | ['array']
+            :commit_message | ['array']
+            :start_branch   | ['array']
+            :start_sha      | ['array']
+            :author_email   | ['array']
+            :author_name    | ['array']
+          end
+
+          with_them do
+            let(:params) { super().merge(param_name => param_value) }
+
+            it 'returns bad request with type validation error' do
+              workhorse_body_upload(url, params)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("400 Bad request - #{param_name} must be a string")
+            end
+          end
+        end
+
+        context 'for action parameters' do
+          where(:param_name, :param_value) do
+            :file_path      | { nested: 'object' }
+            :previous_path  | { nested: 'object' }
+            :last_commit_id | { nested: 'object' }
+            :file_path      | ['array']
+            :previous_path  | ['array']
+            :last_commit_id | ['array']
+          end
+
+          with_them do
+            let(:params) do
+              super().merge(actions: [{ action: 'create', file_path: '/test.rb', content: 'puts 8', param_name => param_value }])
+            end
+
+            it 'returns bad request with type validation error' do
+              workhorse_body_upload(url, params)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("400 Bad request - actions[0][#{param_name}] must be a string")
+            end
+          end
+        end
+      end
     end
 
     shared_examples 'create actions' do

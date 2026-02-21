@@ -32,7 +32,6 @@ domains:
       - code_suggestions # Also in CodeSuggestions
       - duo_agent_platform
       - workflow_catalog
-      - knowledge_graph
 
   Analytics:
     description:
@@ -42,6 +41,7 @@ domains:
       - dora_metrics
       - product_analytics
       - custom_dashboards_foundation
+      - knowledge_graph
 
   AntiAbuse:
     description:

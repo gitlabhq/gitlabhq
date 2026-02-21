@@ -195,6 +195,36 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
       it_behaves_like 'returns bad request - validation error', 'content is required'
     end
+
+    context 'with non-string parameter types' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:param_name, :param_value) do
+        :branch         | { nested: 'object' }
+        :commit_message | { nested: 'object' }
+        :start_branch   | { nested: 'object' }
+        :author_email   | { nested: 'object' }
+        :author_name    | { nested: 'object' }
+        :last_commit_id | { nested: 'object' }
+        :branch         | ['array']
+        :commit_message | ['array']
+        :start_branch   | ['array']
+        :author_email   | ['array']
+        :author_name    | ['array']
+        :last_commit_id | ['array']
+      end
+
+      with_them do
+        let(:params) { super().merge(param_name => param_value) }
+
+        it 'returns bad request with type validation error' do
+          workhorse_body_upload(url, params)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - #{param_name} must be a string")
+        end
+      end
+    end
   end
 
   shared_examples 'rate limiting for large commit content' do

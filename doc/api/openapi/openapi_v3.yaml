@@ -16359,7 +16359,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesAiKnowledgeGraphEnabledNamespace"
+                "$ref": "#/components/schemas/APIEntitiesAnalyticsKnowledgeGraphEnabledNamespace"
         '400':
           description: 400 Bad Request
         '401':
@@ -16379,7 +16379,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesAiKnowledgeGraphEnabledNamespace"
+                "$ref": "#/components/schemas/APIEntitiesAnalyticsKnowledgeGraphEnabledNamespace"
         '400':
           description: 400 Bad Request
         '401':
@@ -92486,7 +92486,7 @@ components:
       properties:
         csp_namespace_id:
           type: string
-    APIEntitiesAiKnowledgeGraphEnabledNamespace:
+    APIEntitiesAnalyticsKnowledgeGraphEnabledNamespace:
       type: object
       properties:
         id:
