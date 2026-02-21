@@ -73,7 +73,6 @@ Gitlab/JsonSafeParse:
     - 'app/presenters/ci/pipeline_artifacts/code_quality_mr_diff_presenter.rb'
     - 'app/services/activity_pub/inbox_resolver_service.rb'
     - 'app/services/audit_events/processor.rb'
-    - 'app/services/ci/parse_annotations_artifact_service.rb'
     - 'app/services/dependency_proxy/request_token_service.rb'
     - 'app/services/ide/schemas_config_service.rb'
     - 'app/services/jira/requests/base.rb'

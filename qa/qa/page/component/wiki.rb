@@ -73,7 +73,12 @@ module QA
         end
 
         def expand_sidebar_if_collapsed
-          click_element('wiki-sidebar-toggle') if has_css?('.wiki-sidebar.sidebar-collapsed', wait: 1)
+          QA::Support::Retrier.retry_until(retry_on_exception: true, message: "Sidebar failed to expand") do
+            break true unless has_css?('.wiki-sidebar.sidebar-collapsed', wait: 1)
+
+            click_element('wiki-sidebar-toggle')
+            has_css?('.wiki-sidebar.sidebar-expanded')
+          end
         end
       end
     end

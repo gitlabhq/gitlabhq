@@ -30,8 +30,10 @@
     :rebase_merge,
     labelRebase,
     help_text: (everyMergeCommit + "<br />" + rebaseUpToDate + "<br />" + rebaseSemiLinear).html_safe
+  .js-rebase-merge-container{ 'aria-live': 'polite' }
   = form.gitlab_ui_radio_component :merge_method,
     :ff,
     labelFastForward,
     help_text: ffTrainsHelpFullHelpText,
     radio_options: { data: { testid: 'merge-ff-radio' } }
+  .js-ff-container{ 'aria-live': 'polite' }

@@ -210,7 +210,11 @@ export default {
               // SCENARIO A: Status update for existing pipeline on view
               this.pendingIds.add(updatedId);
               this.fetchUpdatedPipelines();
-            } else if (isNewPipeline && !this.pagination.after) {
+            } else if (
+              isNewPipeline &&
+              !this.pagination.after &&
+              this.scope === this.$options.scopes.all
+            ) {
               // SCENARIO B: Brand new pipeline detected while on Page 1
               this.fetchNewPipeline(updatedId);
             }

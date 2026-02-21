@@ -32,7 +32,7 @@ module Ci
         # to UTF-8 before proceeding.
         blob = strip_bom(encode_utf8_with_replacement_character(blob))
 
-        blob_json = Gitlab::Json.parse(blob)
+        blob_json = Gitlab::Json.safe_parse(blob)
         raise ParserError, 'Annotations files must be a JSON object' unless blob_json.is_a?(Hash)
 
         blob_json.each do |key, value|

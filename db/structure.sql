@@ -32725,6 +32725,7 @@ CREATE TABLE work_item_custom_types (
     icon_name smallint DEFAULT 0 NOT NULL,
     converted_from_system_defined_type_identifier smallint,
     name text NOT NULL,
+    archived boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1695e9567e CHECK ((id >= 1001)),
     CONSTRAINT check_26af0900e6 CHECK ((char_length(name) <= 48)),
     CONSTRAINT check_8d909174fb CHECK ((num_nonnulls(namespace_id, organization_id) = 1))
@@ -47064,6 +47065,8 @@ CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_package
 CREATE INDEX index_pm_affected_packages_on_purl_type_and_package_name ON pm_affected_packages USING btree (purl_type, package_name);
 
 CREATE UNIQUE INDEX index_pm_cve_enrichment_on_cve ON pm_cve_enrichment USING btree (cve);
+
+CREATE INDEX index_pm_cve_enrichment_on_updated_at_and_id ON pm_cve_enrichment USING btree (updated_at, id);
 
 CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_version_licenses USING btree (pm_license_id);
 

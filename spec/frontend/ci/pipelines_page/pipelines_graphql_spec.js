@@ -797,7 +797,7 @@ describe('Pipelines app', () => {
       expect(singlePipelineHandler).not.toHaveBeenCalled();
     });
 
-    it('fetches newly created pipelines when on the first page', async () => {
+    it('fetches newly created pipelines when on the first page and the All tab', async () => {
       createComponent({
         requestHandlers: [
           [getPipelinesQuery, successDynamicHandler],
@@ -825,6 +825,35 @@ describe('Pipelines app', () => {
         id: 'gid://gitlab/Ci::Pipeline/20000',
       });
     });
+
+    it.each(['finished', 'branches', 'tags'])(
+      'does not fetch new pipelines when on the %s tab',
+      async (scope) => {
+        createComponent({
+          requestHandlers: [
+            [getPipelinesQuery, successDynamicHandler],
+            [getAllPipelinesCountQuery, countHandler],
+            [getSinglePipelineQuery, singlePipelineHandler],
+          ],
+        });
+
+        await waitForPromises();
+
+        findTabs().vm.$emit('onChangeTab', scope);
+
+        mockSubscription.next({
+          data: {
+            ciPipelineStatusesUpdated: {
+              id: 'gid://gitlab/Ci::Pipeline/20000',
+            },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(singlePipelineHandler).not.toHaveBeenCalled();
+      },
+    );
 
     it('shows error alert when batch query fails', async () => {
       createComponent({

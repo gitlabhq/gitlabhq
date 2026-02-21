@@ -53801,6 +53801,9 @@ msgstr ""
 msgid "ProjectSettings|Enable \"Delete source branch\" option by default"
 msgstr ""
 
+msgid "ProjectSettings|Enable automatic rebase prior to merge"
+msgstr ""
+
 msgid "ProjectSettings|Enable automatic reviews by GitLab Duo"
 msgstr ""
 
@@ -62376,6 +62379,9 @@ msgstr ""
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
+msgid "SecurityOrchestration|Only project approval settings will take effect"
+msgstr ""
+
 msgid "SecurityOrchestration|Open policy actions dropdown"
 msgstr ""
 
@@ -62467,6 +62473,9 @@ msgid "SecurityOrchestration|Policy status"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy type"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy will have no effect"
 msgstr ""
 
 msgid "SecurityOrchestration|Prevent users from skipping pipelines"
@@ -62781,6 +62790,12 @@ msgstr ""
 msgid "SecurityOrchestration|Template"
 msgstr ""
 
+msgid "SecurityOrchestration|Test run content coming soon"
+msgstr ""
+
+msgid "SecurityOrchestration|Test runs"
+msgstr ""
+
 msgid "SecurityOrchestration|The action will be logged in the audit log with your justification"
 msgstr ""
 
@@ -62866,6 +62881,12 @@ msgid "SecurityOrchestration|This merge request migrates compliance pipeline `%{
 msgstr ""
 
 msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."
+msgstr ""
+
+msgid "SecurityOrchestration|This policy has no rules to match merge requests against. Add rules for this policy to take effect."
+msgstr ""
+
+msgid "SecurityOrchestration|This policy has no rules, so branch-level settings will not be applied. Only project approval settings will take effect."
 msgstr ""
 
 msgid "SecurityOrchestration|This policy is applied to current project."
@@ -63067,6 +63088,9 @@ msgid "SecurityOrchestration|You can use auto-dismiss actions only with detected
 msgstr ""
 
 msgid "SecurityOrchestration|You can use auto-resolve actions only with no longer detected rules."
+msgstr ""
+
+msgid "SecurityOrchestration|You can use override actions only with detected rules."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."

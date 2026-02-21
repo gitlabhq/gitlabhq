@@ -244,6 +244,63 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
     end
   end
 
+  describe 'Automatic rebase setting', :js do
+    context 'when rebase_on_merge_automatic feature flag is enabled' do
+      before do
+        stub_feature_flags(rebase_on_merge_automatic: true)
+        visit project_settings_merge_requests_path(project)
+      end
+
+      it 'shows checkbox when semi-linear merge method is selected' do
+        choose('project_merge_method_rebase_merge')
+
+        expect(page).to have_field('project_project_setting_attributes_automatic_rebase_enabled')
+        expect(find('.js-rebase-merge-container')).to have_selector('.js-automatic-rebase-setting')
+      end
+
+      it 'shows checkbox when fast-forward merge method is selected' do
+        choose('project_merge_method_ff')
+
+        expect(page).to have_field('project_project_setting_attributes_automatic_rebase_enabled')
+        expect(find('.js-ff-container')).to have_selector('.js-automatic-rebase-setting')
+      end
+
+      it 'hides checkbox when merge commit method is selected' do
+        choose('project_merge_method_merge')
+
+        expect(page).to have_selector('.js-automatic-rebase-setting.gl-hidden', visible: :hidden)
+      end
+
+      it 'persists the setting when saved', :aggregate_failures do
+        choose('project_merge_method_ff')
+        check('project_project_setting_attributes_automatic_rebase_enabled')
+
+        within('.merge-request-settings-form') do
+          find('.rspec-save-merge-request-changes')
+          click_on('Save changes')
+        end
+
+        wait_for_requests
+
+        checkbox = find_field('project_project_setting_attributes_automatic_rebase_enabled')
+
+        expect(checkbox).to be_checked
+        expect(project.reload.project_setting.automatic_rebase_enabled).to be(true)
+      end
+    end
+
+    context 'when rebase_on_merge_automatic feature flag is disabled' do
+      before do
+        stub_feature_flags(rebase_on_merge_automatic: false)
+        visit project_settings_merge_requests_path(project)
+      end
+
+      it 'does not show the automatic rebase checkbox' do
+        expect(page).not_to have_selector('.js-automatic-rebase-setting')
+      end
+    end
+  end
+
   describe 'target project settings' do
     context 'when project is a fork' do
       let_it_be(:upstream) { create(:project, :public) }
