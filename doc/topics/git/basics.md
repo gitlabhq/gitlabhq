@@ -55,7 +55,7 @@ For more information, see [Stash changes](stash.md).
 ## Add files to a branch
 
 The `git add <filename>` command adds files to a Git repository or a branch.
-You an add new files, modify existing files, or delete files.
+You can add new files, modify existing files, or delete files.
 For more information, see [Add files to a branch](add_files.md).
 
 ## Merge requests
