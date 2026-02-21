@@ -265,9 +265,6 @@ module Ci
       run_after_commit { build.execute_hooks }
     end
 
-    after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
-    after_commit :track_ci_build_created_event, on: :create
-
     # Builds no longer use the p_ci_build_tags table for tag storage.
     # Tags are stored in ci_job_definitions and accessed via job_definition.tag_list.
     # Tag records in the `tags` table are created by Ci::PendingBuild.build_tags_ids.
@@ -1500,32 +1497,6 @@ module Ci
           .build_completed_report_type_counter(report_type)
           .increment(status: status)
       end
-    end
-
-    def track_ci_secrets_management_id_tokens_usage
-      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('i_ci_secrets_management_id_tokens_build_created', values: user_id)
-
-      Gitlab::Tracking.event(
-        self.class.to_s,
-        'create_id_tokens',
-        namespace: namespace,
-        user: user,
-        label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
-        ultimate_namespace_id: namespace.root_ancestor.id,
-        context: [Gitlab::Tracking::ServicePingContext.new(
-          data_source: :redis_hll,
-          event: 'i_ci_secrets_management_id_tokens_build_created'
-        ).to_context]
-      )
-    end
-
-    def track_ci_build_created_event
-      Gitlab::InternalEvents.track_event(
-        'create_ci_build',
-        project: project,
-        user: user,
-        property: name
-      )
     end
 
     def prefix_and_partition_for_token

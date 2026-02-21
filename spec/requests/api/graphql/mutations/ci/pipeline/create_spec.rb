@@ -62,6 +62,9 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
     context 'when the pipeline creation is successful' do
       it 'creates a pipeline' do
         stub_ci_pipeline_to_return_yaml_file
+        # Temporary increase for https://gitlab.com/gitlab-org/gitlab/-/issues/588730, will be removed after
+        # Build tracking moved to pipeline chain with preloading to prevent N+1s, adding ~5 queries.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
 
         expect do
           post_graphql_mutation(mutation, current_user: user)

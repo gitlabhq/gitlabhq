@@ -91,4 +91,73 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
       )
     end
   end
+
+  describe 'build creation tracking' do
+    let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, project: project) }
+
+    context 'when pipeline has builds' do
+      let_it_be(:build1) do
+        create(:ci_build, pipeline: pipeline, ci_stage: stage, project: project, name: 'rspec', user: user)
+      end
+
+      let_it_be(:build2) do
+        create(:ci_build, pipeline: pipeline, ci_stage: stage, project: project, name: 'rubocop', user: user)
+      end
+
+      before do
+        pipeline.builds.reload
+      end
+
+      it 'tracks build creation events' do
+        expect { run_chain }
+          .to trigger_internal_events('create_ci_build').twice
+      end
+    end
+
+    context 'when pipeline has builds with id_tokens' do
+      let_it_be(:build_with_tokens) do
+        create(:ci_build, pipeline: pipeline, ci_stage: stage, project: project,
+          user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } })
+      end
+
+      before do
+        pipeline.builds.reload
+      end
+
+      it 'tracks id_tokens usage' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter)
+          .to receive(:track_event)
+          .with('i_ci_secrets_management_id_tokens_build_created', values: [user.id])
+
+        run_chain
+      end
+
+      it 'tracks Snowplow event for id_tokens' do
+        run_chain
+
+        expect_snowplow_event(
+          category: 'Ci::Build',
+          action: 'create_id_tokens',
+          namespace: build_with_tokens.namespace,
+          user: user,
+          label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
+          ultimate_namespace_id: build_with_tokens.namespace.root_ancestor.id,
+          context: [Gitlab::Tracking::ServicePingContext.new(
+            data_source: :redis_hll,
+            event: 'i_ci_secrets_management_id_tokens_build_created'
+          ).to_context.to_json]
+        )
+      end
+    end
+
+    context 'when pipeline has no builds' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+
+      it 'does not track any build events' do
+        expect(Gitlab::InternalEvents).not_to receive(:track_event).with('create_ci_build', anything)
+
+        run_chain
+      end
+    end
+  end
 end

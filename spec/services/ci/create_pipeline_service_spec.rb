@@ -84,7 +84,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         1 + # INSERT INTO "ci_stages"
           1 + # INSERT INTO "ci_builds"
           1 + # INSERT INTO "p_ci_job_definition_instances"
-          1 # INSERT INTO "p_ci_build_sources"
+          1 + # INSERT INTO "p_ci_build_sources"
+          5 # Preloading queries for build tracking (user, job_definition, namespace, project associations)
       end
 
       before do
