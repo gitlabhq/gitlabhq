@@ -321,8 +321,10 @@ export default class MergeRequestStore {
     return {
       mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
       closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),
-      closedAt: localeDateFormat.asDateTimeFull.format(newDate(metrics.closed_at)),
-      mergedAt: localeDateFormat.asDateTimeFull.format(newDate(metrics.merged_at)),
+      closedAt:
+        metrics.closed_at && localeDateFormat.asDateTimeFull.format(newDate(metrics.closed_at)),
+      mergedAt:
+        metrics.merged_at && localeDateFormat.asDateTimeFull.format(newDate(metrics.merged_at)),
       readableMergedAt: MergeRequestStore.getReadableDate(metrics.merged_at),
       readableClosedAt: MergeRequestStore.getReadableDate(metrics.closed_at),
     };

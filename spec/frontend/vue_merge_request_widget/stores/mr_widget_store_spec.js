@@ -186,4 +186,37 @@ describe('MergeRequestStore', () => {
       });
     });
   });
+
+  describe('buildMetrics', () => {
+    it('returns empty object when metrics is undefined', () => {
+      expect(MergeRequestStore.buildMetrics(undefined)).toEqual({});
+    });
+
+    it('does not format dates when closed_at and merged_at are null', () => {
+      const result = MergeRequestStore.buildMetrics({ closed_at: null, merged_at: null });
+
+      expect(result.closedAt).toBeNull();
+      expect(result.mergedAt).toBeNull();
+    });
+
+    it('formats closedAt when closed_at is provided', () => {
+      const result = MergeRequestStore.buildMetrics({
+        closed_at: '2020-01-01T00:00:00.000Z',
+        merged_at: null,
+      });
+
+      expect(result.closedAt).not.toBeNull();
+      expect(result.mergedAt).toBeNull();
+    });
+
+    it('formats mergedAt when merged_at is provided', () => {
+      const result = MergeRequestStore.buildMetrics({
+        closed_at: null,
+        merged_at: '2020-01-01T00:00:00.000Z',
+      });
+
+      expect(result.closedAt).toBeNull();
+      expect(result.mergedAt).not.toBeNull();
+    });
+  });
 });
