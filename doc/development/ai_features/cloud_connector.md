@@ -139,5 +139,5 @@ For more information and examples on the **AI Gateway** authorization process, c
 
 ## Testing
 
-Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment) 
+Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment)
 to run E2E integration tests with **AI Gateway** as the backend service.

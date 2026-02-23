@@ -88,7 +88,7 @@ list by active,
 inactive, and trending projects:
 
 - Active projects are projects with recent activity
-or ongoing development. 
+or ongoing development.
 - Inactive projects are projects that are archived or
 scheduled for deletion.
 - Trending projects are public projects that are considered popular

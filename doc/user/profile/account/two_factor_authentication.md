@@ -35,9 +35,9 @@ or email OTP.
 
 > [!warning]
 > If you lose access to your OTP authenticator, you might be locked out of your account.
-> 
+>
 > To minimize this risk:
-> 
+>
 > - Enable cloud backup in your authenticator app.
 > - Save your backup passwords, secret keys, or recovery credentials in a secure location.
 > - Review the documentation for your specific OTP authenticator.
@@ -144,7 +144,7 @@ Email OTP allows you to verify your identity by sending a six-digit verification
 
 > [!note]
 > You might be unable to use email OTP if:
-> 
+>
 > - Your group policy requires the use of other two-factor authentication methods.
 > - Your account uses an external identity provider.
 > - Your account is scheduled for automatic enablement at a future date.

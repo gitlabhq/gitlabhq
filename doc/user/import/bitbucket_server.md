@@ -118,7 +118,7 @@ For imports to GitLab.com, you must use the [post-migration method](mapping.md) 
 > The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
 > migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
 > [post-migration method](mapping.md) instead that doesn't have these limitations.
-> 
+>
 > For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
 
 Using the alternative method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address

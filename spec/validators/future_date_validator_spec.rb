@@ -17,19 +17,19 @@ RSpec.describe FutureDateValidator do
     subject.expires_at = date
   end
 
-  context 'past date' do
+  context 'with a past date' do
     let(:date) { Date.yesterday }
 
     it { is_expected.not_to be_valid }
   end
 
-  context 'current date' do
+  context 'with the current date' do
     let(:date) { Date.today }
 
     it { is_expected.to be_valid }
   end
 
-  context 'future date' do
+  context 'with a future date' do
     let(:date) { Date.tomorrow }
 
     it { is_expected.to be_valid }

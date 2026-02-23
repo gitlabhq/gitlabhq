@@ -625,7 +625,7 @@ upstream pipeline:
 > [!warning]
 > Make sure the upstream job finishes before the downstream job starts, otherwise you cannot fetch the artifacts.
 > Use [`needs`](../yaml/_index.md#needs) to make the downstream job wait for the upstream job.
-> 
+>
 > For more information, see [issue 356016](https://gitlab.com/gitlab-org/gitlab/-/issues/356016).
 
 ### Fetch artifacts from an upstream merge request pipeline

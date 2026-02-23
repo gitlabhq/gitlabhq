@@ -35,7 +35,7 @@ Use a project access token to authenticate:
 > [!note]
 > On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
 > [trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
-> 
+>
 > On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
 > you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
 

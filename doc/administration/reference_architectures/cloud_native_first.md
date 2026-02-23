@@ -28,7 +28,7 @@ skinparam linetype ortho
 
 card "Kubernetes via Helm Charts" as kubernetes {
   collections "**Webservice Pods**\n//Auto-scaling//" as web #32CD32
-  
+
   collections "**Sidekiq Pods**\n//Auto-scaling//" as sidekiq #ff8dd1
 
   collections "**Gitaly Pods**\n//StatefulSets//" as gitaly #FF8C00

@@ -165,7 +165,7 @@ defined in the project's CI/CD configuration, also the reserved stages `.pipelin
 > [!note]
 > If your policy contains jobs only in the `.pre` and `.post` stages, the policy's pipeline is
 > evaluated as `empty`. It is not merged with the project's pipeline.
-> 
+>
 > To use the `.pre` and `.post` stages in a pipeline execution policy, you must include at least one
 > other job that runs in a different stage. For example: `.pipeline-policy-pre`.
 
@@ -802,10 +802,10 @@ In this case, the job variable value `Project job variable value` takes preceden
 > [!warning]
 > This feature does not work with pipeline execution policies created before GitLab 18.5.
 > To use this feature with older pipeline execution policies, you can either:
-> 
+>
 > - Make any change to the existing YAML configuration files for the pipeline execution policies.
 > - Copy, delete, and recreate the policies.
-> 
+>
 > For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
 You can use the `description`, `value` and `options` keywords to define CI/CD variables

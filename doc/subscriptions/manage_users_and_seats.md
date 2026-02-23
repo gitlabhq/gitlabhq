@@ -110,7 +110,7 @@ The user must not be assigned any other role, anywhere in the instance for GitLa
 On GitLab Self-Managed in the **Premium** tier, if a Guest user has a higher role in any project or group (including their personal namespace),
 when you upgrade to the **Ultimate** tier that higher role takes precedence and they will consume a seat.
 To ensure that Guest users on GitLab Self-Managed Ultimate will not consume a seat,
-confirm that they have no other role assignments in the instance or namespace before upgrading. 
+confirm that they have no other role assignments in the instance or namespace before upgrading.
 
 - If your project is:
   - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-permissions).

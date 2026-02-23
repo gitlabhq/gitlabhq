@@ -82,7 +82,7 @@ Adding a FK constraint to an existing column is a multi-milestone process:
 > [!note]
 > Adding a foreign-key constraint to either an existing or a new column
 > needs an index on the column.
-> 
+>
 > If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait till
 > the index gets added in the `structure.sql`.
 

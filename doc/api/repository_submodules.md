@@ -16,7 +16,7 @@ Use this API to update [Git submodules](https://git-scm.com/book/en/v2/Git-Tools
 
 ## Update a submodule reference
 
-Updates a submodule's reference. Used for some workflows, especially automated ones, 
+Updates a submodule's reference. Used for some workflows, especially automated ones,
 to keep up to date other projects that use it.
 
 ```plaintext

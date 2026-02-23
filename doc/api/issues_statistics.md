@@ -21,7 +21,7 @@ request on that project results in a `404` status code.
 
 ## Retrieve issues statistics for a user
 
-Retrieves statistics for issues accessible by the current user. By default, 
+Retrieves statistics for issues accessible by the current user. By default,
 it returns only issues created by the current user. To get all issues,
 set the `scope` attribute to `all`.
 

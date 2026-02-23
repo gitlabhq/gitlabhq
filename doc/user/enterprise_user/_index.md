@@ -88,9 +88,9 @@ After successful verification, the domain status changes to **Verified** and can
 > [!note]
 > Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
 > Until it completes, the domain remains unverified in GitLab.
-> 
+>
 > If the domain is still unverified after seven days, GitLab automatically removes the domain.
-> 
+>
 > After verification, GitLab periodically reverifies the domain. To avoid potential issues,
 > maintain the `TXT` record on your domain provider.
 

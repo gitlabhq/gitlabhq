@@ -18,14 +18,14 @@ title: Managing security configuration profiles
 
 {{< /history >}}
 
-Security configuration profiles are centralized settings that define how and when security scanners run across your projects. 
+Security configuration profiles are centralized settings that define how and when security scanners run across your projects.
 Use security configuration profiles to manage security scanners across your organization efficiently. A profile-based approach applies best practices with minimal manual setup.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Introducing security configuration profiles](https://www.youtube.com/watch?v=XYMKhhtRvwA).
 
 Profiles use inheritance.
-Security attributes and coverage that you manage for a group can also apply to it's subgroups and projects, unless the coverage is changed for the individual subgroup or project. 
+Security attributes and coverage that you manage for a group can also apply to it's subgroups and projects, unless the coverage is changed for the individual subgroup or project.
 
 Use [default profiles](#default-profiles) to enable pre-configured security scanning within minutes and with minimal configuration.
 
@@ -39,7 +39,7 @@ To view a high-level status (**Enabled**, **Not Enabled**, or **Failed**) for sc
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Security inventory**.
-1. In the security inventory, review the **Test Coverage** column. 
+1. In the security inventory, review the **Test Coverage** column.
 
 ### Change individual project coverage
 
@@ -56,7 +56,7 @@ To save time, you can apply security settings to multiple projects at once:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Security inventory**.
-1. Select multiple projects or an entire subgroup to apply the settings to. 
+1. Select multiple projects or an entire subgroup to apply the settings to.
 1. Select the **Bulk Action** dropdown and choose **Manage security scanners**.
 1. Choose **Apply default profile to all** to standardize your security posture across the selection.
 

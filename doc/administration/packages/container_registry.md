@@ -701,11 +701,11 @@ The Azure storage driver integrates with Microsoft Azure Blob Storage.
 
 > [!warning]
 > The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-> 
+>
 > Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
-> 
+>
 > Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
-> 
+>
 > Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 For a complete list of configuration parameters for each driver, see [`azure_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v1.md) and [`azure_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v2.md).
@@ -1398,7 +1398,7 @@ The time required to perform garbage collection is proportional to the container
 > The `registry-garbage-collect` command shuts down the container registry prior to the garbage collection and
 > only starts it again after garbage collection completes. If you prefer to avoid downtime,
 > you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
-> 
+>
 > This command proceeds only if legacy metadata is in use. This command does not proceed
 > if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 

@@ -494,7 +494,7 @@ Control who can register runners and whether to allow registration tokens.
 > Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 > to generate an authentication token to register runners. This process provides full
 > traceability of runner ownership and enhances your runner fleet's security.
-> 
+>
 > For more information, see
 > [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 

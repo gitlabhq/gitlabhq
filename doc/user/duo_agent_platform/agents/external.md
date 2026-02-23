@@ -105,14 +105,14 @@ Required steps to enable and use managed agents:
 
 ### Claude Code Agent
 
-The [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337/) 
-uses GitLab-managed credentials and does not require additional configuration. 
+The [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337/)
+uses GitLab-managed credentials and does not require additional configuration.
 This agent is available only on GitLab.com.
 
 ### Codex Agent
 
-The [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/) 
-uses GitLab-managed credentials and does not require additional configuration. 
+The [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/)
+uses GitLab-managed credentials and does not require additional configuration.
 This agent is available only on GitLab.com.
 
 ### Amazon Q Developer Agent

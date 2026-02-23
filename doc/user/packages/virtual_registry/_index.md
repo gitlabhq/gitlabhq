@@ -291,7 +291,7 @@ A cleanup policy affects only cached content from upstream registries. It does n
 ### Manage cleanup policies
 
 Manage a cleanup policy for virtual registries in a top-level group.
-Each top-level group can have up to one cleanup policy that 
+Each top-level group can have up to one cleanup policy that
 applies to all virtual registries in that group.
 
 #### Create a cleanup policy
@@ -314,7 +314,7 @@ To create a cleanup policy:
    - Under **Delete caches not accessed in the last (days)**, enter a number to set how often unused cache entries are deleted. Defaults to `7` days. Must be between `1` and `365`.
    - Optional. Under **Email notifications**, select either or both of the following checkboxes to receive email notifications:
      - **Send email notifications when cleanup runs**
-     - **Send email notifications if cleanup fails** 
+     - **Send email notifications if cleanup fails**
 1. Select **Save changes**.
 
 #### Edit a cleanup policy

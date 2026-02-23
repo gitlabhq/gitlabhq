@@ -791,7 +791,7 @@ git submodule update --init --depth 20 --recursive --remote --jobs 4
 > reproducibility of your builds when using the `--remote` flag. In most cases,
 > it is better to explicitly track submodule commits as designed, and update them
 > using an auto-remediation/dependency bot.
-> 
+>
 > The `--remote` flag is not required to check out submodules at their committed
 > revisions. Use this flag only when you want to automatically update submodules
 > to their latest remote versions.

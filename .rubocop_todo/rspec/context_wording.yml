@@ -2663,7 +2663,6 @@ RSpec/ContextWording:
     - 'spec/validators/array_members_validator_spec.rb'
     - 'spec/validators/cron_validator_spec.rb'
     - 'spec/validators/devise_email_validator_spec.rb'
-    - 'spec/validators/future_date_validator_spec.rb'
     - 'spec/validators/import/gitlab_projects/remote_file_validator_spec.rb'
     - 'spec/views/admin/application_settings/_ci_cd.html.haml_spec.rb'
     - 'spec/views/admin/application_settings/_package_registry.html.haml_spec.rb'

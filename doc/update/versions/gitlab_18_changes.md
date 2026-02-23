@@ -62,6 +62,29 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.9.0
+
+Upgrading to GitLab 18.9 might fail with a `PG::CheckViolation` error during the
+`AddNotNullConstraintToPoolRepositoriesOrganizationId` post-deployment migration:
+
+```plaintext
+PG::CheckViolation: ERROR: check constraint "check_96233d37c0" of relation "pool_repositories" is violated by some row
+```
+
+This error occurs because a [batched background migration](../background_migrations.md) that backfills
+`organization_id` in the `pool_repositories` table can be incorrectly marked as finished without
+executing when the table has only one row or is empty. This is common on GitLab Self-Managed instances
+with few or no forks. The GitLab 18.9 migration then fails when it tries to enforce a `NOT NULL`
+constraint on the column that was never populated.
+
+To work around this issue, populate the missing `organization_id` values before retrying the
+upgrade. See the [workaround in issue 590848](https://gitlab.com/gitlab-org/gitlab/-/issues/590848#note_3100211428)
+for the SQL query to run.
+
+After updating the data, retry the upgrade by running `sudo gitlab-ctl reconfigure`.
+
+For more information, see [issue 590848](https://gitlab.com/gitlab-org/gitlab/-/issues/590848).
+
 ## 18.8.2
 
 ### Deploy keys and personal access tokens for blocked users are invalidated

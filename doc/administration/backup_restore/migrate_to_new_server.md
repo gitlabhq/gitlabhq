@@ -5,9 +5,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrate to a new server
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 <!-- some details borrowed from GitLab.com move from Azure to GCP detailed at https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md -->
 
-You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
+You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server using the Linux package.
+
 If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/_index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
 > [!warning]
@@ -35,30 +43,34 @@ To prepare the new server:
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
    See [Manually replicate the primary site's SSH host keys](../geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
-1. [Install and configure GitLab](https://about.gitlab.com/install/) except
-   [incoming email](../incoming_email.md):
-   1. Install GitLab.
-   1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
-      Read the
-      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups/) for more detail.
-   1. If applicable, disable [incoming email](../incoming_email.md).
-   1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
-      Edit `/etc/gitlab/gitlab.rb` and set the following:
+1. [Install GitLab](../../install/package/_index.md).
+1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
+   Read the
+   [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups/) for more detail.
+1. If applicable, disable [incoming email](../incoming_email.md).
+1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
+   Edit `/etc/gitlab/gitlab.rb` and set the following:
 
-      ```ruby
-      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
-      ```
+   ```ruby
+   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
+   ```
 
-   1. Reconfigure GitLab:
+1. Reconfigure GitLab:
 
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 1. Stop GitLab to avoid any potential unnecessary and unintentional data processing:
 
    ```shell
    sudo gitlab-ctl stop
+   ```
+
+1. Stop Redis:
+
+   ```shell
+   sudo gitlab-ctl stop redis
    ```
 
 1. Configure the new server to allow receiving the Redis database and GitLab backup files:
@@ -106,7 +118,10 @@ To prepare the new server:
 1. Flush the Redis database to disk, and stop GitLab other than the services needed for migration:
 
    ```shell
-   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql && sudo gitlab-ctl start gitaly
+   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && \
+   sudo gitlab-ctl stop && \
+   sudo gitlab-ctl start postgresql && \
+   sudo gitlab-ctl start gitaly
    ```
 
 1. Create a GitLab backup:
@@ -148,12 +163,6 @@ To prepare the new server:
 
    ```shell
    sudo gitlab-ctl status
-   ```
-
-1. Stop Redis on the new server before transferring the Redis database backup:
-
-   ```shell
-   sudo gitlab-ctl stop redis
    ```
 
 1. Transfer the Redis database and GitLab backups to the new server:

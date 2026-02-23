@@ -79,10 +79,10 @@ To run a manual job and specify additional variables:
 > [!warning]
 > Any project member with permissions to run a manual job can retry the job and view the variables
 > that were provided when the job was initially run. This includes:
-> 
+>
 > - In public projects: Users with the Developer, Maintainer, or Owner role.
 > - In private or internal projects: Users with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
-> 
+>
 > Consider this visibility when entering sensitive information as manual job variables.
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,

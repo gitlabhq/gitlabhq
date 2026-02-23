@@ -40,7 +40,7 @@ Additionally, as of GitLab 16, we have introduced
 
 > [!note]
 > During GitLab 16.x, we are scheduling two or three required upgrade stops.
-> 
+>
 > We will give at least two milestones of notice when we schedule a required
 > upgrade stop. The first planned required upgrade stop is scheduled for GitLab
 > 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be

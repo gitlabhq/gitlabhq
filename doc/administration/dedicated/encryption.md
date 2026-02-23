@@ -86,7 +86,7 @@ account.
 
 > [!note]
 > BYOK must be enabled during instance onboarding. Once enabled, it cannot be disabled.
-> 
+>
 > If you did not enable BYOK during onboarding, your data is still encrypted at rest with AWS-managed
 > keys, but you cannot use your own keys.
 
@@ -126,7 +126,7 @@ To create AWS KMS keys for BYOK:
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.
 1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
-1. Verify the KMS key policy matches the following example. Replace placeholder values 
+1. Verify the KMS key policy matches the following example. Replace placeholder values
    with your account IDs and usernames. Additional restrictions beyond this policy are not supported.
 
    > [!note]

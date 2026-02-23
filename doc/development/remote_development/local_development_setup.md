@@ -432,7 +432,7 @@ scripts/remote_development/run-smoke-test-suite.sh
 
 > [!note]
 > The test does not set up or teardown any of these components as a part of its execution.
-> 
+>
 > At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
 > of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
 

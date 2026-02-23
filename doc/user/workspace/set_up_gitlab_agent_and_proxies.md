@@ -112,7 +112,7 @@ For a full list of configuration options, see the workspace [configuration refer
 > [!note]
 > The GitLab agent for Kubernetes is configured in one project, but you can use it in other project workspaces.
 > A separate agent is not required for each project.
-> 
+>
 > The configured agent is not visible until you
 > [allow the agent in your group](#allow-the-gitlab-agent-for-kubernetes-in-your-group).
 

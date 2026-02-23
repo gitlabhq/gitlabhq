@@ -21,7 +21,7 @@ description: Create non-human accounts for automated processes and third-party s
 - Subgroup service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585513) in GitLab 18.10
   [with a flag](../../administration/feature_flags/_index.md) named `allow_subgroups_to_create_service_accounts`.
   Disabled by default.
-  
+
 {{< /history >}}
 
 Service accounts are user accounts that represent non-human entities rather than individual people.
