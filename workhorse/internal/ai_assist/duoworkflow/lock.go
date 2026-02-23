@@ -43,11 +43,11 @@ func newWorkflowLockManager(rdb *redis.Client) *workflowLockManager {
 // When a flow is running we need a distributed lock so that it can be resumed
 // concurrently from another workhorse instance. We store these distributed
 // locks in Redis keyed by the workflow ID.
-func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string) (*redsync.Mutex, error) {
+func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string, workflowDefinition string) (*redsync.Mutex, error) {
 	lockKey := workflowLockPrefix + workflowID
 	mutex := m.rs.NewMutex(lockKey, redsync.WithExpiry(workflowLockTimeout))
 
-	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID, "lock_key": lockKey})
+	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID, "lock_key": lockKey, "workflow_definition": workflowDefinition})
 
 	if err := mutex.TryLockContext(ctx); err != nil {
 		// Only fail the request if the lock is already taken by another process.
@@ -68,7 +68,11 @@ func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string
 	return mutex, nil
 }
 
-func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mutex, workflowID string) {
+func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mutex, workflowID string, workflowDefinition string) {
+	logger := log.WithContextFields(ctx, log.Fields{
+		"workflow_id": workflowID, "workflow_definition": workflowDefinition,
+	})
+
 	if m == nil || mutex == nil {
 		return
 	}
@@ -76,26 +80,18 @@ func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mu
 	ok, err := mutex.UnlockContext(ctx)
 	if err != nil {
 		if errors.Is(err, redsync.ErrLockAlreadyExpired) {
-			log.WithContextFields(ctx, log.Fields{
-				"workflow_id": workflowID,
-			}).Info("Workflow lock was already expired")
+			logger.Info("Workflow lock was already expired")
 			return
 		}
 
-		log.WithContextFields(ctx, log.Fields{
-			"workflow_id": workflowID,
-		}).WithError(err).Error("Failed to release workflow lock")
+		logger.WithError(err).Error("Failed to release workflow lock")
 		return
 	}
 
 	if !ok {
-		log.WithContextFields(ctx, log.Fields{
-			"workflow_id": workflowID,
-		}).Info("Failed to release workflow lock without an error")
+		logger.Info("Failed to release workflow lock without an error")
 		return
 	}
 
-	log.WithContextFields(ctx, log.Fields{
-		"workflow_id": workflowID,
-	}).Info("Released workflow lock")
+	logger.Info("Released workflow lock")
 }

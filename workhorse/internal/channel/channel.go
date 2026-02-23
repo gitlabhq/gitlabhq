@@ -125,7 +125,12 @@ func connectToServer(settings *api.ChannelSettings, r *http.Request) (Connection
 
 	setForwardedFor(&settings.Header, r)
 
-	conn, _, err := settings.Dial()
+	conn, resp, err := settings.Dial()
+	if resp != nil && resp.Body != nil {
+		defer func() {
+			_ = resp.Body.Close()
+		}()
+	}
 	if err != nil {
 		return nil, err
 	}

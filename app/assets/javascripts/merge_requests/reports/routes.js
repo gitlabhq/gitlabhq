@@ -11,7 +11,7 @@ export default [
   {
     name: SECURITY_ROUTE,
     path: `/${SECURITY_ROUTE}`,
-    component: () => import('ee_component/merge_requests/reports/pages/security_findings_page.vue'),
+    component: () => import('ee_component/merge_requests/reports/pages/security_scans_page.vue'),
   },
   {
     name: 'report',

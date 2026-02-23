@@ -94,6 +94,22 @@ export const getMatchedComponents = (instance, path) => {
   return route.matched.flatMap((record) => Object.values(record.components));
 };
 
+const runBeforeEnterGuards = (resolved) => {
+  for (const match of resolved.matched) {
+    const { beforeEnter } = match;
+    if (typeof beforeEnter === 'function') {
+      let redirectTarget = null;
+      beforeEnter(resolved, { path: '/' }, (target) => {
+        if (target && (typeof target === 'object' || typeof target === 'string')) {
+          redirectTarget = target;
+        }
+      });
+      if (redirectTarget) return redirectTarget;
+    }
+  }
+  return null;
+};
+
 // Strip trailing slash from path (except for root '/'), handling query strings and hashes
 const stripTrailingSlash = (fullPath) => {
   const queryIndex = fullPath.indexOf('?');
@@ -160,12 +176,23 @@ export default class VueRouterCompat {
       let didRedirect = false;
       for (let i = 0; i < maxRedirects; i += 1) {
         const lastMatched = resolved.matched[resolved.matched.length - 1];
-        if (!lastMatched?.redirect) break;
 
-        const { redirect } = lastMatched;
-        const redirectTarget = typeof redirect === 'function' ? redirect(resolved) : redirect;
-        resolved = router.resolve(redirectTarget);
-        didRedirect = true;
+        // resolve() does not execute beforeEnter guards. Synchronously invoke
+        // them to mimic Vue Router 3 behavior where guards run before the
+        // initial route is committed.
+        const guardRedirect = runBeforeEnterGuards(resolved);
+
+        if (guardRedirect) {
+          resolved = router.resolve(guardRedirect);
+          didRedirect = true;
+        } else if (lastMatched?.redirect) {
+          const { redirect } = lastMatched;
+          const redirectTarget = typeof redirect === 'function' ? redirect(resolved) : redirect;
+          resolved = router.resolve(redirectTarget);
+          didRedirect = true;
+        } else {
+          break;
+        }
       }
 
       router.currentRoute.value = resolved;

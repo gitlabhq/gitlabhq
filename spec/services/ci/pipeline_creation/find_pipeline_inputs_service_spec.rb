@@ -124,6 +124,33 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
         end
       end
 
+      context 'when source does not support inputs' do
+        where(:source, :config_exists?) do
+          [
+            [:security_scan_profiles_source,    true],
+            [:security_scan_profiles_source,    false],
+            [:security_policies_default_source, true],
+            [:security_policies_default_source, false]
+          ]
+        end
+
+        with_them do
+          before do
+            allow(project).to receive(:auto_devops_enabled?).and_return(false)
+            allow_next_instance_of(Gitlab::Ci::ProjectConfig) do |config|
+              allow(config).to receive_messages(exists?: config_exists?, source: source)
+            end
+          end
+
+          it 'returns early success response with empty inputs' do
+            result = service.execute
+
+            expect(result).to be_success
+            expect(result.payload[:inputs].all_inputs).to be_empty
+          end
+        end
+      end
+
       context 'when config is expected in the project' do
         before do
           project.repository.create_file(

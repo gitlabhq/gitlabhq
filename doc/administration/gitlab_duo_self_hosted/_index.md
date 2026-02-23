@@ -34,6 +34,18 @@ avoid external API calls, and manage the full lifecycle of requests to your LLM 
 
 You can use self-hosted models with different deployment options.
 
+### GitLab Duo Agent Platform
+
+GitLab Duo Agent Platform Self-Hosted to use on-premise models or private cloud-hosted models in the GitLab Duo Agent Platform.
+
+For customers with an offline license, billing is seat based and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
+
+For customers with an online license, billing is usage based. You can also use GitLab-managed models in a hybrid deployment.
+
+Inference data (including code inputs, model prompts, and model responses) does not leave the customer network.
+Anonymized billing metadata (instance ID, call count, anonymized user ID) is sent to GitLab for usage billing.
+GitLab does not capture which model or model provider the customer uses.
+
 ### GitLab Duo (Classic)
 
 GitLab Duo Self-Hosted for customers with GitLab Duo Enterprise who are using GitLab Duo (Classic)
@@ -43,18 +55,6 @@ features. You can use:
 - GitLab-managed models in a hybrid deployment
 
 This option uses seat-based pricing.
-
-### GitLab Duo Agent Platform
-
-GitLab Duo Agent Platform Self-Hosted to use on-premise models or private cloud-hosted models in the GitLab Duo Agent Platform.
-
-For customers with an offline license, billing is seat based and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
-
-For customers with an online license, billing is usage based. You can also use GitLab-managed models in a hybrid deployment. 
-
-Inference data (including code inputs, model prompts, and model responses) does not leave the customer network. 
-Anonymized billing metadata (instance ID, call count, anonymized user ID) is sent to GitLab for usage billing. 
-GitLab does not capture which model or model provider the customer uses.
 
 ### Feature versions and status
 

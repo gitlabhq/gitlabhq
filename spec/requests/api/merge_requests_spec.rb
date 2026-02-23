@@ -2328,7 +2328,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     context 'when authorized' do
       it 'creates and returns the new Pipeline' do
-        expect { request }.to change(Ci::Pipeline, :count).by(1)
+        expect { request }.to change { Ci::Pipeline.count }.by(1)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
       end
@@ -2341,7 +2341,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         it 'creates the pipeline async' do
           expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).and_call_original
 
-          expect { request }.to change(Ci::Pipeline, :count).by(1)
+          expect { request }.to change { Ci::Pipeline.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:accepted)
         end
@@ -2369,7 +2369,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:authenticated_user) { create(:user) }
 
       it 'responds with a blank 404' do
-        expect { request }.not_to change(Ci::Pipeline, :count)
+        expect { request }.not_to change { Ci::Pipeline.count }
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
@@ -2378,7 +2378,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:merge_request_iid) { non_existing_record_id }
 
       it 'responds with a blank 404' do
-        expect { request }.not_to change(Ci::Pipeline, :count)
+        expect { request }.not_to change { Ci::Pipeline.count }
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
@@ -2387,7 +2387,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:ci_yaml) { 'invalid yaml file' }
 
       it 'creates a failed pipeline' do
-        expect { request }.to change(Ci::Pipeline, :count).by(1)
+        expect { request }.to change { Ci::Pipeline.count }.by(1)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
         expect(merge_request.pipelines_for_merge_request.last).to be_failed

@@ -6,6 +6,11 @@ module Ci
       include Gitlab::Utils::StrongMemoize
       include ReactiveCaching
 
+      SOURCES_WITHOUT_INPUTS_SUPPORT = %i[
+        security_scan_profiles_source
+        security_policies_default_source
+      ].freeze
+
       self.reactive_cache_key = ->(service) { [service.class.name, service.id] }
       self.reactive_cache_work_type = :external_dependency
       self.reactive_cache_worker_finder = ->(id, *_args) { from_cache(id) }
@@ -60,10 +65,10 @@ module Ci
       private
 
       def fetch_inputs(sha)
-        # The project config may not exist if the project is using a policy.
-        # We currently don't support inputs for policies.
+        # The project config may not exist if the project is using a policy or security scan profile.
+        # We currently don't support inputs for both.
         config = build_project_config(sha)
-        return success_response(Ci::Inputs::Builder.new([])) unless config.exists?
+        return success_response(Ci::Inputs::Builder.new([])) unless inputs_supported?(config)
 
         # Since CI Config path is configurable (local, other project, URL) we translate
         # all supported config types into an `include: {...}` statement.
@@ -133,6 +138,14 @@ module Ci
 
         processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, build_context(sha))
         processor.perform
+      end
+
+      def inputs_supported?(config)
+        config.exists? && source_supports_inputs?(config)
+      end
+
+      def source_supports_inputs?(config)
+        SOURCES_WITHOUT_INPUTS_SUPPORT.exclude?(config.source)
       end
     end
   end

@@ -503,6 +503,35 @@ describe('VueRouterCompat', () => {
       expect(window.location.pathname).toBe(`${base}/new`);
     });
 
+    it('executes beforeEnter guard that redirects on initial route', () => {
+      const base = '/group/-/cadences';
+      window.history.replaceState({}, '', `${base}/new`);
+
+      const IndexComponent = { template: '<div>index</div>' };
+      const NewComponent = { template: '<div>new</div>' };
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          { path: '/', name: 'index', component: IndexComponent },
+          {
+            path: '/new',
+            name: 'new',
+            component: NewComponent,
+            beforeEnter: (to, from, next) => {
+              next({ name: 'index' });
+            },
+          },
+        ],
+      });
+
+      shallowMount(ParentComponent, { router });
+
+      expect(router.currentRoute.name).toBe('index');
+      expect(router.currentRoute.path).toBe('/');
+    });
+
     it('updates the browser URL when following a function redirect', async () => {
       const base = '/app';
       window.history.replaceState({}, '', `${base}/dynamic`);
@@ -524,6 +553,38 @@ describe('VueRouterCompat', () => {
 
       expect(redirect).toHaveBeenCalledWith(expect.objectContaining({ path: '/dynamic' }));
       expect(window.location.pathname).toBe(`${base}/resolved`);
+    });
+  });
+
+  describe('beforeEnter guard', () => {
+    it('executes beforeEnter guard that redirects via next() on push', async () => {
+      const IndexComponent = { template: '<div>index</div>' };
+      const NewComponent = { template: '<div>new</div>' };
+
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          { path: '/', name: 'index', component: IndexComponent },
+          {
+            path: '/new',
+            name: 'new',
+            component: NewComponent,
+            beforeEnter: (to, from, next) => {
+              next({ name: 'index' });
+            },
+          },
+        ],
+      });
+
+      try {
+        await router.push('/new');
+      } catch {
+        // Vue Router 3 may throw/reject on redirect
+      }
+      await nextTick();
+
+      expect(router.currentRoute.name).toBe('index');
+      expect(router.currentRoute.path).toBe('/');
     });
   });
 

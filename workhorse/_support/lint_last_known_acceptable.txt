@@ -1,4 +1,3 @@
-internal/channel/channel.go:128:31: response body must be closed (bodyclose)
 internal/zipartifacts/open_archive.go:74:28: response body must be closed (bodyclose)
 internal/git/diff.go:1: 1-48 lines are duplicate of `internal/git/format-patch.go:1-49` (dupl)
 internal/git/format-patch.go:1: 1-49 lines are duplicate of `internal/git/diff.go:1-48` (dupl)
@@ -6,7 +5,7 @@ internal/testhelper/gitaly.go:277: 277-296 lines are duplicate of `internal/test
 internal/testhelper/gitaly.go:315: 315-336 lines are duplicate of `internal/testhelper/gitaly.go:338-357` (dupl)
 internal/testhelper/gitaly.go:338: 338-357 lines are duplicate of `internal/testhelper/gitaly.go:277-296` (dupl)
 cmd/gitlab-workhorse/main.go:119:6: Function 'buildConfig' has too many statements (43 > 40) (funlen)
-internal/ai_assist/duoworkflow/runner.go:383:18: Function 'handleAgentAction' is too long (109 > 60) (funlen)
+internal/ai_assist/duoworkflow/runner.go:385:18: Function 'handleAgentAction' is too long (109 > 60) (funlen)
 cmd/gitlab-workhorse/main.go:213:1: cognitive complexity 33 of func `run` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)
 internal/transport/transport.go:147:1: cognitive complexity 59 of func `validateIPAddress` is high (> 20) (gocognit)

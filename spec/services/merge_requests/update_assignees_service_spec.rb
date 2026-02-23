@@ -51,8 +51,8 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
 
         expect { update_merge_request }
           .to change { merge_request.reload.assignees }.from([user3]).to(new_users)
-          .and change(merge_request, :updated_at)
-          .and change(merge_request, :updated_by).to(user)
+          .and change { merge_request.updated_at }
+          .and change { merge_request.updated_by }.to(user)
       end
     end
 

@@ -25,7 +25,7 @@ title: Supported platforms for self-hosted models
 
 {{< /history >}}
 
-There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
+The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the providers we have validated and tested. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
 
 ## For self-hosted model deployments
 
@@ -149,12 +149,20 @@ This change has been observed to notably improve response times in internal benc
 
 ## For cloud-hosted model deployments
 
-### AWS Bedrock
+GitLab has validated and tested the following providers. The AI Gateway supports LLM providers that are compatible with [LiteLLM](https://docs.litellm.ai/docs/providers).
 
-[AWS Bedrock](https://aws.amazon.com/bedrock/) is a fully managed service that
-allows developers to build and scale generative AI applications using pre-trained
-models from leading AI companies. It seamlessly integrates with other AWS services
-and offers a pay-as-you-go pricing model.
+- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions) 
+- [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview) 
+- [Open AI](https://developers.openai.com/api/docs/models) 
+
+For configuration information, see the following provider documentation:
+ 
+- [Anthropic API overview](https://platform.claude.com/docs/en/api/overview)
+- [OpenAI API overview](https://developers.openai.com/api/docs)
+- [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+
+### Configure authentication with AWS Bedrock 
 
 To access AWS Bedrock models:
 
@@ -187,17 +195,6 @@ To access AWS Bedrock models:
    For VPC endpoints, the URL format may be different, such as `https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`
 
 For more information, see [supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
-
-### Azure OpenAI
-
-[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) provides
-access to OpenAI's powerful models, enabling developers to integrate advanced AI
-capabilities into their applications with robust security and scalable infrastructure.
-
-For more information, see:
-
-- [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
-- [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
 
 ## Use multiple models and platforms
 

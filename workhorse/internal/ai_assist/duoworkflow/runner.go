@@ -118,6 +118,7 @@ type runner struct {
 	serverCapabilities []string
 	cloudServiceClient *Client
 	cloudServiceStream selfHostedWorkflowStream
+	workflowDefinition string
 }
 
 func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
@@ -197,7 +198,7 @@ func (r *runner) Execute(ctx context.Context) error {
 	defer func() {
 		if r.lockFlow {
 			log.WithRequest(r.originalReq).Info("Releasing lock for workflow")
-			r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+			r.lockManager.releaseLock(ctx, r.mutex, r.workflowID, r.workflowDefinition)
 		}
 	}()
 
@@ -365,13 +366,14 @@ func intersectServerCapabilities(fromServer []string) []string {
 
 func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 	r.workflowID = startReq.WorkflowID
+	r.workflowDefinition = startReq.WorkflowDefinition
 
 	if r.workflowID == "" {
 		log.WithRequest(r.originalReq).Error("No workflow ID provided in StartWorkflowRequest")
 		return fmt.Errorf("handleWebSocketMessage: no workflow ID provided in StartWorkflowRequest")
 	}
 
-	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID)
+	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID, r.workflowDefinition)
 	if err != nil && err != errLockIsUnavailable {
 		return errFailedToAcquireLockError
 	}
@@ -571,7 +573,7 @@ func (r *runner) stopWorkflow(reason string, closeErr error) error {
 // Errors during shutdown are logged but not returned to allow other runners to proceed.
 func (r *runner) Shutdown(ctx context.Context) error {
 	if r.lockFlow {
-		r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+		r.lockManager.releaseLock(ctx, r.mutex, r.workflowID, r.workflowDefinition)
 	}
 
 	select {

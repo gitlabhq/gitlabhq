@@ -3482,6 +3482,9 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
+msgid "AI|AI Item"
+msgstr ""
+
 msgid "AI|AI vulnerability management"
 msgstr ""
 
@@ -3525,9 +3528,6 @@ msgid "AI|Explain this vulnerability and provide insights about potential soluti
 msgstr ""
 
 msgid "AI|Explain with AI"
-msgstr ""
-
-msgid "AI|Flow"
 msgstr ""
 
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
@@ -25982,9 +25982,6 @@ msgstr ""
 msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{agentName} %{date}"
-msgstr ""
-
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
@@ -26043,9 +26040,6 @@ msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
 msgid "DuoAgentPlatform|Show tool details"
-msgstr ""
-
-msgid "DuoAgentPlatform|Triggered"
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
@@ -72375,6 +72369,9 @@ msgid "Trigger token:"
 msgstr ""
 
 msgid "Trigger variables"
+msgstr ""
+
+msgid "Triggered by"
 msgstr ""
 
 msgid "Triggerer"

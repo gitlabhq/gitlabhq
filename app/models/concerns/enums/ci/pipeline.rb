@@ -127,7 +127,8 @@ module Enums
           parameter_source: 7,
           compliance_source: 8,
           security_policies_default_source: 9,
-          pipeline_execution_policy_forced: 10
+          pipeline_execution_policy_forced: 10,
+          security_scan_profiles_source: 11
         }
       end
     end

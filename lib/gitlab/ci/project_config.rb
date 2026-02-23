@@ -12,6 +12,7 @@ module Gitlab
       # - ProjectSetting takes care of CI config coming defined in a project.
       #   This can be the project itself, remote or external.
       # - AutoDevops is used as default option if nothing else is found and if AutoDevops is enabled.
+      # - SecurityScanProfile is used when project has Security Scan Profile attached with a matching pipeline trigger.
       # - EE uses SecurityPolicyDefault and it should come last. It is only necessary if no other source is available.
       #   Based on the policy configuration different source can be used.
       STANDARD_SOURCES = [
@@ -69,7 +70,7 @@ module Gitlab
       def find_source(
         project:, sha:, custom_content:, pipeline_source:, pipeline_source_bridge:, triggered_for_branch:, ref:,
         inputs:)
-        STANDARD_SOURCES.each do |source|
+        standard_sources.each do |source|
           source_config = source.new(project: project,
             sha: sha,
             custom_content: custom_content,
@@ -84,6 +85,10 @@ module Gitlab
         end
 
         nil
+      end
+
+      def standard_sources
+        STANDARD_SOURCES
       end
     end
   end
