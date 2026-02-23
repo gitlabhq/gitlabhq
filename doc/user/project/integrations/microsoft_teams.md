@@ -24,20 +24,68 @@ in Microsoft Teams. To integrate the services, you must:
 ## Configure Microsoft Teams
 
 > [!warning]
-> New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
-> existing integrations must be transitioned to workflow apps by December 2025.
-> Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
+> Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Office 365 Connectors in Microsoft Teams.
+> New integrations must use Power Automate workflows. Existing connector-based integrations must be transitioned by December 2025.
 
-To configure Microsoft Teams to listen for notifications from GitLab:
+To configure Microsoft Teams to receive notifications from GitLab, you must have
+a workflow that accepts the GitLab webhook payload and posts messages
+to your channel. You can create a:
 
-1. In Microsoft Teams, find and select the workflow template "Post to a channel when a webhook request is received".
+- Power Automate workflow using a template.
+- Custom workflow.
 
-   ![Selecting a workflow webhook in Microsoft Teams](img/microsoft_teams_select_webhook_workflow_v17_4.png)
+### Create a Power Automate workflow
 
-1. Enter a name for the webhook. The name is displayed next to every message that
-   comes in through the webhook. Select **Next**.
-1. Select the team and channel you want to add the integration to, then select **Add workflow**.
-1. Copy the webhook URL, as you need it to configure GitLab.
+1. In Microsoft Teams, next to the chat you want to receive notifications in,
+   select **More chat options** ({{< icon name="ellipsis_h" >}}).
+1. Select **Workflows**.
+1. Search for and select the **Send webhook alerts to a channel** workflow template.
+1. Under **Parameters**, enter the team and channel, and select **Save**.
+1. After the workflow is created, on the Workflows dialog, select
+   **Copy webhook link**.
+1. Copy the webhook URL provided. You use this webhook URL to configure GitLab.
+1. Close the Workflows dialog.
+
+#### Modify the workflow to accept GitLab payloads
+
+The default workflow template expects the Adaptive Card format, but GitLab sends
+the Office 365 Connector Card format. To modify the workflow:
+
+1. Go to Power Automate and sign in with your Microsoft account.
+1. Select **My flows** and find the workflow you created.
+1. Select **Edit** to modify the workflow.
+1. Select the existing **Post card in a chat or channel** action and delete it.
+1. Select **Add an action** and search for **Post message in a chat or channel**.
+1. Configure the action:
+   - **Post as**: Flow bot
+   - **Post in**: Channel
+   - **Team**: Select your team
+   - **Channel**: Select your channel
+   - **Message**: On the right of the text box, select **Insert expression**
+     and enter `triggerOutputs()?['body']?['attachments'][0]?['content']`.
+     Select **Add**.
+1. Select **Save**.
+
+### Create a custom workflow
+
+For more control over the message format, create a custom workflow:
+
+1. Go to Power Automate, and select **Create** > **Instant cloud flow**.
+1. Name your workflow and select **When an HTTP request is received** as the trigger,
+   then select **Create**.
+1. Select **Add an action** and search for **Post message in a chat or channel** (Microsoft Teams).
+1. In the trigger configuration, leave the JSON schema empty to accept any payload.
+1. Configure the action:
+   - **Post as**: Flow bot
+   - **Post in**: Channel
+   - **Team**: Select your team
+   - **Channel**: Select your channel
+   - **Message**: On the right of the text box, select **Insert expression**
+     and enter `triggerOutputs()?['body']?['attachments'][0]?['content']`.
+     Select **Add**.
+1. Select **Save**.
+1. In the workflow, select the **manual** trigger. Copy the **HTTP URL** from the trigger.
+   You use this URL to configure GitLab.
 
 ## Configure your GitLab project
 
@@ -59,8 +107,8 @@ GitLab to send the notifications:
    - Tag push
    - Pipeline
    - Wiki page
-1. In **Webhook**, paste the URL you copied when you
-   [configured Microsoft Teams](#configure-microsoft-teams).
+1. In **Webhook**, paste the URL you copied when you created a Power Automate or
+   custom workflow.
 1. Optional. If you enable the pipeline trigger, select the
    **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
 1. Optional. If you enable the pipeline trigger, select the
@@ -70,4 +118,5 @@ GitLab to send the notifications:
 
 ## Related topics
 
-- [Setting up an incoming webhook on Microsoft Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using#setting-up-a-custom-incoming-webhook)
+- [Microsoft Power Automate documentation](https://learn.microsoft.com/en-us/power-automate/)
+- [Microsoft Teams create incoming webhooks documentation](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook)

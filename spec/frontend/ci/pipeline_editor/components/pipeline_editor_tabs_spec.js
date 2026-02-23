@@ -21,6 +21,7 @@ import {
 } from '~/ci/pipeline_editor/constants';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.query.graphql';
+import getAppStatus from '~/ci/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import {
   mockBlobContentQueryResponse,
   mockCiLintPath,
@@ -90,14 +91,30 @@ describe('Pipeline editor tabs component', () => {
   let mockBlobContentData;
   let mockApollo;
 
-  const createComponentWithApollo = ({ props, provide = {}, mountFn = shallowMount } = {}) => {
+  const createComponentWithApollo = ({
+    props,
+    provide = {},
+    mountFn = shallowMount,
+    appStatus = EDITOR_APP_STATUS_VALID,
+  } = {}) => {
     const handlers = [[getBlobContent, mockBlobContentData]];
     mockApollo = createMockApollo(handlers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getAppStatus,
+      data: {
+        app: {
+          __typename: 'PipelineEditorApp',
+          status: appStatus,
+        },
+      },
+    });
 
     createComponent({
       props,
       provide,
       mountFn,
+      appStatus,
       options: {
         apolloProvider: mockApollo,
       },

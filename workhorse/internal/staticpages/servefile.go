@@ -72,7 +72,7 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 
 		defer func() {
 			if err := content.Close(); err != nil {
-				fmt.Printf("Error closing file: %v\n", err)
+				log.WithError(err).Error("Could not close static file")
 			}
 		}()
 
@@ -116,7 +116,11 @@ func (s *Static) resolveAuthorizationHeaders(r *http.Request, w http.ResponseWri
 			return
 		}
 
-		httpResponse.Body.Close()
+		if err := httpResponse.Body.Close(); err != nil {
+			log.WithContextFields(r.Context(), log.Fields{
+				"uri": mask.URL(r.RequestURI),
+			}).WithError(err).Error("Could not close pre-authorize response body")
+		}
 
 		for k, v := range httpResponse.Header {
 			if allowedHeaders[strings.ToLower(k)] {

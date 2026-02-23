@@ -10,8 +10,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
-import { sidebarState } from '~/sidebar/sidebar_state';
+import { currentAssignees, currentReviewers, linkedItems } from '~/graphql_shared/issuable_client';
 import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
 import {
@@ -561,7 +560,7 @@ class GfmAutoComplete {
             assignees =
               SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
           }
-          reviewers = sidebarState.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
+          reviewers = currentReviewers().map(createMemberSearchString);
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

@@ -9,6 +9,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 // Will not return a non-nil error after the response body has been
@@ -19,7 +20,11 @@ func handleReceivePack(w *HTTPResponseWriter, r *http.Request, a *api.Response) 
 	writePostRPCHeader(w, action)
 
 	cr, cw := newWriteAfterReader(r.Body, w)
-	defer cw.Flush()
+	defer func() {
+		if err := cw.Flush(); err != nil {
+			log.WithError(err).Error("Could not flush receive-pack response")
+		}
+	}()
 
 	gitProtocol := r.Header.Get("Git-Protocol")
 

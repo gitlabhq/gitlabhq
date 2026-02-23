@@ -2064,6 +2064,7 @@ export default {
             <template v-else>
               <div v-if="viewConfigChanged" class="gl-flex">
                 <gl-button
+                  v-if="isLoggedIn"
                   size="small"
                   category="tertiary"
                   class="!gl-text-sm"

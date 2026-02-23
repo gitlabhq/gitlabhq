@@ -41457,7 +41457,7 @@ msgstr ""
 msgid "MarkdownEditor|New! Suggest changes directly"
 msgstr ""
 
-msgid "MarkdownEditor|No records"
+msgid "MarkdownEditor|No results"
 msgstr ""
 
 msgid "MarkdownEditor|Outdent line (%{modifierKey}[)"
@@ -73152,6 +73152,9 @@ msgid "Updated"
 msgstr ""
 
 msgid "Updated %{timeAgo}"
+msgstr ""
+
+msgid "Updated %{timeAgo} by %{author}"
 msgstr ""
 
 msgid "Updated %{updatedAt}"

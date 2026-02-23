@@ -83,7 +83,7 @@ The following action patterns are examples of those that should not be introduce
 | `modify`  | Redundant with `update` |
 | `set`     | Redundant with `update` |
 | `view`    | Ambiguous read semantics; use `read` |
-| `write`   | Does not align with our permission granularity; prefer specific actions like `create`, `update`, or `delete` |
+| `write`   | Encompasses create, update, and delete operations, causing unintentional privilege escalation that results in security incidents where users accidentally receive delete access when only needing create or update permissions. Use specific actions like `create`, `update`, or `delete` |
 
 While you may see permissions with these actions, they were likely introduced before these [conventions were established](#historical-context) and will eventually be refactored to align with the current guidelines.
 

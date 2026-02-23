@@ -5,11 +5,15 @@ import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('WorkItemsCreateSavedViewDropdown', () => {
   let wrapper;
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, isLoggedInValue = true } = {}) => {
+    isLoggedIn.mockReturnValue(isLoggedInValue);
     wrapper = shallowMountExtended(WorkItemsCreateSavedViewDropdown, {
       propsData: {
         fullPath: 'test-project-path',
@@ -29,77 +33,90 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findLearnMoreLink = () => wrapper.findComponent(GlLink);
 
-  beforeEach(() => {
-    createComponent();
-  });
-
-  it('renders the dropdown toggle', () => {
-    expect(findDropdownToggle().exists()).toBe(true);
-    expect(findDropdownToggle().props('toggleText')).toBe('Add view');
-  });
-
-  it('renders dropdown items', () => {
-    expect(findDropdownItems()).toHaveLength(2);
-  });
-
-  describe('New view option', () => {
-    it('opens the new saved view modal when clicked', async () => {
-      expect(findNewSavedViewModal().props('show')).toBe(false);
-
-      await findDropdownItems().at(0).vm.$emit('action');
-
-      expect(findNewSavedViewModal().props('show')).toBe(true);
+  describe('when user is logged in', () => {
+    beforeEach(() => {
+      createComponent();
     });
 
-    it('passes correct props to new saved view modal', () => {
-      expect(findNewSavedViewModal().props()).toMatchObject({
-        fullPath: 'test-project-path',
-        sortKey: CREATED_DESC,
-        showSubscriptionLimitWarning: false,
+    it('renders the dropdown toggle', () => {
+      expect(findDropdownToggle().exists()).toBe(true);
+      expect(findDropdownToggle().props('toggleText')).toBe('Add view');
+    });
+
+    it('renders dropdown items', () => {
+      expect(findDropdownItems()).toHaveLength(2);
+    });
+
+    describe('New view option', () => {
+      it('opens the new saved view modal when clicked', async () => {
+        expect(findNewSavedViewModal().props('show')).toBe(false);
+
+        await findDropdownItems().at(0).vm.$emit('action');
+
+        expect(findNewSavedViewModal().props('show')).toBe(true);
+      });
+
+      it('passes correct props to new saved view modal', () => {
+        expect(findNewSavedViewModal().props()).toMatchObject({
+          fullPath: 'test-project-path',
+          sortKey: CREATED_DESC,
+          showSubscriptionLimitWarning: false,
+        });
+      });
+    });
+
+    describe('Browse views option', () => {
+      it('opens the existing saved views modal when clicked', async () => {
+        expect(findExistingSavedViewsModal().props('show')).toBe(false);
+
+        await findDropdownItems().at(1).vm.$emit('action');
+
+        expect(findExistingSavedViewsModal().props('show')).toBe(true);
+      });
+
+      it('passes correct props to existing saved views modal', () => {
+        expect(findExistingSavedViewsModal().props()).toMatchObject({
+          fullPath: 'test-project-path',
+          showSubscriptionLimitWarning: false,
+        });
+      });
+    });
+
+    describe('subscription limit warning', () => {
+      it('does not show warning when showSubscriptionLimitWarning is false', () => {
+        createComponent({ props: { showSubscriptionLimitWarning: false } });
+
+        expect(findWarningMessage().exists()).toBe(false);
+      });
+
+      it('shows warning when showSubscriptionLimitWarning is true', () => {
+        createComponent({ props: { showSubscriptionLimitWarning: true } });
+
+        expect(findWarningMessage().exists()).toBe(true);
+        expect(findWarningIcon().props('name')).toBe('warning');
+        expect(findLearnMoreLink().exists()).toBe(true);
+        expect(findLearnMoreLink().attributes('href')).toBe(
+          helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
+        );
+      });
+
+      it('passes showSubscriptionLimitWarning to child modals', () => {
+        createComponent({ props: { showSubscriptionLimitWarning: true } });
+
+        expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(true);
+        expect(findExistingSavedViewsModal().props('showSubscriptionLimitWarning')).toBe(true);
       });
     });
   });
 
-  describe('Browse views option', () => {
-    it('opens the existing saved views modal when clicked', async () => {
-      expect(findExistingSavedViewsModal().props('show')).toBe(false);
-
-      await findDropdownItems().at(1).vm.$emit('action');
-
-      expect(findExistingSavedViewsModal().props('show')).toBe(true);
+  describe('when user is logged out', () => {
+    beforeEach(() => {
+      createComponent({ isLoggedInValue: false });
     });
 
-    it('passes correct props to existing saved views modal', () => {
-      expect(findExistingSavedViewsModal().props()).toMatchObject({
-        fullPath: 'test-project-path',
-        showSubscriptionLimitWarning: false,
-      });
-    });
-  });
-
-  describe('subscription limit warning', () => {
-    it('does not show warning when showSubscriptionLimitWarning is false', () => {
-      createComponent({ props: { showSubscriptionLimitWarning: false } });
-
-      expect(findWarningMessage().exists()).toBe(false);
-    });
-
-    it('shows warning when showSubscriptionLimitWarning is true', () => {
-      createComponent({ props: { showSubscriptionLimitWarning: true } });
-
-      expect(findWarningMessage().exists()).toBe(true);
-      expect(findWarningIcon().props('name')).toBe('warning');
-      expect(findLearnMoreLink().exists()).toBe(true);
-      expect(findLearnMoreLink().attributes('href')).toBe(
-        helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
-      );
-    });
-
-    it('passes showSubscriptionLimitWarning to child modals', () => {
-      createComponent({ props: { showSubscriptionLimitWarning: true } });
-
-      expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(true);
-      expect(findExistingSavedViewsModal().props('showSubscriptionLimitWarning')).toBe(true);
+    it('does not render the dropdown', () => {
+      expect(findDropdownToggle().exists()).toBe(false);
+      expect(findDropdownItems()).toHaveLength(0);
     });
   });
 });

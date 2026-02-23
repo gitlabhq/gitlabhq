@@ -20,7 +20,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { linkedItems, currentAssignees } from '~/graphql_shared/issuable_client';
+import { linkedItems, currentAssignees, currentReviewers } from '~/graphql_shared/issuable_client';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
@@ -34,6 +34,7 @@ const mockSpriteIcons = '/icons.svg';
 jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
+  currentReviewers: jest.fn().mockReturnValue([]),
 }));
 
 jest.mock('fuzzaldrin-plus', () => ({
@@ -1536,6 +1537,65 @@ describe('GfmAutoComplete', () => {
           triggerDropdown($textarea, '/assign @');
 
           expect(getDropdownItems()).toHaveLength(enabledMembers.length);
+        });
+      });
+    });
+
+    describe('assign_reviewer / unassign_reviewer', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-users');
+      const reviewerMatcher = (user) =>
+        `${user.username.charAt(0).toUpperCase()} ${user.username} ${user.name}`;
+
+      beforeEach(() => {
+        currentReviewers.mockReturnValue([]);
+
+        autocomplete.setup($textarea, { members: true });
+        autocomplete.cachedData['@'] = {
+          '': [...mockAssignees],
+        };
+      });
+
+      describe('without any reviewers present', () => {
+        it('using "/assign_reviewer @" shows all members', () => {
+          triggerDropdown($textarea, '/assign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(reviewerMatcher));
+        });
+
+        it('using "/unassign_reviewer @" shows no users', () => {
+          triggerDropdown($textarea, '/unassign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(currentReviewers).toHaveBeenCalled();
+        });
+      });
+
+      describe('with reviewers present', () => {
+        beforeEach(() => {
+          currentReviewers.mockReturnValue([mockAssignees[1]]);
+        });
+
+        it('using "@" shows all the members', () => {
+          triggerDropdown($textarea, '@');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(reviewerMatcher));
+        });
+
+        it('using "/assign_reviewer @" excludes current reviewers', () => {
+          triggerDropdown($textarea, '/assign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length - 1);
+          expect(getDropdownItems()).not.toContain(reviewerMatcher(mockAssignees[1]));
+        });
+
+        it('using "/unassign_reviewer @" shows only current reviewers', () => {
+          triggerDropdown($textarea, '/unassign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockAssignees[1]].map(reviewerMatcher));
+          expect(currentReviewers).toHaveBeenCalled();
         });
       });
     });

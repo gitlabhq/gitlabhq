@@ -475,7 +475,7 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
       await nextTick();
 
-      expect(findAndReplaceMatchCount()).toBe('No records');
+      expect(findAndReplaceMatchCount()).toBe('No results');
 
       // Text that matches
       findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
@@ -631,7 +631,7 @@ describe('Markdown field header component', () => {
       await nextTick();
 
       expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet LOREM <img src="prompt">');
-      expect(findAndReplaceMatchCount()).toBe('No records');
+      expect(findAndReplaceMatchCount()).toBe('No results');
     });
   });
 });

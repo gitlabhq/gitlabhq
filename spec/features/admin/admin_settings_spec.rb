@@ -250,7 +250,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_selector(selector, visible: :visible)
           end
 
-          it 'auto disables dormant users period field depending on parent checkbox', :js do
+          it 'auto disables dormant users period field depending on parent checkbox', :js,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             uncheck 'application_setting_deactivate_dormant_users'
             expect(page).to have_field('application_setting_deactivate_dormant_users_period', disabled: true)
 
@@ -262,7 +263,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       context 'Change Sign-up restrictions' do
         context 'Require Admin approval for new signup setting' do
-          it 'changes the setting', :js do
+          it 'changes the setting', :js,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             within_testid('sign-up-restrictions-settings-content') do
               check 'Require admin approval for new sign-ups'
               click_button 'Save changes'
@@ -278,7 +280,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(current_settings.email_confirmation_setting).to eq('off')
           end
 
-          it 'changes the setting', :js do
+          it 'changes the setting', :js,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             within_testid('sign-up-restrictions-settings-content') do
               choose 'Hard'
               click_button 'Save changes'

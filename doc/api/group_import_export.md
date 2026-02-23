@@ -24,6 +24,7 @@ Group exports include the following:
 - Group labels
 - Group badges
 - Group members
+- Group events
 - Group wikis (Premium and Ultimate only)
 - Subgroups. Each subgroup includes all previous data in the list.
 

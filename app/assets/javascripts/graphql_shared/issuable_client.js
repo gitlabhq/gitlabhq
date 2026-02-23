@@ -26,6 +26,7 @@ import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
 export const currentAssignees = makeVar({});
+export const currentReviewers = makeVar([]);
 export const availableStatuses = makeVar({});
 
 export const config = {

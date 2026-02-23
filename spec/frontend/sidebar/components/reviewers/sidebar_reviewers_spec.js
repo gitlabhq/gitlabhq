@@ -21,7 +21,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import diffsEventHub from '~/diffs/event_hub';
 import { useBatchComments } from '~/batch_comments/store';
-import { sidebarState } from '~/sidebar/sidebar_state';
+import eventHub from '~/sidebar/event_hub';
 import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '~/sidebar/queries/merge_request_reviewers.subscription.graphql';
 import Mock from '../../mock_data';
@@ -32,15 +32,6 @@ const { bindInternalEventDocument } = useMockInternalEventsTracking();
 Vue.use(VueApollo);
 Vue.use(PiniaVuePlugin);
 
-const resetState = () => {
-  Object.assign(sidebarState, {
-    issuable: {},
-    loading: false,
-    initialLoading: true,
-    drawerOpen: false,
-  });
-};
-
 const resetSingletons = () => {
   SidebarService.singleton = null;
   SidebarStore.singleton = null;
@@ -48,19 +39,48 @@ const resetSingletons = () => {
 };
 
 describe('sidebar reviewers', () => {
-  const apolloMock = createMockApollo();
   let wrapper;
   let mediator;
   let axiosMock;
   let trackEventSpy;
   let pinia;
+  let queryHandler;
+
+  const mockReviewersResponse = ({ canUpdate = false } = {}) => ({
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        issuable: {
+          __typename: 'MergeRequest',
+          id: 'gid://gitlab/MergeRequest/1',
+          reviewers: {
+            __typename: 'MergeRequestReviewerConnection',
+            nodes: [],
+          },
+          userPermissions: {
+            __typename: 'MergeRequestPermissions',
+            adminMergeRequest: canUpdate,
+          },
+        },
+      },
+    },
+  });
 
   const findAssignButton = () => wrapper.findByTestId('sidebar-reviewers-assign-button');
   const findReviewers = () => wrapper.findComponent(Reviewers);
 
-  const createComponent = ({ props, stubs, data } = {}) => {
+  const createComponent = ({ props, stubs, queryResponse } = {}) => {
+    queryHandler = jest.fn().mockResolvedValue(queryResponse || mockReviewersResponse());
+    const subscriptionHandler = createMockApolloSubscription();
+    const apolloProvider = createMockApollo([[getMergeRequestReviewersQuery, queryHandler]]);
+    apolloProvider.defaultClient.setRequestHandler(
+      mergeRequestReviewersUpdatedSubscription,
+      () => subscriptionHandler,
+    );
+
     wrapper = shallowMountExtended(SidebarReviewers, {
-      apolloProvider: apolloMock,
+      apolloProvider,
       pinia,
       propsData: {
         issuableIid: '1',
@@ -70,11 +90,6 @@ describe('sidebar reviewers', () => {
         projectPath: 'projectPath',
         changing: false,
         ...props,
-      },
-      data() {
-        return {
-          ...data,
-        };
       },
       provide: {
         projectPath: 'projectPath',
@@ -114,12 +129,11 @@ describe('sidebar reviewers', () => {
     copy               | canUpdate | expected
     ${'shows'}         | ${true}   | ${true}
     ${'does not show'} | ${false}  | ${false}
-  `('$copy Assign button when canUpdate is $canUpdate', ({ canUpdate, expected }) => {
+  `('$copy Assign button when canUpdate is $canUpdate', async ({ canUpdate, expected }) => {
     createComponent({
-      data: {
-        issuable: { userPermissions: { adminMergeRequest: canUpdate } },
-      },
+      queryResponse: mockReviewersResponse({ canUpdate }),
     });
+    await waitForPromises();
 
     expect(findAssignButton().exists()).toBe(expected);
   });
@@ -129,7 +143,7 @@ describe('sidebar reviewers', () => {
 
     expect(mediator.saveReviewers).not.toHaveBeenCalled();
 
-    wrapper.vm.saveReviewers();
+    eventHub.$emit('sidebar.saveReviewers');
 
     expect(mediator.saveReviewers).toHaveBeenCalled();
   });
@@ -139,7 +153,7 @@ describe('sidebar reviewers', () => {
 
     expect(fetchUserCounts).not.toHaveBeenCalled();
 
-    wrapper.vm.saveReviewers();
+    eventHub.$emit('sidebar.saveReviewers');
     await nextTick();
 
     expect(fetchUserCounts).toHaveBeenCalled();
@@ -148,30 +162,26 @@ describe('sidebar reviewers', () => {
   describe('assign yourself', () => {
     it('tracks how many times the Reviewers component indicates the user is assigning themself', async () => {
       createComponent({
-        data: {
-          issuable: { userPermissions: { adminMergeRequest: true } },
-        },
-        stubs: {
-          Reviewers,
-        },
+        queryResponse: mockReviewersResponse({ canUpdate: true }),
       });
+      await waitForPromises();
 
-      // Wait for Apollo to finish so the sidebar is enabled
+      findReviewers().vm.$emit('assign-self');
       await nextTick();
-
-      const reviewers = findReviewers();
-      reviewers.vm.assignSelf();
 
       expect(trackEventSpy).toHaveBeenCalledWith('assign_self_as_reviewer_in_mr', {}, undefined);
     });
 
-    it('calls the mediator when "reviewBySelf" method is called', () => {
-      createComponent();
+    it('calls the mediator when assign-self is emitted', async () => {
+      createComponent({
+        queryResponse: mockReviewersResponse({ canUpdate: true }),
+      });
+      await waitForPromises();
 
       expect(mediator.addSelfReview).not.toHaveBeenCalled();
       expect(mediator.store.reviewers).toHaveLength(0);
 
-      wrapper.vm.reviewBySelf();
+      findReviewers().vm.$emit('assign-self');
 
       expect(mediator.addSelfReview).toHaveBeenCalled();
       expect(mediator.store.reviewers).toHaveLength(1);
@@ -230,7 +240,6 @@ describe('sidebar reviewers approval tracking', () => {
 
   beforeEach(() => {
     resetSingletons();
-    resetState();
 
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();

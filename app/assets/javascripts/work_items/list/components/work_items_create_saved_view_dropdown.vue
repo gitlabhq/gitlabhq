@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 import WorkItemsExistingSavedViewsModal from './work_items_existing_saved_views_modal.vue';
 
@@ -56,13 +57,14 @@ export default {
     return {
       isNewViewModalVisible: false,
       isExistingViewModalVisible: false,
+      isLoggedIn: isLoggedIn(),
     };
   },
 };
 </script>
 
 <template>
-  <div class="gl-self-center">
+  <div v-if="isLoggedIn" class="gl-self-center">
     <gl-disclosure-dropdown
       icon="plus"
       category="tertiary"

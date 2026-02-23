@@ -17,7 +17,6 @@ import eventHub from '~/sidebar/event_hub';
 import diffsEventHub from '~/diffs/event_hub';
 import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '~/sidebar/queries/merge_request_reviewers.subscription.graphql';
-import { sidebarState } from '~/sidebar/sidebar_state';
 import {
   EVT_REVIEW_DRAWER_APPROVED,
   TRACKING_REVIEW_DRAWER_SUBMIT_APPROVED,
@@ -111,17 +110,21 @@ export default {
     },
   },
   data() {
-    return sidebarState;
+    return {
+      loading: false,
+      initialLoading: true,
+      drawerOpen: false,
+    };
   },
   computed: {
     reviewers() {
-      return this.issuable.reviewers?.nodes || [];
+      return this.issuable?.reviewers?.nodes || [];
     },
     isLoading() {
       return this.loading || this.$apollo.queries.issuable.loading;
     },
     canUpdate() {
-      return this.issuable.userPermissions?.adminMergeRequest || false;
+      return this.issuable?.userPermissions?.adminMergeRequest || false;
     },
     isReviewer() {
       const { username } = this.store?.currentUser || {};

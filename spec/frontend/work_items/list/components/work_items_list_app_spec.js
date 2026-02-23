@@ -2174,53 +2174,79 @@ describe('when workItemPlanningView flag is enabled', () => {
 });
 
 describe('Saved Views', () => {
-  beforeEach(async () => {
-    mountComponent({ workItemPlanningView: true });
+  const mountDefault = async (options = {}) => {
+    mountComponent({ workItemPlanningView: true, ...options });
     await waitForPromises();
-  });
-
-  it('renders the WorkItemsSavedViewsSelectors', () => {
-    expect(findWorkItemsSavedViewsSelectors().exists()).toBe(true);
-  });
+  };
 
   describe('when not on a saved view', () => {
-    it('renders "Save view" button when filters change', async () => {
-      findIssuableList().vm.$emit('filter', [
-        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
-      ]);
-      await nextTick();
+    describe('when user is logged in', () => {
+      it('renders "Save view" button when filters change', async () => {
+        await mountDefault();
 
-      expect(findSaveViewButton().exists()).toBe(true);
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
+
+        expect(findSaveViewButton().exists()).toBe(true);
+      });
+
+      it('renders "Save view" button when sort changes', async () => {
+        await mountDefault();
+
+        findIssuableList().vm.$emit('sort', UPDATED_DESC);
+        await nextTick();
+        await waitForPromises();
+
+        expect(findSaveViewButton().exists()).toBe(true);
+      });
+
+      it('opens the new saved view modal when clicking "Save view"', async () => {
+        await mountDefault();
+
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
+
+        await findSaveViewButton().trigger('click');
+        await nextTick();
+
+        expect(findNewSavedViewModal().exists()).toBe(true);
+      });
     });
 
-    it('renders "Save view" button when sort changes', async () => {
-      findIssuableList().vm.$emit('sort', UPDATED_DESC);
-      await nextTick();
-      await waitForPromises();
+    describe('when user is logged out', () => {
+      beforeEach(async () => {
+        mountComponent({ isLoggedInValue: false });
+        await waitForPromises();
+      });
 
-      expect(findSaveViewButton().exists()).toBe(true);
-    });
+      it('does not render the "Save view" button when filters change', async () => {
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
 
-    it('opens the new saved view modal when clicking "Save view"', async () => {
-      findIssuableList().vm.$emit('filter', [
-        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
-      ]);
-      await nextTick();
+        expect(findSaveViewButton().exists()).toBe(false);
+      });
 
-      await findSaveViewButton().trigger('click');
-      await nextTick();
+      it('does not render the "Save view" button when sort changes', async () => {
+        findIssuableList().vm.$emit('sort', UPDATED_DESC);
+        await nextTick();
+        await waitForPromises();
 
-      expect(findNewSavedViewModal().exists()).toBe(true);
+        expect(findSaveViewButton().exists()).toBe(false);
+      });
     });
 
     it('displays the "not found" modal when the "sv_not_found" query parameter is in the URL', async () => {
       await router.replace({ query: { sv_not_found: true } });
-
-      mountComponent({ workItemPlanningView: true });
-
-      await waitForPromises();
+      await mountDefault();
 
       expect(findViewNotFoundModal().props('show')).toBe(true);
     });
@@ -2229,10 +2255,7 @@ describe('Saved Views', () => {
       await router.replace({
         query: { sv_limit_id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3' },
       });
-
-      mountComponent({ workItemPlanningView: true });
-
-      await waitForPromises();
+      await mountDefault();
 
       expect(findViewLimitWarningModal().props('show')).toBe(true);
     });
@@ -2240,8 +2263,8 @@ describe('Saved Views', () => {
 
   describe('when on a saved view', () => {
     beforeEach(async () => {
+      await mountDefault();
       await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
-
       await waitForPromises();
     });
 
