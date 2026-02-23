@@ -48,9 +48,9 @@ export default {
 
       <div class="gl-flex gl-h-full gl-flex-col gl-items-start gl-overflow-y-auto">
         <div class="gl-px-5">
-          <h3 class="gl-mb-2 gl-mt-3 gl-text-lg">
+          <h4 class="gl-mb-2 gl-mt-3 gl-text-lg">
             {{ $options.i18n.scope }}
-          </h3>
+          </h4>
           <p class="gl-mb-3">{{ $options.i18n.scopeDescription }}</p>
         </div>
 

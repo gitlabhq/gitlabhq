@@ -1189,6 +1189,16 @@ When linking to an issue, include the issue number in the link. For example:
 
 Do not use the pound sign (`issue #12345`).
 
+#### Links to APIs
+
+When linking to API documentation, use lowercase. For example:
+
+- `To import your GitHub repository, see the [import API](link.md).`
+
+Do not capitalize the first letter to match the page title. For example, do not use:
+
+- `To import your GitHub repository, see the [Import API](link.md).`
+
 ### Links to external documentation
 
 When possible, avoid links to external documentation. These links can become outdated and are difficult to maintain.

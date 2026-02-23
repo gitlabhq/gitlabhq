@@ -24,7 +24,7 @@ The following table lists the default model for each GitLab Duo feature.
 |---------|---------------|
 | **Code Suggestions** | |
 | Code Generation | Claude Sonnet 4 Vertex |
-| Code Completion | Codestral 25.01 Fireworks|
+| Code Completion | Codestral 25.08 Fireworks |
 | **GitLab Duo Chat** | |
 | General Chat | Claude Sonnet 4.5 Vertex |
 | Code Explanation | Claude Sonnet 4 |
@@ -53,12 +53,12 @@ The following tables list the models you can select for each feature.
 |------------|-----------------|-----------------|
 | Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Bedrock | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
-| Codestral 25.01 Vertex | {{< no >}} | {{< yes >}} |
-| Codestral 25.08 Fireworks| {{< no >}} | {{< yes >}} |
-| Codestral 25.08 Vertex| {{< no >}} | {{< yes >}} |
-| Gemini 2.5 Flash | {{< yes >}} | {{< no >}} |
+| Codestral 25.08 Fireworks | {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Vertex | {{< no >}} | {{< yes >}} |
+| Gemini 2.5 Flash Vertex | {{< yes >}} | {{< no >}} |
 
 ### GitLab Duo Chat (Classic)
 

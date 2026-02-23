@@ -64,7 +64,7 @@ the task opens in a full-page view.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project, or the project must be public.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project, or the project must be public.
 
 To create a task:
 
@@ -86,7 +86,7 @@ To create a task:
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
@@ -106,7 +106,7 @@ Any nested task list items are moved up a nested level.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project, or the project must be public.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project, or the project must be public.
 
 To add a task:
 
@@ -128,7 +128,7 @@ To add a task:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To edit a task:
 
@@ -156,7 +156,7 @@ Use a rich text editor to edit a task's description.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To edit the description of a task:
 
@@ -179,7 +179,7 @@ To edit the description of a task:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To promote a task to an issue:
 
@@ -247,7 +247,7 @@ by `issue`, `objective` or `key result` in a comment.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can remove a task from an issue. The task is not deleted, but the two are no longer connected.
 It's not possible to connect them again.
@@ -271,7 +271,7 @@ To remove a task from an issue:
 Prerequisites:
 
 - You must either:
-  - Be the author of the task and have at least the Guest role for the project.
+  - Be the author of the task and have the Guest, Reporter, Developer, or Maintainer role for the project.
   - Have the Planner or Owner role for the project.
 
 To delete a task:
@@ -293,7 +293,7 @@ To delete a task:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 By default, tasks are ordered by creation date.
 To reorder them, drag them around.
@@ -324,7 +324,7 @@ For more information about status, including how to configure custom statuses, s
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the task, or be assigned to the task.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the task, or be assigned to the task.
 
 To change the status of a task:
 
@@ -353,7 +353,7 @@ See also [multiple assignees for issues](project/issues/multiple_assignees_for_i
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To change the assignee on a task:
 
@@ -376,7 +376,7 @@ To change the assignee on a task:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add [labels](project/labels.md) to a task:
 
@@ -401,7 +401,7 @@ You can set a [start and due date](project/issues/due_dates.md) on a task.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can set start and due dates on a task to show when work should begin and end.
 
@@ -442,7 +442,7 @@ the new task inherits the milestone.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a task to a milestone:
 
@@ -472,7 +472,7 @@ To add a task to a milestone:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can set weight on each task to show how much work it needs.
 This value is visible only when you view a task.
@@ -547,7 +547,7 @@ You can see the iteration title and period only when you view a task.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a task to an iteration:
 
@@ -681,7 +681,7 @@ To copy the task's email address:
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - The issue and task must belong to the same project.
 
 To set an issue as a parent of a task:
@@ -721,7 +721,7 @@ You can make a task confidential when you create or edit it.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 - If the task has a parent issue which is non-confidential, and you want to make the issue confidential,
   you must first make all the child tasks confidential.
   A [confidential issue](project/issues/confidential_issues.md) can have only confidential children.
@@ -743,7 +743,7 @@ To change the confidentiality of an existing task:
 
 ### Who can see confidential tasks
 
-When a task is made confidential, only users with at least the Reporter role for the project have
+When a task is made confidential, only users with the Reporter, Developer, Maintainer, or Owner role for the project have
 access to the task.
 Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
 the task even if they were actively participating before the change.
@@ -793,7 +793,7 @@ When you do, only project members can add and edit comments.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 To lock a task:
 
@@ -825,7 +825,7 @@ The relationship only shows up in the UI if the user can see both items.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To link an item to a task:
 
@@ -850,7 +850,7 @@ them categorized so their relationships can be better understood visually.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
@@ -872,8 +872,8 @@ You can set a task to close when a merge request merges.
 
 Prerequisites:
 
-- You must have at least a Developer role for the project containing the merge request.
-- You must have at least a Reporter role for the project containing the task.
+- You must have the Developer, Maintainer, or Owner role for the project containing the merge request.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project containing the task.
 
 1. Edit your merge request.
 1. In the **Description** box, find and add the task.

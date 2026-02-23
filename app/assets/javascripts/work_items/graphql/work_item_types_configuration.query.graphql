@@ -1,4 +1,4 @@
-#import "./work_item_types_configuration.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_types_configuration.fragment.graphql"
 # @feature_category: team_planning
 
 query workItemTypesConfiguration($fullPath: ID!) {

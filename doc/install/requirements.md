@@ -21,6 +21,8 @@ The necessary storage space largely depends on the size of the repositories you 
 As a guideline, you should have at least as much free space as all your repositories combined.
 
 The Linux package requires about 2.5 GB of storage space for installation.
+When combined with PostgreSQL, logs, temporary files, and operating system overhead,
+plan for at least 40 GB of disk space for a basic GitLab installation with no repository data.
 For storage flexibility, consider mounting your hard drive through logical volume management.
 You should have a hard drive with at least 7,200 RPM or a solid-state drive to reduce response times.
 

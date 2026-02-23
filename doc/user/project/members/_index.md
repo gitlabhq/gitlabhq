@@ -248,11 +248,8 @@ If a user is:
 
 Prerequisites:
 
-- To remove direct members that have the:
-  - Maintainer, Developer, Reporter, Planner, or Guest role, you must have the Maintainer role.
-  - Owner role, you must have the Owner role.
-- Optional. Unassign the member from all issues and merge requests that
-  are assigned to them.
+- The Maintainer or Owner role when removing a member that does not have the Owner role.
+- The Owner role when removing a member with the Owner role.
 
 To remove a member from a project:
 

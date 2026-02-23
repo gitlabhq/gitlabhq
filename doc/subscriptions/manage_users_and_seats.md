@@ -189,63 +189,8 @@ This number remains the same throughout your subscription period unless you purc
 
 The number of maximum users reflects the highest number of billable users on your system for the current license period.
 
-You can view and export your [license usage](../administration/license_usage.md).
-
-### View users
-
-Prerequisites:
-
-- Administrator access.
-
-View the lists of users in your instance:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Users**.
-
-Select a user to view their account information.
-
-#### Check daily and historical billable users
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can get a list of daily and historical billable users in your GitLab instance:
-
-1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Count the number of users in the instance:
-
-   ```ruby
-   User.billable.count
-   ```
-
-1. Get the historical maximum number of users on the instance from the past year:
-
-   ```ruby
-   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
-   ```
-
-#### Update daily and historical billable users
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can trigger a manual update of the daily and historical billable users in your GitLab instance.
-
-1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Force an update of the daily billable users:
-
-   ```ruby
-   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
-   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
-   ```
-
-1. Force an update of the historical max billable users:
-
-   ```ruby
-   ::HistoricalDataWorker.new.perform
-   ```
+You can view and manage your [billable users](../administration/moderate_users.md#billable-users)
+and [license usage](../administration/license_usage.md).
 
 ### Manage users and subscription seats
 

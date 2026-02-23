@@ -37,6 +37,9 @@ The detection runs automatically after each security scan with no manual trigger
 
 Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
 
+For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
+<!-- Demo published on 2026-02-17 -->
+
 ## Automatic detection
 
 False positive detection runs automatically when:

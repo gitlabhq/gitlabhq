@@ -513,6 +513,45 @@ To resolve:
    sudo gitlab-ctl reconfigure
    ```
 
+### Multi-node OAuth secret synchronization
+
+When you run GitLab Pages across multiple nodes, the Pages OAuth secrets must be identical on all nodes.
+If the secrets are out of sync, some nodes may reject authentication requests with the
+same `Client authentication failed due to unknown client` error.
+
+To resolve this issue:
+
+1. Back up the secrets file on all GitLab nodes:
+
+   ```shell
+   sudo cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.$(date +\%Y\%m\%d)
+   ```
+
+1. On the first node, in the `/etc/gitlab/gitlab-secrets.json` file:
+
+   1. Remove the `gitlab_pages` section.
+   1. Save the file.
+   1. Reconfigure GitLab to regenerate the OAuth token:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+   1. Copy the updated `gitlab_pages` section.
+
+1. On all other nodes, paste the updated `gitlab_pages` section into
+   the corresponding `gitlab-secrets.json` files and save.
+
+1. Reconfigure GitLab so that the `gitlab-pages-config` file is populated with the updated secrets:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Verify that the secrets are consistent across all nodes by comparing the `gitlab_pages`
+   section in `/etc/gitlab/gitlab-secrets.json` and the contents of
+   `/var/opt/gitlab/gitlab-pages/gitlab-pages-config` on each node.
+
 ## Error: `Response size over 104857600 bytes`
 
 If the **pages** job succeeds but the **deploy** job fails, you might get an error that states `Response size over 104857600 bytes`.

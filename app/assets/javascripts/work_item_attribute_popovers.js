@@ -16,13 +16,14 @@ import { handleIssuablePopoverMount } from '~/issuable/popover';
  *
  * CSS Class: `has-popover`
  * Following Data attributes:
- *  - data-reference-type: This can be `issue`, `work_item`, `merge_request`, or `milestone`
+ *  - data-reference-type: This can be `issue`, `work_item`, `merge_request`, `milestone`, or `iteration`
  *  - data-placement: Placement of popover, default is `top`.
  *  - data-iid: Internal ID of the work item or issuable (in case reference type is Issue, WI, or MR)
- *              not required for `milestone`.
- *  - data-group-path:  Path of work item or issuable if it is group-level, not required for `milestone`
- *  - data-project-path:  Path of work item or issuable if it is project-level, not required for `milestone`
+ *              not required for `milestone` or `iteration`.
+ *  - data-group-path:  Path of work item or issuable if it is group-level, not required for `milestone` or `iteration`
+ *  - data-project-path:  Path of work item or issuable if it is project-level, not required for `milestone` or `iteration`
  *  - data-milestone: Milestone ID.
+ *  - data-iteration: Iteration ID.
  */
 export default function initWorkItemAttributePopovers() {
   Vue.use(VueApollo);
@@ -43,7 +44,7 @@ export default function initWorkItemAttributePopovers() {
     }
 
     // Extract required metadata
-    const { referenceType, placement, iid, title, groupPath, projectPath, milestone } =
+    const { referenceType, placement, iid, title, groupPath, projectPath, milestone, iteration } =
       target.dataset;
     let { namespacePath } = target.dataset;
     namespacePath = namespacePath || groupPath || projectPath;
@@ -61,6 +62,7 @@ export default function initWorkItemAttributePopovers() {
           iid,
           title,
           milestone,
+          iteration,
           innerText: innerText.trim(),
         });
       }

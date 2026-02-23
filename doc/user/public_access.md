@@ -94,7 +94,7 @@ You can change the visibility of individual features in a project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.

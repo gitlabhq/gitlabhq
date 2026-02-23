@@ -1,6 +1,7 @@
 /* eslint-disable vue/one-component-per-file */
 import Vue, { nextTick } from 'vue';
 import { ignoreConsoleMessages } from 'helpers/console_watcher';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 // Detect Vue 3 mode by checking for Vue 3-specific property
 const isVue3 = Boolean(Vue.createApp);
@@ -39,6 +40,85 @@ describe('Vue.js compat behavior', () => {
     });
 
     expect(injectedValue).toBe(PROVIDED_VALUE);
+  });
+
+  describe('mounts app replacing element (GLOBAL_MOUNT_CONTAINER)', () => {
+    beforeEach(() => {
+      setHTMLFixture('<div id="app"></div>');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('replaces element', () => {
+      // eslint-disable-next-line no-new
+      new Vue({
+        el: '#app',
+        render(h) {
+          return h('div', { attrs: { id: 'component' } }, 'My App');
+        },
+      });
+
+      expect(document.body.innerHTML).toBe('<div id="component">My App</div>');
+    });
+
+    it('can find elements in document while mounting', () => {
+      let queriedElement = null;
+
+      // eslint-disable-next-line no-new
+      new Vue({
+        el: '#app',
+        mounted() {
+          queriedElement = document.querySelector('#component');
+        },
+        render(h) {
+          return h('div', { attrs: { id: 'component' } }, 'My App');
+        },
+      });
+
+      expect(queriedElement.innerHTML).toBe('My App');
+    });
+
+    describe('can use custom CSS properties during mount', () => {
+      let styleTag;
+
+      beforeEach(() => {
+        styleTag = document.createElement('style');
+        // JSDOM does not properly cascade vars so we need to be precise enough
+        styleTag.textContent = 'body .foo { --my-test-var: 42px; }';
+        document.head.appendChild(styleTag);
+      });
+
+      afterEach(() => {
+        styleTag.remove();
+      });
+
+      it('can read CSS custom property in mounted hook', async () => {
+        // eslint-disable-next-line no-new
+        new Vue({
+          el: '#app',
+          data() {
+            return {
+              mountedVarValue: null,
+            };
+          },
+          mounted() {
+            this.mountedVarValue = window
+              .getComputedStyle(this.$el)
+              .getPropertyValue('--my-test-var')
+              .trim();
+          },
+          render(h) {
+            return h('div', { class: 'foo' }, this.mountedVarValue);
+          },
+        });
+
+        await nextTick();
+
+        expect(document.body.innerHTML).toBe('<div class="foo">42px</div>');
+      });
+    });
   });
 
   describe('__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ (mutable-props.patch)', () => {

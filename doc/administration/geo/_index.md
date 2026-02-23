@@ -209,6 +209,11 @@ The following are required to run Geo:
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
 
+Because Geo adds a tracking database and replication metadata on top of the base
+GitLab installation, plan for at least 40 GB of disk space per site for a minimal
+Geo deployment with no repository data. See the [storage requirements](../../install/requirements.md#storage)
+for more details.
+
 ### Firewall rules
 
 The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, you should open ports in both directions.

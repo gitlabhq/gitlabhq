@@ -11,6 +11,8 @@ describe('initIssuablePopovers', () => {
   let issue1;
   let workItem1;
   let comment1;
+  let milestone1;
+  let iteration1;
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -32,6 +34,12 @@ describe('initIssuablePopovers', () => {
       <a id="note_1" href="${window.location.href}#note_2" class="gfm-issue" title="title" data-iid="1" data-project-path="group/project" data-reference-type="work_item">
         <div class="note-text">some comment text 1</div>
       </a>
+      <div id="six" class="gfm-milestone" data-milestone="1" data-namespace-path="group/project" data-reference-type="milestone">
+        Milestone 1
+      </div>
+      <div id="seven" class="gfm-iteration" data-iteration="1" data-namespace-path="group/project" data-reference-type="iteration">
+        Iteration 1
+      </div>
     `);
 
     mr1 = document.querySelector('#one');
@@ -40,6 +48,8 @@ describe('initIssuablePopovers', () => {
     issue1 = document.querySelector('#four');
     workItem1 = document.querySelector('#five');
     comment1 = document.querySelector('#note_1');
+    milestone1 = document.querySelector('#six');
+    iteration1 = document.querySelector('#seven');
   });
 
   describe('init function', () => {
@@ -50,16 +60,20 @@ describe('initIssuablePopovers', () => {
       issue1.addEventListener = jest.fn();
       workItem1.addEventListener = jest.fn();
       comment1.addEventListener = jest.fn();
+      milestone1.addEventListener = jest.fn();
+      iteration1.addEventListener = jest.fn();
     });
 
     it('does not add the same event listener twice', () => {
-      initIssuablePopovers([mr1, mr1, mr2, issue1, workItem1, comment1]);
+      initIssuablePopovers([mr1, mr1, mr2, issue1, workItem1, comment1, milestone1, iteration1]);
 
       expect(mr1.addEventListener).toHaveBeenCalledTimes(1);
       expect(mr2.addEventListener).toHaveBeenCalledTimes(1);
       expect(issue1.addEventListener).toHaveBeenCalledTimes(1);
       expect(workItem1.addEventListener).toHaveBeenCalledTimes(1);
       expect(comment1.addEventListener).toHaveBeenCalledTimes(1);
+      expect(milestone1.addEventListener).toHaveBeenCalledTimes(1);
+      expect(iteration1.addEventListener).toHaveBeenCalledTimes(1);
     });
 
     it('does not add listener if it does not have the necessary data attributes', () => {
@@ -114,6 +128,52 @@ describe('initIssuablePopovers', () => {
           title: 'title',
           referenceType: comment1.dataset.referenceType,
           target: comment1,
+        }),
+      );
+    });
+  });
+
+  describe('milestone popovers', () => {
+    beforeEach(() => {
+      jest.spyOn(popover, 'handleIssuablePopoverMount').mockImplementation(jest.fn());
+    });
+
+    it('calls popover mount function with milestone data attribute', async () => {
+      initIssuablePopovers([milestone1], popover.handleIssuablePopoverMount);
+
+      await milestone1.dispatchEvent(new Event('mouseenter', { target: milestone1 }));
+
+      expect(popover.handleIssuablePopoverMount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          apolloProvider: expect.anything(),
+          namespacePath: 'group/project',
+          milestone: '1',
+          iteration: undefined,
+          referenceType: 'milestone',
+          target: milestone1,
+        }),
+      );
+    });
+  });
+
+  describe('iteration popovers', () => {
+    beforeEach(() => {
+      jest.spyOn(popover, 'handleIssuablePopoverMount').mockImplementation(jest.fn());
+    });
+
+    it('calls popover mount function with iteration data attribute', async () => {
+      initIssuablePopovers([iteration1], popover.handleIssuablePopoverMount);
+
+      await iteration1.dispatchEvent(new Event('mouseenter', { target: iteration1 }));
+
+      expect(popover.handleIssuablePopoverMount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          apolloProvider: expect.anything(),
+          namespacePath: 'group/project',
+          milestone: undefined,
+          iteration: '1',
+          referenceType: 'iteration',
+          target: iteration1,
         }),
       );
     });

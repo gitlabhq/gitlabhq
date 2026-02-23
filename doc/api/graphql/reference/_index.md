@@ -5465,7 +5465,7 @@ Input type: `ContainerVirtualRegistryUpdateInput`
 | <a id="mutationcontainervirtualregistryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcontainervirtualregistryupdatedescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
 | <a id="mutationcontainervirtualregistryupdateid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | ID of the container virtual registry to be updated. |
-| <a id="mutationcontainervirtualregistryupdatename"></a>`name` | [`String!`](#string) | Name of virtual registry. |
+| <a id="mutationcontainervirtualregistryupdatename"></a>`name` | [`String`](#string) | Name of virtual registry. |
 
 #### Fields
 
@@ -10110,6 +10110,32 @@ Input type: `MavenVirtualRegistryDeleteInput`
 | <a id="mutationmavenvirtualregistrydeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmavenvirtualregistrydeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationmavenvirtualregistrydeleteregistry"></a>`registry` | [`MavenRegistry`](#mavenregistry) | Deleted Maven virtual registry. |
+
+### `Mutation.mavenVirtualRegistryUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MavenVirtualRegistryUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenvirtualregistryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenvirtualregistryupdatedescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="mutationmavenvirtualregistryupdateid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | ID of the Maven virtual registry to be updated. |
+| <a id="mutationmavenvirtualregistryupdatename"></a>`name` | [`String`](#string) | Name of virtual registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenvirtualregistryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenvirtualregistryupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationmavenvirtualregistryupdateregistry"></a>`registry` | [`MavenRegistry`](#mavenregistry) | Maven virtual registry after the mutation. |
 
 ### `Mutation.memberRoleAdminCreate`
 

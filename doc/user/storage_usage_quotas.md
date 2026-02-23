@@ -69,7 +69,7 @@ You can view the following statistics for storage usage in projects and namespac
 
 Prerequisites:
 
-- To view storage usage for a project, you must have at least the Maintainer role for the project or Owner role for the namespace.
+- To view storage usage for a project, you must have the Maintainer or Owner role for the project or Owner role for the namespace.
 - To view storage usage for a group namespace, you must have the Owner role for the namespace.
 
 To view storage:

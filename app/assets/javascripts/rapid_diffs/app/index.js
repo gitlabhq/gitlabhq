@@ -67,11 +67,21 @@ export class RapidDiffsFacade {
   }
 
   #delegateEvents() {
-    this.root.addEventListener('click', (event) => {
-      const diffFile = event.target.closest('diff-file');
-      if (!diffFile) return;
-      diffFile.onClick(event);
-    });
+    this.root.addEventListener(
+      'click',
+      (event) => {
+        const diffFile = event.target.closest('diff-file');
+        if (!diffFile) return;
+        diffFile.onClick(event);
+      },
+      /*
+       *  We want to use the capture phase in delegated events because:
+       *  1. Bootstrap dropdowns will be closed before the click event bubbles,
+       *     this prevents using data-click on items inside the dropdown
+       *  2. Delegated events propagation now could be stopped
+       */
+      { capture: true },
+    );
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {

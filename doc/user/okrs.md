@@ -107,7 +107,7 @@ its parent's objective.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To edit an OKR:
 
@@ -175,7 +175,7 @@ To show the sidebar again:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 You can view all the [system notes](project/system_notes.md) related to the OKR. By default they are sorted by **Oldest first**.
 You can always change the sorting order to **Newest first**, which is remembered across sessions.
@@ -196,7 +196,7 @@ To show who is responsible for an OKR, you can assign users to it.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To change the assignee on an OKR:
 
@@ -215,7 +215,7 @@ To change the assignee on an OKR:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 Use [labels](project/labels.md) to organize OKRs among teams.
 
@@ -240,7 +240,7 @@ You can see the milestone title when you view an objective.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add an objective to a milestone:
 
@@ -269,7 +269,7 @@ value is updated, the automation updates all parents again to show the average.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To set progress of an objective or key result:
 
@@ -296,7 +296,7 @@ as planned or need attention to stay on schedule.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To set health status of an OKR:
 
@@ -315,7 +315,7 @@ To set health status of an OKR:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To promote a key result:
 
@@ -415,7 +415,7 @@ The OKR is marked as closed but is not deleted.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To close an OKR:
 
@@ -445,7 +445,7 @@ below an objective's description.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a new objective to an objective:
 
@@ -475,7 +475,7 @@ To add an existing objective to an objective:
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a new key result to an objective:
 
@@ -506,7 +506,7 @@ To add an existing key result to an objective:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
@@ -534,7 +534,7 @@ Reminders are sent on Tuesdays.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - There must be at least one objective with at least one key result in the project.
 - You can schedule reminders only for top-level objectives.
   Scheduling a check-in reminder for child objectives has no effect.
@@ -554,7 +554,7 @@ To schedule a recurring reminder for an objective, in a new comment use the
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - The parent objective and child OKR must belong to the same project.
 
 To set an objective as a parent of an OKR:
@@ -601,7 +601,7 @@ Select that checkbox and then select **Create objective** or **Create key result
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 - A **confidential objective** can have only confidential
   [child objectives or key results](#child-objectives-and-key-results):
   - To make an objective confidential: If it has any child objectives or key results, you must first
@@ -625,7 +625,7 @@ To change the confidentiality of an existing OKR:
 
 {{< /history >}}
 
-When an OKR is made confidential, only users with at least the Planner role for the project have
+When an OKR is made confidential, only users with the Planner, Reporter, Developer, Maintainer, or Owner role for the project have
 access to the OKR.
 Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
 the OKR even if they were actively participating before the change.
@@ -675,7 +675,7 @@ When you do, only project members can add and edit comments.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 
 To lock an OKR:
 
@@ -707,7 +707,7 @@ The relationship only shows up in the UI if the user can see both items.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To link an item to an objective or key result:
 
@@ -729,7 +729,7 @@ them categorized so their relationships can be better understood visually.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 In the **Linked items** section of an objective or key result,
 next to each item, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Remove**.

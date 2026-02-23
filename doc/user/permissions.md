@@ -560,7 +560,7 @@ Project permissions for [compliance](compliance/_index.md) features including co
 
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must have at least the Reporter role, even if the project is internal. Users with the Guest
+   must have the Reporter, Developer, Maintainer, or Owner role, even if the project is internal. Users with the Guest
    role on GitLab.com are able to perform this action only on public projects because internal
    visibility is not available.
 1. Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
@@ -916,7 +916,7 @@ Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 - Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
 - Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
-To work around the issue, give these users at least the Guest role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the issue, give these users the Guest, Planner, Reporter, Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

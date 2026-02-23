@@ -33,10 +33,10 @@ Use the following scopes to [authenticate](../api/rest/authentication.md) with t
 
 - Storage analysis:
   - Read API access with the `read_api` scope.
-  - At least the Developer role on all projects.
+  - The Developer, Maintainer, or Owner role on all projects.
 - Storage clean up:
   - Full API access with the `api` scope.
-  - At least the Maintainer role on all projects.
+  - The Maintainer or Owner role on all projects.
 
 You can use command-line tools or a programming language to interact with the REST API.
 

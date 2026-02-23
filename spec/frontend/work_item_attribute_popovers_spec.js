@@ -27,6 +27,7 @@ describe('Work Item Attribute Popovers', () => {
       <div class="attributes-wrapper">
         <div class="js-without-popover" data-reference-type="milestone" data-placement="left" data-milestone="1">17.0<div>
         <div class="has-popover js-with-popover" data-reference-type="milestone" data-placement="left" data-milestone="2">18.0<div>
+        <div class="has-popover js-iteration-popover" data-reference-type="iteration" data-placement="left" data-iteration="3" data-namespace-path="group/project">Sprint 1<div>
       </div>
     `);
     initWorkItemAttributePopovers();
@@ -41,14 +42,15 @@ describe('Work Item Attribute Popovers', () => {
     triggerEvent('mouseover', document, mockTarget);
     triggerEvent('mouseenter', mockTarget, mockTarget);
 
-    expect(handleIssuablePopoverMount).toHaveBeenCalledWith({
-      apolloProvider: expect.any(Object),
-      referenceType: 'milestone',
-      placement: 'left',
-      milestone: '2',
-      innerText: '18.0',
-      target: mockTarget,
-    });
+    expect(handleIssuablePopoverMount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        apolloProvider: expect.any(Object),
+        referenceType: 'milestone',
+        placement: 'left',
+        milestone: '2',
+        target: mockTarget,
+      }),
+    );
   });
 
   it('does not call handleIssuablePopoverMount when target is missing required attributes for popover', () => {
@@ -57,5 +59,22 @@ describe('Work Item Attribute Popovers', () => {
     triggerEvent('mouseenter', mockTarget, mockTarget);
 
     expect(handleIssuablePopoverMount).not.toHaveBeenCalled();
+  });
+
+  it('calls handleIssuablePopoverMount with iteration data attribute for iteration popover', () => {
+    const mockTarget = document.querySelector('.js-iteration-popover');
+    triggerEvent('mouseover', document, mockTarget);
+    triggerEvent('mouseenter', mockTarget, mockTarget);
+
+    expect(handleIssuablePopoverMount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        apolloProvider: expect.any(Object),
+        referenceType: 'iteration',
+        placement: 'left',
+        iteration: '3',
+        namespacePath: 'group/project',
+        target: mockTarget,
+      }),
+    );
   });
 });

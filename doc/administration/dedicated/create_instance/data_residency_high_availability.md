@@ -104,7 +104,7 @@ You can deploy your instance in the following AWS regions:
 | Europe (Stockholm)        | `eu-north-1`     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Europe (Zurich)           | `eu-central-2`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 | Israel (Tel Aviv)         | `il-central-1`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Middle East (UAE)         | `me-central-1`   | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Middle East (UAE)         | `me-central-1`   | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
 | Middle East (Bahrain)     | `me-south-1`     | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 | South America (São Paulo) | `sa-east-1`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | US East (N. Virginia)     | `us-east-1`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |

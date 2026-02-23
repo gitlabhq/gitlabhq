@@ -20,9 +20,6 @@ fragment WorkItemTypesConfiguration on WorkItemType {
       propagatesMilestone
       autoExpandTreeOnMove
     }
-    ... on WorkItemWidgetDefinitionProgress {
-      showPopover
-    }
     ... on WorkItemWidgetDefinitionStartAndDueDate {
       canRollUp
     }

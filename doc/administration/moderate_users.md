@@ -18,7 +18,16 @@ If you are an instance administrator, you have several options to moderate and c
 > [!note]
 > This topic is specifically related to user moderation in GitLab Self-Managed. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
 
-## View users by type
+## View users
+
+View the lists of users in your instance:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Overview** > **Users**.
+
+Select a user to view their account information.
+
+### View users by type
 
 {{< history >}}
 
@@ -37,6 +46,45 @@ To view users by type:
    - To display human users, enter **Type=Humans**.
    - To display bot users, enter **Type=Bots**.
 1. Press <kbd>Enter</kbd>.
+
+## Billable users
+
+You can view and update the [billable users](../subscriptions/manage_users_and_seats.md#billable-users) in your instance through the Rails console.
+
+### Check daily and historical billable users
+
+You can get a list of daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+### Update daily and historical billable users
+
+You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```
 
 ## Users pending approval
 
