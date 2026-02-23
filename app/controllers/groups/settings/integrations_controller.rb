@@ -12,9 +12,17 @@ module Groups
       layout 'group_settings'
 
       def index
-        @integrations = Integration
-          .find_or_initialize_all_non_project_specific(Integration.for_group(group))
-          .sort_by { |int| int.title.downcase }
+        @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_group(group))
+
+        @integrations = experiment(:ordered_integrations, actor: current_user) do |e|
+          e.control { @integrations.sort_by { |integration| integration.title.downcase } }
+          e.candidate do
+            @integrations.sort_by do |integration|
+              ranking = Integration::INTEGRATION_POPULARITY_RANKING.index(integration.type)
+              [ranking || Float::INFINITY, integration.title.downcase]
+            end
+          end
+        end.run
       end
 
       def edit

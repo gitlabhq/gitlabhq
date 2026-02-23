@@ -19,6 +19,7 @@ import ParentUsingScopedSlot from './components/scoped_slot_stubs/parent_using_s
 import ChildWithScopedLabelSlot from './components/scoped_slot_stubs/child_with_scoped_label_slot.vue';
 import ParentWithAsyncDefaultVModel from './components/async_v_model/parent_with_async_default_v_model.vue';
 import ParentWithAsyncCustomVModel from './components/async_v_model/parent_with_async_custom_v_model.vue';
+import VIfElseWithDirective from './components/v_if_else_with_directive.vue';
 import ParentWithSlotOrder from './components/parent_with_slot_order.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
@@ -494,5 +495,31 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
     expect(slotContent.exists()).toBe(true);
     // The directive should be applied - if _ctx was wrong, the directive wouldn't resolve
     expect(slotContent.attributes('data-directive-applied')).toBe('true');
+  });
+
+  /**
+   * When Vue 2 compiler generates code for v-if/v-else on elements of the same type,
+   * it doesn't add keys (unlike Vue 3 compiler which adds `key: 0` and `key: 1`).
+   * This causes Vue to reuse DOM elements when switching between branches.
+   *
+   * When one branch has a directive (e.g., v-tooltip) and the other doesn't, the
+   * directive arrays have different lengths. In `invokeDirectiveHook`, the code
+   * tried to access `oldBindings[i].value` without checking if `oldBindings[i]`
+   * exists, causing "Cannot read properties of undefined (reading 'value')".
+   *
+   * Fix (vue2_compiler.js - addVIfKeysModule): The custom Vue 2 compiler module
+   * injects numeric keys (key:0, key:1, etc.) into v-if/v-else/v-else-if branches
+   * that don't have user-defined keys, matching Vue 3 compiler behavior. This
+   * prevents Vue from reusing elements across branches with different directives.
+   */
+  it('handles v-if/v-else switching between components with different directives in v-for', async () => {
+    const wrapper = mount(VIfElseWithDirective);
+
+    expect(wrapper.find('[data-testid="placeholder-btn"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="remove-btn"]').exists()).toBe(false);
+
+    await wrapper.find('[data-testid="add-btn"]').trigger('click');
+
+    expect(wrapper.find('[data-testid="remove-btn"]').exists()).toBe(true);
   });
 });

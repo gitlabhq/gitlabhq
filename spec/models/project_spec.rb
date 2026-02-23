@@ -998,6 +998,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(relation).to have_received(:reorder).with(arel_table['namespace_id'].asc)
       end
     end
+
+    describe '.include_topics' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:topic) { create(:topic) }
+
+      before_all do
+        project.topics << topic
+      end
+
+      it 'preloads topics and project_topics associations' do
+        projects = described_class.include_topics.where(id: project.id)
+        loaded_project = projects.first
+
+        expect(loaded_project.association(:topics)).to be_loaded
+        expect(loaded_project.association(:project_topics)).to be_loaded
+      end
+    end
+
+    describe '.inside_namespace' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:project_in_parent) { create(:project, namespace: parent_group) }
+      let_it_be(:project_in_child) { create(:project, namespace: child_group) }
+      let_it_be(:project_in_other) { create(:project, namespace: other_group) }
+
+      it 'returns projects in the specified namespace and its descendants' do
+        result = described_class.inside_namespace(parent_group)
+
+        expect(result).to include(project_in_parent, project_in_child)
+        expect(result).not_to include(project_in_other)
+      end
+
+      it 'returns none when namespace is nil' do
+        result = described_class.inside_namespace(nil)
+
+        expect(result).to be_empty
+      end
+    end
   end
 
   describe 'modules' do

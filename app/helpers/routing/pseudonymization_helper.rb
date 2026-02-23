@@ -158,7 +158,7 @@ module Routing
     def referrer_params(url)
       Rails.application.routes.recognize_path(url)
     rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, url: request.original_fullpath)
       nil
     end
   end

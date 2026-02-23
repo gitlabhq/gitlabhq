@@ -40,6 +40,39 @@ module Integrations
       # Base classes which aren't actual integrations.
       BASE_CLASSES = %w[].freeze
 
+      INTEGRATION_POPULARITY_RANKING = [
+        "Integrations::JiraCloudApp",
+        "Integrations::Jira",
+        "Integrations::GitlabSlackApplication",
+        "Integrations::Discord",
+        "Integrations::Slack",
+        "Integrations::Github",
+        "Integrations::MicrosoftTeams",
+        "Integrations::Jenkins",
+        "Integrations::Telegram",
+        "Integrations::PipelinesEmail",
+        "Integrations::EmailsOnPush",
+        "Integrations::Confluence",
+        "Integrations::GoogleCloudPlatform::WorkloadIdentityFederation",
+        "Integrations::HangoutsChat",
+        "Integrations::Datadog",
+        "Integrations::Youtrack",
+        "Integrations::GoogleCloudPlatform::ArtifactRegistry",
+        "Integrations::Clickup",
+        "Integrations::Prometheus",
+        "Integrations::ExternalWiki",
+        "Integrations::Linear",
+        "Integrations::Asana",
+        "Integrations::Mattermost",
+        "Integrations::CustomIssueTracker",
+        "Integrations::AppleAppStore",
+        "Integrations::Packagist",
+        "Integrations::Harbor",
+        "Integrations::GooglePlay",
+        "Integrations::Redmine",
+        "Integrations::Buildkite"
+      ].freeze
+
       BASE_ATTRIBUTES = %w[id instance project_id group_id created_at updated_at
         encrypted_properties encrypted_properties_iv properties organization_id].freeze
 

@@ -308,6 +308,119 @@ To delete a package, you can either:
 - [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
 - [Use the API](../../../api/packages.md#delete-a-project-package).
 
+## Install a private PyPI package in a CI/CD pipeline
+
+You can install private PyPI packages in CI/CD pipelines using a
+[CI/CD job token](../../../ci/jobs/ci_job_token.md). The job token
+authenticates automatically and can also access packages in other projects
+within the same top-level group.
+
+Prerequisites:
+
+- If the package is in a different project, that project must allow your project's
+  job tokens. For more information, see [Control job token access](../../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project).
+- When authenticating with a CI/CD job token, the username must be `gitlab-ci-token`.
+
+### Use inline credentials
+
+Pass the `CI_JOB_TOKEN` directly in the `pip install` command:
+
+{{< tabs >}}
+
+{{< tab title="From a project" >}}
+
+```yaml
+install:
+  image: python:latest
+  script:
+    - pip install <package_name> --index-url https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+```
+
+{{< /tab >}}
+
+{{< tab title="From a group" >}}
+
+To install from a group index, which includes packages from all projects in the group:
+
+```yaml
+install:
+  image: python:latest
+  script:
+    - pip install <package_name> --index-url https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi/simple
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Use a `.netrc` file for CI/CD
+
+`.netrc` keeps your `requirements.txt` free of credentials,
+so the same file works both locally and in CI/CD pipelines. pip reads the `.netrc` file 
+automatically to find credentials for a given hostname. For more information, 
+see [.netrc support](https://pip.pypa.io/en/stable/topics/authentication/#netrc-support).
+
+In your `.gitlab-ci.yml`, create the `.netrc` file in `before_script`:
+
+```yaml
+install:
+  image: python:latest
+  before_script:
+    - |
+      echo "machine gitlab.example.com
+      login gitlab-ci-token
+      password ${CI_JOB_TOKEN}" > ~/.netrc
+  script:
+    - pip install -r requirements.txt
+```
+
+Your `requirements.txt` references the GitLab registry without credentials:
+
+```plaintext
+--extra-index-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+package-name==1.0.0
+```
+
+For local development, create a `~/.netrc` file with a
+[personal access token](../../profile/personal_access_tokens.md) that has the `api` scope:
+
+```plaintext
+machine gitlab.example.com
+login <personal_access_token_name>
+password <personal_access_token>
+```
+
+> [!note]
+> The `.netrc` file configures one set of credentials per hostname. If you must
+> authenticate with packages on multiple GitLab instances, add a separate `machine`
+> entry for each hostname.
+
+### Install private packages during a Docker build
+
+When building Docker images that require private PyPI packages, pass the
+`CI_JOB_TOKEN` as a build argument:
+
+```yaml
+build:
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -t my-image .
+```
+
+In your `Dockerfile`, use the token to authenticate with the registry:
+
+```dockerfile
+ARG CI_JOB_TOKEN
+RUN pip install <package_name> --index-url https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+```
+
+> [!note]
+> Build arguments might be visible in the image history. For production images,
+> use [multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
+> so the token is not present in the final image layer.
+
 ## Using `requirements.txt`
 
 If you want pip to access your public registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
@@ -319,19 +432,19 @@ package-name==1.0.0
 
 If this is a private registry, you can authenticate in a couple of ways. For example:
 
-- Using your `requirements.txt` file:
+- Using your `requirements.txt` file with a [personal access token](../../profile/personal_access_tokens.md):
 
   ```plaintext
-  --extra-index-url https://gitlab-ci-token:<personal_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+  --extra-index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
   package-name==1.0.0
   ```
 
-- Using a `~/.netrc` file:
+- Using a `~/.netrc` file with a [personal access token](../../profile/personal_access_tokens.md):
 
   ```plaintext
   machine gitlab.example.com
-  login gitlab-ci-token
-  password <personal_token>
+  login <personal_access_token_name>
+  password <personal_access_token>
   ```
 
 ## Versioning PyPI packages

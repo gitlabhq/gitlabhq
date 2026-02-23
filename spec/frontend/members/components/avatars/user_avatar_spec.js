@@ -5,7 +5,7 @@ import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 
 import { member as memberMock, member2faEnabled, orphanedMember } from '../../mock_data';
 
-jest.mock('lodash/uniqueId', () => (x) => `${x}1`);
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (x) => `${x}1` }));
 
 describe('UserAvatar', () => {
   let wrapper;

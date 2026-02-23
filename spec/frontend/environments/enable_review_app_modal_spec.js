@@ -6,7 +6,7 @@ import { REVIEW_APP_MODAL_I18N as i18n } from '~/environments/constants';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 // hardcode uniqueId for determinism
-jest.mock('lodash/uniqueId', () => (x) => `${x}77`);
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (x) => `${x}77` }));
 
 const EXPECTED_COPY_PRE_ID = 'enable-review-app-copy-string-77';
 

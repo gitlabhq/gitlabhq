@@ -179,12 +179,16 @@ module Projects
         return unless service.run_auto_devops_pipeline?
 
         if @project.empty_repo?
-          flash[:notice] = _("This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch.")
+          flash[:notice] = _(
+            "This repository is currently empty. " \
+              "A new Auto DevOps pipeline will be created after a new file has been pushed to a branch."
+          )
           return
         end
 
         # rubocop:disable CodeReuse/Worker
-        CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
+        CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web,
+          ignore_skip_ci: true, save_on_errors: false)
         # rubocop:enable CodeReuse/Worker
 
         flash[:toast] = _("A new Auto DevOps pipeline has been created, go to the Pipelines page for details")

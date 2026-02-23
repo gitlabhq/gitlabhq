@@ -152,11 +152,11 @@ work for our code. Here's an example of such approach:
 
 ```diff
 - export const mountExtended = (...args) => extendedWrapper(mount(...args));
-+ import { compose } from 'lodash/fp';
-+ export const mountExtended = compose(extendedWrapper, mount);
++ import { flowRight } from 'lodash-es';
++ export const mountExtended = flowRight(extendedWrapper, mount);
 ```
 
-Here we use TypeScript type definitions from `compose` function, to add inferred type definitions to
+Here we use TypeScript type definitions from `flowRight` function, to add inferred type definitions to
 `mountExtended` function. In this case `mountExtended` arguments will be of same type as `mount`
 arguments. And return type will be the same as `extendedWrapper` return type.
 
@@ -164,7 +164,7 @@ We can still use JSDoc's syntax to add description to the function, for example:
 
 ```javascript
 /** Mounts a component and returns an extended wrapper for it */
-export const mountExtended = compose(extendedWrapper, mount);
+export const mountExtended = flowRight(extendedWrapper, mount);
 ```
 
 ## System requirements

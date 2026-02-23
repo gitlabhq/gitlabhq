@@ -20,7 +20,7 @@ module TwCodeowners
   CODE_OWNER_RULES = [
     # CodeOwnerRule.new('Activation', ''),
     # CodeOwnerRule.new('Acquisition', ''),
-    CodeOwnerRule.new('Agent Foundations', '@sselhorn'),
+    CodeOwnerRule.new('Agent Foundations', '@fneill'),
     CodeOwnerRule.new('AI Coding', '@uchandran'),
     CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
     # CodeOwnerRule.new('Analytics Instrumentation', ''),

@@ -70,10 +70,10 @@ describe('WorkItemsOnboardingModal', () => {
     });
 
     it('highlights the first step indicator', () => {
-      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-neutral-950');
-      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-neutral-200');
-      expect(findStepIndicators().at(2).classes()).toContain('gl-bg-neutral-200');
-      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-neutral-200');
+      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-blue-500');
+      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-status-neutral');
+      expect(findStepIndicators().at(2).classes()).toContain('gl-bg-status-neutral');
+      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-status-neutral');
     });
   });
 
@@ -112,10 +112,10 @@ describe('WorkItemsOnboardingModal', () => {
     it('updates step indicators correctly when advancing', async () => {
       await clickNext();
 
-      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-neutral-200');
-      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-neutral-950');
-      expect(findStepIndicators().at(2).classes()).toContain('gl-bg-neutral-200');
-      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-neutral-200');
+      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-status-neutral');
+      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-blue-500');
+      expect(findStepIndicators().at(2).classes()).toContain('gl-bg-status-neutral');
+      expect(findStepIndicators().at(3).classes()).toContain('gl-bg-status-neutral');
     });
   });
 
@@ -147,8 +147,8 @@ describe('WorkItemsOnboardingModal', () => {
     it('updates step indicators correctly when going back', async () => {
       await clickBack();
 
-      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-neutral-950');
-      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-neutral-200');
+      expect(findStepIndicators().at(0).classes()).toContain('gl-bg-blue-500');
+      expect(findStepIndicators().at(1).classes()).toContain('gl-bg-status-neutral');
     });
   });
 

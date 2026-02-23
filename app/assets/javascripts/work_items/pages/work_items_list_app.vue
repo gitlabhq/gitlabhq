@@ -2112,7 +2112,12 @@ export default {
         </template>
 
         <template v-if="!error" #empty-state>
-          <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
+          <slot
+            name="list-empty-state"
+            :has-search="hasSearch"
+            :is-open-tab="isOpenTab"
+            :with-tabs="withTabs"
+          >
             <template v-if="isServiceDeskList">
               <empty-state-with-any-tickets
                 v-if="hasWorkItems"
@@ -2127,6 +2132,7 @@ export default {
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"
+              :with-tabs="withTabs"
             >
               <template #new-issue-button>
                 <create-work-item-modal

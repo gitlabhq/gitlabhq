@@ -133,7 +133,7 @@ export default {
             v-for="(_, index) in steps"
             :key="index"
             class="gl-h-3 gl-w-3 gl-rounded-full"
-            :class="index === currentStep ? 'gl-bg-neutral-950' : 'gl-bg-neutral-200'"
+            :class="index === currentStep ? 'gl-bg-blue-500' : 'gl-bg-status-neutral'"
             data-testid="step-indicator"
           ></span>
         </div>

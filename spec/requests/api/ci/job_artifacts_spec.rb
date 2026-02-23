@@ -677,24 +677,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_search_recent_successful_pipelines: false)
-        end
-
-        it 'returns 404 when search_recent_successful_pipelines is true' do
-          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: true)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-
-        it 'works normally when search_recent_successful_pipelines is false' do
-          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: false)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
       it 'returns artifacts when build exists within search limit' do
         # Create older pipeline with artifacts
         older_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
@@ -905,24 +887,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           pipeline.update!(ref: ref_name, sha: project.commit(ref_name).sha, status: :success)
           job.reload
           stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
-        end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_search_recent_successful_pipelines: false)
-          end
-
-          it 'returns 404 when search_recent_successful_pipelines is true' do
-            get_artifact_file(artifact, ref_name, job.name, search_recent_successful_pipelines: true)
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-
-          it 'works normally when search_recent_successful_pipelines is false' do
-            get_artifact_file(artifact, ref_name, job.name, search_recent_successful_pipelines: false)
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
 
         it 'returns artifact file when build exists within search limit', :sidekiq_might_not_need_inline do

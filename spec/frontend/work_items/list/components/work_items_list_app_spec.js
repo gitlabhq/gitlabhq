@@ -1902,6 +1902,42 @@ describe('empty states', () => {
         expect(findCreateWorkItemModal().exists()).toBe(true);
       });
     });
+
+    describe('withTabs prop', () => {
+      const emptyCountsWithIssueResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+      emptyCountsWithIssueResponse.data.group.workItemStateCounts = {
+        all: 1,
+        closed: 1,
+        opened: 0,
+      };
+      const emptyStateConfig = {
+        ...getEmptyQueryHandler({
+          emptyCounts: emptyCountsWithIssueResponse,
+          emptyHasWorkItems: hasWorkItemsData,
+        }),
+      };
+
+      it('passes withTabs as true by default', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { isProject: false, isGroupIssuesList: true },
+        });
+        await waitForPromises();
+
+        expect(findEmptyStateWithAnyIssues().props('withTabs')).toBe(true);
+      });
+
+      it('passes withTabs as false when withTabs prop is false', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          props: { withTabs: false },
+          provide: { isProject: false, isGroupIssuesList: true },
+        });
+        await waitForPromises();
+
+        expect(findEmptyStateWithAnyIssues().props('withTabs')).toBe(false);
+      });
+    });
   });
 });
 

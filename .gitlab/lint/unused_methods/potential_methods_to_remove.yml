@@ -125,6 +125,9 @@ app/helpers/groups_helper.rb:
 app/helpers/integrations_helper.rb:
 - integration_issue_type
 - integration_todo_target_type
+app/helpers/projects_helper.rb:
+- show_auto_devops_implicitly_enabled_banner?
+- show_mobile_devops_project_promo?
 app/helpers/routing/groups/members_helper.rb:
 - approve_access_request_group_member_path
 - resend_invite_group_member_path
@@ -147,8 +150,6 @@ app/models/application_record.rb:
 - deleted_from_database?
 app/models/application_setting_implementation.rb:
 - ensure_key_restrictions!
-app/models/bulk_imports/export.rb:
-- offline?
 app/models/ci/build.rb:
 - has_live_trace?
 - has_archived_trace?
@@ -174,6 +175,7 @@ app/models/clusters/cluster.rb:
 app/models/clusters/concerns/application_data.rb:
 - certificate_files
 app/models/clusters/concerns/application_status.rb:
+- status_states
 - updateable?
 app/models/clusters/concerns/application_version.rb:
 - update_available?
@@ -262,6 +264,7 @@ app/models/namespace.rb:
 app/models/organizations/isolation_record.rb:
 - not_isolated?
 app/models/project.rb:
+- has_auto_devops_implicitly_disabled?
 - import_scheduled?
 - updating_remote_mirror?
 - issue_exists?
@@ -277,6 +280,8 @@ app/models/todo.rb:
 - for_alert?
 - for_issue_or_work_item?
 - for_ssh_key?
+- review_requested?
+- self_added?
 app/models/user.rb:
 - legacy_otp_secret
 ee/app/models/ai/duo_code_review.rb:
@@ -285,3 +290,9 @@ ee/app/models/concerns/ai/user_authorizable.rb:
 - any_group_with_ai_available?
 app/models/ci/stage.rb:
 - update_legacy_status
+ee/app/models/virtual_registries/cache/entry.rb:
+- mark_as_pending_destruction
+ee/app/models/work_items/statuses/system_defined/lifecycle.rb:
+- find_available_status_by_name
+ee/app/helpers/ee/projects_helper.rb:
+- paid_duo_tier_for_project

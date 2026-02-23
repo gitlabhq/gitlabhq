@@ -52,8 +52,6 @@ module API
           authorize_download_artifacts!
 
           if params[:search_recent_successful_pipelines]
-            not_found! unless Feature.enabled?(:ci_search_recent_successful_pipelines, user_project)
-
             latest_build = ::Ci::Build.latest_with_artifacts_for_ref(
               user_project,
               params[:job],
@@ -105,8 +103,6 @@ module API
           authorize_download_artifacts!
 
           if params[:search_recent_successful_pipelines]
-            not_found! unless Feature.enabled?(:ci_search_recent_successful_pipelines, user_project)
-
             build = ::Ci::Build.latest_with_artifacts_for_ref(
               user_project,
               params[:job],

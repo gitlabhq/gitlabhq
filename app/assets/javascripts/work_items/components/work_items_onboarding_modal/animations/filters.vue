@@ -155,25 +155,68 @@ export default {
 
       <g clip-path="url(#clip0-second)">
         <!-- Border -->
-        <rect x="0.5" y="0.5" width="239" height="169" rx="7.5" stroke="#BFBFC3" />
+        <rect
+          x="0.5"
+          y="0.5"
+          width="239"
+          height="169"
+          rx="7.5"
+          stroke="var(--gl-border-color-strong)"
+        />
 
         <!-- Content rows - static -->
-        <rect x="8" y="99" width="176" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="87" width="112" height="8" rx="4" fill="#BFBFC3" />
-        <rect x="8" y="131.996" width="144" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="120" width="96" height="8" rx="4" fill="#BFBFC3" />
-        <rect x="8" y="165" width="160" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="152.996" width="128" height="8" rx="4" fill="#BFBFC3" />
+        <rect
+          x="8"
+          y="99"
+          width="176"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect x="8" y="87" width="112" height="8" rx="4" fill="var(--gl-border-color-strong)" />
+        <rect
+          x="8"
+          y="131.996"
+          width="144"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect x="8" y="120" width="96" height="8" rx="4" fill="var(--gl-border-color-strong)" />
+        <rect
+          x="8"
+          y="165"
+          width="160"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect
+          x="8"
+          y="152.996"
+          width="128"
+          height="8"
+          rx="4"
+          fill="var(--gl-border-color-strong)"
+        />
 
         <!-- Search bar -->
-        <rect x="9" y="56" width="217" height="18" rx="9" stroke="#BFBFC3" stroke-width="2" />
+        <rect
+          x="9"
+          y="56"
+          width="217"
+          height="18"
+          rx="9"
+          stroke="var(--gl-border-color-strong)"
+          stroke-width="2"
+        />
 
         <!-- Search icon -->
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M214.254 61C216.052 61 217.509 62.457 217.509 64.2543C217.509 64.8577 217.343 65.4224 217.057 65.9068L218.762 67.6113C219.079 67.929 219.079 68.444 218.762 68.7617C218.444 69.0794 217.929 69.0794 217.611 68.7617L215.907 67.0573C215.422 67.3435 214.858 67.5085 214.254 67.5085C212.457 67.5085 211 66.0515 211 64.2543C211 62.457 212.457 61 214.254 61ZM214.254 62.6271C213.356 62.6271 212.627 63.3556 212.627 64.2543C212.627 65.1529 213.356 65.8814 214.254 65.8814C215.153 65.8814 215.881 65.1529 215.881 64.2543C215.881 63.3556 215.153 62.6271 214.254 62.6271Z"
-          fill="#BFBFC3"
+          fill="var(--gl-text-color-disabled)"
         />
 
         <!-- Animated search tags -->
@@ -185,20 +228,28 @@ export default {
           :width="tag.width"
           height="8"
           rx="4"
-          fill="#89888D"
+          fill="var(--gl-text-color-disabled)"
           :style="{ opacity: tag.visible ? 1 : 0 }"
           class="animated-tag"
         />
 
         <!-- Filter button -->
-        <rect x="232" y="56" width="18" height="18" rx="9" stroke="#BFBFC3" stroke-width="2" />
+        <rect
+          x="232"
+          y="56"
+          width="18"
+          height="18"
+          rx="9"
+          stroke="var(--gl-border-color-strong)"
+          stroke-width="2"
+        />
 
         <!-- Divider -->
-        <path d="M10 41H239V43H10V41Z" fill="#DCDCDE" />
+        <path d="M10 41H239V43H10V41Z" fill="var(--gl-border-color-strong)" />
 
         <!-- Highlight pill behind + button (frame 3) -->
         <g :style="{ opacity: currentFrame.highlightPill ? 0.4 : 0 }" class="animated-highlight">
-          <rect x="120" y="11" width="52" height="20" rx="10" fill="#1F75CB" />
+          <rect x="120" y="11" width="52" height="20" rx="10" fill="var(--blue-500)" />
         </g>
 
         <!-- Animated tab buttons -->
@@ -210,7 +261,11 @@ export default {
           :width="tab.width"
           height="8"
           rx="4"
-          :fill="currentFrame.activeTab === idx ? '#626168' : '#BFBFC3'"
+          :fill="
+            currentFrame.activeTab === idx
+              ? 'var(--gl-text-color-subtle)'
+              : 'var(--gl-border-color-strong)'
+          "
           :style="{ opacity: tab.visible ? 1 : 0 }"
           class="animated-tab"
         />
@@ -219,7 +274,7 @@ export default {
         <g :style="{ transform: `translateX(${plusIconX - 132}px)` }" class="animated-plus-icon">
           <path
             d="M132 17C132.491 17 132.889 17.398 132.889 17.8889V20.1111H135.111C135.602 20.1111 136 20.5091 136 21C136 21.4909 135.602 21.8889 135.111 21.8889H132.889V24.1111C132.889 24.602 132.491 25 132 25C131.509 25 131.111 24.602 131.111 24.1111V21.8889H128.889C128.398 21.8889 128 21.4909 128 21C128 20.5091 128.398 20.1111 128.889 20.1111H131.111V17.8889C131.111 17.398 131.509 17 132 17Z"
-            fill="#BFBFC3"
+            fill="var(--gl-text-color-disabled)"
           />
         </g>
 
@@ -230,7 +285,7 @@ export default {
           :width="currentFrame.blueBarWidth"
           height="4"
           rx="2"
-          fill="#1F75CB"
+          fill="var(--blue-500)"
           class="animated-element"
         />
       </g>

@@ -55,7 +55,8 @@ class Projects::NotesController < Projects::ApplicationController
 
   def outdated_line_change
     diff_lines = Rails.cache.fetch(['note', note.id, 'oudated_line_change'], expires_in: 7.days) do
-      Gitlab::Json.dump(::MergeRequests::OutdatedDiscussionDiffLinesService.new(project: note.noteable.source_project, note: note).execute)
+      Gitlab::Json.dump(::MergeRequests::OutdatedDiscussionDiffLinesService.new(project: note.noteable.source_project,
+        note: note).execute)
     end
 
     render json: diff_lines

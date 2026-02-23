@@ -260,7 +260,14 @@ export default {
       xmlns="http://www.w3.org/2000/svg"
     >
       <!-- Border -->
-      <rect x="0.5" y="0.5" width="239" height="169" rx="7.5" stroke="#BFBFC3" />
+      <rect
+        x="0.5"
+        y="0.5"
+        width="239"
+        height="169"
+        rx="7.5"
+        stroke="var(--gl-border-color-strong)"
+      />
 
       <!-- Animated filter chips -->
       <g v-for="(row, rowIdx) in normalizedFilterChips" :key="`row-${rowIdx}`">
@@ -272,7 +279,7 @@ export default {
           :width="chip.w"
           height="4"
           rx="2"
-          fill="#DCDCDE"
+          fill="var(--gl-status-neutral-background-color)"
           :style="{ opacity: chip.visible ? 1 : 0 }"
           class="animated-chip"
         />
@@ -287,7 +294,7 @@ export default {
         :width="width"
         height="4"
         rx="2"
-        fill="#DCDCDE"
+        fill="var(--gl-status-neutral-background-color)"
         class="animated-element"
       />
 
@@ -300,19 +307,26 @@ export default {
         :width="width"
         height="4"
         rx="2"
-        fill="#BFBFC3"
+        fill="var(--gl-border-color-strong)"
         class="animated-element"
       />
 
       <!-- Search bar -->
-      <rect x="8.5" y="26.5" width="179" height="9" rx="4.5" stroke="#BFBFC3" />
+      <rect
+        x="8.5"
+        y="26.5"
+        width="179"
+        height="9"
+        rx="4.5"
+        stroke="var(--gl-border-color-strong)"
+      />
 
       <!-- Search icon -->
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"
         d="M180.466 28C181.828 28 182.931 29.1039 182.931 30.4657C182.931 31.0081 182.756 31.5092 182.459 31.9164L183.888 33.3451C184.037 33.4949 184.037 33.7379 183.888 33.8877C183.738 34.0374 183.495 34.0374 183.345 33.8877L181.916 32.459C181.509 32.7558 181.008 32.9314 180.466 32.9314C179.104 32.9314 178 31.8275 178 30.4657C178 29.1039 179.104 28 180.466 28ZM180.466 28.7673C179.528 28.7673 178.767 29.5276 178.767 30.4657C178.767 31.4038 179.528 32.1641 180.466 32.1641C181.404 32.1641 182.164 31.4038 182.164 30.4657C182.164 29.5276 181.404 28.7673 180.466 28.7673Z"
-        fill="#BFBFC3"
+        fill="var(--gl-text-color-disabled)"
       />
 
       <!-- Animated search tags -->
@@ -324,52 +338,85 @@ export default {
         :width="tag.width"
         height="4"
         rx="2"
-        fill="#626168"
+        fill="var(--gl-text-color-disabled)"
         :style="{ opacity: tag.visible ? 1 : 0 }"
         class="animated-tag"
       />
 
       <!-- Filter buttons -->
-      <rect x="190.5" y="26.5" width="9" height="9" rx="4.5" stroke="#BFBFC3" />
-      <rect x="202.5" y="26.5" width="29" height="9" rx="4.5" stroke="#BFBFC3" />
+      <rect
+        x="190.5"
+        y="26.5"
+        width="9"
+        height="9"
+        rx="4.5"
+        stroke="var(--gl-border-color-strong)"
+      />
+      <rect
+        x="202.5"
+        y="26.5"
+        width="29"
+        height="9"
+        rx="4.5"
+        stroke="var(--gl-border-color-strong)"
+      />
 
       <!-- Top right button -->
-      <rect x="208" y="4" width="24" height="10" rx="5" fill="#DCDCDE" />
+      <rect
+        x="208"
+        y="4"
+        width="24"
+        height="10"
+        rx="5"
+        fill="var(--gl-status-neutral-background-color)"
+      />
 
       <!-- Divider line -->
       <path
         d="M8 17.5C8 17.2239 8.22386 17 8.5 17H231.5C231.776 17 232 17.2239 232 17.5C232 17.7761 231.776 18 231.5 18H8.5C8.22386 18 8 17.7761 8 17.5Z"
-        fill="#DCDCDE"
+        fill="var(--gl-border-color-strong)"
       />
 
       <!-- Top tabs -->
       <path
         d="M136 9C136 7.89543 136.895 7 138 7H146C147.105 7 148 7.89543 148 9C148 10.1046 147.105 11 146 11H138C136.895 11 136 10.1046 136 9Z"
-        fill="#BFBFC3"
+        fill="var(--gl-border-color-strong)"
       />
       <path
         d="M131 6C131.207 6 131.375 6.16789 131.375 6.375V8.625H133.625C133.832 8.625 134 8.79289 134 9C134 9.20711 133.832 9.375 133.625 9.375H131.375V11.625C131.375 11.8321 131.207 12 131 12C130.793 12 130.625 11.8321 130.625 11.625V9.375H128.375C128.168 9.375 128 9.20711 128 9C128 8.79289 128.168 8.625 128.375 8.625H130.625V6.375C130.625 6.16789 130.793 6 131 6Z"
-        fill="#BFBFC3"
+        fill="var(--gl-border-color-strong)"
       />
       <path
         d="M98 9C98 7.89543 98.8954 7 100 7H112C113.105 7 114 7.89543 114 9C114 10.1046 113.105 11 112 11H100C98.8954 11 98 10.1046 98 9Z"
-        fill="#BFBFC3"
+        fill="var(--gl-border-color-strong)"
       />
 
       <!-- Animated tabs -->
       <path
         d="M68 9C68 7.89543 68.8954 7 70 7H82C83.1046 7 84 7.89543 84 9C84 10.1046 83.1046 11 82 11H70C68.8954 11 68 10.1046 68 9Z"
-        :fill="currentFrame.activeTab === 10 ? '#626168' : '#BFBFC3'"
+        :fill="
+          currentFrame.activeTab === 10
+            ? 'var(--gl-text-color-subtle)'
+            : 'var(--gl-border-color-strong)'
+        "
         class="animated-element"
       />
       <path
         d="M40 9C40 7.89543 40.8954 7 42 7H54C55.1046 7 56 7.89543 56 9C56 10.1046 55.1046 11 54 11H42C40.8954 11 40 10.1046 40 9Z"
-        :fill="currentFrame.activeTab === 40 ? '#626168' : '#BFBFC3'"
+        :fill="
+          currentFrame.activeTab === 40
+            ? 'var(--gl-text-color-subtle)'
+            : 'var(--gl-border-color-strong)'
+        "
         class="animated-element"
       />
       <path
         d="M10 9C10 7.89543 10.8954 7 12 7H24C25.1046 7 26 7.89543 26 9C26 10.1046 25.1046 11 24 11H12C10.8954 11 10 10.1046 10 9Z"
-        :fill="currentFrame.activeTab === 68 ? '#626168' : '#BFBFC3'"
+        :fill="
+          currentFrame.activeTab === 68
+            ? 'var(--gl-text-color-subtle)'
+            : 'var(--gl-border-color-strong)'
+        "
         class="animated-element"
       />
 
@@ -380,7 +427,7 @@ export default {
         :width="currentFrame.highlightWidth"
         height="2"
         rx="1"
-        fill="#1F75CB"
+        fill="var(--blue-500)"
         class="animated-element"
       />
     </svg>
@@ -409,7 +456,7 @@ export default {
   transition:
     x 0.6s ease-in-out,
     width 0.6s ease-in-out,
-    opacity 1.2s ease-out;
+    opacity 0.6s ease-in-out;
 }
 
 .animated-chip {

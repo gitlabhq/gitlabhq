@@ -81,13 +81,35 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
     context 'sorting' do
       let!(:project) { create(:project, :public) }
 
-      let!(:old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'old-1', title: 'sorted old', created_at: 1.month.ago) }
-      let!(:new_result) { create(:merge_request, :opened, source_project: project, source_branch: 'new-1', title: 'sorted recent', created_at: 1.day.ago) }
-      let!(:very_old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1', title: 'sorted very old', created_at: 1.year.ago) }
+      let!(:old_result) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'old-1',
+          title: 'sorted old', created_at: 1.month.ago)
+      end
 
-      let!(:old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-old-1', title: 'updated old', updated_at: 1.month.ago) }
-      let!(:new_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-new-1', title: 'updated recent', updated_at: 1.day.ago) }
-      let!(:very_old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-very-old-1', title: 'updated very old', updated_at: 1.year.ago) }
+      let!(:new_result) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'new-1',
+          title: 'sorted recent', created_at: 1.day.ago)
+      end
+
+      let!(:very_old_result) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1',
+          title: 'sorted very old', created_at: 1.year.ago)
+      end
+
+      let!(:old_updated) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'updated-old-1',
+          title: 'updated old', updated_at: 1.month.ago)
+      end
+
+      let!(:new_updated) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'updated-new-1',
+          title: 'updated recent', updated_at: 1.day.ago)
+      end
+
+      let!(:very_old_updated) do
+        create(:merge_request, :opened, source_project: project, source_branch: 'updated-very-old-1',
+          title: 'updated very old', updated_at: 1.year.ago)
+      end
 
       include_examples 'search results sorted' do
         let(:results_created) { described_class.new(nil, search: 'sorted', sort: sort).execute }
@@ -161,6 +183,56 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
         requested_search_type: 'foo'
       )
       service.allowed_scopes
+    end
+  end
+
+  describe '#projects' do
+    subject(:projects) { described_class.new(user, search: 'searchable').projects }
+
+    it 'returns projects the user has access to' do
+      expect(projects).to contain_exactly(public_project, internal_project, found_project, archived_project)
+    end
+
+    it 'includes route and topic associations for performance' do
+      projects
+
+      expect(projects.first.association(:route)).to be_loaded
+      expect(projects.first.association(:topics)).to be_loaded
+      expect(projects.first.association(:project_topics)).to be_loaded
+    end
+
+    context 'when user is nil (unauthenticated)' do
+      subject(:projects) { described_class.new(nil, search: 'searchable').projects }
+
+      it 'returns only public projects' do
+        expect(projects).to contain_exactly(public_project, archived_project)
+      end
+    end
+
+    context 'when search_project_list_lookup is false' do
+      before do
+        stub_feature_flags(search_project_list_lookup: false)
+      end
+
+      it 'returns projects the user has access to' do
+        expect(projects).to contain_exactly(public_project, internal_project, found_project, archived_project)
+      end
+
+      it 'includes route and topic associations for performance' do
+        projects
+
+        expect(projects.first.association(:route)).to be_loaded
+        expect(projects.first.association(:topics)).to be_loaded
+        expect(projects.first.association(:project_topics)).to be_loaded
+      end
+
+      context 'when user is nil (unauthenticated)' do
+        subject(:projects) { described_class.new(nil, search: 'searchable').projects }
+
+        it 'returns only public projects' do
+          expect(projects).to contain_exactly(public_project, archived_project)
+        end
+      end
     end
   end
 end

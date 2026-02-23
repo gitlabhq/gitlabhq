@@ -375,12 +375,13 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
       end
 
       it 'calls error tracking and returns nil' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
           .with(
             ActionController::RoutingError,
             url: '/dashboard/issues?assignee_username=root'
           ).and_call_original
-        expect(helper.masked_referrer_url(original_url)).to be_nil
+
+        expect { helper.masked_referrer_url(original_url) }.to raise_error(StandardError)
       end
     end
 

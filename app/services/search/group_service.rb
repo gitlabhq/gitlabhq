@@ -26,7 +26,11 @@ module Search
       return Project.none unless group
       return @projects if defined? @projects
 
-      @projects = super.inside_path(group.full_path)
+      @projects = if Feature.enabled?(:search_project_list_lookup, current_user)
+                    super.inside_namespace(group)
+                  else
+                    super.inside_path(group.full_path)
+                  end
     end
 
     private

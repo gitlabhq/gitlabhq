@@ -113,6 +113,7 @@ const alias = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
+  lodash: 'lodash-es',
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
   // the following resolves files which are different between CE and EE

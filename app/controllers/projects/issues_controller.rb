@@ -9,7 +9,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
   include IssueBuildParameters
 
-  ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk can_create_branch].freeze
+  ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk
+    can_create_branch].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
   WORK_ITEM_REDIRECT_EXCEPT_ACTIONS = (ISSUES_EXCEPT_ACTIONS + [
     :discussions,                # it's a JSON action, but not always passed on the tests requests
@@ -55,10 +56,12 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?(current_user))
+    push_force_frontend_feature_flag(:work_item_planning_view,
+      !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_frontend_feature_flag(:hide_incident_management_features, project)
-    push_force_frontend_feature_flag(:work_item_features_field, Feature.enabled?(:work_item_features_field, current_user))
+    push_force_frontend_feature_flag(:work_item_features_field,
+      Feature.enabled?(:work_item_features_field, current_user))
   end
 
   after_action :log_issue_show, only: :show
@@ -132,7 +135,8 @@ class Projects::IssuesController < Projects::ApplicationController
       if params[:vueroute].present? && request.path.include?('/designs/')
         # Only redirect to designs path if both vueroute param exists and path contains /designs/
         # Needed since designs are aliased to show in this controller
-        redirect_to designs_project_work_item_path(project, issue.iid, vueroute: params[:vueroute], params: request.query_parameters)
+        redirect_to designs_project_work_item_path(project, issue.iid, vueroute: params[:vueroute],
+          params: request.query_parameters)
       else
         redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
       end
@@ -254,7 +258,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
     create_params[:target_project_id] = params[:target_project_id]
-    result = ::MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user, mr_params: create_params).execute
+    result = ::MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user,
+      mr_params: create_params).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])

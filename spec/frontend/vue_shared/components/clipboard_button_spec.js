@@ -10,7 +10,10 @@ import initCopyToClipboard, {
 } from '~/behaviors/copy_to_clipboard';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  uniqueId: (prefix) => (prefix ? `${prefix}1` : 1),
+}));
 
 describe('clipboard button', () => {
   let wrapper;

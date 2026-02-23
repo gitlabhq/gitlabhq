@@ -2,16 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineLength:
   Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/controllers/groups/milestones_controller.rb'
-    - 'app/controllers/projects/issues_controller.rb'
-    - 'app/controllers/projects/milestones_controller.rb'
-    - 'app/controllers/projects/notes_controller.rb'
-    - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/controllers/projects/settings/ci_cd_controller.rb'
-    - 'app/controllers/projects/settings/repository_controller.rb'
-    - 'app/controllers/projects/templates_controller.rb'
-    - 'app/controllers/projects/web_ide_schemas_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/repositories/git_http_client_controller.rb'
     - 'app/graphql/mutations/todos/mark_all_done.rb'
@@ -3669,7 +3659,6 @@ Layout/LineLength:
     - 'spec/services/resource_access_tokens/revoke_service_spec.rb'
     - 'spec/services/resource_events/change_state_service_spec.rb'
     - 'spec/services/resource_events/synthetic_milestone_notes_builder_service_spec.rb'
-    - 'spec/services/search/global_service_spec.rb'
     - 'spec/services/search/group_service_spec.rb'
     - 'spec/services/search/snippet_service_spec.rb'
     - 'spec/services/security/ci_configuration/sast_create_service_spec.rb'

@@ -14,6 +14,7 @@ class StaticAnalysis
       command.join(' ')
     end
   end
+
   NodeAssignment = Struct.new(:index, :tasks) do
     def total_duration
       return 0 if tasks.empty?
@@ -50,6 +51,7 @@ class StaticAnalysis
     Task.new(%w[scripts/lint-conflicts.sh], 10),
     Task.new(%w[scripts/lint-vendored-gems.sh], 10),
     Task.new(%w[scripts/lint/gitaly_version.rb], 1),
+    Task.new(%w[bundle exec scripts/lint/unused_methods.rb], 30),
     Task.new(%w[yarn run check-dependencies], 1),
     Task.new(%w[scripts/gemfile_lock_changed.sh], 1),
     Task.new(%w[yarn run deps:check:all --no-cache], 60),

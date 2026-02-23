@@ -7,7 +7,7 @@ import {
   shallowMount,
   WrapperArray,
 } from '@vue/test-utils';
-import { compose } from 'lodash/fp';
+import { flowRight } from 'lodash';
 
 /**
  * Query function type
@@ -172,5 +172,5 @@ export const extendedWrapper = (wrapper) => {
   });
 };
 
-export const shallowMountExtended = compose(extendedWrapper, shallowMount);
-export const mountExtended = compose(extendedWrapper, mount);
+export const shallowMountExtended = flowRight(extendedWrapper, shallowMount);
+export const mountExtended = flowRight(extendedWrapper, mount);

@@ -916,6 +916,15 @@ class Project < ApplicationRecord
   scope :with_slack_integration, -> { joins(:slack_integration) }
   # .with_slack_slash_commands_integration can generate poorly performing queries. It is intended only for UsagePing.
   scope :with_slack_slash_commands_integration, -> { joins(:slack_slash_commands_integration) }
+
+  scope :include_topics, -> { includes(:topics, :project_topics) }
+  scope :inside_namespace, ->(namespace) do
+    return none unless namespace
+
+    in_namespace(namespace.self_and_descendants_ids)
+  end
+
+  # deprecated, use inside_namespace
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.

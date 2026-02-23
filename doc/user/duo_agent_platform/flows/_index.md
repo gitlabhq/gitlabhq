@@ -62,8 +62,6 @@ To use flows:
 To execute flows in the GitLab UI:
 
 - You must turn on flows with [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
-- Before you add or execute a flow for the first time, you must
-  [allow members to be added to the group your project is in](../troubleshooting.md#allow-members-to-be-added-to-projects).
 - To use flows that create code, you must
   [configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
 

@@ -27,8 +27,8 @@ describe('EmptyStateWithAnyIssues component', () => {
       mountComponent({ hasSearch: true });
 
       expect(findGlEmptyState().props()).toMatchObject({
-        description: 'To widen your search, change or remove filters above',
-        title: 'Sorry, your filter produced no results',
+        description: 'To widen your search, change or remove filters above.',
+        title: 'No results found',
       });
     });
   });
@@ -49,6 +49,17 @@ describe('EmptyStateWithAnyIssues component', () => {
       mountComponent({ hasSearch: false, isOpenTab: false });
 
       expect(findGlEmptyState().props('title')).toBe('No closed issues');
+    });
+  });
+
+  describe('when withTabs is false', () => {
+    it('shows no results found empty state even without search', () => {
+      mountComponent({ hasSearch: false, withTabs: false });
+
+      expect(findGlEmptyState().props()).toMatchObject({
+        description: 'To widen your search, change or remove filters above.',
+        title: 'No results found',
+      });
     });
   });
 

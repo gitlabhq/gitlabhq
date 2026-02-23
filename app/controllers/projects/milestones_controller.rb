@@ -7,7 +7,8 @@ class Projects::MilestonesController < Projects::ApplicationController
   REDIRECT_TARGETS = [:new_release].freeze
 
   before_action :check_issuables_available!
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :issues, :merge_requests, :participants, :labels, :promote]
+  before_action :milestone,
+    only: [:edit, :update, :destroy, :show, :issues, :merge_requests, :participants, :labels, :promote]
   before_action :redirect_path, only: [:new, :create]
 
   # Allow read any milestone
@@ -105,7 +106,8 @@ class Projects::MilestonesController < Projects::ApplicationController
         render json: {
           errors: [
             format(
-              _("Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."),
+              _("Someone edited this %{model_name} at the same time you did. " \
+                "Please refresh your browser and make sure your changes will not unintentionally remove theirs."),
               model_name: _('milestone')
             )
           ]

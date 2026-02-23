@@ -1,5 +1,5 @@
 import { EVENT_TIMEOUT, EVENT_PLAIN_TEXT, EVENT_ERROR } from '@gitlab/cluster-client';
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash';
 import k8sLogsQuery from '~/environments/graphql/queries/k8s_logs.query.graphql';
 import k8sPodLogsWatcherQuery from '~/environments/graphql/queries/k8s_pod_logs_watcher.query.graphql';
 import {
@@ -9,7 +9,13 @@ import {
 } from '~/environments/graphql/resolvers/kubernetes/k8s_logs';
 import { bootstrapWatcherMock } from '../watcher_mock_helper';
 
-jest.mock('lodash/throttle', () => jest.fn());
+jest.mock('lodash', () => {
+  const lodash = jest.requireActual('lodash');
+  return {
+    ...lodash,
+    throttle: jest.fn(lodash.throttle),
+  };
+});
 
 let watchStream;
 const configuration = {
@@ -59,7 +65,6 @@ describe('k8sLogs', () => {
     );
   });
 
-  throttle.mockImplementation(jest.requireActual('lodash/throttle'));
   const errorMessage = 'event error message';
   const logContent = 'Plain text log data';
   it.each([

@@ -18,9 +18,7 @@ import * as redirectUtils from '~/repository/utils/blob_edit_redirect_utils';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/local_storage_alert');
-jest.mock('lodash/uniqueId', () => {
-  return jest.fn((input) => `${input}1`);
-});
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (input) => `${input}1` }));
 jest.mock('~/repository/utils/blob_edit_redirect_utils', () => ({
   ...jest.requireActual('~/repository/utils/blob_edit_redirect_utils'),
   redirectToExistingMergeRequest: jest.fn(),

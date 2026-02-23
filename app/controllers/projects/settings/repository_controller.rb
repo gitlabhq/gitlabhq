@@ -27,7 +27,8 @@ module Projects
         result = Projects::CleanupService.enqueue(project, current_user, bfg_object_map)
 
         if result[:status] == :success
-          flash[:notice] = _('Repository cleanup has started. You will receive an email once the cleanup operation is complete.')
+          flash[:notice] =
+            _('Repository cleanup has started. You will receive an email once the cleanup operation is complete.')
         else
           flash[:alert] = result.fetch(:message, _('Failed to upload object map file'))
         end

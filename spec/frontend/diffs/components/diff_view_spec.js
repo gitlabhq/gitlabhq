@@ -12,7 +12,7 @@ import { createCustomGetters } from 'helpers/pinia_helpers';
 
 Vue.use(PiniaVuePlugin);
 
-jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), throttle: jest.fn((fn) => fn) }));
 const lodash = jest.requireActual('lodash');
 
 describe('DiffView', () => {

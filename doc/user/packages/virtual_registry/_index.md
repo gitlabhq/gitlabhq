@@ -27,7 +27,7 @@ description: Use the GitLab virtual registry to proxy, cache, and distribute pac
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
+Use the GitLab virtual registry to proxy and cache packages from multiple upstream registries behind a single, well-known URL.
 
 With this approach, you can configure your applications to use one virtual registry instead of multiple upstream registries.
 

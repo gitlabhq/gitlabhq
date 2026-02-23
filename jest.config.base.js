@@ -27,7 +27,9 @@ module.exports = (path, options = {}) => {
   } = options;
 
   const reporters = ['default'];
-  const VUE_JEST_TRANSFORMER = USE_VUE3_COMPILER ? '@vue/vue3-jest' : '@vue/vue2-jest';
+  const VUE_JEST_TRANSFORMER = USE_VUE3_COMPILER
+    ? '@vue/vue3-jest'
+    : '<rootDir>/spec/frontend/__helpers__/vue2_jest_transformer.js';
   const setupFilesAfterEnv = [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'];
   const vueModuleNameMappers = {
     // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
@@ -74,6 +76,13 @@ module.exports = (path, options = {}) => {
             },
             isCustomElement: isCE,
           },
+        },
+      });
+    } else {
+      Object.assign(globals, {
+        'vue-jest': {
+          experimentalCSSCompile: false,
+          compiler: require.resolve('./config/vue3migration/vue2_compiler'),
         },
       });
     }
@@ -143,6 +152,8 @@ module.exports = (path, options = {}) => {
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
+    '^lodash$': '<rootDir>/node_modules/lodash-es/lodash.js',
+    '^lodash/(.*)$': '<rootDir>/node_modules/lodash-es/$1',
     '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,
@@ -229,6 +240,7 @@ module.exports = (path, options = {}) => {
     'decode-named-character-reference',
     'character-entities*',
     'escape-string-regexp',
+    'lodash-es',
   ];
 
   return {

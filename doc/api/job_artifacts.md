@@ -59,6 +59,7 @@ artifact_download:
 {{< history >}}
 
 - `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
+- Feature flag `ci_search_recent_successful_pipelines` removed in GitLab 18.10
 
 {{< /history >}}
 
@@ -78,7 +79,6 @@ Prerequisites:
 - If the pipeline includes manual jobs, they must either:
   - Complete successfully.
   - Have `allow_failure: true` set.
-- To search across recent successful pipelines, the `ci_search_recent_successful_pipelines` feature flag must be enabled for the project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -255,6 +255,7 @@ list_artifacts:
 {{< history >}}
 
 - `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
+- Feature flag `ci_search_recent_successful_pipelines` removed in GitLab 18.10
 
 {{< /history >}}
 
