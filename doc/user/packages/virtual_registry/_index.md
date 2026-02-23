@@ -38,7 +38,7 @@ With this approach, you can configure your applications to use one virtual regis
 
 To configure the virtual registry:
 
-- You need a top-level group with at least the Maintainer role.
+- You need a top-level group with the Maintainer or Owner role.
 - Make sure you enable the virtual registries setting. It's enabled by default, but [administrators can turn it off](#turn-off-the-virtual-registry).
 - Make sure you enable the dependency proxy setting. It's enabled by default, but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 - You must configure authentication for your supported [package format](#supported-package-formats).
@@ -78,7 +78,7 @@ Tokens need one of the following scopes:
 
 Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 
-- A direct member of the top-level group with at least the Guest role.
+- A direct member of the top-level group with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - A GitLab instance administrator.
 - A direct member of one of the projects included in the top-level group.
 

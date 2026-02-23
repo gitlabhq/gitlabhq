@@ -35,7 +35,7 @@ must delete the package and republish it.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To delete a package:
 
@@ -61,7 +61,7 @@ Delete assets associated with a package to reduce storage.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To delete package assets:
 
@@ -94,7 +94,7 @@ have to delete them manually.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 By default, the packages cleanup policy is disabled. To enable it:
 

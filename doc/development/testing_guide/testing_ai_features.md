@@ -64,9 +64,8 @@ These feature tests run when we make a change to AI Gateway repository as well, 
    This branch points the same SHA with master.
 1. If a pipeline fails, the developer should investigate if the proposed change doesn't accidentally introduce regressions.
 
-NOTE:
-
-- `aigw/test-branch` branch is unprotected by default for allowing AIGW & DWS maintainers to trigger downstream pipelines in GitLab project.
+> [!note]
+> `aigw/test-branch` branch is unprotected by default for allowing AIGW & DWS maintainers to trigger downstream pipelines in GitLab project.
 
 ### Run a feature spec locally with your DWS/AIGW change
 

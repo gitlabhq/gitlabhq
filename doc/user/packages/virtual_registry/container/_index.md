@@ -175,7 +175,7 @@ Make sure you are using the expected authentication mechanism.
 
 Errors like these might indicate that:
 
-- The user running the job does not have at least the Guest role for the group that owns the virtual registry.
+- The user running the job does not have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group that owns the virtual registry.
 - The virtual registry ID in the URL is incorrect.
 - The upstream registry does not contain the requested image.
 - The virtual registry has no upstreams configured.
@@ -193,7 +193,7 @@ Error response from daemon: error parsing HTTP 404 response body: unexpected end
 
 To resolve these errors:
 
-1. Verify you have at least the Guest role for the group.
+1. Verify you have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 1. Confirm the virtual registry ID is correct.
 1. Check that the virtual registry has at least one upstream configured.
 1. Verify the image exists in the upstream registry.

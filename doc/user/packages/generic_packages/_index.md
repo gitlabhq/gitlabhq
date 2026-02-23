@@ -26,7 +26,7 @@ The generic packages repository provides:
 To interact with the package registry, you must authenticate with one of the following methods:
 
 - A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
-- A [project access token](../../project/settings/project_access_tokens.md) with the scope set to `api` and at least the Developer role.
+- A [project access token](../../project/settings/project_access_tokens.md) with the scope set to `api` and the Developer, Maintainer, or Owner role.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 

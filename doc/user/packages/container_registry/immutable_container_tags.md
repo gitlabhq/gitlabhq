@@ -23,7 +23,7 @@ description: To prevent container tags from change or deletion, create immutable
 
 Use immutable tags to prevent container tags from being updated or deleted in your project.
 
-By default, users with at least the Developer role can push and delete image tags in all project container repositories.
+By default, users with the Developer, Maintainer, or Owner role can push and delete image tags in all project container repositories.
 With tag immutability rules, you can:
 
 - Prevent the modification of critical image tags and mitigate the risk of malicious or accidental changes.
@@ -63,7 +63,7 @@ graph TD
 
 For a project with these rules:
 
-- Protected tag rule: Pattern `v.*` requires at least the Maintainer role.
+- Protected tag rule: Pattern `v.*` requires the Maintainer or Owner role.
 - Immutable tag rule: Pattern `v\d+\.\d+\.\d+` protects semantic version tags.
 
 | User role | Action | Protected tag check | Immutable tag check | Result |

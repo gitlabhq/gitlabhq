@@ -43,11 +43,11 @@ Do not use authentication methods other than the methods documented here. Undocu
 
 To publish a Terraform module:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To delete a module:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 ## Publish a Terraform module
 

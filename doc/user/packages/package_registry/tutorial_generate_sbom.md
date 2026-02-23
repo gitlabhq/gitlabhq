@@ -42,7 +42,7 @@ CycloneDX supports multiple output formats, including JSON, XML, and Protocol Bu
 
 To complete this tutorial, you need:
 
-- A group with at least the Maintainer role.
+- A group with the Maintainer or Owner role.
 - Access to GitLab CI/CD.
 - A configured [GitLab Runner](../../../ci/runners/_index.md#runner-categories) if you're using a GitLab Self-Managed instance. If you're using GitLab.com, you can skip this requirement.
 - Optional. A [group deploy token](../../project/deploy_tokens/_index.md) to authenticate requests to the package registry.

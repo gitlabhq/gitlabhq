@@ -55,7 +55,7 @@ module QA
 
         Page::Project::Pipeline::Show.perform do |show|
           # Use longer timeout to account for runner availability delays
-          expect(show).to have_passed(timeout: 180)
+          expect(show).to have_passed(timeout: 300)
 
           show.click_job(pipeline_job_name)
         end

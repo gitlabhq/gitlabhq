@@ -23,18 +23,15 @@ description: Namespace hierarchy.
 > [!flag]
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
-> This feature is available for testing, but not ready for production use.
-
-{{< alert type="disclaimer" />}}
-
-> [!note]
-> Organizations is in development.
+> This feature is available for testing, but still in development and not ready for production use.
 
 Organizations will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
+
+> [!disclaimer]
 
 For more information about the state of organization development,
 see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).

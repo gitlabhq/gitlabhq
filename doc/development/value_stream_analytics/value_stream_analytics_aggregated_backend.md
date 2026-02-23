@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Aggregated Value Stream Analytics
 ---
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 This page provides a high-level overview of the aggregated backend for
 Value Stream Analytics (VSA).

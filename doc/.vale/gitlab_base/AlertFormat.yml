@@ -1,0 +1,15 @@
+---
+name: gitlab_base.AlertFormat
+description: |
+  Makes sure alerts use Markdown alerts, not hugo shortcodes.
+extends: existence
+message: "Use markdown alert box syntax for notes, warnings, and feature flag or disclaimer notes."
+link: https://docs.gitlab.com/development/documentation/styleguide/#alert-boxes
+vocab: false
+ignorecase: true
+level: error
+nonword: true
+scope: raw
+tokens:
+  - '\{\{< alert type="(note|warning|flag|disclaimer)" />\}\}'
+  - '^ *note:'

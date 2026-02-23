@@ -100,7 +100,9 @@ A runner polls `POST /api/v4/jobs/request` to find `pending` jobs to execute. Wh
 - The `started_at` timestamp is set
 - The job begins execution on the runner
 
-Note: If a job has exceeded the quota, it will not be assigned to a runner. This logic is handled in `BuildQueueService`, which is called from `RegisterJobService`.
+> [!note]
+> If a job has exceeded the quota, it will not be assigned to a runner. This logic is handled in `BuildQueueService`,
+> which is called from `RegisterJobService`.
 
 **2. Job Running Phase**
 

@@ -2205,12 +2205,12 @@ If your self-hosted Sentry version is 21.4.1 or earlier, you may not be able to 
 To continue sending errors from your GitLab instance to your Sentry instance, upgrade Sentry to version 21.5.0 or later. For more information,
 see [Sentry documentation](https://develop.sentry.dev/self-hosted/releases/).
 
-NOTE:
-The deprecated support is for
-[GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
-for administrators. The deprecated support does not relate to
-[GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
-developers' own deployed applications.
+> [!note]
+> The deprecated support is for
+> [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
+> for administrators. The deprecated support does not relate to
+> [GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
+> developers' own deployed applications.
 
 ### Support for setting custom schema for backup is deprecated
 
@@ -3664,8 +3664,8 @@ In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 - [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Go)
 - [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Python)
 
-NOTE:
-This change was originally planned for GitLab 15.0 and was postponed to GitLab 15.4.
+> [!note]
+> This change was originally planned for GitLab 15.0 and was postponed to GitLab 15.4.
 
 These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.

@@ -776,7 +776,9 @@ Our test suite runs against PostgreSQL 16 as GitLab.com runs on PostgreSQL 16 an
 
 We run our test suite against PostgreSQL 16, 17 and 18 on nightly scheduled pipelines.
 
-NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline. Adding new job families could cause the nightly pipeline to fail.
+> [!note]
+> With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline.
+> Adding new job families could cause the nightly pipeline to fail.
 
 #### Current versions testing
 

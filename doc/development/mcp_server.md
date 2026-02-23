@@ -374,8 +374,8 @@ route_setting :mcp, tool_name: :get_merge_request,
   version: '1.0.0'
 ```
 
-Note: API tools from routes use a single version per tool. For tools requiring multiple
-versions, consider implementing as a custom tool instead.
+> [!note]
+> API tools from routes use a single version per tool. For tools requiring multiple versions, consider implementing as a custom tool instead.
 
 **Version support policy:**
 

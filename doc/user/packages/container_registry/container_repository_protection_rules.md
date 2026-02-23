@@ -22,7 +22,7 @@ description: Protected container repositories in GitLab limit which user roles c
 
 {{< /history >}}
 
-By default, any user with at least the Developer role can push and delete
+By default, any user with the Developer, Maintainer, or Owner role can push and delete
 container images to or from container repositories. Protect a container repository to restrict
 which users can make changes to container images in your container repository.
 
@@ -59,7 +59,7 @@ A container repository is protected if at least one protection rule matches.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To create a protection rule:
 
@@ -86,7 +86,7 @@ The protection rule is created and the container repository is now protected.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To delete a protection rule:
 

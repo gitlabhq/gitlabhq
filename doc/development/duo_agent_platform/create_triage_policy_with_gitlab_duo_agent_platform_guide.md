@@ -51,7 +51,8 @@ Define your migration target through `conditions` in the policy.
 
 Example prompt snippet: `issues, MRs, and epics that are currently labeled with group::authentication`
 
-Note: the gem only answers to [these specific conditions](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#conditions-field).
+> [!note]
+> The gem only answers to [these specific conditions](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#conditions-field).
 
 ### Action
 
@@ -59,7 +60,8 @@ Define the desired outcome of the automation, such as which label to apply to th
 
 Example prompt snippet: `apply a devops::software supply chain security label to issues, MRs, and epics...`
 
-Note: the gem only performs [these actions](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#actions-field).
+> [!note]
+> The gem only performs [these actions](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage#actions-field).
 
 ### Reference material
 

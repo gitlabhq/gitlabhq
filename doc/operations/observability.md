@@ -32,7 +32,7 @@ Use GitLab Observability (O11y) to:
 - View distributed traces, logs, and metrics in a single platform.
 - Identify and troubleshoot performance bottlenecks in your applications.
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 By adding observability to GitLab itself users can gain [these (planned) features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8).
 

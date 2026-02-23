@@ -257,7 +257,10 @@ This should return `true`.
 
 ## Disabling Semantic Code Search
 
-WARNING: Disabling semantic code search can cause long database locks if there are many repository records to delete. Use with caution on production environments. Upcoming work will allow disabling safely. See [issue 582787](https://gitlab.com/gitlab-org/gitlab/-/issues/582787).
+> [!warning]
+> Disabling semantic code search can cause long database locks if there are many repository records to delete.
+> Use with caution on production environments. Upcoming work will allow disabling safely.
+> See [issue 582787](https://gitlab.com/gitlab-org/gitlab/-/issues/582787).
 
 Delete the index and collection record:
 

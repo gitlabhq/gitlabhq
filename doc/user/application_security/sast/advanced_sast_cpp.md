@@ -372,7 +372,8 @@ bear -o compile_commands_abs.json -- make
 cdb-rebase -i compile_commands_abs.json -o compile_commands.json -s "$PWD" -d .
 ```
 
-Note: the `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
+> [!note]
+> The `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
 
 ### Partial scan coverage due to missing header files
 

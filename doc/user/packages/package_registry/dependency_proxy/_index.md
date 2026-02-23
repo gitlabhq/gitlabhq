@@ -98,7 +98,7 @@ The dependency proxy uses the [same permissions as the package registry](../_ind
 
 At a minimum, any user who can use the dependency proxy can also use the project's package registry.
 
-To ensure the cache is properly filled over time, you should make sure a user with at least the Developer role pulls packages with the dependency proxy.
+To ensure the cache is properly filled over time, you should make sure a user with the Developer, Maintainer, or Owner role pulls packages with the dependency proxy.
 
 ## Configure a client
 

@@ -15,7 +15,7 @@ description: Secrets management, job tokens, secure files, and cloud security.
 
 ## Secrets Management
 
-Secrets management is the systems that developers use to securely store sensitive data
+Secrets management is the system that developers use to securely store sensitive data
 in a secure environment with strict access controls. A **secret** is a sensitive credential
 that should be kept confidential. Examples of a secret include:
 

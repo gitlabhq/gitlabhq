@@ -16,9 +16,9 @@
     To continue sending errors from your GitLab instance to your Sentry instance, upgrade Sentry to version 21.5.0 or later. For more information,
     see [Sentry documentation](https://develop.sentry.dev/self-hosted/releases/).
 
-    NOTE:
-    The deprecated support is for
-    [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
-    for administrators. The deprecated support does not relate to
-    [GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
-    developers' own deployed applications.
+    > [!note]
+    > The deprecated support is for
+    > [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
+    > for administrators. The deprecated support does not relate to
+    > [GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
+    > developers' own deployed applications.

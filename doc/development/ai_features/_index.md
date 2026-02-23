@@ -24,7 +24,7 @@ backend components.
 Run the `gitlab:duo:setup` Rake task to seed a test group and a project with GitLab Duo features enabled.
 
 > [!note]
-> this task is idempotent and skips reseeding if the `gitlab-duo` group
+> This task is idempotent and skips reseeding if the `gitlab-duo` group
 > already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
 > For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 

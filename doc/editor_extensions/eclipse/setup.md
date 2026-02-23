@@ -20,7 +20,7 @@ title: Install and set up GitLab for Eclipse
 
 {{< /history >}}
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 ## Install the GitLab for Eclipse plugin
 

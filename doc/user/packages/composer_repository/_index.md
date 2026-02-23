@@ -364,7 +364,7 @@ used to access them:
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 Before you delete a package, make sure you understand
 the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).

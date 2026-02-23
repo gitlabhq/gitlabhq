@@ -706,7 +706,8 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 - Azure: Standard_D8ps_v6 (8 vCPU, 32 GB)
 - Storage: 100 GB with medium performance tier
 
-Note: HA deployments not cost-effective at this scale.
+> [!note]
+> HA deployments are not cost-effective at this scale.
 
 ### 5K Users
 

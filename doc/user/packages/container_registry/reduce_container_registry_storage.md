@@ -43,7 +43,7 @@ View storage usage data for your container registry repositories.
 Prerequisites:
 
 - For GitLab Self-Managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
-- You must have at least the Maintainer role for the project or the Owner role for the namespace.
+- You must have the Maintainer or Owner role for the project or the Owner role for the namespace.
 
 To view storage usage for a project:
 

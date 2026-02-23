@@ -15,7 +15,8 @@ This documentation is designed for community contributors and GitLab developers 
 
 This guide walks you through adding granular PAT authorization to REST API endpoints. Before starting, review the [Permission Naming Conventions](../../conventions.md) documentation to understand the terminology used throughout.
 
-**Note:** These steps cover REST API endpoints only. For GraphQL endpoint protection, refer to [GraphQL protection](graphql_granular_token_authorization.md).
+> [!note]
+> These steps cover REST API endpoints only. For GraphQL endpoint protection, refer to [GraphQL protection](graphql_granular_token_authorization.md).
 
 ### Workflow Overview
 
@@ -70,7 +71,8 @@ Quick reference showing what you create in each step:
    - Add decorators to endpoints that don't have them
    - Update decorators for endpoints that have incomplete or incorrect permissions
 
-**Note:** These endpoints are the basis for the raw permissions you'll create in the next step. Each unique operation (HTTP verb + route) typically needs its own permission.
+> [!note]
+> These endpoints are the basis for the raw permissions you'll create in the next step. Each unique operation (HTTP verb + route) typically needs its own permission.
 
 ### Step 2: Determine Permissions Needed
 
@@ -221,7 +223,8 @@ The directory structure uses three levels: `<category>/<resource>/<action>.yml`
 | Category `_metadata.yml` | Optional | Override folder name display (e.g., `ci_cd` → "CI/CD" instead of "Ci Cd") |
 | Resource `_metadata.yml` | Required | Provide user-facing description of the resource. The `description` field is mandatory. |
 
-Note: The assignable permission YAML file (at `<category>/<resource>/<action>.yml`) is always required and is not a metadata file—it's the main configuration file that defines the permission bundle.
+> [!note]
+> The assignable permission YAML file (at `<category>/<resource>/<action>.yml`) is always required and is not a metadata file—it's the main configuration file that defines the permission bundle.
 
 **Category Level:** The `<category>` subfolder represents the name of the category displayed in the UI where assignable permissions are grouped. The folder name is titleized when displayed (e.g., `project_management` becomes "Project Management"). This category name is displayed when users create a granular PAT, helping them organize and find permissions by functional area.
 

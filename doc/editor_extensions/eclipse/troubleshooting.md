@@ -20,7 +20,7 @@ title: Troubleshooting Eclipse
 
 {{< /history >}}
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/?sort=created_date&state=opened&first_page_size=100)

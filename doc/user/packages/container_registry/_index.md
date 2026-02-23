@@ -152,7 +152,7 @@ see [Container registry visibility permissions](#container-registry-visibility-p
      is internal or private, the container registry is also internal or private.
 
    - **Only Project Members**: The container registry is visible only to project members with
-     at least the Reporter role. This visibility is similar to the behavior of a private project with Container
+     the Reporter, Developer, Maintainer, or Owner role. This visibility is similar to the behavior of a private project with Container
      Registry visibility set to **Everyone With Access**.
 
 1. Select **Save changes**.

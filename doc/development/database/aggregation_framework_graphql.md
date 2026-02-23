@@ -132,7 +132,8 @@ end
 When a dimension is marked as an association object is exposed instead of raw `*_id` field. Dimension above will transform to `field :user, Types::UserType, ...` in GraphQL with batch loading by ID.
 You can order by the association ID using the association name without `_id` suffix (e.g., `orderBy: [{ identifier: "user", direction: DESC }]`).
 
-Note: you must ensure all proper authorization checks on association GraphQL type (e.g. `authorize :read_user`)
+> [!note]
+> You must ensure all proper authorization checks on association GraphQL type (e.g. `authorize :read_user`).
 
 ### Custom Association Configuration
 

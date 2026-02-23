@@ -1127,15 +1127,12 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
      sudo gitlab-ctl reconfigure
      ```
 
-  {{< alert type="note" >}}
-
-  It is mandatory to restart PostgreSQL when underlying version changes, to avoid
-  errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)
-  that can cause downtime. So, if you skip the automatic restarts using the previous
-  method, ensure that you restart the services manually before upgrading to GitLab
-  15.0.
-
-  {{< /alert >}}
+  > [!note]
+  > It is mandatory to restart PostgreSQL when underlying version changes, to avoid
+  > errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)
+  > that can cause downtime. So, if you skip the automatic restarts using the previous
+  > method, ensure that you restart the services manually before upgrading to GitLab
+  > 15.0.
 
 - Starting with GitLab 15.0, the `AES256-GCM-SHA384` SSL cipher will not be allowed by
   NGINX by default. If you use the

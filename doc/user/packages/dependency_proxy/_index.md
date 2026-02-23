@@ -120,7 +120,7 @@ When authenticating with the dependency proxy for container images:
 - Tokens with the `write_virtual_registry` scope must also include the `write_registry` scope.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
-have at least the Guest role for the group they pull images from.
+have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group they pull images from.
 
 The dependency proxy for container images follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
 issuing the client a JWT to use for the pulls. The JWT issued as a result of authenticating

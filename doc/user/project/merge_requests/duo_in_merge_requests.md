@@ -6,7 +6,7 @@ description: Use AI-assisted features for relevant information about a merge req
 title: GitLab Duo in merge requests
 ---
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 GitLab Duo is designed to provide contextually relevant information during the lifecycle of a merge request.
 
