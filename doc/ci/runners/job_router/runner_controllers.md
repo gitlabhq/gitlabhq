@@ -109,6 +109,8 @@ Prerequisites:
 
 ## Implement a runner controller
 
+For a step-by-step guide, see [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md).
+
 To implement your own runner controller, you need to:
 
 1. Create a runner controller in GitLab.
@@ -121,8 +123,6 @@ To implement your own runner controller, you need to:
 For technical specifications and protobuf definitions, see the
 [runner controller documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md)
 in the GitLab Agent for Kubernetes repository.
-
-For a step-by-step guide, see [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md).
 
 ## Related topics
 

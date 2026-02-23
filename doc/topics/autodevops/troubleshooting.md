@@ -76,65 +76,13 @@ Unable to run pipeline
 ```
 
 This error appears when the included job's rules configuration has been overridden with the `only` or `except` syntax.
-To fix this issue, you must either:
-
-- Transition your `only/except` syntax to rules.
-- (Temporarily) Pin your templates to the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
+To fix this issue, you must transition your `only/except` syntax to rules.
 
 ## Failure to create a Kubernetes namespace
 
 Auto Deploy fails if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
 [Troubleshooting failed deployment jobs](../../user/project/clusters/deploy_to_cluster.md#troubleshooting).
-
-## Detected an existing PostgreSQL database
-
-After upgrading to GitLab 13.0, you may encounter this message when deploying
-with Auto DevOps:
-
-```plaintext
-Detected an existing PostgreSQL database installed on the
-deprecated channel 1, but the current channel is set to 2. The default
-channel changed to 2 in GitLab 13.0.
-[...]
-```
-
-Auto DevOps, by default, installs an in-cluster PostgreSQL database alongside
-your application. The default installation method changed in GitLab 13.0, and
-upgrading existing databases requires user involvement. The two installation
-methods are:
-
-- **channel 1 (deprecated)**: Pulls in the database as a dependency of the associated
-  Helm chart. Only supports Kubernetes versions up to version 1.15.
-- **channel 2 (current)**: Installs the database as an independent Helm chart. Required
-  for using the in-cluster database feature with Kubernetes versions 1.16 and greater.
-
-If you receive this error, you can do one of the following actions:
-
-- You can safely ignore the warning and continue using the channel 1 PostgreSQL
-  database by setting `AUTO_DEVOPS_POSTGRES_CHANNEL` to `1` and redeploying.
-
-- You can delete the channel 1 PostgreSQL database and install a fresh channel 2
-  database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
-  redeploying.
-
-  > [!warning]
-  > Deleting the channel 1 PostgreSQL database permanently deletes the existing
-  > channel 1 database and all its data. See
-  > [Upgrading PostgreSQL](upgrading_postgresql.md)
-  > for more information on backing up and upgrading your database.
-
-- If you are not using the in-cluster database, you can set
-  `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
-  users of custom charts without the in-chart PostgreSQL dependency.
-  Database auto-detection is based on the `postgresql.enabled` Helm value for
-  your release. This value is set based on the `POSTGRES_ENABLED` CI/CD variable
-  and persisted by Helm, regardless of whether or not your chart uses the
-  variable.
-
-> [!warning]
-> Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
-> channel 1 database for your environment.
 
 ## Auto DevOps is automatically disabled for a project
 
@@ -160,42 +108,10 @@ Error: failed decoding reader into objects: unable to recognize "": no matches f
 ```
 
 This can occur if your current deployments on the environment namespace were deployed with a
-deprecated/removed API that doesn't exist in Kubernetes v1.16+. For example,
-if [your in-cluster PostgreSQL was installed in a legacy way](#detected-an-existing-postgresql-database),
-the resource was created via the `extensions/v1beta1` API. However, the deployment resource
-was moved to the `app/v1` API in v1.16.
+deprecated/removed API that doesn't exist in Kubernetes v1.16+.
 
 To recover such outdated resources, you must convert the current deployments by mapping legacy APIs
-to newer APIs. There is a helper tool called [`mapkubeapis`](https://github.com/hickeyma/helm-mapkubeapis)
-that works for this problem. Follow these steps to use the tool in Auto DevOps:
-
-1. Modify your `.gitlab-ci.yml` with:
-
-   ```yaml
-   include:
-     - template: Auto-DevOps.gitlab-ci.yml
-     - remote: https://gitlab.com/shinya.maeda/ci-templates/-/raw/master/map-deprecated-api.gitlab-ci.yml
-
-   variables:
-     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or later, please specify "v3".
-   ```
-
-1. Run the job `<environment-name>:map-deprecated-api`. Ensure that this job succeeds before moving
-   to the next step. You should see something like the following output:
-
-   ```shell
-   2020/10/06 07:20:49 Found deprecated or removed Kubernetes API:
-   "apiVersion: extensions/v1beta1
-   kind: Deployment"
-   Supported API equivalent:
-   "apiVersion: apps/v1
-   kind: Deployment"
-   ```
-
-1. Revert your `.gitlab-ci.yml` to the previous version. You no longer need to include the
-   supplemental template `map-deprecated-api`.
-
-1. Continue the deployments as usual.
+to newer APIs.
 
 ## `Error: not a valid chart repository or cannot be reached`
 

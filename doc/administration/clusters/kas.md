@@ -216,6 +216,56 @@ gitlab_kas['env'] = {
 }
 ```
 
+##### Use a load balancer or reverse proxy with multiple KAS instances
+
+> [!warning]
+> When you place a load balancer or reverse proxy in front of KAS, configure separate endpoints for external and internal traffic
+> to prevent exposing the internal API.
+
+KAS serves traffic on different ports:
+
+- Port 8150 (`listen_address`): Agent connections (WebSocket/gRPC)
+- Port 8153 (`internal_api_listen_address`): GitLab Rails API (gRPC)
+
+  > [!warning]
+  > Do not expose port 8153 publicly. Though the port gets authenticated, it should only be accessible to GitLab Rails instances.
+
+To secure KAS when you use a load balancer or reverse proxy, configure two separate endpoints:
+
+- External endpoint: Port 8150 (for agents)
+- Internal endpoint: Port 8153 (for GitLab Rails only, restricted by network or firewall)
+
+This separation ensures that the internal API remains isolated from public access.
+
+For example, configure an internal endpoint with network restrictions in NGINX:
+
+```nginx
+# Internal endpoint (network-restricted)
+server {
+  listen 8443 ssl http2;
+  server_name kas-internal.example.com;
+
+  # Optional: allow 10.0.1.0/24; deny all;
+
+  location /gitlab.agent. {
+    grpc_pass grpc://kas-backend:8153;
+  }
+}
+```
+
+Configure GitLab to use the separate endpoints (`/etc/gitlab/gitlab.rb`):
+
+```ruby
+gitlab_rails['gitlab_kas_external_url'] = 'wss://kas-external.example.com'
+gitlab_rails['gitlab_kas_internal_url'] = 'grpcs://kas-internal.example.com:8443'
+gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://kas-external.example.com/k8s-proxy/'
+```
+
+Key configuration points:
+
+- Use separate domains, ports, or IP restrictions for internal traffic.
+- For cloud load balancers, configure separate target groups for ports 8150 and 8153.
+
 ##### Agent server node settings
 
 | Setting                                             | Description |

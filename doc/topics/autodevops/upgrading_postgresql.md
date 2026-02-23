@@ -38,8 +38,7 @@ involves:
 1. Prepare for downtime. The steps below include taking the application offline
    so that the in-cluster database does not get modified after the database dump is created.
 1. Ensure you have not set `POSTGRES_ENABLED` to `false`, as this setting deletes
-   any existing channel 1 database. For more information, see
-   [Detected an existing PostgreSQL database](troubleshooting.md#detected-an-existing-postgresql-database).
+   any existing channel 1 database.
 
 > [!note]
 > If you have configured Auto DevOps to have staging,
