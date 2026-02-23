@@ -32,7 +32,8 @@ Are there any other stages or teams involved that need to be kept in the loop?
 ### Cleaning up the feature flag
 
 <!-- The checklist here is to help stakeholders keep track of the feature flag status -->
-- [ ] Specify in the issue description if this feature will be removed completely or will be productized as part of the Feature Flag cleanup 
+- [ ] Specify in the issue description if this feature will be removed completely or will be productized as part of the Feature Flag cleanup
+- [ ] Verify that external API consumers (e.g., IDE extensions, CLI tools) that may check this feature flag have been updated or can gracefully handle its removal.
 - [ ] Create a merge request to remove `<feature-flag-name>` feature flag. Ask for review and merge it.
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
