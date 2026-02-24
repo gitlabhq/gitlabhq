@@ -48,15 +48,15 @@ export default {
       required: false,
       default: '',
     },
-    showLabels: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     showClosed: {
       type: Boolean,
       required: false,
       default: true,
+    },
+    hiddenMetadataKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     workItemFullPath: {
       type: String,
@@ -285,7 +285,7 @@ export default {
           :can-update="canUpdate"
           :is-group="isGroup"
           :class="childItemClass"
-          :show-labels="showLabels"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           :work-item-full-path="workItemFullPath"
           :contextual-view-enabled="contextualViewEnabled"
           @mouseover="$emit('mouseover')"
@@ -304,8 +304,8 @@ export default {
         :work-item-type="workItemType"
         :children="displayableChildren"
         :parent="childItem"
-        :show-labels="showLabels"
         :show-closed="showClosed"
+        :hidden-metadata-keys="hiddenMetadataKeys"
         :full-path="workItemFullPath"
         :is-top-level="false"
         :has-indirect-children="hasIndirectChildren"

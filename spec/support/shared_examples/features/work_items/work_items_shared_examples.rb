@@ -1121,7 +1121,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 
   it 'adds an existing child item', :aggregate_failures do
     within_testid testid do
-      click_button 'Add'
+      find_by_testid('add-tree-child-button').click
       click_button "Existing #{type}"
       fill_in 'Search existing items', with: child_item.title
       click_button child_item.title
@@ -1157,7 +1157,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   end
 
   def create_child(type, title)
-    click_button 'Add'
+    find_by_testid('add-tree-child-button').click
     click_button "New #{type}"
     fill_in 'Add a title', with: title
     click_button "Create #{type}"
@@ -1194,7 +1194,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
 
       expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
 
-      click_button 'Add'
+      find('[data-testid="link-item-add-button"]').click
 
       expect(page).to have_selector('[data-testid="link-work-item-form"]')
 
@@ -1251,7 +1251,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     within_testid('work-item-relationships') do
       expect(page).to be_axe_clean.within(selector).skipping :'link-in-text-block'
 
-      click_button 'Add'
+      find_by_testid('link-item-add-button').click
       fill_in 'Search existing items', with: linked_item.title
 
       expect(page).to be_axe_clean.within(selector).skipping :'aria-input-field-name',

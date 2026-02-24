@@ -22,7 +22,7 @@ The S3 bucket contains logs that are:
 - Organized by date in `YYYY/MM/DD/HH` format.
 - Streamed in real-time using [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
 
-If you use [BYOK](encryption.md#bring-your-own-key-byok), application logs use GitLab-managed keys, not your provided key.
+If you use [your own encryption keys](encryption.md#customer-managed-encryption), application logs use GitLab-managed keys, not your provided key.
 
 ## Manage access to application logs
 

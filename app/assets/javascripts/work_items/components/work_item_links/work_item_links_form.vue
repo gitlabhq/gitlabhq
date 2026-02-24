@@ -517,7 +517,7 @@ export default {
         type="submit"
         :disabled="!canSubmitForm"
         :loading="submitInProgress"
-        data-testid="add-child-button"
+        data-testid="add-child-form-button"
       >
         {{ addOrCreateButtonLabel }}
       </gl-button>

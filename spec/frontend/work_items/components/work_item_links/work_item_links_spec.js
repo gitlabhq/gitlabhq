@@ -20,7 +20,7 @@ import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vu
 import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import {
   FORM_TYPES,
-  WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '~/work_items/constants';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
@@ -318,6 +318,7 @@ describe('WorkItemLinks', () => {
     beforeEach(async () => {
       jest.spyOn(utils, 'getToggleFromLocalStorage');
       jest.spyOn(utils, 'saveToggleToLocalStorage');
+      jest.spyOn(utils, 'getHiddenMetadataKeysFromLocalStorage');
       await createComponent();
     });
 
@@ -337,32 +338,28 @@ describe('WorkItemLinks', () => {
       expect(findMoreActions().props('showViewRoadmapAction')).toBe(false);
     });
 
-    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
+    it('toggles hiddenMetadataKeys when display options are toggled', async () => {
       await createComponent();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
 
-      findMoreActions().vm.$emit('toggle-show-labels');
-
-      await nextTick();
-
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(false);
-
-      findMoreActions().vm.$emit('toggle-show-labels');
+      findMoreActions().vm.$emit('update-hidden-metadata-keys', ['labels']);
 
       await nextTick();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(['labels']);
+
+      findMoreActions().vm.$emit('update-hidden-metadata-keys', []);
+
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
     });
 
-    it('calls saveToggleToLocalStorage on toggle-show-labels', () => {
-      findMoreActions().vm.$emit('toggle-show-labels');
-      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
-    });
-
-    it('calls getToggleFromLocalStorage on mount for toggle-show-labels', () => {
-      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
-        WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
+    it('calls getHiddenMetadataKeysFromLocalStorage on mount for metadata', () => {
+      expect(utils.getHiddenMetadataKeysFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
+        [],
       );
     });
 

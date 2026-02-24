@@ -28,6 +28,7 @@ module Gitlab
             operation.description = extract_detail
             operation.tags = extract_tags
             operation.deprecated = extract_deprecated
+            operation.hidden = extract_hidden
             operation.parameters = extract_parameters
             operation.responses = ResponseConverter.new(@route, @schema_registry).convert
             operation.request_body = extract_request_body || {}
@@ -96,6 +97,10 @@ module Gitlab
 
         def extract_deprecated
           !!options.dig(:settings, :description, :deprecated)
+        end
+
+        def extract_hidden
+          !!options.dig(:settings, :description, :hidden)
         end
 
         def path_segments

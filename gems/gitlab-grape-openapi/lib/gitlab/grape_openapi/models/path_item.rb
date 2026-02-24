@@ -12,6 +12,8 @@ module Gitlab
         end
 
         def add_operation(method, operation)
+          return if operation.hidden?
+
           @operations[method.to_s.downcase] = operation
         end
 

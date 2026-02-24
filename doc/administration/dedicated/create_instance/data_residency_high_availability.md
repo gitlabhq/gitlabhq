@@ -128,8 +128,8 @@ What's included:
 
 Limitations:
 
-- [Bring your own key (BYOK)](../encryption.md#bring-your-own-key-byok) is not supported
-- No SLAs apply (RTO and RPO are best effort)
+- [Customer-managed encryption keys](../encryption.md#customer-managed-encryption) are not supported.
+- No SLAs apply. Recovery time objective (RTO) and recovery point objective (RPO) are best efforts.
 
 #### AWS SES
 

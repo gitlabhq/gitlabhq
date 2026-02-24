@@ -26,7 +26,7 @@ to securely encrypt your secrets before you upload them to Switchboard.
 
 ## Collect and upload migration secrets
 
-Collect and upload Geo migration secrets when you [create your GitLab Dedicated instance](create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance).
+Collect and upload Geo migration secrets when you [create your GitLab Dedicated instance](create_instance/_index.md#create-your-instance).
 
 Prerequisites:
 

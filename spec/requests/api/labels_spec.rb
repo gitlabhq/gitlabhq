@@ -446,13 +446,6 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Label already exists')
     end
-
-    context 'with valid label params' do
-      let(:api_path) { api("/projects/#{project.id}/labels", user) }
-      let(:label_title) { valid_label_title_2 }
-
-      it_behaves_like 'ignores archived param when feature flag is disabled'
-    end
   end
 
   describe 'DELETE /projects/:id/labels' do

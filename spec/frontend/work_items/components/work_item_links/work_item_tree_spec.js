@@ -21,8 +21,8 @@ import {
   FORM_TYPES,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+  WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_ISSUE,
 } from '~/work_items/constants';
@@ -321,6 +321,8 @@ describe('WorkItemTree', () => {
     beforeEach(async () => {
       jest.spyOn(utils, 'getToggleFromLocalStorage');
       jest.spyOn(utils, 'saveToggleToLocalStorage');
+      jest.spyOn(utils, 'getHiddenMetadataKeysFromLocalStorage');
+      jest.spyOn(utils, 'saveHiddenMetadataKeysToLocalStorage');
       await createComponent();
     });
 
@@ -346,7 +348,6 @@ describe('WorkItemTree', () => {
 
     it.each`
       toggleName      | toggleEvent
-      ${'showLabels'} | ${'toggle-show-labels'}
       ${'showClosed'} | ${'toggle-show-closed'}
     `(
       'toggles `$toggleName` when `$toggleEvent` is emitted',
@@ -365,9 +366,20 @@ describe('WorkItemTree', () => {
       },
     );
 
-    it('calls saveToggleToLocalStorage on toggle', () => {
-      findMoreActions().vm.$emit('toggle-show-labels');
-      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
+    it('handles metadata display option toggle', async () => {
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
+
+      await findMoreActions().vm.$emit('update-hidden-metadata-keys', ['labels']);
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(['labels']);
+
+      await findMoreActions().vm.$emit('update-hidden-metadata-keys', []);
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
     });
 
     it('calls saveToggleToLocalStorage on toggle-show-closed', () => {
@@ -377,13 +389,14 @@ describe('WorkItemTree', () => {
 
     it('calls getToggleFromLocalStorage on mount for showClosed', () => {
       expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
-        WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+        WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
       );
     });
 
-    it('calls getToggleFromLocalStorage on mount for showLabels', () => {
-      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
-        WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+    it('calls getHiddenMetadataKeysFromLocalStorage on mount for metadata', () => {
+      expect(utils.getHiddenMetadataKeysFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
+        [],
       );
     });
   });
@@ -548,6 +561,84 @@ describe('WorkItemTree', () => {
         findCrudCollapseToggle().vm.$emit('click');
 
         expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
+      });
+    });
+  });
+
+  describe('metadata visibility', () => {
+    useLocalStorageSpy();
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('initializes metadata visibility state from localStorage on mount', async () => {
+      const hiddenKeys = ['labels', 'milestone'];
+      utils.saveHiddenMetadataKeysToLocalStorage(
+        WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
+        hiddenKeys,
+      );
+
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(hiddenKeys);
+    });
+
+    it('initializes metadata visibility state with defaults when localStorage is empty', async () => {
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
+    });
+
+    describe('metadata computed properties', () => {
+      it.each(['labels', 'weight', 'milestone'])(
+        'updates %s visibility when hiddenMetadataKeys changes',
+        async (key) => {
+          await createComponent();
+
+          expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys').includes(key)).toBe(
+            false,
+          );
+
+          await findMoreActions().vm.$emit('update-hidden-metadata-keys', [key]);
+          await nextTick();
+
+          expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys').includes(key)).toBe(
+            true,
+          );
+        },
+      );
+    });
+
+    describe('localStorage persistence', () => {
+      beforeEach(() => {
+        useLocalStorageSpy();
+        jest.spyOn(utils, 'saveToggleToLocalStorage');
+        jest.spyOn(utils, 'saveHiddenMetadataKeysToLocalStorage');
+      });
+
+      it('updates hiddenMetadataKeys state when metadata visibility is changed', async () => {
+        await createComponent();
+
+        await findMoreActions().vm.$emit('update-hidden-metadata-keys', ['labels']);
+
+        expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(['labels']);
+      });
+
+      it('persists metadata visibility state on remount', async () => {
+        const hiddenKeys = ['labels', 'weight'];
+        utils.saveHiddenMetadataKeysToLocalStorage(
+          WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
+          hiddenKeys,
+        );
+
+        await createComponent();
+        expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(hiddenKeys);
+
+        wrapper.destroy();
+        await createComponent();
+
+        expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(hiddenKeys);
       });
     });
   });

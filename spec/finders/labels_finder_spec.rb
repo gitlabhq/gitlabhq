@@ -396,18 +396,6 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
 
         expect(finder.execute).to match_array([archived_label, group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
       end
-
-      context 'with feature flag labels_archive disabled' do
-        before do
-          stub_feature_flags(labels_archive: false)
-        end
-
-        it 'returns all labels' do
-          finder = described_class.new(user, archived: 'true')
-
-          expect(finder.execute).to match_array([archived_label, group_label_2, group_label_locked, project_label_1, group_label_1, project_label_4, project_label_locked])
-        end
-      end
     end
   end
 end

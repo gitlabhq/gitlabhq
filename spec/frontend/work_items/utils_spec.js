@@ -33,8 +33,8 @@ import {
   getDisplayReference,
   isReference,
   workItemRoadmapPath,
-  saveToggleToLocalStorage,
-  getToggleFromLocalStorage,
+  saveHiddenMetadataKeysToLocalStorage,
+  getHiddenMetadataKeysFromLocalStorage,
   makeDrawerUrlParam,
   makeDrawerItemFullPath,
   getItems,
@@ -265,56 +265,65 @@ describe('workItemRoadmapPath', () => {
   });
 });
 
-describe('utils for remembering user showLabel preferences', () => {
+describe('utils for remembering hidden metadata keys', () => {
   useLocalStorageSpy();
 
   afterEach(() => {
     localStorage.clear();
   });
 
-  describe('saveToggleToLocalStorage', () => {
-    it('saves the value to localStorage', () => {
+  describe('saveHiddenMetadataKeysToLocalStorage', () => {
+    it('saves the array value to localStorage as JSON', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      saveToggleToLocalStorage(TEST_KEY, true);
+      saveHiddenMetadataKeysToLocalStorage(TEST_KEY, ['label1', 'label2']);
       expect(localStorage.setItem).toHaveBeenCalled();
-      expect(localStorage.getItem(TEST_KEY)).toBe(true);
+      expect(localStorage.getItem(TEST_KEY)).toBe('["label1","label2"]');
     });
   });
 
-  describe('getToggleFromLocalStorage', () => {
-    it('defaults to true when there is no value from localStorage and no default value is passed', () => {
+  describe('getHiddenMetadataKeysFromLocalStorage', () => {
+    it('returns default empty array when there is no value from localStorage and no default value is passed', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      const result = getToggleFromLocalStorage(TEST_KEY);
+      const result = getHiddenMetadataKeysFromLocalStorage(TEST_KEY);
       expect(localStorage.getItem).toHaveBeenCalled();
-      expect(result).toBe(true);
+      expect(result).toEqual([]);
     });
 
-    it('returns the default boolean value passed when there is no value from localStorage', () => {
+    it('returns an empty array when there is no value from localStorage', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
-      const DEFAULT_VALUE = false;
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      const result = getToggleFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
+      const result = getHiddenMetadataKeysFromLocalStorage(TEST_KEY);
       expect(localStorage.getItem).toHaveBeenCalled();
-      expect(result).toBe(false);
+      expect(result).toEqual([]);
     });
 
-    it('returns the boolean value from localStorage if it exists', () => {
+    it('returns the parsed array value from localStorage if it exists', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
-      const DEFAULT_VALUE = true;
+      const TEST_ARRAY = ['labels', 'weight', 'milestone'];
 
-      localStorage.setItem(TEST_KEY, 'false');
+      localStorage.setItem(TEST_KEY, JSON.stringify(TEST_ARRAY));
 
-      const newResult = getToggleFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
+      const result = getHiddenMetadataKeysFromLocalStorage(TEST_KEY);
       expect(localStorage.getItem).toHaveBeenCalled();
-      expect(newResult).toBe(false);
+      expect(result).toEqual(TEST_ARRAY);
+    });
+
+    it('returns an empty array when stored value is invalid JSON', () => {
+      const TEST_KEY = `test-key-${new Date().getTime}`;
+
+      localStorage.setItem(TEST_KEY, 'invalid-json');
+
+      const result = getHiddenMetadataKeysFromLocalStorage(TEST_KEY);
+      expect(localStorage.getItem).toHaveBeenCalled();
+      expect(result).toEqual([]);
     });
   });
 });

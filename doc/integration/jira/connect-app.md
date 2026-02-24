@@ -69,7 +69,7 @@ You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see
-[Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
+[installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
 <!-- Video published on 2024-10-30 -->
 
 The video above shows the older [Universal Plugin Manager interface](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285) which might be unavailable on newer Jira Cloud instances.
@@ -186,7 +186,7 @@ In GitLab:
 
 You can map up to 100 services.
 
-For more information about deployment tracking in Jira, see [Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
+For more information about deployment tracking in Jira, see [set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
 
 ### Set up deployment gating with GitLab
 
@@ -372,4 +372,4 @@ In Jira:
 
 Your repositories should now appear in Jira Code.
 
-For more information, see [Jira Cloud issue `JRACLOUD-95847`](https://jira.atlassian.com/browse/JRACLOUD-95847).
+For more information, see [issue JRACLOUD-95847](https://jira.atlassian.com/browse/JRACLOUD-95847).

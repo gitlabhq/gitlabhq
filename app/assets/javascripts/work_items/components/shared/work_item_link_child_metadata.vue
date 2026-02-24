@@ -4,7 +4,11 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
 
-import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_HIERARCHY } from '../../constants';
+import {
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_HIERARCHY,
+  METADATA_KEYS,
+} from '~/work_items/constants';
 
 export default {
   components: {
@@ -24,6 +28,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    hiddenMetadataKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     milestone() {
@@ -37,6 +46,9 @@ export default {
     },
     rolledUpCountsByType() {
       return this.hierarchyWidget?.rolledUpCountsByType || [];
+    },
+    showMilestone() {
+      return this.milestone && !this.hiddenMetadataKeys.includes(METADATA_KEYS.MILESTONE);
     },
   },
 };
@@ -56,7 +68,7 @@ export default {
       />
       <slot name="weight-metadata"></slot>
       <item-milestone
-        v-if="milestone"
+        v-if="showMilestone"
         :milestone="milestone"
         class="gl-flex gl-max-w-15 !gl-cursor-help gl-items-center gl-gap-2 gl-leading-normal !gl-no-underline"
       />

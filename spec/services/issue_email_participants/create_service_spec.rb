@@ -41,14 +41,12 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
   end
 
   describe '#execute' do
-    let_it_be_with_reload(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, skip_disk_validation: true) }
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
-
+    let_it_be(:user) { create(:user) }
     let(:emails) { nil }
     let(:service) { described_class.new(target: issue, current_user: user, emails: emails) }
     let(:expected_emails) { emails }
-
     let(:error_feature_flag) { "Feature flag issue_email_participants is not enabled for this project." }
     let(:error_underprivileged) { _("You don't have permission to manage email participants.") }
     let(:error_no_participants_added) do

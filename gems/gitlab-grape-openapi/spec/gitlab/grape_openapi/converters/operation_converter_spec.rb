@@ -43,6 +43,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           expect(operation.request_body).to eq({})
         end
 
+        it 'extracts hidden default' do
+          expect(operation.hidden).to be false
+        end
+
         it 'verifies parameter content' do
           param_names = operation.parameters.map(&:name)
           expect(param_names).to include('active', 'username', 'tag')
@@ -435,6 +439,21 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
       it 'does not set deprecated' do
         expect(operation.deprecated).to be_falsey
+      end
+    end
+  end
+
+  context 'with hidden endpoints' do
+    let(:api_classes) { [TestApis::HiddenApi] }
+    let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+
+    context 'with hidden true directive' do
+      let(:route) { routes.find { |r| r.path.include?('hidden') } }
+
+      subject(:operation) { described_class.convert(route, schema_registry) }
+
+      it 'sets hidden to true' do
+        expect(operation.hidden).to be true
       end
     end
   end

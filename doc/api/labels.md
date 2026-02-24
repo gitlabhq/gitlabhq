@@ -14,7 +14,8 @@ title: Project labels API
 
 {{< history >}}
 
-- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556700) in GitLab 18.10. Feature flag `labels_archive` removed.
 
 {{< /history >}}
 
@@ -38,7 +39,7 @@ GET /projects/:id/labels
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `search` | string | no | Keyword to filter labels by. |
-| `archived` | boolean | no | Whether the label is archived. Returns all labels, when not set. Requires the `labels_archive` feature flag to be enabled. |
+| `archived` | boolean | no | If `true`, returns only archived labels. If unset, returns all labels. |
 
 ```shell
 curl \
@@ -183,7 +184,7 @@ POST /projects/:id/labels
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label |
 | `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
-| `archived`    | boolean | no       | Whether the label is archived. Defaults to `false`. Requires the `labels_archive` feature flag to be enabled. |
+| `archived`    | boolean | no       | If `true`, marks the label as archived. Default value: `false`. |
 
 ```shell
 curl --request POST \
@@ -250,7 +251,7 @@ PUT /projects/:id/labels/:label_id
 | `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description`   | string  | no                                | The new description of the label |
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
-| `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
+| `archived`    | boolean | no       | If `true`, marks the label as archived. Default value: `false`. |
 
 ```shell
 curl --request PUT \

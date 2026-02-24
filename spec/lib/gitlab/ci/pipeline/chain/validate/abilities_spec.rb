@@ -310,5 +310,54 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
         end
       end
     end
+
+    context 'when ci_pipeline_ref_resolution feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_ref_resolution: false)
+        project.add_developer(user)
+      end
+
+      context 'when ref is a branch' do
+        let(:ref) { 'master' }
+
+        it { is_expected.to be_truthy }
+
+        context 'when the branch is protected' do
+          let!(:protected_branch) do
+            create(:protected_branch, project: project, name: ref)
+          end
+
+          it { is_expected.to be_falsey }
+
+          context 'when developers are allowed to merge' do
+            let!(:protected_branch) do
+              create(:protected_branch, :developers_can_merge, project: project, name: ref)
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+      end
+
+      context 'when ref is a tag' do
+        let(:ref) { 'v1.0.0' }
+
+        context 'when the tag is protected' do
+          let!(:protected_tag) do
+            create(:protected_tag, project: project, name: ref)
+          end
+
+          it { is_expected.to be_falsey }
+
+          context 'when developers are allowed to create the tag' do
+            let!(:protected_tag) do
+              create(:protected_tag, :developers_can_create, project: project, name: ref)
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+      end
+    end
   end
 end

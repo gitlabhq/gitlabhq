@@ -111,7 +111,7 @@ If GitLab cannot close a Jira issue:
 
 - Ensure the transition ID you set in the Jira settings matches the one
   your project must have to close an issue. For more information, see
-  [Automatic issue transitions](issues.md#automatic-issue-transitions) and [Custom issue transitions](issues.md#custom-issue-transitions).
+  [automatic issue transitions](issues.md#automatic-issue-transitions) and [custom issue transitions](issues.md#custom-issue-transitions).
 - Make sure the Jira issue is not already marked as resolved:
   - Check the Jira issue resolution field is not set.
   - Check the issue is not struck through in Jira lists.
@@ -156,7 +156,7 @@ The error occurs because the Jira certificate is not publicly trusted or the cer
 Until this issue is resolved, GitLab does not connect to Jira.
 
 To resolve this issue, see
-[Common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#common-ssl-errors).
+[common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/#common-ssl-errors).
 
 ## Change all Jira projects to instance-level or group-level values
 
@@ -264,7 +264,7 @@ Check [`production.log`](../../administration/logs/_index.md#productionlog) to s
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)
 ```
 
-If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
+If that's the case, ensure the **Due date** field is [visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
 ### Error: `An error occurred while requesting data from Jira`
 
@@ -360,9 +360,8 @@ The API response returns a JSON response:
 - `issues` contains an array of the issues that match the Jira project key.
 - `nextPageToken` is provided if there are more results to fetch.
 
-For more information about returned status codes and API details, see the
-[Search for issues using JQL enhanced search (POST)](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-post)
-documentation.
+For more information about returned status codes and API details, see
+[search for issues using JQL enhanced search (POST)](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-post).
 
 {{< /tab >}}
 
@@ -392,8 +391,7 @@ The API response returns a JSON response:
 - `total` is provided if there are more results to fetch.
 
 For more information about returned status codes and API details, see the
-[Perform search with JQL (POST)](https://developer.atlassian.com/server/jira/platform/rest/v10007/api-group-search/#api-api-2-search-post)
-documentation.
+[perform search with JQL (POST)](https://developer.atlassian.com/server/jira/platform/rest/v10007/api-group-search/#api-api-2-search-post).
 
 {{< /tab >}}
 

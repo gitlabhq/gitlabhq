@@ -196,6 +196,29 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
 
         expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
       end
+
+      context 'when a target project has been deleted' do
+        let_it_be(:deleted_project) { create(:project, :private) }
+
+        before do
+          create(
+            :ci_job_token_project_scope_link,
+            source_project: project,
+            target_project: deleted_project,
+            added_by: current_user
+          )
+
+          deleted_project.destroy!
+          Ci::ProjectMirror.where(project_id: deleted_project.id).delete_all
+        end
+
+        it 'excludes the deleted project from the allowlist' do
+          post_graphql(query, current_user: current_user)
+
+          project_paths = allowlist['projectsAllowlist']['nodes'].map { |n| n['target']['fullPath'] }
+          expect(project_paths).not_to include(deleted_project.full_path)
+        end
+      end
     end
   end
 end

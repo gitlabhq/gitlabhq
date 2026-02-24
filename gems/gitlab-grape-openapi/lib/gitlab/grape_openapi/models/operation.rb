@@ -5,13 +5,18 @@ module Gitlab
     module Models
       class Operation
         # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#operation-object
-        attr_accessor :operation_id, :description, :tags, :responses, :parameters, :request_body, :summary, :deprecated
+        attr_accessor :operation_id, :description, :tags, :responses, :parameters, :request_body, :summary,
+          :deprecated, :hidden
 
         def initialize
           @tags = []
           @request_body = {}
           @parameters = []
           @deprecated = false
+        end
+
+        def hidden?
+          @hidden
         end
 
         def to_h

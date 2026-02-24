@@ -21,6 +21,10 @@ export default {
     GlPopover,
   },
   props: {
+    scope: {
+      type: String,
+      required: true,
+    },
     permissions: {
       type: Array,
       required: false,
@@ -82,8 +86,17 @@ export default {
           </gl-form-checkbox>
 
           <span v-if="resource.description" class="gl-ml-3 gl-mt-2">
-            <gl-icon :id="resource.key" name="information-o" class="gl-cursor-pointer" />
-            <gl-popover :target="resource.key" triggers="focus" no-fade boundary="viewport">
+            <gl-icon
+              :id="`${scope}-${resource.key}`"
+              name="information-o"
+              class="gl-cursor-pointer"
+            />
+            <gl-popover
+              :target="`${scope}-${resource.key}`"
+              triggers="focus"
+              no-fade
+              boundary="viewport"
+            >
               {{ resource.description }}
             </gl-popover>
           </span>

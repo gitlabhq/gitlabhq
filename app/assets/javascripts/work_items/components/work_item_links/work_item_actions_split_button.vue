@@ -24,11 +24,6 @@ export default {
       type: Array,
       required: true,
     },
-    tooltipText: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
@@ -37,7 +32,7 @@ export default {
   },
   computed: {
     buttonTooltipText() {
-      return this.isDropdownVisible ? '' : this.tooltipText;
+      return !this.isDropdownVisible ? this.$options.i18n.addItem : '';
     },
   },
   methods: {
@@ -75,16 +70,22 @@ export default {
       this.isDropdownVisible = false;
     },
   },
+  i18n: {
+    addItem: s__('WorkItem|Add item'),
+  },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip="buttonTooltipText"
-    :toggle-text="__('Add')"
+    v-gl-tooltip.top="buttonTooltipText"
+    icon="plus"
     size="small"
+    no-caret
     placement="bottom-end"
     :items="actions"
+    category="tertiary"
+    data-testid="add-tree-child-button"
     @shown="showDropdown"
     @hidden="hideDropdown"
     @beforeClose="onBeforeClose"

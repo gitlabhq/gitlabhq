@@ -31,11 +31,10 @@ You can use any of these words:
 - `finishes`
 - `delivers`
 
-Read more about the
-[Source Commits endpoint](https://www.pivotaltracker.com/help/api/rest/v5#Source_Commits) in
-the Pivotal Tracker API documentation.
+For more information about the source commits endpoint, see the
+[pivotal tracker API](https://www.pivotaltracker.com/help/api/rest/v5#Source_Commits).
 
-See also the [Pivotal Tracker integration API documentation](../../../api/project_integrations.md#pivotal-tracker).
+For more information about pivotal tracker integration, see the [project integrations API](../../../api/project_integrations.md#pivotal-tracker).
 
 ## Set up Pivotal Tracker
 

@@ -67,7 +67,7 @@ Your instance leverages modified versions of the
 [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid)
 with high availability enabled.
 
-When [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance),
+When [onboarding](../../administration/dedicated/create_instance/_index.md#create-your-instance),
 GitLab matches you to the closest reference architecture size based on your number of users.
 
 > [!note]

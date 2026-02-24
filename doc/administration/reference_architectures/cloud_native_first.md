@@ -69,7 +69,7 @@ sidekiq -[#ff8dd1,norank]--> database
 - **Supporting services** - NGINX Ingress, Toolbox, and monitoring components
 
 > [!note]
-> Gitaly on Kubernetes is deployed as Gitaly (non-Cluster) only. Each Gitaly pod is a single point of failure for the repositories it serves. Gitaly Cluster (Praefect) is not supported in Kubernetes.
+> Gitaly on Kubernetes is deployed as Gitaly Sharded (non-Cluster) only and [does not support zero-downtime upgrades](https://gitlab.com/gitlab-org/gitaly/-/work_items/6934). Each Gitaly pod is a single point of failure for the repositories it serves. Gitaly Cluster (Praefect) is not supported in Kubernetes.
 >
 > If you require Gitaly high availability with automatic failover, consider [Cloud Native Hybrid architectures](_index.md#cloud-native-hybrid), which deploy Gitaly Cluster on virtual machines while running stateless components in Kubernetes. For Gitaly on Kubernetes requirements and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#requirements).
 

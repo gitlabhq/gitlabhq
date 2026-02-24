@@ -15,7 +15,9 @@ module Resolvers
         authorize!(source_project)
 
         groups_allowlist = ::Ci::JobToken::GroupScopeLink.with_source(source_project)
-        projects_allowlist = ::Ci::JobToken::ProjectScopeLink.with_source(source_project)
+        projects_allowlist = ::Ci::JobToken::ProjectScopeLink
+                               .with_source(source_project)
+                               .with_target_project_mirror
 
         {
           groups_allowlist: groups_allowlist,

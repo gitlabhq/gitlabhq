@@ -17,6 +17,7 @@ describe('PersonalAccessTokenResourcesList', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(PersonalAccessTokenResourcesList, {
       propsData: {
+        scope: 'namespace',
         permissions: mockGroupPermissions,
         ...props,
       },
@@ -100,10 +101,10 @@ describe('PersonalAccessTokenResourcesList', () => {
       expect(findPopovers()).toHaveLength(2);
 
       expect(findPopover(0).text()).toBe('Project resource description');
-      expect(findPopover(0).attributes('target')).toBe('project');
+      expect(findPopover(0).attributes('target')).toBe('namespace-project');
 
       expect(findPopover(1).text()).toBe('Repository resource description');
-      expect(findPopover(1).attributes('target')).toBe('repository');
+      expect(findPopover(1).attributes('target')).toBe('namespace-repository');
     });
   });
 

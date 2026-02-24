@@ -226,7 +226,7 @@ describe('WorkItemLinkChild', () => {
           childItem: workItemObjectiveWithChild,
           canUpdate: true,
           isGroup: false,
-          showLabels: true,
+          hiddenMetadataKeys: [],
           workItemFullPath,
           contextualViewEnabled: false,
         });

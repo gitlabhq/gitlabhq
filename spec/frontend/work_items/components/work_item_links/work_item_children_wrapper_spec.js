@@ -66,6 +66,7 @@ describe('WorkItemChildrenWrapper', () => {
     disableContent = false,
     canUpdate = false,
     showClosed = true,
+    hiddenMetadataKeys = [],
     moveWorkItemMutationHandler = moveWorkItemMutationSuccessHandler,
     getWorkItemTypeConfigurationMock = getWorkItemTypeConfiguration,
   } = {}) => {
@@ -101,6 +102,7 @@ describe('WorkItemChildrenWrapper', () => {
         disableContent,
         canUpdate,
         showClosed,
+        hiddenMetadataKeys,
         parent: workItemByIidResponseFactory().data.namespace.workItem,
       },
       provide: {
@@ -120,6 +122,14 @@ describe('WorkItemChildrenWrapper', () => {
     expect(workItemLinkChildren.at(0).props().childItem.confidential).toBe(
       childrenWorkItems[0].confidential,
     );
+  });
+
+  it('passes hiddenMetadataKeys to child components', () => {
+    const hiddenKeys = ['weight', 'milestone', 'iteration'];
+    createComponent({ hiddenMetadataKeys: hiddenKeys });
+
+    const workItemLinkChildren = findWorkItemLinkChildItems();
+    expect(workItemLinkChildren.at(0).props('hiddenMetadataKeys')).toEqual(hiddenKeys);
   });
 
   it('does not render children when show closed toggle is off', async () => {

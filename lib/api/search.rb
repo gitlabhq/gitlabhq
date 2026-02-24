@@ -170,12 +170,12 @@ module API
         entity.execute_batch_counting(@results)
       end
 
-      params :search_params_common do
+      params :params_common do
         optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
         optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
       end
 
-      params :search_params_archived_filter do
+      params :param_archived_filter do
         optional :include_archived, type: Boolean, default: false,
           desc: 'Includes archived projects in the search. Introduced in GitLab 18.9.'
       end
@@ -208,8 +208,8 @@ module API
         requires :scope, type: String, desc: 'The scope of the search',
           values: Helpers::SearchHelpers.global_search_scopes
 
-        use :search_params_common
-        use :search_params_archived_filter
+        use :params_common
+        use :param_archived_filter
         use :ee_param_fields
         use :ee_param_exclude_forks
         use :ee_param_regex
@@ -242,8 +242,8 @@ module API
         requires :scope, type: String, desc: 'The scope of the search',
           values: Helpers::SearchHelpers.group_search_scopes
 
-        use :search_params_common
-        use :search_params_archived_filter
+        use :params_common
+        use :param_archived_filter
         use :ee_param_fields
         use :ee_param_exclude_forks
         use :ee_param_regex
@@ -281,7 +281,7 @@ module API
         optional :ref, type: String,
           desc: 'The name of a repository branch or tag. If not given, the default branch is used'
 
-        use :search_params_common
+        use :params_common
         use :ee_param_fields
         use :ee_param_regex
         use :pagination

@@ -29,7 +29,7 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
       context 'when issue has a child' do
         it 'does not allow changing the type' do
           within_testid 'work-item-tree' do
-            click_button 'Add'
+            find_by_testid('add-tree-child-button').click
             click_button "Existing task"
             fill_in 'Search existing items', with: task.title
             click_button task.title

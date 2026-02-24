@@ -177,7 +177,7 @@ tags by default. This limit is controlled by the `push_event_hooks_limit` settin
 are triggered at all for that push event.
 
 For GitLab Self-Managed instances, administrators can modify this limit using the
-[Application Settings API](../../../api/settings.md#available-settings).
+[application Settings API](../../../api/settings.md#available-settings).
 
 Request header:
 
@@ -1195,7 +1195,7 @@ X-Gitlab-Event: Merge Request Hook
 
 The following example is a complete merge request webhook payload for an `open` action.
 Deprecated fields are omitted for clarity. For a list of deprecated fields and their
-recommended alternatives, see [Deprecated fields](#deprecated-fields).
+recommended alternatives, see [deprecated fields](#deprecated-fields).
 
 ```json
 {

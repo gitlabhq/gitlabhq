@@ -36382,12 +36382,6 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|AI Chat in the IDE"
-msgstr ""
-
-msgid "InProductMarketing|AI Code Suggestions in the IDE"
-msgstr ""
-
 msgid "InProductMarketing|Accelerate delivery with GitLab Ultimate + GitLab Duo Agent Platform"
 msgstr ""
 
@@ -36398,9 +36392,6 @@ msgid "InProductMarketing|Built-in security"
 msgstr ""
 
 msgid "InProductMarketing|End-to-end security and compliance"
-msgstr ""
-
-msgid "InProductMarketing|Enjoy %{duration} days of full access to Premium, after which you'll have access to our free tier forever."
 msgstr ""
 
 msgid "InProductMarketing|Enjoy %{duration} days of full access to our best plan, after which you'll have access to our free tier forever. Upgrade to the best plan that suits you at any point - Premium or Ultimate."
@@ -36433,9 +36424,6 @@ msgstr ""
 msgid "InProductMarketing|One platform for Dev, Sec, and Ops teams"
 msgstr ""
 
-msgid "InProductMarketing|Release Controls"
-msgstr ""
-
 msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
@@ -36448,9 +36436,6 @@ msgstr ""
 msgid "InProductMarketing|Support compliance"
 msgstr ""
 
-msgid "InProductMarketing|Team Project Management"
-msgstr ""
-
 msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
@@ -36461,9 +36446,6 @@ msgid "InProductMarketing|Try our most advanced features, including GitLab Duo A
 msgstr ""
 
 msgid "InProductMarketing|Try our most advanced features, including GitLab Duo Enterprise to automate development tasks with AI. After your %{duration}-day trial, continue with free features or upgrade to unlock the full value of GitLab."
-msgstr ""
-
-msgid "InProductMarketing|Unlimited Licensed Users"
 msgstr ""
 
 msgid "InProductMarketing|Want to host GitLab on your servers?"
@@ -78490,6 +78472,9 @@ msgstr ""
 msgid "WorkItem|Active custom fields"
 msgstr ""
 
+msgid "WorkItem|Active types"
+msgstr ""
+
 msgid "WorkItem|Active types are limited to %{limit}."
 msgstr ""
 
@@ -78521,6 +78506,9 @@ msgid "WorkItem|Add a to-do item"
 msgstr ""
 
 msgid "WorkItem|Add description"
+msgstr ""
+
+msgid "WorkItem|Add item"
 msgstr ""
 
 msgid "WorkItem|Add status"
@@ -78871,6 +78859,9 @@ msgstr ""
 msgid "WorkItem|Discard changes"
 msgstr ""
 
+msgid "WorkItem|Display options"
+msgstr ""
+
 msgid "WorkItem|Done"
 msgstr ""
 
@@ -79168,9 +79159,6 @@ msgid "WorkItem|Milestone"
 msgstr ""
 
 msgid "WorkItem|Mint green"
-msgstr ""
-
-msgid "WorkItem|More actions"
 msgstr ""
 
 msgid "WorkItem|Move"
@@ -79541,9 +79529,6 @@ msgstr ""
 msgid "WorkItem|Show empty"
 msgstr ""
 
-msgid "WorkItem|Show labels"
-msgstr ""
-
 msgid "WorkItem|Show sidebar"
 msgstr ""
 
@@ -79812,9 +79797,6 @@ msgid "WorkItem|Type changed."
 msgstr ""
 
 msgid "WorkItem|Type lifecycle updated."
-msgstr ""
-
-msgid "WorkItem|Types"
 msgstr ""
 
 msgid "WorkItem|UnArchive"

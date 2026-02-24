@@ -58,6 +58,9 @@ export default {
     isUserScope() {
       return this.targetBoundaries.includes(ACCESS_USER_ENUM);
     },
+    scope() {
+      return this.isUserScope ? 'user' : 'namespace';
+    },
     resourceTitle() {
       return this.isUserScope
         ? this.$options.i18n.user.resourceTitle
@@ -142,6 +145,7 @@ export default {
         <personal-access-token-resources-list
           v-else-if="filteredPermissions.length"
           v-model="selectedResources"
+          :scope="scope"
           :permissions="filteredPermissions"
         />
         <div v-else class="gl-my-4 gl-text-center gl-text-subtle">

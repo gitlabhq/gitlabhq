@@ -54,7 +54,7 @@ describe('WorkItemLinkChildContents', () => {
   const createComponent = ({
     canUpdate = true,
     childItem = workItemTask,
-    showLabels = true,
+    hiddenMetadataKeys = [],
     workItemFullPath = 'test-project-path',
     isGroup = false,
     getRoutesMock = defaultGetRoutesMock,
@@ -65,7 +65,7 @@ describe('WorkItemLinkChildContents', () => {
         canUpdate,
         isGroup,
         childItem,
-        showLabels,
+        hiddenMetadataKeys,
         workItemFullPath,
         contextualViewEnabled,
       },
@@ -274,14 +274,18 @@ describe('WorkItemLinkChildContents', () => {
     });
 
     it.each`
-      expectedAssertion           | showLabels
-      ${'does not render labels'} | ${true}
-      ${'renders label'}          | ${false}
-    `('$expectedAssertion when showLabels is $showLabels', ({ showLabels }) => {
-      createComponent({ showLabels, childItem: workItemObjectiveWithChild });
+      expectedAssertion           | hiddenMetadataKeys
+      ${'renders label'}          | ${[]}
+      ${'does not render labels'} | ${['labels']}
+    `(
+      '$expectedAssertion when labels are hidden: $hiddenMetadataKeys',
+      ({ hiddenMetadataKeys }) => {
+        const showLabels = !hiddenMetadataKeys.includes('labels');
+        createComponent({ hiddenMetadataKeys, childItem: workItemObjectiveWithChild });
 
-      expect(findAllLabels().exists()).toBe(showLabels);
-    });
+        expect(findAllLabels().exists()).toBe(showLabels);
+      },
+    );
   });
 
   describe('Anchor overlay rendering based on contextual view state', () => {

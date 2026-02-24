@@ -85,13 +85,13 @@ based on your specific team needs.
 
 {{< /history >}}
 
-> [!note]
-> GitLab Duo Agent Platform Self-Hosted is available only to customers with an offline license.
+Customers with an offline license must purchase the GitLab Duo Agent Platform Self-Hosted add-on
+to use self-hosted models in the Agent Platform.
 
-GitLab Duo Agent Platform Self-Hosted provides access to the GitLab Duo Agent Platform for
-customers who use their own models on their self-deployed AI Gateway.
+Customers with this add-on are billed based on seat usage instead of [usage](gitlab_credits.md).
 
-Customers with this add-on are billed based on seat usage instead of [usage-based billing](gitlab_credits.md).
+Customers with an online license can use self-hosted models in the Agent Platform without an
+add-on, and are billed based on usage.
 
 To purchase GitLab Duo Agent Platform Self-Hosted, contact the
 [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).

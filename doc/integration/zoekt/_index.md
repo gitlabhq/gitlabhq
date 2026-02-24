@@ -64,18 +64,72 @@ The following installation methods are available for testing, not for production
 
 ## Enable exact code search
 
+### From the GitLab UI
+
 Prerequisites:
 
 - Be an administrator of the instance.
 - Zoekt is [installed](#install-zoekt).
 
-To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
+To enable [exact code search](../../user/search/exact_code_search.md) from the GitLab UI:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Select the **Enable indexing** and **Enable searching** checkboxes.
 1. Select **Save changes**.
+
+### With Rake tasks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580121) in GitLab 18.10.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Be an administrator of the instance.
+- Zoekt is [installed](#install-zoekt).
+
+You can manage [exact code search](../../user/search/exact_code_search.md) with Rake tasks.
+
+#### Enable indexing and search
+
+To enable indexing and search, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:index
+```
+
+This task enables `zoekt_indexing_enabled`, `zoekt_search_enabled`,
+and `zoekt_auto_index_root_namespace`.
+`RolloutWorker` indexes all root namespaces automatically, and
+search becomes available when indices are ready.
+
+#### Disable indexing and search
+
+To disable indexing and search, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:disable
+```
+
+This task disables both `zoekt_indexing_enabled` and `zoekt_search_enabled`.
+
+#### Pause and resume indexing
+
+To pause indexing (for example, during maintenance), run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:pause_indexing
+```
+
+To resume indexing, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:resume_indexing
+```
 
 ## Check indexing status
 

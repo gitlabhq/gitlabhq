@@ -14,7 +14,8 @@ title: Group labels API
 
 {{< history >}}
 
-- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556700) in GitLab 18.10. Feature flag `labels_archive` removed.
 
 {{< /history >}}
 
@@ -38,7 +39,7 @@ GET /groups/:id/labels
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. |
 | `only_group_labels` | boolean | no | Toggle to include only group labels or also project labels. Defaults to `true`. |
 | `search` | string | no | Keyword to filter labels by. |
-| `archived` | boolean | no | Whether the label is archived. Returns all labels, when not set. Requires the `:labels_archive` feature flag to be enabled. |
+| `archived` | boolean | no | If `true`, returns only archived labels. If unset, returns all labels. |
 
 ```shell
 curl \
@@ -133,7 +134,7 @@ POST /groups/:id/labels
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label, |
-| `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
+| `archived`    | boolean | no       | If `true`, marks the label as archived. Default value: `false`. |
 
 ```shell
 curl --request POST \
@@ -180,7 +181,7 @@ PUT /groups/:id/labels/:label_id
 | `new_name`    | string  | no      | The new name of the label        |
 | `color`       | string  | no      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label. |
-| `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
+| `archived`    | boolean | no       | If `true`, marks the label as archived. Default value: `false`. |
 
 ```shell
 curl --request PUT \

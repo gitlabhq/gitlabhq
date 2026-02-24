@@ -4,9 +4,15 @@ import WikiSidebar from '~/wikis/components/wiki_sidebar.vue';
 import WikiSidebarHeader from '~/wikis/components/wiki_sidebar_header.vue';
 import WikiSidebarEntries from '~/wikis/components/wiki_sidebar_entries.vue';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
+import { observeSidebarResponsiveness } from '~/wikis/utils/sidebar_responsive';
+import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
+
+jest.mock('~/wikis/utils/sidebar_responsive');
+jest.mock('~/wikis/utils/sidebar_toggle');
 
 describe('WikiSidebar', () => {
   let wrapper;
+  let cleanupSpy;
 
   const findSidebarHeader = () => wrapper.findComponent(WikiSidebarHeader);
   const findSidebarEntries = () => wrapper.findComponent(WikiSidebarEntries);
@@ -15,6 +21,34 @@ describe('WikiSidebar', () => {
   const createComponent = (provide) => {
     wrapper = shallowMountExtended(WikiSidebar, { provide });
   };
+
+  beforeEach(() => {
+    cleanupSpy = jest.fn();
+    observeSidebarResponsiveness.mockReturnValue(cleanupSpy);
+  });
+
+  describe('responsive sidebar observer', () => {
+    beforeEach(() => {
+      createComponent({ hasCustomSidebar: false });
+    });
+
+    it('sets up the responsive observer on mount', () => {
+      expect(observeSidebarResponsiveness).toHaveBeenCalledWith(expect.any(Function));
+    });
+
+    it('calls toggleWikiSidebar without persisting when overlap is detected', () => {
+      const onAutoClose = observeSidebarResponsiveness.mock.calls[0][0];
+      onAutoClose();
+
+      expect(toggleWikiSidebar).toHaveBeenCalledWith(false);
+    });
+
+    it('cleans up the observer on destroy', () => {
+      wrapper.destroy();
+
+      expect(cleanupSpy).toHaveBeenCalled();
+    });
+  });
 
   describe('without custom sidebar', () => {
     beforeEach(() => {

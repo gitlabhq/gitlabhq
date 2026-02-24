@@ -96,9 +96,6 @@ class LabelsFinder < UnionFinder
   end
 
   def by_archived(labels)
-    group_actor = group? ? group : project&.group
-
-    return labels unless Feature.enabled?(:labels_archive, group_actor)
     return labels unless filter_by_archived?
 
     # When called from GraphQL, :archived will be boolean.

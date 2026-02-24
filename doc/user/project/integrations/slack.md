@@ -47,7 +47,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In the **Trigger** section, select the checkboxes for each type of GitLab
    event to send to Slack as a notification. For a full list, see
-   [Triggers for Slack notifications](#triggers-for-slack-notifications).
+   [triggers for Slack notifications](#triggers-for-slack-notifications).
    By default, messages are sent to the channel you configured during
    [Slack configuration](#configure-slack).
 1. Optional. To send messages to a different channel, multiple channels, or as

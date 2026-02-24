@@ -1,0 +1,8 @@
+---
+name: ci_pipeline_ref_resolution
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223198
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/590599
+milestone: '18.10'
+type: gitlab_com_derisk
+group: group::pipeline authoring
+default_enabled: false

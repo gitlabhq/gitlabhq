@@ -16,6 +16,8 @@ module Ci
       belongs_to :source_project, class_name: 'Project'
       # the project added to the scope's allowlist
       belongs_to :target_project, class_name: 'Project'
+      belongs_to :target_project_mirror, class_name: 'Ci::ProjectMirror',
+        primary_key: :project_id, foreign_key: :target_project_id, inverse_of: false
       belongs_to :added_by, class_name: 'User'
 
       validates :job_token_policies, json_schema: { filename: 'ci_job_token_policies' }, allow_blank: true
@@ -24,6 +26,7 @@ module Ci
       scope :with_source, ->(project)   { where(source_project: project) }
       scope :with_target, ->(project)   { where(target_project: project) }
       scope :autopopulated, -> { where(autopopulated: true) }
+      scope :with_target_project_mirror, -> { joins(:target_project_mirror) }
 
       validates :source_project, presence: true
       validates :target_project, presence: true

@@ -1,6 +1,8 @@
 <script>
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
+import { observeSidebarResponsiveness } from '~/wikis/utils/sidebar_responsive';
 import WikiSidebarHeader from './wiki_sidebar_header.vue';
 import WikiSidebarEntries from './wiki_sidebar_entries.vue';
 import WikiSidebarToggle from './wiki_sidebar_toggle.vue';
@@ -32,6 +34,16 @@ export default {
     pagesListExpanded(newValue) {
       this.persistPagesListState(newValue);
     },
+  },
+  mounted() {
+    this.cleanupResponsiveObserver = observeSidebarResponsiveness(() => {
+      toggleWikiSidebar(false);
+    });
+  },
+  beforeDestroy() {
+    if (this.cleanupResponsiveObserver) {
+      this.cleanupResponsiveObserver();
+    }
   },
   methods: {
     getInitialPagesListState() {

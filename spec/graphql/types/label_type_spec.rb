@@ -19,15 +19,5 @@ RSpec.describe GitlabSchema.types['Label'], feature_category: :team_planning do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  context 'with feature flag labels_archive disabled' do
-    before do
-      stub_feature_flags(labels_archive: false)
-    end
-
-    it 'does not include :archived field' do
-      expect(described_class).not_to have_graphql_fields(:archived)
-    end
-  end
-
   specify { expect(described_class).to require_graphql_authorizations(:read_label) }
 end

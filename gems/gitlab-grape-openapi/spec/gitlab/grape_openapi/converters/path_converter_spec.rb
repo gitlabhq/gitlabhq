@@ -36,5 +36,13 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
         expect(paths).to eq({})
       end
     end
+
+    context 'when all operations for a path are hidden' do
+      let(:routes) { TestApis::HiddenApi.routes }
+
+      it 'excludes the path entirely' do
+        expect(paths).to be_empty
+      end
+    end
   end
 end

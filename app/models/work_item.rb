@@ -329,6 +329,10 @@ class WorkItem < Issue
     hierarchy.ancestors(hierarchy_order: :asc)
   end
 
+  def ancestors_with_order(hierarchy_order: :asc)
+    hierarchy.ancestors(hierarchy_order: hierarchy_order)
+  end
+
   def descendants
     hierarchy.descendants
   end

@@ -55,15 +55,10 @@ export default {
       required: false,
       default: false,
     },
-    showLabels: {
-      type: Boolean,
+    hiddenMetadataKeys: {
+      type: Array,
       required: false,
-      default: true,
-    },
-    showClosed: {
-      type: Boolean,
-      required: false,
-      default: true,
+      default: () => [],
     },
     disableContent: {
       type: Boolean,
@@ -108,6 +103,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showClosed: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -604,8 +604,8 @@ export default {
       :confidential="child.confidential"
       :work-item-type="child.workItemType.name"
       :has-indirect-children="hasIndirectChildren"
-      :show-labels="showLabels"
       :show-closed="showClosed"
+      :hidden-metadata-keys="hiddenMetadataKeys"
       :work-item-full-path="fullPath"
       :dragged-item-type="draggedItemType"
       :allowed-children-by-type="allowedChildrenByType"

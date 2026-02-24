@@ -110,6 +110,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
 
     it('filters permissions by target boundaries', () => {
+      expect(findResourcesList().props('scope')).toBe('namespace');
       expect(findResourcesList().props('permissions')).toStrictEqual(mockGroupPermissions);
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
       expect(findPermissionsList().props('targetBoundaries')).toEqual(['GROUP', 'PROJECT']);
@@ -120,6 +121,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
       await waitForPromises();
 
+      expect(findResourcesList().props('scope')).toBe('user');
       expect(findResourcesList().props('permissions')).toStrictEqual(mockUserPermissions);
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockUserPermissions);
       expect(findPermissionsList().props('targetBoundaries')).toEqual(['USER']);

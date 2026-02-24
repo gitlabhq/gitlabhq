@@ -259,8 +259,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Geo::DestroyWorker' => 3,
         'Geo::EventWorker' => 3,
         'Geo::ReverificationBatchWorker' => 0,
-        'Geo::BulkMarkPendingBatchWorker' => 0,
-        'Geo::BulkMarkVerificationPendingBatchWorker' => 0,
         'Geo::Scheduler::SchedulerWorker' => false,
         'Geo::Scheduler::Secondary::SchedulerWorker' => false,
         'Geo::SyncWorker' => false,

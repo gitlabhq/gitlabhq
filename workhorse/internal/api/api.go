@@ -295,6 +295,10 @@ func rebaseURL(url *url.URL, onto *url.URL, suffix string) *url.URL {
 	return &newURL
 }
 
+// newRequest creates a lightweight request to the Rails backend for
+// pre-authorization as part of Workhorse's reverse proxy flow.
+// It rebases the original request URL onto the backend (api.URL) and cleans up
+// headers that should not be forwarded.
 func (api *API) newRequest(r *http.Request, suffix string) *http.Request {
 	authReq := &http.Request{
 		Method: r.Method,

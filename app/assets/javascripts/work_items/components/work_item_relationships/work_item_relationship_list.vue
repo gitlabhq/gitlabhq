@@ -56,10 +56,10 @@ export default {
       required: false,
       default: false,
     },
-    showLabels: {
-      type: Boolean,
+    hiddenMetadataKeys: {
+      type: Array,
       required: false,
-      default: true,
+      default: () => [],
     },
     workItemFullPath: {
       type: String,
@@ -277,7 +277,7 @@ export default {
           :child-item="linkedItem.workItem"
           :can-update="canUpdate"
           :is-group="isGroup"
-          :show-labels="showLabels"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           :work-item-full-path="workItemFullPath"
           :class="{
             'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50':

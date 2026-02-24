@@ -1,5 +1,6 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlPopover, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 
 const okrActions = [
@@ -58,6 +59,9 @@ describe('WorkItemActionsSplitButton', () => {
       },
       stubs: {
         GlDisclosureDropdown,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

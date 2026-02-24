@@ -9,8 +9,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
   CHILD_ITEMS_ANCHOR,
-  WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+  WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HIERARCHY,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -27,6 +27,7 @@ import {
   getToggleFromLocalStorage,
   getItems,
   trackCrudCollapse,
+  getHiddenMetadataKeysFromLocalStorage,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
@@ -139,7 +140,6 @@ export default {
       formType: null,
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
-      showLabels: true,
       showClosed: true,
       fetchNextPageInProgress: false,
       workItem: {},
@@ -147,8 +147,10 @@ export default {
       workItemTypes: [],
       hierarchyWidget: null,
       draggedItemType: null,
-      showLabelsLocalStorageKey: WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
-      showClosedLocalStorageKey: WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+      hiddenMetadataKeys: getHiddenMetadataKeysFromLocalStorage(
+        WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
+        [],
+      ),
     };
   },
   apollo: {
@@ -309,8 +311,7 @@ export default {
     window.removeEventListener('popstate', this.checkDrawerParams);
   },
   mounted() {
-    this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
-    this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
+    this.showClosed = getToggleFromLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY);
   },
   methods: {
     genericActionItems(workItemType) {
@@ -344,13 +345,12 @@ export default {
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
     },
-    toggleShowLabels() {
-      this.showLabels = !this.showLabels;
-      saveToggleToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
-    },
     toggleShowClosed() {
       this.showClosed = !this.showClosed;
-      saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
+      saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, this.showClosed);
+    },
+    handleUpdateHiddenMetadataKeys(hiddenKeys) {
+      this.hiddenMetadataKeys = [...hiddenKeys];
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -399,6 +399,7 @@ export default {
   i18n: {
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
   },
+  WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
 };
 </script>
 
@@ -439,17 +440,17 @@ export default {
     </template>
 
     <template #actions>
-      <work-item-actions-split-button v-if="canUpdateChildren" :actions="addItemsActions" />
       <work-item-more-actions
         :work-item-iid="workItemIid"
         :full-path="fullPath"
         :work-item-type="workItemType"
-        :show-labels="showLabels"
         :show-closed="showClosed"
+        :metadata-local-storage-key="$options.WORKITEM_TREE_METADATA_LOCALSTORAGEKEY"
         show-view-roadmap-action
-        @toggle-show-labels="toggleShowLabels"
         @toggle-show-closed="toggleShowClosed"
+        @update-hidden-metadata-keys="handleUpdateHiddenMetadataKeys"
       />
+      <work-item-actions-split-button v-if="canUpdateChildren" :actions="addItemsActions" />
     </template>
 
     <template #form>
@@ -496,8 +497,8 @@ export default {
           :is-group="isGroup"
           :work-item-id="workItemId"
           :work-item-type="workItemType"
-          :show-labels="showLabels"
           :show-closed="showClosed"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           :disable-content="disableContent"
           :has-indirect-children="hasIndirectChildren"
           :allowed-children-by-type="allowedChildrenByType"

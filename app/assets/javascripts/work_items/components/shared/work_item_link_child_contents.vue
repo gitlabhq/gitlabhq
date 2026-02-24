@@ -13,6 +13,13 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  STATE_OPEN,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+  METADATA_KEYS,
+} from '~/work_items/constants';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
@@ -24,12 +31,6 @@ import {
   getDisplayReference,
 } from '../../utils';
 import { routeForWorkItemTypeName } from '../../router/utils';
-import {
-  STATE_OPEN,
-  WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_LABELS,
-  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-} from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
@@ -84,10 +85,10 @@ export default {
       type: String,
       required: true,
     },
-    showLabels: {
-      type: Boolean,
+    hiddenMetadataKeys: {
+      type: Array,
       required: false,
-      default: true,
+      default: () => [],
     },
     contextualViewEnabled: {
       type: Boolean,
@@ -96,6 +97,11 @@ export default {
     },
   },
   computed: {
+    shouldShowAssignees() {
+      const showAssignee =
+        this.assignees.length && !this.hiddenMetadataKeys.includes(METADATA_KEYS.ASSIGNEE);
+      return showAssignee;
+    },
     labels() {
       return this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes || [];
     },
@@ -147,13 +153,22 @@ export default {
       return this.isChildItemOpen ? 'default' : 'subtle';
     },
     displayLabels() {
-      return this.showLabels && this.labels.length;
+      return !this.hiddenMetadataKeys.includes(METADATA_KEYS.LABELS) && this.labels.length;
     },
     workItemStatus() {
       return findStatusWidget(this.childItem)?.status?.name;
     },
     showState() {
-      return !this.workItemStatus || !this.isChildItemOpen;
+      return (
+        !this.hiddenMetadataKeys.includes(METADATA_KEYS.STATUS) &&
+        (!this.workItemStatus || !this.isChildItemOpen)
+      );
+    },
+    showBlockingRelationships() {
+      return (
+        !this.hiddenMetadataKeys.includes(METADATA_KEYS.BLOCKED) &&
+        (this.blockingCount > 0 || this.blockedByCount > 0)
+      );
     },
     displayReference() {
       return getDisplayReference(this.workItemFullPath, this.childItem.reference);
@@ -166,9 +181,6 @@ export default {
     },
     blockedByCount() {
       return this.linkedItemsWidget?.blockedByCount || 0;
-    },
-    hasBlockingRelationships() {
-      return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     childItemUniqueId() {
       return `listItem-${this.childItemFullPath}/${getIdFromGraphQLId(this.childItem.id)}`;
@@ -269,7 +281,7 @@ export default {
           class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3 @sm/panel:gl-flex-row"
         >
           <gl-avatars-inline
-            v-if="assignees.length"
+            v-if="shouldShowAssignees"
             :avatars="assignees"
             collapsed
             :max-visible="2"
@@ -282,7 +294,7 @@ export default {
             </template>
           </gl-avatars-inline>
           <work-item-relationship-icons
-            v-if="isChildItemOpen && hasBlockingRelationships"
+            v-if="isChildItemOpen && showBlockingRelationships"
             :work-item-type="childItemType"
             :work-item-full-path="childItemFullPath"
             :work-item-iid="childItemIid"
@@ -310,6 +322,7 @@ export default {
         :reference="displayReference"
         :is-child-item-open="isChildItemOpen"
         :metadata-widgets="metadataWidgets"
+        :hidden-metadata-keys="hiddenMetadataKeys"
         class="@xl/panel:!gl-ml-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">

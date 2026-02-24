@@ -24,7 +24,7 @@ For a list of available slash commands, see [Slash commands](gitlab_slack_applic
 ## Configuration options
 
 GitLab provides different ways to configure Mattermost slash commands. For any of these options,
-you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
+you must have [Mattermost 3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
 - Linux package installations: Mattermost is bundled with
   [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package

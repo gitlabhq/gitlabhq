@@ -15,9 +15,11 @@ module Gitlab
         end
 
         def convert
-          grouped_routes.transform_values do |routes_for_path|
+          paths = grouped_routes.transform_values do |routes_for_path|
             build_path_item(routes_for_path)
           end
+
+          paths.reject { |_path, operations| operations.empty? }
         end
 
         private

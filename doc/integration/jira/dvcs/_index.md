@@ -26,7 +26,7 @@ For more information, see [configuring webhook security](https://confluence.atla
 
 The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in GitLab 16.0.
 Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
-For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
+For more information, see [install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 
 ## Refresh data imported to Jira
 

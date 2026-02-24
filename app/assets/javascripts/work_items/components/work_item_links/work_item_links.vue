@@ -18,13 +18,14 @@ import {
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
-  WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '../../constants';
 import {
   findHierarchyWidget,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
+  getHiddenMetadataKeysFromLocalStorage,
   getItems,
 } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
@@ -126,12 +127,10 @@ export default {
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: TASKS_ANCHOR,
-      showLabels: true,
+      hiddenMetadataKeys: [],
       showClosed: true,
       fetchNextPageInProgress: false,
       disableContent: false,
-      showLabelsLocalStorageKey: WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
-      showClosedLocalStorageKey: WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
     };
   },
   computed: {
@@ -196,8 +195,11 @@ export default {
     },
   },
   mounted() {
-    this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
-    this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
+    this.hiddenMetadataKeys = getHiddenMetadataKeysFromLocalStorage(
+      WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
+      [],
+    );
+    this.showClosed = getToggleFromLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY);
   },
   methods: {
     showAddForm(formType) {
@@ -243,13 +245,12 @@ export default {
     openReportAbuseModal(reply) {
       this.toggleReportAbuseModal(true, reply);
     },
-    toggleShowLabels() {
-      this.showLabels = !this.showLabels;
-      saveToggleToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    handleUpdateHiddenMetadataKeys(hiddenKeys) {
+      this.hiddenMetadataKeys = [...hiddenKeys];
     },
     toggleShowClosed() {
       this.showClosed = !this.showClosed;
-      saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
+      saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, this.showClosed);
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -329,10 +330,10 @@ export default {
         :work-item-iid="iid"
         :full-path="fullPath"
         :work-item-type="workItemType"
-        :show-labels="showLabels"
+        :hidden-metadata-keys="hiddenMetadataKeys"
         :show-closed="showClosed"
         :show-view-roadmap-action="false"
-        @toggle-show-labels="toggleShowLabels"
+        @update-hidden-metadata-keys="handleUpdateHiddenMetadataKeys"
         @toggle-show-closed="toggleShowClosed"
       />
     </template>
@@ -373,7 +374,7 @@ export default {
           :is-group="isGroup"
           :full-path="fullPath"
           :work-item-id="issuableGid"
-          :show-labels="showLabels"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           :show-closed="showClosed"
           :disable-content="disableContent"
           :has-indirect-children="false"

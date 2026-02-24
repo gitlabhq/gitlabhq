@@ -31,37 +31,58 @@ module Gitlab
             linting
           end
 
-          def branch_exists?
-            strong_memoize(:is_branch) do
-              branch_ref? && project.repository.branch_exists?(ref)
+          def branch?
+            if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+              ref_resolver.branch?
+            else
+              branch_exists?
             end
           end
 
-          def tag_exists?
-            strong_memoize(:is_tag) do
-              tag_ref? && project.repository.tag_exists?(ref)
+          def tag?
+            if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+              ref_resolver.tag?
+            else
+              tag_exists?
             end
           end
 
-          def merge_request_ref_exists?
-            check_merge_request_ref
+          def merge_request_ref?
+            if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+              ref_resolver.merge_request?
+            else
+              merge_request_ref_exists?
+            end
           end
 
-          def workload_ref_exists?
-            ::Ci::Workloads::Workload.workload_ref?(origin_ref) && project.repository.ref_exists?(origin_ref)
+          def workload?
+            if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+              ref_resolver.workload?
+            else
+              workload_ref_exists?
+            end
           end
 
           def ref
-            strong_memoize(:ref) do
-              Gitlab::Git.ref_name(origin_ref)
-            end
+            Gitlab::Git.ref_name(origin_ref)
           end
+          strong_memoize_attr :ref
+
+          def ref_exists?
+            resolved_ref.present?
+          end
+          strong_memoize_attr :ref_exists?
 
           def sha
-            strong_memoize(:sha) do
-              project.commit(origin_sha || origin_ref).try(:id)
-            end
+            ref = if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+                    resolved_ref
+                  else
+                    origin_ref
+                  end
+
+            project.commit(origin_sha || ref).try(:id)
           end
+          strong_memoize_attr :sha
 
           def origin_sha
             checkout_sha || after_sha
@@ -73,13 +94,23 @@ module Gitlab
 
           def protected_ref?
             strong_memoize(:protected_ref) do
-              project.protected_for?(origin_ref)
+              ref_to_check = if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+                               resolved_ref
+                             else
+                               origin_ref
+                             end
+
+              project.protected_for?(ref_to_check)
             end
           end
 
           def ambiguous_ref?
-            strong_memoize(:ambiguous_ref) do
-              project.repository.ambiguous_ref?(origin_ref)
+            if Feature.enabled?(:ci_pipeline_ref_resolution, project)
+              ref_resolver.ambiguous?
+            else
+              strong_memoize(:ambiguous_ref) do
+                project.repository.ambiguous_ref?(origin_ref)
+              end
             end
           end
 
@@ -151,26 +182,48 @@ module Gitlab
               .increment(reason: (reason || :unknown_failure).to_s)
           end
 
-          private
-
-          # Verifies that origin_ref is a fully qualified tag reference (refs/tags/<tag-name>)
-          #
-          # Fallbacks to `true` for backward compatibility reasons
-          # if origin_ref is a short ref
-          def tag_ref?
-            return true if full_git_ref_name_unavailable?
-
-            Gitlab::Git.tag_ref?(origin_ref).present?
+          def branch_exists?
+            strong_memoize(:is_branch) do
+              branch_ref? && project.repository.branch_exists?(ref)
+            end
           end
 
-          # Verifies that origin_ref is a fully qualified branch reference (refs/heads/<branch-name>)
-          #
-          # Fallbacks to `true` for backward compatibility reasons
-          # if origin_ref is a short ref
+          def tag_exists?
+            strong_memoize(:is_tag) do
+              tag_ref? && project.repository.tag_exists?(ref)
+            end
+          end
+
+          def merge_request_ref_exists?
+            check_merge_request_ref
+          end
+
+          def workload_ref_exists?
+            ::Ci::Workloads::Workload.workload_ref?(origin_ref) && project.repository.ref_exists?(origin_ref)
+          end
+
+          private
+
+          def resolved_ref
+            ref_resolver.resolved_ref
+          end
+          strong_memoize_attr :resolved_ref
+
+          def ref_resolver
+            Gitlab::Git::RefResolver.new(project.repository, origin_ref)
+          end
+          strong_memoize_attr :ref_resolver
+
           def branch_ref?
             return true if full_git_ref_name_unavailable?
 
             Gitlab::Git.branch_ref?(origin_ref).present?
+          end
+
+          def tag_ref?
+            return true if full_git_ref_name_unavailable?
+
+            Gitlab::Git.tag_ref?(origin_ref).present?
           end
 
           def full_git_ref_name_unavailable?

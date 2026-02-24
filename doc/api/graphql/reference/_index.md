@@ -5345,6 +5345,33 @@ Input type: `ContainerUpstreamDeleteInput`
 | <a id="mutationcontainerupstreamdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainerupstreamdeleteupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Destroyed upstream. |
 
+### `Mutation.containerUpstreamTest`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerUpstreamTestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamtestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamtestgrouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the group with which the resource is associated. |
+| <a id="mutationcontainerupstreamtestpassword"></a>`password` | [`String`](#string) | Password of the upstream registry. |
+| <a id="mutationcontainerupstreamtesturl"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
+| <a id="mutationcontainerupstreamtestusername"></a>`username` | [`String`](#string) | Username of the upstream registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamtestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamtesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainerupstreamtestsuccess"></a>`success` | [`Boolean!`](#boolean) | Whether the upstream connectivity test was successful. |
+
 ### `Mutation.containerUpstreamUpdate`
 
 {{< details >}}
@@ -9734,7 +9761,7 @@ Input type: `LabelUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationlabelupdatearchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
+| <a id="mutationlabelupdatearchived"></a>`archived` | [`Boolean`](#boolean) | Whether to archive the label. Introduced in GitLab 18.10. |
 | <a id="mutationlabelupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationlabelupdateid"></a>`id` | [`LabelID!`](#labelid) | Global ID of the label to update. |
 
@@ -53159,6 +53186,7 @@ AI features that can be configured through the Model Selection feature settings.
 | <a id="aimodelselectionfeaturesduo_chat_troubleshoot_job"></a>`DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat_write_tests"></a>`DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
 | <a id="aimodelselectionfeaturesgenerate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
+| <a id="aimodelselectionfeaturesglab_ask_git_command"></a>`GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
 | <a id="aimodelselectionfeaturesresolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aimodelselectionfeaturesreview_merge_request"></a>`REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | <a id="aimodelselectionfeaturessummarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Summarize new merge request feature setting. |

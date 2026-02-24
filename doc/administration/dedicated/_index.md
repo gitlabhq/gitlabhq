@@ -44,7 +44,7 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Data encryption](encryption.md) | GitLab encrypts your data both at rest and in transit through infrastructure provided by AWS. | Available by <br>default |
-| [Bring your own key (BYOK)](encryption.md#bring-your-own-key-byok) | You can provide your own AWS KMS keys for encryption instead of using GitLab-managed AWS KMS keys. GitLab integrates these keys with your instance to encrypt data at rest. | Onboarding |
+| [Customer-managed encryption keys](encryption.md#customer-managed-encryption) | You can provide your own AWS KMS keys for encryption instead of using GitLab-managed AWS KMS keys. GitLab integrates these keys with your instance to encrypt data at rest. | Onboarding |
 | [SAML SSO](configure_instance/authentication/saml.md) | You configure the connection to your SAML identity providers. GitLab handles the authentication flow. | Switchboard |
 | [IP allowlists](configure_instance/network_security.md#ip-allowlist) | You specify approved IP addresses. GitLab blocks unauthorized access attempts. | Switchboard |
 | [Custom certificates](configure_instance/network_security.md#custom-certificate-authorities-for-external-services) | You import your SSL certificates. GitLab maintains secure connections to your private services. | Switchboard |
