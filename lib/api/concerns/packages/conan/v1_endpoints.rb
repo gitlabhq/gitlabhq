@@ -382,6 +382,7 @@ module API
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
+                  protect_package!(params[:package_name], :conan, project: project)
                   authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
                 end
               end
@@ -431,6 +432,7 @@ module API
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
+                  protect_package!(params[:package_name], :conan, project: project)
                   authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
                 end
 

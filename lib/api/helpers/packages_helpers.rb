@@ -154,15 +154,23 @@ module API
         )
       end
 
-      def protect_package!(package_name, package_type)
+      def protect_package!(package_name, package_type, project: user_project)
         service_response =
           ::Packages::Protection::CheckRuleExistenceService.for_push(
-            project: user_project,
+            project: project,
             current_user: current_user,
             params: { package_name: package_name, package_type: package_type }
           ).execute
 
-        bad_request!(service_response.message) if service_response.error?
+        if service_response.error?
+          case service_response.reason
+          when :unauthorized
+            forbidden!(service_response.message)
+          else
+            bad_request!(service_response.message)
+          end
+        end
+
         forbidden!('Package protected.') if service_response[:protection_rule_exists?]
       end
 

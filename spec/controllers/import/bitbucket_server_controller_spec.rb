@@ -210,4 +210,34 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
       end
     end
   end
+
+  describe 'GET status.json', :clean_gitlab_redis_rate_limiting do
+    before do
+      allow(controller).to receive(:client).and_return(client)
+      assign_session_tokens
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :bitbucket_server_import do
+      let_it_be(:second_user) { create(:user) }
+
+      let(:current_user) { user }
+
+      before do
+        allow(BitbucketServer::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:repos).and_return([])
+      end
+
+      def request
+        get :status, format: :json
+      end
+
+      def request_with_second_scope
+        sign_in(second_user)
+        session[:bitbucket_server_url] = 'http://localhost:7990'
+        session[:bitbucket_server_username] = 'bitbucket'
+        session[:bitbucket_server_personal_access_token] = 'some-token'
+        get :status, format: :json
+      end
+    end
+  end
 end
