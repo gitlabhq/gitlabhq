@@ -49,6 +49,11 @@
         "item_url",
         "resource_url_template"
       ]
+    },
+    "single_origin_fallback_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable single origin fallback for when the VS Code extension host domain is unreachable."
     }
   },
   "required": [],

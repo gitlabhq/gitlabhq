@@ -212,7 +212,8 @@ ProjectExportWorker.new.perform(current_user.id, project.id)
 
 ## Manually execute export steps
 
-You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
+You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data)
+or through the [project import and export API](../../../api/project_import_export.md). Exporting using these
 methods can sometimes fail without giving enough information to troubleshoot. In these cases,
 [open a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
 [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/projects/import_export/export_service.rb).
@@ -292,7 +293,7 @@ Read through the current performance problems using the Import/Export below.
 
 ### OOM errors
 
-Out of memory (OOM) errors are usually caused by the [Sidekiq Memory Killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
+Out-of-memory (OOM) errors are usually caused by the [Sidekiq memory killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
 
 ```shell
 SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000

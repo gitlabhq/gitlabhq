@@ -48,6 +48,10 @@ module WebIde
       Gitlab::CurrentSettings.vscode_extension_marketplace_extension_host_domain
     end
 
+    def self.single_origin_fallback_enabled?
+      Gitlab::CurrentSettings.vscode_extension_marketplace_single_origin_fallback_enabled
+    end
+
     def self.extension_host_domain_changed?
       extension_host_domain != DEFAULT_EXTENSION_HOST_DOMAIN
     end

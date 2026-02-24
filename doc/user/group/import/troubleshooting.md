@@ -13,7 +13,7 @@ description: "Troubleshooting GitLab direct transfer migrations with Rails conso
 
 {{< /details >}}
 
-In a [rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
+In a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
 you can find the failure or error messages for the group import attempt using:
 
 ```ruby
@@ -115,7 +115,7 @@ If Sidekiq restarts are causing the issue:
   1. Restart Sidekiq for the changes to take effect.
 
 You can now trigger a new migration or use the
-[relations export API](../../../api/project_relations_export.md#schedule-new-export) to manually trigger the export.
+[project relations export API](../../../api/project_relations_export.md#schedule-new-export) to manually trigger the export.
 Check the [export status](../../../api/project_relations_export.md#export-status) to see if
 relations are being exported successfully.
 
@@ -213,7 +213,7 @@ This error can occur when:
   - Optimize [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
   - Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
 - You are [consolidating groups or projects from different source groups into a single destination group](_index.md#known-issues).
-  When epics from different source groups have the same internal ID (which are only unique within a single group), importing them to a single destination group
+  When epics from different source groups have the same internal ID (which are only unique in a single group), importing them to a single destination group
   causes conflicts. This conflict causes `PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint` errors referencing `index_issues_on_namespace_id_iid_unique` or `index_epics_on_group_id_and_iid`.
 
 ## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`

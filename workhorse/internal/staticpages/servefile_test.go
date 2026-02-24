@@ -161,15 +161,15 @@ func TestServingThePregzippedFileWithoutEncoding(t *testing.T) {
 	testServingThePregzippedFile(t, false)
 }
 
-// testRailsServer creates a mock Rails server that returns the specified headers
-func testRailsServer(t *testing.T, headers map[string]string) *httptest.Server {
+// testRailsServer creates a mock Rails server that returns the specified status code and headers
+func testRailsServer(t *testing.T, statusCode int, headers map[string]string) *httptest.Server {
 	t.Helper()
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		// Set the headers that Rails would return
 		for k, v := range headers {
 			w.Header().Set(k, v)
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(statusCode)
 	}))
 }
 
@@ -177,24 +177,12 @@ func testRailsServer(t *testing.T, headers map[string]string) *httptest.Server {
 func verifyCorsHeaders(t *testing.T, w *httptest.ResponseRecorder, expectedHeaders map[string]string) {
 	t.Helper()
 
-	// Verify expected CORS headers are present with correct values
 	for expectedKey, expectedValue := range expectedHeaders {
 		require.Equal(t, expectedValue, w.Header().Get(expectedKey),
 			"Expected CORS header %s to be %s", expectedKey, expectedValue)
 	}
 
-	// Verify that headers NOT in expectedHeaders are NOT set
-	allCorsHeaders := []string{
-		"Access-Control-Allow-Origin",
-		"Access-Control-Allow-Methods",
-		"Access-Control-Allow-Headers",
-		"Access-Control-Allow-Credentials",
-		"Cross-Origin-Opener-Policy",
-		"Content-Security-Policy",
-		"Cross-Origin-Resource-Policy",
-		"Vary",
-	}
-	for _, header := range allCorsHeaders {
+	for _, header := range assetAuthorizationUpstreamResponseForwardedHeaders {
 		if _, expected := expectedHeaders[header]; !expected {
 			require.Empty(t, w.Header().Get(header),
 				"Header %s should not be set", header)
@@ -208,38 +196,49 @@ func TestResolveCorsHeaders(t *testing.T) {
 	// Create test files in the assets directory for different paths
 	fileContent := "STATIC ASSET"
 
-	// Create webpack/gitlab-web-ide-vscode-workbench path
 	vscodeDir := filepath.Join(dir, "assets", "webpack", "gitlab-web-ide-vscode-workbench")
 	err := os.MkdirAll(vscodeDir, 0755)
 	require.NoError(t, err)
 	err = os.WriteFile(filepath.Join(vscodeDir, "test.js"), []byte(fileContent), 0600)
 	require.NoError(t, err)
 
-	// Create gitlab-mono path
 	gitlabMonoDir := filepath.Join(dir, "assets", "gitlab-mono")
 	err = os.MkdirAll(gitlabMonoDir, 0755)
 	require.NoError(t, err)
 	err = os.WriteFile(filepath.Join(gitlabMonoDir, "test.woff2"), []byte(fileContent), 0600)
 	require.NoError(t, err)
 
-	// Create other assets path (should not get CORS headers)
 	otherDir := filepath.Join(dir, "assets", "other")
 	err = os.MkdirAll(otherDir, 0755)
 	require.NoError(t, err)
 	err = os.WriteFile(filepath.Join(otherDir, "test.js"), []byte(fileContent), 0600)
 	require.NoError(t, err)
 
+	err = os.WriteFile(filepath.Join(dir, "other.js"), []byte(fileContent), 0600)
+	require.NoError(t, err)
+
+	// Path variables for paths targeted by authorization rules
+	vscodeAssetPath := "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js"
+	gitlabMonoAssetPath := "/assets/gitlab-mono/test.woff2"
+
+	// Path variables for paths NOT targeted by authorization rules
+	otherAssetPath := "/assets/other/test.js"
+	nonAssetPath := "/other.js"
+
 	testCases := []struct {
 		desc            string
 		path            string
 		method          string
+		railsStatusCode int
 		railsHeaders    map[string]string
+		expectedStatus  int
 		expectedHeaders map[string]string
 	}{
 		{
-			desc:   "CORS headers returned for GET request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
-			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
-			method: "GET",
+			desc:            "CORS headers returned for GET request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:            vscodeAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":      "https://example.com",
 				"Access-Control-Allow-Methods":     "GET, HEAD, OPTIONS",
@@ -247,6 +246,7 @@ func TestResolveCorsHeaders(t *testing.T) {
 				"Access-Control-Allow-Credentials": "true",
 				"Vary":                             "Origin",
 			},
+			expectedStatus: 200,
 			expectedHeaders: map[string]string{
 				"Access-Control-Allow-Origin":      "https://example.com",
 				"Access-Control-Allow-Methods":     "GET, HEAD, OPTIONS",
@@ -256,41 +256,47 @@ func TestResolveCorsHeaders(t *testing.T) {
 			},
 		},
 		{
-			desc:   "CORS headers returned for OPTIONS request on /assets/gitlab-mono path",
-			path:   "/assets/gitlab-mono/test.woff2",
-			method: "OPTIONS",
+			desc:            "CORS headers returned for OPTIONS request on /assets/gitlab-mono path",
+			path:            gitlabMonoAssetPath,
+			method:          "OPTIONS",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 			},
+			expectedStatus: 200,
 			expectedHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 			},
 		},
 		{
-			desc:   "CORS headers returned for HEAD request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
-			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
-			method: "HEAD",
+			desc:            "CORS headers returned for HEAD request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:            vscodeAssetPath,
+			method:          "HEAD",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 			},
+			expectedStatus: 200,
 			expectedHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 			},
 		},
 		{
-			desc:   "New security headers are returned for /assets/webpack/gitlab-web-ide-vscode-workbench path",
-			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
-			method: "GET",
+			desc:            "New security headers are returned for /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:            vscodeAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Cross-Origin-Opener-Policy":   "same-origin",
 				"Content-Security-Policy":      "default-src 'self'",
 				"Cross-Origin-Resource-Policy": "cross-origin",
 			},
+			expectedStatus: 200,
 			expectedHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Cross-Origin-Opener-Policy":   "same-origin",
@@ -299,44 +305,61 @@ func TestResolveCorsHeaders(t *testing.T) {
 			},
 		},
 		{
-			desc:   "No CORS headers for POST request (not in allowed methods)",
-			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
-			method: "POST",
+			desc:            "No CORS headers for POST request (not in allowed methods)",
+			path:            vscodeAssetPath,
+			method:          "POST",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
+			expectedStatus:  200,
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:   "No CORS headers for non-target assets path (not webpack/gitlab-web-ide-vscode-workbench or gitlab-mono)",
-			path:   "/assets/other/test.js",
-			method: "GET",
+			desc:            "No CORS headers for non-target assets path (not webpack/gitlab-web-ide-vscode-workbench or gitlab-mono)",
+			path:            otherAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
+			expectedStatus:  200,
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:   "No CORS headers for non-assets path",
-			path:   "/other/test.js",
-			method: "GET",
+			desc:            "No CORS headers for non-assets path",
+			path:            nonAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
+			expectedStatus:  200,
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:   "Only allowed CORS headers are copied",
-			path:   "/assets/gitlab-mono/test.woff2",
-			method: "GET",
+			desc:            "Only allowed CORS headers are copied",
+			path:            gitlabMonoAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 				"X-Custom-Header":             "should-not-be-copied",
 				"Content-Type":                "application/json",
 			},
+			expectedStatus: 200,
 			expectedHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
+		},
+		{
+			desc:            "401 from authorization check returns NotFound before file is served",
+			path:            vscodeAssetPath,
+			method:          "GET",
+			railsStatusCode: http.StatusUnauthorized,
+			railsHeaders:    map[string]string{},
+			expectedStatus:  404,
+			expectedHeaders: map[string]string{},
 		},
 	}
 
@@ -344,8 +367,8 @@ func TestResolveCorsHeaders(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			testhelper.ConfigureSecret()
 
-			// Create a mock Rails server that returns the specified CORS headers
-			ts := testRailsServer(t, tc.railsHeaders)
+			// Create a mock Rails server that returns the specified status code and CORS headers
+			ts := testRailsServer(t, tc.railsStatusCode, tc.railsHeaders)
 			defer ts.Close()
 
 			// Create API client
@@ -362,13 +385,8 @@ func TestResolveCorsHeaders(t *testing.T) {
 			st := &Static{DocumentRoot: dir, API: apiClient}
 			st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
 
-			// For paths where the file exists and method is allowed, we should get 200
-			if tc.method == "GET" || tc.method == "HEAD" || tc.method == "OPTIONS" {
-				// Check if the path should return 200 or 404
-				if tc.path != "/other/test.js" {
-					require.Equal(t, 200, w.Code, "Request should succeed when file exists")
-				}
-			}
+			// Verify status code
+			require.Equal(t, tc.expectedStatus, w.Code, "Request should return expected status code")
 
 			// Verify CORS headers
 			verifyCorsHeaders(t, w, tc.expectedHeaders)

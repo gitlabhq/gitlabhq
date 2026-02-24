@@ -68,7 +68,7 @@ contribution history, do one of the following:
 
 - [Migrate by using direct transfer](../../group/import/_index.md).
 - Consider engaging Professional Services. For more information, see the
-  [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
+  [Professional Services catalog](https://about.gitlab.com/services/catalog/).
 
 #### When migrating to GitLab Self-Managed
 

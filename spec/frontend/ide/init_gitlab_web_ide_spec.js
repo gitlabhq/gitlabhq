@@ -192,6 +192,7 @@ describe('ide/init_gitlab_web_ide', () => {
         extensionHostDomain: 'web-ide.example.net',
         extensionHostDomainChanged: true,
         workbenchSecret: 'test-workbench-secret',
+        isSingleOriginFallbackEnabled: false,
       });
     });
 

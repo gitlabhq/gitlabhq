@@ -1088,6 +1088,10 @@ class ApplicationSetting < ApplicationRecord
     vscode_extension_marketplace_extension_host_domain: [
       :string,
       { default: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN, store_key: :extension_host_domain }
+    ],
+    vscode_extension_marketplace_single_origin_fallback_enabled: [
+      :boolean,
+      { default: true, store_key: :single_origin_fallback_enabled }
     ]
 
   jsonb_accessor :editor_extensions,

@@ -30698,7 +30698,7 @@ Represents finding.
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
 | <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` {{< icon name="warning-solid" >}} | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in GitLab 16.3. **Status**: Experiment. Identifiers of the vulnerability finding. |
 | <a id="comparedsecurityreportfindinglocation"></a>`location` {{< icon name="warning-solid" >}} | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in GitLab 16.3. **Status**: Experiment. Location of the vulnerability finding. |
-| <a id="comparedsecurityreportfindingmatchesautodismisspolicy"></a>`matchesAutoDismissPolicy` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.9. **Status**: Experiment. Indicates whether the finding matches an auto-dismiss policy. Returns `null` if `auto_dismiss_vulnerability_policies` feature flag is disabled. |
+| <a id="comparedsecurityreportfindingmatchesautodismisspolicy"></a>`matchesAutoDismissPolicy` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.9. **Status**: Experiment. Indicates whether the finding matches an auto-dismiss policy. |
 | <a id="comparedsecurityreportfindingscanner"></a>`scanner` | [`ComparedSecurityReportScanner`](#comparedsecurityreportscanner) | Compared report vulnerability scanner. |
 | <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
@@ -56984,6 +56984,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_policy_protected_branch_modification"></a>`SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
 | <a id="usercalloutfeaturenameenumsecurity_scanner_profiles_announcement"></a>`SECURITY_SCANNER_PROFILES_ANNOUNCEMENT` | Callout feature name for security_scanner_profiles_announcement. |
+| <a id="usercalloutfeaturenameenumsingle_origin_fallback_callout"></a>`SINGLE_ORIGIN_FALLBACK_CALLOUT` | Callout feature name for single_origin_fallback_callout. |
 | <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |

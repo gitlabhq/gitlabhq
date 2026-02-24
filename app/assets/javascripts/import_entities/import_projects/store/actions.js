@@ -19,9 +19,6 @@ const redirectToUrlInError = (e) => visitUrl(e.response.data.error.redirect);
 const tooManyRequests = (e) => e.response.status === HTTP_STATUS_TOO_MANY_REQUESTS;
 const supportsCursorPagination = (provider) =>
   provider === PROVIDERS.GITHUB || provider === PROVIDERS.BITBUCKET;
-const isMultiWorkspaceEnabled = (state) =>
-  state.provider === PROVIDERS.BITBUCKET &&
-  window.gon?.features?.bitbucketCloudImporterMultiWorkspaceRepos;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),
@@ -34,7 +31,7 @@ const commitPaginationData = ({ state, commit, data }) => {
 
   if (supportsCursorPagination(state.provider) && hasCursors) {
     const payload = { ...data.pageInfo };
-    if (isMultiWorkspaceEnabled(state) && data.workspacePagingInfo) {
+    if (state.provider === PROVIDERS.BITBUCKET && data.workspacePagingInfo) {
       payload.workspacePagingInfo = data.workspacePagingInfo;
     }
 
@@ -55,7 +52,7 @@ const commitPaginationData = ({ state, commit, data }) => {
   }
 };
 const paginationParams = ({ state }) => {
-  if (isMultiWorkspaceEnabled(state)) {
+  if (state.provider === PROVIDERS.BITBUCKET) {
     const workspacesWithNextPage = Object.entries(state.workspacePagingInfo)
       .filter(([, info]) => Boolean(info.hasNextPage))
       .map(([workspace, pageInfo]) => ({

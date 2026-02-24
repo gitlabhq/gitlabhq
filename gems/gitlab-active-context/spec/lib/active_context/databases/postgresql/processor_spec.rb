@@ -238,6 +238,79 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         "AND (\"items\".\"embedding\" IS NULL)) subq LIMIT 10"
   end
 
+  context 'with exists queries' do
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.exists('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"embedding\" IS NOT NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(status: 'active').exists('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+        "AND (\"items\".\"embedding\" IS NOT NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(project_id: [1, 2, 3]).exists('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"project_id\" IN (1, 2, 3)) " \
+        "AND (\"items\".\"embedding\" IS NOT NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(status: 'active').exists('embedding').limit(10),
+      "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+        "AND (\"items\".\"embedding\" IS NOT NULL)) subq LIMIT 10"
+
+    context 'when containing AND' do
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.and(
+          ActiveContext::Query.exists('embedding'),
+          ActiveContext::Query.filter(status: 'active')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"embedding\" IS NOT NULL) " \
+          "AND (\"items\".\"status\" = 'active')"
+
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.and(
+          ActiveContext::Query.filter(status: 'active'),
+          ActiveContext::Query.exists('embedding')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') AND " \
+          "(\"items\".\"embedding\" IS NOT NULL)"
+
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.and(
+          ActiveContext::Query.filter(project_id: [1, 2, 3]),
+          ActiveContext::Query.exists('embedding')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"project_id\" IN (1, 2, 3)) " \
+          "AND (\"items\".\"embedding\" IS NOT NULL)"
+    end
+
+    context 'when containing OR' do
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.or(
+          ActiveContext::Query.exists('embedding_v1'),
+          ActiveContext::Query.exists('embedding_v2')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"embedding_v1\" IS NOT NULL " \
+          "OR \"items\".\"embedding_v2\" IS NOT NULL)"
+
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.or(
+          ActiveContext::Query.exists('embedding'),
+          ActiveContext::Query.filter(status: 'active')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"embedding\" IS NOT NULL " \
+          "OR (\"items\".\"status\" = 'active'))"
+
+      it_behaves_like 'a SQL transformer',
+        ActiveContext::Query.or(
+          ActiveContext::Query.filter(status: 'active'),
+          ActiveContext::Query.exists('embedding')
+        ),
+        "SELECT \"items\".* FROM \"items\" WHERE ((\"items\".\"status\" = 'active') " \
+          "OR \"items\".\"embedding\" IS NOT NULL)"
+    end
+  end
+
   context 'with all queries' do
     it_behaves_like 'a SQL transformer',
       ActiveContext::Query.all,

@@ -2,6 +2,7 @@
 name: read_work_item
 description: Grants the ability to read work items
 permissions:
+  - read_work_item
   - read_epic
   - read_epic_award_emoji
   - read_epic_board

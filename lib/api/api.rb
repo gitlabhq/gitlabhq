@@ -368,6 +368,7 @@ module API
         mount ::API::UserCounts
         mount ::API::UserRunners
         mount ::API::WebCommits
+        mount ::API::WorkItems
         mount ::API::Wikis
 
         add_open_api_documentation!

@@ -12686,6 +12686,33 @@ CREATE SEQUENCE ai_active_context_migrations_id_seq
 
 ALTER SEQUENCE ai_active_context_migrations_id_seq OWNED BY ai_active_context_migrations.id;
 
+CREATE TABLE ai_active_context_tasks (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    connection_id bigint NOT NULL,
+    depends_on_id bigint,
+    started_at timestamp with time zone,
+    completed_at timestamp with time zone,
+    status smallint DEFAULT 0 NOT NULL,
+    retries_left smallint DEFAULT 3 NOT NULL,
+    name text NOT NULL,
+    error_message text,
+    params jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT c_ai_active_context_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (status = 255)))),
+    CONSTRAINT check_193ee22275 CHECK ((char_length(error_message) <= 1024)),
+    CONSTRAINT check_c972f26069 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_active_context_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_active_context_tasks_id_seq OWNED BY ai_active_context_tasks.id;
+
 CREATE TABLE ai_agent_version_attachments (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -30782,7 +30809,8 @@ CREATE TABLE user_details (
     CONSTRAINT check_ec514a06ad CHECK ((char_length(email_otp) <= 64)),
     CONSTRAINT check_eeeaf8d4f0 CHECK ((char_length(pronouns) <= 50)),
     CONSTRAINT check_f1a8a05b9a CHECK ((char_length(mastodon) <= 500)),
-    CONSTRAINT check_f932ed37db CHECK ((char_length(pronunciation) <= 255))
+    CONSTRAINT check_f932ed37db CHECK ((char_length(pronunciation) <= 255)),
+    CONSTRAINT check_user_details_provisioned_by_mutually_exclusive CHECK ((num_nonnulls(provisioned_by_group_id, provisioned_by_project_id) <= 1))
 );
 
 COMMENT ON COLUMN user_details.phone IS 'JiHu-specific column';
@@ -34316,6 +34344,8 @@ ALTER TABLE ONLY ai_active_context_connections ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY ai_active_context_migrations ALTER COLUMN id SET DEFAULT nextval('ai_active_context_migrations_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_active_context_tasks ALTER COLUMN id SET DEFAULT nextval('ai_active_context_tasks_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_agent_version_attachments ALTER COLUMN id SET DEFAULT nextval('ai_agent_version_attachments_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
@@ -37174,6 +37204,9 @@ ALTER TABLE ONLY ai_active_context_connections
 
 ALTER TABLE ONLY ai_active_context_migrations
     ADD CONSTRAINT ai_active_context_migrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_active_context_tasks
+    ADD CONSTRAINT ai_active_context_tasks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_agent_version_attachments
     ADD CONSTRAINT ai_agent_version_attachments_pkey PRIMARY KEY (id);
@@ -43821,6 +43854,10 @@ CREATE INDEX index_ai_active_context_migrations_on_connection_and_status ON ai_a
 
 CREATE UNIQUE INDEX index_ai_active_context_migrations_on_connection_and_version ON ai_active_context_migrations USING btree (connection_id, version);
 
+CREATE INDEX index_ai_active_context_tasks_on_connection_id ON ai_active_context_tasks USING btree (connection_id);
+
+CREATE INDEX index_ai_active_context_tasks_on_depends_on_id ON ai_active_context_tasks USING btree (depends_on_id);
+
 CREATE INDEX index_ai_agent_version_attachments_on_ai_agent_version_id ON ai_agent_version_attachments USING btree (ai_agent_version_id);
 
 CREATE INDEX index_ai_agent_version_attachments_on_ai_vectorizable_file_id ON ai_agent_version_attachments USING btree (ai_vectorizable_file_id);
@@ -48470,6 +48507,8 @@ CREATE INDEX index_vulnerability_exports_on_organization_id ON vulnerability_exp
 CREATE INDEX index_vulnerability_exports_on_project_id_not_null ON vulnerability_exports USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_external_issue_links_on_author_id ON vulnerability_external_issue_links USING btree (author_id);
+
+CREATE INDEX index_vulnerability_external_issue_links_on_occurrence_id ON vulnerability_external_issue_links USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX index_vulnerability_external_issue_links_on_project_id ON vulnerability_external_issue_links USING btree (project_id);
 
@@ -54074,6 +54113,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_active_context_tasks
+    ADD CONSTRAINT fk_0888dc7f58 FOREIGN KEY (depends_on_id) REFERENCES ai_active_context_tasks(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY merge_request_assignees
     ADD CONSTRAINT fk_088f01d08d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -54826,6 +54868,9 @@ ALTER TABLE ONLY user_namespace_callouts
 
 ALTER TABLE ONLY workspace_agentk_states
     ADD CONSTRAINT fk_4b1428e43a FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_active_context_tasks
+    ADD CONSTRAINT fk_4b21032502 FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY enabled_foundational_flows
     ADD CONSTRAINT fk_4b4e102eb8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -55849,6 +55894,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT fk_ad89c59858 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_external_issue_links
+    ADD CONSTRAINT fk_ad9e3b0106 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;

@@ -3,25 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Middleware::StaticAssetsAuthorization, feature_category: :web_ide do
+  using RSpec::Parameterized::TableSyntax
+
   let(:app) { double(:app) } # rubocop:disable RSpec/VerifiedDoubles -- stubbed app
   let(:middleware) { described_class.new(app) }
+  let(:gitlab_url) { 'http://gitlab.example.com:3000' }
 
   let(:env) do
     {
       'REQUEST_METHOD' => request_method,
       'PATH_INFO' => path_info,
-      'HTTP_ORIGIN' => origin_header
+      'HTTP_ORIGIN' => origin_header,
+      'HTTP_HOST' => request_host
     }
   end
 
   let(:request_method) { 'GET' }
   let(:path_info) { '/assets/application.js' }
   let(:origin_header) { nil }
+  let(:request_host) { 'http://cdn.web-ide.gitlab-static.net:3000' }
   let(:extension_host_domain) { 'cdn.web-ide.gitlab-static.net' }
   let(:fallback_response) { [200, { 'Content-Type' => 'application/javascript' }, ['OK']] }
 
   before do
     allow(app).to receive(:call).and_return(fallback_response)
+    allow(Gitlab.config.gitlab).to receive(:url).and_return(gitlab_url)
+
     Gitlab::CurrentSettings.update!(
       vscode_extension_marketplace_extension_host_domain: extension_host_domain
     )
@@ -31,45 +38,61 @@ RSpec.describe Gitlab::Middleware::StaticAssetsAuthorization, feature_category: 
     context 'when request is for non-protected asset paths' do
       let(:path_info) { '/assets/application.js' }
 
-      context 'with GET request' do
-        let(:request_method) { 'GET' }
-        let(:origin_header) { 'https://abcdefghijklmnopqrstuvwxyz1234.cdn.web-ide.gitlab-static.net' }
+      %w[GET OPTIONS].each do |request_method|
+        context "with #{request_method} request" do
+          let(:origin_header) { 'https://abcdefghijklmnopqrstuvwxyz1234.cdn.web-ide.gitlab-static.net' }
 
-        it 'passes through without adding special headers' do
-          status, headers, body = middleware.call(env)
+          it 'passes through without adding special headers' do
+            expect(app).to receive(:call)
 
-          expect(status).to eq(200)
-          expect(headers['Access-Control-Allow-Origin']).to be_nil
-          expect(headers['Access-Control-Allow-Methods']).to be_nil
-          expect(headers['Vary']).to be_nil
-          expect(headers['Cross-Origin-Opener-Policy']).to be_nil
-          expect(headers['Cross-Origin-Resource-Policy']).to be_nil
-          expect(headers['Content-Security-Policy']).to be_nil
-          expect(body).to eq(['OK'])
-        end
-      end
+            status, headers, body = middleware.call(env)
 
-      context 'with OPTIONS request' do
-        let(:request_method) { 'OPTIONS' }
-        let(:origin_header) { 'https://abcdefghijklmnopqrstuvwxyz1234.cdn.web-ide.gitlab-static.net' }
-
-        it 'returns empty response without special headers' do
-          expect(app).not_to receive(:call)
-
-          status, headers, body = middleware.call(env)
-
-          expect(status).to eq(204)
-          expect(headers).to be_empty
-          expect(body).to eq([])
+            expect(status).to eq(200)
+            expect(headers['Access-Control-Allow-Origin']).to be_nil
+            expect(headers['Access-Control-Allow-Methods']).to be_nil
+            expect(headers['Vary']).to be_nil
+            expect(headers['Cross-Origin-Opener-Policy']).to be_nil
+            expect(headers['Cross-Origin-Resource-Policy']).to be_nil
+            expect(headers['Content-Security-Policy']).to be_nil
+            expect(body).to eq(['OK'])
+          end
         end
       end
     end
 
     context 'when request is for protected asset directories' do
-      let(:gitlab_url) { 'http://localhost:3000' }
+      shared_examples 'authorizes assets based on single origin fallback setting' do
+        where(:single_origin_fallback_enabled, :request_host, :gitlab_url, :expected_status) do
+          true  | 'gitlab.example.com:3000'            | 'https://gitlab.example.com:3000' | 200
+          true  | 'cdn.web-ide.gitlab-static.net:3000' | 'https://gitlab.example.com:3000' | 200
+          false | 'gitlab.example.com:3000'            | 'https://gitlab.example.com:3000' | 401
+          false | 'cdn.web-ide.gitlab-static.net:3000' | 'https://gitlab.example.com:3000' | 200
+          false | 'gitlab.example.com.another.com'     | 'https://gitlab.example.com'      | 200
+        end
 
-      before do
-        allow(Gitlab.config.gitlab).to receive(:url).and_return(gitlab_url)
+        with_them do
+          before do
+            allow(Gitlab.config.gitlab).to receive(:url).and_return(gitlab_url)
+            Gitlab::CurrentSettings.update!(
+              vscode_extension_marketplace: {
+                enabled: true,
+                extension_host_domain: extension_host_domain,
+                single_origin_fallback_enabled: single_origin_fallback_enabled
+              }
+            )
+          end
+
+          it 'returns expected status based on single_origin_fallback_enabled and request_host' do
+            status, headers, body = middleware.call(env)
+
+            expect(status).to eq(expected_status)
+
+            if expected_status == 401
+              expect(headers).to be_empty
+              expect(body).to eq([])
+            end
+          end
+        end
       end
 
       shared_examples 'applies security headers to protected paths' do
@@ -186,6 +209,7 @@ RSpec.describe Gitlab::Middleware::StaticAssetsAuthorization, feature_category: 
             let(:path_info) { protected_path }
 
             include_examples 'applies security headers to protected paths'
+            include_examples 'authorizes assets based on single origin fallback setting'
           end
         end
       end

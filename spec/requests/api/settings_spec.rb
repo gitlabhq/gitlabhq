@@ -1336,7 +1336,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['vscode_extension_marketplace_enabled']).to eq(true)
         expect(json_response['vscode_extension_marketplace'])
-          .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net" })
+          .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net", "single_origin_fallback_enabled" => true })
       end
     end
   end

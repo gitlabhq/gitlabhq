@@ -6,21 +6,14 @@ module AuthorizedProjectUpdate
     DELAY_INTERVAL = 50.seconds.to_i
 
     def execute
-      min_id = User.minimum(:id)
-      max_id = User.maximum(:id)
-      return if min_id.nil? || max_id.nil?
-
-      # Using this approach (instead of eg. User.each_batch) keeps the arguments
-      # the same for AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
-      # even if the user list changes, so we can deduplicate these jobs.
-
       # Since UserRefreshOverUserRangeWorker has set data_consistency to delayed,
       # a job enqueued without a delay could fail because the replica could not catch up with the primary.
-      # To prevent this, we start the index from `1` instead of `0` so as to ensure that
-      # no UserRefreshOverUserRangeWorker job is enqueued without a delay.
-      (min_id..max_id).each_slice(BATCH_SIZE).with_index(1) do |batch, index|
+      # each_batch yields a 1-based index, ensuring no job is enqueued without a delay.
+      User.each_batch(of: BATCH_SIZE) do |relation, index|
         delay = DELAY_INTERVAL * index
-        AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker.perform_in(delay, *batch.minmax)
+        start_id, end_id = relation.pick(Arel.sql('MIN(id), MAX(id)'))
+
+        AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker.perform_in(delay, start_id, end_id)
       end
     end
   end

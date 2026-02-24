@@ -360,7 +360,7 @@ After you create a conversation with an agent:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/577544) in GitLab 18.7.
+- Introduced in GitLab 18.7.
 
 {{< /history >}}
 

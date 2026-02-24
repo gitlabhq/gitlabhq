@@ -125,7 +125,7 @@ module Users
       file_tree_browser_popover: 121,
       virtual_registry_permission_change_alert: 122, # EE-only
       security_scanner_profiles_announcement: 123, # EE-only
-      # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
+      single_origin_fallback_callout: 124,
       duo_panel_auto_expanded: 125, # EE-only
       work_items_nav_badge: 126,
       work_items_onboarding_modal: 127,

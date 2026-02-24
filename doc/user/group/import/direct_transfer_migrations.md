@@ -24,7 +24,7 @@ To migrate GitLab groups and projects by using direct transfer:
 If there are any problems, you can:
 
 1. [Cancel](#cancel-a-running-migration) or [retry](#retry-failed-or-partially-successful-migrations) the migration.
-1. Check the [troubleshooting information](troubleshooting.md).
+1. See the [troubleshooting documentation](troubleshooting.md).
 
 ## Prerequisites
 
@@ -173,7 +173,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to [naming rules](../../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
+   - **Import with projects**. If this is not available, see the [prerequisites](#prerequisites).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
@@ -191,7 +191,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 To review the results of an import:
 
-1. Go to the [Group import history page](#group-import-history).
+1. Go to the [group import history page](#group-import-history).
 1. To see the details of a failed import, select the **Show errors** link on any import with a **Failed** or **Partially completed** status.
 1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **View details**.
 
@@ -228,7 +228,7 @@ If required, you can cancel a running migration by using either the REST API or 
 ### Cancel with the REST API
 
 For information on canceling a running migration with the REST API, see
-[Cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
+[cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
 
 ### Cancel with a Rails console
 
@@ -263,9 +263,6 @@ destination instance from:
 
 ## Retry failed or partially successful migrations
 
-If your migrations fail, or partially succeed but are missing items, you can retry the migration. To retry a migration
-of a:
-
-- Top-level group and all of its subgroups and projects, use either the GitLab UI or the
-  [GitLab REST API](../../../api/bulk_imports.md).
-- Specific subgroups or projects, use the [GitLab REST API](../../../api/bulk_imports.md).
+If your migrations fail, or partially succeed but are missing items, you can retry the migration.
+To retry a migration of a top-level group and all of its subgroups and projects, or specific subgroups
+or projects, use either the GitLab UI or the [group and project migration by direct transfer API](../../../api/bulk_imports.md).

@@ -57,7 +57,7 @@ you can use external tools, for example:
 ## Migrate by engaging Professional Services
 
 If you prefer, you can engage GitLab Professional Services to migrate groups and projects to GitLab instead of doing it
-yourself. For more information, see the [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
+yourself. For more information, see the [Professional Services catalog](https://about.gitlab.com/services/catalog/).
 
 ## View project import history
 

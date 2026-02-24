@@ -28,6 +28,7 @@ module ActiveContext
           when :filter  then process_filter(node.value)
           when :prefix  then process_prefix(node.value)
           when :missing then process_missing(node)
+          when :exists  then process_exists(node)
           when :and     then process_and(node.children)
           when :or      then process_or(node.children)
           when :knn     then process_knn(node)
@@ -72,6 +73,12 @@ module ActiveContext
           quoted_column = quote_column(node.value)
 
           process_and(node.children).where("#{quoted_column} IS NULL")
+        end
+
+        def process_exists(node)
+          quoted_column = quote_column(node.value)
+
+          process_and(node.children).where("#{quoted_column} IS NOT NULL")
         end
 
         def process_and(children)

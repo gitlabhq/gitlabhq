@@ -86,7 +86,8 @@ module IdeHelper
       'extension-marketplace-settings' => extension_marketplace_settings.to_json,
       'settings-context-hash' => settings_context_hash,
       'extension-host-domain' => WebIde::ExtensionMarketplace.extension_host_domain,
-      'extension-host-domain-changed' => WebIde::ExtensionMarketplace.extension_host_domain_changed?.to_s
+      'extension-host-domain-changed' => WebIde::ExtensionMarketplace.extension_host_domain_changed?.to_s,
+      'is-single-origin-fallback-enabled' => WebIde::ExtensionMarketplace.single_origin_fallback_enabled?.to_s
     }.merge(ide_code_suggestions_data).merge(ide_oauth_data)
   end
 end

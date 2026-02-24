@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import SlotWithFallbackContent from './components/slot_with_fallback_content.vue';
 import ParentWithNamedAndDefaultSlots from './components/parent_with_named_and_default_slots.vue';
 import KeydownEnterHandler from './components/keydown_enter_handler.vue';
@@ -21,6 +22,8 @@ import ParentWithAsyncDefaultVModel from './components/async_v_model/parent_with
 import ParentWithAsyncCustomVModel from './components/async_v_model/parent_with_async_custom_v_model.vue';
 import VIfElseWithDirective from './components/v_if_else_with_directive.vue';
 import ParentWithSlotOrder from './components/parent_with_slot_order.vue';
+import ParentWithSlotOrderForStub from './components/parent_with_slot_order_for_stub.vue';
+import ChildWithMultipleSlots from './components/child_with_multiple_slots.vue';
 
 describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
   it('correctly renders fallback content', () => {
@@ -463,6 +466,31 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
 
     // Named slots (first, last) appear before default, in their template order
     expect(slotOrder).toEqual(['slot-first', 'slot-last', 'slot-default']);
+  });
+
+  /**
+   * Same iteration order fix as above, but tested with `shallowMount` and
+   * `RENDER_ALL_SLOTS_TEMPLATE` — the real-world pattern that broke due to the
+   * order mismatch between Vue 2 and Vue 3 compilers.
+   *
+   * `RENDER_ALL_SLOTS_TEMPLATE` iterates `$scopedSlots` with `v-for`, so the
+   * property insertion order of the slots object determines the DOM order.
+   * Without the fix, default slot appeared first; with the fix, named slots
+   * (header, footer) appear before default, matching Vue 3 compiler output.
+   */
+  it('preserves slot order in shallowMount stubs using RENDER_ALL_SLOTS_TEMPLATE', () => {
+    const wrapper = shallowMount(ParentWithSlotOrderForStub, {
+      stubs: {
+        ChildWithMultipleSlots: stubComponent(ChildWithMultipleSlots, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
+      },
+    });
+
+    const slots = wrapper.findAll('[data-testid^="slot-"]');
+    const slotOrder = slots.wrappers.map((s) => s.attributes('data-testid'));
+
+    expect(slotOrder).toEqual(['slot-header', 'slot-footer', 'slot-default']);
   });
 
   /**

@@ -6080,6 +6080,9 @@ msgstr ""
 msgid "AdminSettings|Enable product analytics"
 msgstr ""
 
+msgid "AdminSettings|Enable single origin fallback"
+msgstr ""
+
 msgid "AdminSettings|Enable smartcn custom analyzer: Indexing"
 msgstr ""
 
@@ -6318,6 +6321,9 @@ msgid "AdminSettings|Send event data to your own Snowplow collector."
 msgstr ""
 
 msgid "AdminSettings|Send warning email"
+msgstr ""
+
+msgid "AdminSettings|Serve VS Code static assets from the GitLab instance if the extension host domain is unreachable."
 msgstr ""
 
 msgid "AdminSettings|Service Ping payload not found in the application cache"
@@ -12323,6 +12329,9 @@ msgstr ""
 msgid "Blocked"
 msgstr ""
 
+msgid "Blocked URL: %{error}"
+msgstr ""
+
 msgid "Blocked work items are not available for the current subscription tier"
 msgstr ""
 
@@ -14350,6 +14359,9 @@ msgstr ""
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
+msgid "Cannot register client: %{error}"
+msgstr ""
+
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr ""
 
@@ -15509,6 +15521,9 @@ msgid "Click to hide"
 msgstr ""
 
 msgid "Click to reveal"
+msgstr ""
+
+msgid "Client registration failed: %{error}"
 msgstr ""
 
 msgid "Client request timeout"
@@ -27028,6 +27043,12 @@ msgstr ""
 msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
+msgid "Dynamic client registration not supported by this server"
+msgstr ""
+
+msgid "Dynamic client registration requires authorization. Please pre-register the OAuth client and configure the client ID manually."
+msgstr ""
+
 msgid "E-mail:"
 msgstr ""
 
@@ -29456,6 +29477,9 @@ msgstr ""
 msgid "Failed to connect to Advanced Search cluster: %{error}"
 msgstr ""
 
+msgid "Failed to connect to MCP server: %{error}"
+msgstr ""
+
 msgid "Failed to connect to your device. Try again."
 msgstr ""
 
@@ -29511,6 +29535,18 @@ msgid "Failed to destroy compliance requirement"
 msgstr ""
 
 msgid "Failed to destroy compliance requirement control"
+msgstr ""
+
+msgid "Failed to discover OAuth metadata"
+msgstr ""
+
+msgid "Failed to discover OAuth metadata: %{error}"
+msgstr ""
+
+msgid "Failed to discover authorization server: %{error}"
+msgstr ""
+
+msgid "Failed to discover resource metadata: %{error}"
 msgstr ""
 
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
@@ -29724,6 +29760,9 @@ msgid "Failed to set due date because the date format is invalid."
 msgstr ""
 
 msgid "Failed to sign in using smart card authentication."
+msgstr ""
+
+msgid "Failed to store token"
 msgstr ""
 
 msgid "Failed to submit your comment. Please try again."
@@ -37457,6 +37496,9 @@ msgid "Invalid repository bundle for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Invalid repository path"
+msgstr ""
+
+msgid "Invalid server URL: %{error}"
 msgstr ""
 
 msgid "Invalid server response"
@@ -46516,6 +46558,12 @@ msgid "Number of users for user cap"
 msgstr ""
 
 msgid "OAuth authorizations"
+msgstr ""
+
+msgid "OAuth error occurred. Please try again."
+msgstr ""
+
+msgid "OAuth state mismatch. Please try again."
 msgstr ""
 
 msgid "OK"
@@ -57568,6 +57616,9 @@ msgstr ""
 msgid "Review requested from %{reviewerName}"
 msgstr ""
 
+msgid "Review settings"
+msgstr ""
+
 msgid "Review started"
 msgstr ""
 
@@ -67630,6 +67681,9 @@ msgstr ""
 msgid "Successfully confirmed"
 msgstr ""
 
+msgid "Successfully connected to MCP server"
+msgstr ""
+
 msgid "Successfully created connection for semantic search. Indexing will start soon."
 msgstr ""
 
@@ -69915,6 +69969,12 @@ msgid "This %{issuable} would exceed the maximum number of linked %{issuables} (
 msgstr ""
 
 msgid "This Cron pattern is invalid"
+msgstr ""
+
+msgid "This MCP server does not support dynamic client registration. Please configure the OAuth client ID for this server."
+msgstr ""
+
+msgid "This MCP server does not use OAuth authentication"
 msgstr ""
 
 msgid "This PDF is too large to display. Please download to view."
@@ -77227,6 +77287,9 @@ msgstr ""
 msgid "Web IDE"
 msgstr ""
 
+msgid "Web IDE single origin fallback is enabled"
+msgstr ""
+
 msgid "Web terminal"
 msgstr ""
 
@@ -77255,6 +77318,9 @@ msgid "WebIDE|Quickly and easily edit multiple files in your project."
 msgstr ""
 
 msgid "WebIDE|Quickly and easily edit multiple files in your project. Press . to open"
+msgstr ""
+
+msgid "WebIDE|The Web IDE could not load because the extension host domain is unreachable."
 msgstr ""
 
 msgid "WebIDE|The Web IDE does not have a valid extension host domain and it could not be initialized."
@@ -81285,6 +81351,9 @@ msgid "Your GitLab instance allows anyone to register for an account, which is a
 msgstr ""
 
 msgid "Your GitLab instance is currently being updated. Please try again later."
+msgstr ""
+
+msgid "Your GitLab instance serves VS Code static assets if the Web IDE extension host domain is unreachable. To prevent high-severity security risks, disable the single origin fallback and ensure that the extension host domain is accessible."
 msgstr ""
 
 msgid "Your GitLab version"

@@ -520,6 +520,26 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           expect(current_settings.vscode_extension_marketplace_extension_host_domain)
             .to eq(default_host_domain)
         end
+
+        it 'changes single origin fallback setting' do
+          page.within('#js-web-ide-settings') do
+            expect(page).to have_checked_field('Enable single origin fallback')
+
+            uncheck 'Enable single origin fallback'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.vscode_extension_marketplace_single_origin_fallback_enabled).to be(false)
+
+          page.within('#js-web-ide-settings') do
+            check 'Enable single origin fallback'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.vscode_extension_marketplace_single_origin_fallback_enabled).to be(true)
+        end
       end
     end
 
@@ -556,7 +576,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         visit integrations_admin_application_settings_path
       end
 
-      it 'shows integrations table' do
+      it 'shows integrations table',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
         expect(page).to have_selector '[data-testid="inactive-integrations-table"]'
       end
     end
@@ -868,7 +889,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             create(:raw_usage_data)
           end
 
-          it 'loads usage ping payload on click', :js do
+          it 'loads usage ping payload on click', :js,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             expected_payload_content = /(?=.*"test")/m
 
             expect(page).not_to have_content expected_payload_content
@@ -881,7 +903,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_content expected_payload_content
           end
 
-          it 'generates usage ping payload on button click', :js do
+          it 'generates usage ping payload on button click', :js,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
               expect(instance).to receive(:usage_data).and_call_original
             end

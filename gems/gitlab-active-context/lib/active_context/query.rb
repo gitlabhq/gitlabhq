@@ -4,7 +4,7 @@
 #
 # The Query class provides a fluent, chainable interface for building queries with various types
 # of conditions and logical operations. It supports filter, prefix, limit, k-nearest neighbor (KNN),
-# and logical AND/OR operations.
+# missing/exists field checks, and logical AND/OR operations.
 #
 # @example Simple filter query
 #   ActiveContext::Query.filter(project_id: 1)
@@ -33,6 +33,7 @@
 # - :filter   - Exact match conditions
 # - :prefix   - Prefix/starts-with conditions
 # - :missing  - Field is missing data
+# - :exists   - Field has data
 # - :limit    - Restricts number of results
 # - :knn      - K-nearest neighbor vector search
 # - :and      - Logical AND between queries
@@ -49,7 +50,7 @@
 
 module ActiveContext
   class Query
-    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or, :missing].freeze
+    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or, :missing, :exists].freeze
     SPACES_PER_INDENT = 2
 
     class << self
@@ -84,6 +85,10 @@ module ActiveContext
 
       def missing(field)
         new(type: :missing, value: field)
+      end
+
+      def exists(field)
+        new(type: :exists, value: field)
       end
 
       def knn(k:, target: nil, vector: nil, content: nil)
@@ -155,6 +160,10 @@ module ActiveContext
       self.class.new(type: :missing, value: field, children: [self])
     end
 
+    def exists(field)
+      self.class.new(type: :exists, value: field, children: [self])
+    end
+
     def inspect_ast(indent = 0)
       indentation = " " * SPACES_PER_INDENT * indent
       details = case type
@@ -162,6 +171,8 @@ module ActiveContext
                   "#{type}(#{value.map { |k, v| "#{k}: #{v}" }.join(', ')})"
                 when :missing
                   "missing(#{value})"
+                when :exists
+                  "exists(#{value})"
                 when :knn
                   knn_details = []
                   knn_details << "target: #{value[:target]}" if value[:target]

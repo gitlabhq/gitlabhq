@@ -49,7 +49,8 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - Another top-level group.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
-- In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
+- In the [group and project migration by direct transfer API](../../../api/bulk_imports.md),
+  copy top-level groups and subgroups to these locations.
 - Copy groups with or without projects.
   Copying groups with projects is available by default on GitLab.com.
 

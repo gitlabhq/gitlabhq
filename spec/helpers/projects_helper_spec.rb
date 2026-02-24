@@ -890,6 +890,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#transfer_project_message' do
+    let_it_be(:project) { create(:project, name: 'My Test  Project') }
+
+    it 'preserves whitespace in the project name' do
+      result = helper.transfer_project_message(project)
+
+      expect(result).to include('class="gl-whitespace-pre-wrap"')
+      expect(result).to include(project.full_name)
+    end
+  end
+
   describe '#project_permissions_panel_data' do
     subject { helper.project_permissions_panel_data(project) }
 

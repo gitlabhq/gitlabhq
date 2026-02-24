@@ -96,4 +96,83 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
       end
     end
   end
+
+  describe '.pipeline_type' do
+    subject(:pipeline_type) { described_class.send(:pipeline_type) }
+
+    before do
+      described_class.instance_variable_set(:@pipeline_type, nil)
+    end
+
+    context 'when on default branch with SCHEDULE_TYPE' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'master')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('SCHEDULE_TYPE', 'nightly')
+      end
+
+      it { is_expected.to eq('default_branch_scheduled_pipeline') }
+    end
+
+    context 'when on default branch without SCHEDULE_TYPE' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'master')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('SCHEDULE_TYPE', nil)
+      end
+
+      it { is_expected.to eq('default_branch_pipeline') }
+    end
+
+    context 'when on a stable-ee branch' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', '17-5-stable-ee')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+      end
+
+      it { is_expected.to eq('stable_branch_pipeline') }
+    end
+
+    context 'when targeting a stable-ee branch' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'some-backport-branch')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', '17-5-stable-ee')
+      end
+
+      it { is_expected.to eq('backport_merge_request_pipeline') }
+    end
+
+    context 'when CI_MERGE_REQUEST_IID is present' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'feature-branch')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_IID', '12345')
+      end
+
+      it { is_expected.to eq('merge_request_pipeline') }
+    end
+
+    context 'when CI_PIPELINE_SOURCE is pipeline (downstream/child)' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'as-if-foss/feature-branch')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_IID', nil)
+        stub_env('CI_PIPELINE_SOURCE', 'pipeline')
+      end
+
+      it { is_expected.to eq('downstream_pipeline') }
+    end
+
+    context 'when no conditions match' do
+      before do
+        stub_env('CI_COMMIT_REF_NAME', 'some-random-branch')
+        stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_IID', nil)
+        stub_env('CI_PIPELINE_SOURCE', 'push')
+      end
+
+      it { is_expected.to eq('unknown') }
+    end
+  end
 end

@@ -139,7 +139,7 @@ module ProjectsHelper
     _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action " \
       "changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") % {
         project_full_name: project.full_name,
-        code_start: '<code>',
+        code_start: '<code class="gl-whitespace-pre-wrap">',
         code_end: '</code>',
         link_to_namespace_change_doc: link_to_namespace_change_doc,
         link_to_data_loss_doc: link_to_data_loss_doc

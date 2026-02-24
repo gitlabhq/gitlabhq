@@ -39,6 +39,7 @@ Migration/UpdateLargeTable:
   - :system_note_metadata
   - :taggings
   - :todos
+  - :vulnerabilities
   - :vulnerability_finding_links
   - :vulnerability_occurrences
   - :vulnerability_reads

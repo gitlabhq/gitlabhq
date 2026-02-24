@@ -87,10 +87,10 @@ module API
         work_item
       end
 
-      expose_field :features,
+      expose :features,
         using: ::API::Entities::WorkItems::Features::Entity,
         documentation: { type: 'Entities::WorkItems::Features::Entity' },
-        expose_nil: true,
+        expose_nil: false,
         if: ->(_work_item, options) { options[:requested_features].present? } do |work_item|
         work_item
       end

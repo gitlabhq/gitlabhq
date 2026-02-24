@@ -21,6 +21,8 @@ module QA
           only: { subdomain: :staging }
         } do
         Page::Project::WorkItem::Index.perform do |index|
+          index.dismiss_onboarding_modal_if_present
+
           index.click_work_items_list_more_actions_dropdown
 
           index.click_export_as_csv_button

@@ -46,7 +46,8 @@ RSpec.describe 'User activates issue tracker', :js, feature_category: :integrati
       end
 
       context 'when the connection test fails' do
-        it 'activates the integration' do
+        it 'activates the integration',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
           stub_request(:head, url).to_raise(Gitlab::HTTP::Error)
 
           visit_project_integration(tracker)

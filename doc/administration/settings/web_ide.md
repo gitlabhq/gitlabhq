@@ -84,3 +84,26 @@ should adapt this guide to other installation methods.
 
 After saving the changes, you can open a project in the Web IDE to verify that the custom
 extension host is used by the editor.
+
+## Single origin fallback
+
+> [!warning]
+> The single origin fallback is enabled by default and has security risks. You should disable the fallback and, instead, ensure that the extension host domain is not blocked by CORS configuration, web browser security policies, or a proxy server.
+
+By default, the Web IDE runs in multi-origin mode, which serves VS Code static assets from a separate extension host domain. This isolation prevents malicious actors from exploiting the extension host to make authenticated requests to the GitLab instance.
+
+However, when the extension host domain is unreachable due to network or CORS restrictions, the Web IDE automatically falls back to single-origin mode. In this mode, the WebIDE serves VS Code assets from the same origin as the GitLab application, which increases the attack surface and creates security vulnerabilities.
+
+The **Enable single origin fallback** setting controls whether the Web IDE can fall back to single-origin mode when the extension host domain is unreachable.
+
+Prerequisites:
+
+- Administrator access.
+
+To configure this setting:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Web IDE**.
+1. Select or clear the **Enable single origin fallback** checkbox.
+1. Select **Save changes**.

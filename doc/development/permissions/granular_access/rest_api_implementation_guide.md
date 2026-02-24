@@ -13,7 +13,7 @@ This documentation is designed for community contributors and GitLab developers 
 
 ## Step-by-Step Implementation Guide
 
-This guide walks you through adding granular PAT authorization to REST API endpoints. Before starting, review the [Permission Naming Conventions](../../conventions.md) documentation to understand the terminology used throughout.
+This guide walks you through adding granular PAT authorization to REST API endpoints. Before starting, review the [Permission Naming Conventions](../conventions.md) documentation to understand the terminology used throughout.
 
 > [!note]
 > These steps cover REST API endpoints only. For GraphQL endpoint protection, refer to [GraphQL protection](graphql_granular_token_authorization.md).
@@ -78,7 +78,7 @@ Quick reference showing what you create in each step:
 
 **Goal:** Define granular permissions following GitLab naming conventions.
 
-For the naming conventions, see [Naming Permissions](../../conventions.md#naming-permissions) in the conventions documentation.
+For the naming conventions, see [Naming Permissions](../conventions.md#naming-permissions) in the conventions documentation.
 
 #### Determining the Resource Name for Endpoints
 
@@ -150,7 +150,7 @@ This creates two files:
 | `name` | Permission name (auto-populated from the action and resource) |
 | `description` | Human-readable description of what the permission allows |
 
-For additional details, see the [Permission Definition File](../../conventions.md#permission-definition-file) section in the conventions documentation.
+For additional details, see the [Permission Definition File](../conventions.md#permission-definition-file) section in the conventions documentation.
 
 #### Resource Metadata Fields
 
@@ -171,11 +171,11 @@ The validation task (`bundle exec rake gitlab:permissions:validate`) enforces se
 
 **Permission Name Format:**
 
-For guidance on how to name permissions, see [Naming Permissions](../../conventions.md#naming-permissions) in the conventions documentation.
+For guidance on how to name permissions, see [Naming Permissions](../conventions.md#naming-permissions) in the conventions documentation.
 
 **Action Words:**
 
-For a list of disallowed actions, see [Disallowed Actions](../../conventions.md#disallowed-actions) in the conventions documentation.
+For a list of disallowed actions, see [Disallowed Actions](../conventions.md#disallowed-actions) in the conventions documentation.
 
 **File Structure:**
 

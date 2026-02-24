@@ -308,11 +308,13 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         valid_runner_registrars: ApplicationSettingImplementation::VALID_RUNNER_REGISTRAR_TYPES,
         vscode_extension_marketplace: {
           'enabled' => false,
-          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
+          'single_origin_fallback_enabled' => true
         },
         vscode_extension_marketplace_enabled?: false,
         vscode_extension_marketplace_extension_host_domain:
           ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
+        vscode_extension_marketplace_single_origin_fallback_enabled: true,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes,
@@ -2504,6 +2506,24 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       with_them do
         it { is_expected.not_to allow_value({ extension_host_domain: domain }).for(:vscode_extension_marketplace) }
       end
+    end
+  end
+
+  describe '#vscode_extension_marketplace_single_origin_fallback_enabled' do
+    it 'is updated when underlying vscode_extension_marketplace changes' do
+      expect(setting.vscode_extension_marketplace_single_origin_fallback_enabled).to be(true)
+
+      setting.vscode_extension_marketplace = { single_origin_fallback_enabled: false }
+
+      expect(setting.vscode_extension_marketplace_single_origin_fallback_enabled).to be(false)
+    end
+
+    it 'updates the underlying vscode_extension_marketplace when changed' do
+      setting.vscode_extension_marketplace = { single_origin_fallback_enabled: true }
+
+      setting.vscode_extension_marketplace_single_origin_fallback_enabled = false
+
+      expect(setting.vscode_extension_marketplace).to eq({ "single_origin_fallback_enabled" => false })
     end
   end
 

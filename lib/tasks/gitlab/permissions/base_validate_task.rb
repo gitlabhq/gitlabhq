@@ -118,7 +118,7 @@ module Tasks
 
         def implementation_guide_link(anchor: nil)
           doc_url = Rails.application.routes.url_helpers.help_page_url(
-            'development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md',
+            'development/permissions/granular_access/rest_api_implementation_guide.md',
             anchor: anchor
           )
           "Learn more: #{doc_url}"

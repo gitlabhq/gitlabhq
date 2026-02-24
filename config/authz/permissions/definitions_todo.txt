@@ -631,7 +631,6 @@ read_vulnerability_statistics
 read_web_hook
 read_web_ide_terminal
 read_wiki_page
-read_work_item
 read_work_item_lifecycle
 read_work_item_status
 read_work_item_type

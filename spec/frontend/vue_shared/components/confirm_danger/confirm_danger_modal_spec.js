@@ -52,6 +52,11 @@ describe('Confirm Danger Modal', () => {
       expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm:`);
     });
 
+    it('preserves whitespace in the confirmation phrase', () => {
+      const codeElement = wrapper.find('code');
+      expect(codeElement.classes()).toContain('gl-whitespace-pre-wrap');
+    });
+
     it('renders any additional messages', () => {
       expect(findAdditionalMessage().text()).toBe(confirmDangerMessage);
     });

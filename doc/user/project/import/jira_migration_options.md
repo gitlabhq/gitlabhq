@@ -64,7 +64,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
 
 ## Let GitLab Professional Services handle the migration for you
 
-For a high-level overview of the Jira migration service, see the [Jira Migration Service](https://drive.google.com/file/d/1p0rv02OnjfSiNoeDT2u4MhviozS--Yan/view) data sheet.
+For a high-level overview, see the [Jira migration service](https://drive.google.com/file/d/1p0rv02OnjfSiNoeDT2u4MhviozS--Yan/view) data sheet.
 
 To get a personalized quote, visit the [GitLab Professional Services](https://about.gitlab.com/services/) page and select **Request Service**.
 

@@ -311,6 +311,8 @@ tags:
   description: Operations related to web commits.
 - name: Wikis
   description: Operations related to wikis.
+- name: Work items
+  description: Operations related to work items.
 - name: Workspaces
   description: Operations related to workspaces.
 servers:
@@ -22822,6 +22824,8 @@ paths:
                   type: string
                 vscode_extension_marketplace_extension_host_domain:
                   type: string
+                vscode_extension_marketplace_single_origin_fallback_enabled:
+                  type: string
                 reindexing_minimum_index_size:
                   type: string
                 reindexing_minimum_relative_bloat_size:
@@ -30089,6 +30093,216 @@ paths:
                   description: The name of the branch
               required:
               - file
+  "/api/v4/namespaces/{id}/-/work_items":
+    get:
+      operationId: getApiV4NamespacesIdDashWorkItems
+      summary: List work items.
+      description: |
+        Get a list of work items in a namespace. Project and group namespaces are supported.
+        This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+      tags:
+      - Work items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesWorkItemBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - feature flag disabled
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded full path of the namespace
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+      - name: cursor
+        required: false
+        description: Cursor for obtaining the next set of records
+        schema:
+          type: string
+        in: query
+      - name: fields
+        required: false
+        description: Comma-separated list of base fields to include. Defaults to id,
+          iid, global_id, title.
+        schema:
+          type: string
+        in: query
+      - name: features
+        required: false
+        description: 'Comma-separated list of feature payloads to include. No feature
+          payloads are returned unless specified. Supported values: description, assignees,
+          labels, milestone, start_and_due_date.'
+        schema:
+          type: string
+        in: query
+  "/api/v4/projects/{id}/-/work_items":
+    get:
+      operationId: getApiV4ProjectsIdDashWorkItems
+      summary: List work items in a project.
+      description: |
+        Get a list of work items in a project.
+        This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+      tags:
+      - Work items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesWorkItemBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - feature flag disabled
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+      - name: cursor
+        required: false
+        description: Cursor for obtaining the next set of records
+        schema:
+          type: string
+        in: query
+      - name: fields
+        required: false
+        description: Comma-separated list of base fields to include. Defaults to id,
+          iid, global_id, title.
+        schema:
+          type: string
+        in: query
+      - name: features
+        required: false
+        description: 'Comma-separated list of feature payloads to include. No feature
+          payloads are returned unless specified. Supported values: description, assignees,
+          labels, milestone, start_and_due_date.'
+        schema:
+          type: string
+        in: query
+  "/api/v4/groups/{id}/-/work_items":
+    get:
+      operationId: getApiV4GroupsIdDashWorkItems
+      summary: List work items in a group.
+      description: |
+        Get a list of work items in a group.
+        This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+      tags:
+      - Work items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesWorkItemBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - feature flag disabled
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the group
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+      - name: cursor
+        required: false
+        description: Cursor for obtaining the next set of records
+        schema:
+          type: string
+        in: query
+      - name: fields
+        required: false
+        description: Comma-separated list of base fields to include. Defaults to id,
+          iid, global_id, title.
+        schema:
+          type: string
+        in: query
+      - name: features
+        required: false
+        description: 'Comma-separated list of feature payloads to include. No feature
+          payloads are returned unless specified. Supported values: description, assignees,
+          labels, milestone, start_and_due_date.'
+        schema:
+          type: string
+        in: query
   "/api/v4/web_commits/public_key":
     get:
       operationId: getApiV4WebCommitsPublicKey
@@ -93944,6 +94158,8 @@ components:
           type: string
         vscode_extension_marketplace_extension_host_domain:
           type: string
+        vscode_extension_marketplace_single_origin_fallback_enabled:
+          type: string
         reindexing_minimum_index_size:
           type: string
         reindexing_minimum_relative_bloat_size:
@@ -94505,6 +94721,199 @@ components:
           example: main
         link:
           type: string
+    APIEntitiesWorkItemsFeaturesStartAndDueDate:
+      type: object
+      properties:
+        start_date:
+          type: string
+          example: '2022-08-17'
+        due_date:
+          type: string
+          example: '2022-08-30'
+    APIEntitiesWorkItemsLabel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: bug
+        description:
+          type: string
+          example: Bug reports
+        color:
+          type: string
+          example: "#FF0000"
+        text_color:
+          type: string
+          example: "#FFFFFF"
+    APIEntitiesWorkItemsFeaturesLabels:
+      type: object
+      properties:
+        allows_scoped_labels:
+          type: Boolean
+          example: true
+        labels:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesWorkItemsLabel"
+    APIEntitiesWorkItemsFeaturesDescription:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Repellendus impedit et vel velit dignissimos.
+        description_html:
+          type: string
+          example: "<p>Repellendus impedit et vel velit dignissimos.</p>"
+        edited:
+          type: Boolean
+          example: false
+        last_edited_at:
+          type: DateTime
+          example: '2022-11-15T08:30:55.232Z'
+        last_edited_by:
+          "$ref": "#/components/schemas/APIEntitiesUserBasic"
+        task_completion_status:
+          "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
+    APIEntitiesWorkItemsFeaturesEntity:
+      type: object
+      properties:
+        description:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsFeaturesDescription"
+        assignees:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+        labels:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsFeaturesLabels"
+        milestone:
+          "$ref": "#/components/schemas/APIEntitiesMilestone"
+        start_and_due_date:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsFeaturesStartAndDueDate"
+    APIEntitiesWorkItemsPermissions:
+      type: object
+      properties:
+        read_work_item:
+          type: Boolean
+          example: true
+        update_work_item:
+          type: Boolean
+          example: true
+        delete_work_item:
+          type: Boolean
+          example: true
+        admin_work_item:
+          type: Boolean
+          example: true
+        admin_parent_link:
+          type: Boolean
+          example: true
+        set_work_item_metadata:
+          type: Boolean
+          example: true
+        create_note:
+          type: Boolean
+          example: true
+        admin_work_item_link:
+          type: Boolean
+          example: true
+        mark_note_as_internal:
+          type: Boolean
+          example: true
+        report_spam:
+          type: Boolean
+          example: true
+        move_work_item:
+          type: Boolean
+          example: true
+        clone_work_item:
+          type: Boolean
+          example: true
+        summarize_comments:
+          type: Boolean
+          example: true
+    APIEntitiesWorkItemsType:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Issue
+        icon_name:
+          type: string
+          example: issue-type-issue
+    APIEntitiesWorkItemBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        global_id:
+          type: string
+          example: gid://gitlab/WorkItem/1
+        iid:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Fix the bug
+        state:
+          type: string
+          example: opened
+        confidential:
+          type: Boolean
+          example: false
+        imported:
+          type: Boolean
+          example: false
+        hidden:
+          type: Boolean
+          example: false
+        lock_version:
+          type: integer
+          example: 0
+        created_at:
+          type: DateTime
+          example: '2022-08-17T12:46:35.053Z'
+        updated_at:
+          type: DateTime
+          example: '2022-11-14T17:22:01.470Z'
+        closed_at:
+          type: DateTime
+          example: '2022-11-15T08:30:55.232Z'
+        title_html:
+          type: string
+          example: "<p>Fix the bug</p>"
+        author:
+          "$ref": "#/components/schemas/APIEntitiesUserBasic"
+        work_item_type:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsType"
+        create_note_email:
+          type: string
+          example: issue-1@example.com
+        duplicated_to_work_item_url:
+          type: string
+          example: https://gitlab.example.com/groups/gitlab-org/-/work_items/2
+        moved_to_work_item_url:
+          type: string
+          example: https://gitlab.example.com/groups/gitlab-org/-/work_items/3
+        reference:
+          type: string
+          example: gitlab-org#1
+        web_url:
+          type: string
+          example: https://gitlab.example.com/groups/gitlab-org/-/work_items/1
+        web_path:
+          type: string
+          example: "/groups/gitlab-org/-/work_items/1"
+        user_permissions:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsPermissions"
+        features:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsFeaturesEntity"
     APIEntitiesUserCounts:
       type: object
       properties:

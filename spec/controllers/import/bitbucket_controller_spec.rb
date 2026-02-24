@@ -132,7 +132,6 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     context "when token is valid" do
       before do
         assign_session_tokens
-        stub_feature_flags(bitbucket_cloud_importer_multi_workspace_repos: false)
 
         allow(controller).to receive(:page_info).and_return({
           has_next_page: false,
@@ -147,11 +146,11 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         let(:repo_id) { @repo.full_name }
         let(:import_source) { @repo.full_name }
         let(:provider_name) { 'bitbucket' }
-        let(:client_repos_field) { :repos }
+        let(:client_repos_field) { :multi_workspace_repos }
       end
 
       it 'returns invalid repos' do
-        allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo, @invalid_repo])
+        allow_any_instance_of(Bitbucket::Client).to receive(:multi_workspace_repos).and_return([@repo, @invalid_repo])
 
         get :status, format: :json
 
@@ -170,10 +169,10 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
 
         it 'passes sanitized filter param to bitbucket client' do
           expect_next_instance_of(Bitbucket::Client) do |client|
-            expect(client).to receive(:repos).with(
+            expect(client).to receive(:multi_workspace_repos).with(
               filter: expected_filter,
               limit: Import::BitbucketController::PAGE_LENGTH,
-              after_cursor: nil
+              workspace_paging_info: []
             ).and_return([@repo])
           end
 
@@ -181,32 +180,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         end
       end
 
-      context 'when paginating' do
-        let(:after_cursor) { '2025-12-10T12:13:37.393445+00:00' }
-
-        subject { get :status, params: { after: after_cursor }, as: :json }
-
-        it 'passes after cursor parameter to bitbucket client' do
-          allow(controller).to receive(:page_info).and_return({
-            has_next_page: false,
-            has_previous_page: false,
-            start_cursor: nil,
-            end_cursor: nil
-          })
-
-          expect_next_instance_of(Bitbucket::Client) do |client|
-            expect(client).to receive(:repos).with(
-              filter: nil,
-              limit: Import::BitbucketController::PAGE_LENGTH,
-              after_cursor: after_cursor
-            ).and_return([@repo])
-          end
-
-          subject
-        end
-      end
-
-      context 'with multi-workspace feature enabled' do
+      context 'with workspace paging info' do
         let(:collection) { instance_double(Bitbucket::MultiWorkspaceCollection, workspace_paging_info: workspace_paging_info) }
 
         let(:workspace_paging_info) do
@@ -218,8 +192,6 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         end
 
         before do
-          stub_feature_flags(bitbucket_cloud_importer_multi_workspace_repos: true)
-
           allow(collection).to receive(:partition).and_return([[@repo], []])
         end
 

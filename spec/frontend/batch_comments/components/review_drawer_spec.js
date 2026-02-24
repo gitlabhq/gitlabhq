@@ -97,6 +97,7 @@ describe('ReviewDrawer', () => {
     useNotes().noteableData.id = 1;
     useNotes().noteableData.preview_note_path = '/preview';
     useNotes().noteableData.noteableType = 'merge_request';
+    useNotes().noteableData.diff_head_sha = 'abc123def456';
     useNotes().notesData.markdownDocsPath = '/markdown/docs';
     useNotes().notesData.quickActionsDocsPath = '/quickactions/docs';
     useBatchComments();
@@ -192,6 +193,7 @@ describe('ReviewDrawer', () => {
         note: 'Hello world',
         approve: false,
         reviewer_state: 'reviewed',
+        merge_request_diff_head_sha: 'abc123def456',
       }),
     );
   });

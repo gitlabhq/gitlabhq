@@ -81,4 +81,50 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
       end
     end
   end
+
+  describe 'client_options' do
+    it 'uses correct URLs for API calls, authorization, and token exchange' do
+      expect(strategy.options.client_options).to have_attributes(
+        site: 'https://api.bitbucket.org',
+        authorize_url: 'https://bitbucket.org/site/oauth2/authorize',
+        token_url: 'https://bitbucket.org/site/oauth2/access_token'
+      )
+    end
+  end
+
+  describe '#raw_info' do
+    let(:access_token) { instance_double(OAuth2::AccessToken) }
+
+    before do
+      allow(strategy).to receive(:raw_info).and_call_original
+      allow(strategy).to receive(:access_token).and_return(access_token)
+    end
+
+    it 'requests user info from /2.0/user' do
+      expect(access_token)
+        .to receive(:get)
+        .with('/2.0/user')
+        .and_return(instance_double(OAuth2::Response, parsed: raw_info))
+
+      expect(strategy.raw_info).to eq(raw_info)
+    end
+  end
+
+  describe '#emails' do
+    let(:access_token) { instance_double(OAuth2::AccessToken) }
+
+    before do
+      allow(strategy).to receive(:emails).and_call_original
+      allow(strategy).to receive(:access_token).and_return(access_token)
+    end
+
+    it 'requests emails from /2.0/user/emails' do
+      expect(access_token)
+        .to receive(:get)
+        .with('/2.0/user/emails')
+        .and_return(instance_double(OAuth2::Response, parsed: { 'values' => emails }))
+
+      expect(strategy.emails).to eq(emails)
+    end
+  end
 end

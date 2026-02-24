@@ -1257,6 +1257,8 @@ Grants the ability to read, write, and delete work items.
 | Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_milestone_events/:event_id` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events/:event_id` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items` |
+| Read | Project | `GET` | `/projects/:id/-/work_items` |
 | Read | Project | `GET` | `/projects/:id/boards` |
 | Read | Project | `GET` | `/projects/:id/boards/:board_id` |
 | Read | Project | `GET` | `/projects/:id/boards/:board_id/lists` |
@@ -1297,6 +1299,8 @@ Grants the ability to read, write, and delete work items.
 | Read | Group | `GET` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji/:award_id` |
 | Read | Group | `GET` | `/groups/:id/issues` |
 | Read | Group | `GET` | `/groups/:id/issues_statistics` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items` |
+| Read | Group | `GET` | `/groups/:id/-/work_items` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
@@ -1802,6 +1806,14 @@ Grants the ability to read, update, delete, and disable two-factor authenticatio
 | Read | Group | `GET` | `/groups/:id/enterprise_users` |
 | Read | Group | `GET` | `/groups/:id/enterprise_users/:user_id` |
 | Update | Group | `PATCH` | `/groups/:id/enterprise_users/:user_id` |
+
+#### Experiment
+
+Grants the ability to read experiments.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/experiments` |
 
 #### Global Search
 

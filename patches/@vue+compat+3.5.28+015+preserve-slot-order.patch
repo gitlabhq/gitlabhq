@@ -1,12 +1,14 @@
 diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
-index 8c678ac..4dcb50e 100644
+index 8c678ac..4155a2a 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6179,7 +6179,9 @@ function convertLegacySlots(vnode) {
+@@ -6179,7 +6179,11 @@ function convertLegacySlots(vnode) {
    if (scopedSlots) {
      delete props.scopedSlots;
      if (slots) {
 -      extend(slots, scopedSlots);
++      // patch-package: Preserve scopedSlots order by starting with it, then merging array children slots
++      // This maintains template order where named slots typically appear before default content
 +      const arrayChildrenSlots = slots;
 +      slots = extend({}, scopedSlots);
 +      extend(slots, arrayChildrenSlots);
@@ -14,14 +16,16 @@ index 8c678ac..4dcb50e 100644
        slots = scopedSlots;
      }
 diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-index c19aa93..2205a0e 100644
+index c19aa93..2c89655 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6086,7 +6086,9 @@ function convertLegacySlots(vnode) {
+@@ -6086,7 +6086,11 @@ function convertLegacySlots(vnode) {
    if (scopedSlots) {
      delete props.scopedSlots;
      if (slots) {
 -      extend(slots, scopedSlots);
++      // patch-package: Preserve scopedSlots order by starting with it, then merging array children slots
++      // This maintains template order where named slots typically appear before default content
 +      const arrayChildrenSlots = slots;
 +      slots = extend({}, scopedSlots);
 +      extend(slots, arrayChildrenSlots);

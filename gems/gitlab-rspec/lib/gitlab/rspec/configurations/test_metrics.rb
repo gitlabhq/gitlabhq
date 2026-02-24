@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/object/blank'
 require 'gitlab_quality/test_tooling'
 
 module Gitlab
@@ -100,6 +101,8 @@ module Gitlab
                                  "backport_merge_request_pipeline"
                                elsif ENV["CI_MERGE_REQUEST_IID"].present?
                                  "merge_request_pipeline"
+                               elsif ENV["CI_PIPELINE_SOURCE"] == "pipeline"
+                                 "downstream_pipeline"
                                else
                                  "unknown"
                                end

@@ -222,7 +222,7 @@ RSpec.describe 'Database schema',
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
-      vulnerability_external_issue_links: %w[project_id vulnerability_occurrence_id],
+      vulnerability_external_issue_links: %w[project_id],
       vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_severity_overrides: %w[vulnerability_occurrence_id], # foreign key will be added at a later date

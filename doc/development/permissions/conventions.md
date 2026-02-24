@@ -48,7 +48,7 @@ The following command generates a definition file with the correct action and re
 bin/permission force_delete_ai_catalog_item -a force_delete -r ai_catalog_item -c ai_catalog
 ```
 
-For a full guide on using the command, see [Create Permission Definition Files](granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files).
+For a full guide on using the command, see [Create Permission Definition Files](granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files).
 
 ### Naming Permissions
 

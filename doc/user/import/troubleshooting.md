@@ -52,7 +52,7 @@ Search logs for relevant information:
 For GitLab Self-Managed instances:
 
 1. Check the [Sidekiq logs](../../administration/logs/_index.md#sidekiqlog) and [`exceptions_json` logs](../../administration/logs/_index.md#exceptions_jsonlog).
-1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [Check import status](#check-import-status).
+1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [check import status](#check-import-status).
 1. Look for fields such as `job_status`, `interrupted_count`, and `exception`.
 
 For GitLab.com (GitLab team members only):
@@ -75,8 +75,8 @@ For GitLab.com (GitLab team members only):
 
 ### Identify common issues
 
-Check the information gathered in [Review logs](#review-logs) against the following common issues:
+Check the information gathered in the [review logs](#review-logs) against the following common issues:
 
 - Interrupted jobs: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
 - S3 connectivity: For imports using S3, check for any S3-related error messages in the logs.
-- Large repository: If the repository is very large, the import might time out. Consider using [Direct transfer](../group/import/_index.md) in this case.
+- Large repository: If the repository is very large, the import might time out. Consider using [direct transfer](../group/import/_index.md) in this case.

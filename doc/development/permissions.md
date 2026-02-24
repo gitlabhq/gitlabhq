@@ -12,9 +12,9 @@ As a pre-requisite, familiarize yourself with our [glossary](../auth/auth_glossa
 
 For more information, see:
 
-- [Authorizations](permissions/authorizations.md): guidance on where to check permissions.
-- [Custom roles](permissions/custom_roles.md): guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
-- [`DeclarativePolicy` framework](policies.md): introduction into `DeclarativePolicy` framework we use for authorization.
-- [Granular Access](permissions/granular_access/_index.md): Development guidelines for granular access control, including job tokens and granular Personal Access Tokens.
-- [Naming and conventions](permissions/conventions.md): guidance on how to name new permissions and what should be included in policy classes.
-- [Predefined roles system](permissions/predefined_roles.md): a general overview about predefined roles, user types, feature specific permissions, and permissions dependencies.
+- [Authorization](permissions/authorizations.md): Guidance on where to check permissions.
+- [Custom roles](permissions/custom_roles.md): Guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
+- [`DeclarativePolicy` framework](policies.md): Introduction to `DeclarativePolicy` framework used for authorization.
+- [Granular access](permissions/granular_access/_index.md): Development guidelines for granular access control, including job tokens and granular Personal Access Tokens.
+- [Permissions conventions](permissions/conventions.md): Guidance on how to name new permissions and what should be included in policy classes.
+- [Predefined system of user roles](permissions/predefined_roles.md): General overview about predefined roles, user types, feature specific permissions, and permissions dependencies.

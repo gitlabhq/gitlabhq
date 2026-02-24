@@ -54,7 +54,8 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
           expect(page).to have_content(device.name)
         end
 
-        it 'allows deleting a device' do
+        it 'allows deleting a device',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
           visit profile_two_factor_auth_path
           expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
 

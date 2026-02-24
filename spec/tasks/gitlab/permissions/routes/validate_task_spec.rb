@@ -105,13 +105,13 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_permission
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
           #
           #    - GET /projects/:id/test: undefined_permission
           #
@@ -142,13 +142,13 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_permission
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
           #
           #    - GET /projects/:id/test: undefined_permission
           #
@@ -177,14 +177,14 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/test: undefined_one
           #    - GET /projects/:id/test: undefined_two
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
           #
           #    - GET /projects/:id/test: undefined_one
           #    - GET /projects/:id/test: undefined_two
@@ -230,14 +230,14 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-3-create-permission-definition-files
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files
           #
           #    - GET /projects/:id/first: undefined_one
           #    - POST /projects/:id/second: undefined_two
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
           #
           #    - GET /projects/:id/first: undefined_one
           #    - POST /projects/:id/second: undefined_two
@@ -261,7 +261,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-4-assign-permissions-to-assignable-permissions
           #
           #    - GET /projects/:id/test: read_something
           #
@@ -286,7 +286,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
           #  Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#determining-boundaries
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#determining-boundaries
           #
           #    - GET /projects/:id/test: read_something
           #        Route boundaries: user
@@ -325,7 +325,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
           #  Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#determining-boundaries
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#determining-boundaries
           #
           #    - GET /projects/:id/test: read_something
           #        Route boundaries: group, user
@@ -391,7 +391,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes define permissions but are missing a boundary_type.
           #  Add boundary_type to the route_setting :authorization.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/granular_personal_access_tokens/rest_api_implementation_guide.md#step-5-add-authorization-decorators-to-api-endpoints
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-5-add-authorization-decorators-to-api-endpoints
           #
           #    - GET /projects/:id/test: read_something
           #

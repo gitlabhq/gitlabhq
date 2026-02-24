@@ -7,7 +7,6 @@ class Import::BitbucketController < Import::BaseController
 
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
-  before_action :expose_feature_flags
 
   rescue_from OAuth2::Error, with: :bitbucket_unauthorized
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
@@ -130,10 +129,6 @@ class Import::BitbucketController < Import::BaseController
 
   private
 
-  def expose_feature_flags
-    push_frontend_feature_flag(:bitbucket_cloud_importer_multi_workspace_repos, current_user)
-  end
-
   def page_info
     bitbucket_repos.page_info
   end
@@ -166,19 +161,11 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def bitbucket_repos
-    @bitbucket_repos ||= if Feature.enabled?(:bitbucket_cloud_importer_multi_workspace_repos, current_user)
-                           client.multi_workspace_repos(
-                             filter: sanitized_filter_param,
-                             limit: PAGE_LENGTH,
-                             workspace_paging_info: workspace_paging_info_param
-                           )
-                         else
-                           client.repos(
-                             filter: sanitized_filter_param,
-                             limit: PAGE_LENGTH,
-                             after_cursor: params[:after].presence
-                           )
-                         end
+    @bitbucket_repos ||= client.multi_workspace_repos(
+      filter: sanitized_filter_param,
+      limit: PAGE_LENGTH,
+      workspace_paging_info: workspace_paging_info_param
+    )
   end
 
   def workspace_paging_info_param

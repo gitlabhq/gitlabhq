@@ -10,6 +10,8 @@ module Users
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
+    SINGLE_ORIGIN_FALLBACK_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
+    SINGLE_ORIGIN_FALLBACK_CALLOUT = 'single_origin_fallback_callout'
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     BRANCH_RULES_TIP_CALLOUT = 'branch_rules_tip_callout'
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
@@ -83,6 +85,15 @@ module Users
 
       days_until_enrollment = (current_user.email_otp_required_after.to_date - Date.current).to_i
       days_until_enrollment.between?(8, 14)
+    end
+
+    def show_single_origin_fallback_callout?
+      controller_path = controller.controller_path
+
+      current_user&.can_admin_all_resources? &&
+        !user_dismissed?(SINGLE_ORIGIN_FALLBACK_CALLOUT) &&
+        SINGLE_ORIGIN_FALLBACK_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller_path.match?(path) } &&
+        WebIde::ExtensionMarketplace.single_origin_fallback_enabled?
     end
 
     private

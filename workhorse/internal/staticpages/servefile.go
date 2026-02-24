@@ -28,6 +28,33 @@ const (
 	CacheExpireMax
 )
 
+// AssetAuthorizationResult represents the result of asset authorization check.
+type AssetAuthorizationResult struct {
+	Allowed              bool
+	AuthorizationHeaders map[string][]string
+}
+
+// HTTP methods allowed for asset authorization checks.
+var assetAuthorizationAllowedRequestMethods = []string{"OPTIONS", "GET", "HEAD"}
+
+// Headers that can be copied from the upstream authorization API response.
+var assetAuthorizationUpstreamResponseForwardedHeaders = []string{
+	"Access-Control-Allow-Origin",
+	"Access-Control-Allow-Methods",
+	"Access-Control-Allow-Headers",
+	"Access-Control-Allow-Credentials",
+	"Cross-Origin-Opener-Policy",
+	"Content-Security-Policy",
+	"Cross-Origin-Resource-Policy",
+	"Vary",
+}
+
+// Allowed asset authorization result with empty headers
+var allowedAssetAuthorizationResult = AssetAuthorizationResult{
+	Allowed:              true,
+	AuthorizationHeaders: make(map[string][]string),
+}
+
 // ServeExisting serves static assets
 // QUIRK: If a client requests 'foo%2Fbar' and 'foo/bar' exists,
 // handleServeFile will serve foo/bar instead of passing the request
@@ -45,6 +72,13 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			if errors.Is(err, errPathTraversal) {
 				log.WithRequest(r).WithError(err).Error()
 			}
+			notFoundHandler.ServeHTTP(w, r)
+			return
+		}
+
+		authResult := s.resolveAssetAuthorization(r)
+
+		if !authResult.Allowed {
 			notFoundHandler.ServeHTTP(w, r)
 			return
 		}
@@ -76,7 +110,7 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			}
 		}()
 
-		s.resolveAuthorizationHeaders(r, w)
+		s.setAuthorizationHeaders(w, authResult)
 		s.setCacheHeaders(w, cache)
 		s.logFileServed(r.Context(), file, w.Header().Get("Content-Encoding"), r.Method, r.RequestURI)
 
@@ -84,49 +118,82 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 	})
 }
 
+// setAuthorizationHeaders sets authorization headers from the auth result
+func (s *Static) setAuthorizationHeaders(w http.ResponseWriter, authResult AssetAuthorizationResult) {
+	for k, v := range authResult.AuthorizationHeaders {
+		w.Header()[k] = v
+	}
+}
+
 var errPathTraversal = errors.New("path traversal")
 
-func (s *Static) resolveAuthorizationHeaders(r *http.Request, w http.ResponseWriter) {
-	allowedMethods := []string{"OPTIONS", "GET", "HEAD"}
-	allowedHeaders := map[string]bool{
-		"access-control-allow-origin":      true,
-		"access-control-allow-methods":     true,
-		"access-control-allow-headers":     true,
-		"access-control-allow-credentials": true,
-		"cross-origin-opener-policy":       true,
-		"content-security-policy":          true,
-		"cross-origin-resource-policy":     true,
-		"vary":                             true,
-	}
+// resolveAssetAuthorization checks authorization for specific static assets and retrieves
+// CORS-related headers from the upstream API.
+//
+// This function handles authorization for two specific asset paths:
+//   - /assets/webpack/gitlab-web-ide-vscode-workbench-<version>/*
+//   - /assets/gitlab-mono/*
+//
+// For these paths, it performs a CORS preflight check by sending an OPTIONS request to the
+// upstream API via PreAuthorize. If the request is unauthorized (HTTP 401), access is denied.
+// Otherwise, allowed CORS headers (access-control-*, cross-origin-*, content-security-policy, vary)
+// are extracted from the API response and returned.
+//
+// For all other asset paths or non-GET/HEAD/OPTIONS requests, authorization is implicitly allowed
+// with no additional headers.
+//
+// Parameters:
+//   - r: The incoming HTTP request
+//
+// Returns:
+//   - AssetAuthorizationResult containing:
+//   - Allowed: true if the asset can be served, false if unauthorized
+//   - AuthorizationHeaders: map of CORS and security headers from the API response
+func (s *Static) resolveAssetAuthorization(r *http.Request) AssetAuthorizationResult {
 	isTargetAssetsPath := strings.HasPrefix(r.URL.Path, "/assets/webpack/gitlab-web-ide-vscode-workbench") ||
 		strings.HasPrefix(r.URL.Path, "/assets/gitlab-mono")
 
-	if isTargetAssetsPath && slices.Contains(allowedMethods, r.Method) {
-		optionsRequest := &http.Request{Method: "OPTIONS", URL: r.URL, Header: r.Header.Clone()}
-		httpResponse, _, err := s.API.PreAuthorize(r.RequestURI, optionsRequest)
+	if !isTargetAssetsPath || !slices.Contains(assetAuthorizationAllowedRequestMethods, r.Method) {
+		return allowedAssetAuthorizationResult
+	}
 
-		if err != nil {
-			log.WithContextFields(r.Context(), log.Fields{
-				"uri": mask.URL(r.RequestURI),
-			}).Error("Could not resolve CORS headers for static asset")
-			return
-		}
+	preflightRequest := &http.Request{Method: "OPTIONS", URL: r.URL, Header: r.Header.Clone()}
+	preflightRequest.Host = r.Host
+	httpResponse, _, err := s.API.PreAuthorize(r.RequestURI, preflightRequest)
 
-		if httpResponse == nil {
-			return
-		}
+	if err != nil {
+		log.WithContextFields(r.Context(), log.Fields{
+			"uri": mask.URL(r.RequestURI),
+		}).Error("Could not resolve CORS headers for static asset")
+		return allowedAssetAuthorizationResult
+	}
 
+	defer func() {
 		if err := httpResponse.Body.Close(); err != nil {
 			log.WithContextFields(r.Context(), log.Fields{
 				"uri": mask.URL(r.RequestURI),
-			}).WithError(err).Error("Could not close pre-authorize response body")
+			}).WithError(err).Error("Error closing asset authorization API response")
 		}
+	}()
 
-		for k, v := range httpResponse.Header {
-			if allowedHeaders[strings.ToLower(k)] {
-				w.Header()[k] = v
-			}
+	if httpResponse.StatusCode == http.StatusUnauthorized {
+		return AssetAuthorizationResult{
+			Allowed:              false,
+			AuthorizationHeaders: make(map[string][]string),
 		}
+	}
+
+	headers := make(map[string][]string)
+
+	for _, headerKey := range assetAuthorizationUpstreamResponseForwardedHeaders {
+		if headerValue, ok := httpResponse.Header[headerKey]; ok {
+			headers[headerKey] = headerValue
+		}
+	}
+
+	return AssetAuthorizationResult{
+		Allowed:              true,
+		AuthorizationHeaders: headers,
 	}
 }
 

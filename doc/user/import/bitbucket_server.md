@@ -145,7 +145,7 @@ The following sections contain solutions for problems you might encounter.
 
 If the GUI-based import tool does not work, you can try to:
 
-- Use the [GitLab Import API](../../api/import.md#import-repository-from-bitbucket-server)
+- Use the [import API](../../api/import.md#import-repository-from-bitbucket-server)
   Bitbucket Server endpoint.
 - Set up [repository mirroring](../project/repository/mirror/_index.md).
   It provides verbose error output.
@@ -157,7 +157,7 @@ for Bitbucket Cloud.
 
 If the project import completes but LFS objects can't be downloaded or cloned, you may be using a
 password or personal access token containing special characters. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
+[issue 337769](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
 
 ### Import fails due to invalid/unresolved host address, or the import URL is blocked
 
@@ -169,7 +169,7 @@ To troubleshoot this problem, use the [Projects API](../../api/projects.md) to c
 This value indicates the URL provided by the Bitbucket server to use for the import. If this URL isn't publicly resolvable, you can get unresolvable address errors.
 
 To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
-For more information, see [Proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
+For more information, see [proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
 
 ### Import fails with JSON::NestingError
 

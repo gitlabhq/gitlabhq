@@ -217,7 +217,8 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         end
       end
 
-      it 'pressing enter should submit the form' do
+      it 'pressing enter should submit the form',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/22163' do
         within_testid('work-item-relationships') do
           click_button 'Add'
           fill_in 'Search existing items', with: issue_b.title

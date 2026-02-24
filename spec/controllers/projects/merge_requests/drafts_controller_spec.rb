@@ -535,6 +535,15 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to have_received(:track_submit_review_comment).with(user: user)
       end
+
+      it 'passes merge_request_diff_head_sha to Notes::CreateService' do
+        allow(Notes::CreateService).to receive(:new).and_call_original
+        expect(Notes::CreateService).to receive(:new).with(
+          project, user, hash_including(merge_request_diff_head_sha: 'abc123')
+        ).and_call_original
+
+        post :publish, params: params.merge!(note: 'Hello world', merge_request_diff_head_sha: 'abc123')
+      end
     end
 
     context 'reviewer state' do

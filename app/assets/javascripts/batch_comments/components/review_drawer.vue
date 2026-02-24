@@ -144,6 +144,7 @@ export default {
   mounted() {
     this.noteData.noteable_type = this.noteableType;
     this.noteData.noteable_id = this.getNoteableData.id;
+    this.noteData.merge_request_diff_head_sha = this.getNoteableData.diff_head_sha;
   },
   methods: {
     ...mapActions(useLegacyDiffs, ['goToFile']),
