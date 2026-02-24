@@ -3,9 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequestsController, feature_category: :source_code_management do
+  include RepoHelpers
+
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:project) { merge_request.project }
   let_it_be(:user) { merge_request.author }
+
+  let_it_be(:base_diff_1) { merge_request.merge_request_diff }
+
+  let_it_be(:base_diff_2) do
+    create_file_in_repo(
+      merge_request.project,
+      'master',
+      'master',
+      'new_file.txt',
+      'new content'
+    )
+
+    merge_request.clear_memoized_shas
+    merge_request.create_merge_request_diff
+  end
 
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
@@ -282,6 +299,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(response.body.scan('<diff-file ').size).to eq(5)
       end
+
+      context 'when diff_id and start_sha params are set' do
+        let(:params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        it 'shows only files in the diff between versions' do
+          get diffs_project_merge_request_path(project, merge_request, params.merge(rapid_diffs: 'true'))
+
+          expect(response.body.scan('<diff-file ').size).to eq(1)
+          expect(response.body).to include('new_file.txt')
+          expect(response.body).to include('new content')
+        end
+      end
     end
 
     private
@@ -308,7 +337,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       login_as(user)
     end
 
-    let(:send_request) { get diff_files_metadata_project_merge_request_path(project, merge_request) }
+    let(:additional_params) { {} }
+
+    let(:send_request) do
+      get diff_files_metadata_project_merge_request_path(project, merge_request, params: additional_params)
+    end
 
     include_examples 'diff files metadata'
 
@@ -320,6 +353,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         send_request
 
         expect(json_response['diff_files']).to be_empty
+      end
+    end
+
+    context 'when diff_id param is set' do
+      let(:additional_params) { { diff_id: base_diff_2.id } }
+
+      include_examples 'diff files metadata'
+
+      context 'when start_sha param is set' do
+        let(:additional_params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        include_examples 'diff files metadata'
       end
     end
   end
@@ -336,9 +381,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     include_examples 'diffs stats' do
       let(:expected_stats) do
         {
-          added_lines: 118,
+          added_lines: 119,
           removed_lines: 9,
-          diffs_count: 20
+          diffs_count: 21
         }
       end
     end
@@ -347,7 +392,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       include_examples 'overflow' do
         let(:expected_stats) do
           {
-            visible_count: 20,
+            visible_count: 21,
             email_path: "/#{project.full_path}/-/merge_requests/1.patch",
             diff_path: "/#{project.full_path}/-/merge_requests/1.diff"
           }
@@ -363,6 +408,34 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         send_request
 
         expect(json_response['diffs_stats']).to eq({ "added_lines" => 0, "removed_lines" => 0, "diffs_count" => 0 })
+      end
+    end
+
+    context 'when diff_id param is set' do
+      let(:additional_params) { { diff_id: base_diff_2.id } }
+
+      it_behaves_like 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 119,
+            removed_lines: 9,
+            diffs_count: 21
+          }
+        end
+      end
+
+      context 'when start_sha param is set' do
+        let(:additional_params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        it_behaves_like 'diffs stats' do
+          let(:expected_stats) do
+            {
+              added_lines: 1,
+              removed_lines: 0,
+              diffs_count: 1
+            }
+          end
+        end
       end
     end
   end
@@ -470,7 +543,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       get versions_project_merge_request_path(project, merge_request)
 
       expect(json_response).to be_kind_of(Array)
-      expect(json_response.size).to eq(1)
+      expect(json_response.size).to eq(2)
       expect(json_response.first).to include(
         "base_version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true",
         "commits_count" => merge_request_diff.commits_count,
@@ -480,7 +553,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         "id" => diff_id,
         "latest" => true,
         "short_commit_sha" => Commit.truncate_sha(start_sha),
-        "version_index" => nil,
+        "version_index" => 2,
         "version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true"
       )
     end

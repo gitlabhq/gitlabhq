@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'visible participants for issuable with read ability' do |model_class|
+RSpec.shared_examples 'participants for issuable with read ability' do |model_class|
   let(:model) { model_class.to_s.classify.constantize }
 
   before do
@@ -16,25 +16,7 @@ RSpec.shared_examples 'visible participants for issuable with read ability' do |
 
       expect(Ability).not_to receive(:allowed?).with(anything, ability_name, source)
 
-      instance.visible_participants(user1)
-    end
-
-    context 'with remove_per_source_permission_from_participants disabled' do
-      before do
-        stub_feature_flags(remove_per_source_permission_from_participants: false)
-      end
-
-      it 'receives expected ability' do
-        source = ability_source == :participable_source ? participable_source : instance
-
-        allow(instance).to receive(:bar).and_return(participable_source)
-        allow(Ability).to receive(:allowed?).with(anything, ability_name, source)
-
-        result = instance.visible_participants(user1)
-
-        expect(Ability).to have_received(:allowed?).with(user1, ability_name, source)
-        expect(result).to be_empty
-      end
+      instance.participants(user1)
     end
   end
 

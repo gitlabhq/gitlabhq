@@ -24,6 +24,11 @@ export default {
       required: false,
       default: '',
     },
+    subtitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
     tooltip: {
       type: Object,
       required: false,
@@ -119,6 +124,7 @@ export default {
   <gl-dashboard-panel
     container-class="grid-stack-item-content"
     :title="title"
+    :subtitle="subtitle"
     :title-icon-class="alertIconClasses"
     :title-icon="alertIcon"
     :title-popover="tooltip"

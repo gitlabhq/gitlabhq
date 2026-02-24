@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_workflow do
+  include RepoHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:diff_options_hash) do
@@ -37,6 +39,21 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         target_project: project,
         source_project: project
       )
+    end
+
+    let_it_be(:base_diff_1) { merge_request.merge_request_diff }
+
+    let_it_be(:base_diff_2) do
+      create_file_in_repo(
+        merge_request.project,
+        'expand-collapse-files',
+        'expand-collapse-files',
+        'new_file.txt',
+        'new content'
+      )
+
+      merge_request.clear_memoized_shas
+      merge_request.create_merge_request_diff
     end
 
     let(:diff_files) { merge_request.merge_request_diff.diffs.diff_files }
@@ -81,6 +98,32 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
 
           expect(response).to have_gitlab_http_status(:success)
           expect(response.body).to include(*file_identifier_hashes(merge_request.merge_head_diff))
+        end
+      end
+
+      context 'when diff_id param is set' do
+        it 'streams all diffs in the specified diff' do
+          go(diff_id: base_diff_2.id)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response.body.scan('<diff-file ').size).to eq(base_diff_2.files_count)
+          expect(response.body).to include(*file_identifier_hashes(base_diff_2))
+        end
+
+        context 'when start_sha param is set' do
+          let(:compare) do
+            ::MergeRequests::MergeRequestDiffComparison
+              .new(base_diff_2)
+              .compare_with(base_diff_1.head_commit_sha)
+          end
+
+          it 'streams all diffs between diff versions' do
+            go(diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response.body.scan('<diff-file ').size).to eq(1)
+            expect(response.body).to include(*file_identifier_hashes(compare))
+          end
         end
       end
     end

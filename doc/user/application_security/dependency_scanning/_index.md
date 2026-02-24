@@ -69,17 +69,9 @@ dependencies from scanning.
 For vulnerability scanning of dependencies outside a pipeline, see
 [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md).
 
-## Getting started
+## Turn on dependency scanning
 
-To get started with dependency scanning the following steps show how to enable it for your project.
-
-Prerequisites:
-
-- The `test` stage is required in the `.gitlab-ci.yml` file.
-- With self-managed runners you need a GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
-- If you're using SaaS runners on GitLab.com, this is enabled by default.
+Follow these steps to turn on dependency scanning in your project.
 
 To enable the analyzer, either:
 
@@ -100,7 +92,16 @@ in the `.gitlab-ci.yml` file. You then merge the merge request to enable depende
 > If you have a complex GitLab configuration file it might not be parsed successfully, and an error
 > might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
 
-To enable dependency scanning:
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- The `test` stage is required in the `.gitlab-ci.yml` file.
+- For self-managed runners, GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
+- For hosted runners on GitLab.com, this configuration is enabled by default.
+
+To turn on dependency scanning:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
@@ -115,7 +116,16 @@ Pipelines now include a dependency scanning job.
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-To enable dependency scanning:
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- The `test` stage is required in the `.gitlab-ci.yml` file.
+- For self-managed runners, GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
+- For hosted runners on GitLab.com, this configuration is enabled by default.
+
+To turn on dependency scanning:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
@@ -165,7 +175,20 @@ After completing these steps, you can:
 
 ## Understanding the results
 
-You can review vulnerabilities in a pipeline:
+Dependency scanning results are available in multiple formats. View them directly in the pipeline
+UI, in the detailed scanning report, or in the Software Bill of Materials (SBOM) generated
+during the scan.
+
+### Review vulnerabilities in the pipeline
+
+Review vulnerabilities detected in your pipeline and take action before your merge request is
+merged.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To review dependency scanning results in a pipeline:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Build** > **Pipelines**.
@@ -186,12 +209,6 @@ You can review vulnerabilities in a pipeline:
    - Location: Names the file where the vulnerable dependency is located.
    - Links: Evidence of the vulnerability being cataloged in various advisory databases.
    - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
-
-Dependency scanning produces the following output:
-
-- **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
-- **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
-  lock or build file detected.
 
 ### Dependency scanning report
 
@@ -525,8 +542,10 @@ To customize dependency scanning, use [CI/CD variables](#available-cicd-variable
 
 To override a job definition (for example, to change properties like `variables` or `dependencies`),
 declare a new job with the same name as the one to override. Place this new job after the template
-inclusion and specify any additional keys under it. For example, this disables `DS_REMEDIATE` for
-the `gemnasium` analyzer:
+inclusion and specify any additional keys under it.
+
+For example, this disables automatic remediation of vulnerable dependencies for the `gemnasium`
+analyzer:
 
 ```yaml
 include:
@@ -613,7 +632,7 @@ variables:
 ```
 
 > [!note]
-> Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
+> Gradle projects require [an additional variable](#use-a-proxy-with-gradle-projects) set up to use a proxy.
 
 Alternatively it may be used in specific jobs, like dependency scanning:
 
@@ -641,11 +660,17 @@ Support for custom certificate authorities was introduced in the following versi
 | `gemnasium-maven`  | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0)  |
 | `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
 
-#### Using a custom TLS certificate authority
+#### Use a custom TLS certificate authority
 
-To use a custom TLS certificate authority, assign the
-[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
-to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To use a custom TLS certificate authority:
+
+- Assign the
+  [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
+  to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
 
 For example, to configure the certificate in the `.gitlab-ci.yml` file:
 
@@ -661,26 +686,29 @@ variables:
 
 ### Authenticate with a private Maven repository
 
-To use a private Maven repository that requires authentication, you should store your credentials in
-a CI/CD variable and reference them in your Maven settings file. Do not add the credentials to your
-`.gitlab-ci.yml` file.
+To allow the dependency analyzer to authenticate with a private Maven repository, you must configure
+credentials in the CI/CD pipeline. Without authentication, the dependency analyzer cannot access
+private dependencies, and the scan will fail.
 
-To authenticate with a private Maven repository:
+> [!warning]
+> Do not add the credentials to your `.gitlab-ci.yml` file.
 
-1. Add the `MAVEN_CLI_OPTS` CI/CD variable to your
-   [project's settings](../../../ci/variables/_index.md#for-a-project), setting the value to include
-   your credentials.
+Prerequisites:
 
-   For example, if your username is `myuser` and the password is `verysecret`:
+- The Maintainer or Owner role for the project.
 
-   | Type     | Key              | Value |
-   |----------|------------------|-------|
-   | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
+To allow the dependency analyzer to authenticate with a private Maven repository:
 
-1. Create a Maven settings file with your server configuration.
+1. [Create a project CI/CD variable](../../../ci/variables/_index.md#for-a-project) named
+   `MAVEN_CLI_OPTS`, and set its value to include your credentials.
 
-   For example, add the following to the settings file `mysettings.xml`. This file is referenced in
-   the `MAVEN_CLI_OPTS` CI/CD variable.
+   For example, assuming a settings file named `mysettings.xml`, username of `myuser`, and password
+   of `verysecret`, you would set the `MAVEN_CLI_OPTS` CI/CD variable to the following:
+
+   `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser`
+
+1. Create the `mysettings.xml` Maven settings file with your server configuration. The filename must
+   match the value you specified in the `--settings` option in step 1.
 
    ```xml
    <!-- mysettings.xml -->
@@ -697,12 +725,6 @@ To authenticate with a private Maven repository:
    ```
 
 ### FIPS-enabled images
-
-{{< history >}}
-
-- Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
-
-{{< /history >}}
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
@@ -728,10 +750,9 @@ For instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for dependency scanning
 jobs to run successfully. For more information, see [Offline environments](../offline_deployments/_index.md).
 
-#### Requirements
+Prerequisites:
 
-To run dependency scanning in an offline environment you must have:
-
+- Administrator access.
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
 - Access to the [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
@@ -835,27 +856,48 @@ To use a copy of the GitLab advisory database:
        - tar -xzvf gemnasium_db.tar.gz --strip-components=1 -C $GEMNASIUM_DB_LOCAL_PATH
    ```
 
-### Using a proxy with Gradle projects
+### Use a proxy with Gradle projects
 
-The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. See [this upstream issue](https://github.com/gradle/gradle/issues/11065).
+The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. For more details,
+see [Gradle issue 11065](https://github.com/gradle/gradle/issues/11065).
 
-To make the Gradle wrapper script use a proxy, you can specify the options using the `GRADLE_CLI_OPTS` CI/CD variable:
+Prerequisites:
 
-```yaml
-variables:
-  GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
-```
+- The Maintainer or Owner role for the project.
 
-### Using a proxy with Maven projects
+To make the Gradle wrapper script use a proxy:
 
-Maven does not read the `HTTP(S)_PROXY` environment variables.
+- Specify the proxy options by using the `GRADLE_CLI_OPTS` CI/CD variable:
 
-To make the Maven dependency scanner use a proxy, you can configure it using a `settings.xml` file (see [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html)) and instruct Maven to use this configuration by using the `MAVEN_CLI_OPTS` CI/CD variable:
+  ```yaml
+  variables:
+    GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
+  ```
 
-```yaml
-variables:
-  MAVEN_CLI_OPTS: "--settings mysettings.xml"
-```
+### Use a proxy with Maven projects
+
+Maven does not read the `HTTP(S)_PROXY` environment variable. You must instead use a Maven
+settings file.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To configure the Maven dependency scanner to use a proxy:
+
+1. Create a `mysettings.xml` file in the project's repository. Configure the Maven proxy settings in
+   that file.
+
+   For details on how to specify the proxy configuration, see the
+   [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html).
+
+1. Define the `MAVEN_CLI_OPTS` CI/CD variable in your project's `.gitlab-ci.yml` file to reference
+   the settings file `mysettings.xml`.
+
+   ```yaml
+   variables:
+     MAVEN_CLI_OPTS: "--settings mysettings.xml"
+   ```
 
 ### Specific settings for languages and package managers
 
@@ -1257,6 +1299,10 @@ Before you begin, consider the following:
 
 - This workaround is only for environments where the default Maven central repository is mirrored to a private registry.
 - After applying this workaround, Maven searches the local repository for plugins, which may have security implications in some environments. Make sure this aligns with your organization's security policies.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
 
 Follow these steps to modify the `settings.xml` file:
 

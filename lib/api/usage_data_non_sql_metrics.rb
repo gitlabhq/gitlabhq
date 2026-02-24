@@ -23,6 +23,7 @@ module API
         tags ['usage_data']
       end
 
+      route_setting :authorization, permissions: :read_usage_data_metric, boundary_type: :instance
       get 'non_sql_metrics' do
         data = ::ServicePing::NonSqlServicePing.for_current_reporting_cycle.pick(:payload) || {}
 

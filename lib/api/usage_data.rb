@@ -56,6 +56,7 @@ module API
         requires :event, type: String, desc: 'The event name that should be tracked',
           documentation: { example: 'i_quickactions_page' }
       end
+      route_setting :authorization, permissions: :increment_usage_data_metric, boundary_type: :instance
       post 'increment_counter' do
         event_name = params[:event]
 
@@ -76,6 +77,7 @@ module API
         requires :event, type: String, desc: 'The event name that should be tracked',
           documentation: { example: 'i_quickactions_page' }
       end
+      route_setting :authorization, permissions: :increment_usage_data_metric, boundary_type: :instance
       post 'increment_unique_users', urgency: :low do
         event_name = params[:event]
 
@@ -99,6 +101,7 @@ module API
           use :event_params
         end
       end
+      route_setting :authorization, permissions: :track_internal_event, boundary_type: :instance
       post 'track_events', urgency: :low do
         if params[:events].count > MAXIMUM_TRACKED_EVENTS
           render_api_error!("Maximum #{MAXIMUM_TRACKED_EVENTS} events allowed in one request.", :bad_request)
@@ -125,6 +128,7 @@ module API
         optional :include_paths, type: Boolean, desc: 'Include file paths in the metric definitions',
           documentation: { example: true, default: false }
       end
+      route_setting :authorization, skip_granular_token_authorization: true
       get 'metric_definitions', urgency: :low do
         content_type 'application/yaml'
         env['api.format'] = :binary

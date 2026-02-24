@@ -194,9 +194,9 @@ To specify a folder or file outside the `steps` folder, use the expanded `step` 
             file: my-step.yml            # optional, defaults to `step.yml`
   ```
 
-### Expressions
+### Moa expression language
 
-Expressions are a mini-language enclosed in double curly-braces `${{ }}`. Expressions are evaluated
+The [Moa expression language](moa.md) is a mini-language enclosed in double curly-braces `${{ }}`. Expressions are evaluated
 just prior to function execution in the job environment and can be used in:
 
 - Input values
@@ -554,7 +554,7 @@ a method to import job configuration, but hide the underlying job composition fr
 
 Functions and components use different syntax for expressions to help differentiate the expression types.
 Component expressions use square brackets `$[[ ]]` and are evaluated during pipeline creation.
-Function expressions use braces `${{ }}` and are evaluated during job execution, just before executing the function.
+[Moa expressions](moa.md) use braces `${{ }}` and are evaluated during job execution, just before executing the function.
 
 For example, a project could use a component that adds a job to format Go code:
 

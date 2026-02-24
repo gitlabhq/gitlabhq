@@ -192,6 +192,17 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
     it 'returns the expected markdown' do
       expect(task.allowed_endpoints).to eq(expected_markdown)
     end
+
+    context 'when the API route list contains duplicates' do
+      let(:routes) { super() + [read_job_route] }
+
+      it 'de-duplicates identical route rows' do
+        markdown = task.allowed_endpoints
+
+        expect(markdown.scan('`GET` | `/path/to/read_job_route`').length).to eq(1)
+        expect(markdown).to eq(expected_markdown)
+      end
+    end
   end
 
   describe '#skipped_endpoints' do

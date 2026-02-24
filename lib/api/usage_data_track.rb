@@ -24,6 +24,7 @@ module API
           use :event_params
         end
 
+        route_setting :authorization, permissions: :track_internal_event, boundary_type: :instance
         post urgency: :low do
           process_event(params)
 

@@ -33,7 +33,7 @@ class Namespace < ApplicationRecord
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
 
-  columns_changing_default :organization_id
+  columns_changing_default :organization_id, :state
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794

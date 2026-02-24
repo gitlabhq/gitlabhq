@@ -64,16 +64,6 @@ module Issuable
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
       end
-
-      def projects_loaded?
-        # We check first if we're loaded to not load unnecessarily.
-        loaded? && to_a.all? { |note| note.association(:project).loaded? }
-      end
-
-      def system_note_metadata_loaded?
-        # We check first if we're loaded to not load unnecessarily.
-        loaded? && to_a.all? { |note| note.association(:system_note_metadata).loaded? }
-      end
     end
 
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
@@ -270,11 +260,7 @@ module Issuable
 
   class_methods do
     def participant_includes
-      if Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
-        [:author, :award_emoji, { notes: [:author, :award_emoji] }]
-      else
-        [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
-      end
+      [:author, :award_emoji, { notes: [:author, :award_emoji] }]
     end
 
     # Searches for records with a matching title.
@@ -668,11 +654,6 @@ module Issuable
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
 
-    unless Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
-      includes << :project unless notes.projects_loaded?
-      includes << :system_note_metadata unless notes.system_note_metadata_loaded?
-    end
-
     if persisted? && includes.any?
       notes.includes(includes)
     else
@@ -708,15 +689,6 @@ module Issuable
   #
   def draftless_title_changed(old_title)
     old_title != title
-  end
-
-  def read_ability_for(participable_source)
-    return super if participable_source == self
-    return super if participable_source.is_a?(Note) && participable_source.system?
-
-    name =  participable_source.try(:issuable_ability_name) || :read_issuable_participables
-
-    { name: name, subject: self }
   end
 
   def supports_health_status?

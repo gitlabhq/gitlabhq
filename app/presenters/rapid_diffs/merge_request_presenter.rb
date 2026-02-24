@@ -19,15 +19,15 @@ module RapidDiffs
     end
 
     def diffs_stats_endpoint
-      diffs_stats_project_merge_request_path(resource.project, resource)
+      diffs_stats_project_merge_request_path(resource.project, resource, diff_options_from_params)
     end
 
     def diff_files_endpoint
-      diff_files_metadata_project_merge_request_path(resource.project, resource)
+      diff_files_metadata_project_merge_request_path(resource.project, resource, diff_options_from_params)
     end
 
     def diff_file_endpoint
-      diff_file_project_merge_request_path(resource.project, resource)
+      diff_file_project_merge_request_path(resource.project, resource, diff_options_from_params)
     end
 
     override(:reload_stream_url)
@@ -35,10 +35,12 @@ module RapidDiffs
       diffs_stream_project_merge_request_path(
         resource.project,
         resource,
-        offset: offset,
-        skip_old_path: skip_old_path,
-        skip_new_path: skip_new_path,
-        view: diff_view
+        diff_options_from_params.merge(
+          offset: offset,
+          skip_old_path: skip_old_path,
+          skip_new_path: skip_new_path,
+          view: diff_view
+        )
       )
     end
 
@@ -56,6 +58,14 @@ module RapidDiffs
       # rubocop: disable CodeReuse/Presenter -- DiffFile is a separate domain from the merge request, we need to represent it differently
       MergeRequest::DiffFilePresenter.new(file, conflicts: @conflicts)
       # rubocop: enable CodeReuse/Presenter
+    end
+
+    def diff_options_from_params
+      {
+        diff_id: request_params[:diff_id],
+        start_sha: request_params[:start_sha],
+        commit_id: request_params[:commit_id]
+      }
     end
   end
 end

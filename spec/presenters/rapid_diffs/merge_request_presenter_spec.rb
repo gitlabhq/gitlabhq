@@ -47,22 +47,48 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: true
 
+  shared_examples_for 'endpoint method with diff version support' do
+    context 'when diff_id is set' do
+      let(:request_params) { { diff_id: 1 } }
+
+      it { is_expected.to end_with('?diff_id=1') }
+
+      context 'when start_sha is set' do
+        let(:request_params) { { diff_id: 1, start_sha: 'abc123' } }
+
+        it { is_expected.to end_with('?diff_id=1&start_sha=abc123') }
+      end
+    end
+
+    context 'when commit_id is set' do
+      let(:request_params) { { commit_id: 'abc123' } }
+
+      it { is_expected.to end_with('?commit_id=abc123') }
+    end
+  end
+
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
 
     it { is_expected.to eq("#{base_path}/diffs_stats") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe '#diff_files_endpoint' do
     subject(:url) { presenter.diff_files_endpoint }
 
     it { is_expected.to eq("#{base_path}/diff_files_metadata") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe '#diff_file_endpoint' do
     subject(:url) { presenter.diff_file_endpoint }
 
     it { is_expected.to eq("#{base_path}/diff_file") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe 'stream urls' do
@@ -135,6 +161,8 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       subject(:url) { presenter.reload_stream_url }
 
       it { is_expected.to eq("#{base_path}/diffs_stream") }
+
+      it_behaves_like 'endpoint method with diff version support'
     end
   end
 

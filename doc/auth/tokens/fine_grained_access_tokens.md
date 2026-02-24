@@ -286,17 +286,7 @@ Grants the ability to cancel, create, delete, read, and retry pipelines.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/pipeline` |
-| Create | Project | `POST` | `/projects/:id/pipeline` |
 | Delete | Project | `DELETE` | `/projects/:id/pipelines/:pipeline_id` |
-| Delete | Project | `DELETE` | `/projects/:id/pipelines/:pipeline_id` |
-| Read | Project | `GET` | `/projects/:id/pipelines` |
-| Read | Project | `GET` | `/projects/:id/pipelines/latest` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/jobs` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/bridges` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/variables` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/test_report` |
-| Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/test_report_summary` |
 | Read | Project | `GET` | `/projects/:id/pipelines` |
 | Read | Project | `GET` | `/projects/:id/pipelines/latest` |
 | Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id` |
@@ -307,9 +297,6 @@ Grants the ability to cancel, create, delete, read, and retry pipelines.
 | Read | Project | `GET` | `/projects/:id/pipelines/:pipeline_id/test_report_summary` |
 | Update | Project | `POST` | `/projects/:id/pipelines/:pipeline_id/retry` |
 | Update | Project | `POST` | `/projects/:id/pipelines/:pipeline_id/cancel` |
-| Update | Project | `POST` | `/projects/:id/pipelines/:pipeline_id/retry` |
-| Update | Project | `POST` | `/projects/:id/pipelines/:pipeline_id/cancel` |
-| Update | Project | `PUT` | `/projects/:id/pipelines/:pipeline_id/metadata` |
 | Update | Project | `PUT` | `/projects/:id/pipelines/:pipeline_id/metadata` |
 
 #### Pipeline Schedule
@@ -319,13 +306,7 @@ Grants the ability to create, delete, play, read, take ownership of, and update 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/pipeline_schedules` |
-| Create | Project | `POST` | `/projects/:id/pipeline_schedules` |
 | Delete | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Delete | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Read | Project | `GET` | `/projects/:id/pipeline_schedules` |
-| Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Read <sup>1</sup> | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
-| Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules` |
 | Read | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
 | Read <sup>1</sup> | Project | `GET` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines` |
@@ -333,14 +314,8 @@ Grants the ability to create, delete, play, read, take ownership of, and update 
 | Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership` |
 | Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/play` |
 | Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables` |
-| Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership` |
-| Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/play` |
-| Update | Project | `POST` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables` |
 | Update | Project | `PUT` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
 | Update | Project | `PUT` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
-| Update | Project | `PUT` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id` |
-| Update | Project | `PUT` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
-| Update | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 | Update | Project | `DELETE` | `/projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key` |
 
 <sup>1</sup> Also requires the `Read Pipeline` permission.
@@ -439,12 +414,7 @@ Grants the ability to create, read, download, and delete secure files.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/secure_files` |
-| Create | Project | `POST` | `/projects/:id/secure_files` |
 | Delete | Project | `DELETE` | `/projects/:id/secure_files/:secure_file_id` |
-| Delete | Project | `DELETE` | `/projects/:id/secure_files/:secure_file_id` |
-| Read | Project | `GET` | `/projects/:id/secure_files` |
-| Read | Project | `GET` | `/projects/:id/secure_files/:secure_file_id` |
-| Read | Project | `GET` | `/projects/:id/secure_files/:secure_file_id/download` |
 | Read | Project | `GET` | `/projects/:id/secure_files` |
 | Read | Project | `GET` | `/projects/:id/secure_files/:secure_file_id` |
 | Read | Project | `GET` | `/projects/:id/secure_files/:secure_file_id/download` |
@@ -1172,6 +1142,15 @@ Grants the ability to create, delete, read, and update freeze periods.
 | Read | Project | `GET` | `/projects/:id/freeze_periods/:freeze_period_id` |
 | Update | Project | `PUT` | `/projects/:id/freeze_periods/:freeze_period_id` |
 
+#### Internal Event
+
+Grants the ability to track internal events.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Track | Instance | `POST` | `/usage_data/track_events` |
+| Track | Instance | `POST` | `/usage_data/track_event` |
+
 #### Issue Label Event
 
 Grants the ability to read issue label events.
@@ -1189,6 +1168,24 @@ Grants the ability to read merge request label events.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events/:event_id` |
+
+#### Service Ping
+
+Grants the ability to read service ping data.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/usage_data/service_ping` |
+
+#### Usage Data Metric
+
+Grants the ability to read and increment usage data metrics.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Increment | Instance | `POST` | `/usage_data/increment_counter` |
+| Increment | Instance | `POST` | `/usage_data/increment_unique_users` |
+| Read | Instance | `GET` | `/usage_data/non_sql_metrics` |
 
 #### Work Item
 
@@ -1659,8 +1656,6 @@ Grants the ability to create, delete, and read protected tags.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/protected_tags` |
 | Read | Project | `GET` | `/projects/:id/protected_tags/:name` |
-| Read | Project | `GET` | `/projects/:id/protected_tags` |
-| Read | Project | `GET` | `/projects/:id/protected_tags/:name` |
 
 #### Push Rule
 
@@ -1717,12 +1712,7 @@ Grants the ability to create, delete, and read repository tags.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/repository/tags` |
-| Create | Project | `POST` | `/projects/:id/repository/tags` |
 | Delete | Project | `DELETE` | `/projects/:id/repository/tags/:tag_name` |
-| Delete | Project | `DELETE` | `/projects/:id/repository/tags/:tag_name` |
-| Read | Project | `GET` | `/projects/:id/repository/tags` |
-| Read | Project | `GET` | `/projects/:id/repository/tags/:tag_name` |
-| Read | Project | `GET` | `/projects/:id/repository/tags/:tag_name/signature` |
 | Read | Project | `GET` | `/projects/:id/repository/tags` |
 | Read | Project | `GET` | `/projects/:id/repository/tags/:tag_name` |
 | Read | Project | `GET` | `/projects/:id/repository/tags/:tag_name/signature` |
@@ -1734,8 +1724,6 @@ Grants the ability to create, delete, and read tags.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Protect | Project | `POST` | `/projects/:id/protected_tags` |
-| Protect | Project | `POST` | `/projects/:id/protected_tags` |
-| Protect | Project | `DELETE` | `/projects/:id/protected_tags/:name` |
 | Protect | Project | `DELETE` | `/projects/:id/protected_tags/:name` |
 
 ### System Access resources
@@ -2058,6 +2046,14 @@ Grants the ability to read statistics.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/statistics` |
+
+#### Usage Data Query
+
+Grants the ability to read usage data queries.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/usage_data/queries` |
 
 #### User
 
@@ -2397,3 +2393,5 @@ job token policies or resource-specific access controls.
 | `GET` | `/projects/:project_id/packages/nuget/v2/FindPackagesById\(\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(Id='*package_name',Version='*package_version'\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(\)` |
+| `GET` | `/usage_data/metric_definitions` |
+| `GET` | `/usage_data/metric_definitions` |

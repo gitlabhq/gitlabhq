@@ -4,11 +4,17 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ProjectsList from '~/homepage/components/projects_list.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import userProjectsQuery from '~/homepage/graphql/queries/user_projects.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_PROJECTS,
+  TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+} from '~/homepage/tracking_constants';
 
 Vue.use(VueApollo);
 
@@ -77,7 +83,7 @@ describe('ProjectsList', () => {
   const findEmptyState = () =>
     wrapper.findByText('No projects match your selected display options.');
   const findProjectsList = () => wrapper.find('ul');
-  const findProjectLinks = () => wrapper.findAll('a[href^="/"]');
+  const findProjectLinks = () => wrapper.findAllByTestId('quick-access-project-link');
   const findProjectAvatars = () => wrapper.findAllComponents(ProjectAvatar);
   const findTooltipComponents = () => wrapper.findAllComponents(TooltipOnTruncate);
   const findFrequentlyVisitedMessage = () =>
@@ -254,6 +260,32 @@ describe('ProjectsList', () => {
       await wrapper.trigger('visible');
 
       expect(refetchSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks clicks on project links', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const link = findProjectLinks().at(0);
+      link.element.addEventListener('click', (e) => e.preventDefault());
+      link.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_PROJECTS,
+          property: TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+        },
+        undefined,
+      );
     });
   });
 });

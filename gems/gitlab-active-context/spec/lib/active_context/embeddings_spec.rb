@@ -2,6 +2,10 @@
 
 RSpec.describe ActiveContext::Embeddings do
   describe '.generate_embeddings' do
+    before do
+      allow(::ActiveContext::Logger).to receive(:info)
+    end
+
     let(:contents) { ['contents-for-embeddings'] }
     let(:unit_primitive) { 'dummy-unit-primitive' }
     let(:user) { double("user") }
@@ -27,6 +31,23 @@ RSpec.describe ActiveContext::Embeddings do
         unit_primitive: unit_primitive,
         user: user,
         batch_size: batch_size
+      )
+
+      generate_embeddings
+    end
+
+    it 'logs the embeddings generation' do
+      expect(::ActiveContext::Logger).to receive(:info).with(
+        message: "generate embeddings",
+        model: 'dummy-model',
+        status: "start",
+        class: "ActiveContext::Embeddings"
+      )
+      expect(::ActiveContext::Logger).to receive(:info).with(
+        message: "generate embeddings",
+        model: 'dummy-model',
+        status: "done",
+        class: "ActiveContext::Embeddings"
       )
 
       generate_embeddings

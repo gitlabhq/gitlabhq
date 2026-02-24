@@ -1,11 +1,17 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { InternalEvents } from '~/tracking';
 import { __ } from '~/locale';
 import { PROJECT_SOURCE_FRECENT, PROJECT_SOURCE_STARRED } from '~/homepage/constants';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import userProjectsQuery from '~/homepage/graphql/queries/user_projects.query.graphql';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_PROJECTS,
+  TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+} from '../tracking_constants';
 
 const MAX_ITEMS = 10;
 
@@ -16,6 +22,7 @@ export default {
     ProjectAvatar,
     TooltipOnTruncate,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     selectedSources: {
       type: Array,
@@ -93,6 +100,12 @@ export default {
       this.error = null;
       this.$apollo.queries.projects.refetch();
     },
+    handleProjectClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_PROJECTS,
+        property: TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+      });
+    },
   },
   MAX_ITEMS,
   PROJECT_SOURCE_FRECENT,
@@ -129,6 +142,8 @@ export default {
         <a
           :href="project.webPath"
           class="-gl-mx-3 gl-flex gl-items-center gl-gap-3 gl-rounded-base gl-p-3 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
+          data-testid="quick-access-project-link"
+          @click="handleProjectClick"
         >
           <project-avatar
             :project-id="project.id"

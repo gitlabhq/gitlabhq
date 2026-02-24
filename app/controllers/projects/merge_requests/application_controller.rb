@@ -21,10 +21,20 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
     @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestPresenter.new(
       @merge_request,
       diff_view: diff_view,
-      diff_options: diff_options,
+      diff_options: rapid_diff_options,
       request_params: params,
       conflicts: conflicts_with_types
     )
+  end
+
+  def rapid_diff_options
+    permitted = params.permit(:diff_id, :start_sha, :commit_id)
+
+    {
+      diff_id: permitted[:diff_id],
+      start_sha: permitted[:start_sha],
+      commit_id: permitted[:commit_id]
+    }.compact.merge(diff_options)
   end
 
   # Normally the methods with `check_(\w+)_available!` pattern are

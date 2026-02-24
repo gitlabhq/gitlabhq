@@ -28,6 +28,8 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
   describe '#generate_embeddings' do
     before do
+      allow(::ActiveContext::Logger).to receive(:info)
+
       allow(llm_class).to receive(:new).and_call_original
     end
 
@@ -54,6 +56,23 @@ RSpec.describe ActiveContext::EmbeddingModel do
         )
 
         expect_any_instance_of(llm_class).to receive(:execute).and_return(embeddings)
+
+        generate_embeddings
+      end
+
+      it 'logs the embeddings generation' do
+        expect(::ActiveContext::Logger).to receive(:info).with(
+          message: "generate embeddings",
+          model: 'embedding model 123',
+          status: "start",
+          class: "ActiveContext::EmbeddingModel"
+        )
+        expect(::ActiveContext::Logger).to receive(:info).with(
+          message: "generate embeddings",
+          model: 'embedding model 123',
+          status: "done",
+          class: "ActiveContext::EmbeddingModel"
+        )
 
         generate_embeddings
       end

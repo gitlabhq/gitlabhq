@@ -16,6 +16,10 @@ module Projects
         ::RapidDiffs::MergeRequestDiffFileComponent
           .with_collection(diff_files, merge_request: @merge_request, parallel_view: view == :parallel)
       end
+
+      def streaming_diff_options
+        rapid_diff_options
+      end
     end
   end
 end

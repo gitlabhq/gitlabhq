@@ -7884,7 +7884,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:merge_request) { build_stubbed(:merge_request) }
 
     before do
-      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request) do |version|
+      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request, {}) do |version|
         allow(version).to receive(:resolve).and_return(diff)
       end
     end
@@ -7925,7 +7925,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:expected_block) { proc {} }
 
     before do
-      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request) do |version|
+      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request, {}) do |version|
         allow(version).to receive(:resolve).and_return(diff)
       end
     end
@@ -8848,6 +8848,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns limited viewable diffs' do
         expect(merge_request.viewable_recent_merge_request_diffs).to eq([viewable_diff_2])
+      end
+    end
+  end
+
+  describe '#find_viewable_diff_by_id' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:viewable_diff) { merge_request.merge_request_diff }
+    let_it_be(:empty_diff) { create(:merge_request_diff, merge_request: merge_request, state: :empty) }
+
+    it 'returns viewable diff by ID' do
+      expect(merge_request.find_viewable_diff_by_id(viewable_diff.id)).to eq(viewable_diff)
+    end
+
+    context 'when ID is for an empty diff' do
+      it 'raises error' do
+        expect { merge_request.find_viewable_diff_by_id(empty_diff.id) }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

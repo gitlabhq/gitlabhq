@@ -23,6 +23,7 @@ module API
         tags ['usage_data']
       end
 
+      route_setting :authorization, permissions: :read_usage_data_query, boundary_type: :instance
       get 'queries' do
         data = ::ServicePing::QueriesServicePing.for_current_reporting_cycle.pick(:payload) || {}
 

@@ -15,12 +15,14 @@ module ActiveContext
     end
 
     def generate_embeddings(content, unit_primitive: nil, user: nil)
-      contents = content.is_a?(Array) ? content : [content].compact
+      log_embeddings_generation do
+        contents = content.is_a?(Array) ? content : [content].compact
 
-      embedding_llm = validate_respond_to_execute(
-        build_embedding_llm(contents, unit_primitive, user)
-      )
-      embedding_llm.execute
+        embedding_llm = validate_respond_to_execute(
+          build_embedding_llm(contents, unit_primitive, user)
+        )
+        embedding_llm.execute
+      end
     end
 
     private
@@ -37,6 +39,26 @@ module ActiveContext
       end
 
       embedding_llm
+    end
+
+    def log_embeddings_generation
+      ::ActiveContext::Logger.info(
+        message: "generate embeddings",
+        model: model_name,
+        status: "start",
+        class: self.class.name
+      )
+
+      embeddings = yield
+
+      ::ActiveContext::Logger.info(
+        message: "generate embeddings",
+        model: model_name,
+        status: "done",
+        class: self.class.name
+      )
+
+      embeddings
     end
   end
 end

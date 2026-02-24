@@ -103,93 +103,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
     end
 
-    context 'when participable is confidential' do
-      before_all do
-        private_project.add_guest(user1)
-        private_project.add_developer(user2)
-      end
-
-      context 'when participable is Issue' do
-        let(:model) { Issue }
-        let(:instance) { model.new(author: user1, project: private_project, confidential: true) }
-
-        it 'filters participants based on confidential issue access' do
-          allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
-
-          allow(instance).to receive(:foo).and_return(user1)
-          allow(instance).to receive(:bar).and_return(user2)
-
-          expect(instance.visible_participants(user2)).to contain_exactly(user2)
-        end
-      end
-
-      context 'when participable is non-Issue' do
-        it 'filters participants based on regular project/group access instead of confidential issue access' do
-          allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
-
-          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-          allow(instance).to receive(:confidential?).and_return(true)
-          allow(instance).to receive(:resource_parent).and_return(private_project)
-          allow(instance).to receive(:foo).and_return(user1)
-          allow(instance).to receive(:bar).and_return(user2)
-          expect(instance).to receive(:project).exactly(4).and_return(private_project)
-
-          expect(instance.visible_participants(user2)).to contain_exactly(user1, user2)
-        end
-      end
-    end
-
-    context 'when participable is a group level object' do
-      it 'returns the list of participants' do
-        allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
-
-        group = build(:group, :public)
-
-        expect(instance).to receive(:foo).and_return(user2)
-        expect(instance).to receive(:bar).and_return(user3)
-        expect(instance).to receive(:project).exactly(3).and_return(nil)
-        expect(instance).to receive(:namespace).exactly(2).and_return(group)
-
-        participants = instance.participants(user1)
-
-        expect(participants).not_to include(user1)
-        expect(participants).to include(user2)
-        expect(participants).to include(user3)
-      end
-    end
-
-    context 'when participable is neither a project nor a group level object' do
-      it 'returns no participants' do
-        allow(model).to receive(:participant_attrs).and_return([:foo])
-
-        user = build(:user)
-
-        expect(instance).to receive(:foo).and_return(user)
-        expect(instance).to receive(:project).exactly(3).and_return(nil)
-
-        participants = instance.participants(user)
-
-        expect(participants).to be_empty
-      end
-    end
-  end
-
-  describe '#visible_participants' do
-    it 'returns the list of participants' do
-      allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
-
-      allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-      expect(instance).to receive(:foo).and_return(user2)
-      expect(instance).to receive(:bar).and_return(user3)
-      expect(instance).to receive(:project).exactly(4).and_return(project)
-
-      participants = instance.visible_participants(user1)
-
-      expect(participants).to include(user2)
-      expect(participants).to include(user3)
-    end
-
-    context 'when Participable is not readable by the current user' do
+    context 'when participable is not readable by the current user' do
       before_all do
         private_project.add_developer(user2)
       end
@@ -201,49 +115,11 @@ RSpec.describe Participable, feature_category: :team_planning do
         allow(instance).to receive(:bar).and_return(user2)
         expect(instance).to receive(:project).exactly(4).and_return(private_project)
 
-        expect(instance.visible_participants(user1)).to contain_exactly(user2)
-      end
-
-      context 'with remove_per_source_permission_from_participants feature flag disabled' do
-        before do
-          stub_feature_flags(remove_per_source_permission_from_participants: false)
-        end
-
-        context 'when source is visible to user' do
-          before do
-            allow(instance).to receive(:source_visible_to_user?).and_return(true)
-          end
-
-          it 'returns participants with project/group access' do
-            allow(model).to receive(:participant_attrs).and_return([:bar])
-
-            allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-            allow(instance).to receive(:bar).and_return(user2)
-            expect(instance).to receive(:project).exactly(4).and_return(private_project)
-
-            expect(instance.visible_participants(user1)).to contain_exactly(user2)
-          end
-        end
-
-        context 'when source is not visible to user' do
-          before do
-            allow(instance).to receive(:source_visible_to_user?).and_return(false)
-          end
-
-          it 'does not return participants with project/group access' do
-            allow(model).to receive(:participant_attrs).and_return([:bar])
-
-            allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-            allow(instance).to receive(:bar).and_return(user2)
-            expect(instance).to receive(:project).exactly(4).and_return(private_project)
-
-            expect(instance.visible_participants(user1)).to be_empty
-          end
-        end
+        expect(instance.participants(user1)).to contain_exactly(user2)
       end
     end
 
-    context 'when Participable is not readable by a participant' do
+    context 'when participable is not readable by a participant' do
       before_all do
         private_project.add_developer(user1)
       end
@@ -255,24 +131,7 @@ RSpec.describe Participable, feature_category: :team_planning do
         allow(instance).to receive(:bar).and_return(user2)
         expect(instance).to receive(:project).exactly(4).and_return(private_project)
 
-        expect(instance.visible_participants(user1)).to be_empty
-      end
-
-      context 'with remove_per_source_permission_from_participants feature flag disabled' do
-        before do
-          stub_feature_flags(remove_per_source_permission_from_participants: false)
-          allow(instance).to receive(:source_visible_to_user?).and_return(true)
-        end
-
-        it 'does not return participants without project/group access' do
-          allow(model).to receive(:participant_attrs).and_return([:bar])
-
-          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-          allow(instance).to receive(:bar).and_return(user2)
-          expect(instance).to receive(:project).exactly(4).and_return(private_project)
-
-          expect(instance.visible_participants(user1)).to be_empty
-        end
+        expect(instance.participants(user1)).to be_empty
       end
     end
 
@@ -292,7 +151,7 @@ RSpec.describe Participable, feature_category: :team_planning do
           allow(instance).to receive(:foo).and_return(user1)
           allow(instance).to receive(:bar).and_return(user2)
 
-          expect(instance.visible_participants(user2)).to contain_exactly(user2)
+          expect(instance.participants(user2)).to contain_exactly(user2)
         end
       end
 
@@ -307,7 +166,7 @@ RSpec.describe Participable, feature_category: :team_planning do
           allow(instance).to receive(:bar).and_return(user2)
           expect(instance).to receive(:project).exactly(4).and_return(private_project)
 
-          expect(instance.visible_participants(user2)).to contain_exactly(user1, user2)
+          expect(instance.participants(user2)).to contain_exactly(user1, user2)
         end
       end
     end
@@ -327,7 +186,7 @@ RSpec.describe Participable, feature_category: :team_planning do
         expect(instance).to receive(:project).exactly(3).and_return(nil)
         expect(instance).to receive(:namespace).exactly(2).and_return(group)
 
-        participants = instance.visible_participants(user1)
+        participants = instance.participants(user1)
 
         expect(participants).not_to include(user1) # not returned by participant attr
         expect(participants).not_to include(user2) # not a member of group
@@ -351,7 +210,8 @@ RSpec.describe Participable, feature_category: :team_planning do
 
         # user is returned by participant attr and is a member of the group,
         # but participable model is neither a group or project object
-        participants = instance.visible_participants(user)
+        participants = instance.participants(user)
+
         expect(participants).to be_empty
       end
     end
@@ -371,12 +231,12 @@ RSpec.describe Participable, feature_category: :team_planning do
 
         allow(Ability).to receive(:allowed?).with(anything, :read_project, anything).and_return(true)
         allow(Ability).to receive(:allowed?).with(anything, :read_note, anything).exactly(3).times.and_return(true)
-        expect(instance.visible_participants(user1)).to match_array [user1, user2]
+        expect(instance.participants(user1)).to contain_exactly(user1, user2)
       end
     end
 
-    it_behaves_like 'visible participants for issuable with read ability', :issue
-    it_behaves_like 'visible participants for issuable with read ability', :merge_request
+    it_behaves_like 'participants for issuable with read ability', :issue
+    it_behaves_like 'participants for issuable with read ability', :merge_request
   end
 
   describe '#participant?' do

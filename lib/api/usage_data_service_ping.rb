@@ -24,6 +24,7 @@ module API
           produces ['application/json']
         end
 
+        route_setting :authorization, permissions: :read_service_ping, boundary_type: :instance
         get do
           content_type 'application/json'
 

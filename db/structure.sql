@@ -464,7 +464,7 @@ CREATE TABLE namespaces (
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
-    state smallint,
+    state smallint DEFAULT 0,
     CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL))
 );
 

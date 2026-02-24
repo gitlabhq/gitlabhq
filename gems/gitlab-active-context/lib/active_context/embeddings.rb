@@ -8,15 +8,17 @@ module ActiveContext
       def generate_embeddings(content, version: {}, unit_primitive: nil, user: nil, batch_size: nil)
         klass = embeddings_class(version)
 
-        contents = content.is_a?(Array) ? content : [content].compact
+        log_embeddings_generation(version[:model]) do
+          contents = content.is_a?(Array) ? content : [content].compact
 
-        klass.generate_embeddings(
-          contents,
-          model: version[:model],
-          unit_primitive: unit_primitive,
-          user: user,
-          batch_size: batch_size
-        )
+          klass.generate_embeddings(
+            contents,
+            model: version[:model],
+            unit_primitive: unit_primitive,
+            user: user,
+            batch_size: batch_size
+          )
+        end
       rescue ArgumentError => e
         raise(
           EmbeddingsClassError,
@@ -38,6 +40,26 @@ module ActiveContext
         end
 
         klass
+      end
+
+      def log_embeddings_generation(model)
+        ::ActiveContext::Logger.info(
+          message: "generate embeddings",
+          model: model,
+          status: "start",
+          class: name
+        )
+
+        embeddings = yield
+
+        ::ActiveContext::Logger.info(
+          message: "generate embeddings",
+          model: model,
+          status: "done",
+          class: name
+        )
+
+        embeddings
       end
     end
   end

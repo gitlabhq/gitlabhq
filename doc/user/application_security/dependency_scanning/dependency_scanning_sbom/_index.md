@@ -48,17 +48,19 @@ we encourage you to use all of our security scanners. For a comparison of these 
 
 Share any feedback on the new dependency scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
 
-## Getting started
+## Turn on dependency scanning
 
-If you are new to dependency scanning, follow these steps to enable it for your project.
+If you are new to dependency scanning, follow these steps to turn it on for your project.
 
 - Prerequisites for all GitLab instances:
 
+  - The Developer, Maintainer, or Owner role for the project.
   - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
     either in the repository or created in the CI/CD pipeline and passed as an artifact to the `dependency-scanning` job.
-  - Runners must have the
-    [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
-    [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor installed. On GitLab.com this is provided by default.
+  - For self-managed runners, GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
+  - For hosted runners on GitLab.com, this configuration is enabled by default.
 
 - Additional prerequisites for GitLab Self-Managed only:
 
@@ -69,15 +71,20 @@ If you are new to dependency scanning, follow these steps to enable it for your 
     > If this data is not available in the GitLab instance, dependency scanning cannot identify
     > vulnerabilities.
 
-To enable dependency scanning:
+To turn on dependency scanning:
 
-- Include the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` in your
-  project's `.gitlab-ci.yml` file.
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Code** > **Repository**.
+1. Select the `.gitlab-ci.yml` file.
+1. Select **Edit** > **Edit single file**.
+1. Add the `v2` dependency scanning CI/CD template:
 
-  ```yaml
-  include:
-    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-  ```
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+   ```
+
+1. Select **Commit changes**.
 
 ### Create lock file or dependency graph
 

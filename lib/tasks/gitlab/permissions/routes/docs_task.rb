@@ -78,7 +78,7 @@ module Tasks
               route_permissions(r).compact_blank.present?
             end
 
-            routes.flat_map do |r|
+            structs = routes.flat_map do |r|
               permissions = route_permissions(r)
               primary_permission = permissions.first
               primary_category = primary_permission.category_name || 'Uncategorized'
@@ -97,6 +97,13 @@ module Tasks
                   permissions
                 )
               end
+            end
+
+            structs.uniq do |s|
+              [
+                s.category, s.resource, s.action, s.boundary,
+                "#{s.route.request_method} #{s.route.origin.delete_prefix('/api/:version')}"
+              ]
             end
           end
 

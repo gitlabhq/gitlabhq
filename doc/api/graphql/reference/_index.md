@@ -16550,6 +16550,32 @@ Input type: `WorkItemSubscribeInput`
 | <a id="mutationworkitemsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemsubscribeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
 
+### `Mutation.workItemTypeCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemTypeCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypecreatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the root group. |
+| <a id="mutationworkitemtypecreateiconname"></a>`iconName` | [`String`](#string) | Icon name for the work item type. |
+| <a id="mutationworkitemtypecreatename"></a>`name` | [`String!`](#string) | Name for the work item type. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemtypecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemtypecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemtypecreateworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Work item type that was created. |
+
 ### `Mutation.workItemTypeUpdate`
 
 {{< details >}}
@@ -34970,6 +34996,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusageuserssort"></a>`sort` | [`GitlabSubscriptionUsageUserSort`](#gitlabsubscriptionusageusersort) | Sort users by the criteria. |
 | <a id="gitlabsubscriptionusageusersusageusersusername"></a>`username` | [`String`](#string) | Username of the User. |
 
 ### `GitlabTrialUsage`
@@ -54786,6 +54813,15 @@ Values for sorting Geo registries.
 | <a id="georegistrysortlast_synced_at_desc"></a>`LAST_SYNCED_AT_DESC` | Latest sync date by descending order. |
 | <a id="georegistrysortverified_at_asc"></a>`VERIFIED_AT_ASC` | Latest verification date by ascending order. |
 | <a id="georegistrysortverified_at_desc"></a>`VERIFIED_AT_DESC` | Latest verification date by descending order. |
+
+### `GitlabSubscriptionUsageUserSort`
+
+Values for sorting users in subscription usage.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="gitlabsubscriptionusageusersortname_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="gitlabsubscriptionusageusersortname_desc"></a>`NAME_DESC` | Name by descending order. |
 
 ### `GitlabSubscriptionsAddOnType`
 

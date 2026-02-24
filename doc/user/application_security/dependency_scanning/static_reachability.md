@@ -58,7 +58,7 @@ Prerequisites:
   [supported languages and package managers](#supported-languages-and-package-managers).
 - [Dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
   version 0.39.0 or later (earlier versions may support specific languages - see `History` above)
-- Enable [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
+- Turn on [dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#turn-on-dependency-scanning).
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
 - Language-specific prerequisites:

@@ -73,7 +73,7 @@ For more information, see:
 
 - [Enable secret detection](secret_detection/pipeline/_index.md#getting-started)
 - [Secret detection settings](secret_detection/pipeline/configure.md)
-- [Enable dependency scanning](dependency_scanning/_index.md#getting-started)
+- [Turn on dependency scanning](dependency_scanning/_index.md#turn-on-dependency-scanning)
 - [Dependency scanning settings](dependency_scanning/_index.md#available-cicd-variables)
 
 ## Step 4: Review scan results

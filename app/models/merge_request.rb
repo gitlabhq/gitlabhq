@@ -1088,20 +1088,19 @@ class MergeRequest < ApplicationRecord
   def diffs_for_streaming(diff_options = {})
     return compare.diffs_for_streaming(diff_options) if compare
 
-    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
+    diff = resolve_diff_version(diff_options)
     diff.diffs_for_streaming(diff_options)
   end
 
   def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
     return compare.diffs_for_streaming_by_changed_paths(diff_options, &) if compare
 
-    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
+    diff = resolve_diff_version(diff_options)
     diff.diffs_for_streaming_by_changed_paths(diff_options, &)
   end
 
   def latest_diffs(diff_options = {})
-    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
-
+    diff = resolve_diff_version(diff_options)
     diff.diffs(diff_options)
   end
 
@@ -2701,7 +2700,7 @@ class MergeRequest < ApplicationRecord
   def first_diffs_slice(limit, diff_options = {})
     return compare.first_diffs_slice(limit, diff_options) if compare
 
-    diff = ::Gitlab::MergeRequests::DiffVersion.new(self).resolve
+    diff = resolve_diff_version(diff_options)
     diff.first_diffs_slice(limit, diff_options)
   end
 
@@ -2855,6 +2854,10 @@ class MergeRequest < ApplicationRecord
       .viewable
       .order_id_desc
       .limit(DIFF_VERSION_LIMIT)
+  end
+
+  def find_viewable_diff_by_id(diff_id)
+    merge_request_diffs.viewable.find(diff_id)
   end
 
   private
@@ -3068,6 +3071,16 @@ class MergeRequest < ApplicationRecord
     unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
 
     (migrated_shas + unmigrated_shas).uniq
+  end
+
+  def resolve_diff_version(diff_options = {})
+    params = {
+      diff_id: diff_options.delete(:diff_id),
+      start_sha: diff_options.delete(:start_sha),
+      commit_id: diff_options.delete(:commit_id)
+    }.compact
+
+    ::Gitlab::MergeRequests::DiffVersion.new(self, params).resolve
   end
 end
 

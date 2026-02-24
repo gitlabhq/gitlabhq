@@ -9,10 +9,12 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
   let(:context) { {} }
 
   def image(path, alt: nil, data_src: nil)
-    alt_tag = alt ? %(alt="#{alt}") : ""
-    data_src_tag = data_src ? %(data-src="#{data_src}") : ""
+    img = Nokogiri::HTML.fragment('<img>').at_css('img')
+    img['src'] = path
+    img['alt'] = alt if alt
+    img['data-src'] = data_src if data_src
 
-    %(<img src="#{path}" #{alt_tag} #{data_src_tag} />)
+    img.to_html
   end
 
   it 'wraps the image with a link to the image src' do
@@ -82,14 +84,14 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
     it 'replaces the image with link to image src', :aggregate_failures do
       doc = filter(image(path), context)
 
-      expect(doc.to_html).to match(%r{^<a[^>]*>#{path}</a>$})
+      expect(doc.at_css('a').text).to eq(path)
       expect(doc.at_css('a')['href']).to eq(path)
     end
 
     it 'uses image alt as a link text', :aggregate_failures do
       doc = filter(image(path, alt: 'My image'), context)
 
-      expect(doc.to_html).to match(%r{^<a[^>]*>My image</a>$})
+      expect(doc.at_css('a').text).to eq('My image')
       expect(doc.at_css('a')['href']).to eq(path)
     end
 
@@ -97,7 +99,7 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
       data_src = '/uploads/data-src.png'
       doc = filter(image(path, data_src: data_src), context)
 
-      expect(doc.to_html).to match(%r{^<a[^>]*>#{data_src}</a>$})
+      expect(doc.at_css('a').text).to eq(data_src)
       expect(doc.at_css('a')['href']).to eq(data_src)
     end
 
@@ -107,48 +109,33 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
       expect(doc.at_css('a')['class']).to match(%r{with-attachment-icon})
     end
 
-    context 'when link attributes contain malicious code' do
-      let(:malicious_code) do
+    context 'when link attributes contain HTML' do
+      let(:html) do
         # rubocop:disable Layout/LineLength
         %q(<a class='fixed-top fixed-bottom' data-create-path=/malicious-url><style> .tab-content>.tab-pane{display: block !important}</style>)
         # rubocop:enable Layout/LineLength
       end
 
-      context 'when image alt contains malicious code' do
-        it 'ignores image alt and uses image path as the link text', :aggregate_failures do
-          doc = filter(image(path, alt: malicious_code), context)
+      it 'alt attribute is used as the link text, without XSS' do
+        doc = filter(image(path, alt: html), context)
 
-          expect(doc.to_html).to match(%r{^<a[^>]*>#{path}</a>$})
-          expect(doc.at_css('a')['href']).to eq(path)
-        end
+        expect(doc.at_css('a').text).to eq(html)
+        expect(doc.to_html).not_to include('<style>')
       end
 
-      context 'when image src contains malicious code' do
-        it 'ignores image src and does not use it as the link text' do
-          doc = filter(image(malicious_code), context)
+      it 'src attribute is used as the link text, without XSS' do
+        doc = filter(image(html), context)
 
-          expect(doc.to_html).to match(%r{^<a[^>]*></a>$})
-        end
-
-        it 'keeps image src unchanged, malicious code does not execute as part of url' do
-          doc = filter(image(malicious_code), context)
-
-          expect(doc.at_css('a')['href']).to eq(malicious_code)
-        end
+        # It gets URL encoded since it went through src. Good for it.
+        expect(doc.at_css('a').text).to eq(html.gsub(' ', '%20'))
+        expect(doc.to_html).not_to include('<style>')
       end
 
-      context 'when image data-src contains malicious code' do
-        it 'ignores data-src and uses image path as the link text', :aggregate_failures do
-          doc = filter(image(path, data_src: malicious_code), context)
+      it 'data-src attribute is used as the link text, without XSS' do
+        doc = filter(image(path, data_src: html), context)
 
-          expect(doc.to_html).to match(%r{^<a[^>]*>#{path}</a>$})
-        end
-
-        it 'uses image data-src, malicious code does not execute as part of url' do
-          doc = filter(image(path, data_src: malicious_code), context)
-
-          expect(doc.at_css('a')['href']).to eq(malicious_code)
-        end
+        expect(doc.at_css('a').text).to eq(html)
+        expect(doc.to_html).not_to include('<style>')
       end
     end
   end

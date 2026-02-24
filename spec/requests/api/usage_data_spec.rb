@@ -19,6 +19,14 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
   describe 'GET /usage_data/service_ping' do
     let(:endpoint) { '/usage_data/service_ping' }
 
+    it_behaves_like 'authorizing granular token permissions', :read_service_ping do
+      let(:boundary_object) { :instance }
+      let(:user) { create(:admin) }
+      let(:request) do
+        get api(endpoint, personal_access_token: pat)
+      end
+    end
+
     context 'without authentication' do
       it 'returns 401 response' do
         get api(endpoint)
@@ -119,6 +127,13 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :increment_usage_data_metric do
+          let(:boundary_object) { :instance }
+          let(:request) do
+            post api(endpoint, personal_access_token: pat), params: { event: known_event }
+          end
+        end
       end
 
       context 'with unknown event' do
@@ -186,6 +201,13 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
           post api(endpoint, user), params: { event: known_event }
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :increment_usage_data_metric do
+          let(:boundary_object) { :instance }
+          let(:request) do
+            post api(endpoint, personal_access_token: pat), params: { event: known_event }
+          end
         end
       end
 
@@ -303,6 +325,15 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
             post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it_behaves_like 'authorizing granular token permissions', :track_internal_event do
+            let(:known_event) { 'web_ide_viewed' }
+            let(:boundary_object) { :instance }
+            let(:request) do
+              post api(endpoint, personal_access_token: pat),
+                params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
+            end
           end
         end
       end
@@ -445,6 +476,17 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
         post api(endpoint, user), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :track_internal_event do
+        let(:boundary_object) { :instance }
+        let(:request) do
+          post api(endpoint, personal_access_token: pat), params: params
+        end
+
+        before do
+          allow(Gitlab::InternalEvents).to receive(:track_event)
+        end
       end
 
       context 'with incorrect params' do
