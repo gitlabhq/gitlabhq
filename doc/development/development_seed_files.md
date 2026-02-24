@@ -39,12 +39,49 @@ To run the seed directly (outside the setup task) and recreate all resources:
 SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu
 ```
 
+### Configurable paths
+
+By default, the seeder creates a group at `gitlab-duo` with a project at `gitlab-duo/test`, cloned from the
+[test-repo](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/test-repo).
+You can override these defaults with the following environment variables:
+
+| Environment variable | Default | Description |
+|---|---|---|
+| `GITLAB_DUO_GROUP_PATH` | `gitlab-duo` | Path of the group to create. |
+| `GITLAB_DUO_PROJECT_PATH` | `test` | Path of the project to create inside the group. |
+| `GITLAB_DUO_PROJECT_CLONE_URL` | `https://gitlab.com/.../test-repo.git` | Git URL to clone as the project repository. |
+
+For example, to seed into a custom group and project:
+
+```shell
+GITLAB_DUO_GROUP_PATH=my-duo-group GITLAB_DUO_PROJECT_PATH=my-project \
+  SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu
+```
+
+The same environment variables are respected by the `gitlab:duo:setup` Rake task.
+
+### Fixed IDs and evaluation framework compatibility
+
 GitLab Duo group and project resources are also used by the [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) for automated GitLab Duo evaluation.
 Some evaluation datasets refer to group or project resources (for instance, `Summarize issue #123` requires a corresponding issue record in PostgreSQL).
 
 Currently, this development seed file and evaluation datasets are managed separately.
 To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
 For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
+
+When using the **default** group and project paths (`gitlab-duo/test`), the seeder assigns a fixed base ID of `1_000_000`
+to all seeded records (group, project, epic, issue, merge request, and so on). This guarantees deterministic IDs that
+the evaluation datasets depend on.
+
+When you provide **custom** paths through the environment variables above, fixed IDs are **not** applied and
+PostgreSQL assigns IDs automatically.
+
+> [!note]
+> Custom-path seeds are fully functional for interactive use of GitLab Duo features
+> (Duo Chat, code suggestions, and so on). The only limitation is that the
+> [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+> datasets expect the fixed IDs created by the default paths. If you need to run
+> automated evaluations, use the default `gitlab-duo/test` paths.
 
 These fixtures are depended by the following projects:
 

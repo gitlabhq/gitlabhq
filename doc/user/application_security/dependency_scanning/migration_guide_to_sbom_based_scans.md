@@ -127,6 +127,11 @@ When you run this tool, it creates a comprehensive report of projects that will 
 
 ## Migrate to dependency scanning using SBOM
 
+Prerequisites:
+
+- To edit the `.gitlab-ci.yml` file or use the CI/CD component: The Developer, Maintainer, or Owner role for the project.
+- To edit scan execution or pipeline execution policies: The Owner role for the group, or a custom role with `manage_security_policy_link` permission.
+
 To migrate to the dependency scanning using SBOM method, perform the following steps for each project:
 
 1. Remove existing customization for dependency scanning based on the Gemnasium analyzer.
@@ -176,6 +181,7 @@ Migrate a Bundler project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps needed to migrate a Bundler project to use the dependency scanning analyzer.
 
@@ -192,6 +198,7 @@ Migrate a CocoaPods project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a CocoaPods project to use the dependency scanning analyzer.
 
@@ -208,6 +215,7 @@ Migrate a Composer project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a Composer project to use the dependency scanning analyzer.
 
@@ -224,6 +232,7 @@ Migrate a Conan project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a Conan project to use the dependency scanning analyzer.
 
@@ -240,6 +249,7 @@ Migrate a Go project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a Go project:
 
@@ -260,6 +270,7 @@ Migrate a Gradle project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a Gradle project:
 
@@ -282,6 +293,7 @@ Migrate a Maven project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a Maven project:
 
@@ -304,6 +316,7 @@ Migrate an npm project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate an npm project to use the dependency scanning analyzer.
 
@@ -320,6 +333,7 @@ Migrate a NuGet project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a NuGet project to use the dependency scanning analyzer.
 
@@ -338,6 +352,7 @@ Migrate a pip project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a pip project:
 
@@ -364,6 +379,7 @@ Migrate a Pipenv project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a Pipenv project:
 
@@ -390,6 +406,7 @@ Migrate a Poetry project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a Poetry project to use the dependency scanning analyzer.
 
@@ -408,6 +425,7 @@ Migrate a pnpm project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There is no additional steps to migrate a pnpm project to use the dependency scanning analyzer.
 
@@ -424,6 +442,7 @@ Migrate an sbt project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate an sbt project:
 
@@ -444,6 +463,7 @@ Migrate a setuptools project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 To migrate a setuptools project:
 
@@ -466,6 +486,7 @@ Migrate a Swift project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a Swift project to use the dependency scanning analyzer.
 
@@ -482,6 +503,7 @@ Migrate a uv project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a uv project to use the dependency scanning analyzer.
 
@@ -502,6 +524,7 @@ Migrate a Yarn project to use the new dependency scanning analyzer.
 Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
+- The Developer, Maintainer, or Owner role for the project.
 
 There are no additional steps to migrate a Yarn project to use the dependency scanning analyzer. If you use the Resolve a vulnerability via merge request feature check [the deprecation announcement](../../../update/deprecations.md#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for available actions. If you use the JavaScript vendored files scan feature, check the [deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries) for available actions.
 

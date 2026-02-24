@@ -7489,9 +7489,9 @@ paths:
   "/api/v4/vulnerabilities/{vulnerability_id}/flags/ai_detection":
     post:
       operationId: postApiV4VulnerabilitiesVulnerabilityIdFlagsAiDetection
-      summary: Update AI SAST False Positive detection results
+      summary: Update AI False Positive Detection results
       description: This feature is currently in an experimental state. Updates the
-        confidence score and explanation for AI-based SAST false positive detection.
+        confidence score and explanation for AI-based False Positive Detection flows.
       tags:
       - Vulnerabilities
       responses:
@@ -11863,6 +11863,10 @@ paths:
                   description: The interval (in days) in which the repository verification
                     is valid. Once expired, it will be reverified. This has no effect
                     when set on a secondary site.
+                blob_download_timeout:
+                  type: integer
+                  description: Maximum time (in seconds) for blob downloads during
+                    Geo sync. Defaults to 28800 (8 hours). Maximum is 86400 (24 hours).
               required:
               - name
               - url
@@ -12059,6 +12063,10 @@ paths:
                   description: The interval (in days) in which the repository verification
                     is valid. Once expired, it will be reverified. This has no effect
                     when set on a secondary site.
+                blob_download_timeout:
+                  type: integer
+                  description: Maximum time (in seconds) for blob downloads during
+                    Geo sync. Defaults to 28800 (8 hours). Maximum is 86400 (24 hours).
     delete:
       operationId: deleteApiV4GeoSitesId
       summary: Remove the Geo site
@@ -92071,6 +92079,8 @@ components:
         selective_sync_organization_ids:
           type: string
         minimum_reverification_interval:
+          type: string
+        blob_download_timeout:
           type: string
         sync_object_storage:
           type: string

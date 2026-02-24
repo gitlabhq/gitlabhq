@@ -5,10 +5,9 @@ new UserCallout({ className: 'js-mr-approval-callout' });
 
 const initAutomaticRebaseSetting = () => {
   const setting = document.querySelector('.js-automatic-rebase-setting');
-  if (!setting) return;
-
   const radios = document.querySelectorAll('input[name="project[merge_method]"]');
-  if (!radios.length) return;
+
+  if (!setting || !radios.length) return;
 
   const containers = {
     rebase_merge: document.querySelector('.js-rebase-merge-container'),

@@ -126,6 +126,9 @@ export default {
       blobHash: uniqueId(),
       currentRef: computed(() => this.currentRef),
       fileType: computed(() => this.viewer.fileType),
+      blameActions: {
+        activateInlineBlame: this.activateInlineBlame,
+      },
     };
   },
   props: {
@@ -412,6 +415,18 @@ export default {
         hash: window.location.hash,
       });
     },
+    activateInlineBlame(lineNumber) {
+      if (!this.showBlame) {
+        this.handleToggleBlame();
+      }
+      this.$router.replace({
+        ...this.$route,
+        hash: `#L${lineNumber}`,
+      });
+      this.$nextTick(() => {
+        this.$refs.blobViewerComponent?.selectLine?.();
+      });
+    },
   },
 };
 </script>
@@ -462,6 +477,7 @@ export default {
       <component
         :is="blobViewer"
         v-else
+        ref="blobViewerComponent"
         :blob="blobInfo"
         :chunks="chunks"
         :show-blame="showBlame && glFeatures.inlineBlame"

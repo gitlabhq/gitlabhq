@@ -78326,6 +78326,11 @@ msgstr ""
 msgid "WorkItems|Your preferences"
 msgstr ""
 
+msgid "WorkItem|%d disabled type"
+msgid_plural "WorkItem|%d disabled types"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "WorkItem|%d item"
 msgid_plural "WorkItem|%d items"
 msgstr[0] ""
@@ -78611,6 +78616,9 @@ msgstr ""
 msgid "WorkItem|Cannot be assigned"
 msgstr ""
 
+msgid "WorkItem|Cannot be used to create new items."
+msgstr ""
+
 msgid "WorkItem|Cannot remove status"
 msgstr ""
 
@@ -78785,6 +78793,9 @@ msgstr ""
 msgid "WorkItem|Disabled in all groups and projects. Items created prior to archiving may remain in this type."
 msgstr ""
 
+msgid "WorkItem|Disabled types"
+msgstr ""
+
 msgid "WorkItem|Discard changes"
 msgstr ""
 
@@ -78840,6 +78851,9 @@ msgid "WorkItem|Emoji reactions"
 msgstr ""
 
 msgid "WorkItem|Enable list item"
+msgstr ""
+
+msgid "WorkItem|Enabled types"
 msgstr ""
 
 msgid "WorkItem|Enter the work item description"

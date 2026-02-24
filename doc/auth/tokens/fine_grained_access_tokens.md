@@ -483,14 +483,19 @@ Grants the ability to create, delete, read, and update CI variables.
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/variables` |
 | Create | Group | `POST` | `/groups/:id/variables` |
+| Create | Instance | `POST` | `/admin/ci/variables` |
 | Delete | Project | `DELETE` | `/projects/:id/variables/:key` |
 | Delete | Group | `DELETE` | `/groups/:id/variables/:key` |
+| Delete | Instance | `DELETE` | `/admin/ci/variables/:key` |
 | Read | Project | `GET` | `/projects/:id/variables` |
 | Read | Project | `GET` | `/projects/:id/variables/:key` |
 | Read | Group | `GET` | `/groups/:id/variables` |
 | Read | Group | `GET` | `/groups/:id/variables/:key` |
+| Read | Instance | `GET` | `/admin/ci/variables` |
+| Read | Instance | `GET` | `/admin/ci/variables/:key` |
 | Update | Project | `PUT` | `/projects/:id/variables/:key` |
 | Update | Group | `PUT` | `/groups/:id/variables/:key` |
+| Update | Instance | `PUT` | `/admin/ci/variables/:key` |
 
 ### Duo resources
 

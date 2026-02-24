@@ -20275,7 +20275,8 @@ CREATE TABLE geo_nodes (
     container_repositories_max_capacity integer DEFAULT 2 NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
-    sync_object_storage boolean DEFAULT false NOT NULL
+    sync_object_storage boolean DEFAULT false NOT NULL,
+    blob_download_timeout integer DEFAULT 28800 NOT NULL
 );
 
 CREATE SEQUENCE geo_nodes_id_seq

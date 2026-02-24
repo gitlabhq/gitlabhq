@@ -26,6 +26,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  inject: ['blameActions', 'glFeatures'],
   props: {
     isHighlighted: {
       type: Boolean,
@@ -56,6 +57,11 @@ export default {
     blobPath: {
       type: String,
       required: true,
+    },
+    isBlameActive: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -107,6 +113,12 @@ export default {
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
     },
+    handleBlameClick(event, index) {
+      if (this.glFeatures.inlineBlame) {
+        event.preventDefault();
+        this.blameActions.activateInlineBlame(this.calculateLineNumber(index));
+      }
+    },
     async addCodeNavigationClasses() {
       await this.$nextTick();
 
@@ -134,9 +146,13 @@ export default {
         class="diff-line-num line-links line-numbers gl-border-r gl-z-3 gl-flex !gl-p-0"
       >
         <a
+          v-if="!isBlameActive"
           class="file-line-blame gl-select-none !gl-shadow-none"
           data-event-tracking="click_chunk_blame_on_blob_page"
           :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
+          :aria-label="`View blame for line ${calculateLineNumber(index)}`"
+          :data-testid="`blame-link-${calculateLineNumber(index)}`"
+          @click="handleBlameClick($event, index)"
         ></a>
         <a
           :id="`L${calculateLineNumber(index)}`"

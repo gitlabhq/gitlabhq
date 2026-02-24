@@ -282,6 +282,7 @@ export default {
           :starting-from="chunk.startingFrom"
           :blame-path="blob.blamePath"
           :blob-path="blob.path"
+          :is-blame-active="showBlame"
           @appear="() => handleAppear(index)"
           @disappear="() => handleDisappear(index)"
         />
