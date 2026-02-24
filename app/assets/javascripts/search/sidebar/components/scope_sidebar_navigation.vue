@@ -11,7 +11,12 @@ import getBlobSearchCountQuery from '~/search/graphql/blob_search_zoekt_count_on
 import { DEFAULT_FETCH_CHUNKS } from '~/search/results/constants';
 // eslint-disable-next-line no-restricted-imports
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
-import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES, SCOPE_BLOB } from '../constants';
+import {
+  NAV_LINK_DEFAULT_CLASSES,
+  NAV_LINK_COUNT_DEFAULT_CLASSES,
+  SCOPE_BLOB,
+  EXCLUDE_FORKS_FILTER_PARAM,
+} from '../constants';
 
 export default {
   name: 'ScopeSidebarNavigation',
@@ -27,13 +32,13 @@ export default {
       variables() {
         return {
           search: this.query.search,
-          groupId: this.query?.group_id && convertToGraphQLId(TYPENAME_GROUP, this.query.group_id),
+          groupId: this.query.group_id && convertToGraphQLId(TYPENAME_GROUP, this.query.group_id),
           chunkCount: DEFAULT_FETCH_CHUNKS,
           projectId:
-            this.query?.project_id && convertToGraphQLId(TYPENAME_PROJECT, this.query.project_id),
-          regex: parseBoolean(this.query?.regex),
+            this.query.project_id && convertToGraphQLId(TYPENAME_PROJECT, this.query.project_id),
+          regex: parseBoolean(this.query.regex),
           includeArchived: parseBoolean(this.query.include_archived),
-          includeForked: parseBoolean(this.query.include_forked),
+          excludeForks: parseBoolean(this.query[EXCLUDE_FORKS_FILTER_PARAM]),
         };
       },
       skip() {

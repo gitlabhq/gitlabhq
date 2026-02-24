@@ -150,7 +150,7 @@ describe('ScopeSidebarNavigation', () => {
           groupId: 'gid://gitlab/Group/123',
           projectId: undefined,
           includeArchived: false,
-          includeForked: false,
+          excludeForks: false,
           regex: false,
         });
       });
@@ -174,7 +174,7 @@ describe('ScopeSidebarNavigation', () => {
             groupId: undefined,
             projectId: undefined,
             includeArchived: false,
-            includeForked: false,
+            excludeForks: false,
             regex: false,
           });
         });
