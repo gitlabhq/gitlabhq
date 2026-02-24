@@ -57,13 +57,11 @@ Offering: GitLab.com
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/542975) in GitLab 18.9 [with a flag](../../../../administration/feature_flags/_index.md) named `configure_web_based_commit_signing`. It is rolled out incrementally to users.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200425) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `configure_web_based_commit_signing`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/542975) in GitLab 18.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542975) in GitLab 18.10. Feature flag `configure_web_based_commit_signing` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can turn on web-based commit signing for all projects in a group,
 or for an individual project.

@@ -11,7 +11,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
-import Pipelines from '~/ci/pipelines_page/pipelines_graphql.vue';
+import PipelinesApp from '~/ci/pipelines_page/pipelines_app.vue';
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
 import NoCiEmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
 import PipelinesFilteredSearch from '~/ci/pipelines_page/components/pipelines_filtered_search.vue';
@@ -55,7 +55,7 @@ jest.mock('~/ci/pipeline_details/utils', () => ({
 
 Vue.use(VueApollo);
 
-describe('Pipelines app', () => {
+describe('Pipelines App', () => {
   let wrapper;
   let trackingSpy;
   let apolloProvider;
@@ -116,7 +116,7 @@ describe('Pipelines app', () => {
       subscriptionHandler,
     );
 
-    wrapper = shallowMountExtended(Pipelines, {
+    wrapper = shallowMountExtended(PipelinesApp, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
         newPipelinePath: '/gitlab-org/gitlab/-/pipelines/new',

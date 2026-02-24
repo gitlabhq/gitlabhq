@@ -10,10 +10,8 @@ import {
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
-import Pipelines from '~/ci/pipelines_page/pipelines.vue';
-import PipelinesGraphql from '~/ci/pipelines_page/pipelines_graphql.vue';
+import PipelinesApp from '~/ci/pipelines_page/pipelines_app.vue';
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '../constants';
-import PipelinesStore from './stores/pipelines_store';
 
 Vue.use(Translate);
 Vue.use(GlToast);
@@ -24,85 +22,6 @@ const apolloProvider = new VueApollo({
 });
 
 export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
-  const el = document.querySelector(selector);
-  if (!el) {
-    return null;
-  }
-
-  const {
-    endpoint,
-    artifactsEndpoint,
-    artifactsEndpointPlaceholder,
-    pipelineSchedulesPath,
-    newPipelinePath,
-    pipelineEditorPath,
-    suggestedCiTemplates,
-    canCreatePipeline,
-    hasGitlabCi,
-    resetCachePath,
-    projectId,
-    defaultBranchName,
-    params,
-    fullPath,
-    visibilityPipelineIdType,
-    showJenkinsCiPrompt,
-    identityVerificationPath,
-    identityVerificationRequired,
-    pipelinesAnalyticsPath,
-    usesExternalConfig,
-    emptyStateIllustrationPath,
-  } = el.dataset;
-
-  return new Vue({
-    el,
-    name: 'PipelinesRoot',
-    apolloProvider,
-    provide: {
-      artifactsEndpoint,
-      artifactsEndpointPlaceholder,
-      canCreatePipeline: parseBoolean(canCreatePipeline),
-      defaultBranchName,
-      fullPath,
-      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
-      pipelineEditorPath,
-      pipelineSchedulesPath,
-      pipelinesAnalyticsPath,
-      projectId,
-      identityVerificationPath,
-      identityVerificationRequired: parseBoolean(identityVerificationRequired),
-      suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
-      showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
-      usesExternalConfig: parseBoolean(usesExternalConfig),
-      emptyStateIllustrationPath,
-    },
-    data() {
-      return {
-        store: new PipelinesStore(),
-      };
-    },
-    created() {
-      if (doesHashExistInUrl('delete_success')) {
-        this.$toast.show(__('The pipeline has been deleted'));
-        historyReplaceState(buildUrlWithCurrentLocation());
-      }
-    },
-    render(createElement) {
-      return createElement(Pipelines, {
-        props: {
-          defaultVisibilityPipelineIdType: visibilityPipelineIdType,
-          endpoint,
-          hasGitlabCi: parseBoolean(hasGitlabCi),
-          newPipelinePath,
-          params: JSON.parse(params),
-          resetCachePath,
-          store: this.store,
-        },
-      });
-    },
-  });
-};
-
-export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -135,7 +54,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
 
   return new Vue({
     el,
-    name: 'PipelinesGraphqlRoot',
+    name: 'PipelinesAppRoot',
     apolloProvider,
     provide: {
       artifactsEndpoint,
@@ -166,7 +85,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       }
     },
     render(createElement) {
-      return createElement(PipelinesGraphql, {
+      return createElement(PipelinesApp, {
         props: {
           defaultVisibilityPipelineIdType: visibilityPipelineIdType,
           params: JSON.parse(params),

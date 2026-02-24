@@ -101,7 +101,8 @@ func init() {
 
 // createDialer references https://github.com/redis/go-redis/blob/b1103e3d436b6fe98813ecbbe1f99dc8d59b06c9/options.go#L214
 // it intercepts the error and tracks it via a Prometheus counter
-func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Context, network, addr string) (net.Conn, error) {
+// sentinelTLSConfig is used for Sentinel connections, redisTLSConfig is used for Redis master connections
+func createDialer(sentinels []string, sentinelTLSConfig *tls.Config, redisTLSConfig *tls.Config) func(ctx context.Context, network, addr string) (net.Conn, error) {
 	return func(ctx context.Context, network, addr string) (net.Conn, error) {
 		var isSentinel bool
 		for _, sentinelAddr := range sentinels {
@@ -113,6 +114,7 @@ func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Co
 
 		dialTimeout := 5 * time.Second // go-redis default
 		destination := "redis"
+		var tlsConfig *tls.Config
 		if isSentinel {
 			// This timeout is recommended for Sentinel-support according to the guidelines.
 			//  https://redis.io/topics/sentinel-clients#redis-service-discovery-via-sentinel
@@ -120,6 +122,9 @@ func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Co
 			//  using a short timeout (in the order of a few hundreds of milliseconds).
 			destination = "sentinel"
 			dialTimeout = 500 * time.Millisecond
+			tlsConfig = sentinelTLSConfig
+		} else {
+			tlsConfig = redisTLSConfig
 		}
 
 		netDialer := &net.Dialer{
@@ -227,7 +232,7 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	}
 
 	// ParseURL seeds TLSConfig if scheme is rediss
-	opt.Dialer = createDialer([]string{}, opt.TLSConfig)
+	opt.Dialer = createDialer([]string{}, nil, opt.TLSConfig)
 
 	return redis.NewClient(opt), nil
 }
@@ -239,6 +244,15 @@ func configureSentinel(cfg *config.Config) (*redis.Client, error) {
 	}
 
 	redisCfg := cfg.Redis
+
+	// Extract Redis TLS config if specified
+	var redisTLSConfig *tls.Config
+	if redisCfg.TLS != nil {
+		redisTLSConfig, err = redisTLSOptions(redisCfg.TLS)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:       redisCfg.SentinelMaster,
@@ -255,7 +269,7 @@ func configureSentinel(cfg *config.Config) (*redis.Client, error) {
 		ReadTimeout:  defaultReadTimeout,
 		WriteTimeout: defaultWriteTimeout,
 
-		Dialer: createDialer(options.Sentinels, options.SentinelTLSConfig),
+		Dialer: createDialer(options.Sentinels, options.SentinelTLSConfig, redisTLSConfig),
 	})
 
 	client.AddHook(sentinelInstrumentationHook{})

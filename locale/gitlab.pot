@@ -44380,13 +44380,13 @@ msgstr ""
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
-msgid "MrReports|All reports"
-msgstr ""
-
 msgid "MrReports|Blockers"
 msgstr ""
 
 msgid "MrReports|Reports"
+msgstr ""
+
+msgid "MrReports|Security scan"
 msgstr ""
 
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
@@ -73390,6 +73390,9 @@ msgstr ""
 msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Edit your search and try again."
+msgstr ""
+
 msgid "UsageBilling|Explore GitLab Duo"
 msgstr ""
 
@@ -73474,6 +73477,9 @@ msgstr ""
 msgid "UsageBilling|No user data available"
 msgstr ""
 
+msgid "UsageBilling|No users found"
+msgstr ""
+
 msgid "UsageBilling|On-demand"
 msgstr ""
 
@@ -73484,6 +73490,9 @@ msgid "UsageBilling|Read the documentation"
 msgstr ""
 
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
+msgstr ""
+
+msgid "UsageBilling|Search for a user"
 msgstr ""
 
 msgid "UsageBilling|This dashboard may not display all current subscription data. For complete visibility, please upgrade to the latest version of GitLab or visit the %{linkStart}Customer Portal%{linkEnd}."

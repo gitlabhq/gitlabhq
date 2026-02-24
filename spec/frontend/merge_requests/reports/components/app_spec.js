@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-// import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import App from '~/merge_requests/reports/components/app.vue';
 import routes from '~/merge_requests/reports/routes';
 
@@ -15,11 +14,29 @@ Vue.use(VueRouter);
 describe('Merge request reports App component', () => {
   let wrapper;
 
-  const findReportsWidget = () => wrapper.findByTestId('reports-widget-sidebar');
+  const findSecurityScansProvider = () => wrapper.findComponent({ name: 'SecurityScansProvider' });
+  const findSecurityNavItem = () => wrapper.findComponent({ name: 'SecurityNavItem' });
 
   const createComponent = () => {
     const router = new VueRouter({ mode: 'history', routes });
-    wrapper = shallowMountExtended(App, { router, provide: { hasPolicies: false } });
+    wrapper = shallowMountExtended(App, {
+      router,
+      provide: {
+        hasPolicies: false,
+        projectPath: 'gitlab-org/gitlab',
+        iid: '1',
+      },
+      stubs: {
+        SecurityScansProvider: {
+          name: 'SecurityScansProvider',
+          template: '<div><slot /></div>',
+        },
+        SecurityNavItem: {
+          name: 'SecurityNavItem',
+          template: '<div></div>',
+        },
+      },
+    });
   };
 
   beforeEach(() => {
@@ -32,11 +49,19 @@ describe('Merge request reports App component', () => {
     window.gl = {};
   });
 
-  it('renders report widget in sidebar', async () => {
+  it('renders SecurityScansProvider when mr is loaded', async () => {
     createComponent();
 
     await waitForPromises();
 
-    expect(findReportsWidget().exists()).toBe(true);
+    expect(findSecurityScansProvider().exists()).toBe(true);
+  });
+
+  it('renders SecurityNavItem inside provider', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findSecurityNavItem().exists()).toBe(true);
   });
 });

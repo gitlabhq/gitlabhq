@@ -572,3 +572,84 @@ func TestConfigureRedisWithTLS(t *testing.T) {
 		})
 	}
 }
+
+func TestConfigureSentinelWithRedisTLS(t *testing.T) {
+	testCases := []struct {
+		description    string
+		redisTLSCfg    *config.TLSConfig
+		sentinelTLSCfg *config.TLSConfig
+		expectError    bool
+	}{
+		{
+			description:    "Sentinel without TLS, Redis without TLS",
+			redisTLSCfg:    nil,
+			sentinelTLSCfg: nil,
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel without TLS, Redis with TLS",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			sentinelTLSCfg: nil,
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel with TLS, Redis with TLS",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			sentinelTLSCfg: &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel with TLS, Redis without TLS",
+			redisTLSCfg:    nil,
+			sentinelTLSCfg: &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError:    false,
+		},
+		{
+			description:    "Redis with invalid TLS config",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile},
+			sentinelTLSCfg: nil,
+			expectError:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			a := mockRedisServer(t, &atomic.Value{})
+
+			scheme := "redis://"
+			if tc.sentinelTLSCfg != nil {
+				scheme = "rediss://"
+			}
+			sentinelURL := helper.URLMustParse(scheme + a)
+			redisCfg := &config.RedisConfig{
+				Sentinel:       []config.TomlURL{{URL: *sentinelURL}},
+				SentinelMaster: "mymaster",
+				TLS:            tc.redisTLSCfg,
+			}
+
+			sentinelCfg := &config.SentinelConfig{
+				TLS: tc.sentinelTLSCfg,
+			}
+
+			cfg := &config.Config{
+				Redis:    redisCfg,
+				Sentinel: sentinelCfg,
+			}
+
+			rdb, err := Configure(cfg)
+
+			if tc.expectError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, rdb)
+				defer rdb.Close()
+
+				// TLS configs are passed to the dialer, not stored in options.
+				// The best we can do is ensure the Configure worked without errors.
+				opt := rdb.Options()
+				require.NotNil(t, opt.Dialer)
+			}
+		})
+	}
+}

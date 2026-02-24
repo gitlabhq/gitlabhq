@@ -1,8 +1,4 @@
 <script>
-/*
-  This component is the GraphQL version of `ci/pipelines_page/pipelines.vue`
-  and is meant to eventually replace it.
-*/
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
@@ -52,7 +48,7 @@ const BATCH_DEBOUNCE = 3000;
 const POLL_INTERVAL = 60000;
 
 export default {
-  name: 'PipelinesList',
+  name: 'PipelinesAppRoot',
   errorStateSvgPath: ERROR_STATE_SVG,
   noPipelinesSvgPath: NO_PIPELINES_SVG,
   scopes: {
