@@ -30,6 +30,12 @@ namespace :gitlab do
   end
 
   task enable_introspection_feature_flags: :environment do
+    # Skip when running inside RSpec examples to avoid polluting the test environment.
+    # StubbedFeature is prepended in tests and calls `super`, which would break
+    # if we override Feature.enabled? here. The rake task runs fine in CI since
+    # it's not inside an RSpec example context.
+    next if defined?(RSpec) && RSpec.current_example
+
     def Feature.enabled?(*)
       true
     end
