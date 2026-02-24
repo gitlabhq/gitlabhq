@@ -7,6 +7,7 @@ import {
   GlLink,
   GlSprintf,
   GlKeysetPagination,
+  GlAlert,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import Api from '~/api';
@@ -24,12 +25,17 @@ import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
 import { PIPELINE_ALIVE_STATUSES } from '~/ci/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
+import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 import { updatePipelineNodes } from '../utils';
+import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
 
 export default {
   name: 'PipelinesTableWrapper',
   components: {
+    GlAlert,
     GlButton,
     GlEmptyState,
     GlKeysetPagination,
@@ -39,6 +45,7 @@ export default {
     GlSprintf,
     PipelinesTable,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
     errorStateSvgPath: {
@@ -71,6 +78,7 @@ export default {
       isRunningMergeRequestPipeline: false,
       pageInfo: {},
       pipelines: [],
+      pipelinesCount: 0,
       pagination: {
         first: PIPELINES_PER_PAGE,
         last: null,
@@ -78,6 +86,11 @@ export default {
         before: '',
       },
       pipelineSubscriptionHandles: new Map(), // Stores unsubscribe handles by pipeline GraphQL ID
+      pipelineCreationRequests: [],
+      showCreationFailedAlert: false,
+      isCreatingPipeline: false,
+      loaderTimeout: null,
+      mergeRequestGid: null,
     };
   },
   apollo: {
@@ -100,26 +113,67 @@ export default {
       update(data) {
         this.hasError = false;
 
-        return (
+        const serverPipelines =
           data?.project?.mergeRequest?.pipelines?.nodes?.map((pipeline) => ({
             ...pipeline,
             id: getIdFromGraphQLId(pipeline.id),
-            // Keep the GraphQL ID for subscriptions
             graphqlId: pipeline.id,
-          })) || []
-        );
+          })) || [];
+
+        return this.mergeWithPendingPipelines(serverPipelines);
       },
       result({ data }) {
         const pipelines = data?.project?.mergeRequest?.pipelines;
 
         if (pipelines) {
           this.pageInfo = pipelines.pageInfo;
-          this.updateBadgeCount(pipelines.count);
+          this.pipelinesCount = pipelines.count;
+          this.updateBadgeCount(this.pipelinesCount);
           this.subscribeToAlivePipelines();
         }
       },
       error() {
         this.hasError = true;
+      },
+    },
+    pipelineCreationRequests: {
+      query: getPipelineCreationRequests,
+      variables() {
+        return {
+          fullPath: this.targetProjectFullPath,
+          mergeRequestIid: String(this.mergeRequestId),
+        };
+      },
+      update(data) {
+        if (data.project?.mergeRequest) {
+          const { pipelineCreationRequests, id } = data.project.mergeRequest;
+          this.mergeRequestGid = id;
+          return pipelineCreationRequests;
+        }
+        return [];
+      },
+      subscribeToMore: {
+        document: pipelineCreationRequestsUpdatedSubscription,
+        variables() {
+          return { mergeRequestId: this.mergeRequestGid };
+        },
+        skip() {
+          return !this.mergeRequestGid;
+        },
+        updateQuery: (previousResult, { subscriptionData }) => {
+          if (!subscriptionData.data?.ciPipelineCreationRequestsUpdated) return previousResult;
+          const updated = subscriptionData.data.ciPipelineCreationRequestsUpdated;
+          return {
+            ...previousResult,
+            project: {
+              ...previousResult.project,
+              mergeRequest: {
+                ...previousResult.project.mergeRequest,
+                pipelineCreationRequests: updated.pipelineCreationRequests,
+              },
+            },
+          };
+        },
       },
     },
   },
@@ -190,6 +244,59 @@ export default {
         return PIPELINE_ALIVE_STATUSES.includes(pipeline.detailedStatus?.name);
       });
     },
+    hasInProgressCreationRequests() {
+      return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
+    },
+    showRunPipelineButtonLoader() {
+      return this.hasInProgressCreationRequests;
+    },
+  },
+  watch: {
+    pipelineCreationRequests: {
+      handler(newRequests, oldRequests) {
+        const hasInProgress = this.requestLengthByStatus(newRequests, 'IN_PROGRESS') > 0;
+
+        if (hasInProgress) {
+          this.startDebouncedPipelineLoader();
+        } else {
+          this.stopDebouncedPipelineLoader();
+        }
+
+        const hasSucceededRequests = this.hasSuccessCountIncreased(oldRequests, newRequests);
+        const hasFailedRequests = this.hasFailureCountIncreased(oldRequests, newRequests);
+
+        if (hasSucceededRequests) {
+          const existingIds = new Set(this.pipelines.map((p) => p.id));
+
+          const newPipelines = newRequests
+            .filter(
+              (req) =>
+                req.status === 'SUCCEEDED' &&
+                req.pipeline &&
+                !existingIds.has(getIdFromGraphQLId(req.pipeline.id)) &&
+                this.latestPipeline?.id < getIdFromGraphQLId(req.pipeline.id),
+            )
+            .map((req) => ({
+              ...req.pipeline,
+              id: getIdFromGraphQLId(req.pipeline.id),
+              graphqlId: req.pipeline.id,
+            }));
+
+          if (newPipelines.length > 0) {
+            this.pipelines = [...newPipelines, ...this.pipelines];
+            this.pipelinesCount += newPipelines.length;
+            this.updateBadgeCount(this.pipelinesCount);
+          }
+        }
+
+        this.showCreationFailedAlert = hasFailedRequests;
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  beforeUnmount() {
+    clearTimeout(this.loaderTimeout);
   },
   methods: {
     /**
@@ -330,11 +437,11 @@ export default {
     async onClickRunPipeline() {
       try {
         this.isRunningMergeRequestPipeline = true;
+        this.startDebouncedPipelineLoader();
 
         await Api.postMergeRequestPipeline(this.projectId, {
           mergeRequestId: this.mergeRequestId,
         });
-        this.$toast.show(s__('Pipeline|Creating pipeline.'));
       } catch (e) {
         const unauthorized = e.response.status === HTTP_STATUS_UNAUTHORIZED;
         let errorMessage = __(
@@ -392,6 +499,45 @@ export default {
         last: PIPELINES_PER_PAGE,
       };
     },
+
+    hasSuccessCountIncreased(previousRequests = [], currentRequests = []) {
+      return (
+        this.requestLengthByStatus(currentRequests, 'SUCCEEDED') >
+        this.requestLengthByStatus(previousRequests, 'SUCCEEDED')
+      );
+    },
+    hasFailureCountIncreased(previousRequests = [], currentRequests = []) {
+      return (
+        this.requestLengthByStatus(currentRequests, 'FAILED') >
+        this.requestLengthByStatus(previousRequests, 'FAILED')
+      );
+    },
+    requestLengthByStatus(requests, status) {
+      return requests.filter((r) => r.status === status).length;
+    },
+    startDebouncedPipelineLoader() {
+      if (this.loaderTimeout) clearTimeout(this.loaderTimeout);
+      this.loaderTimeout = setTimeout(() => {
+        this.isCreatingPipeline = true;
+      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    },
+    stopDebouncedPipelineLoader() {
+      if (this.loaderTimeout) {
+        clearTimeout(this.loaderTimeout);
+        this.loaderTimeout = null;
+      }
+      this.isCreatingPipeline = false;
+    },
+    mergeWithPendingPipelines(serverPipelines) {
+      const serverIds = new Set(serverPipelines.map((p) => p.id));
+      const newestServerId = serverPipelines[0]?.id || 0;
+
+      const pendingPipelines = this.pipelines.filter(
+        (p) => p.id > newestServerId && !serverIds.has(p.id),
+      );
+
+      return [...pendingPipelines, ...serverPipelines];
+    },
   },
   modal: {
     id: 'create-pipeline-for-uork-merge-request-modal',
@@ -417,6 +563,7 @@ export default {
     ),
     runPipelineText: s__('Pipeline|Run pipeline'),
     emptyStateTitle: s__('Pipelines|There are currently no pipelines.'),
+    pipelineCreationFailed: s__('Pipeline|Pipeline creation failed. Please try again.'),
   },
   mrPipelinesDocsPath: helpPagePath('ci/pipelines/merge_request_pipelines.md', {
     anchor: 'prerequisites',
@@ -434,6 +581,13 @@ export default {
 </script>
 <template>
   <div class="content-list pipelines">
+    <gl-alert
+      v-if="showCreationFailedAlert"
+      variant="danger"
+      @dismiss="showCreationFailedAlert = false"
+    >
+      {{ $options.i18n.pipelineCreationFailed }}
+    </gl-alert>
     <gl-loading-icon
       v-if="isLoading"
       :label="s__('Pipelines|Loading pipelines')"
@@ -482,7 +636,7 @@ export default {
           <div class="gl-align-middle">
             <gl-button
               variant="confirm"
-              :loading="isRunningMergeRequestPipeline"
+              :loading="showRunPipelineButtonLoader"
               data-testid="run_pipeline_button"
               @click="tryRunPipeline"
             >
@@ -501,7 +655,7 @@ export default {
         <gl-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"
           data-testid="run_pipeline_button_mobile"
-          :loading="isRunningMergeRequestPipeline"
+          :loading="showRunPipelineButtonLoader"
           @click="tryRunPipeline"
         >
           {{ $options.i18n.runPipelineText }}
@@ -509,6 +663,7 @@ export default {
       </div>
 
       <pipelines-table
+        :is-creating-pipeline="isCreatingPipeline"
         :pipelines="pipelines"
         :source-project-full-path="sourceProjectFullPath"
         class="@lg/panel:-gl-mt-px"
@@ -520,7 +675,7 @@ export default {
           <div v-if="canRenderPipelineButton" class="gl-text-right">
             <gl-button
               data-testid="run_pipeline_button"
-              :loading="isRunningMergeRequestPipeline"
+              :loading="showRunPipelineButtonLoader"
               @click="tryRunPipeline"
             >
               {{ $options.i18n.runPipelineText }}

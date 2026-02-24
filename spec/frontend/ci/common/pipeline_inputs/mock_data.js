@@ -182,6 +182,89 @@ export const mockEmptyInputsResponse = {
   },
 };
 
+export const mockPipelineInputsWithChainedRules = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/17',
+      ciPipelineCreationInputs: [
+        {
+          name: 'environment',
+          description: null,
+          type: 'STRING',
+          options: ['development', 'production'],
+          default: 'development',
+          required: false,
+          regex: null,
+          rules: null,
+        },
+        {
+          name: 'instance_type',
+          description: 'VM instance size',
+          type: 'STRING',
+          options: [],
+          default: null,
+          required: false,
+          regex: null,
+          rules: [
+            {
+              conditionTree: {
+                field: 'environment',
+                operator: 'equals',
+                value: 'development',
+                children: null,
+              },
+              options: ['small', 'medium'],
+              default: 'small',
+            },
+            {
+              conditionTree: {
+                field: 'environment',
+                operator: 'equals',
+                value: 'production',
+                children: null,
+              },
+              options: ['large', 'xlarge'],
+              default: 'large',
+            },
+          ],
+        },
+        {
+          name: 'extra_config',
+          description: 'Extra config that depends on instance_type',
+          type: 'STRING',
+          options: [],
+          default: null,
+          required: false,
+          regex: null,
+          rules: [
+            {
+              conditionTree: {
+                field: 'instance_type',
+                operator: 'equals',
+                value: 'small',
+                children: null,
+              },
+              options: ['opt1', 'opt2'],
+              default: 'opt1',
+            },
+            {
+              conditionTree: {
+                field: 'instance_type',
+                operator: 'equals',
+                value: 'large',
+                children: null,
+              },
+              options: ['opt3', 'opt4'],
+              default: 'opt3',
+            },
+          ],
+        },
+      ],
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockPipelineInputsErrorResponse = {
   errors: [
     {

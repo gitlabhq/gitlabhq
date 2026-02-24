@@ -18,7 +18,7 @@ To use GitLab issue boards to manage your tasks in a Kanban workflow:
 - [Set up Kanban board](#set-up-kanban-board)
 - [Visualize flow and distribution](#visualize-flow-and-distribution)
 
-For other information, see [Advanced tips and tricks](#advanced-tips-and-tricks) at the bottom of this page.
+For other information, see [advanced tips and tricks](#advanced-tips-and-tricks) at the bottom of this page.
 
 ## Set up groups and projects
 
@@ -38,7 +38,8 @@ Next, let's create some labels to represent each step in your Kanban lifecycle:
 - If you are working across multiple projects, create the labels in your group.
   This lets you use a single set of labels across all of your projects.
 
-In both scenarios, the process for creating labels is the same. [Create](../../user/project/labels.md#create-a-label) [scoped labels](../../user/project/labels.md#scoped-labels) for **status::to do**, **status::doing**, and **status::done**.
+In both scenarios, the process for [creating labels](../../user/project/labels.md#create-a-label) is the same.
+Create [scoped labels](../../user/project/labels.md#scoped-labels) for **status::to do**, **status::doing**, and **status::done**.
 
 ## Set up Kanban board
 

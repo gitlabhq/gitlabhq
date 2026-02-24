@@ -4,6 +4,7 @@ require_relative "gitlab/grape_openapi/version"
 require_relative "gitlab/grape_openapi/configuration"
 require_relative "gitlab/grape_openapi/generator"
 require_relative "gitlab/grape_openapi/schema_registry"
+require_relative "gitlab/grape_openapi/request_body_registry"
 require_relative "gitlab/grape_openapi/tag_registry"
 
 # Serializers

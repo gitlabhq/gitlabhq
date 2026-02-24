@@ -9,7 +9,6 @@ import {
   appendUrlFragment,
   appendRedirectQuery,
   toggleRememberMeQuery,
-  toggleRememberMePasskey,
 } from './preserve_url_fragment';
 import UsernameValidator from './username_validator';
 
@@ -18,11 +17,6 @@ initSignInForm();
 new UsernameValidator(); // eslint-disable-line no-new
 new LengthValidator(); // eslint-disable-line no-new
 new NoEmojiValidator(); // eslint-disable-line no-new
-
-// This is implemented directly in app/assets/javascripts/authentication/sign_in/components/sign_in_form.vue
-if (!gon.features.signInFormVue) {
-  toggleRememberMePasskey();
-}
 
 appendUrlFragment();
 appendRedirectQuery();

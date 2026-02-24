@@ -11,6 +11,7 @@ module Gitlab
         end
         @entity_classes = Array(options[:entity_classes])
         @schema_registry = SchemaRegistry.new
+        @request_body_registry = RequestBodyRegistry.new
         @tag_registry = TagRegistry.new
       end
 
@@ -64,13 +65,15 @@ module Gitlab
 
       def paths
         all_routes = @api_classes.flat_map(&:routes)
-        Converters::PathConverter.convert(all_routes, @schema_registry)
+        Converters::PathConverter.convert(all_routes, @schema_registry, @request_body_registry)
       end
 
       private
 
       def schemas
-        @schema_registry.schemas.transform_values(&:to_h)
+        entity_schemas = @schema_registry.schemas.transform_values(&:to_h)
+        request_body_schemas = @request_body_registry.schemas
+        entity_schemas.merge(request_body_schemas)
       end
     end
   end

@@ -13,24 +13,22 @@ title: Control GitLab Duo Agent Platform availability
 {{< /details >}}
 
 GitLab Duo Agent Platform is on by default.
-GitLab Duo Agent Platform includes GitLab Duo Chat (Agentic), agents, and flows.
+Agent Platform includes a [set of features](_index.md).
 
-You can turn GitLab Duo Agent Platform on or off:
+You can turn Agent Platform on or off:
 
-- On GitLab.com: For top-level groups, other groups or subgroups, and projects.
-- On GitLab Self-Managed: For instances, groups or subgroups, and projects.
+- On GitLab.com: For top-level groups.
+- On GitLab Self-Managed: For instances.
 
 ## Turn GitLab Duo Agent Platform on or off
 
 ### On GitLab.com
 
-On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group (namespace).
-
 Prerequisites:
 
-- You must have the Owner role for the top-level group.
+- The Owner role for the top-level group.
 
-To change GitLab Duo Agent Platform availability:
+To turn Agent Platform on or off for a top-level group:
 
 1. On the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
@@ -38,20 +36,18 @@ To change GitLab Duo Agent Platform availability:
 1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
 1. Select **Save changes**.
 
-GitLab Duo Agent Platform availability changes for all subgroups and projects.
+Agent Platform availability changes for all subgroups and projects.
 
-When GitLab Duo Agent Platform is turned off, related settings for flows and
+When Agent Platform is turned off, related settings for flows and
 [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
 
 ### On GitLab Self-Managed
 
-On GitLab Self-Managed, you can control GitLab Duo Agent Platform availability for the instance.
-
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
-To change GitLab Duo Agent Platform availability:
+To turn Agent Platform on or off for an instance:
 
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
@@ -59,27 +55,26 @@ To change GitLab Duo Agent Platform availability:
 1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
 1. Select **Save changes**.
 
-When GitLab Duo Agent Platform is turned off, related settings for flows and
+When Agent Platform is turned off, related settings for flows and
 [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
 
 ## Turn GitLab Duo on or off
 
 GitLab Duo is on by default.
+You can turn GitLab Duo on or off:
 
-You can choose to change the availability of GitLab Duo for different groups and projects.
+- On GitLab.com: For top-level groups, other groups or subgroups, and projects.
+- On GitLab Self-Managed: For instances, groups or subgroups, and projects.
 
 ### On GitLab.com
-
-On GitLab.com, you can control GitLab Duo availability for the top-level group,
-other groups, subgroups, and projects.
 
 #### For a top-level group
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- The Owner role for the top-level group.
 
-To change GitLab Duo availability for the top-level group:
+To change GitLab Duo availability for a top-level group:
 
 1. On the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
@@ -93,7 +88,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- The Owner role for the group or subgroup.
 
 To change GitLab Duo availability for a group or subgroup:
 
@@ -109,7 +104,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner or Maintainer role for the project.
+- The Owner or Maintainer role for the project.
 
 To change GitLab Duo availability for a project:
 
@@ -121,16 +116,13 @@ To change GitLab Duo availability for a project:
 
 ### On GitLab Self-Managed
 
-On GitLab Self-Managed, you can control GitLab Duo availability for the instance,
-groups, subgroups, or projects.
-
 #### For an instance
 
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
-To change GitLab Duo availability for the instance:
+To change GitLab Duo availability for an instance:
 
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
@@ -138,13 +130,11 @@ To change GitLab Duo availability for the instance:
 1. Under **GitLab Duo availability**, select an option.
 1. Select **Save changes**.
 
-GitLab Duo availability changes for the entire instance.
-
 #### For a group or subgroup
 
 Prerequisites:
 
-- You must have the Owner role for the group or subgroup.
+- The Owner role for the group or subgroup.
 
 To change GitLab Duo availability for a group or subgroup:
 
@@ -160,7 +150,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner or Maintainer role for the project.
+- The Owner or Maintainer role for the project.
 
 To change GitLab Duo availability for a project:
 
@@ -169,8 +159,6 @@ To change GitLab Duo availability for a project:
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
 1. Select **Save changes**.
-
-GitLab Duo availability changes for the project.
 
 ## Turn GitLab Duo Core on or off
 
@@ -184,13 +172,11 @@ when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn 
 
 ### On GitLab.com
 
-On GitLab.com, you can change availability for GitLab Duo Core for your top-level group (namespace).
-
 Prerequisites:
 
-- You must have the Owner role for the top-level group.
+- The Owner role for the top-level group.
 
-To change GitLab Duo Core availability:
+To change GitLab Duo Core availability for a top-level group:
 
 1. On the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
@@ -205,13 +191,11 @@ It might take up to 10 minutes for the change to take effect.
 
 ### On GitLab Self-Managed
 
-On GitLab Self-Managed, you can change availability for GitLab Duo Core for your instance.
-
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
-To change GitLab Duo Core availability:
+To change GitLab Duo Core availability for an instance:
 
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
@@ -231,7 +215,7 @@ These features are subject to the [Testing Agreement](https://handbook.gitlab.co
 
 Prerequisites:
 
-- You must have the Owner role for the top-level group.
+- The Owner role for the top-level group.
 
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
@@ -255,7 +239,7 @@ experiment and beta features for your GitLab Self-Managed instance.
 
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
 To turn on GitLab Duo experiment and beta features for an instance:
 
@@ -271,9 +255,9 @@ To turn on GitLab Duo experiment and beta features for an instance:
 
 Prerequisites:
 
-- Be an administrator.
-- Have [network connectivity](../../administration/gitlab_duo/configure/gitlab_self_managed.md) enabled.
-- Have [Silent Mode](../../administration/silent_mode/_index.md) turned off.
+- Administrator access.
+- [Network connectivity](../../administration/gitlab_duo/configure/gitlab_self_managed.md) enabled.
+- [Silent Mode](../../administration/silent_mode/_index.md) turned off.
 
 To turn on GitLab Duo experiment and beta features for an instance:
 

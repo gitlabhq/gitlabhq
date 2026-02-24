@@ -24,9 +24,9 @@ module QA
         it 'unlocks job artifacts from previous successful pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394807' do
           project.visit_job('job_1')
-          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
 
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 
@@ -59,9 +59,8 @@ module QA
 
           project.visit_job('failed_job_2')
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 
@@ -92,9 +91,8 @@ module QA
 
           project.visit_job('successful_job_with_manual_2')
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 

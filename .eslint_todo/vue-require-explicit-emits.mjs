@@ -525,7 +525,6 @@ export default {
     'app/assets/javascripts/vue_merge_request_widget/components/action_buttons.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/deployment/deployment_action_button.vue',
-    'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_migrate_jenkins.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/state_container.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/states/commit_edit.vue',

@@ -4,13 +4,14 @@ module Gitlab
   module GrapeOpenapi
     module Converters
       class PathConverter
-        def self.convert(routes, schema_registry)
-          new(routes, schema_registry).convert
+        def self.convert(routes, schema_registry, request_body_registry)
+          new(routes, schema_registry, request_body_registry).convert
         end
 
-        def initialize(routes, schema_registry)
+        def initialize(routes, schema_registry, request_body_registry)
           @routes = routes
           @schema_registry = schema_registry
+          @request_body_registry = request_body_registry
           @config = Gitlab::GrapeOpenapi.configuration
         end
 
@@ -24,7 +25,7 @@ module Gitlab
 
         private
 
-        attr_reader :config, :routes, :schema_registry
+        attr_reader :config, :routes, :schema_registry, :request_body_registry
 
         def grouped_routes
           routes.group_by { |route| normalize_path(route) }
@@ -44,7 +45,7 @@ module Gitlab
           path_item = Models::PathItem.new
 
           routes_for_path.each do |route|
-            operation = OperationConverter.convert(route, schema_registry)
+            operation = OperationConverter.convert(route, schema_registry, request_body_registry)
             method = extract_method(route)
             path_item.add_operation(method, operation)
           end

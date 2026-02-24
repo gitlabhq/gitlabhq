@@ -9,16 +9,17 @@ module Gitlab
         GET_METHOD = 'GET'
         DELETE_METHOD = 'DELETE'
 
-        attr_reader :route, :options, :params
+        attr_reader :route, :options, :params, :request_body_registry
 
-        def self.convert(route:, options:, params:)
-          new(route: route, options: options, params: params).convert
+        def self.convert(route:, options:, params:, request_body_registry:)
+          new(route: route, options: options, params: params, request_body_registry: request_body_registry).convert
         end
 
-        def initialize(route:, options:, params:)
+        def initialize(route:, options:, params:, request_body_registry:)
           @route = route
           @options = options
           @params = params
+          @request_body_registry = request_body_registry
         end
 
         def convert
@@ -54,11 +55,13 @@ module Gitlab
           }
           schema[:required] = required_params unless required_params.empty?
 
+          schema_ref = request_body_registry.register(schema)
+
           {
             required: required_params.any?,
             content: {
               content_type(body_params) => {
-                schema: schema
+                schema: schema_ref
               }
             }
           }

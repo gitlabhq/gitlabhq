@@ -29,6 +29,8 @@ module RuboCop
         add_offense(node, message: BLOCK_OFFENSE)
       end
 
+      alias_method :on_numblock, :on_block
+
       private
 
       def covered_with_tests?(node)

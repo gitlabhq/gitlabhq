@@ -33,10 +33,9 @@ module QA
 
         Flow::Login.sign_in
         project.visit!
+        Page::Project::Show.perform(&:close_dap_panel_if_exists)
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
-
-        QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
       end
 
       after do

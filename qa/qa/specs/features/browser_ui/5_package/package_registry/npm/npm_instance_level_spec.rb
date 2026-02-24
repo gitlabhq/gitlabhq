@@ -102,9 +102,8 @@ module QA
 
           another_project.visit_job('install')
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to be_successful(timeout: 180)
             job.click_browse_button
           end

@@ -15,7 +15,27 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
     visit admin_root_path
   end
 
-  with_and_without_sign_in_form_vue do
+  it 'disable removes admin mode and redirects to root page' do
+    gitlab_disable_admin_mode
+
+    expect(page).to have_current_path root_path, ignore_query: true
+
+    find_by_testid('user-menu-toggle').click
+
+    expect(page).to have_link(href: new_admin_session_path)
+  end
+
+  it 'disable shows flash notice' do
+    gitlab_disable_admin_mode
+
+    expect(page).to have_selector('[data-testid="alert-info"]', text: _('Admin mode disabled'))
+  end
+
+  context 'on a read-only instance' do
+    before do
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+    end
+
     it 'disable removes admin mode and redirects to root page' do
       gitlab_disable_admin_mode
 
@@ -24,28 +44,6 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
       find_by_testid('user-menu-toggle').click
 
       expect(page).to have_link(href: new_admin_session_path)
-    end
-
-    it 'disable shows flash notice' do
-      gitlab_disable_admin_mode
-
-      expect(page).to have_selector('[data-testid="alert-info"]', text: _('Admin mode disabled'))
-    end
-
-    context 'on a read-only instance' do
-      before do
-        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
-      end
-
-      it 'disable removes admin mode and redirects to root page' do
-        gitlab_disable_admin_mode
-
-        expect(page).to have_current_path root_path, ignore_query: true
-
-        find_by_testid('user-menu-toggle').click
-
-        expect(page).to have_link(href: new_admin_session_path)
-      end
     end
   end
 end

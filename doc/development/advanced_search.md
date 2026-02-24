@@ -1332,6 +1332,174 @@ This filter combines `by_project_confidentiality` and `by_group_level_confidenti
 ]
 ```
 
+#### `by_note_confidentiality`
+
+Applies confidentiality filters for notes. Notes have two levels of confidentiality:
+
+1. Note's own confidentiality (`confidential` field)
+1. Issue's confidentiality (`issue.confidential`, `issue.author_id`, `issue.assignee_id`)
+
+Requires `confidential`, `issue.confidential`, `issue.author_id`, `issue.assignee_id`, `project_id`, and `traversal_ids` fields.
+
+A note is visible if ANY of these conditions are met:
+
+- It's on a non-confidential issue AND the note isn't confidential
+- It's on a confidential issue but user is author/assignee/has project access via `project_id` or `traversal_ids`
+- The note is confidential but user has project access via `project_id` or `traversal_ids`
+
+This filter uses both `project_id` terms and `traversal_ids`-based authorization for efficient group-level searches.
+
+```json
+{
+  "bool": {
+    "minimum_should_match": 1,
+    "should": [
+      {
+        "bool": {
+          "filter": [
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_on_issue_or_not_confidential",
+                "should": [
+                  {
+                    "bool": {
+                      "_name": "filters:confidentiality:notes:not_on_issue",
+                      "must_not": [{ "exists": { "field": "issue" } }]
+                    }
+                  },
+                  {
+                    "term": {
+                      "issue.confidential": {
+                        "_name": "filters:confidentiality:notes:non_confidential_issue",
+                        "value": false
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_confidential",
+                "should": [
+                  { "bool": { "must_not": [{ "exists": { "field": "confidential" } }] } },
+                  { "term": { "confidential": false } }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "issue.confidential": {
+                  "_name": "filters:confidentiality:notes:issue:confidential",
+                  "value": true
+                }
+              }
+            },
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_confidential",
+                "should": [
+                  { "bool": { "must_not": [{ "exists": { "field": "confidential" } }] } },
+                  { "term": { "confidential": false } }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "term": {
+                      "issue.author_id": {
+                        "_name": "filters:confidentiality:notes:confidential:as_author",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "issue.assignee_id": {
+                        "_name": "filters:confidentiality:notes:confidential:as_assignee",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "terms": {
+                      "_name": "filters:confidentiality:notes:private:project:member",
+                      "project_id": [1]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "minimum_should_match": 1,
+                      "should": [
+                        {
+                          "prefix": {
+                            "traversal_ids": {
+                              "_name": "filters:confidentiality:notes:private:ancestry_filter:descendants",
+                              "value": "123-"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "confidential": {
+                  "_name": "filters:confidentiality:notes:confidential",
+                  "value": true
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1,
+          "should": [
+            {
+              "terms": {
+                "_name": "filters:confidentiality:notes:private:project:member",
+                "project_id": [1]
+              }
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "prefix": {
+                      "traversal_ids": {
+                        "_name": "filters:confidentiality:notes:private:ancestry_filter:descendants",
+                        "value": "123-"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
 #### `by_label_ids`
 
 Requires `label_ids` field. Query with `label_names` in options.

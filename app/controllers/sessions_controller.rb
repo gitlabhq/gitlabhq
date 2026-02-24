@@ -38,7 +38,6 @@ class SessionsController < Devise::SessionsController
   before_action :set_invite_params, only: [:new]
   before_action only: [:new] do
     push_frontend_feature_flag(:passkeys, Feature.current_request)
-    push_frontend_feature_flag(:sign_in_form_vue, Feature.current_request)
     push_frontend_feature_flag(:two_step_sign_in, Feature.current_request)
   end
 

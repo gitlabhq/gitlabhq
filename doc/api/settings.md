@@ -260,7 +260,9 @@ PUT /application/settings
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal"
+  --url "https://gitlab.example.com/api/v4/application/settings" \
+  --data "signup_enabled=false" \
+  --data "default_project_visibility=internal"
 ```
 
 Example response:

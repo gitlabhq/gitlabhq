@@ -23,6 +23,11 @@
 # List of domain bounded contexts composing GitLab product functionality.
 # A domain generally includes one or more highly cohesive feature categories.
 domains:
+  Activation:
+    description: User and namespace activation features and metrics tracking
+    feature_categories:
+      - onboarding
+
   Ai:
     description: Abstraction layers for AI capabilities, custom models and Duo Chat
     feature_categories:
@@ -128,11 +133,21 @@ domains:
     feature_categories:
       - team_planning
 
+  DependencyManagement:
+    description: Automated management of project dependencies including version updates and security patches.
+    feature_categories:
+      - dependency_management
+
   DependencyProxy:
     description: Dependency Proxy for container images.
     feature_categories:
       - virtual_registry
       - package_registry
+
+  DeployTokens:
+    description: Managing deploy tokens
+    feature_categories:
+      - continuous_delivery
 
   DesignManagement:
     description:
@@ -179,6 +194,11 @@ domains:
       - portfolio_management
       - code_review_workflow
 
+  Mcp:
+    description: MCP server, tools and associated classes and tooling.
+    feature_categories:
+      - mcp_server
+
   Members:
     description: Layer related to mapping users to groups and projects via membership
     feature_categories:
@@ -200,11 +220,6 @@ domains:
     description:
     feature_categories:
       - mlops
-
-  Mcp:
-    description: MCP server, tools and associated classes and tooling.
-    feature_categories:
-      - mcp_server
 
   Namespaces:
     description: Managing groups, subgroups and user namespaces
@@ -259,16 +274,6 @@ domains:
     feature_categories:
       - pages
 
-  Activation:
-    description: User and namespace activation features and metrics tracking
-    feature_categories:
-      - onboarding
-
-  DeployTokens:
-    description: Managing deploy tokens
-    feature_categories:
-      - continuous_delivery
-
   Projects:
     description: Managing projects as workspaces and their lifecycle. Feature specific behavior must not go here.
     feature_categories:
@@ -282,11 +287,6 @@ domains:
       A project push rule can override a group push rule.
     feature_categories:
       - source_code_management
-
-  ResourceAccessTokens:
-    description: Managing groups and projects access tokens
-    feature_categories:
-      - system_access
 
   Releases:
     description:
@@ -304,6 +304,11 @@ domains:
     feature_categories:
       - source_code_management
       - gitaly
+
+  ResourceAccessTokens:
+    description: Managing groups and projects access tokens
+    feature_categories:
+      - system_access
 
   Sbom:
     description: SBOM related ingestion

@@ -35023,6 +35023,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusageuserssearchquery"></a>`searchQuery` | [`String`](#string) | Filter users with a matching name, username, or email. Ignored when username is provided. |
 | <a id="gitlabsubscriptionusageusersusageuserssort"></a>`sort` | [`GitlabSubscriptionUsageUserSort`](#gitlabsubscriptionusageusersort) | Sort users by the criteria. |
 | <a id="gitlabsubscriptionusageusersusageusersusername"></a>`username` | [`String`](#string) | Username of the User. |
 

@@ -8,13 +8,14 @@ module Gitlab
 
         DASH_SEGMENT = 'Dash'
 
-        def self.convert(route, schema_registry)
-          new(route, schema_registry).convert
+        def self.convert(route, schema_registry, request_body_registry)
+          new(route, schema_registry, request_body_registry).convert
         end
 
-        def initialize(route, schema_registry)
+        def initialize(route, schema_registry, request_body_registry)
           @route = route
           @schema_registry = schema_registry
+          @request_body_registry = request_body_registry
           @config = Gitlab::GrapeOpenapi.configuration
           @options = route.instance_variable_get(:@options)
           @pattern = route.instance_variable_get(:@pattern)
@@ -37,7 +38,7 @@ module Gitlab
 
         private
 
-        attr_reader :config, :route, :options, :pattern, :endpoint, :schema_registry
+        attr_reader :config, :route, :options, :pattern, :endpoint, :schema_registry, :request_body_registry
 
         def route_method
           options = @route.instance_variable_get(:@options)
@@ -155,7 +156,8 @@ module Gitlab
           RequestBodyConverter.convert(
             route: route,
             options: options,
-            params: options[:params]
+            params: options[:params],
+            request_body_registry: request_body_registry
           )
         end
       end

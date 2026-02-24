@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Free user limit
+title: Free tier user and group limits
 ---
 
 {{< details >}}
@@ -11,6 +11,10 @@ title: Free user limit
 - Offering: GitLab.com
 
 {{< /details >}}
+
+If you're on the Free tier, the following user and group limits apply.
+
+## Free user limit
 
 You can add up to five users to newly created top-level namespaces with
 private visibility on GitLab.com.

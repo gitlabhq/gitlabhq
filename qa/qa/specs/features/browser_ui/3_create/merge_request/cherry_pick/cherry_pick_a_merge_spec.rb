@@ -14,6 +14,7 @@ module QA
         feature_mr.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
+          merge_request.close_dap_panel_if_exists
           merge_request.merge!
           merge_request.cherry_pick!
         end

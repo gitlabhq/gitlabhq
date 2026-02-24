@@ -154,7 +154,7 @@ GitLab has validated and tested the following providers. The AI Gateway supports
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions) 
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview) 
-- [Open AI](https://developers.openai.com/api/docs/models) 
+- [OpenAI](https://developers.openai.com/api/docs/models) 
 
 For configuration information, see the following provider documentation:
  

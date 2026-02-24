@@ -649,6 +649,9 @@ module QA
           has_link?(name)
         end
 
+        # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
+        def close_dap_panel_if_exists; end
+
         private
 
         def wait_assignees_block_finish_loading

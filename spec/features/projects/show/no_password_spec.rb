@@ -40,25 +40,21 @@ RSpec.describe 'No Password Alert', :with_current_organization, feature_category
     end
 
     context 'when user has no personal access tokens' do
-      with_and_without_sign_in_form_vue do
-        it 'has a personal access token alert' do
-          gitlab_sign_in_via('saml', user, 'my-uid')
-          visit project_path(project)
+      it 'has a personal access token alert' do
+        gitlab_sign_in_via('saml', user, 'my-uid')
+        visit project_path(project)
 
-          expect(page).to have_content message_password_auth_disabled
-        end
+        expect(page).to have_content message_password_auth_disabled
       end
     end
 
     context 'when user has a personal access token' do
-      with_and_without_sign_in_form_vue do
-        it 'shows no alert' do
-          create(:personal_access_token, user: user)
-          gitlab_sign_in_via('saml', user, 'my-uid')
-          visit project_path(project)
+      it 'shows no alert' do
+        create(:personal_access_token, user: user)
+        gitlab_sign_in_via('saml', user, 'my-uid')
+        visit project_path(project)
 
-          expect(page).not_to have_content message_password_auth_disabled
-        end
+        expect(page).not_to have_content message_password_auth_disabled
       end
     end
   end

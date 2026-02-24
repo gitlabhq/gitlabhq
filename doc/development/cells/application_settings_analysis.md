@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 517
+- Number of attributes: 516
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 298 (57.99999999999999%)
 - Number of attributes on GitLab.com different from the defaults: 223 (43.0%)
-- Number of attributes with `clusterwide` set: 517 (100.0%)
-- Number of attributes with `clusterwide: true` set: 142 (27.0%)
+- Number of attributes with `clusterwide` set: 516 (100.0%)
+- Number of attributes with `clusterwide: true` set: 141 (27.0%)
 
 ## Individual columns
 
@@ -319,7 +319,6 @@ title: Application Settings analysis
 | `mirror_max_delay` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
 | `model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `namespace_aggregation_schedule_lease_duration_in_seconds` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
-| `namespace_deletion_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `namespace_storage_forks_cost_factor` | `false` | `double` | `` | `true` | `1.0` | `true` | `false`| `false` |
 | `new_user_signups_cap` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `notes_create_limit` | `false` | `integer` | `` | `true` | `300` | `true` | `true`| `false` |

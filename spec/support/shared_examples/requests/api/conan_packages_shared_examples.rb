@@ -956,20 +956,29 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: fals
   it_behaves_like 'protected package main example'
   it_behaves_like 'updating personal access token last used'
 
-  if revision
-    it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) }
+  it 'creates a recipe revision', if: revision do
+    expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1)
+  end
 
-    context 'when the file already exists' do
-      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
-      let(:recipe_path_name) { package.name }
+  context 'when the file already exists' do
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision if revision }
+    let(:recipe_path_name) { package.name }
+    let(:package_file) { package.package_files.find_by(file_name: file_name) }
 
-      it 'does not upload the file again' do
-        expect { request }.not_to change { Packages::PackageFile.count }
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({
-          'message' => '400 Bad request - Validation failed: ' \
-            'File name already exists for the given recipe revision, package reference, and package revision'
-        })
+    it 'returns existing package file' do
+      expect { request }.not_to change { Packages::PackageFile.count }
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response).to include('id' => package_file.id)
+    end
+
+    context 'with different content', unless: revision do
+      let(:headers_with_token) do
+        super().merge('X-Checksum-Sha1' => Digest::SHA1.hexdigest(file_name)) # rubocop:disable Fips/SHA1 -- conan uses SHA-1 hash
+      end
+
+      it 'creates a new package file' do
+        expect { subject }.to change { Packages::PackageFile.count }.by(1)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -1000,26 +1009,33 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: fal
   it_behaves_like 'protected package main example'
   it_behaves_like 'updating personal access token last used'
 
-  if revision
-    it 'creates a recipe and package revision' do
-      expect { request }
-        .to change { Packages::Conan::RecipeRevision.count }.by(1)
-        .and change { Packages::Conan::PackageRevision.count }.by(1)
+  it 'creates a recipe and package revision', if: revision do
+    expect { request }
+      .to change { Packages::Conan::RecipeRevision.count }.by(1)
+      .and change { Packages::Conan::PackageRevision.count }.by(1)
+  end
+
+  context 'when the file already exists' do
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision if revision }
+    let(:package_revision) { package.conan_package_revisions.first.revision if revision }
+    let(:conan_package_reference) { package.conan_package_references.first.reference }
+    let(:recipe_path_name) { package.name }
+    let(:package_file) { package.package_files.find_by(file_name: file_name) }
+
+    it 'returns existing package file' do
+      expect { request }.not_to change { Packages::PackageFile.count }
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response).to include('id' => package_file.id)
     end
 
-    context 'when the file already exists' do
-      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
-      let(:package_revision) { package.conan_package_revisions.first.revision }
-      let(:conan_package_reference) { package.conan_package_references.first.reference }
-      let(:recipe_path_name) { package.name }
+    context 'with different content', unless: revision do
+      let(:headers_with_token) do
+        super().merge('X-Checksum-Sha1' => Digest::SHA1.hexdigest(file_name)) # rubocop:disable Fips/SHA1 -- conan uses SHA-1 hash
+      end
 
-      it 'does not upload the file again' do
-        expect { request }.not_to change { Packages::PackageFile.count }
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({
-          'message' => '400 Bad request - Validation failed: ' \
-            'File name already exists for the given recipe revision, package reference, and package revision'
-        })
+      it 'creates a new package file' do
+        expect { subject }.to change { Packages::PackageFile.count }.by(1)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

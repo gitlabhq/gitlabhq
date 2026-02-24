@@ -3080,6 +3080,9 @@ msgstr ""
 msgid "AICatalog|No authentication"
 msgstr ""
 
+msgid "AICatalog|No triggers configured."
+msgstr ""
+
 msgid "AICatalog|No triggers configured. %{linkStart}Add a trigger%{linkEnd} to make this %{itemType} available."
 msgstr ""
 
@@ -11028,9 +11031,6 @@ msgid "B"
 msgstr ""
 
 msgid "Back"
-msgstr ""
-
-msgid "Back to page %{number}"
 msgstr ""
 
 msgid "Back to reference %{footnote_id}"
@@ -41910,9 +41910,6 @@ msgstr ""
 msgid "Maximum of 255 characters"
 msgstr ""
 
-msgid "Maximum page reached"
-msgstr ""
-
 msgid "Maximum page size"
 msgstr ""
 
@@ -44300,9 +44297,6 @@ msgid "Most common"
 msgstr ""
 
 msgid "Most relevant"
-msgstr ""
-
-msgid "Most starred"
 msgstr ""
 
 msgid "Move"
@@ -66503,9 +66497,6 @@ msgstr ""
 msgid "Sorry, no projects matched your search"
 msgstr ""
 
-msgid "Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further."
-msgstr ""
-
 msgid "Sorry, your filter produced no results"
 msgstr ""
 
@@ -83316,9 +83307,6 @@ msgstr ""
 msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
 msgstr ""
 
-msgid "mrWidget|Information"
-msgstr ""
-
 msgid "mrWidget|Members who can merge are allowed to add commits."
 msgstr ""
 
@@ -83343,9 +83331,6 @@ msgid "mrWidget|Merging immediately is not recommended because your changes won'
 msgstr ""
 
 msgid "mrWidget|Merging immediately is not recommended. The merged changes could cause pipeline failures on the target branch, and the changes will not be validated against the commits being added by the merge requests currently in the merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
-msgstr ""
-
-msgid "mrWidget|Migrate to GitLab CI/CD from Jenkins"
 msgstr ""
 
 msgid "mrWidget|Naming convention"
@@ -83394,12 +83379,6 @@ msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipel
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to start a merge train when all merge checks pass"
-msgstr ""
-
-msgid "mrWidget|Start with migration plan"
-msgstr ""
-
-msgid "mrWidget|Take advantage of simple, scalable pipelines and CI/CD enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!"
 msgstr ""
 
 msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."

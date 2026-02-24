@@ -2,8 +2,12 @@
 
 RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
   let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+  let(:request_body_registry) { Gitlab::GrapeOpenapi::RequestBodyRegistry.new }
   let(:api_classes) { [TestApis::NestedApi] }
   let(:routes) { api_classes.flat_map(&:routes) }
+  let(:route) { routes.first }
+
+  subject(:operation) { described_class.convert(route, schema_registry, request_body_registry) }
 
   describe '.convert' do
     context 'with simple routes' do
@@ -11,8 +15,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
       context 'with GET route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'GET' } }
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('getApiV1Users')
@@ -56,8 +58,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       context 'with POST route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'POST' } }
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('postApiV1Users')
         end
@@ -87,8 +87,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       context 'with PUT route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'PUT' } }
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('putApiV1UsersId')
         end
@@ -104,8 +102,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
       context 'with PATCH route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'PATCH' } }
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('patchApiV1UsersId')
@@ -123,8 +119,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       context 'with DELETE route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'DELETE' } }
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('deleteApiV1UsersId')
         end
@@ -141,8 +135,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       context 'with HEAD route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'HEAD' } }
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('headApiV1UsersId')
         end
@@ -154,8 +146,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
       context 'with OPTIONS route' do
         let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'OPTIONS' } }
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates correct operation_id' do
           expect(operation.operation_id).to eq('optionsApiV1Users')
@@ -176,11 +166,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
     end
 
     context 'with nested routes to ensure uniqueness' do
-      let(:operations) do
-        routes.map { |route| described_class.convert(route, schema_registry) }
-      end
-
       it 'generates unique operation IDs for all routes' do
+        operations = routes.map { |r| described_class.convert(r, schema_registry, request_body_registry) }
         operation_ids = operations.map(&:operation_id)
 
         expect(operation_ids).to eq(%w[
@@ -195,6 +182,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       end
 
       it 'has no duplicate operation IDs' do
+        operations = routes.map { |r| described_class.convert(r, schema_registry, request_body_registry) }
         operation_ids = operations.map(&:operation_id)
         expect(operation_ids.uniq.length).to eq(operation_ids.length)
       end
@@ -205,8 +193,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
             r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == '/api/:version/users'
           end
         end
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates simple operation_id' do
           expect(operation.operation_id).to eq('getApiV1Users')
@@ -219,8 +205,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
             r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == '/api/:version/admin/users'
           end
         end
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates operation_id with admin prefix' do
           expect(operation.operation_id).to eq('getApiV1AdminUsers')
@@ -236,8 +220,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           end
         end
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'generates operation_id with all segments' do
           expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdUsers')
         end
@@ -250,8 +232,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
               '/api/:version/projects/:project_id/merge_requests'
           end
         end
-
-        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates operation_id with camelized segments' do
           expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdMergeRequests')
@@ -269,8 +249,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           end
         end
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'has nil description when no detail provided' do
           expect(operation.description).to be_nil
         end
@@ -284,8 +262,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
     context 'with parameters' do
       let(:api_classes) { [TestApis::UsersApi] }
       let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'GET' } }
-
-      subject(:operation) { described_class.convert(route, schema_registry) }
 
       it 'extracts parameter details correctly' do
         params = operation.parameters
@@ -314,8 +290,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
       end
 
-      subject(:operation) { described_class.convert(route, schema_registry) }
-
       it 'camelizes paths with underscores correctly' do
         expect(operation.operation_id).to include('MergeRequests')
       end
@@ -323,26 +297,27 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
     context 'with request body' do
       let(:api_classes) { [TestApis::UsersApi] }
-      let(:post_route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'POST' } }
-      let(:get_route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'GET' } }
 
-      it 'includes request_body for POST request' do
-        operation = described_class.convert(post_route, schema_registry)
-        expect(operation.request_body).not_to be_empty
-        expect(operation.request_body).to be_a(Hash)
+      context 'with POST request' do
+        let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'POST' } }
+
+        it 'includes request_body for POST request' do
+          expect(operation.request_body).not_to be_empty
+          expect(operation.request_body).to be_a(Hash)
+        end
       end
 
-      it 'has empty request_body for GET request' do
-        operation = described_class.convert(get_route, schema_registry)
-        expect(operation.request_body).to eq({})
+      context 'with GET request' do
+        let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'GET' } }
+
+        it 'has empty request_body for GET request' do
+          expect(operation.request_body).to eq({})
+        end
       end
     end
 
     context 'with responses' do
       let(:api_classes) { [TestApis::UsersApi] }
-      let(:route) { routes.first }
-
-      subject(:operation) { described_class.convert(route, schema_registry) }
 
       it 'converts responses using ResponseConverter' do
         expect(operation.responses).to be_a(Hash)
@@ -360,8 +335,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           end
         end
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'returns nil for tags when not specified' do
           expect(operation.tags).to be_empty
         end
@@ -374,21 +347,20 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           end
         end
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'returns empty array for parameters' do
           expect(operation.parameters).to eq([])
         end
       end
 
       context 'with camelize functionality' do
-        it 'handles underscores in operation_id' do
-          route = routes.find do |r|
+        let(:route) do
+          routes.find do |r|
             r.instance_variable_get(:@pattern).instance_variable_get(:@origin) ==
               '/api/:version/projects/:project_id/merge_requests/:merge_request_id/comments'
           end
-          operation = described_class.convert(route, schema_registry)
+        end
 
+        it 'handles underscores in operation_id' do
           expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdMergeRequestsMergeRequestIdComments')
           expect(operation.operation_id).to include('MergeRequests')
           expect(operation.operation_id).to include('MergeRequestId')
@@ -404,8 +376,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           end
         end
 
-        subject(:operation) { described_class.convert(route, schema_registry) }
-
         it 'includes all path parameters in operation_id' do
           expect(operation.operation_id).to include('ProjectId')
           expect(operation.operation_id).to include('MergeRequestId')
@@ -416,12 +386,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
   context 'with deprecated endpoints' do
     let(:api_classes) { [TestApis::DeprecatedApi] }
-    let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
 
     context 'with deprecated true directive' do
       let(:route) { routes.find { |r| r.path.include?('directive') } }
-
-      subject(:operation) { described_class.convert(route, schema_registry) }
 
       it 'sets deprecated to true' do
         expect(operation.deprecated).to be true
@@ -435,8 +402,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
     context 'with non-deprecated endpoint' do
       let(:route) { routes.find { |r| r.path.include?('normal') } }
 
-      subject(:operation) { described_class.convert(route, schema_registry) }
-
       it 'does not set deprecated' do
         expect(operation.deprecated).to be_falsey
       end
@@ -446,11 +411,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
   context 'with hidden endpoints' do
     let(:api_classes) { [TestApis::HiddenApi] }
     let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+    let(:request_body_registry) { Gitlab::GrapeOpenapi::RequestBodyRegistry.new }
 
     context 'with hidden true directive' do
       let(:route) { routes.find { |r| r.path.include?('hidden') } }
 
-      subject(:operation) { described_class.convert(route, schema_registry) }
+      subject(:operation) { described_class.convert(route, schema_registry, request_body_registry) }
 
       it 'sets hidden to true' do
         expect(operation.hidden).to be true

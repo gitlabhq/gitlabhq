@@ -13,7 +13,7 @@ giving constructive, helpful feedback. By the end of the tutorial, you're ready 
 approve the merge request, or request more changes.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
+For an overview, see [merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
 To review a merge request:
@@ -301,7 +301,7 @@ your review. This avoids message overload to your recipients, and gives you a ch
 to recheck (and change) your words before you publish.
 
 Remember to be constructive and kind. The structure of
-[Conventional comments](https://conventionalcomments.org/) can help you write
+[conventional comments](https://conventionalcomments.org/) can help you write
 comments that are both thoughtful and constructive.
 
 First, write your comments you want to attach to specific lines or files:

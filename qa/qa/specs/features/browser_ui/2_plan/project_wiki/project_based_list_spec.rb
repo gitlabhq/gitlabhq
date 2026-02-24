@@ -42,9 +42,8 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
           large_wiki.visit!
 
-          QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
           Page::Project::Wiki::Show.perform do |wiki|
+            wiki.close_dap_panel_if_exists
             wiki.expand_sidebar_if_collapsed
             wiki.click_view_all_pages
           end

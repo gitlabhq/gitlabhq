@@ -29,9 +29,7 @@ Changes made to files in the repository are tracked, so you can view a history.
 While a repository focuses on version control for source code,
 a project provides a comprehensive environment for the entire development lifecycle.
 
-For details, see:
-
-- [Create a repository](../project/repository/_index.md#create-a-repository)
+For more information, see [create a repository](../project/repository/_index.md#create-a-repository).
 
 ## Step 2: Write your code
 
@@ -54,13 +52,15 @@ You can further split your development environment by creating separate workspac
 Workspaces are separate development environments you use to ensure different projects
 don't interfere with one another.
 
-For details, see:
+For more information, see:
 
 - [Create a file in the repository from the UI](../project/repository/_index.md#add-a-file-from-the-ui)
 - [Open a file in the Web IDE](../project/web_ide/_index.md#from-a-file)
 - [Create a remote development environment with workspaces](../workspace/_index.md)
 - [Available editor extensions](../../editor_extensions/_index.md)
-- Use [Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) to write code more quickly
+
+For other help writing code, see [code suggestions](../duo_agent_platform/code_suggestions/_index.md)
+or [code suggestions (classic)](../project/repository/code_suggestions/_index.md).
 
 ## Step 3: Save changes and push to GitLab
 
@@ -77,7 +77,7 @@ How you do this depends on where you authored the code and the tools you use to 
 But the idea is to create a merge request that takes the contents of your source branch
 and proposes combining it into the target branch.
 
-For details, see:
+For more information, see:
 
 - [Use Git to create a merge request](../../tutorials/make_first_git_commit/_index.md)
 - [Use the UI to create a merge request when you add, edit, or upload a file](../project/merge_requests/creating_merge_requests.md)

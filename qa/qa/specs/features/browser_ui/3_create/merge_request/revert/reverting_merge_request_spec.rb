@@ -13,6 +13,7 @@ module QA
         revertible_merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
+          merge_request.close_dap_panel_if_exists
           merge_request.merge!
           expect(merge_request).to be_revertible, 'Expected merge request to be in a state to be reverted.'
           merge_request.revert_change!

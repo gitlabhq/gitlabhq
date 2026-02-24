@@ -694,14 +694,6 @@ module ProjectsHelper
     'manual-ordering'
   end
 
-  def projects_filtered_search_and_sort_app_data
-    {
-      initial_sort: project_list_sort_by,
-      programming_languages: programming_languages,
-      paths_to_exclude_sort_on: [starred_explore_projects_path, explore_root_path]
-    }.to_json
-  end
-
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,

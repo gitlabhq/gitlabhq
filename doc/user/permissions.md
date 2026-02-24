@@ -585,13 +585,13 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | Action                                                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request <sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) merge requests and comments <sup>1</sup>                       |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>2</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) merge requests and comments <sup>1</sup><sup>2</sup>           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>3</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Comment and add suggestions                                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create [snippets](snippets.md)                                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>3</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update merge request details <sup>4</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
+| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>4</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
+| Update merge request details <sup>5</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)             |       |         |          |           |     ✓      |   ✓   |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
 | Delete merge request                                                                      |       |         |          |           |            |   ✓   |
@@ -603,6 +603,8 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
    internal visibility is not available.
+1. Users with the Planner role can not use advanced search for merge requests and comments on merge
+   requests. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 1. Approval from Planner and Reporter roles is available only if
    [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
 1. In projects that accept contributions from external members, users can create, edit, and close their
@@ -703,14 +705,14 @@ Project permissions for [issues](project/issues/_index.md):
 | [Search](search/_index.md) issues and comments                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create issues                                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) confidential issues and comments                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) confidential issues and comments <sup>6</sup>          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Edit issues, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Close and reopen issues <sup>2</sup>                                              |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [design management](project/issues/design_management.md) files             |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [issue boards](project/issue_board.md)                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [milestones](project/milestones/_index.md)                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) milestones                                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) milestones <sup>6</sup>                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Archive or reopen [requirements](project/requirements/_index.md) <sup>3</sup>     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create or edit [requirements](project/requirements/_index.md) <sup>4</sup>        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Import or export [requirements](project/requirements/_index.md)                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -733,6 +735,8 @@ Project permissions for [issues](project/issues/_index.md):
 1. Guest users can archive and reopen issues that they authored or are assigned to.
 1. Guest users can modify the title and description that they authored or are assigned to.
 1. Users who don't have the Planner or Owner role can only delete the issues they authored.
+1. Users with the Planner role can not use advanced search for milestones or comments on confidential issues.
+   For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 
 Project permissions for [tasks](tasks.md):
 

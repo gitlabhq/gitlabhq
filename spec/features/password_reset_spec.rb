@@ -3,37 +3,35 @@
 require 'spec_helper'
 
 RSpec.describe 'Password reset', feature_category: :system_access do
-  with_and_without_sign_in_form_vue do
-    describe 'throttling' do
-      it 'sends reset instructions when not previously sent' do
-        user = create(:user)
-        forgot_password(user)
+  describe 'throttling', :js do
+    it 'sends reset instructions when not previously sent' do
+      user = create(:user)
+      forgot_password(user)
 
-        expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
-        expect(page).to have_current_path new_user_session_path, ignore_query: true
-        expect(user.recently_sent_password_reset?).to be_truthy
-      end
+      expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
+      expect(user.recently_sent_password_reset?).to be_truthy
+    end
 
-      it 'sends reset instructions when previously sent more than a minute ago' do
-        user = create(:user)
-        user.send_reset_password_instructions
-        user.update_attribute(:reset_password_sent_at, 5.minutes.ago)
+    it 'sends reset instructions when previously sent more than a minute ago' do
+      user = create(:user)
+      user.send_reset_password_instructions
+      user.update_attribute(:reset_password_sent_at, 5.minutes.ago)
 
-        expect { forgot_password(user) }.to change { user.reset_password_sent_at }
-        expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
-        expect(page).to have_current_path new_user_session_path, ignore_query: true
-      end
+      expect { forgot_password(user) }.to change { user.reset_password_sent_at }
+      expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
+    end
 
-      it 'throttles multiple resets in a short timespan' do
-        user = create(:user)
-        user.send_reset_password_instructions
-        # Reload because PG handles datetime less precisely than Ruby/Rails
-        user.reload
+    it 'throttles multiple resets in a short timespan' do
+      user = create(:user)
+      user.send_reset_password_instructions
+      # Reload because PG handles datetime less precisely than Ruby/Rails
+      user.reload
 
-        expect { forgot_password(user) }.not_to change { user.reset_password_sent_at }
-        expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
-        expect(page).to have_current_path new_user_session_path, ignore_query: true
-      end
+      expect { forgot_password(user) }.not_to change { user.reset_password_sent_at }
+      expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
     end
   end
 

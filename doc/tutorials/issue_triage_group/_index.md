@@ -154,7 +154,7 @@ Doing this ensures that the most important issues show on top
 of the issue list if you sort by priority or label priority.
 
 To learn what happens when you sort by priority or label priority, see
-[Sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
 
 To prioritize labels:
 
@@ -258,5 +258,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

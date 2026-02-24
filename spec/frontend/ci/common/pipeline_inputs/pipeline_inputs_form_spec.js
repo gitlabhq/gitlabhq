@@ -22,6 +22,7 @@ import {
   mockPipelineInputsErrorResponse,
   mockPipelineInputsWithRules,
   mockPipelineInputsWithComplexRules,
+  mockPipelineInputsWithChainedRules,
 } from './mock_data';
 
 Vue.use(VueApollo);
@@ -1035,6 +1036,56 @@ describe('PipelineInputsForm', () => {
 
       expect(getInputByName('special_feature').isSelected).toBe(false);
       expect(getInputByName('special_feature').options).toEqual([]);
+    });
+  });
+
+  describe('dynamic rules with chained dependencies', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithChainedRules);
+      await createComponent();
+    });
+
+    it('evaluates multi-level dependencies', async () => {
+      await selectInputs(['environment']);
+
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+      expect(getInputByName('instance_type').value).toBe('small');
+      expect(getInputByName('extra_config').isSelected).toBe(true);
+      expect(getInputByName('extra_config').value).toBe('opt1');
+    });
+
+    it('cascades updates through entire dependency chain', async () => {
+      await selectInputs(['environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'environment',
+        value: 'production',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toBe('large');
+      expect(getInputByName('extra_config').value).toBe('opt3');
+      expect(getInputByName('extra_config').options).toEqual(['opt3', 'opt4']);
+    });
+
+    it('deselects downstream input when middle dependency no longer matches any rule', async () => {
+      await selectInputs(['environment']);
+
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('instance_type'),
+        value: 'medium',
+      });
+      await nextTick();
+
+      expect(getInputByName('extra_config').isSelected).toBe(false);
+      expect(getInputByName('extra_config').options).toEqual([]);
+    });
+
+    it('returns correct number of inputs in processed array', async () => {
+      await selectInputs(['environment']);
+      expect(getTableInputs()).toHaveLength(3);
     });
   });
 });

@@ -230,42 +230,48 @@ export default {
     processedInputs() {
       if (!this.hasDynamicRules) return this.inputs;
 
-      return this.inputs.map((input) => {
-        if (!input.hasRules) return input;
+      const processed = [];
 
-        const matchingRule = findMatchingRule(input.rules, this.inputs);
+      for (const input of this.inputs) {
+        if (input.hasRules) {
+          const matchingRule = findMatchingRule(input.rules, processed);
 
-        if (matchingRule) {
-          const options = matchingRule.options || [];
-          const ruleIndex = input.rules.indexOf(matchingRule);
-          const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
-          const hasOptions = options.length > 0;
+          if (matchingRule) {
+            const options = matchingRule.options || [];
+            const ruleIndex = input.rules.indexOf(matchingRule);
+            const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
+            const hasOptions = options.length > 0;
 
-          let value = matchingRule.default ?? '';
+            let value = matchingRule.default ?? '';
 
-          if (hasOptions && options.includes(input.value)) {
-            value = input.value;
-          } else if (!hasOptions && !ruleChanged) {
-            value = input.value;
+            if (hasOptions && options.includes(input.value)) {
+              value = input.value;
+            } else if (!hasOptions && !ruleChanged) {
+              value = input.value;
+            }
+
+            processed.push({
+              ...input,
+              options,
+              value,
+              lastMatchedRuleIndex: ruleIndex,
+              isSelected: true,
+            });
+          } else {
+            processed.push({
+              ...input,
+              options: [],
+              value: '',
+              lastMatchedRuleIndex: null,
+              isSelected: false,
+            });
           }
-
-          return {
-            ...input,
-            options,
-            value,
-            lastMatchedRuleIndex: ruleIndex,
-            isSelected: true,
-          };
+        } else {
+          processed.push(input);
         }
+      }
 
-        return {
-          ...input,
-          options: [],
-          value: '',
-          lastMatchedRuleIndex: null,
-          isSelected: false,
-        };
-      });
+      return processed;
     },
   },
   watch: {

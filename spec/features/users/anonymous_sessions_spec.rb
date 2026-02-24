@@ -9,42 +9,23 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
     expire_session
   end
 
-  with_and_without_sign_in_form_vue do
-    it 'creates a session with a short TTL when login fails' do
-      visit new_user_session_path
-      # The session key only gets created after a post
-      fill_in 'user_login', with: 'non-existant@gitlab.org'
-      fill_in 'user_password', with: '12345678'
-      click_button 'Sign in'
+  it 'creates a session with a short TTL when login fails', :js do
+    visit new_user_session_path
+    # The session key only gets created after a post
+    fill_in 'user_login', with: 'non-existant@gitlab.org'
+    fill_in 'user_password', with: '12345678'
+    click_button 'Sign in'
 
-      expect(page).to have_content('Invalid login or password')
+    expect(page).to have_content('Invalid login or password')
 
-      expect_single_session_with_short_ttl
-    end
+    expect_single_session_with_short_ttl
   end
 
-  context "with sign_in_form_vue feature flag disabled" do
-    before do
-      stub_feature_flags(sign_in_form_vue: false)
-    end
+  it 'increases the TTL when the login succeeds', :js do
+    user = create(:user)
+    gitlab_sign_in(user)
 
-    it 'increases the TTL when the login succeeds' do
-      user = create(:user)
-      gitlab_sign_in(user)
-
-      expect(find('.js-super-sidebar')['data-sidebar']).to include(user.name)
-
-      expect_single_session_with_authenticated_ttl
-    end
-  end
-
-  context "with sign_in_form_vue feature flag enabled", :js do
-    it 'increases the TTL when the login succeeds' do
-      user = create(:user)
-      gitlab_sign_in(user)
-
-      expect_single_session_with_authenticated_ttl
-    end
+    expect_single_session_with_authenticated_ttl
   end
 
   context 'with an unauthorized project' do

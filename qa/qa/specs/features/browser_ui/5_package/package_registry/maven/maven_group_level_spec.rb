@@ -139,9 +139,8 @@ module QA
             create_package(package_project)
             package_project.visit_job('deploy')
 
-            QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
             Page::Project::Job::Show.perform do |job|
+              job.close_dap_panel_if_exists
               expect(job).to be_successful(timeout: 400)
 
               job.retry!
@@ -160,9 +159,8 @@ module QA
             create_package(package_project)
             package_project.visit_job('deploy')
 
-            QA::EE::Page::Component::DapEmptyState.perform(&:close_if_exists)
-
             Page::Project::Job::Show.perform do |job|
+              job.close_dap_panel_if_exists
               expect(job).to be_successful(timeout: 400)
 
               job.retry!

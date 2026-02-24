@@ -57,6 +57,7 @@ module Packages
         format: Packages::Nuget::FORMAT
       )
     }
+    scope :with_file_sha1, ->(file_sha1) { where(file_sha1: file_sha1) }
 
     scope :preload_package, -> { preload(:package) }
     scope :preload_project, -> { preload(:project) }

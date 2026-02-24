@@ -190,7 +190,7 @@ Repeat these steps to create a few more issues with the same labels.
 You should now see at least one issue there, ready for your product designers to start working on!
 
 Congratulations! Now your teams can start collaborating on amazing software.
-As a next step, you can try out [the goal workflow](#the-goal-workflow) for yourself using these boards,
+As a next step, you can try out the [goal workflow](#the-goal-workflow) for yourself using these boards,
 simulating the two teams interacting.
 
 ## Learn more about project management in GitLab

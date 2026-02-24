@@ -33,7 +33,7 @@ Use this API to:
 - Manage cache entries.
 - Handle package downloads and uploads.
 
-## Manage virtual registries
+## Manage Maven virtual registries
 
 Use the following endpoints to create and manage Maven virtual registries.
 
@@ -45,7 +45,7 @@ Use the following endpoints to create and manage Maven virtual registries.
 
 {{< /history >}}
 
-Lists all Maven virtual registries for a group.
+Lists all Maven virtual registries for a specified group.
 
 ```plaintext
 GET /groups/:id/-/virtual_registries/packages/maven/registries
@@ -82,7 +82,7 @@ Example response:
 
 ### Create a virtual registry
 
-Creates a Maven virtual registry for a group.
+Creates a Maven virtual registry for a specified group.
 
 ```plaintext
 POST /groups/:id/-/virtual_registries/packages/maven/registries
@@ -118,9 +118,9 @@ Example response:
 }
 ```
 
-### Get a virtual registry
+### Retrieve a virtual registry
 
-Gets a specific Maven virtual registry.
+Retrieves a specified Maven virtual registry.
 
 ```plaintext
 GET /virtual_registries/packages/maven/registries/:id
@@ -155,7 +155,7 @@ Example response:
 
 ### Update a virtual registry
 
-Updates a specific Maven virtual registry.
+Updates a specified Maven virtual registry.
 
 ```plaintext
 PATCH /virtual_registries/packages/maven/registries/:id
@@ -184,7 +184,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 > [!warning]
 > Deleting a virtual registry also deletes all associated upstream registries that are not shared with other virtual registries, along with their cache entries.
 
-Deletes a specific Maven virtual registry.
+Deletes a specified Maven virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/registries/:id
@@ -212,7 +212,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< /history >}}
 
-Schedule all cache entries for deletion in all exclusive upstream registries for a Maven virtual registry. Cache entries are not scheduled for deletion for upstream registries that are associated with other virtual registries.
+Schedules all cache entries for deletion in all exclusive upstream registries for a Maven virtual registry. Cache entries are not scheduled for deletion for upstream registries that are associated with other virtual registries.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/registries/:id/cache
@@ -236,7 +236,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 Use the following endpoints to configure and manage upstream Maven registries.
 
-### List all upstream registries for a top-level group
+### List all upstream registries
 
 {{< history >}}
 
@@ -245,7 +245,7 @@ Use the following endpoints to configure and manage upstream Maven registries.
 
 {{< /history >}}
 
-Lists all upstream registries for a top-level group.
+Lists all upstream Maven registries for a specified top-level group.
 
 ```plaintext
 GET /groups/:id/-/virtual_registries/packages/maven/upstreams
@@ -287,7 +287,7 @@ Example response:
 ]
 ```
 
-### Test connection before creating an upstream registry
+### Test upstream registry connection before creation
 
 {{< history >}}
 
@@ -345,7 +345,7 @@ Example response:
 
 ### List all upstream registries for a virtual registry
 
-Lists all upstream registries for a Maven virtual registry.
+Lists all upstream Maven registries for a specified virtual registry.
 
 ```plaintext
 GET /virtual_registries/packages/maven/registries/:id/upstreams
@@ -397,7 +397,7 @@ Example response:
 
 {{< /history >}}
 
-Adds an upstream registry to a Maven virtual registry.
+Creates an upstream registry for a specified Maven virtual registry.
 
 ```plaintext
 POST /virtual_registries/packages/maven/registries/:id/upstreams
@@ -420,7 +420,7 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 > You cannot add two upstreams with the same URL and credentials (`username` and `password`) to the same top-level group. Instead, you can either:
 >
 > - Set different credentials for each upstream with the same URL.
-> - [Associate an upstream](#associate-an-upstream-with-a-registry) with multiple virtual registries.
+> - [Associate an upstream](#associate-an-upstream-registry-with-a-virtual-registry) with multiple virtual registries.
 
 Example request:
 
@@ -453,9 +453,9 @@ Example response:
 }
 ```
 
-### Get an upstream registry
+### Retrieve an upstream registry
 
-Gets a specific upstream registry for a Maven virtual registry.
+Retrieves a specified upstream registry.
 
 ```plaintext
 GET /virtual_registries/packages/maven/upstreams/:id
@@ -507,7 +507,7 @@ Example response:
 
 {{< /history >}}
 
-Updates a specific upstream registry for a Maven virtual registry.
+Updates a specified upstream registry.
 
 ```plaintext
 PATCH /virtual_registries/packages/maven/upstreams/:id
@@ -566,7 +566,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 ### Delete an upstream registry
 
-Deletes a specific upstream registry for a Maven virtual registry.
+Deletes a specified upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/upstreams/:id
@@ -586,7 +586,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
 
-### Associate an upstream with a registry
+### Associate an upstream registry with a virtual registry
 
 {{< history >}}
 
@@ -595,7 +595,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< /history >}}
 
-Associates an existing upstream registry with a Maven virtual registry.
+Associates an existing upstream registry with a specified Maven virtual registry.
 
 ```plaintext
 POST /virtual_registries/packages/maven/registry_upstreams
@@ -628,7 +628,7 @@ Example response:
 }
 ```
 
-### Disassociate an upstream from a registry
+### Disassociate an upstream registry from a virtual registry
 
 {{< history >}}
 
@@ -637,7 +637,7 @@ Example response:
 
 {{< /history >}}
 
-Removes the association between an upstream registry and a Maven virtual registry.
+Disassociates an upstream registry from a specified Maven virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/registry_upstreams/:id
@@ -667,7 +667,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< /history >}}
 
-Schedules all cache entries for deletion for a specific upstream registry in a Maven virtual registry.
+Schedules all cache entries for deletion for a specified upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/upstreams/:id/cache
@@ -687,7 +687,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
 
-### Test connection to an upstream registry
+### Test upstream registry connection
 
 {{< history >}}
 
@@ -695,7 +695,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< /history >}}
 
-Tests the connection to an existing Maven upstream registry.
+Tests the connection to a specified Maven upstream registry.
 
 ```plaintext
 GET /virtual_registries/packages/maven/upstreams/:id/test
@@ -733,7 +733,7 @@ Example response:
 }
 ```
 
-### Test connection to an upstream registry with override parameters
+### Test upstream registry connection with override parameters
 
 {{< history >}}
 
@@ -741,7 +741,7 @@ Example response:
 
 {{< /history >}}
 
-Tests the connection to an existing Maven upstream registry with optional parameter overrides.
+Tests the connection to a specified Maven upstream registry with optional parameter overrides.
 
 This way, you can test changes to the URL, username, or password before updating the upstream registry configuration.
 
@@ -836,9 +836,9 @@ Example response:
 
 Use the following endpoints to manage cache entries for a Maven virtual registry.
 
-### List upstream registry cache entries
+### List all upstream registry cache entries
 
-Lists cache entries for a Maven upstream registry.
+Lists all cache entries for a specified Maven upstream registry.
 
 ```plaintext
 GET /virtual_registries/packages/maven/upstreams/:id/cache_entries
@@ -886,7 +886,7 @@ Example response:
 
 ### Delete an upstream registry cache entry
 
-Deletes a specific cache entry for a Maven upstream registry.
+Deletes a specified cache entry for a Maven upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/cache_entries/*id
@@ -919,7 +919,7 @@ see [Maven virtual registry](../user/packages/virtual_registry/maven/_index.md).
 
 ### Download a package
 
-Downloads a package from a Maven virtual registry. To access this resource, you must [authenticate with the registry](../user/packages/package_registry/supported_functionality.md#authenticate-with-the-registry).
+Downloads a package from a specified Maven virtual registry. To access this resource, you must [authenticate with the registry](../user/packages/package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 ```plaintext
 GET /virtual_registries/packages/maven/:id/*path
@@ -950,7 +950,7 @@ the following response headers:
 
 ### Upload a package
 
-Uploads a package to a Maven virtual registry. This endpoint is accessible only by [GitLab Workhorse](../development/workhorse/_index.md).
+Uploads a package to a specified Maven virtual registry. This endpoint is accessible only by [GitLab Workhorse](../development/workhorse/_index.md).
 
 ```plaintext
 POST /virtual_registries/packages/maven/:id/*path/upload

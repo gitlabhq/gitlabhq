@@ -43,6 +43,11 @@ To use merge request pipelines:
 To configure merge request pipelines, you must configure jobs in your
 `.gitlab-ci.yml` file to run when `CI_PIPELINE_SOURCE` equals `merge_request_event`.
 
+> [!note]
+> Rules defined in `include:` (for example, with `include:component`) do not satisfy
+> this requirement. You must define matching `rules:` or `workflow: rules` directly
+> in `.gitlab-ci.yml`.
+
 You can configure individual jobs with `rules`,
 or use `workflow: rules` to control the entire pipeline.
 

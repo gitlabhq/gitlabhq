@@ -18,7 +18,6 @@ import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
-import MrWidgetMigrateJenkins from './components/mr_widget_migrate_jenkins.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
@@ -58,7 +57,6 @@ export default {
     Loading,
     WidgetContainer,
     MrWidgetSuggestPipeline: WidgetSuggestPipeline,
-    MrWidgetMigrateJenkins,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
     MrWidgetMerged: MergedState,
@@ -179,11 +177,6 @@ export default {
       const { hasCI, mergeRequestAddCiConfigPath } = this.mr;
 
       return !hasCI && mergeRequestAddCiConfigPath;
-    },
-    showRenderMigrateFromJenkins() {
-      const { hasCI, isDismissedJenkinsMigration, ciIntegrationJenkins } = this.mr;
-
-      return hasCI && !isDismissedJenkinsMigration && ciIntegrationJenkins;
     },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
@@ -505,9 +498,6 @@ export default {
       eventHub.$off('FetchDeployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },
-    dismissMigrateFromJenkins() {
-      this.mr.isDismissedJenkinsMigration = true;
-    },
     apolloStateQueryMaxPollingInterval() {
       return (
         Math.max(this.startingPollInterval, STATE_QUERY_POLLING_INTERVAL_DEFAULT) +
@@ -544,13 +534,6 @@ export default {
       :human-access="formattedHumanAccess"
       :user-callouts-path="mr.userCalloutsPath"
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
-    />
-    <mr-widget-migrate-jenkins
-      v-if="showRenderMigrateFromJenkins"
-      class="mr-widget-workflow"
-      :path="mr.userCalloutsPath"
-      :feature-id="mr.migrateJenkinsFeatureId"
-      @dismiss="dismissMigrateFromJenkins"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

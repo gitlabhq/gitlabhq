@@ -57,18 +57,6 @@ To revoke all sessions for all users:
 1. Optional. List all active sessions with the following command:
 
    ```ruby
-   ActiveSession.list(User.all)
-   ```
-
-1. Revoke all sessions with the following command:
-
-   ```ruby
-   ActiveSession.destroy_all
-   ```
-
-1. Verify sessions are closed with the following command:
-
-   ```ruby
    # Show all users with active sessions
     puts "=== Currently Logged In Users ==="
     User.find_each do |user|
@@ -81,6 +69,16 @@ To revoke all sessions for all users:
         end
     end
    ```
+
+1. Revoke all sessions with the following command:
+
+   ```ruby
+   User.find_each do |user|
+      ActiveSession.destroy_all_but_current(user, nil)
+   end
+   ```
+
+1. Optional. Confirm all sessions have been revoked by running the "List all active sessions" command again.
 
 ### Revoke all sessions for a user
 

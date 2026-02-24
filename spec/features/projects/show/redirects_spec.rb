@@ -43,18 +43,16 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
     expect(page).to have_current_path("/#{public_project.full_path}", ignore_query: true)
   end
 
-  with_and_without_sign_in_form_vue do
-    it 'redirects to private project page after sign in' do
-      visit project_path(private_project)
+  it 'redirects to private project page after sign in', :js do
+    visit project_path(private_project)
 
-      owner = private_project.first_owner
-      fill_in 'user_login',    with: owner.email
-      fill_in 'user_password', with: owner.password
-      click_button 'Sign in'
+    owner = private_project.first_owner
+    fill_in 'user_login',    with: owner.email
+    fill_in 'user_password', with: owner.password
+    click_button 'Sign in'
 
-      expect(page).to have_content('No repository')
-      expect(page).to have_current_path("/#{private_project.full_path}", ignore_query: true)
-    end
+    expect(page).to have_content('No repository')
+    expect(page).to have_current_path("/#{private_project.full_path}", ignore_query: true)
   end
 
   context 'when signed in' do

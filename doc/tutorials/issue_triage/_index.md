@@ -43,7 +43,7 @@ To set up GitLab for issue triage in a project:
 A project contains the issues that are used for planning your upcoming code changes.
 
 If you already have a project you're working in, proceed to
-[Decide on the criteria for types, severity, and priority](#decide-on-the-criteria-for-types-severity-and-priority).
+[decide on the criteria for types, severity, and priority](#decide-on-the-criteria-for-types-severity-and-priority).
 
 To create a blank project:
 
@@ -143,7 +143,7 @@ Now, set the new labels as priority labels, which ensures that the most importan
 of the issue list if you sort by priority or label priority.
 
 To learn what happens when you sort by priority or label priority, see
-[Sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
 
 To prioritize a label:
 
@@ -240,5 +240,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

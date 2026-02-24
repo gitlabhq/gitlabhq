@@ -69,7 +69,7 @@ When using the Maven virtual registry, remember the following restrictions:
 
 Manage virtual registries for your group.
 
-You can also [use the API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
+You can also [use the API](../../../../api/maven_virtual_registries.md#manage-maven-virtual-registries).
 
 ### Create a Maven virtual registry
 

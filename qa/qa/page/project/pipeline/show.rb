@@ -133,6 +133,9 @@ module QA
           def has_stage?(name)
             has_element?('stage-column-title', text: name)
           end
+
+          # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
+          def close_dap_panel_if_exists; end
         end
       end
     end

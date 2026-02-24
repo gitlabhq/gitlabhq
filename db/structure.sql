@@ -13050,7 +13050,9 @@ CREATE TABLE ai_flow_triggers (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     ai_catalog_item_consumer_id bigint,
+    filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
 
@@ -14319,7 +14321,6 @@ CREATE TABLE application_settings (
     duo_remote_flows_enabled boolean DEFAULT true NOT NULL,
     lock_duo_remote_flows_enabled boolean DEFAULT false NOT NULL,
     terraform_state_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    namespace_deletion_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     duo_foundational_flows_enabled boolean DEFAULT true NOT NULL,
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
     duo_sast_fp_detection_enabled boolean DEFAULT true NOT NULL,
@@ -14395,7 +14396,6 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_group_settings_is_hash CHECK ((jsonb_typeof(group_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_importers_is_hash CHECK ((jsonb_typeof(importers) = 'object'::text)),
     CONSTRAINT check_application_settings_integrations_is_hash CHECK ((jsonb_typeof(integrations) = 'object'::text)),
-    CONSTRAINT check_application_settings_namespace_deletion_settings_is_hash CHECK ((jsonb_typeof(namespace_deletion_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_o11y_settings_is_hash CHECK ((jsonb_typeof(observability_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_package_registry_is_hash CHECK ((jsonb_typeof(package_registry) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
@@ -18894,7 +18894,8 @@ CREATE TABLE dependency_proxy_blob_states (
     verification_checksum bytea,
     verification_failure text,
     group_id bigint,
-    CONSTRAINT check_8e4f76fffe CHECK ((char_length(verification_failure) <= 255))
+    CONSTRAINT check_8e4f76fffe CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_f590d48013 CHECK ((group_id IS NOT NULL))
 );
 
 COMMENT ON TABLE dependency_proxy_blob_states IS '{"owner":"group::geo","description":"Geo-specific table to store the verification state of DependencyProxy::Blob objects"}';
@@ -46946,7 +46947,7 @@ CREATE INDEX index_packages_package_files_on_package_file_extension_status ON pa
 
 CREATE INDEX index_packages_package_files_on_package_id_and_created_at_desc ON packages_package_files USING btree (package_id, created_at DESC);
 
-CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON packages_package_files USING btree (package_id, file_name);
+CREATE INDEX index_packages_package_files_on_package_id_file_name_file_sha1 ON packages_package_files USING btree (package_id, file_name, file_sha1);
 
 CREATE INDEX index_packages_package_files_on_package_id_id ON packages_package_files USING btree (package_id, id);
 

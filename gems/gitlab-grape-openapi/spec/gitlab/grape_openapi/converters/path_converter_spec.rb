@@ -2,10 +2,11 @@
 
 RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
   let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+  let(:request_body_registry) { Gitlab::GrapeOpenapi::RequestBodyRegistry.new }
   let(:routes) { TestApis::UsersApi.routes }
 
   describe '.convert' do
-    subject(:paths) { described_class.convert(routes, schema_registry) }
+    subject(:paths) { described_class.convert(routes, schema_registry, request_body_registry) }
 
     it 'groups routes by normalized path' do
       expect(paths.keys).to include('/api/v1/users')

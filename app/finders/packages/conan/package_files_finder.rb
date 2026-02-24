@@ -9,7 +9,8 @@ module Packages
         files = by_conan_file_type(super)
         files = by_recipe_revision(files)
         files = by_package_revision(files)
-        by_conan_package_reference(files)
+        files = by_conan_package_reference(files)
+        by_file_sha1(files)
       end
 
       def by_conan_file_type(files)
@@ -42,6 +43,12 @@ module Packages
         else
           files.with_conan_package_revision(params[:package_revision])
         end
+      end
+
+      def by_file_sha1(files)
+        return files unless params[:file_sha1]
+
+        files.with_file_sha1(params[:file_sha1])
       end
     end
   end
