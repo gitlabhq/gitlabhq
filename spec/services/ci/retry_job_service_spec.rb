@@ -22,6 +22,10 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
   let(:service) { described_class.new(project, user) }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+  end
+
   shared_context 'retryable bridge' do
     let_it_be(:downstream_project) { create(:project, :repository) }
 
@@ -125,6 +129,17 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'raises an error' do
         expect { service.execute(job) }
+          .to raise_error Gitlab::Access::AccessDeniedError
+      end
+    end
+
+    context 'when the user does not have permission to set pipeline variables' do
+      before do
+        project.update!(ci_pipeline_variables_minimum_override_role: :no_one_allowed)
+      end
+
+      it 'raises an error' do
+        expect { service.execute(job, variables: job_variables_attributes) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
     end

@@ -11,6 +11,7 @@ module Ci
     TRIGGER_TOKEN_PREFIX = 'glptt-'
 
     EXPIRED_TOKEN_RETENTION = 30.days
+    MAX_DESCRIPTION_LENGTH = 2048
 
     self.limit_name = 'pipeline_triggers'
     self.limit_scope = :project
@@ -23,6 +24,7 @@ module Ci
     validates :token_encrypted, presence: true, uniqueness: true
     validates :owner, presence: true
     validates :project, presence: true
+    validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }, if: :description_changed?
 
     validate :expires_at_before_instance_max_expiry_date, on: :create
 
