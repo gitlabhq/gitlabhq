@@ -22,6 +22,36 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+
+      context 'when JWT token is nil' do
+        let(:jwt_token) { nil }
+
+        it 'renders unauthorized' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when JWT token is empty' do
+        let(:jwt_token) { '' }
+
+        it 'renders unauthorized' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when JWT token exceeds size limit' do
+        let(:jwt_token) { 'x' * 9.kilobytes }
+
+        it 'renders unauthorized' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
   end
 
@@ -47,13 +77,15 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
     let_it_be(:shared_secret) { 'secret' }
     let_it_be(:base_url) { 'https://test.atlassian.net' }
     let_it_be(:display_url) { 'https://custom.example.com' }
+    let(:jwt_token) { Atlassian::Jwt.encode({ iss: client_key, qsh: 'test' }, shared_secret) }
 
     let(:params) do
       {
         clientKey: client_key,
         sharedSecret: shared_secret,
         baseUrl: base_url,
-        displayUrl: display_url
+        displayUrl: display_url,
+        jwt: jwt_token
       }
     end
 
@@ -83,11 +115,14 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
     end
 
     context 'when the shared_secret param is missing' do
+      let(:jwt_token) { Atlassian::Jwt.encode({ iss: client_key, qsh: 'test' }, 'some_secret') }
+
       let(:params) do
         {
           clientKey: client_key,
           baseUrl: base_url,
-          displayUrl: display_url
+          displayUrl: display_url,
+          jwt: jwt_token
         }
       end
 
@@ -250,10 +285,12 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
     let_it_be(:installation) { create(:jira_connect_installation) }
 
     let(:client_key) { installation.client_key }
+    let(:jwt_token) { Atlassian::Jwt.encode({ iss: client_key, qsh: 'test' }, installation.shared_secret) }
     let(:params) do
       {
         clientKey: client_key,
-        baseUrl: 'https://test.atlassian.net'
+        baseUrl: 'https://test.atlassian.net',
+        jwt: jwt_token
       }
     end
 

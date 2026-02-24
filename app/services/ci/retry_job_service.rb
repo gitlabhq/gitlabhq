@@ -30,7 +30,7 @@ module Ci
       # from the model and not overridden by other abstractions.
       raise TypeError unless job.instance_of?(Ci::Build) || job.instance_of?(Ci::Bridge)
 
-      check_access!(job)
+      check_access!(job, variables: variables)
       variables = ensure_project_id!(variables)
 
       new_job = Ci::CloneJobService.new(job, current_user: current_user).execute(
@@ -142,8 +142,12 @@ module Ci
       end
     end
 
-    def check_access!(job)
+    def check_access!(job, variables: [])
       unless can?(current_user, :retry_job, job)
+        raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
+      end
+
+      if variables.present? && !can?(current_user, :set_pipeline_variables, project)
         raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
       end
     end

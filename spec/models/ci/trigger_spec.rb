@@ -14,6 +14,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:owner) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_length_of(:description).is_at_most(described_class::MAX_DESCRIPTION_LENGTH) }
   end
 
   describe 'before_validation' do

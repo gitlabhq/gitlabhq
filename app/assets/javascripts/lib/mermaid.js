@@ -1,10 +1,23 @@
 import mermaid from 'mermaid';
 import DOMPurify from 'dompurify';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, isRootRelative } from '~/lib/utils/url_utility';
 import { resetServiceWorkersPublicPath } from '~/lib/utils/webpack';
 
 const resetWebpackPublicPath = () => {
-  window.gon = { relative_url_root: getParameterByName('relativeRootPath') };
+  const relativeRootPath = getParameterByName('relativeRootPath');
+
+  // Validate the path to prevent injection attacks (CVE-2025-12029 variant)
+  // Must start with / but not //
+  if (!relativeRootPath) {
+    return;
+  }
+
+  const trimmedPath = relativeRootPath.trim();
+  if (!isRootRelative(trimmedPath)) {
+    return;
+  }
+
+  window.gon = { relative_url_root: trimmedPath };
   resetServiceWorkersPublicPath();
 };
 
