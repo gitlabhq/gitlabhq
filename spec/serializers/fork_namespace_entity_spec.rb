@@ -26,15 +26,15 @@ RSpec.describe ForkNamespaceEntity do
   end
 
   %i[id
-     name
-     description
-     markdown_description
-     marked_for_deletion
-     visibility
-     full_name
-     created_at
-     updated_at
-     avatar_url].each do |attribute|
+    name
+    description
+    markdown_description
+    marked_for_deletion
+    visibility
+    full_name
+    created_at
+    updated_at
+    avatar_url].each do |attribute|
     it "includes #{attribute}" do
       expect(json).to have_key(attribute)
     end

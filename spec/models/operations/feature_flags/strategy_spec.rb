@@ -38,7 +38,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
       context 'when the strategy name is gradualRolloutUserId' do
         where(:invalid_parameters) do
           [nil, {}, { percentage: '40', groupId: 'mygroup', userIds: '4' }, { percentage: '40' },
-           { percentage: '40', groupId: 'mygroup', extra: nil }, { groupId: 'mygroup' }]
+            { percentage: '40', groupId: 'mygroup', extra: nil }, { groupId: 'mygroup' }]
         end
         with_them do
           it 'must have valid parameters for the strategy' do
@@ -69,8 +69,8 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         describe 'percentage' do
           where(:invalid_value) do
             [50, 40.0, { key: "value" }, "garbage", "101", "-1", "-10", "1000", "10.0", "5%", "25%",
-             "100hi", "e100", "30m", " ", "\r\n", "\n", "\t", "\n10", "20\n", "\n100", "100\n",
-             "\n  ", nil]
+              "100hi", "e100", "30m", " ", "\r\n", "\n", "\t", "\n10", "20\n", "\n100", "100\n",
+              "\n  ", nil]
           end
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
@@ -109,7 +109,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         describe 'groupId' do
           where(:invalid_value) do
             [nil, 4, 50.0, {}, 'spaces bad', 'bad$', '%bad', '<bad', 'bad>', '!bad',
-             '.bad', 'Bad', 'bad1', "", " ", "b" * 33, "ba_d", "ba\nd"]
+              '.bad', 'Bad', 'bad1', "", " ", "b" * 33, "ba_d", "ba\nd"]
           end
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
@@ -189,8 +189,8 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
         describe 'rollout' do
           where(invalid_value: [50, 40.0, { key: "value" }, "garbage", "101", "-1", " ", "-10",
-                                "1000", "10.0", "5%", "25%", "100hi", "e100", "30m", "\r\n",
-                                "\n", "\t", "\n10", "20\n", "\n100", "100\n", "\n  ", nil])
+            "1000", "10.0", "5%", "25%", "100hi", "e100", "30m", "\r\n",
+            "\n", "\t", "\n10", "20\n", "\n100", "100\n", "\n  ", nil])
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
               parameters = { stickiness: 'default', groupId: 'mygroup', rollout: invalid_value }
@@ -227,7 +227,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
         describe 'groupId' do
           where(invalid_value: [nil, 4, 50.0, {}, 'spaces bad', 'bad$', '%bad', '<bad', 'bad>',
-                                '!bad', '.bad', 'Bad', 'bad1', "", " ", "b" * 33, "ba_d", "ba\nd"])
+            '!bad', '.bad', 'Bad', 'bad1', "", " ", "b" * 33, "ba_d", "ba\nd"])
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
               parameters = { stickiness: 'default', groupId: invalid_value, rollout: '40' }
@@ -318,9 +318,9 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         describe 'userIds' do
           where(:valid_value) do
             ["", "sam", "1", "a", "uuid-of-some-kind", "sam,fred,tom,jane,joe,mike",
-             "gitlab@example.com", "123,4", "UPPER,Case,charActeRS", "0",
-             "$valid$email#2345#$%..{}+=-)?\\/@example.com", "spaces allowed",
-             "a" * 256, "a,#{'b' * 256},ccc", "many    spaces"]
+              "gitlab@example.com", "123,4", "UPPER,Case,charActeRS", "0",
+              "$valid$email#2345#$%..{}+=-)?\\/@example.com", "spaces allowed",
+              "a" * 256, "a,#{'b' * 256},ccc", "many    spaces"]
           end
           with_them do
             it 'is valid with a string of comma separated values' do
@@ -337,8 +337,8 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
           where(:invalid_value) do
             [1, 2.5, {}, [], nil, "123\n456", "1,2,3,12\t3", "\n", "\n\r",
-             "joe\r,sam", "1,2,2", "1,,2", "1,2,,,,", "b" * 257, "1, ,2", "tim,    ,7", " ",
-             "    ", " ,1", "1,  ", " leading,1", "1,trailing  ", "1, both ,2"]
+              "joe\r,sam", "1,2,2", "1,,2", "1,2,,,,", "b" * 257, "1, ,2", "tim,    ,7", " ",
+              "    ", " ,1", "1,  ", " leading,1", "1,trailing  ", "1, both ,2"]
           end
           with_them do
             it 'is invalid' do

@@ -23,8 +23,6 @@ module Ci
     def reset_source_bridge
       @pipeline.reset_source_bridge!(current_user)
     rescue ActiveRecord::StaleObjectError
-      raise unless Feature.enabled?(:rescue_stale_object_errors_in_pipeline_processing, project)
-
       # We deliberately do not retry here. This service can be called from
       # multiple jobs concurrently, and a StaleObjectError means another
       # process has already updated the associated bridge record. The bridge

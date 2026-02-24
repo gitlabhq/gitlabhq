@@ -9,9 +9,13 @@ module Backup
 
       def self.id = 'pages'
 
-      def human_name = _('pages')
+      def human_name
+        _('pages')
+      end
 
-      def destination_path = 'pages.tar.gz'
+      def destination_path
+        'pages.tar.gz'
+      end
 
       private
 

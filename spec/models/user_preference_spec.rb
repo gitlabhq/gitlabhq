@@ -26,18 +26,18 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       where(color: [
         '#000000',
-              '#123456',
-              '#abcdef',
-              '#AbCdEf',
-              '#ffffff',
-              '#fFfFfF',
-              '#000',
-              '#123',
-              '#abc',
-              '#AbC',
-              '#fff',
-              '#fFf',
-              ''
+        '#123456',
+        '#abcdef',
+        '#AbCdEf',
+        '#ffffff',
+        '#fFfFfF',
+        '#000',
+        '#123',
+        '#abc',
+        '#AbC',
+        '#fff',
+        '#fFf',
+        ''
       ])
 
       with_them do
@@ -47,12 +47,12 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       where(color: [
         '#1',
-              '#12',
-              '#1234',
-              '#12345',
-              '#1234567',
-              '123456',
-              '#12345x'
+        '#12',
+        '#1234',
+        '#12345',
+        '#1234567',
+        '123456',
+        '#12345x'
       ])
 
       with_them do

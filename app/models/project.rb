@@ -892,6 +892,20 @@ class Project < ApplicationRecord
       .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
   end
 
+  # NOTE: This scope must always be chained with a namespace filter (e.g. .in_namespace()).
+  # It has no namespace constraint and will scan all projects if used standalone.
+  # See: Integrations::PropagateService#create_integration_for_projects_without_integration_belonging_to_group
+  scope :without_integration_excluding_ancestor_archived_check, ->(integration) {
+    integrations = Integration
+      .select('1')
+      .where("#{Integration.table_name}.project_id = projects.id")
+      .where(type: integration.type)
+
+    where('NOT EXISTS (?)', integrations)
+      .where(pending_delete: false)
+      .where(archived: false)
+  }
+
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 

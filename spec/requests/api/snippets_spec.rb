@@ -355,7 +355,7 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       before do
         stub_application_setting(restricted_visibility_levels:
                                    [Gitlab::VisibilityLevel::INTERNAL,
-                                    Gitlab::VisibilityLevel::PRIVATE])
+                                     Gitlab::VisibilityLevel::PRIVATE])
       end
 
       it_behaves_like 'snippet creation'
@@ -460,7 +460,7 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       before do
         stub_application_setting(restricted_visibility_levels:
                                    [Gitlab::VisibilityLevel::PUBLIC,
-                                    Gitlab::VisibilityLevel::PRIVATE])
+                                     Gitlab::VisibilityLevel::PRIVATE])
       end
 
       it_behaves_like 'snippet non-file updates'

@@ -101,7 +101,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
         pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/245272')
 
         queries = [{ query: group_query(group1) },
-                   { query: group_query(group2) }]
+          { query: group_query(group2) }]
 
         expect { post_multiplex(queries, current_user: admin) }
           .to issue_same_number_of_queries_as { post_graphql(group_query(group1), current_user: admin) }

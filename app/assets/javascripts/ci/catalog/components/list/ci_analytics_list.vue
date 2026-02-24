@@ -66,7 +66,7 @@ export default {
     {
       key: 'components',
       label: s__('CiCatalog|Components'),
-      tdClass: '!gl-text-secondary',
+      tdClass: '!gl-text-subtle',
     },
   ],
 };

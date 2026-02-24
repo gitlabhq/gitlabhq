@@ -3425,6 +3425,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.without_integration_excluding_ancestor_archived_check' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:active_project) { create(:project, group: group) }
+    let_it_be(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be(:pending_delete_project) { create(:project, group: group, pending_delete: true) }
+    let_it_be(:project_with_integration) { create(:project, group: group) }
+    let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+    let_it_be(:existing_integration) { create(:jira_integration, project: project_with_integration) }
+
+    subject { described_class.without_integration_excluding_ancestor_archived_check(instance_integration) }
+
+    it 'returns active projects without the integration' do
+      is_expected.to include(active_project)
+      is_expected.not_to include(project_with_integration, archived_project, pending_delete_project)
+    end
+  end
+
   describe 'user and recency scopes', :freeze_time do
     let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project) }

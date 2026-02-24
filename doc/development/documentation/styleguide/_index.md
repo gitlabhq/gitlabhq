@@ -171,23 +171,19 @@ Term 2
 
 ### Shortcodes
 
-[Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code that we can include in our Markdown content to display non-standard elements on a page, such as alert boxes or tabs.
+[Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code
+that we can include in our Markdown content to display non-standard elements on a page,
+such as availability details or tabs.
 
 GitLab documentation uses the following shortcodes:
 
-- [Alert boxes](#alert-boxes)
-  - Note
-  - Warning
-  - Flag
-  - Disclaimer
-  - Details
 - [Availability details](availability_details.md)
+- [Collapsible panels](#collapsible-panels)
 - [Version history](availability_details.md#history)
 - [Icons](#gitlab-svg-icons)
 - [Tabs](#tabs)
 - [Cards](#cards)
 - [Maintained versions](#maintained-versions)
-- [Collapsible panels](#collapsible-panels)
 - [Guide](#guide)
 - [Feature tables](#feature-tables)
   - Yes

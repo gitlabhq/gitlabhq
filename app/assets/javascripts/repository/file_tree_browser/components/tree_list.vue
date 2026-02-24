@@ -607,7 +607,7 @@ export default {
         :aria-label="$options.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
         class="gl-w-full !gl-px-3"
-        button-text-classes="gl-flex gl-w-full gl-text-secondary"
+        button-text-classes="gl-flex gl-w-full gl-text-subtle"
         @click="onFilterBarClick"
       >
         <span class="gl-grow gl-text-left">{{ $options.searchLabel }}</span>

@@ -5,11 +5,17 @@ module Backup
     class Database < Task
       def self.id = 'db'
 
-      def human_name = _('database')
+      def human_name
+        _('database')
+      end
 
-      def destination_path = 'db'
+      def destination_path
+        'db'
+      end
 
-      def cleanup_path = 'db'
+      def cleanup_path
+        'db'
+      end
 
       def pre_restore_warning
         return if options.force

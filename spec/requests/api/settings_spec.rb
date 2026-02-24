@@ -540,11 +540,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
       it 'does not allow unrestricted key lengths' do
         types = %w[dsa_key_restriction
-                   ecdsa_key_restriction
-                   ecdsa_sk_key_restriction
-                   ed25519_key_restriction
-                   ed25519_sk_key_restriction
-                   rsa_key_restriction]
+          ecdsa_key_restriction
+          ecdsa_sk_key_restriction
+          ed25519_key_restriction
+          ed25519_sk_key_restriction
+          rsa_key_restriction]
 
         types.each do |type|
           put api("/application/settings", admin), params: { type => 0 }

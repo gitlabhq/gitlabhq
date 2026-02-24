@@ -162,6 +162,12 @@ class Group < Namespace
   end
 
   scope :with_integrations, -> { joins(:integrations) }
+  scope :excluding_self_and_ancestors_archived, -> {
+    where(
+      "NOT (namespaces.traversal_ids::bigint[] && ARRAY(?)::bigint[])",
+      NamespaceSetting.where(archived: true).select(:namespace_id)
+    )
+  }
 
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
   has_one :jira_integration, class_name: 'Integrations::Jira'

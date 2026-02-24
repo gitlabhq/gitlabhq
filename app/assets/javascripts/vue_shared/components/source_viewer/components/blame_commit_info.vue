@@ -112,7 +112,7 @@ export default {
     <timeago-tooltip
       :time="commit.authoredDate || commit.committedDate"
       tooltip-placement="top"
-      class="gl-w-12 gl-shrink-0 gl-truncate gl-text-sm gl-text-secondary"
+      class="gl-w-12 gl-shrink-0 gl-truncate gl-text-sm gl-text-subtle"
       data-testid="commit-time"
     />
 
@@ -150,7 +150,7 @@ export default {
       data-event-tracking="click_previous_blame_on_blob_page"
       data-testid="view-previous-blame-button"
       style="min-height: var(--blame-line-height)"
-      class="!gl-text-secondary focus:!gl-focus-inset"
+      class="!gl-text-subtle focus:!gl-focus-inset"
       :class="{ 'gl-invisible': !previousBlameUrl }"
     />
   </div>

@@ -121,12 +121,18 @@ module Gitlab
       end
 
       # overridden in EE
-      def max_size_from_settings = Gitlab::CurrentSettings.max_pages_size.megabytes
+      def max_size_from_settings
+        Gitlab::CurrentSettings.max_pages_size.megabytes
+      end
 
-      def path_prefix = build.pages&.fetch(:path_prefix, '')
+      def path_prefix
+        build.pages&.fetch(:path_prefix, '')
+      end
       strong_memoize_attr :path_prefix
 
-      def sha = build.sha
+      def sha
+        build.sha
+      end
       strong_memoize_attr :sha
     end
   end

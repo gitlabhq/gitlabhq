@@ -11,7 +11,7 @@ const initAutomaticRebaseSetting = () => {
 
   const containers = {
     rebase_merge: document.querySelector('.js-rebase-merge-container'),
-    ff: document.querySelector('.js-ff-container'),
+    ff: document.querySelector('.js-fast-forward-container'),
   };
 
   const updatePosition = (value) => {

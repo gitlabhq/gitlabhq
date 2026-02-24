@@ -3975,11 +3975,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:author_c) { build(:author, email: 'douwe@gitlab.com', name: 'Douwe Maan') }
     let(:stubbed_commits) do
       [build(:commit, author: author_a),
-       build(:commit, author: author_a),
-       build(:commit, author: author_b),
-       build(:commit, author: author_c),
-       build(:commit, author: author_c),
-       build(:commit, author: author_c)]
+        build(:commit, author: author_a),
+        build(:commit, author: author_b),
+        build(:commit, author: author_c),
+        build(:commit, author: author_c),
+        build(:commit, author: author_c)]
     end
 
     let(:order_by) { nil }
@@ -4082,12 +4082,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:author_d) { build(:author, email: 'johndoe@gitlab.com', name: 'John Doe') }
       let(:stubbed_commits) do
         [build(:commit, author: author_a),
-         build(:commit, author: author_a),
-         build(:commit, author: author_b),
-         build(:commit, author: author_c),
-         build(:commit, author: author_c),
-         build(:commit, author: author_c),
-         build(:commit, author: author_d)]
+          build(:commit, author: author_a),
+          build(:commit, author: author_b),
+          build(:commit, author: author_c),
+          build(:commit, author: author_c),
+          build(:commit, author: author_c),
+          build(:commit, author: author_d)]
       end
 
       it 'returns the contributors for ref' do
@@ -4880,17 +4880,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:expected_params) do
       [
         user,
-       'master', # branch_name
-       'commit message', # commit_message
-       [], # actions
-       'author email', # author_email
-       'author name', # author_name
-       nil, # start_branch_name
-       nil, # start_repository
-       true, # force
-       nil, # start_sha
-       expected_sign, # sign
-       target_sha # target_sha
+        'master', # branch_name
+        'commit message', # commit_message
+        [], # actions
+        'author email', # author_email
+        'author name', # author_name
+        nil, # start_branch_name
+        nil, # start_repository
+        true, # force
+        nil, # start_sha
+        expected_sign, # sign
+        target_sha # target_sha
       ]
     end
 

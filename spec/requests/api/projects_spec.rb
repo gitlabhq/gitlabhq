@@ -72,9 +72,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     before do
       allow(project.repository).to receive(:languages).and_return(
         [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
-         { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-         { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-         { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+          { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+          { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+          { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
       )
     end
 

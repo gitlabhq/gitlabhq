@@ -453,6 +453,64 @@ query {
 More about pagination and cursors:
 [GraphQL documentation](https://graphql.org/learn/pagination/)
 
+## File uploads
+
+Some mutations accept file uploads as arguments. These mutations use the
+[GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec),
+which allows you to send files alongside your GraphQL operations using `multipart/form-data` requests.
+
+Mutations that support file uploads have arguments of type `Upload`.
+You can identify these mutations in the [GraphQL API reference](reference/_index.md)
+by looking for arguments with the `Upload` scalar type.
+
+File upload mutations cannot be run through [GraphiQL](#graphiql). You must use
+a [command-line](#command-line) tool like `curl` or a compatible GraphQL client library.
+
+A multipart upload request has three key parts:
+
+- `operations`: A JSON string containing the GraphQL query and variables, with file
+  values set to `null`.
+- `map`: A JSON object that maps file keys to the variable paths in the operations.
+- The file fields themselves, referenced by the keys used in `map`.
+
+To upload a design to an issue using the `designManagementUpload` mutation:
+
+```shell
+GRAPHQL_TOKEN=<your-token>
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --form 'operations={"query": "mutation ($files: [Upload!]!, $projectPath: ID!, $iid: ID!) { designManagementUpload(input: { projectPath: $projectPath, iid: $iid, files: $files }) { designs { filename } errors } }", "variables": {"files": [null], "projectPath": "<group>/<project>", "iid": "<issue-iid>"}}' \
+  --form 'map={"0": ["variables.files.0"]}' \
+  --form '0=@/path/to/your/design.png'
+```
+
+To import work items from a CSV file using the `workItemsCsvImport` mutation:
+
+```shell
+GRAPHQL_TOKEN=<your-token>
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --form 'operations={"query": "mutation ($projectPath: ID!, $file: Upload!) { workItemsCsvImport(input: { projectPath: $projectPath, file: $file }) { message errors } }", "variables": {"projectPath": "<group>/<project>", "file": null}}' \
+  --form 'map={"0": ["variables.file"]}' \
+  --form '0=@/path/to/your/work-items.csv'
+```
+
+To upload multiple files in a single request, add additional entries to both the
+`map` and the form fields:
+
+```shell
+GRAPHQL_TOKEN=<your-token>
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --form 'operations={"query": "mutation ($files: [Upload!]!, $projectPath: ID!, $iid: ID!) { designManagementUpload(input: { projectPath: $projectPath, iid: $iid, files: $files }) { designs { filename } errors } }", "variables": {"files": [null, null], "projectPath": "<group>/<project>", "iid": "<issue-iid>"}}' \
+  --form 'map={"0": ["variables.files.0"], "1": ["variables.files.1"]}' \
+  --form '0=@/path/to/first-design.png' \
+  --form '1=@/path/to/second-design.png'
+```
+
 ## Changing the query URL
 
 Sometimes, it is necessary to send GraphQL requests to a different URL. An example are the `GeoNode` queries, which only work against a secondary Geo site URL.

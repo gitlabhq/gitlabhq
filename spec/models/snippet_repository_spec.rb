@@ -232,8 +232,8 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
     context 'with commit actions' do
       let(:result) do
         [{ action: :create }.merge(new_file),
-         { action: :move }.merge(move_file),
-         { action: :update }.merge(update_file)]
+          { action: :move }.merge(move_file),
+          { action: :update }.merge(update_file)]
       end
 
       let(:repo) { double }

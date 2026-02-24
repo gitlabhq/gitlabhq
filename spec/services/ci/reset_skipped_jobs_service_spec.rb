@@ -446,16 +446,6 @@ RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :
 
         expect { service.execute(input_processables) }.not_to raise_error
       end
-
-      context 'when the rescue_stale_object_errors_in_pipeline_processing feature flag is disabled' do
-        before do
-          stub_feature_flags(rescue_stale_object_errors_in_pipeline_processing: false)
-        end
-
-        it 'raises an error' do
-          expect { service.execute(input_processables) }.to raise_error(ActiveRecord::StaleObjectError)
-        end
-      end
     end
   end
 

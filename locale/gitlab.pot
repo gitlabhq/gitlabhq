@@ -3131,10 +3131,10 @@ msgstr ""
 msgid "AICatalog|Potential security threat"
 msgstr ""
 
-msgid "AICatalog|Private %{itemTypePlural} are best for:"
+msgid "AICatalog|Private"
 msgstr ""
 
-msgid "AICatalog|Private project"
+msgid "AICatalog|Private %{itemTypePlural} are best for:"
 msgstr ""
 
 msgid "AICatalog|Project is required."
@@ -3147,6 +3147,9 @@ msgid "AICatalog|Project members can use this flow. You must have at least the M
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
+msgstr ""
+
+msgid "AICatalog|Project: %{label}"
 msgstr ""
 
 msgid "AICatalog|Projects using this service account"
@@ -3384,6 +3387,9 @@ msgid "AICatalog|Visibility"
 msgstr ""
 
 msgid "AICatalog|Visibility & access"
+msgstr ""
+
+msgid "AICatalog|Visibility: %{label}"
 msgstr ""
 
 msgid "AICatalog|Wasting compute or causing performance issues."

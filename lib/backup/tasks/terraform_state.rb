@@ -5,9 +5,13 @@ module Backup
     class TerraformState < Task
       def self.id = 'terraform_state'
 
-      def human_name = _('terraform states')
+      def human_name
+        _('terraform states')
+      end
 
-      def destination_path = 'terraform_state.tar.gz'
+      def destination_path
+        'terraform_state.tar.gz'
+      end
 
       private
 

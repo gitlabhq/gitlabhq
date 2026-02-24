@@ -117,6 +117,7 @@ module Gitlab
 
         if gitlab_redis_queues.sentinels?
           config[:sentinels] = gitlab_redis_queues.sentinels
+          config[:sentinel_password] = gitlab_redis_queues.sentinel_password
         end
 
         config

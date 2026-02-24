@@ -8087,7 +8087,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     shared_examples 'max member access for projects' do
       let(:projects) do
         [owner_project, maintainer_project, reporter_project,
-         developer_project, planner_project, guest_project, no_access_project].map(&:id)
+          developer_project, planner_project, guest_project, no_access_project].map(&:id)
       end
 
       let(:expected) do
@@ -8167,7 +8167,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     shared_examples 'max member access for groups' do
       let(:groups) do
         [owner_group, maintainer_group, reporter_group, developer_group,
-         planner_group, guest_group, no_access_group, planner_group].map(&:id)
+          planner_group, guest_group, no_access_group, planner_group].map(&:id)
       end
 
       let(:expected_access_levels) do

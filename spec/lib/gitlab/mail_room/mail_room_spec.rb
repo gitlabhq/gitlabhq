@@ -11,6 +11,7 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
       url: "localhost",
       db: 99,
       sentinels: [{ host: 'localhost', port: 1234 }],
+      sentinel_password: nil,
       sentinels?: true,
       ssl_params: nil
     )

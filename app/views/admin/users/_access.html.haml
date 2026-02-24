@@ -50,7 +50,7 @@
       = f.label :email_otp_required_after, s_('AdminUsers|Email OTP required after'), class: 'gl-block col-form-label'
       = f.datetime_field :email_otp_required_after,
         class: 'form-control gl-form-input gl-form-input-md'
-      .gl-text-secondary.gl-text-md.gl-mt-2
+      .gl-text-subtle.gl-text-md.gl-mt-2
         = s_('AdminUsers|Control when a user will need to enter an OTP during sign in.')
         - if @user.must_require_email_otp?
           = s_('AdminUsers|Cannot be nil.')

@@ -9,7 +9,7 @@ describe('Merge requests settings page', () => {
           <input type="radio" name="project[merge_method]" value="rebase_merge" ${selectedMethod === 'rebase_merge' ? 'checked' : ''}>
           <div class="js-rebase-merge-container" aria-live="polite"></div>
           <input type="radio" name="project[merge_method]" value="ff" ${selectedMethod === 'ff' ? 'checked' : ''}>
-          <div class="js-ff-container" aria-live="polite"></div>
+          <div class="js-fast-forward-container" aria-live="polite"></div>
         </fieldset>
         <fieldset id="merge-options">
           <div class="js-automatic-rebase-setting">
@@ -54,7 +54,7 @@ describe('Merge requests settings page', () => {
 
       const setting = document.querySelector('.js-automatic-rebase-setting');
 
-      expect(setting.parentElement).toHaveClass('js-ff-container');
+      expect(setting.parentElement).toHaveClass('js-fast-forward-container');
       expect(setting).not.toHaveClass('gl-hidden');
       expect(setting).toHaveClass('gl-ml-6');
     });
@@ -69,7 +69,7 @@ describe('Merge requests settings page', () => {
 
       const setting = document.querySelector('.js-automatic-rebase-setting');
 
-      expect(setting.parentElement).toHaveClass('js-ff-container');
+      expect(setting.parentElement).toHaveClass('js-fast-forward-container');
       expect(setting).not.toHaveClass('gl-hidden');
     });
 
@@ -98,7 +98,7 @@ describe('Merge requests settings page', () => {
 
       setting = document.querySelector('.js-automatic-rebase-setting');
 
-      expect(setting.parentElement).toHaveClass('js-ff-container');
+      expect(setting.parentElement).toHaveClass('js-fast-forward-container');
     });
   });
 

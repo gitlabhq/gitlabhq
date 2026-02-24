@@ -1140,7 +1140,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
               .to match_array(%w[alpha beta])
             expect(json_response['assets']['links'].map { |h| h['url'] })
               .to match_array(%w[https://dosuken.example.com/alpha.exe
-                                 https://dosuken.example.com/beta.exe])
+                https://dosuken.example.com/beta.exe])
           end
 
           context 'when link names are duplicates' do

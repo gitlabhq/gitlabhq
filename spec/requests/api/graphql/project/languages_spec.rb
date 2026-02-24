@@ -23,9 +23,9 @@ RSpec.describe 'Project.languages', feature_category: :internationalization do
 
   let_it_be(:test_languages) do
     [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
-     { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-     { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-     { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+      { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+      { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+      { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
   end
 
   let_it_be(:expected_languages) do

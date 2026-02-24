@@ -58,13 +58,34 @@ module AuditEvents
         user_id: [::AuditEvents::UserAuditEvent, ->(id) { ::User.find(id) }]
       }
 
-      entity_type, (model_class, entity_finder) = entity_mapping.find do |key, _|
+      entity_key, (model_class, entity_finder) = entity_mapping.find do |key, _|
         audit_event_json[key].present?
       end
 
-      if entity_type && entity_finder
-        entity = entity_finder.call(audit_event_json[entity_type])
+      if entity_key && entity_finder
+        entity = entity_finder.call(audit_event_json[entity_key])
         [model_class, entity]
+      else
+        determine_from_entity_type(audit_event_json)
+      end
+    end
+
+    # Fallback method for stream_only events that use entity_type/entity_id format
+    # instead of the scoped *_id fields (e.g., project_id, group_id, user_id).
+    # Note: ActiveRecord::RecordNotFound exceptions bubble up to fetch_from_json's rescue block.
+    def self.determine_from_entity_type(audit_event_json)
+      entity_type = audit_event_json[:entity_type]
+      entity_id = audit_event_json[:entity_id]
+
+      return [::AuditEvents::InstanceAuditEvent, :instance] if entity_id.blank?
+
+      case entity_type
+      when 'Project'
+        [::AuditEvents::ProjectAuditEvent, ::Project.find(entity_id)]
+      when 'Group'
+        [::AuditEvents::GroupAuditEvent, ::Group.find(entity_id)]
+      when 'User'
+        [::AuditEvents::UserAuditEvent, ::User.find(entity_id)]
       else
         [::AuditEvents::InstanceAuditEvent, :instance]
       end
@@ -80,7 +101,26 @@ module AuditEvents
 
       excluded_fields = excluded_fields_mapping[model_class] || [:entity_type, :entity_id]
       filtered_json = audit_event_json.except(*excluded_fields)
+
+      filtered_json = add_scoped_id_from_entity(model_class, filtered_json, audit_event_json)
+
       model_class.new(filtered_json)
+    end
+
+    def self.add_scoped_id_from_entity(model_class, filtered_json, audit_event_json)
+      return filtered_json if audit_event_json[:entity_id].blank?
+
+      id_field_mapping = {
+        ::AuditEvents::GroupAuditEvent => :group_id,
+        ::AuditEvents::ProjectAuditEvent => :project_id,
+        ::AuditEvents::UserAuditEvent => :user_id
+      }
+
+      id_field = id_field_mapping[model_class]
+      return filtered_json unless id_field
+      return filtered_json if filtered_json[id_field].present?
+
+      filtered_json.merge(id_field => audit_event_json[:entity_id])
     end
   end
 end

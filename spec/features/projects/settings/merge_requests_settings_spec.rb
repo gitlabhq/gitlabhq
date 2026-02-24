@@ -262,7 +262,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
         choose('project_merge_method_ff')
 
         expect(page).to have_field('project_project_setting_attributes_automatic_rebase_enabled')
-        expect(find('.js-ff-container')).to have_selector('.js-automatic-rebase-setting')
+        expect(find('.js-fast-forward-container')).to have_selector('.js-automatic-rebase-setting')
       end
 
       it 'hides checkbox when merge commit method is selected' do

@@ -90,7 +90,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let(:current_user) { owner }
     let(:mr_permissions) do
       [:create_merge_request_from, :read_merge_request, :update_merge_request,
-       :admin_merge_request, :create_merge_request_in]
+        :admin_merge_request, :create_merge_request_in]
     end
 
     it 'disallows all permissions when the feature is disabled' do

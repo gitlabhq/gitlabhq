@@ -32,7 +32,9 @@ module Backup
       end
 
       # Key string that identifies the task
-      def id = self.class.id
+      def id
+        self.class.id
+      end
 
       # Name of the task used for logging.
       def human_name
@@ -46,21 +48,33 @@ module Backup
       end
 
       # Path to remove after a successful backup, uses #destination_path when not specified
-      def cleanup_path = destination_path
+      def cleanup_path
+        destination_path
+      end
 
       # `true` if the destination might not exist on a successful backup
-      def destination_optional = false
+      def destination_optional
+        false
+      end
 
       # `true` if the task can be used
-      def enabled = true
+      def enabled
+        true
+      end
 
-      def enabled? = enabled
+      def enabled?
+        enabled
+      end
 
       # a string returned here will be displayed to the user before calling #restore
-      def pre_restore_warning = nil
+      def pre_restore_warning
+        nil
+      end
 
       # a string returned here will be displayed to the user after calling #restore
-      def post_restore_warning = nil
+      def post_restore_warning
+        nil
+      end
 
       private
 

@@ -8,6 +8,7 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
 
     before do
       stub_jira_integration_test
+      stub_feature_flags(optimize_propagate_integration_projects: false)
     end
 
     let(:group) { create(:group) }
@@ -101,13 +102,83 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
 
       context 'with a subgroup with integration' do
         let(:subgroup) { create(:group, parent: group) }
-        let(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
+        let(:subgroup_integration) do
+          create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+        end
 
         it 'calls to PropagateIntegrationInheritDescendantWorker' do
           expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)
             .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
 
           described_class.new(group_integration).execute
+        end
+      end
+    end
+
+    describe 'with optimize_propagate_integration_projects feature flag' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:deep_subgroup) { create(:group, parent: subgroup) }
+      let_it_be(:project_in_subgroup) { create(:project, group: subgroup) }
+      let_it_be(:project_in_deep_subgroup) { create(:project, group: deep_subgroup) }
+
+      let(:group_integration) { create(:jira_integration, :group, group: root_group) }
+
+      subject(:execute) { described_class.new(group_integration).execute }
+
+      context 'when enabled' do
+        before do
+          stub_feature_flags(optimize_propagate_integration_projects: true)
+        end
+
+        it 'propagates to descendant groups without integration' do
+          expected_min_id = [subgroup.id, deep_subgroup.id].min
+          expected_max_id = [subgroup.id, deep_subgroup.id].max
+
+          expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
+            .with(group_integration.id, expected_min_id, expected_max_id)
+
+          execute
+        end
+
+        it 'propagates to descendant projects without integration' do
+          expected_min_id = [project_in_subgroup.id, project_in_deep_subgroup.id].min
+          expected_max_id = [project_in_subgroup.id, project_in_deep_subgroup.id].max
+
+          expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
+            .with(group_integration.id, expected_min_id, expected_max_id)
+
+          execute
+        end
+
+        it 'only propagates to groups without the integration' do
+          create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+
+          expect(PropagateIntegrationGroupWorker).to receive(:perform_async).once
+            .with(group_integration.id, deep_subgroup.id, deep_subgroup.id)
+
+          execute
+        end
+
+        it 'only propagates to projects without the integration' do
+          create(:jira_integration, project: project_in_subgroup, inherit_from_id: group_integration.id)
+
+          expect(PropagateIntegrationProjectWorker).to receive(:perform_async).once
+            .with(group_integration.id, project_in_deep_subgroup.id, project_in_deep_subgroup.id)
+
+          execute
+        end
+
+        context 'when group has no descendants' do
+          let(:empty_group) { create(:group) }
+          let(:group_integration) { create(:jira_integration, :group, group: empty_group) }
+
+          it 'does not enqueue any propagation workers' do
+            expect(PropagateIntegrationGroupWorker).not_to receive(:perform_async)
+            expect(PropagateIntegrationProjectWorker).not_to receive(:perform_async)
+
+            execute
+          end
         end
       end
     end

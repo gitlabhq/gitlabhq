@@ -1731,6 +1731,45 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to include(group_with_integration) }
       it { is_expected.not_to include(group_without_integration) }
     end
+
+    describe '.excluding_self_and_ancestors_archived' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:sub_subgroup) { create(:group, parent: subgroup) }
+
+      subject { root_group.self_and_descendants.excluding_self_and_ancestors_archived }
+
+      context 'when no namespaces are archived' do
+        before do
+          subgroup.namespace_settings.update!(archived: false)
+        end
+
+        it 'returns all groups in the hierarchy' do
+          is_expected.to include(root_group, subgroup, sub_subgroup)
+        end
+      end
+
+      context 'when a mid-level group is archived' do
+        before do
+          subgroup.namespace_settings.update!(archived: true)
+        end
+
+        it 'excludes the archived group and its descendants but keeps the parent' do
+          is_expected.to include(root_group)
+          is_expected.not_to include(subgroup, sub_subgroup)
+        end
+      end
+
+      context 'when the root group is archived' do
+        before do
+          root_group.namespace_settings.update!(archived: true)
+        end
+
+        it 'excludes the entire hierarchy' do
+          is_expected.to be_empty
+        end
+      end
+    end
   end
 
   describe '.project_creation_levels_for_user' do

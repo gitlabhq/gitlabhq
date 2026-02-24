@@ -272,7 +272,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
               'refspecs' => ["+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                             "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
+                "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
               'depth' => project.ci_default_git_depth,
               'repo_object_format' => 'sha1',
               'protected' => job.protected }
@@ -284,11 +284,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                'timeout' => job.timeout_value,
                'when' => 'on_success',
                'allow_failure' => false },
-             { 'name' => 'after_script',
-               'script' => %w[ls date],
-               'timeout' => job.timeout_value,
-               'when' => 'always',
-               'allow_failure' => true }]
+              { 'name' => 'after_script',
+                'script' => %w[ls date],
+                'timeout' => job.timeout_value,
+                'when' => 'always',
+                'allow_failure' => true }]
           end
 
           let(:expected_hooks) do
@@ -297,8 +297,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           let(:expected_variables) do
             [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
-             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
-             { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false }]
+              { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false }]
           end
 
           let(:expected_artifacts) do
@@ -920,11 +920,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           context 'when triggered job is available' do
             let(:expected_variables) do
               [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
-               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
-               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true, 'masked' => false },
-               { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false },
-               { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false, 'masked' => false },
-               { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false, 'masked' => false }]
+                { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+                { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true, 'masked' => false },
+                { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false },
+                { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false, 'masked' => false },
+                { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false, 'masked' => false }]
             end
 
             let(:trigger) { create(:ci_trigger, project: project) }

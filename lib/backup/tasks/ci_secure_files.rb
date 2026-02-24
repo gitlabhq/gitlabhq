@@ -5,9 +5,13 @@ module Backup
     class CiSecureFiles < Task
       def self.id = 'ci_secure_files'
 
-      def human_name = _('ci secure files')
+      def human_name
+        _('ci secure files')
+      end
 
-      def destination_path = 'ci_secure_files.tar.gz'
+      def destination_path
+        'ci_secure_files.tar.gz'
+      end
 
       private
 

@@ -128,7 +128,7 @@ export default {
             'on-this-page-link gl-relative gl-block gl-rounded-sm gl-px-4 gl-py-2 gl-text-sm gl-no-underline hover:gl-no-underline focus:gl-no-underline',
             isActive(item.id)
               ? 'is-active gl-bg-subtle gl-font-bold gl-text-default'
-              : 'gl-text-secondary hover:gl-bg-subtle hover:gl-text-default',
+              : 'gl-text-subtle hover:gl-bg-subtle hover:gl-text-default',
           ]"
           :href="`#${encodeURIComponent(item.id)}`"
           :aria-current="isActive(item.id) ? 'location' : null"

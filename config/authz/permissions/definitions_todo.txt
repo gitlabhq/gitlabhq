@@ -352,7 +352,6 @@ manage_devops_adoption_namespaces
 manage_duo_core_settings
 manage_group_link_with_owner_access
 manage_instance_model_selection
-manage_ldap_admin_links
 manage_merge_request_settings
 manage_owners
 manage_project_security_exclusions

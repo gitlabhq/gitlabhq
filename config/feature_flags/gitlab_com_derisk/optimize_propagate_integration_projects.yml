@@ -1,0 +1,12 @@
+---
+name: optimize_propagate_integration_projects
+description: |
+  Optimizes the query used during integration propagation to find projects without
+  a given integration. The original query was timing out on large group hierarchies.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/577221
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220587
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/589759
+milestone: '18.10'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

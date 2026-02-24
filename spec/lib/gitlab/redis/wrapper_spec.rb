@@ -51,4 +51,84 @@ RSpec.describe Gitlab::Redis::Wrapper do
       expect(described_class.active?).to be true
     end
   end
+
+  describe '#params' do
+    let(:wrapper) { described_class.new }
+
+    context 'when Sentinel authentication is configured' do
+      before do
+        allow(wrapper).to receive(:redis_store_options).and_return(
+          sentinels: [
+            { host: '10.0.0.1', port: 26380 },
+            { host: '10.0.0.2', port: 26380 }
+          ],
+          host: 'gitlab-redis',
+          port: 6380,
+          password: 'redis-password',
+          sentinel_password: 'sentinel-password',
+          sentinel_username: 'sentinel-user'
+        )
+      end
+
+      it 'includes sentinel_password' do
+        params = wrapper.params
+        expect(params).to include(sentinel_password: 'sentinel-password')
+      end
+
+      it 'includes sentinel_username' do
+        params = wrapper.params
+        expect(params).to include(sentinel_username: 'sentinel-user')
+      end
+
+      it 'includes the name from host' do
+        params = wrapper.params
+        expect(params).to include(name: 'gitlab-redis')
+      end
+
+      it 'includes sentinels configuration' do
+        params = wrapper.params
+        expect(params[:sentinels]).to eq([
+          { host: '10.0.0.1', port: 26380 },
+          { host: '10.0.0.2', port: 26380 }
+        ])
+      end
+
+      it 'excludes scheme, instrumentation_class, host, and port' do
+        params = wrapper.params
+        expect(params).not_to include(:scheme, :instrumentation_class, :host, :port)
+      end
+    end
+
+    context 'when Sentinel authentication is not configured' do
+      before do
+        allow(wrapper).to receive(:redis_store_options).and_return(
+          sentinels: [
+            { host: '10.0.0.1', port: 26380 },
+            { host: '10.0.0.2', port: 26380 }
+          ],
+          host: 'gitlab-redis',
+          port: 6380,
+          password: 'redis-password'
+        )
+      end
+
+      it 'does not include sentinel_password' do
+        params = wrapper.params
+        expect(params).not_to include(:sentinel_password)
+      end
+
+      it 'does not include sentinel_username' do
+        params = wrapper.params
+        expect(params).not_to include(:sentinel_username)
+      end
+
+      it 'preserves sentinels configuration' do
+        params = wrapper.params
+        expect(params[:sentinels]).to eq([
+          { host: '10.0.0.1', port: 26380 },
+          { host: '10.0.0.2', port: 26380 }
+        ])
+      end
+    end
+  end
 end

@@ -31,7 +31,7 @@ RSpec.describe WebIdeTerminal do
     let(:services_with_aliases) do
       {
         services: [{ name: 'postgres', alias: 'postgres' },
-                   { name: 'docker:stable-dind', alias: 'docker' }]
+          { name: 'docker:stable-dind', alias: 'docker' }]
       }
     end
 

@@ -497,9 +497,9 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'includes all keys' do
       expect(described_class.simple_sorts.keys).to include(
         *%w[created_asc created_at_asc created_date created_desc created_at_desc
-            closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
-            id_asc id_desc relative_position relative_position_asc updated_desc updated_asc
-            updated_at_asc updated_at_desc title_asc title_desc])
+          closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
+          id_asc id_desc relative_position relative_position_asc updated_desc updated_asc
+          updated_at_asc updated_at_desc title_asc title_desc])
     end
   end
 

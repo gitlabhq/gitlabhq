@@ -46,7 +46,7 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
 
         expect(graphql_data_at(:jobs, :count)).to eq(2)
         expect(graphql_data_at(:jobs, :nodes)).to match_array([a_graphql_entity_for(pending_job),
-                                                               a_graphql_entity_for(failed_job)])
+          a_graphql_entity_for(failed_job)])
       end
     end
 

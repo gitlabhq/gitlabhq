@@ -89,6 +89,24 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
     end
   end
 
+  context 'when sentinel password is configured' do
+    let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled.yml' }
+    let(:queues_config_path) { 'spec/fixtures/config/redis_sentinel_password.yml' }
+    let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
+
+    it 'includes sentinel_password in both delivery and arbitration options' do
+      expected_options = {
+        redis_url: gitlab_redis_queues.url,
+        sentinels: gitlab_redis_queues.sentinels,
+        sentinel_password: 'my-sentinel-password'
+      }
+
+      expect(configuration[:mailboxes].length).to eq(2)
+      expect(configuration[:mailboxes].map { |m| m[:delivery_options] }).to all(include(expected_options))
+      expect(configuration[:mailboxes].map { |m| m[:arbitration_options] }).to all(include(expected_options))
+    end
+  end
+
   def absolute_path(path)
     Rails.root.join(path).to_s
   end
