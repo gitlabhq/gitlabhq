@@ -24,6 +24,7 @@ module Gitlab
           auto_rollback_deployment: { threshold: 1, interval: 3.minutes },
           autocomplete_users: { threshold: -> { application_settings.autocomplete_users_limit }, interval: 1.minute },
           autocomplete_users_unauthenticated: { threshold: -> { application_settings.autocomplete_users_unauthenticated_limit }, interval: 1.minute },
+          bitbucket_server_import: { threshold: 6, interval: 1.minute },
           bulk_delete_todos: { threshold: 6, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
           ci_job_processed_subscription: { threshold: 50, interval: 1.minute },

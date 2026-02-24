@@ -877,6 +877,49 @@ RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_he
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling checksum deploy header' if with_checksum_deploy_header
   it_behaves_like 'updating personal access token last used'
+
+  context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:pat_project_developer) { personal_access_token }
+    let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: [project])) }
+    let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+    let_it_be(:pat_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+
+    let(:package_protection_rule) do
+      create(:package_protection_rule, package_type: :conan, project: project)
+    end
+
+    let(:conan_package_name) { recipe_path_name }
+    let(:conan_package_name_no_match) { "#{conan_package_name}_no_match" }
+
+    before do
+      package_protection_rule.update!(
+        package_name_pattern: package_name_pattern,
+        minimum_access_level_for_push: minimum_access_level_for_push
+      )
+    end
+
+    shared_examples 'authorized package' do
+      it_behaves_like 'returning response status', :ok
+    end
+
+    where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+      ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer)  | 'protected package'
+      ref(:conan_package_name)          | :maintainer | ref(:pat_project_maintainer) | 'authorized package'
+      ref(:conan_package_name)          | :owner      | ref(:pat_project_developer)  | 'protected package'
+      ref(:conan_package_name)          | :owner      | ref(:pat_project_owner)      | 'authorized package'
+      ref(:conan_package_name)          | :admin      | ref(:pat_project_owner)      | 'protected package'
+      ref(:conan_package_name)          | :admin      | ref(:pat_admin)              | 'authorized package'
+      ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_developer)  | 'authorized package'
+      ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_maintainer) | 'authorized package'
+      ref(:conan_package_name_no_match) | :admin      | ref(:pat_project_owner)      | 'authorized package'
+    end
+
+    with_them do
+      it_behaves_like params[:shared_examples_name]
+    end
+  end
 end
 
 RSpec.shared_examples 'protected package main example' do

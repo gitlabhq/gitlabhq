@@ -253,6 +253,7 @@ module API
                       route_setting :authorization, job_token_policies: :admin_packages
 
                       put 'authorize', urgency: :low do
+                        protect_package!(params[:package_name], :conan)
                         authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
                       end
                     end
@@ -475,6 +476,7 @@ module API
                             route_setting :authorization, job_token_policies: :admin_packages
 
                             put 'authorize', urgency: :low do
+                              protect_package!(params[:package_name], :conan)
                               authorize_workhorse!(subject: project,
                                 maximum_size: project.actual_limits.conan_max_file_size)
                             end

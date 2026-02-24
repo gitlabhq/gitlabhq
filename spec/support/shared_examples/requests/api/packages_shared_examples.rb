@@ -216,3 +216,8 @@ RSpec.shared_examples 'a successful package creation' do
     end
   end
 end
+
+RSpec.shared_examples 'protected package' do
+  it_behaves_like 'returning response status with message', status: :forbidden,
+    message: '403 Forbidden - Package protected.'
+end
