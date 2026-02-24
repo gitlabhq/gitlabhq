@@ -1,0 +1,3 @@
+---
+name: update_npm_virtual_registry
+description: Grants the ability to update NPM virtual registries

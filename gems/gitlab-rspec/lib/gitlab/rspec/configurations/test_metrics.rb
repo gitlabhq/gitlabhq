@@ -6,6 +6,15 @@ module Gitlab
   module Rspec
     module Configurations
       class TestMetrics
+        REQUIRED_CLICKHOUSE_ENV_VARS = %w[
+          GLCI_DA_CLICKHOUSE_URL
+          GLCI_CLICKHOUSE_METRICS_USERNAME
+          GLCI_CLICKHOUSE_METRICS_PASSWORD
+          GLCI_CLICKHOUSE_METRICS_DB
+          GLCI_CLICKHOUSE_METRICS_TABLE
+          GLCI_CLICKHOUSE_SHARED_DB
+        ].freeze
+
         class << self
           def configure!(run_type = test_run_type)
             return unless ENV["CI"] && ENV["GLCI_EXPORT_TEST_METRICS"] == "true" && run_type
@@ -14,7 +23,7 @@ module Gitlab
               next if rspec_config.dry_run?
 
               GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |exporter_config|
-                if clickhouse_url && clickhouse_username && clickhouse_password
+                if clickhouse_env_vars_present?
                   yield(exporter_config) if block_given?
 
                   exporter_config.run_type = run_type
@@ -23,13 +32,20 @@ module Gitlab
 
                   rspec_config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
                 else
-                  exporter_config.logger.warn("Test metrics export is enabled but environment variables are not set!")
+                  missing = REQUIRED_CLICKHOUSE_ENV_VARS.reject { |var| ENV[var] && !ENV[var].empty? }
+                  exporter_config.logger.warn(
+                    "Test metrics export is enabled but missing environment variables: #{missing.join(', ')}"
+                  )
                 end
               end
             end
           end
 
           private
+
+          def clickhouse_env_vars_present?
+            REQUIRED_CLICKHOUSE_ENV_VARS.all? { |var| ENV[var] && !ENV[var].empty? }
+          end
 
           def owners_table
             @owners_table ||= GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(

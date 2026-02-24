@@ -8,3 +8,4 @@ permissions:
   - update_container_virtual_registry_upstream
   - update_maven_virtual_registry_upstream
   - update_maven_virtual_registry
+  - update_npm_virtual_registry

@@ -17,3 +17,5 @@ permissions:
   - purge_container_virtual_registry_upstream_cache
   - purge_maven_virtual_registry_cache
   - purge_maven_virtual_registry_upstream_cache
+  - delete_npm_virtual_registry
+  - purge_npm_virtual_registry_cache

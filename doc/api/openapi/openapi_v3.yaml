@@ -635,6 +635,213 @@ paths:
               required:
               - started_on
               - expires_on
+  "/api/v4/groups/{id}/-/virtual_registries/packages/npm/registries":
+    get:
+      operationId: getApiV4GroupsIdDashVirtualRegistriesPackagesNpmRegistries
+      summary: Get the list of all npm virtual registries
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                            This feature is currently an experiment. \
+                            This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesNpmRegistry"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The group ID or full group path. Must be a top-level group
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+    post:
+      operationId: postApiV4GroupsIdDashVirtualRegistriesPackagesNpmRegistries
+      summary: Create a new npm virtual registry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                            This feature is currently an experiment. \
+                            This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesNpmRegistry"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The group ID or full group path. Must be a top-level group
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the npm virtual registry
+                description:
+                  type: string
+                  description: The description of the npm virtual registry
+              required:
+              - name
+  "/api/v4/virtual_registries/packages/npm/registries/{id}":
+    get:
+      operationId: getApiV4VirtualRegistriesPackagesNpmRegistriesId
+      summary: Get a specific npm virtual registry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                          This feature is currently an experiment. \
+                          This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesNpmRegistry"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+    patch:
+      operationId: patchApiV4VirtualRegistriesPackagesNpmRegistriesId
+      summary: Update a specific npm virtual registry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                                This feature is currently an experiment. \
+                                This feature behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the npm virtual registry
+                description:
+                  type: string
+                  description: The description of the npm virtual registry
+    delete:
+      operationId: deleteApiV4VirtualRegistriesPackagesNpmRegistriesId
+      summary: Delete a specific npm virtual registry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                          This feature is currently an experiment. \
+                          This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '412':
+          description: Precondition Failed
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+  "/api/v4/virtual_registries/packages/npm/registries/{id}/cache":
+    delete:
+      operationId: deleteApiV4VirtualRegistriesPackagesNpmRegistriesIdCache
+      summary: Purge cache for a npm virtual registry
+      description: |-
+        This feature was introduced in GitLab 18.10. \
+                                This feature is currently an experiment. \
+                                This feature is behind the `npm_virtual_registry` feature flag.
+      tags:
+      - Virtual registries
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
   "/api/v4/virtual_registries/packages/npm/remote/upstreams/{id}/cache_entries":
     get:
       operationId: getApiV4VirtualRegistriesPackagesNpmRemoteUpstreamsIdCacheEntries
@@ -90346,6 +90553,46 @@ components:
         trial:
           type: Boolean
           example: 'false'
+    APIEntitiesVirtualRegistriesPackagesNpmRegistryUpstream:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        position:
+          type: integer
+          example: 1
+        registry_id:
+          type: integer
+          example: 1
+        upstream_id:
+          type: integer
+          example: 1
+    APIEntitiesVirtualRegistriesPackagesNpmRegistry:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: my-npm-registry
+        description:
+          type: string
+          example: NPM virtual registry
+        group_id:
+          type: integer
+          example: 1
+        created_at:
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
+        updated_at:
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
+        registry_upstreams:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesNpmRegistryUpstream"
     APIEntitiesVirtualRegistriesPackagesNpmCacheRemoteEntry:
       type: object
       properties:

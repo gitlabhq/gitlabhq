@@ -135,13 +135,30 @@ describe('GroupsListItem', () => {
     });
   });
 
-  it('renders projects count', () => {
-    createComponent();
+  describe('when projects are provided as GraphQL nodes', () => {
+    it('renders projects count from projects.count', () => {
+      const projectsNodeCount = 42;
+      createComponent({
+        propsData: { group: { ...group, projects: { count: projectsNodeCount } } },
+      });
 
-    expect(findProjectsCount().props()).toMatchObject({
-      tooltipText: 'Projects',
-      iconName: 'project',
-      stat: group.projectsCount.toString(),
+      expect(findProjectsCount().props()).toMatchObject({
+        tooltipText: 'Projects',
+        iconName: 'project',
+        stat: projectsNodeCount.toString(),
+      });
+    });
+  });
+
+  describe('when projects count is not provided through GraphQL nodes', () => {
+    it('renders projects count from `projectsCount` field', () => {
+      createComponent();
+
+      expect(findProjectsCount().props()).toMatchObject({
+        tooltipText: 'Projects',
+        iconName: 'project',
+        stat: group.projectsCount.toString(),
+      });
     });
   });
 
@@ -158,7 +175,9 @@ describe('GroupsListItem', () => {
 
   describe('when projects count is not available', () => {
     it.each([undefined, null])('does not render projects count', (projectsCount) => {
-      createComponent({ propsData: { group: { ...group, projectsCount } } });
+      createComponent({
+        propsData: { group: { ...group, projectsCount, projects: { count: projectsCount } } },
+      });
 
       expect(findProjectsCount().exists()).toBe(false);
     });

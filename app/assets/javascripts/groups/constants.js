@@ -6,7 +6,6 @@ import {
   SORT_LABEL_STARS,
 } from '~/groups_projects/constants';
 
-export const MAX_CHILDREN_COUNT = 20;
 export const SEARCH_MINIMUM_LENGTH = 3;
 
 export const COMMON_STR = {

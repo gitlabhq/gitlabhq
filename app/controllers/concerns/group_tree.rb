@@ -17,7 +17,7 @@ module GroupTree
                groups.by_parent(nil).page(safe_params[:page])
              end
 
-    @groups = groups.with_selects_for_list(archived: safe_params[:archived], active: safe_params[:active])
+    @groups = groups.with_selects_for_list
 
     respond_to do |format|
       format.html

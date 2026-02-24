@@ -4717,6 +4717,31 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(subject.mergeable?).to be_falsey
     end
 
+    context 'with skip_conflict_check option' do
+      before do
+        allow(subject).to receive_messages(
+          mergeable_state?: true,
+          check_mergeability: nil,
+          should_be_rebased?: false
+        )
+      end
+
+      where(:can_be_merged, :skip_conflict_check, :expected_mergeable) do
+        false | false | false
+        false | true  | true
+        true  | false | true
+        true  | true  | true
+      end
+
+      with_them do
+        specify do
+          allow(subject).to receive(:can_be_merged?).and_return(can_be_merged)
+
+          expect(subject.mergeable?(skip_conflict_check: skip_conflict_check)).to eq(expected_mergeable)
+        end
+      end
+    end
+
     context 'with skip_ci_check option' do
       before do
         allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
@@ -4830,22 +4855,68 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#skipped_auto_merge_checks' do
-    subject { build_stubbed(:merge_request).skipped_auto_merge_checks(options) }
+    subject { merge_request.skipped_auto_merge_checks(options) }
 
+    let(:merge_request) { build_stubbed(:merge_request) }
     let(:options) { { auto_merge_strategy: auto_merge_strategy } }
 
-    where(:auto_merge_strategy, :skip_checks) do
-      ''                                                      | false
-      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
+    context 'when auto_merge_strategy is blank' do
+      let(:auto_merge_strategy) { '' }
+
+      it 'does not skip any checks' do
+        expect(subject.values).to all(be_falsey)
+      end
     end
 
-    with_them do
-      it do
-        is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
-          skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
-          skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
-          skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
-          skip_merge_time_check: skip_checks, skip_ci_check: skip_checks)
+    context 'when auto_merge_strategy is STRATEGY_MERGE_WHEN_CHECKS_PASS' do
+      let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
+
+      it 'skips all the checks except skip_rebase_check and skip_conflict_check' do
+        expect(subject.except(:skip_rebase_check, :skip_conflict_check).values).to all(be_truthy)
+      end
+
+      context 'when recheck_merge_status? is true' do
+        before do
+          allow(merge_request).to receive(:recheck_merge_status?).and_return(true)
+        end
+
+        it 'sets skip_conflict_check to true' do
+          expect(subject[:skip_conflict_check]).to be_truthy
+        end
+      end
+
+      context 'when recheck_merge_status? is false' do
+        before do
+          allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
+        end
+
+        it 'sets skip_conflict_check to false' do
+          expect(subject[:skip_conflict_check]).to be_falsy
+        end
+      end
+    end
+
+    context 'when auto_merge_strategy is STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS' do
+      let(:auto_merge_strategy) { AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS }
+
+      context 'when recheck_merge_status? is true' do
+        before do
+          allow(merge_request).to receive(:recheck_merge_status?).and_return(true)
+        end
+
+        it 'sets skip_conflict_check to true' do
+          expect(subject[:skip_conflict_check]).to be_truthy
+        end
+      end
+
+      context 'when recheck_merge_status? is false' do
+        before do
+          allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
+        end
+
+        it 'sets skip_conflict_check to false' do
+          expect(subject[:skip_conflict_check]).to be_falsy
+        end
       end
     end
   end

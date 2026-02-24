@@ -9,7 +9,7 @@ We're actively investing in improving the experimentation platform based on feed
 scale. The full roadmap is tracked in
 [Improve Growth experiment process and velocity](https://gitlab.com/groups/gitlab-org/-/epics/19812).
 
-## Planned Improvements
+## Planned improvements
 
 ### Sticky candidate assignments across exclusion boundaries
 

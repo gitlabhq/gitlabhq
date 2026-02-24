@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         }
       end
 
-      around(:all) do |example|
+      around do |example|
         create_and_delete_files(project, project_files) do
           example.run
         end

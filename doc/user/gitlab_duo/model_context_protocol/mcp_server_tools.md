@@ -183,7 +183,7 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -203,7 +203,7 @@ Manages CI/CD pipelines in a GitLab project.
 | `page`        | integer | No          | Current page number. Default is `1`. |
 | `per_page`    | integer | No          | Number of items per page. Default is `20`. |
 
-### Examples
+Examples:
 
 - List pipelines:
 

@@ -303,9 +303,10 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => :can_be_merged do |merge_request, transition|
-      next unless merge_request.auto_merge_enabled?
-
       merge_request.run_after_commit do
+        # We find it instead of reloading in order not to clear any other attributes
+        next unless MergeRequest.where(id: merge_request.id, auto_merge_enabled: true).exists?
+
         AutoMergeProcessWorker.perform_async({ 'merge_request_id' => merge_request.id })
       end
     end
@@ -1524,11 +1525,17 @@ class MergeRequest < ApplicationRecord
   alias_method :wip_title, :draft_title
 
   def skipped_auto_merge_checks(options = {})
-    merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
+    merge_when_checks_pass_strat = options[:auto_merge_strategy].in?([
+      ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+      ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
+    ])
+
+    skip_conflict_check = merge_when_checks_pass_strat && recheck_merge_status?
 
     {
       skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
+      skip_conflict_check: skip_conflict_check,
       skip_draft_check: merge_when_checks_pass_strat,
       skip_blocked_check: merge_when_checks_pass_strat,
       skip_discussions_check: merge_when_checks_pass_strat,
@@ -1545,6 +1552,7 @@ class MergeRequest < ApplicationRecord
 
   # mergeable_state_check_params allows a hash of merge checks to skip or not
   # skip_ci_check
+  # skip_conflict_check
   # skip_discussions_check
   # skip_draft_check
   # skip_approved_check
@@ -1554,11 +1562,13 @@ class MergeRequest < ApplicationRecord
   # skip_locked_paths_check
   # skip_jira_check
   # skip_locked_lfs_files_check
-  def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
+  def mergeable?(
+    check_mergeability_retry_lease: false, skip_rebase_check: false,
+    skip_conflict_check: false, **mergeable_state_check_params)
     return false unless mergeable_state?(**mergeable_state_check_params)
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
-    mergeable_git_state?(skip_rebase_check: skip_rebase_check)
+    mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check)
   end
 
   def self.mergeable_state_checks

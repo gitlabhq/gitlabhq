@@ -25636,6 +25636,7 @@ CREATE TABLE pages_deployment_states (
     verification_checksum bytea,
     verification_failure text,
     project_id bigint,
+    CONSTRAINT check_0eeca7e0c7 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_15217e8c3a CHECK ((char_length(verification_failure) <= 255))
 );
 

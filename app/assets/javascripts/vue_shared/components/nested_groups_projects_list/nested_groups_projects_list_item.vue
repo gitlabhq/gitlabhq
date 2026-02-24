@@ -1,13 +1,13 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
-import { sprintf, s__, n__ } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import {
-  TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPES,
 } from '~/vue_shared/components/resource_lists/constants';
 import ProjectsListItem from '../projects_list/projects_list_item.vue';
 import GroupsListItem from '../groups_list/groups_list_item.vue';
-import { LIST_ITEM_TYPE_PROJECT, MAX_CHILDREN_COUNT } from './constants';
+import { LIST_ITEM_TYPE_PROJECT } from './constants';
 
 export default {
   name: 'NestedGroupsProjectsListItem',
@@ -20,6 +20,7 @@ export default {
     item: {
       type: Object,
       required: true,
+      validator: (value) => Array.isArray(value.children),
     },
     timestampType: {
       type: String,
@@ -46,7 +47,7 @@ export default {
   },
   data() {
     return {
-      isExpanded: this.expandedOverride,
+      isExpanded: this.expandedOverride && this.item.children?.length,
     };
   },
   computed: {
@@ -59,7 +60,7 @@ export default {
     nestedItemsContainerClasses() {
       const baseClasses = ['gl-pl-6'];
 
-      if (!this.showChildren) {
+      if (!this.isExpanded) {
         return [...baseClasses, 'gl-hidden'];
       }
 
@@ -84,11 +85,11 @@ export default {
             showGroupIcon: true,
           };
     },
-    showChildren() {
-      return this.isExpanded && this.item.children?.length;
-    },
     hasMoreChildren() {
-      return this.item.childrenCount > MAX_CHILDREN_COUNT;
+      return this.item.childrenCount > this.item.children.length;
+    },
+    showMoreChildrenLink() {
+      return this.hasMoreChildren && !this.item.childrenLoading;
     },
     moreChildrenLinkText() {
       return n__(
@@ -103,9 +104,9 @@ export default {
           avatarLabel: this.item.avatarLabel,
         }),
         category: 'tertiary',
-        icon: this.showChildren ? 'chevron-down' : 'chevron-right',
+        icon: this.isExpanded ? 'chevron-down' : 'chevron-right',
         loading: this.item.childrenLoading,
-        'aria-expanded': this.showChildren ? 'true' : 'false',
+        'aria-expanded': this.isExpanded ? 'true' : 'false',
         'aria-controls': this.nestedItemsContainerId,
       };
     },
@@ -120,7 +121,7 @@ export default {
   },
   methods: {
     onNestedItemsToggleClick() {
-      this.isExpanded = !this.showChildren;
+      this.isExpanded = !this.isExpanded;
 
       if (!this.item.children?.length) {
         this.$emit('load-children', this.item.id);
@@ -164,7 +165,7 @@ export default {
         @hover-stat="$emit('hover-stat', $event)"
         @click-avatar="$emit('click-avatar')"
       >
-        <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-7">
+        <li v-if="showMoreChildrenLink" class="gl-border-b gl-py-4 gl-pl-7">
           <div class="gl-flex gl-h-7 gl-items-center">
             <gl-link :href="item.webUrl" data-testid="more-children-link">
               {{ moreChildrenLinkText }}

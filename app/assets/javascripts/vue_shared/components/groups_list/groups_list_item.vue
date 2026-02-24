@@ -102,7 +102,10 @@ export default {
       return numberToMetricPrefix(this.group.descendantGroupsCount);
     },
     projectsCount() {
-      return numberToMetricPrefix(this.group.projectsCount);
+      return this.group.projects?.count ?? this.group.projectsCount;
+    },
+    displayProjectsCount() {
+      return numberToMetricPrefix(this.projectsCount);
     },
     groupMembersCount() {
       return numberToMetricPrefix(this.group.groupMembersCount);
@@ -111,7 +114,7 @@ export default {
       return isNumeric(this.group.descendantGroupsCount);
     },
     showProjectsCount() {
-      return isNumeric(this.group.projectsCount);
+      return isNumeric(this.projectsCount);
     },
     showGroupMembersCount() {
       return isNumeric(this.group.groupMembersCount);
@@ -186,7 +189,7 @@ export default {
         v-if="showProjectsCount"
         :tooltip-text="$options.i18n.projects"
         icon-name="project"
-        :stat="projectsCount"
+        :stat="displayProjectsCount"
         data-testid="projects-count"
         @hover="$emit('hover-stat', 'projects-count')"
       />

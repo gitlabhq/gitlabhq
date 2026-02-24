@@ -1568,17 +1568,6 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
-- :name: dependency_proxy_blob:virtual_registries_packages_cache_destroy_orphan_entries
-  :worker_name: VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker
-  :feature_category: :virtual_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :cronjob_child
-  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
   :feature_category: :virtual_registry

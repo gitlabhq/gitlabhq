@@ -1,0 +1,3 @@
+---
+name: create_npm_virtual_registry
+description: Grants the ability to create NPM virtual registries

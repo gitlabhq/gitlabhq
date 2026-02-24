@@ -949,6 +949,7 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Create | Group | `POST` | `/groups/:id/-/virtual_registries/packages/maven/registries` |
 | Create | Group | `POST` | `/virtual_registries/packages/maven/registries/:id/upstreams` |
 | Create | Group | `POST` | `/virtual_registries/packages/maven/registry_upstreams` |
+| Create | Group | `POST` | `/groups/:id/-/virtual_registries/packages/npm/registries` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registries/:id` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registries/:id/cache` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registry_upstreams/:id` |
@@ -962,6 +963,10 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Delete | Group | `DELETE` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/maven/cache_entries/*id` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/npm/remote/cache_entries/*id` |
+| Delete | Group | `DELETE` | `/virtual_registries/packages/npm/registries/:id` |
+| Delete | Group | `DELETE` | `/virtual_registries/packages/npm/registries/:id/cache` |
+| Read | Group | `GET` | `/virtual_registries/packages/npm/registries/:id` |
+| Read | Group | `GET` | `/groups/:id/-/virtual_registries/packages/npm/registries` |
 | Read | Group | `GET` | `/virtual_registries/packages/npm/remote/upstreams/:id/cache_entries` |
 | Read | Group | `GET` | `/virtual_registries/packages/maven/upstreams/:id/cache_entries` |
 | Read | Group | `GET` | `/virtual_registries/packages/maven/upstreams/:id/test` |
@@ -976,16 +981,17 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Read | Group | `GET` | `/groups/:id/-/virtual_registries/container/upstreams` |
 | Read | Group | `GET` | `/virtual_registries/container/registries/:id` |
 | Read | Group | `GET` | `/groups/:id/-/virtual_registries/container/registries` |
-| Read | Group | `POST` | `/virtual_registries/container/upstreams/:id/test` |
 | Read | Group | `POST` | `/groups/:id/-/virtual_registries/packages/maven/upstreams/test` |
-| Read | Group | `POST` | `/groups/:id/-/virtual_registries/container/upstreams/test` |
+| Read | Group | `POST` | `/virtual_registries/container/upstreams/:id/test` |
 | Read | Group | `POST` | `/virtual_registries/packages/maven/upstreams/:id/test` |
+| Read | Group | `POST` | `/groups/:id/-/virtual_registries/container/upstreams/test` |
 | Update | Group | `PATCH` | `/virtual_registries/container/registries/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/container/registry_upstreams/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/container/upstreams/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/packages/maven/registries/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/packages/maven/upstreams/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
+| Update | Group | `PATCH` | `/virtual_registries/packages/npm/registries/:id` |
 
 #### Virtual Registry Cleanup Policy
 
