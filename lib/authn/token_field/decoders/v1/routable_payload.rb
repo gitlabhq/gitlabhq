@@ -5,6 +5,8 @@ module Authn
     module Decoders
       module V1
         class RoutablePayload
+          include Gitlab::Utils::StrongMemoize
+
           def initialize(token)
             @token = token
           end
@@ -20,7 +22,15 @@ module Authn
           attr_reader :token
 
           def routable_token?
+            with_correct_crc? && payload_size_within_limit?
+          end
+
+          def with_correct_crc?
             generator_class.crc_of(prefixed_encoded_payload) == crc
+          end
+
+          def payload_size_within_limit?
+            formatted_payload && formatted_payload.size <= generator_class::MAXIMUM_SIZE_OF_ROUTING_PAYLOAD
           end
 
           def decoded_payload_hash
@@ -36,8 +46,10 @@ module Authn
           end
 
           def formatted_payload
-            decodable_payload.try { |payload| payload[generator_class::RANDOM_BYTES_LENGTH...-1] }
+            decodable_payload
+              .try { |payload| payload[generator_class::RANDOM_BYTES_LENGTH...-1] }
           end
+          strong_memoize_attr :formatted_payload
 
           def decodable_payload
             base64_payload.try { |payload| Base64.urlsafe_decode64(payload) }

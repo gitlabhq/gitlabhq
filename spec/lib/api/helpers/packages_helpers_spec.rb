@@ -397,6 +397,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     let_it_be(:project_owner) { project.owner }
     let_it_be(:project_deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
     let_it_be(:package) { create(:maven_package) }
+    let_it_be(:unauthorized_user) { create(:user) }
 
     let_it_be(:package_protection_rule_maven) do
       create(:package_protection_rule,
@@ -440,6 +441,14 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       end
     end
 
+    shared_examples 'forbidden response' do
+      it 'renders bad_request error' do
+        expect(helper).to receive(:forbidden!)
+
+        subject
+      end
+    end
+
     where(:package_name, :package_type, :current_user, :expected_shared_example) do
       lazy { package.name } | :maven   | ref(:project_developer)    | 'forbidden response because package protected'
       lazy { package.name } | :pypi    | ref(:project_developer)    | 'success response because package not protected'
@@ -452,10 +461,35 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       nil                   | :maven   | ref(:project_developer)    | 'success response because package not protected'
       nil                   | :no_type | ref(:project_developer)    | 'bad_request response'
       nil                   | nil      | ref(:project_developer)    | 'bad_request response'
+      lazy { package.name } | :maven   | ref(:unauthorized_user)    | 'forbidden response'
     end
 
     with_them do
       it_behaves_like params[:expected_shared_example]
+    end
+
+    context 'when project is provided as an argument' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:current_user) { project_developer }
+
+      let(:package_name) { package.name }
+      let(:package_type) { :maven }
+
+      subject { helper.protect_package!(package_name, package_type, project: other_project) }
+
+      before_all do
+        other_project.add_developer(project_developer)
+      end
+
+      it 'uses the provided project' do
+        expect(::Packages::Protection::CheckRuleExistenceService).to receive(:for_push).with(
+          project: other_project,
+          current_user: current_user,
+          params: { package_name: package_name, package_type: package_type }
+        ).and_call_original
+
+        subject
+      end
     end
   end
 end
