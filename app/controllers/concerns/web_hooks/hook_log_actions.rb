@@ -32,7 +32,7 @@ module WebHooks
     private
 
     def hook_log
-      @hook_log ||= hook.web_hook_logs.find(params[:id])
+      @hook_log ||= hook.web_hook_logs.find(params.permit(:id)[:id])
     end
 
     def execute_hook

@@ -41,7 +41,7 @@ module AccessTokensActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def revoke
-    @resource_access_token = finder.find(params[:id])
+    @resource_access_token = finder.find(revoke_params[:id])
     revoked_response = ResourceAccessTokens::RevokeService.new(current_user, resource, @resource_access_token).execute
 
     if revoked_response.success?
@@ -88,6 +88,10 @@ module AccessTokensActions
   end
 
   def rotate_params
+    params.permit(:id)
+  end
+
+  def revoke_params
     params.permit(:id)
   end
 

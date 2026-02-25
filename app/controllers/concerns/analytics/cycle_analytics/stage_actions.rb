@@ -66,7 +66,10 @@ module Analytics
       end
 
       def stage
-        @stage ||= ::Analytics::CycleAnalytics::StageFinder.new(parent: namespace, stage_id: params[:id]).execute
+        @stage ||= ::Analytics::CycleAnalytics::StageFinder.new(
+          parent: namespace,
+          stage_id: params.permit(:id)[:id]
+        ).execute
       end
 
       def data_collector

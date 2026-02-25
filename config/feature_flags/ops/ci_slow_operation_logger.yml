@@ -1,0 +1,9 @@
+---
+name: ci_slow_operation_logger
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590016
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224043
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590782
+milestone: '18.10'
+type: ops
+group: group::pipeline authoring
+default_enabled: false

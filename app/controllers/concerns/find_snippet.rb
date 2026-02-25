@@ -18,7 +18,7 @@ module FindSnippet
   end
 
   def snippet_id
-    params[:id]
+    params.permit(:id)[:id]
   end
 
   def snippet_find_params

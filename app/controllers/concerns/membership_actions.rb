@@ -10,7 +10,7 @@ module MembershipActions
   end
 
   def update
-    member = members_and_requesters.find(params[:id])
+    member = members_and_requesters.find(members_requesters_permitted_params[:id])
     result = Members::UpdateService
       .new(current_user, update_params)
       .execute(member)
@@ -23,10 +23,10 @@ module MembershipActions
   end
 
   def destroy
-    member = members_and_requesters.find(params[:id])
-    skip_subresources = !ActiveRecord::Type::Boolean.new.cast(params.delete(:remove_sub_memberships))
+    member = members_and_requesters.find(members_requesters_permitted_params[:id])
+    skip_subresources = !ActiveRecord::Type::Boolean.new.cast(destroy_option_params[:remove_sub_memberships])
     # !! is used in case unassign_issuables contains empty string which would result in nil
-    unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(params.delete(:unassign_issuables))
+    unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(destroy_option_params[:unassign_issuables])
 
     Members::DestroyService.new(current_user).execute(
       member,
@@ -71,9 +71,9 @@ module MembershipActions
   end
 
   def approve_access_request
-    access_requester = requesters.find(params[:id])
+    access_requester = requesters.find(members_requesters_permitted_params[:id])
     result = Members::ApproveAccessRequestService
-      .new(current_user, params)
+      .new(current_user, approve_access_request_service_params)
       .execute(access_requester)
 
     if result[:status] == :success
@@ -111,7 +111,7 @@ module MembershipActions
   # rubocop: enable CodeReuse/ActiveRecord
 
   def resend_invite
-    member = membershipable_members.find(params[:id])
+    member = membershipable_members.find(members_requesters_permitted_params[:id])
 
     if member.invite?
       member.resend_invite
@@ -165,7 +165,7 @@ module MembershipActions
   end
 
   def requested_relations(inherited_permissions = :with_inherited_permissions)
-    case params[inherited_permissions].presence
+    case params.permit(inherited_permissions)[inherited_permissions].presence
     when 'exclude'
       [:direct]
     when 'only'
@@ -210,7 +210,19 @@ module MembershipActions
 
   def shared_members_relations
     project_relations = [:invited_groups, :shared_into_ancestors]
-    [:shared_from_groups, *(project_relations if params[:project_id])]
+    [:shared_from_groups, *(project_relations if members_requesters_permitted_params[:project_id])]
+  end
+
+  def members_requesters_permitted_params
+    params.permit(:project_id, :id, id: [])
+  end
+
+  def approve_access_request_service_params
+    params.permit(:access_level, :current_access_level)
+  end
+
+  def destroy_option_params
+    params.permit(:remove_sub_memberships, :unassign_issuables)
   end
 end
 

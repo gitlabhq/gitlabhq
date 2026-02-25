@@ -515,6 +515,29 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             expect(progress.string).to include(message)
           end
         end
+
+        context 'when keep_time is shorter than the backup creation duration' do
+          let(:backup_time) { Time.zone.parse('2025-12-31') }
+          let(:current_time) { Time.zone.parse('2026-1-1') }
+          let(:new_backup_file) { "#{backup_time.to_i}_2025_12_31_#{Gitlab::VERSION}_gitlab_backup.tar" }
+
+          before do
+            allow(Gitlab.config.backup).to receive(:keep_time).and_return(3600)
+
+            allow(Time).to receive(:current).and_return(backup_time, current_time)
+
+            subject.create # rubocop:disable Rails/SaveBang
+          end
+
+          it 'does not remove the newly created backup file' do
+            expect(FileUtils).not_to have_received(:rm).with(new_backup_file)
+          end
+
+          it 'still removes other old backup files' do
+            expect(FileUtils).to have_received(:rm).with(files[1])
+            expect(FileUtils).to have_received(:rm).with(files[5])
+          end
+        end
       end
 
       describe 'cloud storage' do

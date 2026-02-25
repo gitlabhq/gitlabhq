@@ -76,7 +76,8 @@ To edit a saved view:
 1. Select **Plan** > **Work items**.
 1. Select the view you want to edit.
 1. Select the view again, then select **Edit**.
-1. Edit the title, description, or visibility of the view.
+1. Edit the title or description of the view.
+1. Edit the visibility of the view. To change this setting, you must be the creator of the view.
 1. Select **Save**.
 
 ## Copy a link to a saved view

@@ -336,4 +336,60 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
       end
     end
   end
+
+  describe 'slow operation logging', :request_store do
+    let(:params) { { project: project.full_path, file: '/file.yml' } }
+
+    around do |example|
+      create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
+        example.run
+      end
+    end
+
+    context 'when operation duration exceeds threshold' do
+      before do
+        stub_const('Gitlab::Ci::Pipeline::SlowOperationLogger::SLOW_THRESHOLD_SECONDS', 0.0)
+      end
+
+      it 'logs slow permission checks' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            message: 'CI slow operation alert for download_code_permission_check',
+            project_id: project.id,
+            user_id: user.id
+          )
+        )
+
+        Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file])
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_slow_operation_logger: false)
+        end
+
+        it 'does not log permission checks' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file])
+        end
+      end
+
+      context 'when the project is public and the user is nil', :request_store do
+        let(:context_user) { nil }
+
+        it 'logs without user_id since it is nil' do
+          expect(Gitlab::AppJsonLogger).to receive(:info) do |args|
+            expect(args).to include(
+              message: 'CI slow operation alert for download_code_permission_check',
+              project_id: project.id
+            )
+            expect(args).not_to have_key(:user_id)
+          end
+
+          Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file])
+        end
+      end
+    end
+  end
 end
