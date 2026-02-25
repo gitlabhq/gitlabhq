@@ -4302,7 +4302,6 @@
 - './spec/lib/gitlab/ci/pipeline/metrics_spec.rb'
 - './spec/lib/gitlab/ci/pipeline_object_hierarchy_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/preloader_spec.rb'
-- './spec/lib/gitlab/ci/pipeline/quota/deployments_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/seed/build/cache_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/seed/pipeline_spec.rb'

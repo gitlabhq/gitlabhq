@@ -106,7 +106,7 @@ Group permissions for [group features](group/_index.md):
 | Disable notification emails                                                                 |       |         |          |           |            |   ✓   |
 | Import [project](project/settings/import_export.md)                                         |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Developers and Maintainers can view events based on their individual actions only. For more
    information, see the [prerequisites](compliance/audit_events.md#prerequisites).
@@ -174,7 +174,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |           |            |   ✓   |
 | Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Users can view events based on their individual actions only. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
 
@@ -190,7 +190,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
 | Purchase [GitLab Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. If the user has GitLab Duo Pro or Enterprise, the
    [user must be assigned a seat to gain access to that GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
@@ -208,7 +208,7 @@ Group permissions for the [package and container registry](packages/_index.md):
 | Configure a virtual registry                    |       |         |          |           |     ✓      |   ✓   |
 | Pull an artifact from a virtual registry        |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Guests can only view events based on their individual actions.
 
@@ -242,7 +242,7 @@ Group permissions for [package registry](packages/_index.md):
 | Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete epics <sup>5</sup>                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
@@ -260,7 +260,7 @@ Group permissions for [wikis](project/wiki/group.md):
 | Edit group wiki pages                               |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | Delete group wiki pages                             |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 1. Guests: In addition, if your group is public or internal, all users who can see the group can also search group wiki pages.
@@ -357,7 +357,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Disable notification emails                                                            |       |         |          |           |            |   ✓   |
 | Transfer project                                                                       |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -428,7 +428,7 @@ Project permissions for [application security](application_security/secure_your_
 | Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
 | Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
 
@@ -491,7 +491,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Take ownership of pipeline schedules                                                                        |            |       |         |          |           |     ✓      |
 | Delete others' pipeline schedules                                                                           |            |       |         |          |           |     ✓      |
 
-**Footnotes**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -539,7 +539,7 @@ Guest users and members with the Reporter role cannot do any of these actions.
 | Pull container images from private projects <sup>2</sup>  |     ✓     |     ✓      |
 | Push container images to current project <sup>3</sup>     |     ✓     |     ✓      |
 
-**Footnotes**
+**Footnotes**:
 
 1. Developers and Maintainers: Only if the triggering user is not an external user.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy).
@@ -556,7 +556,7 @@ Project permissions for [compliance](compliance/_index.md) features including co
 | View licenses in [dependency list](application_security/dependency_list/_index.md)                              |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                                     |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
@@ -574,7 +574,7 @@ Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 | Use GitLab Duo features <sup>1</sup>                                                 |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-project) |            |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Code Suggestions requires a [user being assigned a seat to gain access to a GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 
@@ -596,7 +596,7 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
 | Delete merge request                                                                      |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
@@ -630,7 +630,7 @@ Project permissions for [model registry](project/ml/model_registry/_index.md) an
 | Edit experiments and candidates                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete experiments and candidates                                               |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Non-members can only view models and versions in public projects with the **Everyone with access**
    visibility level. Non-members can't view internal projects, even if they're logged in.
@@ -687,7 +687,7 @@ Project permissions for [package registry](packages/_index.md):
 | Delete packages                         |       |         |          |           |     ✓      |   ✓   |
 | Delete files associated with a package  |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
@@ -725,7 +725,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Delete issues <sup>5</sup>                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking,
    and more. Guest users can only set metadata when creating an issue. They cannot change the
@@ -752,7 +752,7 @@ Project permissions for [tasks](tasks.md):
 | Add internal note                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete tasks <sup>2</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Guest users can modify the title and description that they authored or are assigned to.
 1. Users who don't have the Planner or Owner role can only delete the tasks they authored.
@@ -809,7 +809,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Remove fork relationship                                              |       |         |          |           |            |   ✓   |
 | Force push to protected branches <sup>6</sup>                         |       |         |          |           |            |       |
 
-**Footnotes**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -862,7 +862,7 @@ Project permissions for [user management](project/members/_index.md).
 | Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
 | Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+**Footnotes**:
 
 1. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role.
    They also cannot approve Owner role access requests.
